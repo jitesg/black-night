@@ -1,0 +1,759 @@
+{
+  "_note_hi": "यह checklist library मौजूदा 5 DEFAULT_KARYVAHI (Nakal Chick, Nakal Rapat, Bayan Vadi, Ghatnasthal Nirikshan, e-Sakshya Videography) के ऊपर जुड़ती है — उन्हें दोबारा नहीं जोड़ा गया है क्योंकि वो हर crime type में पहले से अपने-आप seed होती हैं। कानूनी धारा संख्याएँ (BNS/BNSS) सामान्य संदर्भ के लिए दी गई हैं — इन्हें अपने Legal Cell/RI से आधिकारिक रूप से सत्यापित करवाकर ही उपयोग करें, क्योंकि गलत धारा संदर्भ केस को प्रभावित कर सकता है।",
+  "items": [
+   
+    {
+      "task_name": "शव का पंचनामा (Inquest Panchnama)",
+      "brief_description": "मृतक के शव का निरीक्षण कर पंचनामा तैयार करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "murder",
+        "road_accident","dowry_death"
+      ]
+    },
+    {
+      "task_name": "पोस्टमार्टम हेतु शव भेजना",
+      "brief_description": "शव को राजपत्रित चिकित्सक के पास पोस्टमार्टम हेतु भेजें, आवश्यक फॉर्म सहित।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "murder",
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "मृतक की पहचान",
+      "brief_description": "शव की पहचान परिजनों/गवाहों से करवाएं; पहचान न होने पर Unknown Body प्रक्रिया अपनाएं।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "murder"
+      ]
+    },
+    {
+      "task_name": "भौतिक साक्ष्य जब्ती (हथियार/रक्त-रंजित वस्तुएं)",
+      "brief_description": "घटनास्थल से सभी भौतिक साक्ष्य जब्त कर सीलबंद करें, जब्ती पंचनामा तैयार करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "attempt_to_murder",
+        "murder"
+      ]
+    },
+    {
+      "task_name": "आरोपी की पहचान एवं तलाश",
+      "brief_description": "उपलब्ध साक्ष्य/गवाह बयान के आधार पर संदिग्ध आरोपी की पहचान कर तलाश शुरू करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "attempt_to_murder",
+        "murder",
+        "robbery",
+        "theft"
+      ]
+    },
+    {
+      "task_name": "FSL परीक्षण हेतु नमूने भेजना",
+      "brief_description": "जब्त भौतिक साक्ष्य/नमूनों को राजकीय विधि विज्ञान प्रयोगशाला भेजें, forwarding letter सहित।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "arms_act",
+        "attempt_to_murder",
+        "murder",
+        "rape"
+      ]
+    },
+    {
+      "task_name": "DNA परीक्षण",
+      "brief_description": "पहचान अस्पष्ट होने या यौन हिंसा का संकेत होने पर DNA नमूने FSL भेजें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "murder",
+        "pocso_sexual_assault",
+        "rape"
+      ]
+    },
+    {
+      "task_name": "फिंगरप्रिंट परीक्षण",
+      "brief_description": "घटनास्थल की उपयुक्त सतहों से फिंगरप्रिंट उठवाकर परीक्षण हेतु भेजें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "criminal_trespass_housebreaking",
+        "murder",
+        "theft"
+      ]
+    },
+    {
+      "task_name": "बैलिस्टिक परीक्षण",
+      "brief_description": "आग्नेयास्त्र प्रयुक्त होने पर हथियार/कारतूस के खोल FSL बैलिस्टिक विंग भेजें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "arms_act",
+        "attempt_to_murder",
+        "murder"
+      ]
+    },
+    {
+      "task_name": "मोबाइल फोरेंसिक / CDR-CAF विश्लेषण",
+      "brief_description": "मृतक/आरोपी के मोबाइल की CDR, CAF एवं लोकेशन जांच करवाएं।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "cyber_crime",
+        "kidnapping_abduction",
+        "murder"
+      ]
+    },
+    {
+      "task_name": "टेस्ट आइडेंटिफिकेशन परेड (TIP)",
+      "brief_description": "आरोपी अपरिचित गवाह द्वारा पहचाना जाना हो तो मजिस्ट्रेट के समक्ष TIP करवाएं।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "dacoity",
+        "murder",
+        "robbery"
+      ]
+    },
+    {
+      "task_name": "हथियार बरामदगी",
+      "brief_description": "प्रयुक्त हथियार बरामद करने का प्रयास करें एवं पंचनामा तैयार करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "attempt_to_murder",
+        "dacoity",
+        "murder",
+        "robbery"
+      ]
+    },
+    {
+      "task_name": "आसपास के CCTV की मैपिंग",
+      "brief_description": "घटनास्थल के आसपास उपलब्ध सभी CCTV की सूची बनाकर फुटेज सुरक्षित करें।",
+      "priority": "RECOMMENDED",
+      "requires_evidence": true,
+      "crime_types": [
+        "criminal_trespass_housebreaking",
+        "murder",
+        "robbery",
+        "theft"
+      ]
+    },
+    {
+      "task_name": "पूर्व विवाद का सत्यापन",
+      "brief_description": "मृतक/पीड़ित एवं संदिग्ध के मध्य पूर्व विवाद/रंजिश की जांच करें।",
+      "priority": "RECOMMENDED",
+      "requires_evidence": false,
+      "crime_types": [
+        "attempt_to_murder",
+        "hurt_grievous_hurt",
+        "murder"
+      ]
+    },
+    {
+      "task_name": "वित्तीय लेन-देन सत्यापन",
+      "brief_description": "मकसद आर्थिक होने की आशंका पर संबंधित बैंक खातों/लेन-देन की जांच करें।",
+      "priority": "RECOMMENDED",
+      "requires_evidence": false,
+      "crime_types": [
+        "cheating_fraud",
+        "murder"
+      ]
+    },
+    {
+      "task_name": "सोशल-मीडिया साक्ष्य संरक्षण",
+      "brief_description": "मृतक/आरोपी/पीड़ित के सोशल मीडिया की प्रासंगिक सामग्री का स्क्रीनशॉट व hash सहित संरक्षण करें।",
+      "priority": "RECOMMENDED",
+      "requires_evidence": true,
+      "crime_types": [
+        "murder",
+        "rape",
+        "sexual_harassment"
+      ]
+    },
+    {
+      "task_name": "घायल का मेडिको-लीगल सर्टिफिकेट (MLC)",
+      "brief_description": "घायल की चिकित्सकीय जांच करवाकर MLC प्राप्त करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "attempt_to_murder",
+        "hurt_grievous_hurt",
+        "road_accident",
+        "robbery"
+      ]
+    },
+    {
+      "task_name": "घायल/पीड़ित का बयान (होश में होने पर)",
+      "brief_description": "घायल का बयान अस्पताल में या स्वस्थ होने पर दर्ज करें (Dying Declaration की स्थिति में मजिस्ट्रेट/चिकित्सक की उपस्थिति सुनिश्चित करें)।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "attempt_to_murder"
+      ]
+    },
+    {
+      "task_name": "अस्पताल रिकॉर्ड प्राप्त करना",
+      "brief_description": "इलाज लंबा चलने पर पूर्ण अस्पताल रिकॉर्ड/डिस्चार्ज समरी प्राप्त करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "attempt_to_murder",
+        "hurt_grievous_hurt",
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "विशेषज्ञ चिकित्सा राय (चोट की प्रकृति हेतु)",
+      "brief_description": "चोट गंभीर/जानलेवा होने की प्रकृति के संबंध में चिकित्सक से लिखित राय लें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "attempt_to_murder",
+        "hurt_grievous_hurt"
+      ]
+    },
+    {
+      "task_name": "पीड़िता का बयान (183 BNSS)",
+      "brief_description": "पीड़िता का बयान मजिस्ट्रेट के समक्ष धारा 183 BNSS के अंतर्गत दर्ज करवाएं।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "pocso_sexual_assault",
+        "rape"
+      ]
+    },
+    {
+      "task_name": "पीड़िता की चिकित्सकीय जांच (MLC)",
+      "brief_description": "महिला चिकित्सक द्वारा पीड़िता की चिकित्सकीय जांच करवाकर MLC/FSL किट प्राप्त करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "pocso_sexual_assault",
+        "rape"
+      ]
+    },
+    {
+      "task_name": "पीड़िता की उम्र सत्यापन",
+      "brief_description": "जन्म प्रमाण पत्र/स्कूल रिकॉर्ड से आयु सत्यापित करें — नाबालिग होने पर POCSO लागू होगा।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "pocso_sexual_assault",
+        "rape"
+      ]
+    },
+    {
+      "task_name": "आरोपी की गिरफ्तारी एवं चिकित्सकीय परीक्षण",
+      "brief_description": "आरोपी को गिरफ्तार कर चिकित्सकीय परीक्षण करवाएं (potency test सहित जहां लागू)।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "pocso_sexual_assault",
+        "rape"
+      ]
+    },
+    {
+      "task_name": "बाल कल्याण समिति (CWC) को सूचना",
+      "brief_description": "पीड़ित बच्चे के मामले की सूचना 24 घंटे में CWC को दें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "pocso_sexual_assault"
+      ]
+    },
+    {
+      "task_name": "विशेष लोक अभियोजक की नियुक्ति सुनिश्चित करना",
+      "brief_description": "POCSO प्रकरण हेतु विशेष लोक अभियोजक नियुक्ति की पुष्टि करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "pocso_sexual_assault"
+      ]
+    },
+    {
+      "task_name": "सपोर्ट पर्सन/अभिभावक की उपस्थिति",
+      "brief_description": "बयान/चिकित्सकीय जांच के दौरान बच्चे के साथ सपोर्ट पर्सन या अभिभावक की उपस्थिति सुनिश्चित करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "pocso_sexual_assault"
+      ]
+    },
+    {
+      "task_name": "काउंसलिंग रेफरल",
+      "brief_description": "पीड़ित/पीड़िता को मनोवैज्ञानिक सहायता हेतु संदर्भित करें।",
+      "priority": "RECOMMENDED",
+      "requires_evidence": false,
+      "crime_types": [
+        "pocso_sexual_assault",
+        "rape"
+      ]
+    },
+    {
+      "task_name": "दहेज मांग/लेन-देन संबंधी साक्ष्य",
+      "brief_description": "दहेज की मांग/लेन-देन संबंधी रसीद, बैंक स्टेटमेंट, संदेश आदि एकत्र करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "cruelty_husband_relatives"
+      ]
+    },
+    {
+      "task_name": "पीड़िता का विस्तृत बयान (दहेज प्रताड़ना)",
+      "brief_description": "प्रताड़ना की घटनाओं, तिथियों एवं संलिप्त व्यक्तियों का विस्तृत बयान लें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "cruelty_husband_relatives"
+      ]
+    },
+    {
+      "task_name": "ससुराल पक्ष के विरुद्ध गवाह बयान",
+      "brief_description": "पड़ोसी/रिश्तेदारों के बयान दर्ज कर प्रताड़ना की पुष्टि करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "cruelty_husband_relatives"
+      ]
+    },
+    {
+      "task_name": "स्त्रीधन की सूची",
+      "brief_description": "पीड़िता के स्त्रीधन (गहने/सामान) की सूची तैयार कर बरामदगी का प्रयास करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "cruelty_husband_relatives"
+      ]
+    },
+    {
+      "task_name": "अंतिम ज्ञात लोकेशन एवं CDR प्राप्त करना",
+      "brief_description": "अपहृत/लापता व्यक्ति की अंतिम लोकेशन एवं मोबाइल CDR प्राप्त करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "kidnapping_abduction"
+      ]
+    },
+    {
+      "task_name": "फोटोग्राफ का प्रसारण",
+      "brief_description": "पीड़ित का फोटो सभी थानों/चौकियों एवं सोशल मीडिया पर प्रसारित करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "kidnapping_abduction"
+      ]
+    },
+    {
+      "task_name": "फिरौती कॉल ट्रेसिंग",
+      "brief_description": "फिरौती की मांग वाली कॉल/मैसेज की तकनीकी ट्रेसिंग करवाएं।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "kidnapping_abduction"
+      ]
+    },
+    {
+      "task_name": "चोरी गई संपत्ति की सूची",
+      "brief_description": "चोरी/लूट/डकैती में गई सभी वस्तुओं की सूची, मूल्य व फोटो सहित तैयार करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "criminal_trespass_housebreaking",
+        "dacoity",
+        "robbery",
+        "theft"
+      ]
+    },
+    {
+      "task_name": "सर्राफा/पॉनशॉप जांच",
+      "brief_description": "चोरी की धातु/आभूषण बेचे जाने की आशंका पर स्थानीय सर्राफा व पॉनशॉप की जांच करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "theft"
+      ]
+    },
+    {
+      "task_name": "बरामद संपत्ति की पहचान",
+      "brief_description": "बरामद संपत्ति मालिक को दिखाकर पहचान पंचनामा तैयार करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "robbery",
+        "theft"
+      ]
+    },
+    {
+      "task_name": "संदिग्ध वाहन की जांच",
+      "brief_description": "घटना में प्रयुक्त वाहन के नंबर व मालिक का पता लगाएं।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "dacoity",
+        "robbery"
+      ]
+    },
+    {
+      "task_name": "गैंग पहचान हेतु पुराने रिकॉर्ड खंगालना",
+      "brief_description": "समान modus operandi वाले पुराने डकैती/लूट के रिकॉर्ड से गैंग की पहचान का प्रयास करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "dacoity"
+      ]
+    },
+    {
+      "task_name": "फरार आरोपियों के विरुद्ध कुर्की/इश्तिहार",
+      "brief_description": "फरार आरोपियों के विरुद्ध BNSS प्रावधान अनुसार इश्तिहार/कुर्की की कार्यवाही करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "dacoity"
+      ]
+    },
+    {
+      "task_name": "प्रवेश/निकास बिंदु का निरीक्षण",
+      "brief_description": "सेंधमारी में प्रयुक्त प्रवेश/निकास बिंदु व औजार के निशान चिह्नित करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "criminal_trespass_housebreaking"
+      ]
+    },
+    {
+      "task_name": "तोड़फोड़ उपकरण बरामदगी",
+      "brief_description": "सेंधमारी में प्रयुक्त औजार बरामद होने पर जब्त कर FSL जांच हेतु भेजें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "criminal_trespass_housebreaking"
+      ]
+    },
+    {
+      "task_name": "NDPS बरामदगी पंचनामा (धारा 42/43/50 प्रक्रिया)",
+      "brief_description": "NDPS एक्ट की अनिवार्य प्रक्रिया (धारा 42/43/50) का पालन करते हुए बरामदगी पंचनामा तैयार करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "ndps"
+      ]
+    },
+    {
+      "task_name": "मादक पदार्थ का वजन एवं द्वि-नमूना",
+      "brief_description": "बरामद मादक पदार्थ का वजन कर गजटेड अधिकारी/मजिस्ट्रेट के समक्ष दो नमूने (FSL व मालखाना) तैयार करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "ndps"
+      ]
+    },
+    {
+      "task_name": "स्वतंत्र साक्षी सुनिश्चित करना",
+      "brief_description": "बरामदगी के समय स्वतंत्र/सार्वजनिक साक्षी उपस्थित रहना सुनिश्चित करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "ndps"
+      ]
+    },
+    {
+      "task_name": "वाणिज्यिक मात्रा हेतु विशेष प्रक्रिया",
+      "brief_description": "बरामद मात्रा वाणिज्यिक श्रेणी में होने पर धारा 37 NDPS अनुसार जमानत-विरोध प्रक्रिया अपनाएं।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "ndps"
+      ]
+    },
+    {
+      "task_name": "सोर्स/आपूर्ति नेटवर्क की जांच",
+      "brief_description": "मादक पदार्थ के स्रोत/आपूर्तिकर्ता तक पहुंचने का प्रयास करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "ndps"
+      ]
+    },
+    {
+      "task_name": "हथियार का लाइसेंस सत्यापन",
+      "brief_description": "जब्त हथियार का लाइसेंस/स्वामित्व सत्यापित करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "arms_act"
+      ]
+    },
+    {
+      "task_name": "हथियार जब्ती पंचनामा",
+      "brief_description": "अवैध/अनधिकृत हथियार जब्त कर पंचनामा तैयार करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "arms_act"
+      ]
+    },
+    {
+      "task_name": "अन्य अपराध से क्रॉस-रेफरेंस जांच",
+      "brief_description": "प्रयुक्त हथियार अन्य लंबित/पूर्व अपराध में उपयोग होने की जांच करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "arms_act"
+      ]
+    },
+    {
+      "task_name": "लेन-देन विवरण/स्क्रीनशॉट प्राप्त करना",
+      "brief_description": "शिकायतकर्ता से पूर्ण लेन-देन विवरण, स्क्रीनशॉट व संबंधित संदेश प्राप्त करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "cyber_crime"
+      ]
+    },
+    {
+      "task_name": "1930 साइबर हेल्पलाइन के माध्यम से फंड फ्रीज सूचना",
+      "brief_description": "प्रभावित राशि रोकने हेतु तत्काल संबंधित बैंक/वॉलेट को 1930/NCRP के माध्यम से सूचना दें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "cyber_crime"
+      ]
+    },
+    {
+      "task_name": "लेन-देन ट्रेल विश्लेषण",
+      "brief_description": "बैंक स्टेटमेंट/IP लॉग के आधार पर पूरी लेन-देन श्रृंखला का विश्लेषण करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "cyber_crime"
+      ]
+    },
+    {
+      "task_name": "सेवा प्रदाता से डेटा हेतु नोटिस",
+      "brief_description": "संबंधित प्लेटफॉर्म/टेलीकॉम/बैंक को डेटा प्रदान करने हेतु वैधानिक नोटिस भेजें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "cyber_crime"
+      ]
+    },
+    {
+      "task_name": "डिजिटल साक्ष्य संरक्षण (Hash सहित)",
+      "brief_description": "सभी डिजिटल साक्ष्य e-Sakshya/प्रमाणित प्रक्रिया से hash सहित संरक्षित करें ताकि अखंडता सिद्ध हो सके।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "cyber_crime"
+      ]
+    },
+    {
+      "task_name": "खाताधारक KYC विवरण प्राप्त करना",
+      "brief_description": "लाभार्थी खाते के KYC विवरण बैंक से प्राप्त करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "cyber_crime"
+      ]
+    },
+    {
+      "task_name": "मोबाइल फोरेंसिक (डिवाइस बरामद होने पर)",
+      "brief_description": "आरोपी का मोबाइल/लैपटॉप बरामद होने पर फोरेंसिक परीक्षण करवाएं।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "cyber_crime"
+      ]
+    },
+    {
+      "task_name": "अंतरराज्यीय/अंतरराष्ट्रीय एंगल की सूचना",
+      "brief_description": "मामला अन्य राज्य/देश से जुड़ा होने पर संबंधित एजेंसी (I4C/Interpol) को सूचित करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "cyber_crime"
+      ]
+    },
+    {
+      "task_name": "दस्तावेजी साक्ष्य प्राप्त करना",
+      "brief_description": "अनुबंध, रसीद, बैंक विवरण आदि दस्तावेजी साक्ष्य शिकायतकर्ता से प्राप्त करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "cheating_fraud",
+        "criminal_breach_of_trust",
+        "forgery_fake_documents"
+      ]
+    },
+    {
+      "task_name": "आरोपी की पृष्ठभूमि व संपत्ति जांच",
+      "brief_description": "आरोपी की वित्तीय पृष्ठभूमि व चल-अचल संपत्ति की जांच करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "cheating_fraud",
+        "criminal_breach_of_trust"
+      ]
+    },
+    {
+      "task_name": "बैंक खाता फ्रीजिंग अनुरोध",
+      "brief_description": "संबंधित बैंक को खाता फ्रीज करने हेतु वैधानिक अनुरोध भेजें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "cheating_fraud"
+      ]
+    },
+    {
+      "task_name": "हस्तलेख विशेषज्ञ राय",
+      "brief_description": "दस्तावेज जालसाजी का संदेह होने पर हस्तलेख विशेषज्ञ से राय लें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "forgery_fake_documents"
+      ]
+    },
+    {
+      "task_name": "कंपनी/फर्म रिकॉर्ड जांच (ROC/GST)",
+      "brief_description": "आरोपी फर्म/कंपनी के ROC, GST एवं अन्य वैधानिक रिकॉर्ड की जांच करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "cheating_fraud",
+        "criminal_breach_of_trust"
+      ]
+    },
+    {
+      "task_name": "अन्य पीड़ितों की पहचान हेतु सार्वजनिक सूचना",
+      "brief_description": "समान तरीके से अन्य पीड़ित होने की आशंका पर सार्वजनिक सूचना/अपील जारी करें।",
+      "priority": "RECOMMENDED",
+      "requires_evidence": false,
+      "crime_types": [
+        "cheating_fraud"
+      ]
+    },
+    {
+      "task_name": "स्पॉट पंचनामा (Site Plan)",
+      "brief_description": "दुर्घटनास्थल का मापन सहित स्पॉट पंचनामा तैयार करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "वाहन निरीक्षण एवं जब्ती",
+      "brief_description": "दुर्घटनाग्रस्त वाहन का मैकेनिकल फिटनेस हेतु निरीक्षण कर जब्त करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "ब्रेथ एनालाइजर टेस्ट",
+      "brief_description": "चालक का ब्रेथ एनालाइजर/मेडिकल परीक्षण से शराब सेवन की जांच करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "ड्राइविंग लाइसेंस व वाहन दस्तावेज सत्यापन",
+      "brief_description": "चालक का DL एवं वाहन के RC/बीमा/फिटनेस दस्तावेज सत्यापित करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "हिट एंड रन वाहन पहचान",
+      "brief_description": "फरार वाहन की पहचान हेतु CCTV/गवाहों से नंबर व मॉडल का पता लगाएं।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": true,
+      "crime_types": [
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "बीमा कंपनी को सूचना",
+      "brief_description": "दुर्घटना की सूचना संबंधित बीमा कंपनी को तय समय में दें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "सड़क की स्थिति/साइनेज सर्वेक्षण",
+      "brief_description": "दुर्घटना कारण विश्लेषण हेतु सड़क की स्थिति, गड्ढे व साइनेज का सर्वेक्षण करें।",
+      "priority": "RECOMMENDED",
+      "requires_evidence": true,
+      "crime_types": [
+        "road_accident"
+      ]
+    },
+    {
+      "task_name": "जाति प्रमाण पत्र सत्यापन",
+      "brief_description": "पीड़ित का SC/ST जाति प्रमाण पत्र सत्यापित करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": true,
+      "crime_types": [
+        "sc_st_act"
+      ]
+    },
+    {
+      "task_name": "जातिसूचक कृत्य/शब्द का गवाह बयान",
+      "brief_description": "गवाहों के बयान में जातिसूचक शब्दों/कृत्य का स्पष्ट उल्लेख सुनिश्चित करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "sc_st_act"
+      ]
+    },
+    {
+      "task_name": "उच्च अधिकारी द्वारा विवेचना पर्यवेक्षण",
+      "brief_description": "SC/ST एक्ट प्रकरण में नियमानुसार DSP/उच्च अधिकारी से विवेचना पर्यवेक्षण सुनिश्चित करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "sc_st_act"
+      ]
+    },
+    {
+      "task_name": "पीड़ित राहत राशि (Relief) की कार्यवाही",
+      "brief_description": "नियमानुसार पीड़ित को देय राहत राशि दिलाने की प्रक्रिया शुरू करें।",
+      "priority": "MANDATORY",
+      "requires_evidence": false,
+      "crime_types": [
+        "sc_st_act"
+      ]
+    },
+    {
+      "task_name": "स्वतंत्र गवाह सुनिश्चित करना",
+      "brief_description": "सार्वजनिक स्थान पर घटना होने पर स्वतंत्र गवाहों के बयान दर्ज करें।",
+      "priority": "CONDITIONAL",
+      "requires_evidence": false,
+      "crime_types": [
+        "sc_st_act"
+      ]
+    },
+    {
+      "task_name": "समय पर आरोप पत्र प्रस्तुत करना",
+      "brief_description": "विशेष अदालत में निर्धारित समय-सीमा में आरोप पत्र प्रस्तुत करना सुनिश्चित करें।",
+      "priority": "RECOMMENDED",
+      "requires_evidence": false,
+      "crime_types": [
+        "pocso_sexual_assault",
+        "sc_st_act"
+      ]
+    }
+  ]
+}

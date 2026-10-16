@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "InvestSuite Core Layer Development",
+    "slug": "investsuite-core",
+    "version": "1.0.478",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "buildNumber": "1",
+      "bundleIdentifier": "com.miaoda.appd2z6dwnk2jnl"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "predictiveBackGestureEnabled": false,
+      "versionCode": 1,
+      "package": "com.miaoda.appd2z6dwnk2jnl",
+      "backgroundColor": "#111827"
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-asset",
+      "expo-sqlite",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/NotoSansDevanagari-Regular.ttf"
+          ]
+        }
+      ],
+      "expo-system-ui",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow InvestSuite to access your photos for evidence and records.",
+          "cameraPermission": "Allow InvestSuite to use the camera to capture photos and documents."
+        }
+      ],
+      "expo-document-picker",
+      "expo-web-browser",
+      "expo-image",
+      "@react-native-async-storage/expo-with-async-storage",
+      "expo-sharing",
+      "expo-file-system",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow InvestSuite to access your microphone.",
+          "recordAudioAndroid": true
+        }
+      ]
+    ],
+    "router": {
+      "root": "src"
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "scheme": "appd2z6dwnk2jnl"
+  }
+}

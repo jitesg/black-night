@@ -1,0 +1,65 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [claude/app-apk-build-upbmwa, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --no-install
+        env:
+          CI: 1
+
+      - name: Build release APK
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=armeabi-v7a,arm64-v8a
+        env:
+          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx6g -XX:MaxMetaspaceSize=1g"
+
+      - name: Rename APK
+        run: cp android/app/build/outputs/apk/release/app-release.apk InvestSuite.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: InvestSuite-apk
+          path: InvestSuite.apk
+
+      - name: Publish as GitHub release
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-build-${{ github.run_number }}
+          name: InvestSuite APK (build ${{ github.run_number }})
+          prerelease: true
+          target_commitish: ${{ github.sha }}
+          files: InvestSuite.apk
+          body: Android APK built from ${{ github.sha }}. Download InvestSuite.apk below and open it on your phone to install.

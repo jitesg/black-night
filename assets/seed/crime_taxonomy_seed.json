@@ -1,0 +1,154 @@
+{
+  "crimeTypes": [
+    {
+      "id": "murder",
+      "name_hi": "हत्या",
+      "name_en": "Murder"
+    },
+    {
+      "id": "attempt_to_murder",
+      "name_hi": "हत्या का प्रयास",
+      "name_en": "Attempt to Murder"
+    },
+    {
+      "id": "culpable_homicide",
+      "name_hi": "सदोष मानव वध (हत्या से इतर)",
+      "name_en": "Culpable Homicide (not amounting to Murder)"
+    },
+    {
+      "id": "death_by_negligence",
+      "name_hi": "उपेक्षा/लापरवाही से मृत्यु",
+      "name_en": "Death by Negligence / Road Death"
+    },
+    {
+      "id": "hurt_grievous_hurt",
+      "name_hi": "चोट / गंभीर चोट",
+      "name_en": "Hurt / Grievous Hurt"
+    },
+    {
+      "id": "assault_criminal_force",
+      "name_hi": "आत्महत्या के लिए दुष्प्रेरण",
+      "name_en": "Abetment of Suicide"
+    },
+    {
+      "id": "rape",
+      "name_hi": "बलात्कार",
+      "name_en": "Rape"
+    },
+    {
+      "id": "sexual_harassment",
+      "name_hi": "यौन उत्पीड़न / महिला अपराध",
+      "name_en": "Sexual Harassment"
+    },
+    {
+      "id": "kidnapping_abduction",
+      "name_hi": "अपहरण / व्यपहरण/ बहला-फुसलाकर ले जाना",
+      "name_en": "Kidnapping / Abduction"
+    },
+    {
+      "id": "human_trafficking_unlawful_compulsory_labour",
+      "name_hi": "मानव तस्करी / बंधुआ/ अनिवार्य श्रम",
+      "name_en": "Human Trafficking / Unlawful Compulsory Labour"
+    },
+    {
+      "id": "rape_gang_rape",
+      "name_hi": "बलात्कार/ सामूहिक बलात्कार",
+      "name_en": "Rape/ Gang Rape"
+    },
+    {
+      "id": "pocso_sexual_assault",
+      "name_hi": "पॉक्सो यौन उत्पीड़न",
+      "name_en": "POCSO Sexual Assault"
+    },
+    {
+      "id": "dowry_death",
+      "name_hi": "दहेज हत्या",
+      "name_en": "Dowry Death"
+    },
+    {
+      "id": "cruelty_husband_relatives",
+      "name_hi": "पति/परिजनों द्वारा क्रूरता",
+      "name_en": "Cruelty by Husband or Relatives"
+    },
+    {
+      "id": "domestic_violence",
+      "name_hi": "घरेलू हिंसा संबंधी अपराध",
+      "name_en": "Domestic Violence Related Offence"
+    },
+    {
+      "id": "theft",
+      "name_hi": "चोरी",
+      "name_en": "Theft"
+    },
+    {
+      "id": "robbery",
+      "name_hi": "लूट",
+      "name_en": "Robbery"
+    },
+    {
+      "id": "dacoity",
+      "name_hi": "डकैती",
+      "name_en": "Dacoity"
+    },
+    {
+      "id": "snatching",
+      "name_hi": "छिनैती",
+      "name_en": "Snatching"
+    },
+    {
+      "id": "criminal_breach_of_trust",
+      "name_hi": "आपराधिक विश्वासघात",
+      "name_en": "Criminal Breach of Trust"
+    },
+    {
+      "id": "cheating_fraud",
+      "name_hi": "छल / धोखाधड़ी",
+      "name_en": "Cheating / Fraud"
+    },
+    {
+      "id": "forgery_fake_documents",
+      "name_hi": "कूटरचना / फर्जी दस्तावेज",
+      "name_en": "Forgery / Fake Documents"
+    },
+    {
+      "id": "criminal_trespass_housebreaking",
+      "name_hi": "आपराधिक अतिचार / सेंधमारी",
+      "name_en": "Criminal Trespass / House-breaking"
+    },
+    {
+      "id": "cyber_crime",
+      "name_hi": "साइबर अपराध / ऑनलाइन धोखाधड़ी",
+      "name_en": "Cyber Crime / Online Fraud"
+    },
+    {
+      "id": "ndps",
+      "name_hi": "एनडीपीएस (मादक पदार्थ)",
+      "name_en": "NDPS (Narcotic Drugs & Psychotropic Substances)"
+    },
+    {
+      "id": "arms_act",
+      "name_hi": "आयुध अधिनियम",
+      "name_en": "Arms Act"
+    },
+    {
+      "id": "sc_st_act",
+      "name_hi": "अनुसूचित जाति/जनजाति अधिनियम",
+      "name_en": "SC/ST (Prevention of Atrocities) Act"
+    },
+    {
+      "id": "road_accident",
+      "name_hi": "सड़क दुर्घटना",
+      "name_en": "Road Accident"
+    },
+    {
+      "id": "rioting_unlawful_assembly",
+      "name_hi": "दंगा / गैरकानूनी जमाव",
+      "name_en": "Rioting / Unlawful Assembly"
+    },
+    {
+      "id": "criminal_intimidation_extortion",
+      "name_hi": "आपराधिक धमकी / जबरन वसूली",
+      "name_en": "Criminal Intimidation / Extortion"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ──────────────────────────────────────────────────────────────────────
+     * InvestSuite Design System — Soft Indigo (v300)
+     *
+     * Base:    Off-white (#F4F7FE) root, pure white (#FFFFFF) surfaces
+     * Primary: Vibrant Indigo (#6366F1) — CTAs, active states, focus rings
+     * Text:    Charcoal (#111827) primary, slate (#6B7280) muted
+     *
+     * Status semantics (WCAG AA on white):
+     *   Success  → #16A34A / bg rgba(22,163,74,0.10)
+     *   Warning  → #D97706 / bg rgba(217,119,6,0.10)
+     *   Error    → #DC2626 / bg rgba(220,38,38,0.10)
+     *   Info     → #2563EB / bg rgba(37,99,235,0.10)
+     * ────────────────────────────────────────────────────────────────────── */
+
+    /* Base surfaces */
+    --background:        228 60% 97%;        /* #F4F7FE — soft off-white */
+    --foreground:        222 47% 11%;        /* #111827 — charcoal */
+
+    /* Card — pure white lifted surface */
+    --card:              0 0% 100%;          /* #FFFFFF */
+    --card-foreground:   222 47% 11%;        /* #111827 */
+
+    --popover:           0 0% 100%;          /* #FFFFFF */
+    --popover-foreground:222 47% 11%;
+
+    /* Primary: vibrant indigo — CTAs, active states, focus rings */
+    --primary:           239 84% 67%;        /* #6366F1 */
+    --primary-foreground:0 0% 100%;          /* white text on indigo */
+
+    /* Secondary: light slate — tray, chips */
+    --secondary:         220 14% 96%;        /* #F1F5F9 */
+    --secondary-foreground: 222 47% 11%;     /* #111827 */
+
+    /* Muted: soft surface for backgrounds, skeleton loaders */
+    --muted:             220 14% 96%;        /* #F1F5F9 */
+    --muted-foreground:  220 9% 46%;         /* #6B7280 */
+
+    /* Accent: indigo tint surface */
+    --accent:            239 84% 95%;        /* #EEF2FF — indigo-50 */
+    --accent-foreground: 239 84% 50%;        /* #4F46E5 — indigo-600 */
+
+    /* Semantic */
+    --destructive:       0 84% 60%;          /* #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders + inputs — hairline on light bg */
+    --border:            220 13% 91%;        /* #E5E7EB */
+    --input:             220 13% 91%;        /* #E5E7EB */
+    --ring:              239 84% 67%;        /* indigo focus ring */
+
+    /* Radius */
+    --radius:            1rem;
+  }
+
+  .dark {
+    /* ──────────────────────────────────────────────────────────────────────
+     * Midnight Indigo — dark palette
+     *
+     * Base:    Deep navy (#0F172A) root, lifted slate (#1E293B) surfaces
+     * Primary: Soft indigo (#818CF8) — CTAs, active states, focus rings
+     * Text:    Cool slate (#F1F5F9) primary, muted slate (#94A3B8) muted
+     * ────────────────────────────────────────────────────────────────────── */
+
+    /* Base surfaces */
+    --background:        222 47% 11%;        /* #0F172A — deep navy */
+    --foreground:        214 32% 91%;        /* #F1F5F9 — cool slate */
+
+    /* Card — lifted slate surface */
+    --card:              215 28% 17%;        /* #1E293B */
+    --card-foreground:   214 32% 91%;        /* #F1F5F9 */
+
+    --popover:           215 28% 17%;        /* #1E293B */
+    --popover-foreground:214 32% 91%;        /* #F1F5F9 */
+
+    /* Primary: soft indigo — CTAs, active states, focus rings */
+    --primary:           234 89% 74%;        /* #818CF8 */
+    --primary-foreground:222 47% 11%;        /* #0F172A — dark text on soft indigo */
+
+    /* Secondary: same lifted slate */
+    --secondary:         215 28% 17%;        /* #1E293B */
+    --secondary-foreground: 214 32% 91%;     /* #F1F5F9 */
+
+    /* Muted: same slate surface for skeletons */
+    --muted:             215 28% 17%;        /* #1E293B */
+    --muted-foreground:  215 20% 65%;        /* #94A3B8 */
+
+    /* Accent: deep indigo tint surface */
+    --accent:            245 76% 20%;        /* #1E1B4B — indigo-950 */
+    --accent-foreground: 231 77% 90%;        /* #C7D2FE — indigo-200 */
+
+    /* Semantic */
+    --destructive:       0 91% 71%;          /* #F87171 — red-400 */
+    --destructive-foreground: 222 47% 11%;   /* #0F172A */
+
+    /* Borders + inputs — visible hairline on dark bg */
+    --border:            215 25% 27%;        /* #334155 — slate-700 */
+    --input:             215 25% 27%;        /* #334155 */
+    --ring:              234 89% 74%;        /* #818CF8 — soft indigo focus ring */
+  }
+}
+
+

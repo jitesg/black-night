@@ -1,0 +1,401 @@
+/**
+ * Nyayalay Select Format Screen
+ *
+ * Used by NBW, Summons, Anya, Vadi Suchna, and DCRB Report workflows.
+ *
+ * Params:
+ *   tag        – filter by tag (NBW / Summons workflows)
+ *   docId      – passed through so fill-format can route back
+ *   mode       – "anya" = multi-type filter; "formatType" = exact format_type match
+ *   formatType – the exact format_type value to filter when mode="formatType"
+ *
+ * NBW / Summons "tag" mode now behaves like GD's select-format:
+ *   • Base set = formats whose tags array contains the tag param ('NBW' or 'Summons'),
+ *     queried via getPublishedFormatsByTag — NOT filtered by format_type
+ *   • Chip filters: All | Favorites | Recently Used | Created By Me
+ *   • Debounced search applied client-side on the tag-filtered result set
+ *   • Eye icon → BottomSheet content preview
+ */
+import { logger } from '@/lib/logger';
+import { stripHtmlTags } from '@/lib/stringUtils';
+import { T } from '@/lib/typography';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ActivityIndicator, FlatList, Pressable,
+  ScrollView, Text, View,
+} from 'react-native';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import {
+  ChevronRight, Clock, Eye, FileWarning,
+  LayoutTemplate, Star, User,
+} from 'lucide-react-native';
+import { BottomSheet } from '@/components/ui/ds/BottomSheet';
+import { SearchBar } from '@/components/SearchBar';
+import {
+  type FormatType,
+  type FormatWithMeta,
+} from '@/lib/db/predefinedFormatRepo';
+import {
+  getPublishedFormatsByTag,
+  getPublishedFormatsByType,
+  getPublishedFormatsByTypes,
+  searchPublishedFormatsByTypes,
+} from '@/lib/db/sysFormatRepo';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
+
+const MODULE_COLOR = '#1D4ED8';
+const ANYA_TYPES: FormatType[] = ['Nyayalay', 'Prarthna Patra', 'Any'];
+
+// ─── Chip filter (used in tag / NBW mode only) ─────────────────────────────
+type ChipFilter = 'All' | 'Favorites' | 'Recently Used' | 'Created By Me';
+
+const CHIP_FILTERS: { label: string; value: ChipFilter }[] = [
+  { label: 'All',            value: 'All' },
+  { label: 'Favorites',      value: 'Favorites' },
+  { label: 'Recently Used',  value: 'Recently Used' },
+  { label: 'Created By Me',  value: 'Created By Me' },
+];
+
+function applyChipFilter(list: FormatWithMeta[], chip: ChipFilter): FormatWithMeta[] {
+  switch (chip) {
+    case 'Favorites':
+      return list.filter((f) => f.is_favorite === 1);
+    case 'Recently Used':
+      return list
+        .filter((f) => f.last_used_at != null)
+        .sort((a, b) => (b.last_used_at ?? 0) - (a.last_used_at ?? 0));
+    case 'Created By Me':
+      return list.filter((f) => f.created_by === 'me');
+    default:
+      return list;
+  }
+}
+
+// ─── Screen ────────────────────────────────────────────────────────────────
+export default function NyayalaySelectFormatScreen() {
+  const { tag, docId, mode, formatType } = useLocalSearchParams<{
+    tag?: string;
+    docId: string;
+    mode?: string;
+    formatType?: string;
+  }>();
+
+  const isAnya       = mode === 'anya';
+  const isFormatType = mode === 'formatType' && !!formatType;
+  // Tag mode = NBW / Summons — uses the GD-style rich UI
+  const isTagMode    = !isAnya && !isFormatType && !!tag;
+
+  // ── Tag-mode state (chip filters + preview) ───────────────────────────
+  const [allTagFormats, setAllTagFormats]   = useState<FormatWithMeta[]>([]);
+  const [displayed,     setDisplayed]       = useState<FormatWithMeta[]>([]);
+  const [chip,          setChip]            = useState<ChipFilter>('All');
+  const [previewFormat, setPreviewFormat]   = useState<FormatWithMeta | null>(null);
+
+  // ── Shared state ──────────────────────────────────────────────────────
+  const [formats,  setFormats]  = useState<FormatWithMeta[]>([]);
+  const [loading,  setLoading]  = useState(true);
+  const [query,    setQuery]    = useState('');
+
+  // Refs so useFocusEffect reads latest query/chip without re-registering
+  const queryRef = useRef(query);
+  const chipRef  = useRef(chip);
+  useEffect(() => { queryRef.current = query; }, [query]);
+  useEffect(() => { chipRef.current  = chip;  }, [chip]);
+
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => { if (searchTimer.current) clearTimeout(searchTimer.current); };
+  }, []);
+
+  // ── Load ──────────────────────────────────────────────────────────────
+  const load = useCallback(async (q = '', activeChip: ChipFilter = 'All') => {
+    setLoading(true);
+    try {
+      if (isTagMode) {
+        // Base set = formats tagged exactly with tag ('NBW' or 'Summons') so the
+        // two types are properly isolated at the DB level — not all Nyayalay templates.
+        // A search query is applied client-side on the already-enriched tag result set
+        // (getPublishedFormatsByTag returns enriched rows, so client filter is cheap).
+        const rawBase = await getPublishedFormatsByTag(tag!);
+        const base = q.trim()
+          ? rawBase.filter((f) => {
+              const ql = q.trim().toLowerCase();
+              return (
+                f.title.toLowerCase().includes(ql) ||
+                (f.vivran ?? '').toLowerCase().includes(ql)
+              );
+            })
+          : rawBase;
+        logger.debug(
+          `[NyayalaySelectFormat] loaded ${base.length} rows for tag="${tag}" — query="${q}" chip="${activeChip}"`
+        );
+        setAllTagFormats(base);
+        setDisplayed(applyChipFilter(base, activeChip));
+      } else if (isFormatType) {
+        let results = await getPublishedFormatsByType(formatType as FormatType);
+        if (q.trim()) {
+          const lower = q.trim().toLowerCase();
+          results = results.filter((f) =>
+            f.title.toLowerCase().includes(lower) || f.vivran?.toLowerCase().includes(lower)
+          );
+        }
+        setFormats(results);
+      } else if (isAnya) {
+        const results = q.trim()
+          ? await searchPublishedFormatsByTypes(q, ANYA_TYPES)
+          : await getPublishedFormatsByTypes(ANYA_TYPES);
+        setFormats(results);
+      } else {
+        // Fallback: tag-based raw query (legacy path, no chip UI)
+        const results = tag ? await getPublishedFormatsByTag(tag) : [];
+        setFormats(results);
+      }
+    } catch (e) {
+      logger.warn('[NyayalaySelectFormat] load error:', e);
+    } finally {
+      setLoading(false);
+    }
+  }, [isAnya, isFormatType, isTagMode, tag, formatType]);
+
+  useFocusEffect(useCallback(() => {
+    load(queryRef.current, chipRef.current);
+  }, [load]));
+
+  // ── Search ────────────────────────────────────────────────────────────
+  const handleSearch = (q: string) => {
+    setQuery(q);
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => load(q, chip), 300);
+  };
+
+  const clearSearch = () => {
+    setQuery('');
+    load('', chip);
+  };
+
+  // ── Chip (tag mode only) ──────────────────────────────────────────────
+  const handleChip = (selected: ChipFilter) => {
+    setChip(selected);
+    setDisplayed(applyChipFilter(allTagFormats, selected));
+  };
+
+  // ── Derived ───────────────────────────────────────────────────────────
+  const title = isFormatType
+    ? `${formatType} Templates`
+    : isAnya  ? 'Anya Templates'
+    : tag     ? `${tag} Templates`
+    : 'Select Template';
+
+  // In tag mode the displayed list comes from chip-filtered state;
+  // in other modes it comes from the shared formats state.
+  const listData = isTagMode ? displayed : formats;
+
+  // ── Render ────────────────────────────────────────────────────────────
+  return (
+    <View className="flex-1 bg-background">
+      <AppHeader title={title} subtitle="Nyayalay" showBack />
+
+      {/* ── Tag-mode toolbar: search + chip filters (mirrors GD) ── */}
+      {isTagMode && (
+        <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
+          <SearchBar
+            value={query}
+            onChangeText={handleSearch}
+            placeholder={`Search ${tag} templates…`}
+            variant="light"
+            returnKeyType="search"
+            accessibilityLabel={`Search ${tag} templates`}
+          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
+            {CHIP_FILTERS.map((f) => {
+              const active = chip === f.value;
+              const Icon =
+                f.value === 'Favorites'     ? Star  :
+                f.value === 'Recently Used' ? Clock :
+                f.value === 'Created By Me' ? User  : null;
+              return (
+                <Pressable
+                  key={f.value}
+                  onPress={() => handleChip(f.value)}
+                  className="mx-1 flex-row items-center gap-1.5 rounded-full px-3 py-1.5 active:opacity-70"
+                  style={{ backgroundColor: active ? MODULE_COLOR : '#F3F4F6' }}
+                >
+                  {Icon && (
+                    <Icon
+                      size={11}
+                      color={active ? '#fff' : '#6B7280'}
+                      fill={f.value === 'Favorites' && active ? '#fff' : 'none'}
+                    />
+                  )}
+                  <Text
+                    className="text-xs font-medium"
+                    style={{ color: active ? '#fff' : '#374151' }}
+                  >
+                    {f.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
+
+      {/* ── Anya / FormatType search bar ──────────────────────────── */}
+      {(isAnya || isFormatType) && (
+        <View className="px-5 pt-4">
+          <SearchBar
+            value={query}
+            onChangeText={handleSearch}
+            placeholder="Search templates…"
+            variant="light"
+            returnKeyType="search"
+            accessibilityLabel="Search nyayalay templates"
+          />
+          <Text className="text-xs text-muted-foreground mt-2 mb-1">
+            {isFormatType
+              ? `Showing: ${formatType}`
+              : 'Showing: Nyayalay · Prarthna Patra · Any'}
+          </Text>
+        </View>
+      )}
+
+      {/* ── List ─────────────────────────────────────────────────── */}
+      {loading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color={MODULE_COLOR} />
+        </View>
+      ) : (
+        <FlatList
+          removeClippedSubviews
+          data={listData}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{
+            paddingHorizontal: T.space.xl - 12,
+            paddingVertical: T.space.md,
+            paddingBottom: 48,
+            gap: T.space.md - 4,
+          }}
+          showsVerticalScrollIndicator={false}
+          contentInsetAdjustmentBehavior="automatic"
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() =>
+                router.push(
+                  `/(app)/nyayalay/fill-format?formatId=${item.id}&docId=${docId}` as never
+                )
+              }
+              className="bg-card border border-border rounded-2xl p-4 flex-row items-center gap-3 active:opacity-70"
+              style={{ borderCurve: 'continuous' }}
+            >
+              {/* Icon — star when favourite */}
+              <View
+                className="w-10 h-10 rounded-xl items-center justify-center"
+                style={{ backgroundColor: `${MODULE_COLOR}12` }}
+              >
+                {item.is_favorite === 1
+                  ? <Star size={18} color={MODULE_COLOR} fill={MODULE_COLOR} />
+                  : <LayoutTemplate size={18} color={MODULE_COLOR} />
+                }
+              </View>
+
+              {/* Title + tags + last-used */}
+              <View className="flex-1 gap-1" style={{ minWidth: 0 }}>
+                <Text className="text-base font-semibold text-foreground" numberOfLines={1}>
+                  {item.title}
+                </Text>
+
+                {/* Tag pills */}
+                {item.tags.length > 0 && (
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {item.tags.map((t) => (
+                      <View key={t} className="mr-1 bg-secondary rounded-full px-2 py-0.5">
+                        <Text className="text-xs text-muted-foreground">{t}</Text>
+                      </View>
+                    ))}
+                  </ScrollView>
+                )}
+
+                {/* Last used timestamp */}
+                {item.last_used_at ? (
+                  <View className="flex-row items-center gap-1">
+                    <Clock size={10} color="#9CA3AF" />
+                    <Text className="text-xs text-muted-foreground">
+                      {`Used ${new Date(item.last_used_at * 1000).toLocaleDateString('en-IN', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                      })}`}
+                    </Text>
+                  </View>
+                ) : (
+                  // Format type hint for non-tag modes
+                  !isTagMode && (
+                    <Text className="text-xs text-muted-foreground">{item.format_type}</Text>
+                  )
+                )}
+              </View>
+
+              {/* Eye: preview template content — tag mode only */}
+              {isTagMode && (
+                <Pressable
+                  onPress={(e) => { e.stopPropagation(); setPreviewFormat(item); }}
+                  className="p-2 active:opacity-60 mr-1"
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                >
+                  <Eye size={16} color="#9CA3AF" />
+                </Pressable>
+              )}
+
+              <ChevronRight size={16} color="#9CA3AF" />
+            </Pressable>
+          )}
+          ListEmptyComponent={
+            <View className="items-center justify-center py-24 gap-4 px-6">
+              <View
+                className="w-16 h-16 rounded-2xl items-center justify-center"
+                style={{ backgroundColor: `${MODULE_COLOR}12` }}
+              >
+                <FileWarning size={30} color={MODULE_COLOR} />
+              </View>
+              <Text className="text-base font-semibold text-foreground text-center">
+                {isTagMode && chip !== 'All'
+                  ? `No ${chip} Nyayalay templates`
+                  : 'No templates found'}
+              </Text>
+              <Text className="text-sm text-muted-foreground text-center leading-5">
+                {query.trim()
+                  ? 'Try a different search term.'
+                  : isTagMode && chip !== 'All'
+                  ? 'Try the "All" filter to see all Nyayalay templates.'
+                  : isFormatType
+                  ? `Create a template with type "${formatType}" in the Predefine Format module.`
+                  : isAnya
+                  ? 'Create templates with type Nyayalay, Prarthna Patra, or Any in the Predefine Format module.'
+                  : 'Create a template with format type = Nyayalay in the Predefine Format module.'}
+              </Text>
+            </View>
+          }
+        />
+      )}
+
+      {/* ── Template preview bottom sheet (tag mode only) ─────────── */}
+      {isTagMode && (
+        <BottomSheet
+          visible={!!previewFormat}
+          onClose={() => setPreviewFormat(null)}
+          title={previewFormat ? `${previewFormat.title} (Preview)` : 'Preview'}
+          snapHeight={480}
+        >
+          <ScrollView
+            contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, paddingTop: 8 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <Text className="text-sm text-foreground leading-6" selectable>
+              {previewFormat?.vivran
+                ? stripHtmlTags(previewFormat.vivran).replace(/\{\{.*?\}\}|<<.*?>>|\[\[.*?\]\]/g, '…')
+                : ''}
+            </Text>
+          </ScrollView>
+        </BottomSheet>
+      )}
+    </View>
+  );
+}
