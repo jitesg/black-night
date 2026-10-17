@@ -11,7 +11,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View, Text, Pressable, Animated, Vibration,
 } from 'react-native';
-import { usePreventScreenCapture } from 'expo-screen-capture';
 import { T } from '@/lib/typography';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -98,8 +97,6 @@ export default function PinEntryScreen() {
 
   // Prevent screenshots while the PIN screen is visible — this screen shows
   // the 6-dot entry which reveals PIN length; protect it on physical devices.
-  usePreventScreenCapture();
-
   const [pin, setPin]             = useState('');
   const [error, setError]         = useState('');
   const [locked, setLocked]       = useState(false);

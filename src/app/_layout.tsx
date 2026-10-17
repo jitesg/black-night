@@ -17,6 +17,7 @@ import { WorkspaceProvider } from '@/context/WorkspaceContext';
 import { I18nProvider } from '@/components/I18nProvider';
 import { SettingsStoreProvider, useSettingsStore } from '@/hooks/useSettingsStore';
 import { AppLockProvider, useAppLock } from '@/context/AppLockContext';
+import { KeyboardInsetView } from '@/components/common/KeyboardInsetView';
 import { getDatabase } from '@/lib/db/database';
 import { seedSystemContent, restoreDevContent, getPerSeedFileStatus, seedReady } from '@/lib/db/seedManager';
 import { runKnowledgeDiagnostics } from '@/lib/diagnostics/knowledgeDiagnostics';
@@ -155,10 +156,11 @@ function AppNavigatorContent({
   const isAppLockScreen = segments.includes('app-lock');
 
   useEffect(() => {
-    if (locked) {
-      router.replace('/(app)/app-lock/pin-entry');
-    }
-  }, [locked, router]);
+    if (!locked || isAppLockScreen) return;
+    // Defer one tick so the navigator is mounted before we navigate.
+    const id = setTimeout(() => router.replace('/(app)/app-lock/pin-entry'), 0);
+    return () => clearTimeout(id);
+  }, [locked, isAppLockScreen, router]);
 
   return (
     <SafeAreaProvider style={{ flex: 1 }}>
@@ -169,13 +171,19 @@ function AppNavigatorContent({
       />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <WorkspaceProvider>
-          {locked && !isAppLockScreen ? (
-            <LoadingSpinner navTheme={navTheme} isDark={isDark} />
-          ) : (
+          {/* Keep the navigator mounted while locked: unmounting it and then
+              calling router.replace() crashed the app when App Lock turned on.
+              The spinner covers the screen until the lock screen opens. */}
+          <KeyboardInsetView>
             <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: navTheme.colors.background } }}>
               <Stack.Screen name="index" />
               <Stack.Screen name="(app)" />
             </Stack>
+          </KeyboardInsetView>
+          {locked && !isAppLockScreen && (
+            <View style={StyleSheet.absoluteFillObject}>
+              <LoadingSpinner navTheme={navTheme} isDark={isDark} />
+            </View>
           )}
           <PortalHost />
           {/* App-switcher blur shield — covers the entire screen when the app

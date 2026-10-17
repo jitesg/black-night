@@ -13,7 +13,7 @@ import { T } from '@/lib/typography';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Lock, ChevronLeft, Delete } from 'lucide-react-native';
-import { setAppLockPin } from '@/lib/appLockAuth';
+import { setAppLockPin, touchAppLockSession } from '@/lib/appLockAuth';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 
 const NAVY = '#1E3A5F';
@@ -125,8 +125,12 @@ export default function PinSetupScreen() {
           setSaving(true);
           try {
             await setAppLockPin(first);
+            // Start unlocked so saving the PIN doesn't lock the app at once.
+            touchAppLockSession();
+            update('appLock', true);
             update('pinLock', true);
-            router.replace('/(app)/home' as never);
+            if (router.canGoBack()) router.back();
+            else router.replace('/(app)/home' as never);
           } catch {
             setError(t('appLock.savePinFailed'));
             setSaving(false);

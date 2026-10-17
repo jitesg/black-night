@@ -20,8 +20,11 @@ export function useAppLock() { return useContext(AppLockContext); }
 
 export function AppLockProvider({ children }: { children: React.ReactNode }) {
   const { settings } = useSettingsStore();
+  // Lock only once a PIN exists (pinLock is turned on by PIN setup). Locking
+  // with no PIN left the user stuck on a lock screen they couldn't pass.
+  const lockEnabled = !!settings.appLock && !!settings.pinLock;
   const [locked, setLocked] = useState(
-    () => !!settings.appLock && !isAppLockSessionActive()
+    () => lockEnabled && !isAppLockSessionActive()
   );
   const backgroundAtRef = useRef<number | null>(null);
 
@@ -29,8 +32,8 @@ export function AppLockProvider({ children }: { children: React.ReactNode }) {
   const relock = () => { clearAppLockSession(); setLocked(true); };
 
   useEffect(() => {
-    if (settings.appLock && !isAppLockSessionActive()) setLocked(true);
-  }, [settings.appLock]);
+    if (lockEnabled && !isAppLockSessionActive()) setLocked(true);
+  }, [lockEnabled]);
 
   useEffect(() => {
     // Reuse this app's existing TimeoutVal → milliseconds mapping from
@@ -47,14 +50,14 @@ export function AppLockProvider({ children }: { children: React.ReactNode }) {
       } else if (next === 'active') {
         const elapsed = backgroundAtRef.current ? Date.now() - backgroundAtRef.current : 0;
         backgroundAtRef.current = null;
-        if (settings.appLock && elapsed >= timeoutMs) relock();
+        if (lockEnabled && elapsed >= timeoutMs) relock();
       }
     });
     return () => sub.remove();
-  }, [settings.appLock, settings.autoLockTimeout]);
+  }, [lockEnabled, settings.autoLockTimeout]);
 
   return (
-    <AppLockContext.Provider value={{ locked: !!settings.appLock && locked, unlock, relock }}>
+    <AppLockContext.Provider value={{ locked: lockEnabled && locked, unlock, relock }}>
       {children}
     </AppLockContext.Provider>
   );

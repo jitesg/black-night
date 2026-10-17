@@ -7,7 +7,7 @@ import { Lock, KeyRound, Fingerprint, Timer, EyeOff, ChevronDown, Check } from '
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
-import { hasAppLockPinSet } from '@/lib/appLockAuth';
+import { hasAppLockPinSet, touchAppLockSession } from '@/lib/appLockAuth';
 import { router } from 'expo-router';
 
 export type TimeoutVal = SettingsState['autoLockTimeout'];
@@ -26,6 +26,20 @@ export default function SecurityScreen() {
   const activeOpt = TIMEOUT_OPTIONS.find((o) => o.value === settings.autoLockTimeout);
   const timeoutLabel = activeOpt ? t(activeOpt.labelKey) : t('settings.security.minutes5');
 
+  // Turning a lock on must not lock the officer out of the screen they are
+  // on, so start an unlocked session first. With no PIN yet, go to the
+  // first-time PIN setup, which turns the PIN lock on when it's saved.
+  const handleAppLockToggle = async (val: boolean) => {
+    if (!val) { update('appLock', false); return; }
+    touchAppLockSession();
+    update('appLock', true);
+    if (!(await hasAppLockPinSet())) {
+      router.push('/(app)/app-lock/pin-setup' as never);
+    } else if (!settings.pinLock) {
+      update('pinLock', true);
+    }
+  };
+
   const handlePinLockToggle = async (val: boolean) => {
     if (val) {
       const hasPin = await hasAppLockPinSet();
@@ -33,10 +47,21 @@ export default function SecurityScreen() {
         router.push('/(app)/app-lock/pin-setup' as never);
         return;
       }
+      touchAppLockSession();
       update('pinLock', true);
     } else {
       update('pinLock', false);
     }
+  };
+
+  // Fingerprint needs a PIN as the fallback if it fails.
+  const handleBiometricToggle = async (val: boolean) => {
+    if (val && !(await hasAppLockPinSet())) {
+      update('biometric', true);
+      router.push('/(app)/app-lock/pin-setup' as never);
+      return;
+    }
+    update('biometric', val);
   };
 
   return (
@@ -59,7 +84,7 @@ export default function SecurityScreen() {
             </View>
             <Switch
               value={settings.appLock}
-              onValueChange={(v) => update('appLock', v)}
+              onValueChange={handleAppLockToggle}
               trackColor={{ false: '#E5E7EB', true: `${'#F59E0B'}60` }}
               thumbColor={settings.appLock ? '#F59E0B' : '#9CA3AF'}
             />
@@ -95,7 +120,7 @@ export default function SecurityScreen() {
             <Switch
               value={settings.biometric}
               disabled={!settings.appLock}
-              onValueChange={(v) => update('biometric', v)}
+              onValueChange={handleBiometricToggle}
               trackColor={{ false: '#E5E7EB', true: `${'#F59E0B'}60` }}
               thumbColor={settings.biometric ? '#F59E0B' : '#9CA3AF'}
             />

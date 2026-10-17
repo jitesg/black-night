@@ -9,7 +9,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View, Text, Pressable, Animated, Vibration, ActivityIndicator,
 } from 'react-native';
-import { usePreventScreenCapture } from 'expo-screen-capture';
 import { useTranslation } from 'react-i18next';
 import { T } from '@/lib/typography';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -101,8 +100,6 @@ export default function PinEntryScreen() {
   const { returnTo } = useLocalSearchParams<{ returnTo?: string }>();
   const { settings } = useSettingsStore();
   const { unlock } = useAppLock();
-
-  usePreventScreenCapture();
 
   const [pin, setPin]                         = useState('');
   const [error, setError]                     = useState('');

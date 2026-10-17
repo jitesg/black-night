@@ -1,40 +1,12 @@
 import { Stack, useSegments } from 'expo-router';
-import { useEffect } from 'react';
 import { View } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import { preventScreenCaptureAsync, allowScreenCaptureAsync } from 'expo-screen-capture';
 import { FloatingAIButton } from '@/components/ai/FloatingAIButton';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
-// ── Web-safe screen-capture guard ────────────────────────────────────────────
-// expo-screen-capture's web stub (ExpoScreenCapture.web.js) exports an empty
-// object — `ExpoScreenCapture.preventScreenCapture` is `undefined` on Web.
-// Calling `usePreventScreenCapture()` (or `preventScreenCaptureAsync()`)
-// directly causes it to throw `UnavailabilityError` on Web, which crashes the
-// entire (app) layout and produces a blank white screen on ALL drawer tabs.
-//
-// Fix: call the async functions directly inside a `useEffect` guarded by
-// `process.env.EXPO_OS !== 'web'`, so the native path is fully preserved
-// while the web platform safely skips it.
-function useScreenCaptureProtection() {
-  useEffect(() => {
-    if (process.env.EXPO_OS === 'web') return; // no-op on Web — stub throws
-    preventScreenCaptureAsync();
-    return () => {
-      allowScreenCaptureAsync();
-    };
-  }, []);
-}
-
 export default function AppLayout() {
-  // Prevent screenshots / screen recordings across ALL authenticated screens.
-  // This is the correct place: every screen inside (app)/ — FIR details,
-  // case diaries, GD entries, Prarthna Patra, Nyayalay — carries sensitive
-  // police case data. One call here covers all of them.
-  // Uses the web-safe wrapper above instead of usePreventScreenCapture()
-  // directly, which throws UnavailabilityError on Web.
-  useScreenCaptureProtection();
+  // Screenshots are allowed (screen-capture blocking removed on request).
   const { colorScheme } = useColorScheme();
   const segments = useSegments() as readonly string[];
   const insideFIR =
