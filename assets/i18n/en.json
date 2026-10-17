@@ -847,7 +847,9 @@
       "deleteTitle": "Delete Case Diary?",
       "deleteDesc": "This diary and all its karyvahi entries will be permanently removed. Completed karyvahi synced from this diary will revert to pending.",
       "cancel": "Cancel",
-      "export": "Export"
+      "export": "Export",
+      "exportAll": "Export All",
+      "exportFailed": "Export failed"
     },
     "addCaseDiary": {
       "titleNew": "New Case Diary",

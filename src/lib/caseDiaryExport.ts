@@ -1,8 +1,8 @@
 /**
  * caseDiaryExport.ts
  *
- * Generates a DOCX file for a single Case Diary and triggers the native
- * share/save dialog via expo-sharing.
+ * Generates a DOCX file for a single Case Diary, or for all diaries of a
+ * mukadma merged into one file, and opens the native share/save dialog.
  *
  * Approach:
  *   - `docx` (pure-JS) builds the document in memory as a Blob/ArrayBuffer.
@@ -23,7 +23,10 @@ import {
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 
-import { getCaseDiaryById, getEntriesByDiary, deserializePlaces } from '@/lib/db/caseDiaryRepo';
+import {
+  getCaseDiaryById, getCaseDiariesByFIR, getEntriesByDiary, deserializePlaces,
+  type CaseDiary,
+} from '@/lib/db/caseDiaryRepo';
 import { getFIRById } from '@/lib/db/firRepo';
 
 // ─── constants ────────────────────────────────────────────────────────────────
@@ -98,18 +101,17 @@ function textParas(text: string, color = '111827'): Paragraph[] {
   );
 }
 
-// ─── main export function ─────────────────────────────────────────────────────
+// ─── document builders ────────────────────────────────────────────────────────
 
-export async function exportCaseDiaryToDocx(diaryId: string): Promise<void> {
-  // 1. Load data
-  const diary = await getCaseDiaryById(diaryId);
-  if (!diary) throw new Error('Case diary not found');
+type Block = Paragraph | Table;
 
-  const [entries, fir] = await Promise.all([
-    getEntriesByDiary(diaryId), // already in sequence_order
-    getFIRById(diary.fir_id),
-  ]);
-
+/** Builds the title, details table and entries for one case diary. */
+async function buildDiaryBlocks(
+  diary: CaseDiary,
+  fir: Awaited<ReturnType<typeof getFIRById>>,
+  diaryNumber?: number,
+): Promise<Block[]> {
+  const entries = await getEntriesByDiary(diary.id); // already in sequence_order
   const places = deserializePlaces(diary.places_visited);
 
   // 2. Build document content ─────────────────────────────────────────────────
@@ -119,7 +121,10 @@ export async function exportCaseDiaryToDocx(diaryId: string): Promise<void> {
     heading: HeadingLevel.TITLE,
     alignment: AlignmentType.CENTER,
     spacing: { after: 80, lineRule: 'auto' },
-    children: [new TextRun({ text: 'केस डायरी (Case Diary)', bold: true, size: 48 })],
+    children: [new TextRun({
+      text: diaryNumber ? `केस डायरी संख्या ${diaryNumber} (Case Diary No. ${diaryNumber})` : 'केस डायरी (Case Diary)',
+      bold: true, size: 48,
+    })],
   });
 
   const subtitlePara = new Paragraph({
@@ -253,8 +258,18 @@ export async function exportCaseDiaryToDocx(diaryId: string): Promise<void> {
     children: [new TextRun({ text: 'इस डायरी में कोई प्रविष्टि नहीं है।', italics: true, color: '9CA3AF', size: 20 })],
   });
 
-  // 3. Assemble document with page-number footer
-  const doc = new Document({
+  return [
+    titlePara,
+    subtitlePara,
+    metaTable,
+    timelineHeading,
+    ...(entries.length === 0 ? [emptyPara] : entryParas),
+  ];
+}
+
+/** Wraps sections (one per diary, each starting on a new page) in a document. */
+function buildDocument(sectionsChildren: Block[][]): Document {
+  return new Document({
     styles: {
       default: {
         document: { run: { font: 'Arial', size: 22 } },
@@ -282,8 +297,7 @@ export async function exportCaseDiaryToDocx(diaryId: string): Promise<void> {
         },
       ],
     },
-    sections: [
-      {
+    sections: sectionsChildren.map((children) => ({
         properties: {
           page: { margin: { top: 1440, right: 1260, bottom: 1440, left: 1260 } },
         },
@@ -300,38 +314,21 @@ export async function exportCaseDiaryToDocx(diaryId: string): Promise<void> {
             })],
           }),
         },
-        children: [
-          titlePara,
-          subtitlePara,
-          metaTable,
-          timelineHeading,
-          ...(entries.length === 0 ? [emptyPara] : entryParas),
-        ],
-      },
-    ],
+        children,
+      })),
   });
+}
 
-  // 4. Pack → base64 → write to cache
-  const buffer = await Packer.toBuffer(doc);
-  const bytes = new Uint8Array(buffer);
-  let binary = '';
-  // Build base64 in chunks to avoid call-stack overflow on large docs
-  const CHUNK = 8192;
-  for (let i = 0; i < bytes.byteLength; i += CHUNK) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
-  }
-  const base64 = btoa(binary);
-
-  const safeDate = (diary.preparation_date ?? 'diary').replace(/[^a-z0-9]/gi, '_');
-  const firNum   = fir?.fir_number?.replace(/[^a-z0-9]/gi, '_') ?? 'fir';
-  const filename = `Case_Diary_${firNum}_${safeDate}.docx`;
-  const uri      = `${FileSystem.cacheDirectory}${filename}`;
-
+/** Packs the document, writes it to the cache folder and opens the share sheet. */
+async function saveAndShare(doc: Document, filename: string): Promise<void> {
+  // toBase64String works on phones; toBuffer needs Node's Buffer, which
+  // React Native doesn't have, so the export failed silently on mobile.
+  const base64 = await Packer.toBase64String(doc);
+  const uri = `${FileSystem.cacheDirectory}${filename}`;
   await FileSystem.writeAsStringAsync(uri, base64, {
     encoding: FileSystem.EncodingType.Base64,
   });
 
-  // 5. Share via native sheet
   const canShare = await Sharing.isAvailableAsync();
   if (!canShare) throw new Error('इस डिवाइस पर शेयरिंग उपलब्ध नहीं है');
 
@@ -340,4 +337,40 @@ export async function exportCaseDiaryToDocx(diaryId: string): Promise<void> {
     dialogTitle: `Export — ${filename}`,
     UTI: 'org.openxmlformats.wordprocessingml.document',
   });
+}
+
+const safe = (v: string | undefined | null, fallback: string) =>
+  (v ?? fallback).replace(/[^a-z0-9]/gi, '_');
+
+// ─── public API ───────────────────────────────────────────────────────────────
+
+/** Exports one case diary as a .docx file. */
+export async function exportCaseDiaryToDocx(diaryId: string): Promise<void> {
+  const diary = await getCaseDiaryById(diaryId);
+  if (!diary) throw new Error('Case diary not found');
+  const fir = await getFIRById(diary.fir_id);
+
+  const doc = buildDocument([await buildDiaryBlocks(diary, fir)]);
+  const filename = `Case_Diary_${safe(fir?.fir_number, 'fir')}_${safe(diary.preparation_date, 'diary')}.docx`;
+  await saveAndShare(doc, filename);
+}
+
+/**
+ * Merges every case diary of a mukadma (FIR) into one .docx, oldest first,
+ * each diary starting on a new page.
+ */
+export async function exportAllCaseDiariesToDocx(firId: string): Promise<void> {
+  const [diaries, fir] = await Promise.all([getCaseDiariesByFIR(firId), getFIRById(firId)]);
+  if (diaries.length === 0) throw new Error('इस मुकदमे में कोई केस डायरी नहीं है');
+
+  // Same order and numbering as the Case Diary tab (oldest created first).
+  const ordered = [...diaries].sort((a, b) => a.created_at - b.created_at);
+
+  const sections: Block[][] = [];
+  for (let i = 0; i < ordered.length; i++) {
+    sections.push(await buildDiaryBlocks(ordered[i], fir, i + 1));
+  }
+
+  const filename = `Case_Diary_All_${safe(fir?.fir_number, 'fir')}.docx`;
+  await saveAndShare(buildDocument(sections), filename);
 }

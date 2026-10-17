@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo, memo } from 'react';
 import { logger } from '@/lib/logger';
-import { View, Text, FlatList, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { T } from '@/lib/typography';
 import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
@@ -14,7 +14,7 @@ import {
   deserializePlaces,
   type CaseDiary, type CaseDiaryEntry,
 } from '@/lib/db/caseDiaryRepo';
-import { exportCaseDiaryToDocx } from '@/lib/caseDiaryExport';
+import { exportCaseDiaryToDocx, exportAllCaseDiariesToDocx } from '@/lib/caseDiaryExport';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { useFIRContext } from '@/context/FIRContext';
 
@@ -238,6 +238,21 @@ export default function CaseDiaryTab() {
       await exportCaseDiaryToDocx(id);
     } catch (e) {
       logger.error('[CaseDiary] Export failed', e);
+      Alert.alert(t('fir.caseDiary.exportFailed'), e instanceof Error ? e.message : String(e));
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  // Merge every case diary of this mukadma into one .docx
+  const handleExportAll = async () => {
+    if (exporting || !stableFirId) return;
+    setExporting('all');
+    try {
+      await exportAllCaseDiariesToDocx(stableFirId);
+    } catch (e) {
+      logger.error('[CaseDiary] Export all failed', e);
+      Alert.alert(t('fir.caseDiary.exportFailed'), e instanceof Error ? e.message : String(e));
     } finally {
       setExporting(null);
     }
@@ -264,14 +279,28 @@ export default function CaseDiaryTab() {
         title={t('fir.caseDiary.title')}
         countLabel={diaries.length > 0 ? t('fir.caseDiary.entryCount_other', { count: diaries.length }) : undefined}
         rightActions={
-          <Pressable
-            onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary' as never, params: { firId: stableFirId } })}
-            className="flex-row items-center gap-1.5 rounded-xl px-3 py-2 active:opacity-70"
-            style={{ backgroundColor: INDIGO }}
-          >
-            <Plus size={14} color="#fff" />
-            <Text className="text-xs font-bold text-white">{t('fir.caseDiary.addDiary')}</Text>
-          </Pressable>
+          <View className="flex-row items-center gap-2">
+            {diaries.length > 0 && (
+              <Pressable
+                onPress={handleExportAll}
+                disabled={!!exporting}
+                accessibilityLabel={t('fir.caseDiary.exportAll')}
+                className="flex-row items-center gap-1.5 rounded-xl px-3 py-2 active:opacity-70"
+                style={{ backgroundColor: '#059669' }}
+              >
+                <Download size={14} color="#fff" />
+                <Text className="text-xs font-bold text-white">{t('fir.caseDiary.exportAll')}</Text>
+              </Pressable>
+            )}
+            <Pressable
+              onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary' as never, params: { firId: stableFirId } })}
+              className="flex-row items-center gap-1.5 rounded-xl px-3 py-2 active:opacity-70"
+              style={{ backgroundColor: INDIGO }}
+            >
+              <Plus size={14} color="#fff" />
+              <Text className="text-xs font-bold text-white">{t('fir.caseDiary.addDiary')}</Text>
+            </Pressable>
+          </View>
         }
       />
       {loading ? (
