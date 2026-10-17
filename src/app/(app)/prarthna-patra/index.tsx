@@ -275,7 +275,6 @@ const PPCard = memo(function PPCard({
 export default function PrarthnaPatraScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const fabBottom = Math.max(insets.bottom + 16, 24);
   const { settings } = useSettingsStore();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [items, setItems] = useState<PrarthnaPatra[]>([]);
@@ -640,15 +639,6 @@ export default function PrarthnaPatraScreen() {
         }
       />
 
-      {/* FAB — floats above safe-area bottom */}
-      <Pressable
-        onPress={() => router.push('/(app)/prarthna-patra/add' as never)}
-        className="absolute right-5 flex-row items-center gap-2 px-5 py-3 rounded-2xl active:opacity-80"
-        style={{ backgroundColor: ACCENT, borderCurve: 'continuous', bottom: fabBottom }}
-      >
-        <Plus size={16} color="#fff" />
-        <Text className="text-sm font-bold text-white">{t('prarthnaPatra.list.addPetition')}</Text>
-      </Pressable>
     </View>
   );
 }

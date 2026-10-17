@@ -239,7 +239,6 @@ export default function GdScreen() {
   const chipBorder       = CHIP_BORDER[colorScheme === 'dark' ? 'dark' : 'light'];
   const listPaddingBottom = useListBottomPadding();
   const { settings } = useSettingsStore();
-  const fabBottom = 24; // FAB sits above list; safe-area already handled by listPaddingBottom
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [entries, setEntries] = useState<GdEntry[]>([]);
   const [query, setQuery] = useState('');
@@ -474,17 +473,6 @@ export default function GdScreen() {
         />
       )}
 
-      {/* FAB */}
-      <View className="absolute right-6" style={{ bottom: fabBottom }}>
-        <Pressable
-          onPress={() => router.push('/(app)/gd/add-gd' as never)}
-          className="flex-row items-center gap-2 px-5 py-3.5 rounded-2xl active:opacity-80"
-          style={{ backgroundColor: ACCENT, borderCurve: 'continuous' }}
-        >
-          <Plus size={17} color="#fff" />
-          <Text className="text-sm font-bold text-white">{t('gd.list.addGd')}</Text>
-        </Pressable>
-      </View>
       {/* Delete confirmation */}
       <AlertDialog
         open={deleteTarget !== null}

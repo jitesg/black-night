@@ -44,13 +44,18 @@ export function AppLockProvider({ children }: { children: React.ReactNode }) {
     const timeoutMinutes = option !== undefined ? option.value : 5;
     const timeoutMs = timeoutMinutes * 60 * 1000;
 
+    // Lock again only when the session ended (the officer exited the app)
+    // or the app sat in the background longer than the auto-lock timeout.
+    // "Immediately" (0) means lock on exit only, so quick trips to a file
+    // picker, camera or permission dialog don't bring up the lock screen.
     const sub = AppState.addEventListener('change', (next: AppStateStatus) => {
-      if (next === 'background' || next === 'inactive') {
+      if (next === 'background') {
         backgroundAtRef.current = Date.now();
       } else if (next === 'active') {
         const elapsed = backgroundAtRef.current ? Date.now() - backgroundAtRef.current : 0;
         backgroundAtRef.current = null;
-        if (lockEnabled && elapsed >= timeoutMs) relock();
+        if (!lockEnabled) return;
+        if (!isAppLockSessionActive() || (timeoutMs > 0 && elapsed >= timeoutMs)) relock();
       }
     });
     return () => sub.remove();

@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useMemo } from 'react';
+import { clearAppLockSession } from '@/lib/appLockAuth';
 import { T } from '@/lib/typography';
 import {
   View, Text, ScrollView, Pressable,
@@ -308,6 +309,8 @@ export default function HomeScreen() {
     const onBackPress = () => {
       const now = Date.now();
       if (now - lastBackPressTime.current < 2000) {
+        // Exiting ends the App Lock session; the PIN is asked on next open.
+        clearAppLockSession();
         BackHandler.exitApp();
         return true;
       }

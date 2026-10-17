@@ -8,7 +8,7 @@
  *  - 6-digit numeric PIN.
  *  - Separate storage key: `__app_lock_pin_v2__`
  *  - Stored in AsyncStorage as SHA-256(salt + pin) with salt.
- *  - In-memory session with 30-minute timeout.
+ *  - In-memory session that lasts until the app exits.
  *  - Max 5 wrong attempts -> 30-second lockout.
  *  - Biometric wrapper around expo-local-authentication with web guard.
  */
@@ -21,7 +21,6 @@ import * as LocalAuthentication from 'expo-local-authentication';
 const PIN_KEY = '__app_lock_pin_v2__';
 
 // ── Session config ────────────────────────────────────────────────────────────
-const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
 const MAX_ATTEMPTS       = 5;
 const LOCKOUT_MS         = 30 * 1000;       // 30 seconds
 
@@ -114,14 +113,11 @@ export async function verifyAppLockPin(
 
 // ── Session management ────────────────────────────────────────────────────────
 
+// The session lasts until the app exits or is closed (or the auto-lock
+// timeout passes in the background). No in-app expiry: a 30-minute expiry
+// made the lock screen pop up mid-use, e.g. when opening an add screen.
 export function isAppLockSessionActive(): boolean {
-  if (!_sessionValid || _sessionAt === null) return false;
-  if (Date.now() - _sessionAt > SESSION_TIMEOUT_MS) {
-    _sessionValid = false;
-    _sessionAt    = null;
-    return false;
-  }
-  return true;
+  return _sessionValid && _sessionAt !== null;
 }
 
 export function touchAppLockSession(): void {

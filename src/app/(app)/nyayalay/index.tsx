@@ -266,7 +266,6 @@ const DocCard = memo(function DocCard({
 export default function NyayalayScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const fabBottom = Math.max(insets.bottom + 16, 24);
   const { colorScheme } = useColorScheme();
   const scheme = colorScheme === 'dark' ? 'dark' : 'light';
   const palette = THEME[scheme];
@@ -625,16 +624,6 @@ export default function NyayalayScreen() {
           ) : null
         }
       />
-
-      {/* FAB */}
-      <Pressable
-        onPress={() => router.push('/(app)/nyayalay/add' as never)}
-        className="absolute right-6 rounded-2xl px-5 py-3.5 flex-row items-center gap-2 active:opacity-80"
-        style={{ backgroundColor: NYL_COLOR, bottom: fabBottom }}
-      >
-        <Plus size={17} color="#fff" />
-        <Text className="text-sm font-bold text-white">{t('nyayalay.addCourtDoc')}</Text>
-      </Pressable>
 
       {/* Delete dialog */}
       <AlertDialog
