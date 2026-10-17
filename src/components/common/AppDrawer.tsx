@@ -23,9 +23,11 @@ import { useTranslation } from 'react-i18next';
 import {
   Animated,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   Text,
+  ToastAndroid,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -275,11 +277,16 @@ function DrawerNavItem({
   item,
   active,
   onPress,
+  onLongPress,
+  pinned = false,
   colors,
 }: {
   item: NavItem;
   active: boolean;
   onPress: () => void;
+  /** Long press pins/unpins the item on Home */
+  onLongPress?: () => void;
+  pinned?: boolean;
   colors: typeof THEME.light;
 }) {
   const { t } = useTranslation();
@@ -288,8 +295,10 @@ function DrawerNavItem({
   return (
     <Pressable
       onPress={onPress}
+      onLongPress={onLongPress}
       accessibilityRole="menuitem"
       accessibilityLabel={label}
+      accessibilityHint={onLongPress ? t('drawer.pinHint') : undefined}
       accessibilityState={{ selected: active }}
       style={{
         flexDirection: 'row',
@@ -331,6 +340,9 @@ function DrawerNavItem({
       >
         {label}
       </Text>
+
+      {/* Pinned to Home */}
+      {pinned ? <Star size={13} color={INDIGO} fill={INDIGO} /> : null}
 
       {/* Optional badge */}
       {item.badge && item.badge > 0 ? (
@@ -461,7 +473,28 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
   // Phone: 82% capped at 360dp · Tablet: up to 480dp
   const drawerWidth = Math.min(windowWidth * 0.82, windowWidth >= 600 ? 480 : 360);
 
-  const { items: pinnedItems, unpinItem } = usePinnedItems();
+  const { items: pinnedItems, pinItem, unpinItem, isPinned } = usePinnedItems();
+
+  // Long press a menu item to pin it to Home (or unpin it).
+  const togglePin = useCallback((item: NavItem) => {
+    const label = t(item.labelKey);
+    let message: string;
+    if (isPinned(item.id)) {
+      unpinItem(item.id);
+      message = t('drawer.unpinnedToast', { name: label });
+    } else {
+      pinItem({
+        id: item.id,
+        label: item.label,
+        labelKey: item.labelKey,
+        iconKey: item.id,
+        color: item.color,
+        route: item.route,
+      });
+      message = t('drawer.pinnedToast', { name: label });
+    }
+    if (Platform.OS === 'android') ToastAndroid.show(message, ToastAndroid.SHORT);
+  }, [t, isPinned, pinItem, unpinItem]);
 
   // ── Animation refs ──────────────────────────────────────────────────────────
   // Initialise well off-screen
@@ -573,7 +606,7 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
                 {pinnedItems.slice(0, 5).map((p) => (
                   <DrawerPinnedChip
                     key={p.id}
-                    label={p.label}
+                    label={p.labelKey ? t(p.labelKey) : p.label}
                     color={p.color}
                     onPress={() => handleNavigate(p.route)}
                     onLongPress={() => unpinItem(p.id)}
@@ -592,6 +625,8 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
                 item={item}
                 active={isActive(item.route)}
                 onPress={() => handleNavigate(item.route)}
+                onLongPress={item.id === 'home' ? undefined : () => togglePin(item)}
+                pinned={isPinned(item.id)}
                 colors={colors}
               />
             ))}
@@ -605,6 +640,8 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
                 item={item}
                 active={isActive(item.route)}
                 onPress={() => handleNavigate(item.route)}
+                onLongPress={() => togglePin(item)}
+                pinned={isPinned(item.id)}
                 colors={colors}
               />
             ))}

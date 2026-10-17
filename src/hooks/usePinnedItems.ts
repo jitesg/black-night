@@ -1,84 +1,112 @@
 /**
- * usePinnedItems — persistent pin/unpin/reorder for Dashboard
+ * usePinnedItems — persistent pin/unpin/reorder for Dashboard + Drawer
  *
- * Backed by AsyncStorage under key "investsuite:pinned_items".
+ * Backed by AsyncStorage under key "investsuite:pinned_items_v1".
  * Each PinnedItem has an id, label, icon key, color, and route.
+ *
+ * The list lives in one shared store, so pinning from the drawer shows up
+ * on the Home "Pinned" row straight away (and vice versa).
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = 'investsuite:pinned_items_v1';
 
 export interface PinnedItem {
   id: string;
+  /** English fallback label */
   label: string;
+  /** i18n key for the label (drawer nav keys) */
+  labelKey?: string;
   /** lucide icon name string — rendered in AppDrawer/Dashboard */
   iconKey: string;
   color: string;
   route: string;
 }
 
+// Label keys for items saved before labelKey existed.
+const LABEL_KEYS: Record<string, string> = {
+  mukadma: 'drawer.navMukadma',
+  gd: 'drawer.navGd',
+  nyayalay: 'drawer.navNyayalay',
+  prarthna: 'drawer.navPrarthna',
+  nirodhatmak: 'drawer.navNirodhatmak',
+  halka: 'drawer.navHalka',
+  knowledge: 'drawer.navKnowledge',
+  formats: 'drawer.navFormats',
+};
+
 // Default pinned items shown on first launch
 const DEFAULTS: PinnedItem[] = [
-  { id: 'mukadma',      label: 'Mukadma',           iconKey: 'FileText',      color: '#7C3AED', route: '/(app)/mukadma' },
-  { id: 'gd',           label: 'General Diary',      iconKey: 'BookMarked',    color: '#D97706', route: '/(app)/gd' },
-  { id: 'knowledge',    label: 'Knowledge Base',     iconKey: 'Library',       color: '#0F766E', route: '/(app)/knowledge' },
-  { id: 'halka',        label: 'My Halka',           iconKey: 'BookOpen',      color: '#1D6A9F', route: '/(app)/halka' },
+  { id: 'mukadma',   label: 'Mukadma',        labelKey: 'drawer.navMukadma',   iconKey: 'FileText',   color: '#7C3AED', route: '/(app)/mukadma' },
+  { id: 'gd',        label: 'General Diary',  labelKey: 'drawer.navGd',        iconKey: 'BookMarked', color: '#D97706', route: '/(app)/gd' },
+  { id: 'knowledge', label: 'Knowledge Base', labelKey: 'drawer.navKnowledge', iconKey: 'Library',    color: '#0F766E', route: '/(app)/knowledge' },
+  { id: 'halka',     label: 'My Halka',       labelKey: 'drawer.navHalka',     iconKey: 'BookOpen',   color: '#1D6A9F', route: '/(app)/halka' },
 ];
 
-export function usePinnedItems() {
-  const [items, setItems] = useState<PinnedItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+// ── Shared store ──────────────────────────────────────────────────────────────
+interface PinnedState { items: PinnedItem[]; loaded: boolean }
 
-  // Load from storage
-  useEffect(() => {
-    (async () => {
-      try {
-        const raw = await AsyncStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw) as PinnedItem[];
-          setItems(Array.isArray(parsed) ? parsed : DEFAULTS);
-        } else {
-          setItems(DEFAULTS);
-        }
-      } catch {
-        setItems(DEFAULTS);
-      } finally {
-        setLoaded(true);
-      }
-    })();
-  }, []);
+let state: PinnedState = { items: [], loaded: false };
+let loading: Promise<void> | null = null;
+const listeners = new Set<() => void>();
 
-  // Persist whenever items change (after initial load)
-  const persist = useCallback(async (next: PinnedItem[]) => {
+function setState(next: PinnedState) {
+  state = next;
+  listeners.forEach((l) => l());
+}
+
+function withLabelKeys(items: PinnedItem[]): PinnedItem[] {
+  return items.map((p) => (p.labelKey || !LABEL_KEYS[p.id] ? p : { ...p, labelKey: LABEL_KEYS[p.id] }));
+}
+
+function load() {
+  if (loading) return;
+  loading = (async () => {
+    let items = DEFAULTS;
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      const raw = await AsyncStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as PinnedItem[];
+        if (Array.isArray(parsed)) items = withLabelKeys(parsed);
+      }
     } catch {
-      // silent — non-critical
+      // fall back to defaults
     }
-  }, []);
+    setState({ items, loaded: true });
+  })();
+}
+
+function save(items: PinnedItem[]) {
+  setState({ ...state, items });
+  AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(items)).catch(() => null);
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => { listeners.delete(listener); };
+}
+
+const getSnapshot = () => state;
+
+// ── Hook ──────────────────────────────────────────────────────────────────────
+export function usePinnedItems() {
+  const { items, loaded } = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+
+  useEffect(() => { load(); }, []);
 
   const pinItem = useCallback((item: PinnedItem) => {
-    setItems((prev) => {
-      if (prev.find((p) => p.id === item.id)) return prev;
-      const next = [...prev, item];
-      persist(next);
-      return next;
-    });
-  }, [persist]);
+    if (state.items.some((p) => p.id === item.id)) return;
+    save([...state.items, item]);
+  }, []);
 
   const unpinItem = useCallback((id: string) => {
-    setItems((prev) => {
-      const next = prev.filter((p) => p.id !== id);
-      persist(next);
-      return next;
-    });
-  }, [persist]);
+    save(state.items.filter((p) => p.id !== id));
+  }, []);
 
   const reorderItems = useCallback((next: PinnedItem[]) => {
-    setItems(next);
-    persist(next);
-  }, [persist]);
+    save(next);
+  }, []);
 
   const isPinned = useCallback((id: string) => items.some((p) => p.id === id), [items]);
 

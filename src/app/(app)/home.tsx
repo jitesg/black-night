@@ -213,7 +213,7 @@ function PinnedChip({ item, onUnpin }: { item: PinnedItem; onUnpin: () => void }
     >
       <Star size={11} color={C.action} fill={C.action} />
       <Text style={{ ...T.footnote, fontWeight: '600', color: C.text, maxWidth: 100 }} numberOfLines={1}>
-        {item.label}
+        {item.labelKey ? t(item.labelKey) : item.label}
       </Text>
     </Pressable>
   );
