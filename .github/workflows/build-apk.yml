@@ -1,8 +1,10 @@
 name: Build Android APK
 
+# Builds only on request: push a tag named build-<n> (or run it manually).
+# Pushing code alone no longer builds an APK.
 on:
   push:
-    branches: [claude/app-apk-build-upbmwa, master]
+    tags: ['build-*']
   workflow_dispatch:
 
 permissions:
