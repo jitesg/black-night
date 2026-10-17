@@ -48,7 +48,7 @@ import {
   FolderOpen,
   HelpCircle,
   Info,
-  Database,
+  UserRound,
   X,
   Star,
   Terminal,
@@ -93,7 +93,7 @@ const MAIN_NAV: NavItem[] = [
 ];
 
 const SECONDARY_NAV: NavItem[] = [
-  { id: 'master-data', labelKey: 'drawer.navMasterData',  label: 'Master Data Hub',    icon: Database,    route: '/(app)/workspace-setup',     color: '#6B7280' },
+  { id: 'master-data', labelKey: 'drawer.navMasterData',  label: 'User Profile',       icon: UserRound,   route: '/(app)/workspace-setup',     color: '#6B7280' },
   { id: 'reminders',   labelKey: 'drawer.navReminders',   label: 'Reminders',          icon: Bell,        route: '/(app)/settings/reminders',  color: '#D97706' },
   { id: 'attachments', labelKey: 'drawer.navAttachments', label: 'Attachment Library', icon: FolderOpen,  route: '/(app)/knowledge',            color: '#6B7280' },
   { id: 'settings',    labelKey: 'drawer.navSettings',    label: 'Settings',           icon: Settings,    route: '/(app)/settings',             color: '#6B7280' },

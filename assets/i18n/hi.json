@@ -1641,7 +1641,7 @@
     "daysAgo": "{{count}} दिन पहले"
   },
   "workspace": {
-    "title": "कार्यस्थान सेटअप",
+    "title": "उपयोगकर्ता प्रोफ़ाइल",
     "officerInfo": "अधिकारी विवरण",
     "officerName": "अधिकारी का नाम",
     "officerNamePlaceholder": "पूरा नाम",
@@ -1689,7 +1689,7 @@
     "navHalka": "मेरा हल्का",
     "navKnowledge": "कानूनी ज्ञान",
     "navFormats": "पूर्वनिर्धारित प्रारूप",
-    "navMasterData": "मास्टर डेटा हब",
+    "navMasterData": "उपयोगकर्ता प्रोफ़ाइल",
     "navReminders": "स्मरणपत्र",
     "navAttachments": "संलग्नक लाइब्रेरी",
     "navSettings": "सेटिंग्स",

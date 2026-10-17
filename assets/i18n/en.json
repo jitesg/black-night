@@ -1641,7 +1641,7 @@
     "daysAgo": "{{count}} days ago"
   },
   "workspace": {
-    "title": "Workspace Setup",
+    "title": "User Profile",
     "officerInfo": "Officer Information",
     "officerName": "Officer Name",
     "officerNamePlaceholder": "Full name",
@@ -1689,7 +1689,7 @@
     "navHalka": "My Halka",
     "navKnowledge": "Knowledge",
     "navFormats": "Predefine Formats",
-    "navMasterData": "Master Data Hub",
+    "navMasterData": "User Profile",
     "navReminders": "Reminders",
     "navAttachments": "Attachment Library",
     "navSettings": "Settings",
