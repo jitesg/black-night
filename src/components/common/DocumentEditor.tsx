@@ -438,6 +438,17 @@ interface FullScreenProps {
   placeholder: string;
 }
 
+// Stable object: a new one each render made the editor re-apply its style.
+const RICH_EDITOR_STYLE = {
+  contentCSSText: `
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #111827;
+    padding: 0 4px;
+  `,
+};
+
 function FullScreenModal({ visible, onClose, value, onChange, title, placeholder }: FullScreenProps) {
   const { t } = useTranslation();
   const { settings } = useSettingsStore();
@@ -467,6 +478,12 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
   // editorHtmlRef can be mutated by later in-flight bridge events before the
   // comparison runs, giving a false "no change" result.
   const lastEmittedRef = useRef<string>('');
+
+  // Recent HTML strings the editor itself emitted. When typing fast, the
+  // parent's `value` lags a keystroke or two behind the editor; such a lagging
+  // value is one of our own older emissions, not an external change, and
+  // pushing it back reset the content and threw the cursor to the start.
+  const emittedHistoryRef = useRef<string[]>([]);
 
   // Monotonically-increasing counter incremented every time a real (non-echoed)
   // onChange fires.  Effects capture the counter at their start and bail out if
@@ -530,7 +547,11 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
     // out as plain text, which prepareHtml() wraps in <p>, so `prepared` never
     // matched and the editor was reset on every keystroke — the cursor jumped
     // to the start and new letters landed at the front.
-    if (value === lastEmittedRef.current || prepared === lastEmittedRef.current) return; // no real external change
+    const own = emittedHistoryRef.current;
+    if (
+      value === lastEmittedRef.current || prepared === lastEmittedRef.current ||
+      own.includes(value) || own.includes(prepared)
+    ) return; // our own (possibly lagging) emission — not an external change
     editorHtmlRef.current = prepared;
     if (visible && editorRef.current) {
       // Final stale check before writing to the WebView
@@ -597,6 +618,8 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
     changeSeqRef.current += 1;
     editorHtmlRef.current = html;
     lastEmittedRef.current = html;
+    emittedHistoryRef.current.push(html);
+    if (emittedHistoryRef.current.length > 50) emittedHistoryRef.current.shift();
     onChange(html);
   }, [onChange]);
 
@@ -1015,15 +1038,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                   handleEditorReady();
                 }}
                 style={styles.richEditor}
-                editorStyle={{
-                  contentCSSText: `
-                    font-family: -apple-system, 'Helvetica Neue', sans-serif;
-                    font-size: 16px;
-                    line-height: 1.7;
-                    color: #111827;
-                    padding: 0 4px;
-                  `,
-                }}
+                editorStyle={RICH_EDITOR_STYLE}
               />
             </>
           )}

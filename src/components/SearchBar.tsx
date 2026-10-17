@@ -23,7 +23,7 @@
  */
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import {
-  Platform, Pressable, TextInput,
+  Platform, Pressable, TextInput, View,
   type ReturnKeyTypeOptions, type TextStyle, type ViewStyle,
 } from 'react-native';
 import type { StyleProp } from 'react-native';
@@ -258,9 +258,11 @@ export const SearchBar = memo(function SearchBar({
     <Animated.View
       style={isExpanded ? containerStyle : { alignSelf: 'flex-start' }}
     >
+      {/* Separate keys + a plain View for the collapsed button: sharing one
+          view with the expanded state left Reanimated's animated border and
+          background stuck on it (square focus box around the search icon). */}
       {!isExpanded ? (
-        <Animated.View
-        >
+        <View key="collapsed">
           <Pressable
             onPress={handleExpand}
             accessibilityRole="button"
@@ -278,9 +280,10 @@ export const SearchBar = memo(function SearchBar({
           >
             <Search size={18} color={C.iconMuted} />
           </Pressable>
-        </Animated.View>
+        </View>
       ) : (
         <Animated.View
+          key="expanded"
           style={[
             {
               flexDirection: 'row',
