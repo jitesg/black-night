@@ -1,35 +1,37 @@
 /**
  * Search Preferences Screen
  */
-import { View, Text, Pressable, ScrollView, Switch } from 'react-native';
+import { View, Text, ScrollView, Switch } from 'react-native';
 import { Search, History, Sparkles, Type, Brain, Zap, Highlighter, Gauge } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 type SearchPrefKey = keyof Pick<SettingsState,
   'searchHistory' | 'smartSuggestions' | 'autocomplete' | 'predictiveSearch' |
   'typoTolerance' | 'highlightMatches' | 'instantSearch'
 >;
 
-const PREFS: { key: SearchPrefKey; label: string; desc: string; icon: typeof Search; color: string }[] = [
-  { key: 'searchHistory',    label: 'Search History',    desc: 'Remember recent searches for quick access',        icon: History,    color: '#6B7280' },
-  { key: 'smartSuggestions', label: 'Smart Suggestions', desc: 'Intelligent suggestions based on your work',        icon: Sparkles,   color: '#2563EB' },
-  { key: 'autocomplete',     label: 'Autocomplete',      desc: 'Complete search terms as you type',                icon: Type,       color: '#1D4ED8' },
-  { key: 'predictiveSearch', label: 'Predictive Search', desc: 'Predict and show relevant results early',           icon: Brain,      color: '#7C3AED' },
-  { key: 'typoTolerance',    label: 'Typo Tolerance',    desc: 'Find results even with minor spelling errors',      icon: Zap,        color: '#10B981' },
-  { key: 'highlightMatches', label: 'Highlight Matches', desc: 'Bold matching text in search results',             icon: Highlighter, color: '#F59E0B' },
-  { key: 'instantSearch',    label: 'Instant Search',    desc: 'Search results update as you type each character', icon: Gauge,      color: '#0891B2' },
+const PREFS: { key: SearchPrefKey; labelKey: string; descKey: string; icon: typeof Search; color: string }[] = [
+  { key: 'searchHistory',    labelKey: 'settings.search.history',        descKey: 'settings.search.historyDesc',        icon: History,     color: '#6B7280' },
+  { key: 'smartSuggestions', labelKey: 'settings.search.suggestions',    descKey: 'settings.search.suggestionsDesc',    icon: Sparkles,    color: '#2563EB' },
+  { key: 'autocomplete',     labelKey: 'settings.search.autocomplete',   descKey: 'settings.search.autocompleteDesc',   icon: Type,        color: '#1D4ED8' },
+  { key: 'predictiveSearch', labelKey: 'settings.search.predictive',     descKey: 'settings.search.predictiveDesc',     icon: Brain,       color: '#7C3AED' },
+  { key: 'typoTolerance',    labelKey: 'settings.search.typoTolerance',  descKey: 'settings.search.typoToleranceDesc',  icon: Zap,         color: '#10B981' },
+  { key: 'highlightMatches', labelKey: 'settings.search.highlight',      descKey: 'settings.search.highlightDesc',      icon: Highlighter, color: '#F59E0B' },
+  { key: 'instantSearch',    labelKey: 'settings.search.instant',        descKey: 'settings.search.instantDesc',        icon: Gauge,       color: '#0891B2' },
 ];
 
 export default function SearchPrefsScreen() {
   const { settings, update } = useSettingsStore();
+  const { t } = useTranslation();
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Search Preferences" showBack />
+      <AppHeader title={t('settings.search.title')} showBack />
 
       <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Search Behavior</Text>
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.search.behavior')}</Text>
         <View className="bg-card border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
           {PREFS.map((pref, idx) => {
             const Icon = pref.icon;
@@ -43,8 +45,8 @@ export default function SearchPrefsScreen() {
                   <Icon size={16} color={pref.color} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-sm font-semibold text-foreground">{pref.label}</Text>
-                  <Text className="text-xs text-muted-foreground mt-0.5 leading-4">{pref.desc}</Text>
+                  <Text className="text-sm font-semibold text-foreground">{t(pref.labelKey)}</Text>
+                  <Text className="text-xs text-muted-foreground mt-0.5 leading-4">{t(pref.descKey)}</Text>
                 </View>
                 <Switch
                   value={val}
@@ -59,7 +61,7 @@ export default function SearchPrefsScreen() {
 
         <View className="bg-muted/50 rounded-2xl p-4 mt-4" style={{ borderCurve: 'continuous' }}>
           <Text className="text-xs text-muted-foreground leading-5">
-            Search preferences apply to Universal Search used across all modules — FIR, GD, Nyayalay, Prarthna Patra, Knowledge Base, and more.
+            {t('settings.search.disclaimer')}
           </Text>
         </View>
       </ScrollView>

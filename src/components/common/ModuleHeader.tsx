@@ -26,6 +26,7 @@ import { useColorScheme } from 'nativewind';
 import { H } from '@/lib/headerTokens';
 import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
+import { useTranslation } from 'react-i18next';
 
 // Legacy constant kept so no callers break
 const NAVY = H.navy;
@@ -54,6 +55,7 @@ export const ModuleHeader = memo(function ModuleHeader({
   containerStyle,
   children,
 }: ModuleHeaderProps) {
+  const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const colors = THEME[colorScheme ?? 'light'];
@@ -92,7 +94,7 @@ export const ModuleHeader = memo(function ModuleHeader({
           {showBackButton && (
             <Pressable
               onPress={handleBack}
-              accessibilityLabel="Go back"
+              accessibilityLabel={t('header.goBack')}
               accessibilityRole="button"
               className="active:opacity-60"
               style={{

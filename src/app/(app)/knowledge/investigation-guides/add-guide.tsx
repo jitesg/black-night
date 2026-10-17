@@ -11,6 +11,7 @@ import {
   AlertCircle, BookOpen, ChevronDown,
   FileText, Save, Search, Users,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import {
@@ -84,6 +85,7 @@ const CRIME_TYPES = [
 
 // ─── Main Screen ──────────────────────────────────────────────────────────
 export default function AddGuideScreen() {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const COLOR = colorScheme === 'dark' ? '#22D3EE' : '#0891B2';
@@ -92,6 +94,9 @@ export default function AddGuideScreen() {
   const config = GUIDE_CONFIG[guideType];
   const isEdit = Boolean(editId);
   const Icon = config.icon;
+
+  const contentLabel = t(`knowledge.guide.${guideType}.contentLabel`);
+  const contentPlaceholder = t(`knowledge.guide.${guideType}.contentPlaceholder`);
 
   const [title, setTitle] = useState('');
   const [crimeType, setCrimeType] = useState('');
@@ -127,9 +132,9 @@ export default function AddGuideScreen() {
 
   const handleSave = async () => {
     setError('');
-    if (!title.trim()) { setError('Title is required.'); return; }
-    if (!crimeType.trim()) { setError('Crime Type is required.'); return; }
-    if (!description.trim()) { setError(`${config.contentLabel} is required.`); return; }
+    if (!title.trim()) { setError(t('knowledge.guide.errorTitleRequired')); return; }
+    if (!crimeType.trim()) { setError(t('knowledge.guide.errorCrimeTypeRequired')); return; }
+    if (!description.trim()) { setError(t('knowledge.guide.errorContentRequired', { contentLabel })); return; }
 
     setSaving(true);
     try {
@@ -154,7 +159,7 @@ export default function AddGuideScreen() {
       isDirty.current = false;
       router.back();
     } catch (e) {
-      setError('Failed to save. Please try again.');
+      setError(t('knowledge.guide.errorSaveFailed'));
       logger.error('[AddGuide] save error:', e);
     } finally {
       setSaving(false);
@@ -164,18 +169,18 @@ export default function AddGuideScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title={isEdit ? 'Edit Entry' : 'New Entry'}
-        subtitle={config.label}
+        title={isEdit ? t('knowledge.guide.editEntry') : t('knowledge.guide.newEntry')}
+        subtitle={t(`knowledge.guide.${guideType}.label`)}
         onBack={handleBack}
         rightActions={
           <Pressable onPress={handleSave} disabled={saving} className="flex-row items-center gap-1.5 px-4 py-2 rounded-xl active:opacity-70" style={{ backgroundColor: COLOR, borderCurve: 'continuous' }}>
             <Save size={15} color="#fff" />
-            <Text className="text-sm font-bold text-white">{saving ? 'Saving…' : 'Save'}</Text>
+            <Text className="text-sm font-bold text-white">{saving ? t('common.saving') : t('common.save')}</Text>
           </Pressable>
         }
       />
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
 
@@ -186,8 +191,8 @@ export default function AddGuideScreen() {
         >
           {/* ── Title ── */}
           <Input
-            label="Title *"
-            placeholder="Enter a descriptive title…"
+            label={t('knowledge.guide.fieldTitle')}
+            placeholder={t('knowledge.guide.titlePlaceholder')}
             value={title}
             onChangeText={(v) => { setTitle(v); setError(''); }}
           />
@@ -195,7 +200,7 @@ export default function AddGuideScreen() {
           {/* ── Crime Type dropdown ── */}
           <View className="gap-1.5">
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Crime Type <Text className="text-destructive">*</Text>
+              {t('knowledge.guide.fieldCrimeType')} <Text className="text-destructive">*</Text>
             </Text>
             <Pressable
               onPress={() => setShowCrimeDropdown((v) => !v)}
@@ -206,7 +211,9 @@ export default function AddGuideScreen() {
                 className="flex-1 text-base"
                 style={{ color: crimeType ? C.foreground : C.mutedForeground }}
               >
-                {crimeType || 'Select crime type…'}
+                {crimeType
+                  ? t('knowledge.guide.crimeType.' + crimeType, { defaultValue: crimeType })
+                  : t('knowledge.guide.selectCrimeType')}
               </Text>
               <ChevronDown size={16} color={C.mutedForeground} />
             </Pressable>
@@ -234,7 +241,7 @@ export default function AddGuideScreen() {
                       className="flex-1 text-sm font-medium"
                       style={{ color: crimeType === ct ? COLOR : C.foreground }}
                     >
-                      {ct}
+                      {t('knowledge.guide.crimeType.' + ct, { defaultValue: ct })}
                     </Text>
                     {crimeType === ct && (
                       <Text className="text-xs font-bold" style={{ color: COLOR }}>✓</Text>
@@ -244,32 +251,32 @@ export default function AddGuideScreen() {
               </View>
             )}
             <Text className="text-xs text-muted-foreground">
-              Used for filtering and search
+              {t('knowledge.guide.crimeTypeHint')}
             </Text>
           </View>
 
           {/* ── Main Content ── */}
           <Input
             type="multiline"
-            label={`${config.contentLabel} *`}
-            placeholder={config.contentPlaceholder}
+            label={`${contentLabel} *`}
+            placeholder={contentPlaceholder}
             value={description}
             onChangeText={(v) => { setDescription(v); setError(''); }}
           />
 
           {/* ── Tags ── */}
           <Input
-            label="Tags / Keywords"
-            placeholder="e.g. BNS 302, Homicide, DNA Evidence…"
+            label={t('knowledge.guide.fieldTags')}
+            placeholder={t('knowledge.guide.tagsPlaceholder')}
             value={tags}
             onChangeText={setTags}
-            helperText="Separate multiple tags with commas"
+            helperText={t('knowledge.guide.tagsHelper')}
           />
 
           {/* Attachments note */}
           <View className="bg-secondary rounded-xl px-4 py-3">
             <Text className="text-xs text-muted-foreground leading-5">
-              📎 Attachments (PDF, images, documents) can be added from the detail view after saving.
+              {t('knowledge.guide.attachmentsNote')}
             </Text>
           </View>
 
@@ -289,7 +296,11 @@ export default function AddGuideScreen() {
             style={{ backgroundColor: COLOR, borderCurve: 'continuous' }}
           >
             <Text className="text-base font-bold text-white">
-              {saving ? 'Saving…' : isEdit ? 'Update Entry' : 'Save Entry'}
+              {saving
+                ? t('common.saving')
+                : isEdit
+                  ? t('knowledge.guide.updateEntry')
+                  : t('knowledge.guide.saveEntry')}
             </Text>
           </Pressable>
         </ScrollView>
@@ -299,20 +310,20 @@ export default function AddGuideScreen() {
       <AlertDialog open={showUnsaved} onOpenChange={setShowUnsaved}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogTitle>{t('knowledge.guide.unsavedTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Discard them?
+              {t('knowledge.guide.unsavedDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setShowUnsaved(false)}>
-              <Text>Keep Editing</Text>
+              <Text>{t('knowledge.guide.keepEditing')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               onPress={() => { isDirty.current = false; setShowUnsaved(false); router.back(); }}
               className="bg-destructive"
             >
-              <Text className="text-destructive-foreground font-semibold">Discard</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('knowledge.guide.discard')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -14,6 +14,7 @@ import { Camera, Image as ImageIcon, X, Check, RefreshCw, AlertCircle, Sparkles 
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { extractFieldsFromImage, normalizeMimeType, type FieldSpec } from '@/lib/ocrService';
+import { useTranslation } from 'react-i18next';
 
 interface OcrScanModalProps {
   visible: boolean;
@@ -28,8 +29,10 @@ export function OcrScanModal({
   onClose,
   fields,
   onApply,
-  title = 'Document OCR Scanner',
+  title,
 }: OcrScanModalProps) {
+  const { t } = useTranslation();
+  const displayTitle = title ?? t('ocr.scannerTitle');
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const palette = isDark ? THEME.dark : THEME.light;
@@ -59,7 +62,7 @@ export function OcrScanModal({
 
   const processImage = async (uri: string, base64: string | null | undefined, rawMime?: string | null) => {
     if (!base64) {
-      setError('Could not extract image data. Please try another image.');
+      setError(t('ocr.cannotExtractImage'));
       return;
     }
 
@@ -79,7 +82,7 @@ export function OcrScanModal({
         setHasExtracted(true);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Error extracting text from document.');
+      setError(e instanceof Error ? e.message : t('ocr.errorExtracting'));
     } finally {
       setLoading(false);
     }
@@ -89,7 +92,7 @@ export function OcrScanModal({
     try {
       const permission = await ImagePicker.requestCameraPermissionsAsync();
       if (!permission.granted) {
-        setError('Camera permission is required to capture documents.');
+        setError(t('ocr.cameraPermissionRequired'));
         return;
       }
 
@@ -104,7 +107,7 @@ export function OcrScanModal({
         await processImage(asset.uri, asset.base64, asset.mimeType);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to launch camera.');
+      setError(e instanceof Error ? e.message : t('ocr.failedLaunchCamera'));
     }
   };
 
@@ -112,7 +115,7 @@ export function OcrScanModal({
     try {
       const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permission.granted) {
-        setError('Photo library permission is required to select document photos.');
+        setError(t('ocr.galleryPermissionRequired'));
         return;
       }
 
@@ -127,7 +130,7 @@ export function OcrScanModal({
         await processImage(asset.uri, asset.base64, asset.mimeType);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to select image.');
+      setError(e instanceof Error ? e.message : t('ocr.failedSelectImage'));
     }
   };
 
@@ -164,8 +167,8 @@ export function OcrScanModal({
                 <Sparkles size={16} color="#2D52B8" />
               </View>
               <View>
-                <Text className="text-base font-bold text-foreground">{title}</Text>
-                <Text className="text-xs text-muted-foreground">AI-powered Hindi/English document field extraction</Text>
+                <Text className="text-base font-bold text-foreground">{displayTitle}</Text>
+                <Text className="text-xs text-muted-foreground">{t('ocr.scannerSubtitle')}</Text>
               </View>
             </View>
             <Pressable
@@ -182,11 +185,11 @@ export function OcrScanModal({
               <View className="flex-row items-start gap-2.5 p-3.5 mb-4 rounded-xl bg-destructive/10 border border-destructive/20">
                 <AlertCircle size={18} color="#DC2626" className="mt-0.5" />
                 <View className="flex-1">
-                  <Text className="text-xs font-semibold text-destructive mb-0.5">Extraction Notice</Text>
+                  <Text className="text-xs font-semibold text-destructive mb-0.5">{t('ocr.extractionNotice')}</Text>
                   <Text className="text-xs text-destructive/90 leading-4">{error}</Text>
                   {error.toLowerCase().includes('api key') && (
                     <Text className="text-[11px] text-destructive/80 mt-1">
-                      To configure: add GEMINI_API_KEY as a secret in Supabase Dashboard.
+                      {t('ocr.apiKeyNotice')}
                     </Text>
                   )}
                 </View>
@@ -197,9 +200,9 @@ export function OcrScanModal({
             {!imageUri && !loading && (
               <View className="gap-4 my-2">
                 <View className="p-4 rounded-2xl bg-secondary/50 border border-border gap-2">
-                  <Text className="text-sm font-semibold text-foreground">Select a Document or Note</Text>
+                  <Text className="text-sm font-semibold text-foreground">{t('ocr.selectDocOrNote')}</Text>
                   <Text className="text-xs text-muted-foreground leading-4">
-                    Capture or upload a clear photo of an identity card (Aadhaar, Voter ID), handwritten complaint, notice, or form. The AI will extract relevant details in Hindi and English.
+                    {t('ocr.selectDocDesc')}
                   </Text>
                 </View>
 
@@ -210,8 +213,8 @@ export function OcrScanModal({
                     style={{ borderCurve: 'continuous' }}
                   >
                     <Camera size={26} color="#FFFFFF" />
-                    <Text className="text-sm font-semibold text-white">Capture Photo</Text>
-                    <Text className="text-[11px] text-white/80">Take a photo with camera</Text>
+                    <Text className="text-sm font-semibold text-white">{t('ocr.capturePhoto')}</Text>
+                    <Text className="text-[11px] text-white/80">{t('ocr.capturePhotoDesc')}</Text>
                   </Pressable>
 
                   <Pressable
@@ -220,15 +223,15 @@ export function OcrScanModal({
                     style={{ borderCurve: 'continuous' }}
                   >
                     <ImageIcon size={26} color="#2D52B8" />
-                    <Text className="text-sm font-semibold text-foreground">Pick from Gallery</Text>
-                    <Text className="text-[11px] text-muted-foreground">Select existing image</Text>
+                    <Text className="text-sm font-semibold text-foreground">{t('ocr.pickFromGallery')}</Text>
+                    <Text className="text-[11px] text-muted-foreground">{t('ocr.pickFromGalleryDesc')}</Text>
                   </Pressable>
                 </View>
 
                 {/* Target Fields preview */}
                 <View className="mt-3">
                   <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                    Fields to be extracted ({fields.length})
+                    {t('ocr.fieldsToBeExtracted', { count: fields.length })}
                   </Text>
                   <View className="flex-row flex-wrap gap-1.5">
                     {fields.map((f) => (
@@ -246,9 +249,9 @@ export function OcrScanModal({
               <View className="items-center justify-center py-12 gap-4">
                 <ActivityIndicator size="large" color="#2D52B8" />
                 <View className="items-center gap-1">
-                  <Text className="text-sm font-semibold text-foreground">Scanning document with Gemini AI...</Text>
+                  <Text className="text-sm font-semibold text-foreground">{t('ocr.scanningDocument')}</Text>
                   <Text className="text-xs text-muted-foreground text-center">
-                    Reading handwritten and printed text in Hindi & English
+                    {t('ocr.readingText')}
                   </Text>
                 </View>
                 {imageUri ? (
@@ -267,7 +270,7 @@ export function OcrScanModal({
                   <View className="flex-row items-center gap-2">
                     <Check size={16} color="#16A34A" />
                     <Text className="text-xs font-medium text-foreground">
-                      Extracted {countFilled} of {fields.length} fields
+                      {t('ocr.extractedCount', { count: countFilled, total: fields.length })}
                     </Text>
                   </View>
                   <Pressable
@@ -275,14 +278,14 @@ export function OcrScanModal({
                     className="flex-row items-center gap-1 px-2.5 py-1 rounded-lg bg-card border border-border active:opacity-70"
                   >
                     <RefreshCw size={12} color={palette.mutedForeground} />
-                    <Text className="text-xs text-muted-foreground">Re-scan</Text>
+                    <Text className="text-xs text-muted-foreground">{t('ocr.rescan')}</Text>
                   </Pressable>
                 </View>
 
                 {/* Review / Edit Fields */}
                 <View className="gap-3">
                   <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Review & Edit Extracted Information
+                    {t('ocr.reviewEditTitle')}
                   </Text>
                   {fields.map((f) => {
                     const val = extractedValues[f.key] ?? '';
@@ -292,15 +295,15 @@ export function OcrScanModal({
                         <View className="flex-row items-center justify-between">
                           <Text className="text-xs font-semibold text-foreground">{f.label}</Text>
                           {isFilled ? (
-                            <Text className="text-[10px] text-green-600 font-medium">Found</Text>
+                            <Text className="text-[10px] text-green-600 font-medium">{t('ocr.found')}</Text>
                           ) : (
-                            <Text className="text-[10px] text-muted-foreground">Not found in document</Text>
+                            <Text className="text-[10px] text-muted-foreground">{t('ocr.notFoundInDoc')}</Text>
                           )}
                         </View>
                         <TextInput
                           value={val}
                           onChangeText={(text) => handleValueChange(f.key, text)}
-                          placeholder={`Enter ${f.label}`}
+                          placeholder={t('ocr.enterFieldPlaceholder', { label: f.label })}
                           placeholderTextColor={palette.mutedForeground}
                           className="px-3.5 py-2.5 rounded-xl border text-sm text-foreground bg-background"
                           style={{
@@ -321,7 +324,7 @@ export function OcrScanModal({
                     style={{ borderCurve: 'continuous' }}
                   >
                     <Text className="text-sm font-semibold text-white">
-                      Apply Extracted Fields to Form
+                      {t('ocr.applyToForm')}
                     </Text>
                   </Pressable>
 
@@ -329,7 +332,7 @@ export function OcrScanModal({
                     onPress={handleClose}
                     className="items-center justify-center py-2.5 rounded-xl active:opacity-60"
                   >
-                    <Text className="text-xs text-muted-foreground">Cancel</Text>
+                    <Text className="text-xs text-muted-foreground">{t('common.cancel')}</Text>
                   </Pressable>
                 </View>
               </View>

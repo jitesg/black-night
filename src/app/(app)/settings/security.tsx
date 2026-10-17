@@ -3,32 +3,50 @@
  */
 import { useState } from 'react';
 import { View, Text, Pressable, ScrollView, Switch, Modal } from 'react-native';
-import { Lock, KeyRound, Fingerprint, Timer, EyeOff, Shield, ChevronDown, Check } from 'lucide-react-native';
+import { Lock, KeyRound, Fingerprint, Timer, EyeOff, ChevronDown, Check } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { hasAppLockPinSet } from '@/lib/appLockAuth';
+import { router } from 'expo-router';
 
-type TimeoutVal = SettingsState['autoLockTimeout'];
-const TIMEOUT_OPTIONS: { value: TimeoutVal; label: string }[] = [
-  { value: 0, label: 'Immediately' },
-  { value: 1, label: '1 minute' },
-  { value: 5, label: '5 minutes' },
-  { value: 15, label: '15 minutes' },
-  { value: 30, label: '30 minutes' },
+export type TimeoutVal = SettingsState['autoLockTimeout'];
+export const TIMEOUT_OPTIONS: { value: TimeoutVal; labelKey: string }[] = [
+  { value: 0, labelKey: 'settings.security.immediately' },
+  { value: 1, labelKey: 'settings.security.minutes1' },
+  { value: 5, labelKey: 'settings.security.minutes5' },
+  { value: 15, labelKey: 'settings.security.minutes15' },
+  { value: 30, labelKey: 'settings.security.minutes30' },
 ];
 
 export default function SecurityScreen() {
   const { settings, update } = useSettingsStore();
   const [timeoutOpen, setTimeoutOpen] = useState(false);
-  const timeoutLabel = TIMEOUT_OPTIONS.find((o) => o.value === settings.autoLockTimeout)?.label ?? '5 minutes';
+  const { t } = useTranslation();
+  const activeOpt = TIMEOUT_OPTIONS.find((o) => o.value === settings.autoLockTimeout);
+  const timeoutLabel = activeOpt ? t(activeOpt.labelKey) : t('settings.security.minutes5');
+
+  const handlePinLockToggle = async (val: boolean) => {
+    if (val) {
+      const hasPin = await hasAppLockPinSet();
+      if (!hasPin) {
+        router.push('/(app)/app-lock/pin-setup' as never);
+        return;
+      }
+      update('pinLock', true);
+    } else {
+      update('pinLock', false);
+    }
+  };
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Security & Privacy" subtitle="App lock, biometric, and privacy controls" showBack />
+      <AppHeader title={t('settings.security.title')} subtitle={t('settings.security.subtitle')} showBack />
 
       <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
 
         {/* App Lock section */}
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">App Lock</Text>
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.security.appLock')}</Text>
         <View className="bg-card border border-border rounded-2xl overflow-hidden mb-5" style={{ borderCurve: 'continuous' }}>
           {/* App Lock master */}
           <View className="flex-row items-center gap-3 px-4 py-4 border-b border-border">
@@ -36,8 +54,8 @@ export default function SecurityScreen() {
               <Lock size={16} color='#1E3A5F' />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">App Lock</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Require authentication to open InvestSuite</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.security.appLock')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.security.appLockDesc')}</Text>
             </View>
             <Switch
               value={settings.appLock}
@@ -53,13 +71,13 @@ export default function SecurityScreen() {
               <KeyRound size={16} color="#1D4ED8" />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">PIN Lock</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">4–6 digit PIN to unlock the app</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.security.pinLock')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.security.pinLockDesc')}</Text>
             </View>
             <Switch
               value={settings.pinLock}
               disabled={!settings.appLock}
-              onValueChange={(v) => update('pinLock', v)}
+              onValueChange={handlePinLockToggle}
               trackColor={{ false: '#E5E7EB', true: `${'#F59E0B'}60` }}
               thumbColor={settings.pinLock ? '#F59E0B' : '#9CA3AF'}
             />
@@ -71,8 +89,8 @@ export default function SecurityScreen() {
               <Fingerprint size={16} color="#10B981" />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Biometric Authentication</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Fingerprint or face recognition unlock</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.security.biometric')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.security.biometricDesc')}</Text>
             </View>
             <Switch
               value={settings.biometric}
@@ -92,8 +110,8 @@ export default function SecurityScreen() {
               <Timer size={16} color="#F59E0B" />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Auto Lock Timeout</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Lock app after period of inactivity</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.security.timeout')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.security.timeoutDesc')}</Text>
             </View>
             <View className="flex-row items-center gap-1">
               <Text className="text-sm font-semibold" style={{ color: '#2563EB' }}>{timeoutLabel}</Text>
@@ -103,15 +121,15 @@ export default function SecurityScreen() {
         </View>
 
         {/* Privacy section */}
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Privacy</Text>
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.security.privacy')}</Text>
         <View className="bg-card border border-border rounded-2xl overflow-hidden mb-5" style={{ borderCurve: 'continuous' }}>
           <View className="flex-row items-center gap-3 px-4 py-4">
             <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: '#DC262615' }}>
               <EyeOff size={16} color="#DC2626" />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Hide Sensitive Information</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5 leading-4">Mask phone numbers, addresses, and personal data</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.security.hideSensitive')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5 leading-4">{t('settings.security.hideSensitiveDesc')}</Text>
             </View>
             <Switch
               value={settings.hideSensitive}
@@ -124,7 +142,7 @@ export default function SecurityScreen() {
 
         <View className="bg-muted/50 rounded-2xl p-4" style={{ borderCurve: 'continuous' }}>
           <Text className="text-xs text-muted-foreground leading-5">
-            App Lock requires device-level biometric or PIN enrollment. Enable App Lock first to configure PIN and biometric options.
+            {t('settings.security.disclaimer')}
           </Text>
         </View>
       </ScrollView>
@@ -133,14 +151,14 @@ export default function SecurityScreen() {
       <Modal visible={timeoutOpen} transparent animationType="fade" onRequestClose={() => setTimeoutOpen(false)}>
         <Pressable style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' }} onPress={() => setTimeoutOpen(false)}>
           <View className="bg-card rounded-t-3xl px-4 pt-4 pb-10">
-            <Text className="text-base font-bold text-foreground mb-4 text-center">Auto Lock Timeout</Text>
+            <Text className="text-base font-bold text-foreground mb-4 text-center">{t('settings.security.timeout')}</Text>
             {TIMEOUT_OPTIONS.map((opt) => (
               <Pressable
                 key={opt.value}
                 onPress={() => { update('autoLockTimeout', opt.value as TimeoutVal); setTimeoutOpen(false); }}
                 className="flex-row items-center py-3.5 border-b border-border active:opacity-70"
               >
-                <Text className="flex-1 text-sm text-foreground">{opt.label}</Text>
+                <Text className="flex-1 text-sm text-foreground">{t(opt.labelKey)}</Text>
                 {opt.value === settings.autoLockTimeout && <Check size={16} color='#2563EB' />}
               </Pressable>
             ))}

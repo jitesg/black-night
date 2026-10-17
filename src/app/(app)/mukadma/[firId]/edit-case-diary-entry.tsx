@@ -26,7 +26,12 @@ import { BookOpen, FileText, CheckSquare } from 'lucide-react-native';
 import {
   getEntriesByDiary, updateEntry,
   type CaseDiaryEntry,
+  getCaseDiaryById,
+  type CaseDiary,
 } from '@/lib/db/caseDiaryRepo';
+import { getFIRById, type FIR } from '@/lib/db/firRepo';
+import { FirBasisHintsView } from '@/components/caseDiary/FirBasisHintsView';
+import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ─── Design tokens ──────────────────────────────────────────────────────────
@@ -41,6 +46,8 @@ export default function EditCaseDiaryEntryScreen() {
   const { t } = useTranslation();
 
   const [entry, setEntry]       = useState<CaseDiaryEntry | null>(null);
+  const [diary, setDiary]       = useState<CaseDiary | null>(null);
+  const [fir, setFir]           = useState<FIR | null>(null);
   const [loading, setLoading]   = useState(true);
   const [loadError, setLoadError] = useState('');
   const [vivran, setVivran]     = useState('');
@@ -72,9 +79,15 @@ export default function EditCaseDiaryEntryScreen() {
     let isMounted = true;
     (async () => {
       try {
-        const allEntries = await getEntriesByDiary(diaryId);
+        const [allEntries, d, f] = await Promise.all([
+          getEntriesByDiary(diaryId),
+          getCaseDiaryById(diaryId),
+          firId ? getFIRById(firId) : Promise.resolve(null),
+        ]);
         const found = allEntries.find((e) => e.id === entryId) ?? null;
         if (isMounted) {
+          if (d) setDiary(d);
+          if (f) setFir(f);
           if (found) {
             setEntry(found);
             setVivran(found.vivran ?? '');
@@ -152,7 +165,7 @@ export default function EditCaseDiaryEntryScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       className="flex-1 bg-background"
     >
       {/* ── Discard-changes confirmation ──────────────────────────────────── */}
@@ -249,6 +262,22 @@ export default function EditCaseDiaryEntryScreen() {
               accessibilityLabel={t('fir.editCaseDiaryEntry.narrativeAccessibility')}
             />
           )}
+
+          {/* FIR Basis Non-blocking Hints */}
+          <FirBasisHintsView
+            fir={fir}
+            diaryDate={diary?.preparation_date}
+            text={isKaryvahi ? vivran : narrativeText}
+            karyvahiKey={isKaryvahi ? entry?.karyvahi_name : undefined}
+            hasDiaries={true}
+          />
+          <FardCheckButton
+            text={isKaryvahi ? vivran : narrativeText}
+            title={isKaryvahi ? entry?.karyvahi_name : undefined}
+            fir={fir}
+            matchKeywords={true}
+            className="mt-1"
+          />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

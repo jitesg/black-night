@@ -1,6 +1,7 @@
 // Bug 3 fix: removed unused imports — useCallback, isActionWorkflow,
 // PPComplainant, PPAccused, HeaderIconBtn.
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View, Text, ScrollView, Pressable, KeyboardAvoidingView,
   BackHandler, Modal, FlatList,
@@ -177,6 +178,7 @@ function DatePickerField({
 function TypePicker({
   value, onChange, error,
 }: { value: PetitionType | null; onChange: (v: PetitionType) => void; error?: string }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const { colorScheme: scheme } = useColorScheme();
   const palette = scheme === 'dark' ? THEME.dark : THEME.light;
@@ -194,7 +196,7 @@ function TypePicker({
         }}
       >
         <Text style={{ ...T.subhead, color: value ? palette.foreground : palette.mutedForeground }}>
-          {value ? PETITION_TYPE_LABELS[value] : 'Select petition type…'}
+          {value ? PETITION_TYPE_LABELS[value] : t('prarthnaPatra.form.selectPetitionType')}
         </Text>
         <ChevronDown size={15} color="#9CA3AF" />
       </Pressable>
@@ -203,26 +205,26 @@ function TypePicker({
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Select Petition Type</AlertDialogTitle>
+            <AlertDialogTitle>{t('prarthnaPatra.form.selectPetitionTypeDialog')}</AlertDialogTitle>
           </AlertDialogHeader>
           <ScrollView style={{ maxHeight: 360 }}>
-            {PETITION_TYPES.map((t) => (
+            {PETITION_TYPES.map((tItem) => (
               <Pressable
-                key={t}
-                onPress={() => { onChange(t); setOpen(false); }}
+                key={tItem}
+                onPress={() => { onChange(tItem); setOpen(false); }}
                 style={{
                   paddingVertical: T.space.md - 4, paddingHorizontal: T.space.md,
                   borderBottomWidth: 1, borderBottomColor: '#F3F4F6',
                   flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
                 }}
               >
-                <Text style={{ ...T.subhead, color: palette.foreground }}>{PETITION_TYPE_LABELS[t]}</Text>
-                {value === t && <Text style={{ ...T.subhead, color: '#1E3A5F' }}>✓</Text>}
+                <Text style={{ ...T.subhead, color: palette.foreground }}>{PETITION_TYPE_LABELS[tItem]}</Text>
+                {value === tItem && <Text style={{ ...T.subhead, color: '#1E3A5F' }}>✓</Text>}
               </Pressable>
             ))}
           </ScrollView>
           <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setOpen(false)}><Text>Cancel</Text></AlertDialogCancel>
+            <AlertDialogCancel onPress={() => setOpen(false)}><Text>{t('common.cancel')}</Text></AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -233,6 +235,7 @@ function TypePicker({
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function AddPrarthnaPatraScreen() {
+  const { t } = useTranslation();
   const { editId } = useLocalSearchParams<{ editId?: string }>();
   const isEdit = !!editId;
 
@@ -449,10 +452,10 @@ export default function AddPrarthnaPatraScreen() {
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
-    if (!petitionType) e.petitionType = 'Please select a petition type';
-    if (!dateOfReceipt) e.dateOfReceipt = 'Date of Receipt is required';
-    if (!matter.trim()) e.matter = 'Matter (विवरण) is required';
-    if (!complainants[0]?.name.trim()) e.complainant0 = 'At least one complainant name is required';
+    if (!petitionType) e.petitionType = t('prarthnaPatra.form.errorPetitionType');
+    if (!dateOfReceipt) e.dateOfReceipt = t('prarthnaPatra.form.errorDateOfReceipt');
+    if (!matter.trim()) e.matter = t('prarthnaPatra.form.errorMatter');
+    if (!complainants[0]?.name.trim()) e.complainant0 = t('prarthnaPatra.form.errorComplainantRequired');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -524,9 +527,9 @@ export default function AddPrarthnaPatraScreen() {
     } catch (err: unknown) {
       // Fix 4: retain field-level errors; show exact DB error message for easier
       // debugging instead of replacing all errors with a generic string.
-      const msg = err instanceof Error ? err.message : 'Failed to save. Please try again.';
+      const msg = err instanceof Error ? err.message : t('prarthnaPatra.form.errorSaveFailed');
       console.error('[PP] handleSave failed:', err);
-      setErrors((prev) => ({ ...prev, general: `Error: ${msg}` }));
+      setErrors((prev) => ({ ...prev, general: t('prarthnaPatra.form.errorPrefix', { msg }) }));
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -552,13 +555,13 @@ export default function AddPrarthnaPatraScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       style={{ flex: 1 }}
     >
       <View style={{ flex: 1, backgroundColor: '#F9FAFB' }}>
         <AppHeader
-          title={isEdit ? 'Edit Petition' : 'Add Petition'}
-          subtitle="Prarthna Patra"
+          title={isEdit ? t('prarthnaPatra.form.editTitle') : t('prarthnaPatra.form.addTitle')}
+          subtitle={t('prarthnaPatra.form.subtitle')}
           onBack={handleBack}
           rightActions={
             <Pressable
@@ -571,7 +574,7 @@ export default function AddPrarthnaPatraScreen() {
               }}
             >
               <Text style={{ ...T.footnote, fontWeight: T.weight.bold, color: '#fff' }}>
-                {saving ? 'Saving…' : 'Save'}
+                {saving ? t('common.saving') : t('common.save')}
               </Text>
             </Pressable>
           }
@@ -597,35 +600,35 @@ export default function AddPrarthnaPatraScreen() {
                 <Sparkles size={18} color="#2D52B8" />
               </View>
               <View>
-                <Text className="text-xs font-bold text-foreground">Auto-fill via OCR Scan</Text>
-                <Text className="text-[11px] text-muted-foreground">Scan written complaint or ID card using AI</Text>
+                <Text className="text-xs font-bold text-foreground">{t('prarthnaPatra.form.ocrScanBtn')}</Text>
+                <Text className="text-[11px] text-muted-foreground">{t('prarthnaPatra.form.ocrScanDesc')}</Text>
               </View>
             </View>
             <View className="px-3 py-1.5 rounded-xl bg-primary">
-              <Text className="text-xs font-semibold text-white">Scan</Text>
+              <Text className="text-xs font-semibold text-white">{t('prarthnaPatra.form.ocrScan')}</Text>
             </View>
           </Pressable>
 
           {/* ── Petition Type ── */}
-          <Section title="Petition Type" />
+          <Section title={t('prarthnaPatra.form.sectionPetitionType')} />
           <TypePicker value={petitionType} onChange={handleTypeChange} error={errors.petitionType} />
 
           {/* ── Petition Info ── */}
-          <Section title="Petition Details" />
-          <Field label="जांचकर्ता का नाम (Investigator Name)">
+          <Section title={t('prarthnaPatra.form.sectionPetitionDetails')} />
+          <Field label={t('prarthnaPatra.form.investigatorLabel')}>
             <Input
               value={investigatorName}
               onChangeText={setInvestigatorName}
-              placeholder="Investigating officer name"
+              placeholder={t('prarthnaPatra.form.investigatorPlaceholder')}
             />
           </Field>
 
           {/* ── Dates ── */}
-          <Section title="Dates" />
+          <Section title={t('prarthnaPatra.form.sectionDates')} />
           <View style={{ flexDirection: 'row', gap: T.space.sm + 2 }}>
             <View style={{ flex: 1 }}>
               <DatePickerField
-                label="Date of Receipt *"
+                label={t('prarthnaPatra.form.dateOfReceipt')}
                 value={dateOfReceipt}
                 onChange={handleReceiptDateChange}
                 error={errors.dateOfReceipt}
@@ -633,17 +636,17 @@ export default function AddPrarthnaPatraScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <DatePickerField
-                label="Deadline Date"
+                label={t('prarthnaPatra.form.deadlineDate')}
                 value={deadlineDate}
                 onChange={setDeadlineDate}
                 error={errors.deadlineDate}
-                helperText={deadlineDate ? 'Auto: Receipt +10 days; editable' : undefined}
+                helperText={deadlineDate ? t('prarthnaPatra.form.deadlineHelper') : undefined}
               />
             </View>
           </View>
 
           {/* ── Complainants ── */}
-          <Section title={petitionType === 'बीट सूचना' ? 'Complainant / Source Details' : 'Complainant Details'} />
+          <Section title={petitionType === 'बीट सूचना' ? t('prarthnaPatra.form.sectionComplainantSourceDetails') : t('prarthnaPatra.form.sectionComplainantDetails')} />
           {complainants.map((c, idx) => {
             const villageMatches = getVillageMatches(c.village);
             const showVillageSug = activeVillageField?.side === 'complainant' && activeVillageField.idx === idx && villageMatches.length > 0;
@@ -657,7 +660,7 @@ export default function AddPrarthnaPatraScreen() {
               >
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: T.space.sm + 2 }}>
                   <Text style={{ ...T.footnote, fontWeight: T.weight.semibold, color: palette.foreground }}>
-                    Complainant {idx + 1}
+                    {t('prarthnaPatra.form.complainantCardTitle', { number: idx + 1 })}
                   </Text>
                   {complainants.length > 1 && (
                     <Pressable onPress={() => removeComplainant(idx)}>
@@ -665,7 +668,7 @@ export default function AddPrarthnaPatraScreen() {
                     </Pressable>
                   )}
                 </View>
-                <Field label="Name *" error={idx === 0 ? errors.complainant0 : undefined}>
+                <Field label={t('prarthnaPatra.form.fieldName')} error={idx === 0 ? errors.complainant0 : undefined}>
                   <Input
                     value={c.name}
                     onChangeText={(v) => {
@@ -673,30 +676,30 @@ export default function AddPrarthnaPatraScreen() {
                       // Fix 5: clear complainant0 error as soon as the user types
                       if (idx === 0 && errors.complainant0) setErrors((prev) => ({ ...prev, complainant0: '' }));
                     }}
-                    placeholder="Full name"
+                    placeholder={t('prarthnaPatra.form.fieldFullName')}
                   />
                 </Field>
-                <Field label="Father / Husband Name">
-                  <Input value={c.father_husband_name} onChangeText={(v) => updateComplainant(idx, 'father_husband_name', v)} placeholder="Father or husband name" />
+                <Field label={t('prarthnaPatra.form.fieldFatherHusband')}>
+                  <Input value={c.father_husband_name} onChangeText={(v) => updateComplainant(idx, 'father_husband_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherHusband')} />
                 </Field>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
                   <View style={{ flex: 1 }}>
-                    <Field label="Mobile">
-                      <Input type="mobile" value={c.mobile} onChangeText={(v) => updateComplainant(idx, 'mobile', v)} placeholder="Mobile" />
+                    <Field label={t('prarthnaPatra.form.fieldMobile')}>
+                      <Input type="mobile" value={c.mobile} onChangeText={(v) => updateComplainant(idx, 'mobile', v)} placeholder={t('prarthnaPatra.form.fieldMobile')} />
                     </Field>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Field label="Alt Mobile">
-                      <Input type="mobile" value={c.alternate_mobile} onChangeText={(v) => updateComplainant(idx, 'alternate_mobile', v)} placeholder="Alt mobile" />
+                    <Field label={t('prarthnaPatra.form.fieldAltMobile')}>
+                      <Input type="mobile" value={c.alternate_mobile} onChangeText={(v) => updateComplainant(idx, 'alternate_mobile', v)} placeholder={t('prarthnaPatra.form.fieldAltMobile')} />
                     </Field>
                   </View>
                 </View>
-                <Field label="Full Address">
-                  <Input type="multiline" value={c.full_address} onChangeText={(v) => updateComplainant(idx, 'full_address', v)} numberOfLines={2} placeholder="Full address" />
+                <Field label={t('prarthnaPatra.form.fieldFullAddress')}>
+                  <Input type="multiline" value={c.full_address} onChangeText={(v) => updateComplainant(idx, 'full_address', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldFullAddress')} />
                 </Field>
                 {/* Village with autocomplete */}
                 <View>
-                  <Field label="Village">
+                  <Field label={t('prarthnaPatra.form.fieldVillage')}>
                     <Input
                       value={c.village}
                       onChangeText={(v) => {
@@ -705,7 +708,7 @@ export default function AddPrarthnaPatraScreen() {
                       }}
                       onFocus={() => setActiveVillageField({ side: 'complainant', idx })}
                       onBlur={() => setActiveVillageField(null)}
-                      placeholder="Village / GP name"
+                      placeholder={t('prarthnaPatra.form.placeholderVillage')}
                     />
                   </Field>
                   {showVillageSug && (
@@ -737,30 +740,30 @@ export default function AddPrarthnaPatraScreen() {
                 </View>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
                   <View style={{ flex: 1 }}>
-                    <Field label="District">
-                      <Input value={c.district} onChangeText={(v) => updateComplainant(idx, 'district', v)} placeholder="District" />
+                    <Field label={t('prarthnaPatra.form.fieldDistrict')}>
+                      <Input value={c.district} onChangeText={(v) => updateComplainant(idx, 'district', v)} placeholder={t('prarthnaPatra.form.fieldDistrict')} />
                     </Field>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Field label="Police Station">
-                      <Input value={c.police_station} onChangeText={(v) => updateComplainant(idx, 'police_station', v)} placeholder="Police station" />
+                    <Field label={t('prarthnaPatra.form.fieldPoliceStation')}>
+                      <Input value={c.police_station} onChangeText={(v) => updateComplainant(idx, 'police_station', v)} placeholder={t('prarthnaPatra.form.fieldPoliceStation')} />
                     </Field>
                   </View>
                 </View>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
                   <View style={{ flex: 1 }}>
-                    <Field label="जाति (Caste)">
-                      <Input value={c.jati} onChangeText={(v) => updateComplainant(idx, 'jati', v)} placeholder="Caste" />
+                    <Field label={t('prarthnaPatra.form.fieldCaste')}>
+                      <Input value={c.jati} onChangeText={(v) => updateComplainant(idx, 'jati', v)} placeholder={t('prarthnaPatra.form.fieldCaste')} />
                     </Field>
                   </View>
                   <View style={{ width: 68 }}>
-                    <Field label="Age">
-                      <Input type="age" value={c.age} onChangeText={(v) => updateComplainant(idx, 'age', v)} placeholder="Age" />
+                    <Field label={t('prarthnaPatra.form.fieldAge')}>
+                      <Input type="age" value={c.age} onChangeText={(v) => updateComplainant(idx, 'age', v)} placeholder={t('prarthnaPatra.form.fieldAge')} />
                     </Field>
                   </View>
                   <View style={{ width: 84 }}>
-                    <Field label="Gender">
-                      <Input value={c.gender} onChangeText={(v) => updateComplainant(idx, 'gender', v)} placeholder="M/F" />
+                    <Field label={t('prarthnaPatra.form.fieldGender')}>
+                      <Input value={c.gender} onChangeText={(v) => updateComplainant(idx, 'gender', v)} placeholder={t('prarthnaPatra.form.placeholderGender')} />
                     </Field>
                   </View>
                 </View>
@@ -776,7 +779,7 @@ export default function AddPrarthnaPatraScreen() {
             }}
           >
             <Plus size={14} color="#6B7280" />
-            <Text style={{ ...T.footnote, color: '#6B7280' }}>Add Another Complainant</Text>
+            <Text style={{ ...T.footnote, color: '#6B7280' }}>{t('prarthnaPatra.form.addAnotherComplainant')}</Text>
           </Pressable>
 
           {/* ── Same As Toggle ── */}
@@ -791,12 +794,12 @@ export default function AddPrarthnaPatraScreen() {
           >
             <Copy size={13} color="#4B5563" />
             <Text style={{ ...T.footnote, color: '#4B5563', fontWeight: T.weight.medium }}>
-              Same As (Copy address · village · police station · district · caste)
+              {t('prarthnaPatra.form.sameAs')}
             </Text>
           </Pressable>
 
           {/* ── Matter ── */}
-          <Section title={petitionType === 'NCR' ? 'Complaint Details (विवरण)' : 'Matter (विवरण)'} />
+          <Section title={petitionType === 'NCR' ? t('prarthnaPatra.form.sectionComplaintDetails') : t('prarthnaPatra.form.sectionMatter')} />
           <View style={{ marginBottom: T.space.xs }}>
             <DocumentEditor
               value={matter}
@@ -805,17 +808,17 @@ export default function AddPrarthnaPatraScreen() {
                 // Fix 5: clear matter error as soon as the user types
                 if (errors.matter) setErrors((prev) => ({ ...prev, matter: '' }));
               }}
-              title="Petition Matter"
-              placeholder="Describe the matter / petition content…"
+              title={t('prarthnaPatra.form.matterTitle')}
+              placeholder={t('prarthnaPatra.form.matterPlaceholder')}
               minHeight={120}
               error={!!errors.matter}
-              accessibilityLabel="Matter editor"
+              accessibilityLabel={t('prarthnaPatra.form.matterTitle')}
             />
             {errors.matter ? <Text style={{ ...T.caption2, color: '#DC2626', marginTop: 3 }}>{errors.matter}</Text> : null}
           </View>
 
           {/* ── Accused ── */}
-          <Section title="Accused Details (Optional)" />
+          <Section title={t('prarthnaPatra.form.sectionAccusedDetails')} />
           {accused.map((a, idx) => {
             const villageMatches = getVillageMatches(a.village);
             const showVillageSug = activeVillageField?.side === 'accused' && activeVillageField.idx === idx && villageMatches.length > 0;
@@ -828,35 +831,37 @@ export default function AddPrarthnaPatraScreen() {
                 }}
               >
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: T.space.sm + 2 }}>
-                  <Text style={{ ...T.footnote, fontWeight: T.weight.semibold, color: palette.foreground }}>Accused {idx + 1}</Text>
+                  <Text style={{ ...T.footnote, fontWeight: T.weight.semibold, color: palette.foreground }}>
+                    {t('prarthnaPatra.form.accusedCardTitle', { number: idx + 1 })}
+                  </Text>
                   <Pressable onPress={() => removeAccused(idx)}>
                     <Trash2 size={15} color="#DC2626" />
                   </Pressable>
                 </View>
-                <Field label="Name">
-                  <Input value={a.name} onChangeText={(v) => updateAccused(idx, 'name', v)} placeholder="Full name" />
+                <Field label={t('prarthnaPatra.form.fieldNameOptional')}>
+                  <Input value={a.name} onChangeText={(v) => updateAccused(idx, 'name', v)} placeholder={t('prarthnaPatra.form.fieldFullName')} />
                 </Field>
-                <Field label="Father Name">
-                  <Input value={a.father_name} onChangeText={(v) => updateAccused(idx, 'father_name', v)} placeholder="Father name" />
+                <Field label={t('prarthnaPatra.form.fieldFatherName')}>
+                  <Input value={a.father_name} onChangeText={(v) => updateAccused(idx, 'father_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherName')} />
                 </Field>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
                   <View style={{ flex: 1 }}>
-                    <Field label="Mobile">
-                      <Input type="mobile" value={a.mobile} onChangeText={(v) => updateAccused(idx, 'mobile', v)} placeholder="Mobile" />
+                    <Field label={t('prarthnaPatra.form.fieldMobile')}>
+                      <Input type="mobile" value={a.mobile} onChangeText={(v) => updateAccused(idx, 'mobile', v)} placeholder={t('prarthnaPatra.form.fieldMobile')} />
                     </Field>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Field label="Alt Mobile">
-                      <Input type="mobile" value={a.alternate_mobile} onChangeText={(v) => updateAccused(idx, 'alternate_mobile', v)} placeholder="Alt mobile" />
+                    <Field label={t('prarthnaPatra.form.fieldAltMobile')}>
+                      <Input type="mobile" value={a.alternate_mobile} onChangeText={(v) => updateAccused(idx, 'alternate_mobile', v)} placeholder={t('prarthnaPatra.form.fieldAltMobile')} />
                     </Field>
                   </View>
                 </View>
-                <Field label="Full Address">
-                  <Input type="multiline" value={a.full_address} onChangeText={(v) => updateAccused(idx, 'full_address', v)} numberOfLines={2} placeholder="Full address" />
+                <Field label={t('prarthnaPatra.form.fieldFullAddress')}>
+                  <Input type="multiline" value={a.full_address} onChangeText={(v) => updateAccused(idx, 'full_address', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldFullAddress')} />
                 </Field>
                 {/* Village with autocomplete */}
                 <View>
-                  <Field label="Village">
+                  <Field label={t('prarthnaPatra.form.fieldVillage')}>
                     <Input
                       value={a.village}
                       onChangeText={(v) => {
@@ -865,7 +870,7 @@ export default function AddPrarthnaPatraScreen() {
                       }}
                       onFocus={() => setActiveVillageField({ side: 'accused', idx })}
                       onBlur={() => setActiveVillageField(null)}
-                      placeholder="Village / GP name"
+                      placeholder={t('prarthnaPatra.form.placeholderVillage')}
                     />
                   </Field>
                   {showVillageSug && (
@@ -897,35 +902,35 @@ export default function AddPrarthnaPatraScreen() {
                 </View>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
                   <View style={{ flex: 1 }}>
-                    <Field label="District">
-                      <Input value={a.district} onChangeText={(v) => updateAccused(idx, 'district', v)} placeholder="District" />
+                    <Field label={t('prarthnaPatra.form.fieldDistrict')}>
+                      <Input value={a.district} onChangeText={(v) => updateAccused(idx, 'district', v)} placeholder={t('prarthnaPatra.form.fieldDistrict')} />
                     </Field>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Field label="Police Station">
-                      <Input value={a.police_station} onChangeText={(v) => updateAccused(idx, 'police_station', v)} placeholder="Police station" />
+                    <Field label={t('prarthnaPatra.form.fieldPoliceStation')}>
+                      <Input value={a.police_station} onChangeText={(v) => updateAccused(idx, 'police_station', v)} placeholder={t('prarthnaPatra.form.fieldPoliceStation')} />
                     </Field>
                   </View>
                 </View>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
                   <View style={{ flex: 1 }}>
-                    <Field label="जाति (Caste)">
-                      <Input value={a.jati} onChangeText={(v) => updateAccused(idx, 'jati', v)} placeholder="Caste" />
+                    <Field label={t('prarthnaPatra.form.fieldCaste')}>
+                      <Input value={a.jati} onChangeText={(v) => updateAccused(idx, 'jati', v)} placeholder={t('prarthnaPatra.form.fieldCaste')} />
                     </Field>
                   </View>
                   <View style={{ width: 72 }}>
-                    <Field label="उम्र (Age)">
-                      <Input type="age" value={a.age} onChangeText={(v) => updateAccused(idx, 'age', v)} placeholder="Age" />
+                    <Field label={t('prarthnaPatra.form.fieldAge')}>
+                      <Input type="age" value={a.age} onChangeText={(v) => updateAccused(idx, 'age', v)} placeholder={t('prarthnaPatra.form.fieldAge')} />
                     </Field>
                   </View>
                   <View style={{ width: 84 }}>
-                    <Field label="लिंग (Gender)">
-                      <Input value={a.gender} onChangeText={(v) => updateAccused(idx, 'gender', v)} placeholder="M/F" />
+                    <Field label={t('prarthnaPatra.form.fieldGender')}>
+                      <Input value={a.gender} onChangeText={(v) => updateAccused(idx, 'gender', v)} placeholder={t('prarthnaPatra.form.placeholderGender')} />
                     </Field>
                   </View>
                 </View>
-                <Field label="Remarks">
-                  <Input type="multiline" value={a.remarks} onChangeText={(v) => updateAccused(idx, 'remarks', v)} numberOfLines={2} placeholder="Remarks" />
+                <Field label={t('prarthnaPatra.form.fieldRemarks')}>
+                  <Input type="multiline" value={a.remarks} onChangeText={(v) => updateAccused(idx, 'remarks', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldRemarks')} />
                 </Field>
               </View>
             );
@@ -939,15 +944,13 @@ export default function AddPrarthnaPatraScreen() {
             }}
           >
             <Plus size={14} color="#6B7280" />
-            <Text style={{ ...T.footnote, color: '#6B7280' }}>Add Another Accused</Text>
+            <Text style={{ ...T.footnote, color: '#6B7280' }}>{t('prarthnaPatra.form.addAnotherAccused')}</Text>
           </Pressable>
 
           {/* Status note */}
           <View style={{ marginTop: T.space.md, backgroundColor: '#F3F4F6', borderRadius: 10, padding: T.space.sm + 2 }}>
             <Text style={{ ...T.caption1, color: '#6B7280', lineHeight: 18 }}>
-              Status is automatically set to <Text style={{ fontWeight: T.weight.semibold }}>Pending</Text> on
-              creation and updated to <Text style={{ fontWeight: T.weight.semibold }}>Nistarit</Text> when a
-              report is saved.
+              {t('prarthnaPatra.form.statusNote')}
             </Text>
           </View>
         </ScrollView>
@@ -957,20 +960,20 @@ export default function AddPrarthnaPatraScreen() {
       <AlertDialog open={backDialogOpen} onOpenChange={setBackDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogTitle>{t('prarthnaPatra.form.unsavedDialogTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Do you want to save this Prarthna Patra before leaving?
+              {t('prarthnaPatra.form.unsavedDialogDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setBackDialogOpen(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={() => { setBackDialogOpen(false); setIsDirty(false); router.back(); }}>
-              <Text>Discard</Text>
+              <Text>{t('common.discard')}</Text>
             </AlertDialogAction>
             <AlertDialogAction onPress={() => { setBackDialogOpen(false); handleSave(); }}>
-              <Text>Save</Text>
+              <Text>{t('common.save')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -981,7 +984,7 @@ export default function AddPrarthnaPatraScreen() {
         onClose={() => setOcrModalVisible(false)}
         fields={PP_OCR_FIELDS}
         onApply={handleOcrApply}
-        title="Prarthna Patra OCR Scanner"
+        title={t('prarthnaPatra.form.ocrModalTitle')}
       />
     </KeyboardAvoidingView>
   );

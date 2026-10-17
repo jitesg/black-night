@@ -36,7 +36,7 @@ const NODE_DEFINITIONS: NodeDef[] = [
     id: 'node-scene',
     label: 'Crime Scene Inspection',
     dependsOn: ['node-fir'],
-    completionPatterns: ['ghatnasthal', 'scene inspection', 'स्थल निरीक्षण', 'site inspection'],
+    completionPatterns: ['ghatnasthal', 'scene inspection', 'स्थल निरीक्षण', 'site inspection', 'घटनास्थल'],
   },
   {
     id: 'node-seizure',
@@ -54,7 +54,7 @@ const NODE_DEFINITIONS: NodeDef[] = [
     id: 'node-complainant',
     label: 'Complainant / Victim Statement',
     dependsOn: ['node-fir'],
-    completionPatterns: ['bayan vadi', 'complainant', 'victim statement', 'वादी बयान', 'पीड़ित'],
+    completionPatterns: ['bayan vadi', 'complainant', 'victim statement', 'वादी बयान', 'पीड़ित', 'वादी'],
   },
   {
     id: 'node-medical',
@@ -97,7 +97,7 @@ const NODE_DEFINITIONS: NodeDef[] = [
     id: 'node-videography',
     label: 'e-Sakshya Videography',
     dependsOn: ['node-scene'],
-    completionPatterns: ['e-sakshya', 'videography', 'video', 'ई-साक्ष्य'],
+    completionPatterns: ['e-sakshya', 'videography', 'video', 'ई-साक्ष्य', 'वीडियोग्राफी'],
   },
   {
     id: 'node-court',

@@ -6,30 +6,33 @@
 
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
 import type { InvestigationScoreReport, ScoreDimension, IntelGrade } from '@/ai/intelligence/IntelligenceTypes';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function gradeColor(g: IntelGrade): string {
+function gradeColor(g: IntelGrade, isDark: boolean): string {
   switch (g) {
-    case 'A': return '#16a34a';
-    case 'B': return '#2563eb';
-    case 'C': return '#d97706';
-    case 'D': return '#ea580c';
-    default:  return '#dc2626';
+    case 'A': return isDark ? '#4ade80' : '#16a34a';
+    case 'B': return isDark ? '#60a5fa' : '#2563eb';
+    case 'C': return isDark ? '#fbbf24' : '#d97706';
+    case 'D': return isDark ? '#fb923c' : '#ea580c';
+    default:  return isDark ? '#f87171' : '#dc2626';
   }
 }
 
-function scoreBarColor(score: number): string {
-  if (score >= 75) return '#16a34a';
-  if (score >= 50) return '#d97706';
-  return '#dc2626';
+function scoreBarColor(score: number, isDark: boolean): string {
+  if (score >= 75) return isDark ? '#4ade80' : '#16a34a';
+  if (score >= 50) return isDark ? '#fbbf24' : '#d97706';
+  return isDark ? '#f87171' : '#dc2626';
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function DimensionRow({ dim }: { dim: ScoreDimension }) {
+function DimensionRow({ dim, isDark }: { dim: ScoreDimension; isDark: boolean }) {
   const barPct = `${dim.score}%`;
+  const gColor = gradeColor(dim.grade, isDark);
   return (
     <View className="mb-4">
       <View className="flex-row justify-between items-baseline mb-1">
@@ -38,9 +41,9 @@ function DimensionRow({ dim }: { dim: ScoreDimension }) {
           <Text className="text-xs text-muted-foreground">{dim.score}/100</Text>
           <View
             className="w-5 h-5 rounded items-center justify-center"
-            style={{ backgroundColor: gradeColor(dim.grade) + '22' }}
+            style={{ backgroundColor: gColor + '22' }}
           >
-            <Text className="text-xs font-bold" style={{ color: gradeColor(dim.grade) }}>
+            <Text className="text-xs font-bold" style={{ color: gColor }}>
               {dim.grade}
             </Text>
           </View>
@@ -50,7 +53,7 @@ function DimensionRow({ dim }: { dim: ScoreDimension }) {
       <View className="h-1.5 rounded-full bg-muted overflow-hidden">
         <View
           className="h-full rounded-full"
-          style={{ width: `${dim.score}%` as `${number}%`, backgroundColor: scoreBarColor(dim.score) }}
+          style={{ width: `${dim.score}%` as `${number}%`, backgroundColor: scoreBarColor(dim.score, isDark) }}
         />
       </View>
       {/* Key items (first 2) */}
@@ -68,7 +71,10 @@ interface Props {
 }
 
 export function IntelligenceScorePanel({ report }: Props) {
-  const overallColor = gradeColor(report.grade);
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
+  const overallColor = gradeColor(report.grade, isDark);
   const dimensions: ScoreDimension[] = [
     report.investigationQuality,
     report.evidenceStrength,
@@ -107,7 +113,7 @@ export function IntelligenceScorePanel({ report }: Props) {
 
       {/* Dimension rows */}
       {dimensions.map((dim) => (
-        <DimensionRow key={dim.name} dim={dim} />
+        <DimensionRow key={dim.name} dim={dim} isDark={isDark} />
       ))}
 
       {/* Footer advisory */}

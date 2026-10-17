@@ -65,7 +65,7 @@ const ATM_PLAYBOOK: CrimePlaybook = {
   steps: [
     s('Register FIR', 'Register FIR under BNS Section 109 immediately.', true, 'documentation', { karyvahiPattern: 'fir|mukadma', legalReference: 'BNSS Section 173' }),
     s('Medical Examination of Victim', 'Obtain MLC/injury report from government hospital.', true, 'medical', { karyvahiPattern: 'medical|mlc|victim|पीड़ित' }),
-    s('Crime Scene Inspection', 'Inspect and photograph crime scene.', true, 'evidence', { karyvahiPattern: 'scene|ghatnasthal|spot' }),
+    s('Crime Scene Inspection', 'Inspect and photograph crime scene.', true, 'evidence', { karyvahiPattern: 'scene|ghatnasthal|घटनास्थल|spot' }),
     s('Seizure of Weapon', 'Seize weapon used with panchnama.', true, 'evidence', { karyvahiPattern: 'seizure|weapon|हथियार' }),
     s('Witness Statements', 'Record statements of all eyewitnesses.', true, 'witness', { karyvahiPattern: 'statement|bayan|witness' }),
     s('Arrest of Accused', 'Arrest accused with proper memo.', true, 'investigation', { karyvahiPattern: 'arrest|गिरफ्तार' }),
@@ -88,7 +88,7 @@ const THEFT_PLAYBOOK: CrimePlaybook = {
   description: 'Investigation playbook for theft cases.',
   steps: [
     s('Register FIR', 'Register FIR under appropriate BNS section.', true, 'documentation', { karyvahiPattern: 'fir|mukadma' }),
-    s('Crime Scene Inspection', 'Inspect and document the scene of theft.', true, 'evidence', { karyvahiPattern: 'scene|ghatnasthal' }),
+    s('Crime Scene Inspection', 'Inspect and document the scene of theft.', true, 'evidence', { karyvahiPattern: 'scene|ghatnasthal|घटनास्थल' }),
     s('Witness Statements', 'Record witness and complainant statements.', true, 'witness', { karyvahiPattern: 'statement|bayan|witness' }),
     s('Property List / Recovery', 'Prepare list of stolen property and attempt recovery.', true, 'evidence', { karyvahiPattern: 'recovery|property|माल.*बरामद|recovery memo' }),
     s('Seizure Memo on Recovery', 'Prepare seizure memo for recovered property.', true, 'evidence', { karyvahiPattern: 'seizure|जब्ती' }),
@@ -109,7 +109,7 @@ const ROBBERY_PLAYBOOK: CrimePlaybook = {
   steps: [
     s('Register FIR', 'Register FIR immediately.', true, 'documentation', { karyvahiPattern: 'fir|mukadma' }),
     s('Medical Examination of Victim', 'Get MLC if victim sustained injuries.', true, 'medical', { karyvahiPattern: 'medical|mlc|victim' }),
-    s('Crime Scene Inspection', 'Document scene, collect clues.', true, 'evidence', { karyvahiPattern: 'scene|ghatnasthal' }),
+    s('Crime Scene Inspection', 'Document scene, collect clues.', true, 'evidence', { karyvahiPattern: 'scene|ghatnasthal|घटनास्थल' }),
     s('Seizure of Weapon', 'Seize any weapon used in robbery.', true, 'evidence', { karyvahiPattern: 'seizure|weapon|हथियार' }),
     s('Witness Statements', 'Record all eyewitness and victim statements.', true, 'witness', { karyvahiPattern: 'statement|bayan|witness' }),
     s('Arrest of Accused', 'Arrest accused with arrest memo.', true, 'investigation', { karyvahiPattern: 'arrest' }),
@@ -335,7 +335,7 @@ const DACOITY_PLAYBOOK: CrimePlaybook = {
   steps: [
     s('Register FIR Immediately', 'Register FIR immediately — high-priority case.', true, 'documentation', { karyvahiPattern: 'fir|mukadma' }),
     s('Medical Examination of Victims', 'Obtain MLC for injured victims.', true, 'medical', { karyvahiPattern: 'medical|mlc|victim' }),
-    s('Crime Scene Inspection', 'Detailed scene inspection with collection of physical evidence.', true, 'evidence', { karyvahiPattern: 'scene|ghatnasthal' }),
+    s('Crime Scene Inspection', 'Detailed scene inspection with collection of physical evidence.', true, 'evidence', { karyvahiPattern: 'scene|ghatnasthal|घटनास्थल' }),
     s('Witness Statements', 'Record all victim and eyewitness statements.', true, 'witness', { karyvahiPattern: 'statement|witness|victim' }),
     s('Seizure of Weapons / Loot', 'Seize weapons and recovered loot with panchnama.', true, 'evidence', { karyvahiPattern: 'seizure|weapon|loot|recovery' }),
     s('Arrest of Accused', 'Identify and arrest accused with proper memo.', true, 'investigation', { karyvahiPattern: 'arrest' }),

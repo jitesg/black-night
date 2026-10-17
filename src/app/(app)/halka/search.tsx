@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator, Keyboard, Pressable, SectionList, Text, View,
 } from 'react-native';
@@ -20,17 +21,18 @@ import { useSearchHistory } from '@/hooks/useSearchHistory';
 
 const TYPE_CONFIG: Record<
   SearchResult['type'],
-  { icon: React.ComponentType<{ size: number; color: string }>; color: string; label: string }
+  { icon: React.ComponentType<{ size: number; color: string }>; color: string; labelKey: string }
 > = {
-  gram_panchayat: { icon: BookOpen,    color: '#2D52B8', label: 'Gram Panchayat' },
-  hamlet:         { icon: Home,        color: '#7C3AED', label: 'Hamlet'          },
-  person:         { icon: User,        color: '#0891B2', label: 'Person'          },
-  religious_place:{ icon: Church,      color: '#DC2626', label: 'Religious Place' },
-  institution:    { icon: Building2,   color: '#16a34a', label: 'Institution'     },
-  liquor_shop:    { icon: ShoppingBag, color: '#D97706', label: 'Liquor Shop'     },
+  gram_panchayat: { icon: BookOpen,    color: '#2D52B8', labelKey: 'halka.types.gramPanchayat' },
+  hamlet:         { icon: Home,        color: '#7C3AED', labelKey: 'halka.types.hamlet'          },
+  person:         { icon: User,        color: '#0891B2', labelKey: 'halka.types.person'          },
+  religious_place:{ icon: Church,      color: '#DC2626', labelKey: 'halka.types.religiousPlace' },
+  institution:    { icon: Building2,   color: '#16a34a', labelKey: 'halka.types.institution'     },
+  liquor_shop:    { icon: ShoppingBag, color: '#D97706', labelKey: 'halka.types.liquorShop'     },
 };
 
 function ResultItem({ item, query, highlight, typoTolerant }: { item: SearchResult; query: string; highlight: boolean; typoTolerant?: boolean }) {
+  const { t } = useTranslation();
   const cfg = TYPE_CONFIG[item.type];
   const Icon = cfg.icon;
 
@@ -74,7 +76,7 @@ function ResultItem({ item, query, highlight, typoTolerant }: { item: SearchResu
         style={{ backgroundColor: `${cfg.color}15` }}
       >
         <Text className="text-xs font-medium" style={{ color: cfg.color }}>
-          {cfg.label}
+          {t(cfg.labelKey)}
         </Text>
       </View>
     </Pressable>
@@ -82,8 +84,9 @@ function ResultItem({ item, query, highlight, typoTolerant }: { item: SearchResu
 }
 
 export default function SearchScreen() {
+  const { t } = useTranslation();
   const { settings } = useSettingsStore();
-  const { history, addToHistory, clearHistory } = useSearchHistory();
+  const { history, addToHistory, clearHistory, removeFromHistory } = useSearchHistory();
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -188,7 +191,7 @@ export default function SearchScreen() {
 
   // Group results by type
   const grouped = results.reduce<Record<string, SearchResult[]>>((acc, r) => {
-    const key = TYPE_CONFIG[r.type].label;
+    const key = t(TYPE_CONFIG[r.type].labelKey);
     if (!acc[key]) acc[key] = [];
     acc[key].push(r);
     return acc;
@@ -234,7 +237,7 @@ export default function SearchScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Search" showBack />
+      <AppHeader title={t('common.search')} showBack />
 
       {/* Search bar */}
       <View className="px-6 py-4">
@@ -244,25 +247,26 @@ export default function SearchScreen() {
           onSubmitEditing={handleSubmit}
           onFocus={() => setInputFocused(true)}
           onBlur={() => setInputFocused(false)}
-          placeholder="Search GPs, hamlets, persons, places…"
+          placeholder={t('halka.search.placeholder')}
           variant="light"
           autoFocus
           returnKeyType="search"
-          accessibilityLabel="Search halka records"
+          accessibilityLabel={t('halka.search.accessibilityLabel')}
         />
 
         {/* Quick filter chips */}
         <View className="flex-row flex-wrap gap-2 mt-3">
           {Object.entries(TYPE_CONFIG).map(([type, cfg]) => {
             const Icon = cfg.icon;
+            const label = t(cfg.labelKey);
             return (
               <Pressable
                 key={type}
-                onPress={() => { setQuery(cfg.label); runSearch(cfg.label); Keyboard.dismiss(); }}
+                onPress={() => { setQuery(label); runSearch(label); Keyboard.dismiss(); }}
                 className="flex-row items-center gap-1.5 rounded-full px-3 py-1.5 border border-border bg-card active:opacity-70"
               >
                 <Icon size={12} color={cfg.color} />
-                <Text className="text-xs text-foreground">{cfg.label}</Text>
+                <Text className="text-xs text-foreground">{label}</Text>
               </Pressable>
             );
           })}
@@ -282,7 +286,7 @@ export default function SearchScreen() {
               >
                 <Search size={13} color="#9CA3AF" />
                 <Text className="flex-1 text-sm text-foreground" numberOfLines={1}>{s.title}</Text>
-                <Text className="text-xs text-muted-foreground">{cfg.label}</Text>
+                <Text className="text-xs text-muted-foreground">{t(cfg.labelKey)}</Text>
               </Pressable>
             );
           })}
@@ -293,9 +297,9 @@ export default function SearchScreen() {
       {showHistory && (
         <View className="mx-6 mb-2 bg-card border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
           <View className="flex-row items-center justify-between px-4 py-2 border-b border-border">
-            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Recent</Text>
+            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">{t('halka.search.recent')}</Text>
             <Pressable onPress={clearHistory} className="active:opacity-70">
-              <Text className="text-xs text-muted-foreground">Clear</Text>
+              <Text className="text-xs text-muted-foreground">{t('common.clear')}</Text>
             </Pressable>
           </View>
           {history.map((q, i) => (
@@ -307,8 +311,10 @@ export default function SearchScreen() {
               <Clock size={13} color="#9CA3AF" />
               <Text className="flex-1 text-sm text-foreground" numberOfLines={1}>{q}</Text>
               <Pressable
-                onPress={() => { /* individual removal not supported — clear all */ }}
+                onPress={() => removeFromHistory(q)}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                accessibilityRole="button"
+                accessibilityLabel={t('halka.search.removeRecent', { query: q })}
               >
                 <X size={12} color="#9CA3AF" />
               </Pressable>
@@ -321,7 +327,7 @@ export default function SearchScreen() {
       {showSmartChips && (
         <View className="px-6 mb-2">
           <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-            Suggested
+            {t('halka.search.suggested')}
           </Text>
           <View className="flex-row flex-wrap gap-2">
             {smartSuggestions.map((s) => {
@@ -344,7 +350,7 @@ export default function SearchScreen() {
       {showPredictive && (
         <View className="px-6 mb-2">
           <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-            Suggested for you
+            {t('halka.search.suggestedForYou')}
           </Text>
           <View className="flex-row flex-wrap gap-2">
             {predictiveCandidates.map((s) => {
@@ -373,9 +379,9 @@ export default function SearchScreen() {
           <View className="w-14 h-14 rounded-2xl bg-secondary items-center justify-center">
             <Search size={24} color="#9CA3AF" />
           </View>
-          <Text className="text-base font-semibold text-foreground">No results found</Text>
+          <Text className="text-base font-semibold text-foreground">{t('halka.search.noResults')}</Text>
           <Text className="text-sm text-muted-foreground text-center leading-6">
-            Try a different search term or browse by category above
+            {t('halka.search.noResultsHint')}
           </Text>
         </View>
       ) : !searched ? (
@@ -384,7 +390,7 @@ export default function SearchScreen() {
             <Search size={24} color="#9CA3AF" />
           </View>
           <Text className="text-sm text-muted-foreground text-center leading-6">
-            Search across all Gram Panchayats, hamlets, persons, religious places, institutions, and liquor shops
+            {t('halka.search.initialHint')}
           </Text>
         </View>
       ) : (
@@ -398,7 +404,7 @@ export default function SearchScreen() {
           contentInsetAdjustmentBehavior="automatic"
           ListHeaderComponent={
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-widest py-3">
-              {results.length} result{results.length !== 1 ? 's' : ''}
+              {t('halka.search.resultsCount', { count: results.length })}
             </Text>
           }
           renderSectionHeader={({ section: { title } }) => (

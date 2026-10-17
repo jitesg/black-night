@@ -5,12 +5,16 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { ChevronDown, MapPin, Edit2, ListChecks, ChevronRight } from 'lucide-react-native';
+import { ChevronDown, MapPin, Edit2, ListChecks, ChevronRight, Plus, Search, X, CheckSquare } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { getFIRById, updateFIR, type FIR } from '@/lib/db/firRepo';
 import { getAccusedByFIR, type FIRAccused } from '@/lib/db/firAccusedRepo';
 import { getKaryvahiByFIR, type FIRKaryvahi, type KaryvahiStatus, type KaryvahiPriority } from '@/lib/db/firKaryvahiRepo';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { getCaseChecklists } from '@/lib/db/sopChecklistRepo';
+import { getAll as getAllSops, getById as getSopById, type SopIndexEntry } from '@/ai/sopIndex';
+import { Modal } from 'react-native';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useFIRContext } from '@/context/FIRContext';
 import { Input } from '@/components/ui/input';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
@@ -41,6 +45,7 @@ function CollapsibleDocumentBox({
   placeholder: string;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useTranslation();
 
   if (!isExpanded) {
     return (
@@ -75,16 +80,15 @@ function CollapsibleDocumentBox({
         onPress={() => setIsExpanded(false)}
         className="bg-secondary rounded-xl py-3 items-center justify-center active:opacity-70"
       >
-        <Text className="text-sm font-semibold text-muted-foreground">सहेजें / छोटा करें</Text>
+        <Text className="text-sm font-semibold text-muted-foreground">{t('fir.saveOrCollapse')}</Text>
       </Pressable>
     </View>
   );
 }
 
-// StyledInput removed — all fields use universal <Input>
-
 function DateField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   const [show, setShow] = useState(false);
+  const { t } = useTranslation();
   return (
     <Field label={label}>
       <Pressable
@@ -93,7 +97,7 @@ function DateField({ label, value, onChange }: { label: string; value: string; o
         style={{ borderCurve: 'continuous' }}
       >
         <Text className={`text-sm ${value ? 'text-foreground' : 'text-muted-foreground'}`}>
-          {value || `Select ${label}`}
+          {value || t('fir.selectField', { label })}
         </Text>
         <ChevronDown size={14} color="#9CA3AF" />
       </Pressable>
@@ -109,19 +113,27 @@ function DateField({ label, value, onChange }: { label: string; value: string; o
 }
 
 function StatusBadge({ status }: { status: string }) {
+  const { t } = useTranslation();
   const isPending = status === 'Pending';
   return (
     <View className="rounded-full px-3 py-1" style={{ backgroundColor: isPending ? '#FEF3C7' : '#D1FAE5' }}>
-      <Text className="text-xs font-semibold" style={{ color: isPending ? '#92400E' : '#065F46' }}>{status}</Text>
+      <Text className="text-xs font-semibold" style={{ color: isPending ? '#92400E' : '#065F46' }}>
+        {isPending ? t('fir.statusPending') : t('fir.statusFinished')}
+      </Text>
     </View>
   );
 }
 
 function AccusedRow({ accused }: { accused: FIRAccused }) {
-  const BAIL_LABELS: Record<string, string> = { unknown: 'Status Unknown', in_jail: 'In Jail After Remand', on_bail: 'Out On Bail' };
+  const { t } = useTranslation();
+  const BAIL_LABELS: Record<string, string> = {
+    unknown: t('fir.bailUnknown'),
+    in_jail: t('fir.bailInJail'),
+    on_bail: t('fir.bailOnBail'),
+  };
   return (
     <View className="bg-secondary rounded-xl px-4 py-3 gap-1 mb-2">
-      <Text className="text-sm font-semibold text-foreground">{accused.name ?? 'Unknown'}</Text>
+      <Text className="text-sm font-semibold text-foreground">{accused.name ?? t('fir.accusedUnknown')}</Text>
       {accused.address ? <Text className="text-xs text-muted-foreground">{accused.address}</Text> : null}
       {accused.mobile ? <Text className="text-xs text-muted-foreground">📞 {accused.mobile}</Text> : null}
       <View className="flex-row items-center gap-2 mt-1">
@@ -129,7 +141,7 @@ function AccusedRow({ accused }: { accused: FIRAccused }) {
           <Text className="text-xs text-muted-foreground">{BAIL_LABELS[accused.bail_status] ?? accused.bail_status}</Text>
         </View>
         {accused.next_remand_date ? (
-          <Text className="text-xs text-amber-600">⏰ Next Remand: {accused.next_remand_date}</Text>
+          <Text className="text-xs text-amber-600">⏰ {t('fir.nextRemandPrefix')}: {accused.next_remand_date}</Text>
         ) : null}
       </View>
     </View>
@@ -137,19 +149,9 @@ function AccusedRow({ accused }: { accused: FIRAccused }) {
 }
 
 export default function FIRDetailsTab() {
-  // ── firId resolution: single stableFirId = params.firId || activeFirId ───────
-  // Identical pattern to karyvahi.tsx and case-diary.tsx — see karyvahi.tsx for
-  // the full race-condition explanation.
-  //
-  // ROOT CAUSE OF "BLANK FIR DETAILS ON BACK":
-  //   The previous code used useLocalSearchParams() alone (no context fallback).
-  //   During tab navigation, expo-router may briefly emit { firId: undefined }
-  //   before re-hydrating the param. The LEAVE cleanup was also incrementing
-  //   requestCounterRef, which staled the in-flight load — leaving fir=null.
-  //   Fixed by: single stableFirId memo (params || context), inFlightFirIdRef
-  //   single-flight gate, mountedRef guard, and removing counter++ from LEAVE.
   const params = useLocalSearchParams<{ firId: string }>();
   const { activeFirId } = useFIRContext();
+  const { t } = useTranslation();
 
   const stableFirId = useMemo((): string | undefined => {
     const fromParams  = params.firId?.trim();
@@ -172,7 +174,6 @@ export default function FIRDetailsTab() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  // crimeType is read-only after FIR creation — no dropdown state needed
 
   // Editable fields
   const [firNumber, setFirNumber] = useState('');
@@ -193,11 +194,41 @@ export default function FIRDetailsTab() {
   const [nakalRapat, setNakalRapat] = useState('');
   const [mukadmaSaransh, setMukadmaSaransh] = useState('');
 
+  // ── SOP Checklists State (Task L30) ──────────────────────────────────────────
+  const [caseChecklists, setCaseChecklists] = useState<
+    Array<{ sop_id: string; total_steps: number; done_steps: number; progress_percent: number }>
+  >([]);
+  const [sopPickerOpen, setSopPickerOpen] = useState(false);
+  const [sopSearchQuery, setSopSearchQuery] = useState('');
+  const [sopSelectedCrime, setSopSelectedCrime] = useState<string>('सभी');
+
+  const allSops = useMemo(() => getAllSops(), []);
+  const allCrimeCategories = useMemo(() => {
+    const crimes = new Set<string>();
+    allSops.forEach((s) => {
+      if (s.crime) crimes.add(s.crime);
+    });
+    return ['सभी', ...Array.from(crimes).slice(0, 10)];
+  }, [allSops]);
+
+  const filteredSops = useMemo(() => {
+    return allSops.filter((s) => {
+      const matchCrime = sopSelectedCrime === 'सभी' || s.crime === sopSelectedCrime;
+      if (!matchCrime) return false;
+      if (!sopSearchQuery.trim()) return true;
+      const q = sopSearchQuery.toLowerCase();
+      return (
+        s.title.toLowerCase().includes(q) ||
+        s.crime.toLowerCase().includes(q) ||
+        s.id.toLowerCase().includes(q)
+      );
+    });
+  }, [allSops, sopSelectedCrime, sopSearchQuery]);
+
   // ── Lifecycle refs ───────────────────────────────────────────────────────────
   const mountedRef       = useRef(true);   // guards all setState after async awaits
   const hasDataRef       = useRef(false);  // true once first successful load completes
   const loadedFirIdRef   = useRef<string | undefined>(undefined);
-  // Single-flight gate: if a load is already in-flight for this firId, skip.
   const inFlightFirIdRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
@@ -210,7 +241,6 @@ export default function FIRDetailsTab() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── load: single DB fetch, guarded against duplicate and stale writes ────────
   const load = useCallback(async () => {
     const t0 = Date.now();
 
@@ -220,7 +250,6 @@ export default function FIRDetailsTab() {
       return;
     }
 
-    // Single-flight gate: prevents duplicate loads from useFocusEffect + retry
     if (inFlightFirIdRef.current === stableFirId) {
       logger.warn(`[FIR_DETAILS_LOAD] SKIP — already in-flight firId="${stableFirId}" t=${t0}`);
       return;
@@ -233,10 +262,11 @@ export default function FIRDetailsTab() {
     if (!hasDataRef.current && mountedRef.current) setLoading(true);
 
     try {
-      const [f, acc, karyvahi] = await Promise.all([
+      const [f, acc, karyvahi, chklists] = await Promise.all([
         getFIRById(requestedId),
         getAccusedByFIR(requestedId),
         getKaryvahiByFIR(requestedId, 'DetailsTab'),
+        getCaseChecklists(requestedId),
       ]);
 
       if (!mountedRef.current) {
@@ -244,9 +274,21 @@ export default function FIRDetailsTab() {
         return;
       }
 
-      // Only write state if firId hasn't changed during the async work
       if (stableFirId === requestedId) {
         logger.warn(`[FIR_DETAILS_LOAD] END firId="${requestedId}" found=${!!f} elapsed=${Date.now() - t0}ms`);
+        const formatted = (chklists || []).map((c) => {
+          const meta = getSopById(c.sop_id);
+          const total = meta?.steps?.length || 1;
+          const done = c.done_count;
+          const percent = Math.min(100, Math.round((done / total) * 100));
+          return {
+            sop_id: c.sop_id,
+            total_steps: total,
+            done_steps: done,
+            progress_percent: percent,
+          };
+        });
+        setCaseChecklists(formatted);
         if (f) {
           setFir(f);
           setFirNumber(f.fir_number);
@@ -274,8 +316,6 @@ export default function FIRDetailsTab() {
       }
     } catch (e) {
       logger.warn('[FIR_DETAILS_LOAD] ERROR:', e);
-      // Never clear an already-loaded FIR on a background refresh error.
-      // Only clear on the very first load failure (no data yet).
       if (!hasDataRef.current && mountedRef.current) {
         setFir(null);
         setAccused([]);
@@ -286,22 +326,16 @@ export default function FIRDetailsTab() {
     }
   }, [stableFirId]);
 
-  // ── Retry trigger: fires when stableFirId arrives after focus ────────────────
   useEffect(() => {
     if (!stableFirId) return;
     if (stableFirId !== loadedFirIdRef.current) {
       hasDataRef.current       = false;
       loadedFirIdRef.current   = undefined;
-      inFlightFirIdRef.current = undefined; // clear stale in-flight for the previous firId
+      inFlightFirIdRef.current = undefined;
     }
     load();
   }, [stableFirId, load]);
 
-  // ── useFocusEffect: reload on every screen focus (no counter++ in LEAVE) ─────
-  //
-  // KEY FIX: LEAVE no longer increments requestCounterRef. The previous code
-  // incremented it in cleanup, which ran before the in-flight await resolved,
-  // staling the load and leaving fir=null → blank details screen.
   useFocusEffect(useCallback(() => {
     logger.warn(`[FIR_DETAILS_FOCUS] ENTER stableFirId="${stableFirId ?? 'undefined'}" t=${Date.now()}`);
     load();
@@ -311,11 +345,11 @@ export default function FIRDetailsTab() {
   }, [load, stableFirId]));
 
   const handleSave = async () => {
-    if (!firNumber.trim()) { setError('FIR Number is required'); return; }
+    if (!firNumber.trim()) { setError(t('fir.firNumberRequired')); return; }
     // Chronology: Date of Occurrence must not be later than Date of Information
     if (dateOccurrence && dateInformation) {
       if (new Date(dateOccurrence) > new Date(dateInformation)) {
-        setError('घटना की तारीख (Date of Occurrence) एफआईआर दर्ज तारीख (Date of Information) से बाद की नहीं हो सकती।');
+        setError(t('fir.occurrenceDateOrderError'));
         return;
       }
     }
@@ -336,13 +370,12 @@ export default function FIRDetailsTab() {
       const updated = await getFIRById(stableFirId!);
       if (updated && mountedRef.current) setFir(updated);
     } catch {
-      setError('Failed to update. Please try again.');
+      setError(t('fir.updateError'));
     } finally {
       setSaving(false);
     }
   };
 
-  // Phase 5: derive progress stats from karyvahi items
   const karyvahiStats = useMemo(() => {
     const effectiveStatus = (i: FIRKaryvahi): KaryvahiStatus =>
       (i.execution_count ?? 0) > 0 ? 'COMPLETED' : ((i.status as KaryvahiStatus) ?? 'PENDING');
@@ -361,9 +394,9 @@ export default function FIRDetailsTab() {
   }, [karyvahiItems]);
 
   const PRIORITY_LABEL: Record<KaryvahiPriority, string> = {
-    MANDATORY:   '🔴 अनिवार्य',
-    CONDITIONAL: '🟡 परिस्थितिनुसार',
-    RECOMMENDED: '🟢 Recommended',
+    MANDATORY:   t('fir.priorityMandatory'),
+    CONDITIONAL: t('fir.priorityConditional'),
+    RECOMMENDED: t('fir.priorityRecommended'),
   };
   const PRIORITY_COLOR: Record<KaryvahiPriority, string> = {
     MANDATORY:   '#DC2626',
@@ -380,8 +413,8 @@ export default function FIRDetailsTab() {
   }
 
   return (
-    <KeyboardAvoidingView behavior="padding" className="flex-1 bg-background">
-      <AppHeader title={fir?.complainant_name ?? 'FIR Details'} subtitle={fir?.fir_number ? `FIR No. ${fir.fir_number}` : undefined} showBack />
+    <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1 bg-background">
+      <AppHeader title={fir?.complainant_name ?? t('fir.firDetails')} subtitle={fir?.fir_number ? `${t('fir.firNoPrefix')} ${fir.fir_number}` : undefined} showBack />
 
       <ScrollView
         contentContainerClassName="px-6 py-5 gap-6 pb-24"
@@ -394,14 +427,14 @@ export default function FIRDetailsTab() {
           </View>
         ) : null}
 
-        {/* Phase 5: Checklist Progress Card */}
+        {/* Checklist Progress Card */}
         {karyvahiStats.total > 0 && (
           <View className="bg-card border border-border rounded-2xl p-4 gap-3" style={{ borderCurve: 'continuous' }}>
             {/* Header row */}
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center gap-2">
                 <ListChecks size={15} color="#6366F1" />
-                <Text className="text-sm font-bold text-foreground">चेकलिस्ट प्रगति</Text>
+                <Text className="text-sm font-bold text-foreground">{t('fir.checklistProgress')}</Text>
               </View>
               <Pressable
                 onPress={() => router.push(`/(app)/mukadma/${stableFirId}/pending-actions` as never)}
@@ -410,7 +443,7 @@ export default function FIRDetailsTab() {
                 {karyvahiStats.pendingMandatory > 0 && (
                   <View className="rounded-full bg-red-100 px-2 py-0.5">
                     <Text className="text-xs font-semibold text-red-600">
-                      {karyvahiStats.pendingMandatory} लंबित
+                      {t('fir.pendingCount', { count: karyvahiStats.pendingMandatory })}
                     </Text>
                   </View>
                 )}
@@ -421,7 +454,7 @@ export default function FIRDetailsTab() {
             {/* Overall bar */}
             <View className="gap-1.5">
               <View className="flex-row items-center justify-between">
-                <Text className="text-xs text-muted-foreground">कुल पूर्ण</Text>
+                <Text className="text-xs text-muted-foreground">{t('fir.totalCompleted')}</Text>
                 <Text className="text-xs font-semibold" style={{ color: karyvahiStats.completed === karyvahiStats.total ? '#16A34A' : '#6366F1' }}>
                   {karyvahiStats.completed}/{karyvahiStats.total} · {Math.round((karyvahiStats.completed / karyvahiStats.total) * 100)}%
                 </Text>
@@ -434,16 +467,16 @@ export default function FIRDetailsTab() {
             </View>
 
             {/* Per-priority bars */}
-            {karyvahiStats.byPriority.map(({ priority, total: t, completed: c }) => (
+            {karyvahiStats.byPriority.map(({ priority, total: tot, completed: c }) => (
               <View key={priority} className="gap-1">
                 <View className="flex-row items-center justify-between">
                   <Text className="text-xs" style={{ color: PRIORITY_COLOR[priority] }}>
                     {PRIORITY_LABEL[priority]}
                   </Text>
-                  <Text className="text-xs text-muted-foreground">{c}/{t}</Text>
+                  <Text className="text-xs text-muted-foreground">{c}/{tot}</Text>
                 </View>
                 <Progress
-                  value={t > 0 ? (c / t) * 100 : 0}
+                  value={tot > 0 ? (c / tot) * 100 : 0}
                   className="h-1.5"
                   indicatorClassName={
                     priority === 'MANDATORY'   ? 'bg-red-500' :
@@ -457,48 +490,48 @@ export default function FIRDetailsTab() {
 
         {/* Basic */}
         <View className="gap-4">
-          <Text className="text-base font-bold text-foreground border-b border-border pb-2">Basic Information</Text>
-          <Field label="FIR Number"><Input value={firNumber} onChangeText={setFirNumber} /></Field>
-          <Field label="Section"><Input value={section} onChangeText={setSection} /></Field>
+          <Text className="text-base font-bold text-foreground border-b border-border pb-2">{t('fir.basicInfo')}</Text>
+          <Field label={t('fir.firNumber')}><Input value={firNumber} onChangeText={setFirNumber} /></Field>
+          <Field label={t('fir.section')}><Input value={section} onChangeText={setSection} /></Field>
         </View>
 
         {/* Complainant */}
         <View className="gap-4">
-          <Text className="text-base font-bold text-foreground border-b border-border pb-2">Complainant Details</Text>
-          <Field label="Name"><Input value={cName} onChangeText={setCName} /></Field>
-          <Field label="Full Address"><Input type="multiline" value={cAddress} onChangeText={setCAddress} numberOfLines={2} /></Field>
+          <Text className="text-base font-bold text-foreground border-b border-border pb-2">{t('fir.complainantDetails')}</Text>
+          <Field label={t('fir.name')}><Input value={cName} onChangeText={setCName} /></Field>
+          <Field label={t('fir.fullAddress')}><Input type="multiline" value={cAddress} onChangeText={setCAddress} numberOfLines={2} /></Field>
           <View className="flex-row gap-3">
-            <View className="flex-1"><Field label="Mobile"><Input type="mobile" value={cMobile} onChangeText={setCMobile} /></Field></View>
-            <View className="flex-1"><Field label="Alt. Mobile"><Input type="mobile" value={cAltMobile} onChangeText={setCAltMobile} /></Field></View>
+            <View className="flex-1"><Field label={t('fir.mobile')}><Input type="mobile" value={cMobile} onChangeText={setCMobile} /></Field></View>
+            <View className="flex-1"><Field label={t('fir.altMobile')}><Input type="mobile" value={cAltMobile} onChangeText={setCAltMobile} /></Field></View>
           </View>
           <View className="flex-row gap-3">
-            <View className="flex-1"><Field label="Jati"><Input value={cJati} onChangeText={setCJati} /></Field></View>
-            <View className="flex-1"><Field label="Age"><Input type="age" value={cAge} onChangeText={setCAge} /></Field></View>
+            <View className="flex-1"><Field label={t('fir.jati')}><Input value={cJati} onChangeText={setCJati} /></Field></View>
+            <View className="flex-1"><Field label={t('fir.age')}><Input type="age" value={cAge} onChangeText={setCAge} /></Field></View>
           </View>
         </View>
 
         {/* Incident */}
         <View className="gap-4">
-          <Text className="text-base font-bold text-foreground border-b border-border pb-2">Incident Details</Text>
-          <Field label="Ghatnasthal">
+          <Text className="text-base font-bold text-foreground border-b border-border pb-2">{t('fir.incidentDetails')}</Text>
+          <Field label={t('fir.ghatnasthal')}>
             <Input type="multiline" value={ghatnasthal} onChangeText={setGhatnasthal} leftIcon={<MapPin size={14} color="#6B7280" />} numberOfLines={2} />
           </Field>
-          <Field label="Crime Type">
+          <Field label={t('fir.crimeType')}>
             {/* Read-only: crime type is locked after FIR creation */}
             <View className="bg-muted rounded-xl px-4 py-3">
               <Text className="text-sm text-muted-foreground">{crimeType || '—'}</Text>
             </View>
             <Text className="text-xs text-muted-foreground mt-1">
-              Crime Type FIR दर्ज होने के बाद बदला नहीं जा सकता (Investigation checklist इसी पर आधारित है)।
+              {t('fir.crimeTypeLockNotice')}
             </Text>
           </Field>
           <View className="flex-row gap-3">
-            <View className="flex-1"><DateField label="Date of Occurrence" value={dateOccurrence} onChange={setDateOccurrence} /></View>
-            <View className="flex-1"><Field label="Time"><Input type="time" value={timeOccurrence} onChangeText={setTimeOccurrence} /></Field></View>
+            <View className="flex-1"><DateField label={t('fir.dateOfOccurrence')} value={dateOccurrence} onChange={setDateOccurrence} /></View>
+            <View className="flex-1"><Field label={t('fir.time')}><Input type="time" value={timeOccurrence} onChangeText={setTimeOccurrence} /></Field></View>
           </View>
           <View className="flex-row gap-3">
-            <View className="flex-1"><DateField label="Date of Information" value={dateInformation} onChange={setDateInformation} /></View>
-            <View className="flex-1"><Field label="Time"><Input type="time" value={timeInformation} onChangeText={setTimeInformation} /></Field></View>
+            <View className="flex-1"><DateField label={t('fir.dateOfInformation')} value={dateInformation} onChange={setDateInformation} /></View>
+            <View className="flex-1"><Field label={t('fir.time')}><Input type="time" value={timeInformation} onChangeText={setTimeInformation} /></Field></View>
           </View>
         </View>
 
@@ -506,7 +539,7 @@ export default function FIRDetailsTab() {
         {accused.length > 0 && (
           <View className="gap-3">
             <Text className="text-base font-bold text-foreground border-b border-border pb-2">
-              Accused ({accused.length})
+              {t('fir.accusedSectionTitle', { count: accused.length })}
             </Text>
             {accused.map((a) => <AccusedRow key={a.id} accused={a} />)}
           </View>
@@ -514,40 +547,116 @@ export default function FIRDetailsTab() {
 
         {/* Detailed Reports & Summary */}
         <View className="gap-4">
-          <Text className="text-base font-bold text-foreground border-b border-border pb-2">Detailed Reports &amp; Summary</Text>
+          <Text className="text-base font-bold text-foreground border-b border-border pb-2">{t('fir.detailedReportsAndSummary')}</Text>
           <Text className="text-xs text-muted-foreground -mt-2">
-            मुकदमा सारांश केस डायरी की पहली प्रविष्टि में स्वतः जुड़ जाएगा।
+            {t('fir.summaryAutoAddNotice')}
           </Text>
           <CollapsibleDocumentBox
-            label="Nakal Chick Form"
+            label={t('fir.nakalChickForm')}
             value={nakalChick}
             onChangeText={setNakalChick}
-            placeholder="Nakal Chick details…"
+            placeholder={t('fir.nakalChickPlaceholder')}
           />
           <CollapsibleDocumentBox
-            label="Nakal Rapat Form"
+            label={t('fir.nakalRapatForm')}
             value={nakalRapat}
             onChangeText={setNakalRapat}
-            placeholder="Nakal Rapat details…"
+            placeholder={t('fir.nakalRapatPlaceholder')}
           />
           <CollapsibleDocumentBox
-            label="मुकदमा सारांश (Case Summary)"
+            label={t('fir.mukadmaSaranshTitle')}
             value={mukadmaSaransh}
             onChangeText={setMukadmaSaransh}
-            placeholder="मुकदमे की संक्षिप्त कहानी / घटनाक्रम यहाँ लिखें…"
+            placeholder={t('fir.mukadmaSaranshPlaceholder')}
           />
+        </View>
+
+        {/* SOP चेकलिस्ट Section (Task L30) */}
+        <View className="gap-3">
+          <View className="flex-row items-center justify-between border-b border-border pb-2">
+            <View className="flex-row items-center gap-2">
+              <CheckSquare size={18} color="#0F766E" />
+              <Text className="text-base font-bold text-foreground">SOP चेकलिस्ट</Text>
+              {caseChecklists.length > 0 && (
+                <View className="bg-primary/10 px-2 py-0.5 rounded-full">
+                  <Text className="text-xs font-bold text-primary">{caseChecklists.length}</Text>
+                </View>
+              )}
+            </View>
+            <Pressable
+              onPress={() => setSopPickerOpen(true)}
+              className="flex-row items-center gap-1 px-3 py-1.5 rounded-xl bg-primary active:opacity-70"
+            >
+              <Plus size={14} color="#FFFFFF" />
+              <Text className="text-xs font-bold text-primary-foreground">+ SOP जोड़ें</Text>
+            </Pressable>
+          </View>
+
+          {caseChecklists.length > 0 ? (
+            <View className="gap-2.5">
+              {caseChecklists.map((item) => {
+                const sopMeta = getSopById(item.sop_id);
+                const title = sopMeta?.title || item.sop_id;
+                const targetId = sopMeta?.kid || item.sop_id;
+
+                return (
+                  <Pressable
+                    key={item.sop_id}
+                    onPress={() =>
+                      router.push(
+                        `/(app)/knowledge/${targetId}?tab=checklist&caseId=${stableFirId}` as any
+                      )
+                    }
+                    className="p-3.5 rounded-xl border border-border bg-card active:opacity-70 shadow-sm shadow-black/5"
+                  >
+                    <View className="flex-row items-center justify-between gap-2">
+                      <View className="flex-1">
+                        <Text className="text-sm font-bold text-foreground leading-5" numberOfLines={1}>
+                          {title}
+                        </Text>
+                        {sopMeta?.crime ? (
+                          <Text className="text-xs text-muted-foreground mt-0.5">
+                            {sopMeta.crime}
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View className="items-end">
+                        <Text className="text-xs font-bold text-primary">
+                          {item.done_steps}/{item.total_steps} ({item.progress_percent}%)
+                        </Text>
+                        <ChevronRight size={14} color="#9CA3AF" />
+                      </View>
+                    </View>
+
+                    <View className="h-1.5 w-full bg-muted rounded-full overflow-hidden mt-2">
+                      <View
+                        className="h-full bg-primary rounded-full"
+                        style={{ width: `${item.progress_percent}%` }}
+                      />
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : (
+            <View className="p-4 rounded-xl border border-dashed border-border bg-muted/20 items-center justify-center">
+              <Text className="text-xs text-muted-foreground text-center">
+                इस केस से कोई SOP चेकलिस्ट नहीं जुड़ी है। &apos;+ SOP जोड़ें&apos; पर टैप करके विवेचना चेकलिस्ट प्रारंभ करें।
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* Status info */}
         <View className="bg-secondary rounded-2xl p-4 gap-1" style={{ borderCurve: 'continuous' }}>
-          <Text className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">Status</Text>
+          <Text className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">{t('fir.statusTitle')}</Text>
           <Text className="text-sm text-foreground">
-            Status is automatically computed from the <Text className="font-bold">Karyvahi</Text> tab.
+            {t('fir.statusAutoComputedNotice')}
           </Text>
           <View className="mt-2 flex-row items-center gap-2">
             <StatusBadge status={fir?.status ?? 'Pending'} />
             <Text className="text-xs text-muted-foreground">
-              {fir?.status === 'Finished' ? 'All karyvahi completed' : 'Some karyvahi pending'}
+              {fir?.status === 'Finished' ? t('fir.statusAllFinished') : t('fir.statusSomePending')}
             </Text>
           </View>
         </View>
@@ -559,9 +668,138 @@ export default function FIRDetailsTab() {
           className="rounded-2xl py-4 items-center active:opacity-80"
           style={{ backgroundColor: '#6366F1', borderCurve: 'continuous' }}
         >
-          <Text className="text-white font-bold text-base">{saving ? 'Saving…' : 'Save Changes'}</Text>
+          <Text className="text-white font-bold text-base">{saving ? t('common.saving') : t('common.saveChanges')}</Text>
         </Pressable>
       </ScrollView>
+
+      {/* ── SOP Picker Modal (+ SOP जोड़ें) ── */}
+      <Modal
+        visible={sopPickerOpen}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setSopPickerOpen(false)}
+      >
+        <Pressable
+          onPress={() => setSopPickerOpen(false)}
+          className="flex-1 bg-black/50 justify-end"
+        >
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            className="bg-card border-t border-border rounded-t-3xl max-h-[85%] p-4 gap-3 shadow-2xl"
+          >
+            {/* Header */}
+            <View className="flex-row items-center justify-between pb-2 border-b border-border">
+              <View>
+                <Text className="text-base font-bold text-foreground">
+                  SOP चुनें और चेकलिस्ट जोड़ें
+                </Text>
+                <Text className="text-xs text-muted-foreground">
+                  विवेचना के लिए उपयुक्त मानक संचालन प्रक्रिया चुनें
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => setSopPickerOpen(false)}
+                hitSlop={8}
+                className="p-1 rounded-full bg-muted"
+              >
+                <X size={18} color="#6B7280" />
+              </Pressable>
+            </View>
+
+            {/* Search Box */}
+            <View className="flex-row items-center bg-muted/30 border border-border rounded-xl px-3 py-2 gap-2">
+              <Search size={16} color="#9CA3AF" />
+              <TextInput
+                value={sopSearchQuery}
+                onChangeText={setSopSearchQuery}
+                placeholder="SOP खोजें (उदा. हत्या, साइबर, जब्ती)…"
+                placeholderTextColor="#9CA3AF"
+                className="flex-1 text-sm text-foreground p-0"
+              />
+              {sopSearchQuery ? (
+                <Pressable onPress={() => setSopSearchQuery('')} hitSlop={8}>
+                  <X size={14} color="#9CA3AF" />
+                </Pressable>
+              ) : null}
+            </View>
+
+            {/* Crime Category Chips */}
+            <View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerClassName="gap-1.5 py-1"
+              >
+                {allCrimeCategories.map((crime) => {
+                  const isSel = sopSelectedCrime === crime;
+                  return (
+                    <Pressable
+                      key={crime}
+                      onPress={() => setSopSelectedCrime(crime)}
+                      className={`px-3 py-1.5 rounded-full border ${
+                        isSel
+                          ? 'bg-primary border-primary'
+                          : 'bg-muted/40 border-border'
+                      }`}
+                    >
+                      <Text
+                        className={`text-xs font-semibold ${
+                          isSel ? 'text-primary-foreground' : 'text-foreground'
+                        }`}
+                      >
+                        {crime}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            </View>
+
+            {/* SOP List */}
+            <ScrollView className="max-h-96 gap-2">
+              {filteredSops.length > 0 ? (
+                filteredSops.map((sop) => (
+                  <Pressable
+                    key={sop.id}
+                    onPress={() => {
+                      setSopPickerOpen(false);
+                      router.push(
+                        `/(app)/knowledge/${sop.kid || sop.id}?tab=checklist&caseId=${stableFirId}` as any
+                      );
+                    }}
+                    className="p-3 rounded-xl border border-border bg-card active:opacity-70 mb-2 shadow-sm shadow-black/5"
+                  >
+                    <View className="flex-row items-start justify-between gap-2">
+                      <View className="flex-1">
+                        <Text className="text-sm font-bold text-foreground leading-5">
+                          {sop.title}
+                        </Text>
+                        <View className="flex-row items-center gap-2 mt-1">
+                          <View className="px-2 py-0.5 rounded bg-primary/10">
+                            <Text className="text-[10px] font-bold text-primary">
+                              {sop.src}
+                            </Text>
+                          </View>
+                          <Text className="text-xs text-muted-foreground">
+                            {sop.crime}
+                          </Text>
+                        </View>
+                      </View>
+                      <ChevronRight size={16} color="#9CA3AF" className="mt-1" />
+                    </View>
+                  </Pressable>
+                ))
+              ) : (
+                <View className="p-8 items-center justify-center">
+                  <Text className="text-xs text-muted-foreground text-center">
+                    कोई SOP नहीं मिला। कृपया अन्य शब्द या श्रेणी चुनें।
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }

@@ -1,5 +1,6 @@
 import { logger } from '@/lib/logger';
 import { useCallback, useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator, FlatList, Pressable, ScrollView, Text, View,
 } from 'react-native';
@@ -63,21 +64,24 @@ export default function PPSelectFormatScreen() {
     router.push(`/(app)/prarthna-patra/fill-format?${qs.toString()}` as RelativePathString);
   };
 
+  const { t } = useTranslation();
+  const subtitleText = isReportMode ? t('prarthnaPatra.selectFormat.subtitleReport') : t('prarthnaPatra.selectFormat.subtitleFormat');
+
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title="Select Format"
-        subtitle={isReportMode ? 'Prarthna Patra Report' : 'Prarthna Patra'}
+        title={t('prarthnaPatra.selectFormat.title')}
+        subtitle={subtitleText}
         onBack={() => router.back()}
       />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
         <SearchBar
           value={query}
           onChangeText={handleSearch}
-          placeholder={`Search ${formatType} formats…`}
+          placeholder={t('prarthnaPatra.selectFormat.searchPlaceholder', { type: formatType })}
           variant="light"
           returnKeyType="search"
-          accessibilityLabel="Search formats"
+          accessibilityLabel={t('prarthnaPatra.selectFormat.searchAccessibility')}
         />
       </View>
 
@@ -105,12 +109,12 @@ export default function PPSelectFormatScreen() {
                 <FileWarning size={30} color={MODULE_COLOR} />
               </View>
               <Text className="text-base font-semibold text-foreground text-center">
-                {query.trim() ? 'No formats found' : `No ${formatType} formats available`}
+                {query.trim() ? t('prarthnaPatra.selectFormat.noFormatsFound') : t('prarthnaPatra.selectFormat.noFormatsAvailable', { type: formatType })}
               </Text>
               <Text className="text-sm text-muted-foreground text-center">
                 {query.trim()
-                  ? 'Try a different search term.'
-                  : `Create a format with type "${formatType}" in the Predefine Format module first.`}
+                  ? t('prarthnaPatra.selectFormat.hintDifferentQuery')
+                  : t('prarthnaPatra.selectFormat.hintCreateFormat', { type: formatType })}
               </Text>
             </View>
           }

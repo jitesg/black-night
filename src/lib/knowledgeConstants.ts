@@ -1,5 +1,5 @@
 import {
-  Scale, ClipboardList, Bell, FileText, Gavel, CheckSquare,
+  Scale, ClipboardList, Bell, FileText, Gavel,
 } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 
@@ -71,16 +71,6 @@ export const KNOWLEDGE_CATEGORIES: KnowledgeCategory[] = [
     ],
   },
   {
-    id: 'Checklist',
-    label: 'Checklist',
-    icon: CheckSquare,
-    color: '#0891B2',
-    subcategories: [
-      'Crime-wise Checklist', 'Arrest Checklist',
-      'Court Checklist', 'Beat Checklist', 'General Checklist',
-    ],
-  },
-  {
     id: 'Police Format',
     label: 'Police Format',
     icon: FileText,
@@ -101,7 +91,6 @@ export const ANALYTICS_LABELS: { label: string; categoryId: string }[] = [
   { label: 'SOP',           categoryId: 'SOP' },
   { label: 'Circular',      categoryId: 'Circular' },
   { label: 'Court Judgment', categoryId: 'Court Judgment' },
-  { label: 'Checklist',     categoryId: 'Checklist' },
   { label: 'Police Format', categoryId: 'Police Format' },
 ];
 
@@ -111,7 +100,6 @@ const CATEGORY_I18N_KEY: Record<string, string> = {
   'SOP':            'knowledge.categories.SOP',
   'Circular':       'knowledge.categories.Circular',
   'Court Judgment': 'knowledge.categories.CourtJudgment',
-  'Checklist':      'knowledge.categories.Checklist',
   'Police Format':  'knowledge.categories.PoliceFormat',
 };
 
@@ -128,3 +116,103 @@ export function getCategoryLabel(
   if (key) return t(key);
   return KNOWLEDGE_CATEGORY_MAP[categoryId]?.label ?? categoryId;
 }
+
+/**
+ * Normalizes any category string (English, Hindi, URL-encoded, or plural alias)
+ * to its canonical category id: 'Law' | 'SOP' | 'Circular' | 'Court Judgment' | 'Police Format' | 'Checklist'
+ */
+export function getCanonicalCategory(raw: string | undefined | null): string {
+  if (!raw) return '';
+  let decoded = raw;
+  try {
+    decoded = decodeURIComponent(raw).trim();
+  } catch {
+    decoded = raw.trim();
+  }
+  const lower = decoded.toLowerCase();
+
+  if (
+    decoded === 'Circular' ||
+    lower === 'circular' ||
+    lower === 'circulars' ||
+    decoded === 'परिपत्र' ||
+    lower === 'peripatra'
+  ) {
+    return 'Circular';
+  }
+  if (
+    decoded === 'SOP' ||
+    lower === 'sop' ||
+    lower === 'sops' ||
+    decoded === 'एसओपी'
+  ) {
+    return 'SOP';
+  }
+  if (
+    decoded === 'Court Judgment' ||
+    lower === 'court judgment' ||
+    lower === 'court judgments' ||
+    decoded === 'अदालत का निर्णय' ||
+    lower === 'courtjudgment' ||
+    decoded === 'Court%20Judgment'
+  ) {
+    return 'Court Judgment';
+  }
+  if (
+    decoded === 'Police Format' ||
+    lower === 'police format' ||
+    lower === 'police formats' ||
+    decoded === 'पुलिस प्रारूप' ||
+    lower === 'policeformat' ||
+    decoded === 'Police%20Format'
+  ) {
+    return 'Police Format';
+  }
+  if (
+    decoded === 'Law' ||
+    lower === 'law' ||
+    lower === 'laws' ||
+    decoded === 'Laws & Sections' ||
+    decoded === 'विधि पुस्तकालय'
+  ) {
+    return 'Law';
+  }
+  if (
+    decoded === 'Checklist' ||
+    lower === 'checklist' ||
+    lower === 'checklists' ||
+    decoded === 'चेकलिस्ट'
+  ) {
+    return 'Checklist';
+  }
+
+  // Exact match with known category id
+  if (KNOWLEDGE_CATEGORY_MAP[decoded]) return decoded;
+
+  return decoded;
+}
+
+/**
+ * Returns all database category variants that match a given category.
+ * Ensures queries find both singular and plural forms (e.g. 'SOP' and 'SOPs').
+ */
+export function getCategoryVariants(category: string): string[] {
+  const canonical = getCanonicalCategory(category);
+  switch (canonical) {
+    case 'Circular':
+      return ['Circular', 'Circulars', 'परिपत्र'];
+    case 'SOP':
+      return ['SOP', 'SOPs', 'एसओपी'];
+    case 'Court Judgment':
+      return ['Court Judgment', 'Court Judgments', 'अदालत का निर्णय'];
+    case 'Police Format':
+      return ['Police Format', 'Police Formats', 'पुलिस प्रारूप'];
+    case 'Law':
+      return ['Law', 'Laws & Sections', 'विधि पुस्तकालय'];
+    case 'Checklist':
+      return ['Checklist', 'Checklists', 'चेकलिस्ट'];
+    default:
+      return [canonical || category];
+  }
+}
+

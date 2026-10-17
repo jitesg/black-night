@@ -95,7 +95,6 @@ const ALL_SETTINGS: SettingItem[] = [
     descKey: 'settings.items.ai.desc',
     route: '/(app)/settings/ai-assistant',
     keywords: ['ai', 'artificial intelligence', 'suggestions', 'draft', 'report', 'smart'],
-    badgeKey: 'settings.badges.soon',
   },
   {
     id: 'backup',

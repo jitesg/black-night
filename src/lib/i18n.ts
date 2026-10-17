@@ -35,6 +35,17 @@ const SETTINGS_KEY = 'investsuite:settings_v1';
 
 export type AppLanguage = 'hi' | 'en';
 
+/** Converts camelCase/snake_case/kebab-case into a clean, human-readable label. */
+export function humanizeKey(key: string): string {
+  if (!key) return '';
+  const lastPart = key.split('.').pop() || key;
+  return lastPart
+    .replace(/[-_]+/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim();
+}
+
 /** Reads the persisted language preference from AsyncStorage.
  *  Returns 'hi' as the default if nothing is stored or parsing fails. */
 export async function getStoredLanguage(): Promise<AppLanguage> {
@@ -63,11 +74,23 @@ i18n
       en: { translation: en },
     },
     lng: 'hi',          // boot default — overridden by initI18nLanguage()
-    fallbackLng: 'hi',
+    fallbackLng: ['en', 'hi'],
     interpolation: {
       escapeValue: false, // React Native does not need HTML escaping
     },
     compatibilityJSON: 'v4', // required for RN bundler (no Intl.PluralRules polyfill needed with v4)
+    parseMissingKeyHandler: (key: string, defaultValue?: string) => {
+      if (defaultValue) return defaultValue;
+      try {
+        const enVal = i18n.getResource('en', 'translation', key);
+        if (typeof enVal === 'string' && enVal) return enVal;
+        const hiVal = i18n.getResource('hi', 'translation', key);
+        if (typeof hiVal === 'string' && hiVal) return hiVal;
+      } catch {
+        // fallback to humanized label below
+      }
+      return humanizeKey(key);
+    },
   });
 
 /** Called once on app mount to align i18next with the persisted preference. */

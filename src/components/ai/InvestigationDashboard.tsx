@@ -11,6 +11,7 @@
 
 import React, { memo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   CheckSquare, Clock, AlertTriangle, Activity,
   ChevronDown, ChevronUp, TrendingUp, CalendarClock, FileText,
@@ -42,47 +43,48 @@ function SectionCard({
   children: React.ReactNode;
   defaultExpanded?: boolean;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(defaultExpanded);
   const { colorScheme } = useColorScheme();
-  const colors = THEME[colorScheme ?? 'light'];
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
 
   return (
     <View style={{
-      borderRadius: 14, borderWidth: 1, borderColor: colors.border,
-      backgroundColor: colors.card, overflow: 'hidden', marginBottom: 8,
+      borderRadius: 14, borderWidth: 1, borderColor: C.border,
+      backgroundColor: C.card, overflow: 'hidden', marginBottom: 8,
     }}>
       <Pressable
         onPress={() => setOpen(v => !v)}
         accessibilityRole="button"
-        accessibilityLabel={`${open ? 'Collapse' : 'Expand'} ${title}`}
+        accessibilityLabel={open ? t('ai.collapseSection', { title }) : t('ai.expandSection', { title })}
         className="active:opacity-70"
         style={{
           flexDirection: 'row', alignItems: 'center', gap: 8,
           paddingHorizontal: 14, paddingVertical: 11,
-          borderBottomWidth: open ? 1 : 0, borderBottomColor: colors.muted,
+          borderBottomWidth: open ? 1 : 0, borderBottomColor: C.border,
         }}
       >
         <View style={{
           width: 30, height: 30, borderRadius: 15,
-          backgroundColor: colors.muted,
+          backgroundColor: C.muted,
           alignItems: 'center', justifyContent: 'center',
         }}>
-          <Icon size={14} color={colors.mutedForeground} strokeWidth={2} />
+          <Icon size={14} color={C.mutedForeground} strokeWidth={2} />
         </View>
-        <Text style={{ flex: 1, fontSize: 13, fontWeight: '600', color: colors.foreground }}>
+        <Text style={{ flex: 1, fontSize: 13, fontWeight: '600', color: C.foreground }}>
           {title}
         </Text>
         {badge ? (
           <View style={{
             paddingHorizontal: 8, paddingVertical: 3,
-            borderRadius: 10, backgroundColor: badgeColor ?? colors.muted,
+            borderRadius: 10, backgroundColor: badgeColor ?? C.muted,
           }}>
-            <Text style={{ fontSize: 11, fontWeight: '700', color: colors.mutedForeground }}>{badge}</Text>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.mutedForeground }}>{badge}</Text>
           </View>
         ) : null}
         {open
-          ? <ChevronUp size={14} color={colors.mutedForeground} />
-          : <ChevronDown size={14} color={colors.mutedForeground} />}
+          ? <ChevronUp size={14} color={C.mutedForeground} />
+          : <ChevronDown size={14} color={C.mutedForeground} />}
       </Pressable>
       {open && (
         <View style={{ paddingHorizontal: 14, paddingVertical: 10, gap: 8 }}>
@@ -104,18 +106,24 @@ function PriorityRow({
   priority: 'critical' | 'high' | 'medium' | 'low';
   daysRemaining?: number;
 }) {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
-  const colors = THEME[colorScheme ?? 'light'];
-  const dotColor = priority === 'critical' ? '#DC2626'
-    : priority === 'high' ? '#EA580C'
-    : priority === 'medium' ? '#D97706' : '#9CA3AF';
-  // semantic status backgrounds — intentionally fixed (status chips, not surfaces)
-  const bg     = priority === 'critical' ? '#FEF2F2'
-    : priority === 'high' ? '#FFF7ED'
-    : colors.muted;
-  const border = priority === 'critical' ? '#FECACA'
-    : priority === 'high' ? '#FED7AA'
-    : colors.border;
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
+  const dotColor = priority === 'critical' ? (isDark ? '#F87171' : '#DC2626')
+    : priority === 'high' ? (isDark ? '#FB923C' : '#EA580C')
+    : priority === 'medium' ? (isDark ? '#FBBF24' : '#D97706') : C.mutedForeground;
+  // semantic status backgrounds with dark-mode variants
+  const bg = priority === 'critical'
+    ? (isDark ? 'rgba(239, 68, 68, 0.15)' : '#FEF2F2')
+    : priority === 'high'
+      ? (isDark ? 'rgba(234, 88, 12, 0.15)' : '#FFF7ED')
+      : C.muted;
+  const border = priority === 'critical'
+    ? (isDark ? 'rgba(239, 68, 68, 0.3)' : '#FECACA')
+    : priority === 'high'
+      ? (isDark ? 'rgba(234, 88, 12, 0.3)' : '#FED7AA')
+      : C.border;
   const isOverdue = (daysRemaining ?? 0) < 0;
   const isDue     = daysRemaining === 0;
 
@@ -130,37 +138,38 @@ function PriorityRow({
         backgroundColor: dotColor, marginTop: 6, flexShrink: 0,
       }} />
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 12, fontWeight: '600', color: colors.foreground }} numberOfLines={2}>
+        <Text style={{ fontSize: 12, fontWeight: '600', color: C.foreground }} numberOfLines={2}>
           {label}
         </Text>
         {detail ? (
-          <Text style={{ fontSize: 11, color: colors.mutedForeground, marginTop: 2 }} numberOfLines={1}>
+          <Text style={{ fontSize: 11, color: C.mutedForeground, marginTop: 2 }} numberOfLines={1}>
             {detail}
           </Text>
         ) : null}
         {daysRemaining !== undefined && (
           <Text style={{
-            fontSize: 11, color: isOverdue ? '#DC2626' : isDue ? '#D97706' : colors.mutedForeground,
+            fontSize: 11, color: isOverdue ? (isDark ? '#F87171' : '#DC2626') : isDue ? (isDark ? '#FBBF24' : '#D97706') : C.mutedForeground,
             marginTop: 2,
           }}>
             {isOverdue
-              ? `${Math.abs(daysRemaining)}d overdue`
-              : isDue ? 'Due today'
-              : `Due in ${daysRemaining}d`}
+              ? t('ai.daysOverdue', { count: Math.abs(daysRemaining) })
+              : isDue ? t('ai.dueToday')
+              : t('ai.dueInDays', { count: daysRemaining })}
           </Text>
         )}
       </View>
     </View>
   );
 }
+
 // ── Progress bar ─────────────────────────────────────────────────────────────
 
 function ProgressBar({ value, color }: { value: number; color: string }) {
   const { colorScheme } = useColorScheme();
-  const colors = THEME[colorScheme ?? 'light'];
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const pct = Math.min(Math.max(value, 0), 100);
   return (
-    <View style={{ height: 4, borderRadius: 2, backgroundColor: colors.muted, overflow: 'hidden' }}>
+    <View style={{ height: 4, borderRadius: 2, backgroundColor: C.muted, overflow: 'hidden' }}>
       <View style={{ width: `${pct}%`, height: '100%', backgroundColor: color, borderRadius: 2 }} />
     </View>
   );
@@ -169,18 +178,20 @@ function ProgressBar({ value, color }: { value: number; color: string }) {
 // ── Main export ───────────────────────────────────────────────────────────────
 
 export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx, report }: Props) {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
-  const colors = THEME[colorScheme ?? 'light'];
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
   const { caseHealth, caseReadiness, allActions } = report;
   const fir = ctx.fir;
   if (!fir) return null;
 
   const pendingActions  = allActions.filter(a => a.priority === 'critical' || a.priority === 'high');
   const criticalCount   = allActions.filter(a => a.priority === 'critical').length;
-  // gradeColor is a semantic accent tied to score grade — intentionally fixed
-  const gradeColor      = caseHealth.grade === 'A' || caseHealth.grade === 'B' ? '#16A34A'
-    : caseHealth.grade === 'C' ? '#D97706'
-    : caseHealth.grade === 'D' ? '#EA580C' : '#DC2626';
+  // gradeColor is a semantic accent tied to score grade with dark-mode variants
+  const gradeColor = caseHealth.grade === 'A' || caseHealth.grade === 'B' ? (isDark ? '#4ADE80' : '#16A34A')
+    : caseHealth.grade === 'C' ? (isDark ? '#FBBF24' : '#D97706')
+    : caseHealth.grade === 'D' ? (isDark ? '#FB923C' : '#EA580C') : (isDark ? '#F87171' : '#DC2626');
 
   return (
     <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4 }}>
@@ -188,37 +199,52 @@ export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx
       {/* Checklist progress */}
       <SectionCard
         icon={TrendingUp}
-        title="Investigation Progress"
+        title={t('ai.investigationProgress')}
         badge={`${caseHealth.score}% · ${caseHealth.grade}`}
         badgeColor={
-          caseHealth.grade === 'A' || caseHealth.grade === 'B' ? '#DCFCE7'
-          : caseHealth.grade === 'C' ? '#FEF9C3' : '#FEE2E2'
+          caseHealth.grade === 'A' || caseHealth.grade === 'B'
+            ? (isDark ? 'rgba(34, 197, 94, 0.2)' : '#DCFCE7')
+            : caseHealth.grade === 'C'
+              ? (isDark ? 'rgba(245, 158, 11, 0.2)' : '#FEF9C3')
+              : (isDark ? 'rgba(239, 68, 68, 0.2)' : '#FEE2E2')
         }
         defaultExpanded
       >
         <ProgressBar value={caseHealth.score} color={gradeColor} />
         <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-          <StatChip label={`${caseHealth.completedItems} done`}     color="#16A34A" bg="#F0FDF4" />
-          <StatChip label={`${caseHealth.pendingItems} pending`}    color="#D97706" bg="#FFFBEB" />
+          <StatChip
+            label={`${caseHealth.completedItems} ${t('ai.done')}`}
+            color={isDark ? '#86EFAC' : '#16A34A'}
+            bg={isDark ? 'rgba(34, 197, 94, 0.15)' : '#F0FDF4'}
+          />
+          <StatChip
+            label={`${caseHealth.pendingItems} ${t('ai.pending')}`}
+            color={isDark ? '#FDE68A' : '#D97706'}
+            bg={isDark ? 'rgba(245, 158, 11, 0.15)' : '#FFFBEB'}
+          />
           {caseHealth.criticalItems > 0 && (
-            <StatChip label={`${caseHealth.criticalItems} critical`} color="#DC2626" bg="#FEF2F2" />
+            <StatChip
+              label={`${caseHealth.criticalItems} ${t('ai.critical')}`}
+              color={isDark ? '#FCA5A5' : '#DC2626'}
+              bg={isDark ? 'rgba(239, 68, 68, 0.15)' : '#FEF2F2'}
+            />
           )}
         </View>
         <View style={{
           flexDirection: 'row', alignItems: 'center', gap: 8, padding: 10,
           borderRadius: 10, borderWidth: 1,
-          backgroundColor: caseReadiness.readyForChargeSheet ? '#F0FDF4' : colors.muted,
-          borderColor:     caseReadiness.readyForChargeSheet ? '#BBF7D0' : colors.border,
+          backgroundColor: caseReadiness.readyForChargeSheet ? (isDark ? 'rgba(34, 197, 94, 0.15)' : '#F0FDF4') : C.muted,
+          borderColor:     caseReadiness.readyForChargeSheet ? (isDark ? 'rgba(34, 197, 94, 0.3)' : '#BBF7D0') : C.border,
         }}>
           <Text style={{
             fontSize: 12, fontWeight: '600',
-            color: caseReadiness.readyForChargeSheet ? '#16A34A' : colors.foreground,
+            color: caseReadiness.readyForChargeSheet ? (isDark ? '#86EFAC' : '#16A34A') : C.foreground,
             flex: 1,
           }}>
-            Charge Sheet: {caseReadiness.readinessScore}% ready
+            {t('ai.chargeSheetReady', { pct: caseReadiness.readinessScore })}
           </Text>
           {!caseReadiness.readyForChargeSheet && caseReadiness.blockers.length > 0 && (
-            <Text style={{ fontSize: 11, color: colors.mutedForeground }} numberOfLines={1}>
+            <Text style={{ fontSize: 11, color: C.mutedForeground }} numberOfLines={1}>
               {caseReadiness.blockers[0]}
             </Text>
           )}
@@ -229,9 +255,9 @@ export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx
       {pendingActions.length > 0 && (
         <SectionCard
           icon={CheckSquare}
-          title="Pending Actions"
-          badge={criticalCount > 0 ? `${criticalCount} critical` : `${pendingActions.length}`}
-          badgeColor={criticalCount > 0 ? '#FEE2E2' : colors.muted}
+          title={t('ai.pendingActions')}
+          badge={criticalCount > 0 ? `${criticalCount} ${t('ai.critical')}` : `${pendingActions.length}`}
+          badgeColor={criticalCount > 0 ? (isDark ? 'rgba(239, 68, 68, 0.2)' : '#FEE2E2') : C.muted}
           defaultExpanded={criticalCount > 0}
         >
           {pendingActions.slice(0, 5).map(a => (
@@ -243,8 +269,8 @@ export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx
             />
           ))}
           {pendingActions.length > 5 && (
-            <Text style={{ fontSize: 11, color: colors.mutedForeground, textAlign: 'center', paddingVertical: 4 }}>
-              +{pendingActions.length - 5} more actions
+            <Text style={{ fontSize: 11, color: C.mutedForeground, textAlign: 'center', paddingVertical: 4 }}>
+              {t('ai.moreActions', { count: pendingActions.length - 5 })}
             </Text>
           )}
         </SectionCard>
@@ -254,7 +280,7 @@ export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx
       {ctx.courtDocs && ctx.courtDocs.length > 0 && (
         <SectionCard
           icon={CalendarClock}
-          title="Court Deadlines"
+          title={t('ai.courtDeadlines')}
           badge={`${ctx.courtDocs.length}`}
           defaultExpanded={false}
         >
@@ -283,9 +309,9 @@ export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx
       {ctx.confidence.missingFields.length > 0 && (
         <SectionCard
           icon={AlertTriangle}
-          title="Missing Information"
+          title={t('ai.missingInformation')}
           badge={`${ctx.confidence.missingFields.length}`}
-          badgeColor="#FEF9C3"
+          badgeColor={isDark ? 'rgba(245, 158, 11, 0.2)' : '#FEF9C3'}
           defaultExpanded={false}
         >
           {ctx.confidence.missingFields.slice(0, 6).map((f, i) => (
@@ -293,10 +319,10 @@ export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx
               flexDirection: 'row', alignItems: 'center', gap: 8,
               paddingVertical: 6,
               borderBottomWidth: i < Math.min(ctx.confidence.missingFields.length, 6) - 1 ? 1 : 0,
-              borderBottomColor: colors.muted,
+              borderBottomColor: C.border,
             }}>
-              <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: '#D97706' }} />
-              <Text style={{ fontSize: 12, color: colors.foreground }}>{f}</Text>
+              <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: isDark ? '#FBBF24' : '#D97706' }} />
+              <Text style={{ fontSize: 12, color: C.foreground }}>{f}</Text>
             </View>
           ))}
         </SectionCard>
@@ -307,20 +333,22 @@ export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx
         icon={FileText}
         title={`FIR ${fir.fir_number}`}
         badge={fir.status}
-        badgeColor={fir.status === 'Pending' ? '#FEF9C3' : '#DCFCE7'}
+        badgeColor={fir.status === 'Pending'
+          ? (isDark ? 'rgba(245, 158, 11, 0.2)' : '#FEF9C3')
+          : (isDark ? 'rgba(34, 197, 94, 0.2)' : '#DCFCE7')}
         defaultExpanded={false}
       >
-        <InfoRow label="Complainant" value={fir.complainant_name ?? '—'} />
-        <InfoRow label="Offence Date" value={fir.date_of_occurrence ?? '—'} />
-        <InfoRow label="Status" value={fir.status ?? '—'} />
-        <InfoRow label="Confidence" value={`${Math.round(ctx.confidence.overallScore * 100)}%`} />
+        <InfoRow label={t('ai.complainant')} value={fir.complainant_name ?? '—'} />
+        <InfoRow label={t('ai.offenceDate')} value={fir.date_of_occurrence ?? '—'} />
+        <InfoRow label={t('ai.status')} value={fir.status ?? '—'} />
+        <InfoRow label={t('ai.confidence')} value={`${Math.round(ctx.confidence.overallScore * 100)}%`} />
       </SectionCard>
 
       {/* ── Recent case diaries ──────────────────────────────────────────────── */}
       {ctx.caseDiaries && ctx.caseDiaries.length > 0 && (
         <SectionCard
           icon={Activity}
-          title="Recent Case Diaries"
+          title={t('ai.recentCaseDiaries')}
           badge={`${ctx.caseDiaries.length}`}
           defaultExpanded={false}
         >
@@ -328,18 +356,18 @@ export const InvestigationDashboard = memo(function InvestigationDashboard({ ctx
             <View key={i} style={{
               paddingVertical: 8,
               borderBottomWidth: i < Math.min(ctx.caseDiaries.length, 3) - 1 ? 1 : 0,
-              borderBottomColor: colors.muted,
+              borderBottomColor: C.border,
             }}>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: colors.foreground }} numberOfLines={1}>
-                Case Diary Entry
+              <Text style={{ fontSize: 12, fontWeight: '600', color: C.foreground }} numberOfLines={1}>
+                {t('ai.caseDiaryEntry')}
               </Text>
               {cd.preparation_date ? (
-                <Text style={{ fontSize: 11, color: colors.mutedForeground, marginTop: 2 }}>
+                <Text style={{ fontSize: 11, color: C.mutedForeground, marginTop: 2 }}>
                   {cd.preparation_date}
                 </Text>
               ) : null}
               {cd.places_visited ? (
-                <Text style={{ fontSize: 11, color: colors.mutedForeground, marginTop: 1 }} numberOfLines={1}>
+                <Text style={{ fontSize: 11, color: C.mutedForeground, marginTop: 1 }} numberOfLines={1}>
                   {cd.places_visited}
                 </Text>
               ) : null}

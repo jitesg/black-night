@@ -148,7 +148,7 @@ export class EventDrivenIntelligenceEngine {
 
     // ── 7. Witness Added ──────────────────────────────────────────────────────
     const witnessKaryvahi = ctx.karyvahi.all.filter(
-      (k) => k.name.toLowerCase().includes('witness') || k.name.toLowerCase().includes('bayan')
+      (k) => k.name.toLowerCase().includes('witness') || k.name.toLowerCase().includes('bayan') || k.name.includes('बयान') || k.name.includes('वादी') || k.name.includes('गवाह')
     );
     if (witnessKaryvahi.length > 0) {
       events.push(mkEvent(

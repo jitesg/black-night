@@ -29,6 +29,9 @@ export interface InvestigationChecklist {
   sync_status: string;
 }
 
+export type PlaybookPhase = 'IMMEDIATE' | 'INVESTIGATION' | 'CLOSURE';
+export type PlaybookProves = 'OFFENCE' | 'IDENTITY' | 'INTENT' | 'PROCEDURE';
+
 export interface ChecklistItem {
   id: string;
   checklist_id: string | null;   // nullable — new items created via M2M flow have no parent checklist
@@ -43,6 +46,18 @@ export interface ChecklistItem {
   priority?: string; // 'MANDATORY' | 'CONDITIONAL' | 'RECOMMENDED'
   // Phase 4 additive column — links this template to a predefined format
   auto_generate_format_id?: string;
+  // Investigation Playbook fields (optional)
+  step_code?: string;
+  phase?: PlaybookPhase | string;
+  proves?: PlaybookProves | string;
+  condition_note?: string;
+  legal_basis?: string;
+  why_text?: string;
+  court_text?: string;
+  care_text?: string;
+  risk_text?: string;
+  steps_text?: string;
+  docs_text?: string;
   created_at: number;
   updated_at: number;
   deleted_at?: number;
@@ -228,18 +243,59 @@ export function getFlatCrimeTypes(): CrimeTypeMeta[] {
 export async function getChecklistItemsForCrimeTypes(
   crimeTypeIds: string[]
 ): Promise<ChecklistItem[]> {
-  if (crimeTypeIds.length === 0) return [];
-  const db = await getDatabase();
-  const placeholders = crimeTypeIds.map(() => '?').join(',');
-  return db.getAllAsync<ChecklistItem>(
-    `SELECT DISTINCT ci.*
-     FROM checklist_items ci
-     INNER JOIN checklist_item_subtypes s ON s.checklist_item_id = ci.id
-     WHERE ci.deleted_at IS NULL
-       AND LOWER(TRIM(s.crime_type)) IN (${placeholders})
-     ORDER BY ci.sort_order ASC, ci.task_name ASC`,
-    crimeTypeIds.map((id) => id.toLowerCase().trim())
+  const cleanIds = Array.from(
+    new Set(
+      crimeTypeIds
+        .map((id) => id.toLowerCase().trim())
+        .filter((id) => id.length > 0)
+    )
   );
+  if (cleanIds.length === 0) return [];
+
+  const db = await getDatabase();
+  const placeholders = cleanIds.map(() => '?').join(',');
+
+  type RowWithLinkType = ChecklistItem & { link_type: string };
+
+  const rows = await db.getAllAsync<RowWithLinkType>(
+    `SELECT ci.*, LOWER(TRIM(s.crime_type)) AS link_type
+     FROM checklist_items ci
+     JOIN checklist_item_subtypes s ON s.checklist_item_id = ci.id
+     WHERE ci.deleted_at IS NULL
+       AND LOWER(TRIM(s.crime_type)) IN (${placeholders})`,
+    cleanIds
+  );
+
+  const playbookIds = new Set<string>();
+  for (const r of rows) {
+    if (r.step_code && r.step_code.trim() !== '') {
+      playbookIds.add(r.link_type);
+    }
+  }
+
+  const itemMap = new Map<string, ChecklistItem>();
+  for (const r of rows) {
+    const hasStepCode = !!(r.step_code && r.step_code.trim() !== '');
+    const isUser = r.source === 'user';
+    const notInPlaybook = !playbookIds.has(r.link_type);
+
+    if (hasStepCode || isUser || notInPlaybook) {
+      if (!itemMap.has(r.id)) {
+        const { link_type: _link_type, ...item } = r;
+        itemMap.set(r.id, item);
+      }
+    }
+  }
+
+  const items = Array.from(itemMap.values());
+  items.sort((a, b) => {
+    if (a.sort_order !== b.sort_order) {
+      return a.sort_order - b.sort_order;
+    }
+    return (a.task_name || '').localeCompare(b.task_name || '');
+  });
+
+  return items;
 }
 
 // ─── Checklist Items CRUD ─────────────────────────────────────────────────
@@ -520,4 +576,87 @@ export async function getChecklistItemsForPairs(
      ORDER BY ci.sort_order ASC, ci.task_name ASC`,
     params
   );
+}
+
+/**
+ * Parse encoded crime_type string formatted as "Type:Sub1,Sub2|Type2:Sub3"
+ * or legacy/flat formats into distinct (crimeType, subType) pairs.
+ */
+export function parseCrimeTypePairs(encoded: string): SubtypePair[] {
+  if (!encoded) return [];
+  const pairs: SubtypePair[] = [];
+  const groups = encoded.split('|').map((g) => g.trim()).filter(Boolean);
+  for (const group of groups) {
+    const colonIdx = group.indexOf(':');
+    if (colonIdx === -1) {
+      const ct = group.trim();
+      if (ct) pairs.push({ crimeType: ct, subType: '' });
+    } else {
+      const ct = group.slice(0, colonIdx).trim();
+      const subsRaw = group.slice(colonIdx + 1);
+      const subs = subsRaw.split(',').map((s) => s.trim()).filter(Boolean);
+      for (const sub of subs) {
+        if (ct) pairs.push({ crimeType: ct, subType: sub });
+      }
+      if (subs.length === 0 && ct) pairs.push({ crimeType: ct, subType: '' });
+    }
+  }
+
+  const seenPairKeys = new Set<string>();
+  const uniquePairs = pairs.filter((p) => {
+    const key = `${p.crimeType.toLowerCase()}:::${p.subType.toLowerCase()}`;
+    if (seenPairKeys.has(key)) return false;
+    seenPairKeys.add(key);
+    return true;
+  });
+
+  return uniquePairs;
+}
+
+/**
+ * Return non-deleted checklist_items that have a non-empty step_code AND are
+ * linked through checklist_item_subtypes to any of the given pairs (DISTINCT, ORDER BY sort_order).
+ */
+export async function getPlaybookStepsForPairs(
+  pairs: SubtypePair[]
+): Promise<ChecklistItem[]> {
+  if (pairs.length === 0) return [];
+  const db = await getDatabase();
+
+  const whereClauses = pairs.map(() =>
+    `(LOWER(TRIM(s.crime_type))=LOWER(TRIM(?)) AND LOWER(TRIM(s.crime_subtype))=LOWER(TRIM(?)))`
+  ).join(' OR ');
+  const params: string[] = [];
+  for (const p of pairs) {
+    params.push(p.crimeType, p.subType);
+  }
+
+  return db.getAllAsync<ChecklistItem>(
+    `SELECT DISTINCT ci.*
+     FROM checklist_items ci
+     INNER JOIN checklist_item_subtypes s ON s.checklist_item_id = ci.id
+     WHERE ci.deleted_at IS NULL
+       AND ci.step_code IS NOT NULL
+       AND TRIM(ci.step_code) != ''
+       AND (${whereClauses})
+     ORDER BY ci.sort_order ASC, ci.task_name ASC`,
+    params
+  );
+}
+
+/**
+ * Load a single checklist item by its unique step_code.
+ */
+export async function getChecklistItemByStepCode(
+  stepCode: string
+): Promise<ChecklistItem | null> {
+  if (!stepCode) return null;
+  const db = await getDatabase();
+  const row = await db.getFirstAsync<ChecklistItem>(
+    `SELECT * FROM checklist_items
+     WHERE deleted_at IS NULL AND step_code = ?
+     LIMIT 1`,
+    [stepCode.trim()]
+  );
+  return row ?? null;
 }

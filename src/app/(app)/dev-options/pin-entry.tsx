@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { usePreventScreenCapture } from 'expo-screen-capture';
 import { T } from '@/lib/typography';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Terminal, ChevronLeft, Delete } from 'lucide-react-native';
 import {
@@ -93,6 +93,7 @@ function useShake() {
 
 // ── Screen ────────────────────────────────────────────────────────────────────
 export default function PinEntryScreen() {
+  const { returnTo } = useLocalSearchParams<{ returnTo?: string }>();
   // No __DEV__ gate — the PIN is the security boundary, not the build type.
 
   // Prevent screenshots while the PIN screen is visible — this screen shows
@@ -148,7 +149,7 @@ export default function PinEntryScreen() {
         const ok = await verifyPin(next);
         if (ok) {
           _addAudit({ action: 'Developer PIN Verified', section: 'PIN Entry', outcome: 'success' });
-          router.replace('/(app)/dev-options' as never);
+          router.replace((returnTo ? decodeURIComponent(returnTo) : '/(app)/dev-options') as never);
         } else {
           shake();
           setPin('');

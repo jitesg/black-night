@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, FlatList, Pressable, ScrollView, Text, View,
+  ActivityIndicator, FlatList, KeyboardAvoidingView, Pressable, ScrollView, Text, View,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -62,6 +63,7 @@ const SECTIONS: Section[] = [
 ];
 
 function HSItem({ person, gpId, onDelete }: { person: Person; gpId: string; onDelete: () => void }) {
+  const { t } = useTranslation();
   return (
     <View className="py-3 border-b border-border">
       <View className="flex-row items-start gap-3">
@@ -88,7 +90,7 @@ function HSItem({ person, gpId, onDelete }: { person: Person; gpId: string; onDe
         className="ml-11 mt-2 flex-row items-center gap-1 active:opacity-60"
       >
         <Edit size={12} color="#2D52B8" />
-        <Text className="text-xs text-primary">Edit History Sheeter</Text>
+        <Text className="text-xs text-primary">{t('halka.detail.editHS')}</Text>
       </Pressable>
     </View>
   );
@@ -122,6 +124,7 @@ function PersonItem({ person, onDelete }: { person: Person; onDelete: () => void
 }
 
 function PlaceItem({ place, gpId, onDelete }: { place: ReligiousPlace; gpId: string; onDelete: () => void }) {
+  const { t } = useTranslation();
   return (
     <View className="py-3 border-b border-border">
       <View className="flex-row items-start gap-3">
@@ -142,13 +145,14 @@ function PlaceItem({ place, gpId, onDelete }: { place: ReligiousPlace; gpId: str
         className="ml-11 mt-2 flex-row items-center gap-1 active:opacity-60"
       >
         <Edit size={12} color="#2D52B8" />
-        <Text className="text-xs text-primary">Manage Authority & Events</Text>
+        <Text className="text-xs text-primary">{t('halka.detail.manageAuthEvents')}</Text>
       </Pressable>
     </View>
   );
 }
 
 function InstitutionItem({ inst, gpId, onDelete }: { inst: SocialInstitution; gpId: string; onDelete: () => void }) {
+  const { t } = useTranslation();
   return (
     <View className="py-3 border-b border-border">
       <View className="flex-row items-start gap-3">
@@ -169,13 +173,14 @@ function InstitutionItem({ inst, gpId, onDelete }: { inst: SocialInstitution; gp
         className="ml-11 mt-2 flex-row items-center gap-1 active:opacity-60"
       >
         <Edit size={12} color="#2D52B8" />
-        <Text className="text-xs text-primary">Manage Head & Staff</Text>
+        <Text className="text-xs text-primary">{t('halka.detail.manageHeadStaff')}</Text>
       </Pressable>
     </View>
   );
 }
 
 function ShopItem({ shop, onDelete }: { shop: LiquorShop; onDelete: () => void }) {
+  const { t } = useTranslation();
   return (
     <View className="py-3 border-b border-border flex-row items-start gap-3">
       <View className="w-8 h-8 rounded-full bg-secondary items-center justify-center mt-0.5">
@@ -184,7 +189,7 @@ function ShopItem({ shop, onDelete }: { shop: LiquorShop; onDelete: () => void }
       <View className="flex-1">
         <Text className="text-sm font-semibold text-foreground">{shop.shop_name}</Text>
         <Badge label={shop.shop_type} color="#7C3AED" />
-        <Text className="text-xs text-muted-foreground mt-0.5">Owner: {shop.owner_name}</Text>
+        <Text className="text-xs text-muted-foreground mt-0.5">{t('halka.detail.owner', { name: shop.owner_name })}</Text>
         {shop.mobile ? <Text className="text-xs text-muted-foreground">{shop.mobile}</Text> : null}
       </View>
       <Pressable onPress={onDelete} className="p-1.5 active:opacity-60">
@@ -195,6 +200,7 @@ function ShopItem({ shop, onDelete }: { shop: LiquorShop; onDelete: () => void }
 }
 
 function HamletItem({ hamlet, onDelete }: { hamlet: Hamlet; onDelete: () => void }) {
+  const { t } = useTranslation();
   return (
     <View className="py-3 border-b border-border flex-row items-center gap-3">
       <View className="w-8 h-8 rounded-full bg-secondary items-center justify-center">
@@ -203,7 +209,7 @@ function HamletItem({ hamlet, onDelete }: { hamlet: Hamlet; onDelete: () => void
       <View className="flex-1">
         <Text className="text-sm font-semibold text-foreground">{hamlet.name}</Text>
         {hamlet.population ? (
-          <Text className="text-xs text-muted-foreground">Population: {hamlet.population}</Text>
+          <Text className="text-xs text-muted-foreground">{t('halka.detail.population', { count: hamlet.population })}</Text>
         ) : null}
       </View>
       <Pressable onPress={onDelete} className="p-1.5 active:opacity-60">
@@ -226,6 +232,7 @@ interface SectionData {
 }
 
 export default function GPDetailScreen() {
+  const { t } = useTranslation();
   const { gpId, section } = useLocalSearchParams<{ gpId: string; section?: string }>();
 
   // If navigated from analytics-list with a ?section= param, open that section.
@@ -358,7 +365,7 @@ export default function GPDetailScreen() {
       case 'attachments':
         return (
           <View className="py-4 items-center">
-            <Text className="text-sm text-muted-foreground">Attachment engine integration coming soon</Text>
+            <Text className="text-sm text-muted-foreground">{t('halka.detail.attachmentsComingSoon')}</Text>
           </View>
         );
     }
@@ -376,10 +383,10 @@ export default function GPDetailScreen() {
     <View className="flex-1 bg-background">
       <AppHeader
         title={gp?.name ?? 'Gram Panchayat'}
-        subtitle="My Halka"
+        subtitle={t('halka.title')}
         showBack
         actions={
-          <HeaderIconBtn icon={Edit2} onPress={() => router.push(`/(app)/halka/add-gp?editId=${gpId}` as never)} label="Edit GP" />
+          <HeaderIconBtn icon={Edit2} onPress={() => router.push(`/(app)/halka/add-gp?editId=${gpId}` as never)} label={t('halka.detail.editGP')} />
         }
       />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
@@ -397,6 +404,7 @@ export default function GPDetailScreen() {
           const Icon = section.icon;
           const isOpen = expanded.has(section.key);
           const count = getCount(section.key);
+          const title = t('halka.section.' + section.key);
 
           return (
             <View
@@ -415,7 +423,7 @@ export default function GPDetailScreen() {
                 >
                   <Icon size={18} color={section.color} />
                 </View>
-                <Text className="flex-1 text-sm font-semibold text-foreground">{section.title}</Text>
+                <Text className="flex-1 text-sm font-semibold text-foreground">{title}</Text>
                 {count > 0 && (
                   <View className="bg-primary rounded-full w-5 h-5 items-center justify-center">
                     <Text className="text-xs text-primary-foreground font-bold">{count}</Text>
@@ -433,13 +441,13 @@ export default function GPDetailScreen() {
                       className="flex-row items-center gap-2 py-3 active:opacity-60"
                     >
                       <Plus size={15} color="#2D52B8" />
-                      <Text className="text-sm text-primary font-medium">Add {section.title}</Text>
+                      <Text className="text-sm text-primary font-medium">{t('halka.detail.addSection', { title })}</Text>
                     </Pressable>
                   )}
                   {renderSectionContent(section.key)}
                   {count === 0 && section.key !== 'attachments' && (
                     <Text className="text-xs text-muted-foreground py-3 text-center">
-                      No {section.title.toLowerCase()} added yet
+                      {t('halka.detail.noSectionYet', { title: title.toLowerCase() })}
                     </Text>
                   )}
                 </View>
@@ -454,50 +462,55 @@ export default function GPDetailScreen() {
       {/* "How many HS?" prompt */}
       <AlertDialog open={hsCountPrompt} onOpenChange={(v) => { if (!v) setHsCountPrompt(false); }}>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Add History Sheeters</AlertDialogTitle>
-            <AlertDialogDescription>
-              How many History Sheeters do you want to add?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
+          <KeyboardAvoidingView
+            behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
+            style={{ width: '100%' }}
+          >
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('halka.detail.addHSTitle')}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t('halka.detail.addHSDesc')}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
 
-          {/* Counter row */}
-          <View className="flex-row items-center justify-center gap-5 py-2">
-            <Pressable
-              onPress={() => setHsCount((v) => String(Math.max(1, parseInt(v || '1', 10) - 1)))}
-              className="w-10 h-10 rounded-xl bg-secondary items-center justify-center active:opacity-60"
-            >
-              <Text className="text-xl font-bold text-foreground">−</Text>
-            </Pressable>
-            <Input
-              type="number"
-              value={hsCount}
-              onChangeText={setHsCount}
-              maxLength={2}
-              style={{ width: 56 }}
-            />
-            <Pressable
-              onPress={() => setHsCount((v) => String(Math.min(10, parseInt(v || '1', 10) + 1)))}
-              className="w-10 h-10 rounded-xl bg-secondary items-center justify-center active:opacity-60"
-            >
-              <Text className="text-xl font-bold text-foreground">+</Text>
-            </Pressable>
-          </View>
+            {/* Counter row */}
+            <View className="flex-row items-center justify-center gap-5 py-2">
+              <Pressable
+                onPress={() => setHsCount((v) => String(Math.max(1, parseInt(v || '1', 10) - 1)))}
+                className="w-10 h-10 rounded-xl bg-secondary items-center justify-center active:opacity-60"
+              >
+                <Text className="text-xl font-bold text-foreground">−</Text>
+              </Pressable>
+              <Input
+                type="number"
+                value={hsCount}
+                onChangeText={setHsCount}
+                maxLength={2}
+                style={{ width: 56 }}
+              />
+              <Pressable
+                onPress={() => setHsCount((v) => String(Math.min(10, parseInt(v || '1', 10) + 1)))}
+                className="w-10 h-10 rounded-xl bg-secondary items-center justify-center active:opacity-60"
+              >
+                <Text className="text-xl font-bold text-foreground">+</Text>
+              </Pressable>
+            </View>
 
-          <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setHsCountPrompt(false)}>
-              <Text>Cancel</Text>
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onPress={() => {
-                setHsCountPrompt(false);
-                const n = Math.min(Math.max(parseInt(hsCount || '1', 10) || 1, 1), 10);
-                router.push(`/(app)/halka/${gpId}/add-person?type=${PERSON_TYPES.HISTORY_SHEETER}&count=${n}` as never);
-              }}
-            >
-              <Text className="text-primary-foreground font-semibold">Continue</Text>
-            </AlertDialogAction>
-          </AlertDialogFooter>
+            <AlertDialogFooter>
+              <AlertDialogCancel onPress={() => setHsCountPrompt(false)}>
+                <Text>{t('common.cancel')}</Text>
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onPress={() => {
+                  setHsCountPrompt(false);
+                  const n = Math.min(Math.max(parseInt(hsCount || '1', 10) || 1, 1), 10);
+                  router.push(`/(app)/halka/${gpId}/add-person?type=${PERSON_TYPES.HISTORY_SHEETER}&count=${n}` as never);
+                }}
+              >
+                <Text className="text-primary-foreground font-semibold">{t('halka.detail.continue')}</Text>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </KeyboardAvoidingView>
         </AlertDialogContent>
       </AlertDialog>
     </View>

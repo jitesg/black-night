@@ -9,6 +9,13 @@ export const CREATE_TABLES_SQL = `
     applied_at     INTEGER NOT NULL DEFAULT (strftime('%s','now'))
   );
 
+  -- app_settings: key-value storage table for system tokens, seed tracking, and app flags.
+  CREATE TABLE IF NOT EXISTS app_settings (
+    key        TEXT PRIMARY KEY,
+    value      TEXT NOT NULL,
+    updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))
+  );
+
   CREATE TABLE IF NOT EXISTS workspace_settings (
     id TEXT PRIMARY KEY DEFAULT 'default',
     police_station TEXT NOT NULL DEFAULT '',
@@ -335,6 +342,12 @@ export const CREATE_TABLES_SQL = `
     deleted_at INTEGER,
     version INTEGER NOT NULL DEFAULT 1,
     sync_status TEXT NOT NULL DEFAULT 'pending'
+  );
+
+  CREATE TABLE IF NOT EXISTS knowledge_notes (
+    entry_id TEXT PRIMARY KEY,
+    note TEXT NOT NULL,
+    updated_at INTEGER NOT NULL
   );
 
   CREATE TABLE IF NOT EXISTS investigation_checklists (
@@ -696,6 +709,42 @@ export const CREATE_TABLES_SQL = `
   CREATE INDEX IF NOT EXISTS idx_surveillance_gp_id     ON surveillance_targets(gp_id);
   CREATE INDEX IF NOT EXISTS idx_surveillance_deleted_at ON surveillance_targets(deleted_at);
 
+  -- Reminders table
+  CREATE TABLE IF NOT EXISTS reminders (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    due_at INTEGER NOT NULL,
+    repeat_mode TEXT NOT NULL DEFAULT 'once',
+    sound TEXT NOT NULL DEFAULT 'default',
+    notification_id TEXT,
+    is_completed INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    deleted_at INTEGER
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_reminders_due_at      ON reminders(due_at);
+  CREATE INDEX IF NOT EXISTS idx_reminders_completed   ON reminders(is_completed);
+  CREATE INDEX IF NOT EXISTS idx_reminders_deleted_at  ON reminders(deleted_at);
+
+  -- ── v291: AI Learning Patterns (Level-5 Learning Engine) ──────────────────
+  CREATE TABLE IF NOT EXISTS ai_learning_patterns (
+    id TEXT PRIMARY KEY,
+    pattern_type TEXT NOT NULL,
+    description TEXT NOT NULL,
+    crime_type TEXT,
+    trigger_conditions TEXT NOT NULL,
+    recommended_action TEXT NOT NULL,
+    confirmation_count INTEGER NOT NULL DEFAULT 0,
+    rejection_count INTEGER NOT NULL DEFAULT 0,
+    confidence_boost INTEGER NOT NULL DEFAULT 0,
+    last_updated_at INTEGER NOT NULL,
+    is_active INTEGER NOT NULL DEFAULT 0
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_ai_learning_patterns_active ON ai_learning_patterns(is_active);
+
   -- ── Performance indexes ────────────────────────────────────────────────────
   -- firs: filter by status, sort by created_at, look up by fir_number
   CREATE INDEX IF NOT EXISTS idx_firs_status      ON firs(status);
@@ -750,6 +799,42 @@ export const CREATE_TABLES_SQL = `
   CREATE INDEX IF NOT EXISTS idx_phrase_category          ON phrase_library(category);
   CREATE INDEX IF NOT EXISTS idx_phrase_deleted_at        ON phrase_library(deleted_at);
   CREATE INDEX IF NOT EXISTS idx_phrase_usage             ON phrase_library(usage_count);
+
+  -- ── Notification Log ───────────────────────────────────────────────────────
+  CREATE TABLE IF NOT EXISTS notification_log (
+    id TEXT PRIMARY KEY,
+    ref_type TEXT NOT NULL,
+    ref_id TEXT NOT NULL,
+    notif_kind TEXT NOT NULL,
+    notified_at INTEGER NOT NULL,
+    UNIQUE(ref_type, ref_id, notif_kind)
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_notif_log_lookup ON notification_log(ref_type, ref_id, notif_kind);
+
+  -- ── Task L30: SOP Checklist ─────────────────────────────────────────────
+  CREATE TABLE IF NOT EXISTS sop_checklist (
+    id TEXT PRIMARY KEY,
+    sop_id TEXT NOT NULL,
+    case_id TEXT,
+    step_id TEXT NOT NULL,
+    done INTEGER NOT NULL DEFAULT 0,
+    note TEXT,
+    updated_at INTEGER NOT NULL,
+    UNIQUE(sop_id, IFNULL(case_id,''), step_id)
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_sop_checklist_lookup ON sop_checklist(sop_id, case_id);
+  CREATE INDEX IF NOT EXISTS idx_sop_checklist_case   ON sop_checklist(case_id);
+
+  -- ── Task L30/L31: SOP Images (optional local image cache table) ──────────
+  CREATE TABLE IF NOT EXISTS sop_images (
+    id TEXT PRIMARY KEY,
+    w INTEGER,
+    h INTEGER,
+    mime TEXT,
+    data TEXT
+  );
 `;
 
 // Person types

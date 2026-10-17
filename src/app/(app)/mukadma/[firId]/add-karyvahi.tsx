@@ -11,13 +11,16 @@ import { useState } from 'react';
 import { logger } from '@/lib/logger';
 import { View, Text, ScrollView, Pressable, KeyboardAvoidingView } from 'react-native';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { useLocalSearchParams, router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { createKaryvahi, getNextKaryvahiSortOrder } from '@/lib/db/firKaryvahiRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 
 export default function AddKaryvahiScreen() {
   const { firId } = useLocalSearchParams<{ firId: string }>();
+  const { t } = useTranslation();
 
   const [name, setName]             = useState('');
   const [precautions, setPrecautions] = useState('');
@@ -25,8 +28,8 @@ export default function AddKaryvahiScreen() {
   const [error, setError]           = useState('');
 
   const handleSave = async () => {
-    if (!name.trim()) { setError('Karyvahi name is required'); return; }
-    if (!firId) { setError('FIR ID missing — go back and retry'); return; }
+    if (!name.trim()) { setError(t('fir.karyvahiNameRequired')); return; }
+    if (!firId) { setError(t('fir.firIdMissing')); return; }
     setError('');
     setSaving(true);
     try {
@@ -44,7 +47,7 @@ export default function AddKaryvahiScreen() {
       router.back();
     } catch (e) {
       logger.error('[AddKaryvahi] save error:', e);
-      setError('Failed to save. Please try again.');
+      setError(t('fir.saveError'));
     } finally {
       setSaving(false);
     }
@@ -52,11 +55,11 @@ export default function AddKaryvahiScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       className="flex-1 bg-background"
     >
       <AppHeader
-        title="Add Karyvahi"
+        title={t('fir.addKaryvahi')}
         showBack
         rightActions={
           <Pressable
@@ -65,7 +68,7 @@ export default function AddKaryvahiScreen() {
             className="rounded-xl px-4 py-2 active:opacity-70"
             style={{ backgroundColor: '#6366F1' }}
           >
-            <Text className="text-white text-sm font-bold">{saving ? 'Saving…' : 'Save'}</Text>
+            <Text className="text-white text-sm font-bold">{saving ? t('common.saving') : t('common.save')}</Text>
           </Pressable>
         }
       />
@@ -82,28 +85,29 @@ export default function AddKaryvahiScreen() {
 
         <View className="gap-1.5">
           <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Karyvahi Name *
+            {t('fir.karyvahiName')} *
           </Text>
           <Input
             value={name}
             onChangeText={setName}
-            placeholder="Enter karyvahi name"
+            placeholder={t('fir.karyvahiNamePlaceholder')}
             returnKeyType="next"
           />
         </View>
 
         <View className="gap-1.5">
           <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Brief Description
+            {t('fir.briefDescription')}
           </Text>
           <DocumentEditor
             value={precautions}
             onChangeText={setPrecautions}
-            title="Brief Description"
-            placeholder="Describe purpose or notes for this karyvahi…"
+            title={t('fir.briefDescription')}
+            placeholder={t('fir.briefDescriptionPlaceholder')}
             minHeight={120}
-            accessibilityLabel="Karyvahi brief description editor"
+            accessibilityLabel={t('fir.karyvahiBriefDescAccessibility')}
           />
+          <FardCheckButton text={precautions} title={name} className="mt-1" />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

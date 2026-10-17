@@ -3,12 +3,14 @@
  */
 import { useState } from 'react';
 import { View, Text, Pressable, ScrollView, Modal } from 'react-native';
-import { Clock, Music, RefreshCw, ChevronDown, Check } from 'lucide-react-native';
+import { useRouter, type RelativePathString } from 'expo-router';
+import { Clock, Music, RefreshCw, ChevronDown, ChevronRight, Check, Bell } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // Generic inline dropdown picker
-function OptionPicker<T extends string | number>({
+export function OptionPicker<T extends string | number>({
   label, value, options, onSelect, desc,
 }: {
   label: string;
@@ -59,22 +61,40 @@ type SnoozeVal = SettingsState['reminderSnooze'];
 type SoundVal = SettingsState['reminderSound'];
 type RepeatVal = SettingsState['reminderRepeat'];
 
-const SOUND_OPTIONS: { value: SoundVal; label: string }[] = [
+export const SOUND_OPTIONS: { value: SoundVal; label: string }[] = [
   { value: 'default', label: 'Default' },
   { value: 'bell', label: 'Bell' },
   { value: 'chime', label: 'Chime' },
   { value: 'silent', label: 'Silent' },
 ];
-const SNOOZE_OPTIONS: { value: SnoozeVal; label: string }[] = [
+export const SNOOZE_OPTIONS: { value: SnoozeVal; label: string }[] = [
   { value: 5, label: '5 minutes' },
   { value: 10, label: '10 minutes' },
   { value: 15, label: '15 minutes' },
   { value: 30, label: '30 minutes' },
 ];
-const REPEAT_OPTIONS: { value: RepeatVal; label: string }[] = [
+export const REPEAT_OPTIONS: { value: RepeatVal; label: string }[] = [
   { value: 'once', label: 'Once' },
   { value: 'daily', label: 'Daily' },
   { value: 'weekly', label: 'Weekly' },
+];
+
+export const SOUND_OPTION_KEYS: { value: SoundVal; labelKey: string }[] = [
+  { value: 'default', labelKey: 'settings.reminders.soundDefault' },
+  { value: 'bell', labelKey: 'settings.reminders.soundBell' },
+  { value: 'chime', labelKey: 'settings.reminders.soundChime' },
+  { value: 'silent', labelKey: 'settings.reminders.soundSilent' },
+];
+export const SNOOZE_OPTION_KEYS: { value: SnoozeVal; labelKey: string }[] = [
+  { value: 5, labelKey: 'settings.reminders.snooze5' },
+  { value: 10, labelKey: 'settings.reminders.snooze10' },
+  { value: 15, labelKey: 'settings.reminders.snooze15' },
+  { value: 30, labelKey: 'settings.reminders.snooze30' },
+];
+export const REPEAT_OPTION_KEYS: { value: RepeatVal; labelKey: string }[] = [
+  { value: 'once', labelKey: 'settings.reminders.repeatOnce' },
+  { value: 'daily', labelKey: 'settings.reminders.repeatDaily' },
+  { value: 'weekly', labelKey: 'settings.reminders.repeatWeekly' },
 ];
 const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
   const h = Math.floor(i / 2).toString().padStart(2, '0');
@@ -87,12 +107,38 @@ const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
 
 export default function RemindersScreen() {
   const { settings, update } = useSettingsStore();
+  const router = useRouter();
+  const { t } = useTranslation();
+
+  const soundOptions = SOUND_OPTION_KEYS.map((o) => ({ value: o.value, label: t(o.labelKey) }));
+  const snoozeOptions = SNOOZE_OPTION_KEYS.map((o) => ({ value: o.value, label: t(o.labelKey) }));
+  const repeatOptions = REPEAT_OPTION_KEYS.map((o) => ({ value: o.value, label: t(o.labelKey) }));
+
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Reminders" showBack />
+      <AppHeader title={t('settings.reminders.title')} showBack />
 
       <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Reminder Preferences</Text>
+        {/* Navigation to My Reminders */}
+        <View className="mb-6">
+          <View className="bg-card border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
+            <Pressable
+              onPress={() => router.push('/(app)/reminders' as RelativePathString)}
+              className="px-4 py-4 flex-row items-center gap-3 active:opacity-70"
+            >
+              <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: '#2563EB15' }}>
+                <Bell size={18} color="#2563EB" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-sm font-semibold text-foreground">{t('settings.reminders.myReminders')}</Text>
+                <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.reminders.myRemindersDesc')}</Text>
+              </View>
+              <ChevronRight size={18} color="#6B7280" />
+            </Pressable>
+          </View>
+        </View>
+
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.reminders.preferences')}</Text>
         <View className="bg-card border border-border rounded-2xl overflow-hidden divide-y divide-border" style={{ borderCurve: 'continuous' }}>
 
           {/* Default time */}
@@ -101,12 +147,12 @@ export default function RemindersScreen() {
               <Clock size={16} color='#2563EB' />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Default Reminder Time</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Applied to new reminders without a specific time</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.reminders.defaultTime')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.reminders.defaultTimeDesc')}</Text>
             </View>
           </View>
           <OptionPicker
-            label="Time"
+            label={t('settings.reminders.timeLabel')}
             value={settings.reminderTime}
             options={TIME_OPTIONS}
             onSelect={(v) => update('reminderTime', v)}
@@ -118,14 +164,14 @@ export default function RemindersScreen() {
               <Music size={16} color="#1D4ED8" />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Reminder Sound</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Alert sound for reminder notifications</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.reminders.sound')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.reminders.soundDesc')}</Text>
             </View>
           </View>
           <OptionPicker
-            label="Sound"
+            label={t('settings.reminders.sound')}
             value={settings.reminderSound}
-            options={SOUND_OPTIONS}
+            options={soundOptions}
             onSelect={(v) => update('reminderSound', v as SoundVal)}
           />
 
@@ -135,14 +181,14 @@ export default function RemindersScreen() {
               <Clock size={16} color="#10B981" />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Snooze Duration</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Time to delay when snoozing a reminder</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.reminders.snooze')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.reminders.snoozeDesc')}</Text>
             </View>
           </View>
           <OptionPicker
-            label="Snooze Duration"
+            label={t('settings.reminders.snooze')}
             value={settings.reminderSnooze}
-            options={SNOOZE_OPTIONS}
+            options={snoozeOptions}
             onSelect={(v) => update('reminderSnooze', v as SnoozeVal)}
           />
 
@@ -152,14 +198,14 @@ export default function RemindersScreen() {
               <RefreshCw size={16} color="#7C3AED" />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Repeat Settings</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Default repeat frequency for new reminders</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.reminders.repeat')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.reminders.repeatDesc')}</Text>
             </View>
           </View>
           <OptionPicker
-            label="Repeat"
+            label={t('settings.reminders.repeat')}
             value={settings.reminderRepeat}
-            options={REPEAT_OPTIONS}
+            options={repeatOptions}
             onSelect={(v) => update('reminderRepeat', v as RepeatVal)}
           />
         </View>

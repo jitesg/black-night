@@ -36,12 +36,26 @@ import {
   type PPDashboardAnalytics,
   type PetitionType,
 } from '@/lib/db/prarthnaPatraRepo';
+import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 
 // ── Filter types ─────────────────────────────────────────────────────────
 const ACCENT = '#1E3A5F';
 type StatusFilter = 'All' | 'Pending' | 'Nistarit' | 'Finished';
 type TimeFilter = 'Today' | 'This Week' | 'Overdue' | null;
+
+const STATUS_LABEL_KEY = {
+  All: 'common.all',
+  Pending: 'fir.list.filterPending',
+  Nistarit: 'prarthnaPatra.status.nistarit',
+  Finished: 'fir.list.filterFinished',
+} as const;
+
+const TIME_FILTER_KEYS: Record<NonNullable<TimeFilter>, string> = {
+  'Today': 'filters.today',
+  'This Week': 'filters.thisWeek',
+  'Overdue': 'prarthnaPatra.filters.overdue',
+};
 
 function todayStr() {
   const d = new Date();
@@ -56,31 +70,32 @@ function startOfWeekStr() {
 // ── Status badge ──────────────────────────────────────────────────────────
 
 function StatusBadge({ pp }: { pp: PrarthnaPatra }) {
+  const { t } = useTranslation();
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
   if (pp.status === 'Nistarit') {
     return (
       <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: '#D1FAE5' }}>
-        <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>Nistarit</Text>
+        <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
       </View>
     );
   }
   if (pp.status === 'Finished') {
     return (
       <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: '#EDE9FE' }}>
-        <Text className="text-xs font-semibold" style={{ color: '#5B21B6' }}>Finished</Text>
+        <Text className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{t('fir.list.filterFinished')}</Text>
       </View>
     );
   }
   if (days <= 0) {
     return (
       <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: '#FEE2E2' }}>
-        <Text className="text-xs font-semibold" style={{ color: '#991B1B' }}>Overdue</Text>
+        <Text className="text-xs font-semibold" style={{ color: '#991B1B' }}>{t('prarthnaPatra.status.overdue')}</Text>
       </View>
     );
   }
   return (
     <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: '#FEF3C7' }}>
-      <Text className="text-xs font-semibold" style={{ color: '#92400E' }}>Pending</Text>
+      <Text className="text-xs font-semibold" style={{ color: '#92400E' }}>{t('fir.list.filterPending')}</Text>
     </View>
   );
 }
@@ -94,6 +109,7 @@ function AnalyticsCard({
   finished: number; dueToday?: number; overdue?: number;
   selected?: boolean; onPress?: () => void;
 }) {
+  const { t } = useTranslation();
   const hasActionWorkflow = finished > 0 || (dueToday !== undefined);
   return (
     <Pressable
@@ -109,28 +125,28 @@ function AnalyticsCard({
       <Text className="text-xs font-semibold text-muted-foreground mb-1.5" numberOfLines={1}>{label}</Text>
       <View className="flex-row items-baseline gap-1">
         <Text className="text-lg font-bold text-foreground">{total}</Text>
-        <Text className="text-xs text-muted-foreground">total</Text>
+        <Text className="text-xs text-muted-foreground">{t('prarthnaPatra.analytics.statTotal').toLowerCase()}</Text>
       </View>
       <View className="flex-row gap-2 mt-1.5 pt-1.5 border-t border-border flex-wrap">
         <View>
           <Text className="text-xs font-semibold" style={{ color: '#92400E' }}>{pending}</Text>
-          <Text style={{ ...T.micro, color: '#9CA3AF' }}>Pend.</Text>
+          <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('fir.list.filterPending')}</Text>
         </View>
         {hasActionWorkflow ? (
           <View>
             <Text className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{finished}</Text>
-            <Text style={{ ...T.micro, color: '#9CA3AF' }}>Done</Text>
+            <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('prarthnaPatra.analytics.statDone')}</Text>
           </View>
         ) : (
           <View>
             <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{nistarit}</Text>
-            <Text style={{ ...T.micro, color: '#9CA3AF' }}>Nist.</Text>
+            <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('prarthnaPatra.analytics.statNist')}</Text>
           </View>
         )}
         {overdue !== undefined && overdue > 0 && (
           <View>
             <Text className="text-xs font-semibold" style={{ color: '#DC2626' }}>{overdue}</Text>
-            <Text style={{ ...T.micro, color: '#9CA3AF' }}>OD</Text>
+            <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('prarthnaPatra.analytics.statOd')}</Text>
           </View>
         )}
       </View>
@@ -145,13 +161,16 @@ const PPCard = memo(function PPCard({
 }: {
   pp: PrarthnaPatra; query: string; highlight: boolean; typoTolerant?: boolean; onDelete: (id: string) => void;
 }) {
+  const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
 
   const dayLabel = (pp.status === 'Nistarit' || pp.status === 'Finished')
-    ? pp.status
-    : days > 0 ? `${days}d left` : days === 0 ? 'Due today' : `${Math.abs(days)}d overdue`;
+    ? t(STATUS_LABEL_KEY[pp.status])
+    : days > 0 ? t('prarthnaPatra.dayLabel.daysLeft', { count: days })
+    : days === 0 ? t('prarthnaPatra.dayLabel.dueToday')
+    : t('prarthnaPatra.dayLabel.daysOverdue', { count: Math.abs(days) });
   const dayColor = pp.status === 'Nistarit' ? '#6B7280'
     : pp.status === 'Finished' ? '#5B21B6'
     : days > 0 ? '#2D52B8' : '#DC2626';
@@ -181,8 +200,8 @@ const PPCard = memo(function PPCard({
         {/* Complainant name from registration number context */}
         <View className="flex-row items-center gap-3">
           <View className="flex-1">
-            <Text className="text-xs text-muted-foreground">Receipt: {pp.date_of_receipt}</Text>
-            <Text className="text-xs text-muted-foreground">Deadline: {pp.deadline_date}</Text>
+            <Text className="text-xs text-muted-foreground">{t('prarthnaPatra.list.receipt', { date: pp.date_of_receipt })}</Text>
+            <Text className="text-xs text-muted-foreground">{t('prarthnaPatra.list.deadline', { date: pp.deadline_date })}</Text>
           </View>
           <Text className="text-xs font-semibold" style={{ color: dayColor }}>{dayLabel}</Text>
         </View>
@@ -193,11 +212,11 @@ const PPCard = memo(function PPCard({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{pp.registration_number}</AlertDialogTitle>
-            <AlertDialogDescription>Select an action</AlertDialogDescription>
+            <AlertDialogDescription>{t('prarthnaPatra.list.menuTitle')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setMenuOpen(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               onPress={() => {
@@ -205,7 +224,7 @@ const PPCard = memo(function PPCard({
                 router.push(`/(app)/prarthna-patra/${pp.id}` as never);
               }}
             >
-              <Text>View</Text>
+              <Text>{t('common.view')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
               onPress={() => {
@@ -213,13 +232,13 @@ const PPCard = memo(function PPCard({
                 router.push(`/(app)/prarthna-patra/add?editId=${pp.id}` as never);
               }}
             >
-              <Text>Edit</Text>
+              <Text>{t('common.edit')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
               className="bg-destructive"
               onPress={() => { setMenuOpen(false); setDeleteOpen(true); }}
             >
-              <Text className="text-destructive-foreground">Delete</Text>
+              <Text className="text-destructive-foreground">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -229,20 +248,20 @@ const PPCard = memo(function PPCard({
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Petition?</AlertDialogTitle>
+            <AlertDialogTitle>{t('prarthnaPatra.list.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete {pp.registration_number}. This action cannot be undone.
+              {t('prarthnaPatra.list.deleteDesc', { regNo: pp.registration_number })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setDeleteOpen(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive"
               onPress={() => { setDeleteOpen(false); onDelete(pp.id); }}
             >
-              <Text className="text-destructive-foreground">Delete</Text>
+              <Text className="text-destructive-foreground">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -254,6 +273,7 @@ const PPCard = memo(function PPCard({
 // ── Main screen ───────────────────────────────────────────────────────────
 
 export default function PrarthnaPatraScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const fabBottom = Math.max(insets.bottom + 16, 24);
   const { settings } = useSettingsStore();
@@ -407,14 +427,14 @@ export default function PrarthnaPatraScreen() {
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <AppHeader
-        title="Prarthna Patra"
-        subtitle={`${filtered.length} petition${filtered.length !== 1 ? 's' : ''}`}
+        title={t('prarthnaPatra.title')}
+        subtitle={t('prarthnaPatra.list.count', { count: filtered.length })}
         onMenuPress={() => setDrawerOpen(true)}
         actions={
           <HeaderIconBtn
             icon={Plus}
             onPress={() => router.push('/(app)/prarthna-patra/add' as never)}
-            label="Add Petition"
+            label={t('prarthnaPatra.list.addPetition')}
           />
         }
       />
@@ -452,12 +472,12 @@ export default function PrarthnaPatraScreen() {
                   <Pressable
                     onPress={() => setAnalyticsExpanded((v) => !v)}
                     accessibilityRole="button"
-                    accessibilityLabel="Toggle analytics"
+                    accessibilityLabel={t('prarthnaPatra.analytics.toggle')}
                     className="py-1"
                   >
                     <View className="flex-row items-center justify-between">
                       <Text className="text-xs text-muted-foreground font-medium tracking-widest uppercase">
-                        Analytics
+                        {t('prarthnaPatra.analytics.title')}
                       </Text>
                       <Animated.View style={chevronStyle}>
                         <ChevronDown size={16} color="#6B7280" />
@@ -468,7 +488,12 @@ export default function PrarthnaPatraScreen() {
                         numberOfLines={1}
                         className="text-xs text-muted-foreground mt-1"
                       >
-                        {`${analytics.overall.total} Total · ${analytics.overall.pending} Pending · ${analytics.overall.nistarit} Nistarit · ${analytics.overall.finished} Finished`}
+                        {t('prarthnaPatra.analytics.summary', {
+                          total: analytics.overall.total,
+                          pending: analytics.overall.pending,
+                          nistarit: analytics.overall.nistarit,
+                          finished: analytics.overall.finished,
+                        })}
                       </Text>
                     )}
                   </Pressable>
@@ -477,7 +502,7 @@ export default function PrarthnaPatraScreen() {
                     <View className="flex-row items-center mt-1.5">
                       <View className="flex-row items-center bg-muted rounded-full pl-2.5 pr-1.5 py-1 border border-border">
                         <Text className="text-xs text-foreground font-medium mr-1.5">
-                          Filtered: {PETITION_TYPE_LABELS[categoryFilter]}
+                          {t('prarthnaPatra.analytics.filtered', { type: PETITION_TYPE_LABELS[categoryFilter] })}
                         </Text>
                         <Pressable
                           onPress={(e) => {
@@ -486,7 +511,7 @@ export default function PrarthnaPatraScreen() {
                           }}
                           hitSlop={6}
                           accessibilityRole="button"
-                          accessibilityLabel="Clear filter"
+                          accessibilityLabel={t('prarthnaPatra.analytics.clearFilter')}
                           className="w-4 h-4 rounded-full bg-muted-foreground/20 items-center justify-center active:opacity-60"
                         >
                           <X size={10} color="#6B7280" />
@@ -508,27 +533,27 @@ export default function PrarthnaPatraScreen() {
                       style={{ borderCurve: 'continuous' }}
                     >
                       <Text className="text-xs text-muted-foreground font-medium uppercase tracking-widest mb-2">
-                        Overall
+                        {t('prarthnaPatra.analytics.overall')}
                       </Text>
                       <View className="flex-row gap-2">
                         <View className="flex-1 items-center">
                           <Text className="text-base font-bold text-foreground">{analytics.overall.total}</Text>
-                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>Total</Text>
+                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>{t('prarthnaPatra.analytics.statTotal')}</Text>
                         </View>
                         <View className="w-px bg-border" />
                         <View className="flex-1 items-center">
                           <Text className="text-base font-bold" style={{ color: '#92400E' }}>{analytics.overall.pending}</Text>
-                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>Pending</Text>
+                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>{t('fir.list.filterPending')}</Text>
                         </View>
                         <View className="w-px bg-border" />
                         <View className="flex-1 items-center">
                           <Text className="text-base font-bold" style={{ color: '#065F46' }}>{analytics.overall.nistarit}</Text>
-                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>Nistarit</Text>
+                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>{t('prarthnaPatra.status.nistarit')}</Text>
                         </View>
                         <View className="w-px bg-border" />
                         <View className="flex-1 items-center">
                           <Text className="text-base font-bold" style={{ color: '#5B21B6' }}>{analytics.overall.finished}</Text>
-                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>Finished</Text>
+                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>{t('fir.list.filterFinished')}</Text>
                         </View>
                       </View>
                     </View>
@@ -565,11 +590,11 @@ export default function PrarthnaPatraScreen() {
               value={query}
               onChangeText={setQuery}
               onSubmitEditing={handleSearchSubmit}
-              placeholder="Search name, registration no., matter, type…"
+              placeholder={t('prarthnaPatra.list.searchPlaceholder')}
               variant="light"
               returnKeyType="search"
               containerStyle={{ marginBottom: T.space.sm }}
-              accessibilityLabel="Search petitions"
+              accessibilityLabel={t('prarthnaPatra.list.searchAccessibility')}
               collapsible
             />
 
@@ -581,10 +606,10 @@ export default function PrarthnaPatraScreen() {
               contentContainerStyle={{ paddingRight: T.space.sm, paddingVertical: 2 }}
             >
               {(['All', 'Pending', 'Nistarit', 'Finished'] as StatusFilter[]).map((f) => (
-                <FilterChip key={f} label={f} active={statusFilter === f} onPress={() => setStatusFilter(f)} />
+                <FilterChip key={f} label={t(STATUS_LABEL_KEY[f])} active={statusFilter === f} onPress={() => setStatusFilter(f)} />
               ))}
-              {([['Today', 'Today'], ['This Week', 'This Week'], ['Overdue', 'Overdue']] as [string, TimeFilter][]).map(([label, val]) => (
-                <FilterChip key={label} label={label} active={timeFilter === val} onPress={() => setTimeFilter((p) => p === val ? null : val)} />
+              {(['Today', 'This Week', 'Overdue'] as NonNullable<TimeFilter>[]).map((val) => (
+                <FilterChip key={val} label={t(TIME_FILTER_KEYS[val])} active={timeFilter === val} onPress={() => setTimeFilter((p) => p === val ? null : val)} />
               ))}
               {PETITION_TYPES.map((type) => (
                 <FilterChip key={type} label={type} active={categoryFilter === type} onPress={() => setCategoryFilter((p) => p === type ? null : type)} />
@@ -593,7 +618,7 @@ export default function PrarthnaPatraScreen() {
 
             {/* List count label */}
             <Text className="text-xs text-muted-foreground font-medium tracking-widest uppercase mt-1 mb-2">
-              {filtered.length} petition{filtered.length !== 1 ? 's' : ''}
+              {t('prarthnaPatra.list.count', { count: filtered.length })}
             </Text>
 
             {loading && <ActivityIndicator className="my-8" />}
@@ -604,11 +629,11 @@ export default function PrarthnaPatraScreen() {
           !loading ? (
             <View className="items-center py-16 gap-3">
               <FileText size={40} color="#9CA3AF" />
-              <Text className="text-base font-semibold text-muted-foreground">No petitions found</Text>
+              <Text className="text-base font-semibold text-muted-foreground">{t('prarthnaPatra.list.emptyTitle')}</Text>
               <Text className="text-sm text-muted-foreground text-center px-8">
                 {query || statusFilter !== 'All' || timeFilter || categoryFilter
-                  ? 'Try adjusting your search or filters'
-                  : 'Tap + to register a new Prarthna Patra'}
+                  ? t('prarthnaPatra.list.emptySearchHint')
+                  : t('prarthnaPatra.list.emptyAddHint')}
               </Text>
             </View>
           ) : null
@@ -622,7 +647,7 @@ export default function PrarthnaPatraScreen() {
         style={{ backgroundColor: ACCENT, borderCurve: 'continuous', bottom: fabBottom }}
       >
         <Plus size={16} color="#fff" />
-        <Text className="text-sm font-bold text-white">Add Petition</Text>
+        <Text className="text-sm font-bold text-white">{t('prarthnaPatra.list.addPetition')}</Text>
       </Pressable>
     </View>
   );

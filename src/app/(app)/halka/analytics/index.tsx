@@ -1,4 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/lib/i18n';
 import { logger } from '@/lib/logger';
 import {
   ActivityIndicator, FlatList, Pressable, Text, View,
@@ -78,7 +80,7 @@ async function loadItems(category: Category): Promise<ListItem[]> {
       const rows: HamletWithGP[] = await getAllHamlets();
       return rows.map((r) => ({
         id: r.id, title: r.name, subtitle: r.gp_name,
-        badge: r.population ? `Pop. ${r.population}` : undefined,
+        badge: r.population ? i18n.t('halka.analytics.popBadge', { count: r.population }) : undefined,
         badgeColor: '#7C3AED', gpId: r.gp_id,
       }));
     }
@@ -192,9 +194,12 @@ function ItemRow({ item, Icon, color, onPress, onEdit, onDelete }: {
 
 // ─── main screen ───────────────────────────────────────────────────────────
 export default function AnalyticsListScreen() {
+  const { t } = useTranslation();
   const { category } = useLocalSearchParams<{ category: string }>();
   const cat = (category as Category) ?? 'gramPanchayats';
   const meta = CATEGORY_META[cat] ?? CATEGORY_META.gramPanchayats;
+  const title = t('halka.category.' + cat + '.title');
+  const emptyMsg = t('halka.category.' + cat + '.emptyMsg');
   const Icon = meta.icon;
 
   const [allItems, setAllItems] = useState<ListItem[]>([]);
@@ -302,7 +307,7 @@ export default function AnalyticsListScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title={meta.title} subtitle="My Halka"
+      <AppHeader title={title} subtitle={t('halka.title')}
         showBack
       />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
@@ -310,9 +315,9 @@ export default function AnalyticsListScreen() {
         <SearchBar
           value={query}
           onChangeText={setQuery}
-          placeholder={`Search ${meta.title.toLowerCase()}…`}
+          placeholder={t('halka.analytics.searchPlaceholder', { title: title.toLowerCase() })}
           variant="navy"
-          accessibilityLabel={`Search ${meta.title}`}
+          accessibilityLabel={t('halka.analytics.searchAccessibility', { title })}
         />
       </View>
 
@@ -345,10 +350,10 @@ export default function AnalyticsListScreen() {
                 <Icon size={26} color={meta.color} />
               </View>
               <Text className="text-base font-semibold text-foreground">
-                {query.trim() ? 'No results found' : meta.emptyMsg}
+                {query.trim() ? t('common.noResults') : emptyMsg}
               </Text>
               {query.trim() ? (
-                <Text className="text-sm text-muted-foreground text-center px-8">Try a different search term</Text>
+                <Text className="text-sm text-muted-foreground text-center px-8">{t('halka.analytics.tryDifferentSearch')}</Text>
               ) : null}
             </View>
           }
@@ -359,19 +364,17 @@ export default function AnalyticsListScreen() {
       <AlertDialog open={deleteTarget !== null} onOpenChange={(v) => { if (!v) setDeleteTarget(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Record</AlertDialogTitle>
+            <AlertDialogTitle>{t('halka.analytics.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete{' '}
-              <Text className="font-semibold text-foreground">{deleteTarget?.title ?? 'this record'}</Text>
-              ? This action cannot be undone.
+              {t('halka.analytics.deleteDesc', { title: deleteTarget?.title ?? t('halka.analytics.thisRecord') })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setDeleteTarget(null)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleDeleteConfirm} className="bg-destructive">
-              <Text className="text-destructive-foreground font-semibold">Delete</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

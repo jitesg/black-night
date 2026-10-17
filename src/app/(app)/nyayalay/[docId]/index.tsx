@@ -47,6 +47,7 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
 function PersonSection({
   persons, label,
 }: { persons: NyayalayDocWithDetails['persons']; label: string }) {
+  const { t } = useTranslation();
   if (!persons.length) return null;
   return (
     <View className="mb-4">
@@ -58,10 +59,10 @@ function PersonSection({
           className="bg-card border border-border rounded-2xl p-4 mb-3"
           style={{ borderCurve: 'continuous' }}>
           <Text className="text-sm font-semibold text-foreground mb-1">{i + 1}. {p.name}</Text>
-          {p.father_name ? <Text className="text-xs text-muted-foreground">Father: {p.father_name}</Text> : null}
-          {p.mobile ? <Text className="text-xs text-muted-foreground">Mobile: {p.mobile}</Text> : null}
-          {p.address ? <Text className="text-xs text-muted-foreground">Address: {p.address}</Text> : null}
-          {p.remarks ? <Text className="text-xs text-muted-foreground">Remarks: {p.remarks}</Text> : null}
+          {p.father_name ? <Text className="text-xs text-muted-foreground">{t('nyayalay.detail.fatherPrefix')}: {p.father_name}</Text> : null}
+          {p.mobile ? <Text className="text-xs text-muted-foreground">{t('nyayalay.detail.mobilePrefix')}: {p.mobile}</Text> : null}
+          {p.address ? <Text className="text-xs text-muted-foreground">{t('nyayalay.detail.addressPrefix')}: {p.address}</Text> : null}
+          {p.remarks ? <Text className="text-xs text-muted-foreground">{t('nyayalay.detail.remarksPrefix')}: {p.remarks}</Text> : null}
         </View>
       ))}
     </View>
@@ -71,6 +72,7 @@ function PersonSection({
 function ReminderPanel({
   doc,
 }: { doc: NyayalayDocWithDetails }) {
+  const { t } = useTranslation();
   const info = computeReminderInfo(
     doc.doc_type, doc.sub_type, doc.deadline_date, doc.status
   );
@@ -84,13 +86,19 @@ function ReminderPanel({
     ? (doc.deadline_date < todayStr() ? '#991B1B' : '#1D4ED8')
     : '#065F46';
 
+  const statusLabelText = info.statusLabel === 'Finished'
+    ? t('fir.list.filterFinished')
+    : info.statusLabel === 'Overdue'
+    ? t('nyayalay.status.overdue')
+    : t('nyayalay.reminder.active');
+
   return (
     <View className="rounded-2xl p-4 mb-4"
       style={{ backgroundColor: bg, borderWidth: 1, borderColor, borderCurve: 'continuous' }}>
       <View className="flex-row items-center gap-2 mb-2">
         <Bell size={14} color={textColor} />
         <Text className="text-xs font-semibold uppercase tracking-widest" style={{ color: textColor }}>
-          Reminder
+          {t('nyayalay.reminder.title')}
         </Text>
       </View>
       <Text className="text-sm font-semibold mb-1" style={{ color: textColor }}>
@@ -100,7 +108,7 @@ function ReminderPanel({
         <View className="rounded-full px-2 py-0.5"
           style={{ backgroundColor: info.isActive ? (doc.deadline_date < todayStr() ? '#FEE2E2' : '#DBEAFE') : '#DCFCE7' }}>
           <Text className="text-xs font-semibold" style={{ color: textColor }}>
-            {info.statusLabel}
+            {statusLabelText}
           </Text>
         </View>
         <Calendar size={12} color={textColor} />
@@ -111,22 +119,23 @@ function ReminderPanel({
 }
 
 function ReportCard({ report }: { report: NyayalayReport }) {
+  const { t } = useTranslation();
   return (
     <View className="bg-card border border-border rounded-2xl p-4 mb-4"
       style={{ borderCurve: 'continuous' }}>
       <View className="flex-row items-center gap-2 mb-3">
         <FileText size={14} color={MODULE_COLOR} />
         <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-          Attached Report
+          {t('nyayalay.report.attachedReport')}
         </Text>
         <View className="rounded-full px-2 py-0.5 ml-auto" style={{ backgroundColor: '#D1FAE5' }}>
-          <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>Saved</Text>
+          <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('nyayalay.report.savedBadge')}</Text>
         </View>
       </View>
       {report.format_title ? (
-        <Text className="text-xs text-muted-foreground mb-1">Template: {report.format_title}</Text>
+        <Text className="text-xs text-muted-foreground mb-1">{t('nyayalay.report.templatePrefix')}: {report.format_title}</Text>
       ) : null}
-      <Text className="text-xs text-muted-foreground mb-2">Date: {report.report_date}</Text>
+      <Text className="text-xs text-muted-foreground mb-2">{t('nyayalay.report.datePrefix')}: {report.report_date}</Text>
       <Text className="text-sm text-foreground leading-6" numberOfLines={6}>
         {stripHtmlTags(report.report_content)}
       </Text>
@@ -136,12 +145,26 @@ function ReportCard({ report }: { report: NyayalayReport }) {
 
 // ── Checklist Section (High Court) ────────────────────────────────────────
 
+const CHECKLIST_KEY_MAP: Record<string, string> = {
+  'bail-report': 'nyayalay.checklist.bailReport',
+  'vadi-suchna': 'nyayalay.checklist.vadiSuchna',
+  'dcrb-report': 'nyayalay.checklist.dcrbReport',
+  'status-report': 'nyayalay.checklist.statusReport',
+};
+const CHECKLIST_LABEL_FALLBACK_MAP: Record<string, string> = {
+  'Bail Report': 'nyayalay.checklist.bailReport',
+  'Vadi Suchna': 'nyayalay.checklist.vadiSuchna',
+  'DCRB Report': 'nyayalay.checklist.dcrbReport',
+  'Status Report': 'nyayalay.checklist.statusReport',
+};
+
 function ChecklistSection({
   items, onChange,
 }: {
   items: NyayalayChecklistItem[];
   onChange: (id: string, val: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const done = items.filter((i) => i.is_done).length;
   const total = items.length;
   const pct = total ? Math.round((done / total) * 100) : 0;
@@ -150,7 +173,7 @@ function ChecklistSection({
     <View className="mb-4">
       <View className="flex-row items-center justify-between mb-2">
         <Text className="text-xs text-muted-foreground uppercase tracking-widest">
-          Checklist
+          {t('nyayalay.checklist.title')}
         </Text>
         <Text className="text-xs text-muted-foreground">{done}/{total} · {pct}%</Text>
       </View>
@@ -159,25 +182,33 @@ function ChecklistSection({
         <View className="h-full rounded-full"
           style={{ width: `${pct}%`, backgroundColor: pct === 100 ? '#10B981' : MODULE_COLOR }} />
       </View>
-      {items.map((item) => (
-        <Pressable
-          key={item.id}
-          onPress={() => onChange(item.id, !item.is_done)}
-          className="flex-row items-center gap-3 py-3 border-b border-border active:opacity-70"
-        >
-          {item.is_done
-            ? <CheckSquare size={18} color={MODULE_COLOR} />
-            : <Square size={18} color="#9CA3AF" />}
-          <Text className="flex-1 text-sm"
-            style={{ color: item.is_done ? '#6B7280' : '#111827',
-              textDecorationLine: item.is_done ? 'line-through' : 'none' }}>
-            {item.label}
-          </Text>
-          {item.is_optional && (
-            <Text className="text-xs text-muted-foreground">Optional</Text>
-          )}
-        </Pressable>
-      ))}
+      {items.map((item) => {
+        const itemKey = (item as unknown as { _key?: string })._key;
+        const i18nKey = (itemKey && CHECKLIST_KEY_MAP[itemKey])
+          ? CHECKLIST_KEY_MAP[itemKey]
+          : CHECKLIST_LABEL_FALLBACK_MAP[item.label];
+        const displayLabel = i18nKey ? t(i18nKey) : item.label;
+
+        return (
+          <Pressable
+            key={item.id}
+            onPress={() => onChange(item.id, !item.is_done)}
+            className="flex-row items-center gap-3 py-3 border-b border-border active:opacity-70"
+          >
+            {item.is_done
+              ? <CheckSquare size={18} color={MODULE_COLOR} />
+              : <Square size={18} color="#9CA3AF" />}
+            <Text className="flex-1 text-sm"
+              style={{ color: item.is_done ? '#6B7280' : '#111827',
+                textDecorationLine: item.is_done ? 'line-through' : 'none' }}>
+              {displayLabel}
+            </Text>
+            {item.is_optional && (
+              <Text className="text-xs text-muted-foreground">{t('nyayalay.checklist.optional')}</Text>
+            )}
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
@@ -244,12 +275,12 @@ export default function NyayalayDocDetailScreen() {
         checklistItems.map((i) => ({ id: i.id, is_done: i.is_done }))
       );
       setChecklistDirty(false);
-      setSaveSuccessMsg('Checklist saved');
+      setSaveSuccessMsg(t('nyayalay.detail.checklistSaved'));
       setTimeout(() => setSaveSuccessMsg(''), 2500);
       // Reload doc so analytics + progress bar reflect the saved state
       await load();
     } catch {
-      setSaveSuccessMsg('Save failed — try again');
+      setSaveSuccessMsg(t('nyayalay.detail.checklistSaveFailed'));
       setTimeout(() => setSaveSuccessMsg(''), 2500);
     } finally {
       setSaving(false);
@@ -288,9 +319,9 @@ export default function NyayalayDocDetailScreen() {
     return (
       <View className="flex-1 bg-background items-center justify-center px-5">
         <StatusBar style="dark" />
-        <Text className="text-base text-muted-foreground">Document not found.</Text>
+        <Text className="text-base text-muted-foreground">{t('nyayalay.detail.docNotFound')}</Text>
         <Pressable onPress={() => router.back()} className="mt-4 active:opacity-70">
-          <Text className="text-sm" style={{ color: MODULE_COLOR }}>Go Back</Text>
+          <Text className="text-sm" style={{ color: MODULE_COLOR }}>{t('common.back')}</Text>
         </Pressable>
       </View>
     );
@@ -300,10 +331,19 @@ export default function NyayalayDocDetailScreen() {
   const isFinished = doc.status === 'Finished';
   const isOverdue = !isFinished && days < 0;
 
-  const dayLabel = isFinished ? 'Finished'
-    : days > 0 ? `${days} days left`
-    : days === 0 ? 'Due today'
-    : `${Math.abs(days)} days overdue`;
+  const statusLabel = isFinished
+    ? t('fir.list.filterFinished')
+    : isOverdue
+    ? t('nyayalay.status.overdue')
+    : t('fir.list.filterPending');
+
+  const dayLabel = isFinished
+    ? t('fir.list.filterFinished')
+    : days > 0
+    ? t('nyayalay.daysLeft', { count: days, days })
+    : days === 0
+    ? t('nyayalay.dueToday')
+    : t('nyayalay.daysOverdue', { count: Math.abs(days), days: Math.abs(days) });
 
   const accused = doc.persons.filter((p) => p.person_type === 'accused');
   const appellants = doc.persons.filter((p) => p.person_type === 'appellant');
@@ -322,7 +362,7 @@ export default function NyayalayDocDetailScreen() {
             style={{ backgroundColor: isFinished ? '#D1FAE5' : isOverdue ? '#FEE2E2' : '#FEF3C7' }}>
             <Text className="text-sm font-semibold"
               style={{ color: isFinished ? '#065F46' : isOverdue ? '#991B1B' : '#92400E' }}>
-              {doc.status}
+              {statusLabel}
             </Text>
           </View>
           <Calendar size={14} color="#9CA3AF" />
@@ -333,22 +373,22 @@ export default function NyayalayDocDetailScreen() {
           </Text>
         </View>
 
-        <DetailRow label="Registration Number" value={doc.registration_number} />
-        <DetailRow label="Court Name" value={doc.court_name} />
-        <DetailRow label="Vad Sankhya" value={doc.vad_sankhya} />
-        <DetailRow label="Apradh Sankhya" value={doc.apradh_sankhya} />
-        <DetailRow label="Applicable Sections" value={doc.applicable_sections} />
+        <DetailRow label={t('nyayalay.detail.regNumber')} value={doc.registration_number} />
+        <DetailRow label={t('nyayalay.detail.courtName')} value={doc.court_name} />
+        <DetailRow label={t('nyayalay.detail.vadSankhya')} value={doc.vad_sankhya} />
+        <DetailRow label={t('nyayalay.detail.apradhSankhya')} value={doc.apradh_sankhya} />
+        <DetailRow label={t('nyayalay.detail.applicableSections')} value={doc.applicable_sections} />
         <DetailRow
-          label="FIR"
+          label={t('nyayalay.detail.fir')}
           value={doc.fir_number
             ? `${doc.fir_number}/${doc.fir_year}${doc.fir_ps ? ` — ${doc.fir_ps}` : ''}`
             : null}
         />
-        <DetailRow label="Matter" value={doc.matter} />
-        <DetailRow label="Document Title" value={doc.document_title} />
-        <DetailRow label="Writ Type" value={doc.writ_type} />
-        <PersonSection persons={accused} label="Accused" />
-        <PersonSection persons={appellants} label="Appellants" />
+        <DetailRow label={t('nyayalay.detail.matter')} value={doc.matter} />
+        <DetailRow label={t('nyayalay.detail.documentTitle')} value={doc.document_title} />
+        <DetailRow label={t('nyayalay.detail.writType')} value={doc.writ_type} />
+        <PersonSection persons={accused} label={t('nyayalay.form.accused')} />
+        <PersonSection persons={appellants} label={t('nyayalay.form.appellants')} />
       </>
     );
   };
@@ -382,7 +422,7 @@ export default function NyayalayDocDetailScreen() {
             style={{ backgroundColor: isFinished ? '#D1FAE5' : isOverdue ? '#FEE2E2' : '#FEF3C7' }}>
             <Text className="text-xs font-semibold"
               style={{ color: isFinished ? '#065F46' : isOverdue ? '#991B1B' : '#92400E' }}>
-              {doc.status}
+              {statusLabel}
             </Text>
           </View>
         </View>
@@ -474,7 +514,7 @@ export default function NyayalayDocDetailScreen() {
           className="border border-dashed border-border rounded-xl py-3 px-4 flex-row items-center gap-2 mt-3 active:opacity-70"
         >
           <FileText size={14} color="#6B7280" />
-          <Text className="text-sm text-muted-foreground flex-1">Add Vadi Suchna from Format</Text>
+          <Text className="text-sm text-muted-foreground flex-1">{t('nyayalay.detail.addVadiSuchna')}</Text>
         </Pressable>
       )}
 
@@ -485,7 +525,7 @@ export default function NyayalayDocDetailScreen() {
           className="border border-dashed border-border rounded-xl py-3 px-4 flex-row items-center gap-2 mt-2 active:opacity-70"
         >
           <FileText size={14} color="#6B7280" />
-          <Text className="text-sm text-muted-foreground flex-1">Add DCRB Report from Format</Text>
+          <Text className="text-sm text-muted-foreground flex-1">{t('nyayalay.detail.addDcrbReport')}</Text>
         </Pressable>
       )}
 
@@ -497,7 +537,7 @@ export default function NyayalayDocDetailScreen() {
           style={{ backgroundColor: MODULE_COLOR, borderCurve: 'continuous' }}
         >
           <Text className="text-white font-semibold text-sm">
-            {saving ? 'Saving…' : 'Save Checklist Changes'}
+            {saving ? t('common.saving') : t('nyayalay.detail.saveChecklist')}
           </Text>
         </Pressable>
       )}
@@ -517,8 +557,7 @@ export default function NyayalayDocDetailScreen() {
       <ReminderPanel doc={doc} />
       <View className="bg-muted rounded-2xl p-4" style={{ borderCurve: 'continuous' }}>
         <Text className="text-xs text-muted-foreground text-center">
-          Bail (Lower Court) acts as an information and reminder tracker.
-          No report generation is required.
+          {t('nyayalay.detail.bailLowerCourtNotice')}
         </Text>
       </View>
     </View>
@@ -533,7 +572,7 @@ export default function NyayalayDocDetailScreen() {
       {!isFinished ? (
         <Pressable
           onPress={() => {
-            // Go to report screen; it has a built-in "Select template" button
+            // Go to report screen; it has a built-built "Select template" button
             goToReport();
           }}
           className="rounded-xl py-3.5 px-5 items-center flex-row justify-center gap-2 active:opacity-80"
@@ -541,7 +580,7 @@ export default function NyayalayDocDetailScreen() {
         >
           <FileText size={16} color="#fff" />
           <Text className="text-white font-semibold text-sm">
-            {report ? 'Edit Report' : 'Create Report'}
+            {report ? t('nyayalay.report.editReport') : t('nyayalay.report.createReport')}
           </Text>
         </Pressable>
       ) : (
@@ -550,7 +589,7 @@ export default function NyayalayDocDetailScreen() {
           className="border border-border rounded-xl py-3 px-5 items-center flex-row justify-center gap-2 active:opacity-70"
         >
           <FileText size={16} color="#6B7280" />
-          <Text className="text-sm text-muted-foreground font-medium">View / Edit Report</Text>
+          <Text className="text-sm text-muted-foreground font-medium">{t('nyayalay.report.viewEditReport')}</Text>
         </Pressable>
       )}
     </View>
@@ -560,7 +599,7 @@ export default function NyayalayDocDetailScreen() {
     <View className="flex-1 bg-background">
       <AppHeader
         title={doc.court_name || doc.document_title || doc.registration_number}
-        subtitle={`${DOC_TYPE_LABELS[doc.doc_type]}${doc.sub_type ? ` — ${doc.sub_type}` : ''}`}
+        subtitle={`${DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type}${doc.sub_type ? ` — ${doc.sub_type}` : ''}`}
         onBack={handleBack}
         rightActions={
           <Pressable onPress={() => router.push(`/(app)/nyayalay/add?editId=${doc.id}` as never)} className="active:opacity-70 px-3 py-1.5 border border-border rounded-xl">
@@ -596,19 +635,19 @@ export default function NyayalayDocDetailScreen() {
       <AlertDialog open={backDialog} onOpenChange={setBackDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Checklist Changes</AlertDialogTitle>
+            <AlertDialogTitle>{t('nyayalay.dialog.unsavedChecklistTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved checklist changes. Do you want to save before leaving?
+              {t('nyayalay.dialog.unsavedChecklistDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setBackDialog(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               onPress={() => { setBackDialog(false); setChecklistDirty(false); router.back(); }}
             >
-              <Text>Discard</Text>
+              <Text>{t('common.discard')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
               onPress={async () => {
@@ -618,7 +657,7 @@ export default function NyayalayDocDetailScreen() {
               }}
               className="bg-primary"
             >
-              <Text className="text-primary-foreground font-semibold">Save</Text>
+              <Text className="text-primary-foreground font-semibold">{t('common.save')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

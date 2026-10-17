@@ -25,6 +25,7 @@ import {
   type FormatWithMeta,
 } from '@/lib/db/predefinedFormatRepo';
 import { getPublishedFormats, searchPublishedFormats } from '@/lib/db/sysFormatRepo';
+import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
 import { SourceBadge } from '@/components/common/SourceBadge';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
@@ -63,6 +64,37 @@ function formatDate(ts?: number): string {
   return new Date(ts * 1000).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
+function getFormatTypeLabel(type: string, t: (k: string) => string): string {
+  switch (type) {
+    case 'GD': return t('format.type.gd');
+    case 'Case Diary': return t('format.type.caseDiary');
+    case 'Narrative': return t('format.type.narrative');
+    case 'Nyayalay': return t('format.type.nyayalay');
+    case 'Prarthna Patra': return t('format.type.prarthnaPatra');
+    case 'BNSS Karyavahi': return t('format.type.bnssKaryavahi');
+    case 'Any': return t('format.type.any');
+    default: return type;
+  }
+}
+
+function getFilterOptionLabel(filter: string, t: (k: string) => string): string {
+  switch (filter) {
+    case 'All': return t('format.filter.all');
+    case 'GD': return t('format.type.gd');
+    case 'Case Diary': return t('format.type.caseDiary');
+    case 'Narrative': return t('format.type.narrative');
+    case 'Nyayalay': return t('format.type.nyayalay');
+    case 'Prarthna Patra': return t('format.type.prarthnaPatra');
+    case 'BNSS Karyavahi': return t('format.type.bnssKaryavahi');
+    case 'Any': return t('format.type.any');
+    case 'Favorites': return t('format.filter.favorites');
+    case 'Recently Used': return t('format.filter.recentlyUsed');
+    case 'Recently Added': return t('format.filter.recentlyAdded');
+    case 'Created By Me': return t('format.filter.createdByMe');
+    default: return filter;
+  }
+}
+
 // ─── Format Card ──────────────────────────────────────────────────────────
 const FormatCard = memo(function FormatCard({
   format, query, onPress, onFavorite, onPreview, onEdit, onDelete,
@@ -78,6 +110,7 @@ const FormatCard = memo(function FormatCard({
   const typeColor = FORMAT_TYPE_COLORS[format.format_type] ?? '#6B7280';
   const isSystem = format.source === 'system';
   const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
   const palette = colorScheme === 'dark' ? THEME.dark : THEME.light;
 
   return (
@@ -106,7 +139,7 @@ const FormatCard = memo(function FormatCard({
             style={{ backgroundColor: `${typeColor}15` }}
           >
             <Text className="text-xs font-medium" style={{ color: typeColor }}>
-              {format.format_type}
+              {getFormatTypeLabel(format.format_type, t)}
             </Text>
           </View>
         </View>
@@ -116,7 +149,7 @@ const FormatCard = memo(function FormatCard({
           className="items-center justify-center active:opacity-60"
           style={{ width: 36, height: 36 }}
           hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-          accessibilityLabel="Preview format"
+          accessibilityLabel={t('format.list.previewAccessibility')}
           accessibilityRole="button"
         >
           <Eye size={18} color={INDIGO} />
@@ -127,7 +160,7 @@ const FormatCard = memo(function FormatCard({
           className="items-center justify-center active:opacity-60"
           style={{ width: 36, height: 36 }}
           hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-          accessibilityLabel={format.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
+          accessibilityLabel={format.is_favorite ? t('format.list.removeFromFavorites') : t('format.list.addToFavorites')}
           accessibilityRole="button"
         >
           <Star
@@ -154,7 +187,7 @@ const FormatCard = memo(function FormatCard({
           <Clock size={11} color={palette.mutedForeground} />
           {/* muted-foreground: #6B7280 light / #94A3B8 dark — both ≥4.5:1 on their card bg ✓ */}
           <Text className="text-xs text-muted-foreground">
-            {format.last_used_at ? `Used ${formatDate(format.last_used_at)}` : `Added ${formatDate(format.created_at)}`}
+            {format.last_used_at ? t('format.list.usedDate', { date: formatDate(format.last_used_at) }) : t('format.list.addedDate', { date: formatDate(format.created_at) })}
           </Text>
           <SourceBadge source={format.source} size="xs" />
         </View>
@@ -166,7 +199,7 @@ const FormatCard = memo(function FormatCard({
               className="items-center justify-center active:opacity-60"
               style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: `${INDIGO}18` }}
               hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-              accessibilityLabel="Edit format"
+              accessibilityLabel={t('format.list.editAccessibility')}
               accessibilityRole="button"
             >
               <Edit2 size={14} color={INDIGO} />
@@ -176,7 +209,7 @@ const FormatCard = memo(function FormatCard({
               className="items-center justify-center active:opacity-60"
               style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: '#DC262610' }}
               hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-              accessibilityLabel="Delete format"
+              accessibilityLabel={t('format.list.deleteAccessibility')}
               accessibilityRole="button"
             >
               <Trash2 size={14} color="#DC2626" />
@@ -281,8 +314,28 @@ export default function FormatsScreen() {
   }, []);
 
   useFocusEffect(useCallback(() => {
+    let isMounted = true;
     setLoading(true);
-    loadData(queryRef.current, activeFilterRef.current, sourceFilterRef.current);
+    (async () => {
+      await Promise.race([
+        seedReady,
+        new Promise((resolve) => setTimeout(resolve, 800)),
+      ]);
+      if (isMounted) {
+        loadData(queryRef.current, activeFilterRef.current, sourceFilterRef.current);
+      }
+    })();
+
+    const unsubscribe = onSeedComplete(() => {
+      if (isMounted) {
+        loadData(queryRef.current, activeFilterRef.current, sourceFilterRef.current);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, [loadData]));
 
   // Back → Dashboard: module root screens always return to home, never exit app.
@@ -398,13 +451,13 @@ export default function FormatsScreen() {
               borderWidth: 1,
               borderColor: activeFilter !== 'All' ? INDIGO : chipInactiveBorder,
             }}
-            accessibilityLabel={activeFilter !== 'All' ? `Active filter: ${activeFilter}. Tap to clear.` : 'Open filter options'}
+            accessibilityLabel={activeFilter !== 'All' ? t('format.list.activeFilterClear', { filter: getFilterOptionLabel(activeFilter, t) }) : t('format.list.openFilters')}
             accessibilityRole="button"
           >
             {activeFilter !== 'All' ? (
               <>
                 <Text className="text-xs font-semibold" style={{ color: '#fff' }} numberOfLines={1}>
-                  {activeFilter}
+                  {getFilterOptionLabel(activeFilter, t)}
                 </Text>
                 <X size={12} color="#fff" />
               </>
@@ -442,7 +495,7 @@ export default function FormatsScreen() {
                     className="text-xs font-semibold"
                     style={{ color: isActive ? '#fff' : chipInactiveText }}
                   >
-                    {f}
+                    {getFilterOptionLabel(f, t)}
                   </Text>
                   {showBadge && (
                     <View
@@ -560,7 +613,7 @@ export default function FormatsScreen() {
       <BottomSheet
         visible={!!previewFormat}
         onClose={() => setPreviewFormat(null)}
-        title={previewFormat ? `${previewFormat.title} (Preview)` : ''}
+        title={previewFormat ? `${previewFormat.title} (${t('common.preview')})` : ''}
         snapHeight={480}
       >
         <ScrollView

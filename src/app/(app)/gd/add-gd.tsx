@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
   BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, TextInput, View,
@@ -31,6 +32,13 @@ const TYPE_COLORS: Record<string, string> = {
   'अन्य':   '#6B7280',
 };
 
+const GD_TYPE_KEYS: Record<string, string> = {
+  'रवानगी': 'departure',
+  'वापसी':  'return',
+  'तस्करा': 'taskara',
+  'अन्य':   'other',
+};
+
 const GD_OCR_FIELDS = [
   { key: 'gd_type', label: 'जीडी प्रकार (रवानगी / वापसी / तस्करा / अन्य)' },
   { key: 'vivran', label: 'जीडी विवरण (GD Content / Details)' },
@@ -59,6 +67,7 @@ function fmtDate(str: string): string {
 export default function AddGdScreen() {
   const { editId } = useLocalSearchParams<{ editId?: string }>();
   const isEdit = Boolean(editId);
+  const { t } = useTranslation();
 
   // Form state
   const [prepDate, setPrepDate] = useState<Date>(todayDateObj());
@@ -314,7 +323,7 @@ export default function AddGdScreen() {
     // `saving` state is the double-tap guard — the Save button is disabled while true.
     setError('');
     if (!vivran.trim()) {
-      setError('Vivran (content) is required.');
+      setError(t('gd.form.errorVivranRequired'));
       return;
     }
     setSaving(true);
@@ -376,7 +385,7 @@ export default function AddGdScreen() {
       if (__DEV__) console.log('[AddGD] navigation after save — router.back() | source: handleSave | session:', newSid);
       router.back();
     } catch (e) {
-      setError('Failed to save. Please try again.');
+      setError(t('gd.form.errorSaveFailed'));
       if (__DEV__) console.log('[AddGD] save op failed — opId:', saveOpId, '| error:', e);
       logger.warn('[GD] Save error:', e);
     } finally {
@@ -434,17 +443,17 @@ export default function AddGdScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title={isEdit ? 'Edit GD Entry' : 'New GD Entry'}
+        title={isEdit ? t('gd.form.editTitle') : t('gd.form.newTitle')}
         onBack={handleBack}
         rightActions={
           <Pressable onPress={handleSave} disabled={saving} className="flex-row items-center gap-1.5 px-4 py-2 rounded-xl active:opacity-70" style={{ backgroundColor: GD_COLOR, borderCurve: 'continuous' }}>
             <Save size={15} color="#fff" />
-            <Text className="text-sm font-bold text-white">{saving ? 'Saving…' : 'Save'}</Text>
+            <Text className="text-sm font-bold text-white">{saving ? t('common.saving') : t('common.save')}</Text>
           </Pressable>
         }
       />
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         keyboardVerticalOffset={process.env.EXPO_OS === 'ios' ? 56 : 0}
         className="flex-1"
       >
@@ -466,19 +475,19 @@ export default function AddGdScreen() {
                 <Sparkles size={18} color={GD_COLOR} />
               </View>
               <View>
-                <Text className="text-xs font-bold text-foreground">Auto-fill via OCR Scan</Text>
-                <Text className="text-[11px] text-muted-foreground">Scan diary note or document using AI</Text>
+                <Text className="text-xs font-bold text-foreground">{t('gd.form.ocrBannerTitle')}</Text>
+                <Text className="text-[11px] text-muted-foreground">{t('gd.form.ocrBannerSubtitle')}</Text>
               </View>
             </View>
             <View className="px-3 py-1.5 rounded-xl" style={{ backgroundColor: GD_COLOR }}>
-              <Text className="text-xs font-semibold text-white">Scan</Text>
+              <Text className="text-xs font-semibold text-white">{t('gd.form.scanBtn')}</Text>
             </View>
           </Pressable>
 
           {/* ── Preparation Date ─────────────────────────────────── */}
           <View className="gap-1.5">
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Preparation Date <Text className="text-destructive">*</Text>
+              {t('gd.form.prepDate')} <Text className="text-destructive">*</Text>
             </Text>
             <Pressable
               onPress={() => setShowDatePicker(true)}
@@ -494,7 +503,7 @@ export default function AddGdScreen() {
             <DatePickerModal
               visible={showDatePicker}
               value={prepDateStr}
-              label="Preparation Date"
+              label={t('gd.form.prepDate')}
               accentColor={GD_COLOR}
               onConfirm={(v) => setPrepDate(dateStrToObj(v))}
               onClose={() => setShowDatePicker(false)}
@@ -517,9 +526,9 @@ export default function AddGdScreen() {
               {taDaFlag && <Text className="text-white text-xs font-bold">✓</Text>}
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-medium text-foreground">Use for TA/DA</Text>
+              <Text className="text-sm font-medium text-foreground">{t('gd.form.useForTaDa')}</Text>
               <Text className="text-xs text-muted-foreground mt-0.5">
-                Mark this GD entry for future TA/DA calculations
+                {t('gd.form.useForTaDaHint')}
               </Text>
             </View>
           </Pressable>
@@ -527,7 +536,7 @@ export default function AddGdScreen() {
           {/* ── GD Type ──────────────────────────────────────────── */}
           <View className="gap-1.5">
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              GD Type <Text className="text-destructive">*</Text>
+              {t('gd.form.gdType')} <Text className="text-destructive">*</Text>
             </Text>
             <Pressable
               onPress={() => setShowTypeDropdown(!showTypeDropdown)}
@@ -538,7 +547,9 @@ export default function AddGdScreen() {
                 className="w-2.5 h-2.5 rounded-full"
                 style={{ backgroundColor: typeColor }}
               />
-              <Text className="flex-1 text-base text-foreground">{gdType}</Text>
+              <Text className="flex-1 text-base text-foreground">
+                {GD_TYPE_KEYS[gdType] ? t('gd.type.' + GD_TYPE_KEYS[gdType]) : gdType}
+              </Text>
               <ChevronDown size={16} color="#9CA3AF" />
             </Pressable>
             {showTypeDropdown && (
@@ -565,7 +576,7 @@ export default function AddGdScreen() {
                       className="text-base font-medium"
                       style={{ color: gdType === type ? (TYPE_COLORS[type] ?? '#111827') : '#374151' }}
                     >
-                      {type}
+                      {GD_TYPE_KEYS[type] ? t('gd.type.' + GD_TYPE_KEYS[type]) : type}
                     </Text>
                     {gdType === type && (
                       <Text className="ml-auto text-xs font-bold" style={{ color: TYPE_COLORS[type] }}>✓</Text>
@@ -590,10 +601,10 @@ export default function AddGdScreen() {
             </View>
             <View className="flex-1">
               <Text className="text-sm font-semibold" style={{ color: GD_COLOR }}>
-                Add From Format
+                {t('gd.form.addFromFormat')}
               </Text>
               <Text className="text-xs text-muted-foreground mt-0.5">
-                Select a predefined GD template to auto-fill Vivran
+                {t('gd.form.addFromFormatHint')}
               </Text>
             </View>
           </Pressable>
@@ -601,14 +612,14 @@ export default function AddGdScreen() {
           {/* ── Vivran Editor ────────────────────────────────────── */}
           <View className="gap-1.5">
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Vivran (Content) <Text className="text-destructive">*</Text>
+              {t('gd.form.vivranLabel')} <Text className="text-destructive">*</Text>
             </Text>
             <DocumentEditor
               value={vivran}
               onChangeText={(v) => { setVivran(v); setError(''); }}
-              title="GD Vivran"
-              placeholder="Enter GD content here, or use Add From Format to auto-generate…"
-              accessibilityLabel="GD Vivran editor"
+              title={t('gd.form.vivranEditorTitle')}
+              placeholder={t('gd.form.vivranPlaceholder')}
+              accessibilityLabel={t('gd.form.vivranAccessibility')}
             />
           </View>
 
@@ -628,7 +639,7 @@ export default function AddGdScreen() {
             style={{ backgroundColor: GD_COLOR, borderCurve: 'continuous' }}
           >
             <Text className="text-base font-bold text-white">
-              {saving ? 'Saving…' : isEdit ? 'Update GD Entry' : 'Save GD Entry'}
+              {saving ? t('common.saving') : isEdit ? t('gd.form.updateBtn') : t('gd.form.saveBtn')}
             </Text>
           </Pressable>
 
@@ -639,26 +650,26 @@ export default function AddGdScreen() {
       <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogTitle>{t('gd.dialog.unsavedTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Do you want to save this GD before leaving?
+              {t('gd.dialog.unsavedDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setShowUnsavedDialog(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <Pressable
               onPress={handleDiscard}
               className="px-4 py-2 rounded-xl border border-border active:opacity-70"
             >
-              <Text className="text-sm font-medium text-foreground">Discard</Text>
+              <Text className="text-sm font-medium text-foreground">{t('common.discard')}</Text>
             </Pressable>
             <AlertDialogAction
               onPress={async () => { setShowUnsavedDialog(false); await handleSave(); }}
               style={{ backgroundColor: GD_COLOR }}
             >
-              <Text className="text-white font-semibold">Save</Text>
+              <Text className="text-white font-semibold">{t('common.save')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -669,26 +680,26 @@ export default function AddGdScreen() {
       <AlertDialog open={showReplaceDialog} onOpenChange={setShowReplaceDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Vivran Already Has Content</AlertDialogTitle>
+            <AlertDialogTitle>{t('gd.dialog.replaceTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              The Vivran editor already contains text. What would you like to do with the new generated report?
+              {t('gd.dialog.replaceDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={handleReplaceDialogCancel}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <Pressable
               onPress={handleAppendChoice}
               className="px-4 py-2 rounded-xl border border-border active:opacity-70"
             >
-              <Text className="text-sm font-medium text-foreground">Append</Text>
+              <Text className="text-sm font-medium text-foreground">{t('gd.dialog.append')}</Text>
             </Pressable>
             <AlertDialogAction
               onPress={handleReplaceChoice}
               style={{ backgroundColor: GD_COLOR }}
             >
-              <Text className="text-white font-semibold">Replace</Text>
+              <Text className="text-white font-semibold">{t('gd.dialog.replace')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -699,7 +710,7 @@ export default function AddGdScreen() {
         onClose={() => setOcrModalVisible(false)}
         fields={GD_OCR_FIELDS}
         onApply={handleOcrApply}
-        title="General Diary OCR Scanner"
+        title={t('gd.form.ocrModalTitle')}
       />
     </View>
   );

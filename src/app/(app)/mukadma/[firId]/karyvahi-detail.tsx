@@ -12,7 +12,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, Pressable, ActivityIndicator,
-  TextInput, FlatList,
+  TextInput, FlatList, KeyboardAvoidingView,
 } from 'react-native';
 import { Image } from 'react-native';
 import { useLocalSearchParams, useFocusEffect, router } from 'expo-router';
@@ -33,6 +33,10 @@ import {
   type FIRKaryvahi, type KaryvahiExecution,
 } from '@/lib/db/firKaryvahiRepo';
 import {
+  getChecklistItemByStepCode,
+  type ChecklistItem,
+} from '@/lib/db/checklistRepo';
+import {
   addEvidence, getEvidenceByKaryvahi, updateEvidenceCaption, deleteEvidence,
   type KaryvahiEvidence,
 } from '@/lib/db/karyvahiEvidenceRepo';
@@ -41,59 +45,15 @@ const NAVY = '#6366F1';
 
 // ── Static knowledge sections ─────────────────────────────────────────────────
 
-interface KnowledgeSection {
-  title: string;
-  body: string;
-}
+import { matchDefaultKaryvahi } from '@/lib/karyvahiNames';
+import {
+  getDefaultKnowledge,
+  resolveKnowledgeSections,
+  deriveKnowledgeSections,
+  type KnowledgeSection,
+} from '@/lib/defaultKaryvahiKnowledge';
 
-function deriveKnowledgeSections(name: string, description?: string): KnowledgeSection[] {
-  const n = name.toLowerCase();
-  return [
-    {
-      title: 'Why This Step Is Required',
-      body: description?.trim() ||
-        'This investigation step is mandated under standard operating procedure for thorough inquiry.',
-    },
-    {
-      title: 'When to Perform',
-      body: n.includes('bayan') || n.includes('statement')
-        ? 'Record witness/victim statements as early as possible — preferably within 24 hours of the report.'
-        : n.includes('ghatnasthal') || n.includes('scene')
-          ? 'Conduct site inspection before the scene is disturbed, ideally within hours of registration.'
-          : n.includes('videography') || n.includes('video')
-            ? 'Perform videography during scene inspection or any important procedural step requiring visual documentation.'
-            : n.includes('nakal') || n.includes('record')
-              ? 'Review FIR/police records promptly after registration to verify entries and flag discrepancies.'
-              : 'Perform this step as part of the systematic investigation sequence established at the outset.',
-    },
-    {
-      title: 'Legal Importance',
-      body: 'Proper execution of this step supports admissibility of evidence and compliance with the Bharatiya Nagarik Suraksha Sanhita (BNSS) investigation provisions.',
-    },
-    {
-      title: 'Investigation Steps',
-      body: n.includes('bayan')
-        ? '1. Inform the witness/victim of their right to have a support person present.\n2. Record statement verbatim in their language.\n3. Read back statement and obtain signature/thumb impression.\n4. Attach to case file.'
-        : n.includes('ghatnasthal')
-          ? '1. Cordon off the scene before entry.\n2. Sketch the scene and mark evidence locations.\n3. Photograph/video each piece of evidence in situ.\n4. Collect and seal evidence with labels.\n5. Prepare Panchnama with two independent witnesses.'
-          : n.includes('videography')
-            ? '1. Verify e-Sakshya app is updated and device has sufficient battery.\n2. Record continuous video — do not stop/restart unnecessarily.\n3. Narrate visible actions for the record.\n4. Upload within 48 hours to the portal.'
-            : '1. Prepare required materials and documentation.\n2. Execute the procedure per prescribed format.\n3. Record outcome and file with the case diary.',
-    },
-    {
-      title: 'Related Documents & Evidence',
-      body: 'Case diary entry, FIR copy, signed statements (if applicable), scene inspection report (if applicable), Panchnama (if applicable).',
-    },
-    {
-      title: 'Best Practices',
-      body: '• Maintain chronological documentation in the case diary.\n• Ensure all witnesses/participants are properly identified.\n• Cross-reference this step with related karyvahi entries.\n• Preserve the chain of custody for all evidence collected.',
-    },
-    {
-      title: 'Common Mistakes to Avoid',
-      body: '• Delayed execution after the event.\n• Incomplete or non-contemporaneous documentation.\n• Missing witness signatures on statements.\n• Failing to record this step in the Case Diary.',
-    },
-  ];
-}
+export { resolveKnowledgeSections, deriveKnowledgeSections, type KnowledgeSection };
 
 // ── Section card ──────────────────────────────────────────────────────────────
 
@@ -121,7 +81,7 @@ function ExecutionRow({ exec, idx }: { exec: KaryvahiExecution; idx: number }) {
         <Text className="text-white text-xs font-bold">{idx + 1}</Text>
       </View>
       <View className="flex-1">
-        <Text className="text-xs font-semibold text-foreground">{t('fir.karyvahiDetail.execLabel')} #{exec.execution_number}</Text>
+        <Text className="text-xs font-semibold text-foreground">{t('fir.karyvahiDetail.execLabel', { n: exec.execution_number })}</Text>
         <Text className="text-xs text-muted-foreground">{dt}</Text>
       </View>
       {exec.template_used ? (
@@ -384,10 +344,11 @@ export default function KaryvahiDetailScreen() {
   const { firId, karyvahiId } = useLocalSearchParams<{ firId: string; karyvahiId: string }>();
   const { t } = useTranslation();
 
-  const [karyvahi, setKaryvahi]     = useState<FIRKaryvahi | null>(null);
-  const [executions, setExecutions] = useState<KaryvahiExecution[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [showDelete, setShowDelete] = useState(false);
+  const [karyvahi, setKaryvahi]         = useState<FIRKaryvahi | null>(null);
+  const [playbookItem, setPlaybookItem] = useState<ChecklistItem | null>(null);
+  const [executions, setExecutions]     = useState<KaryvahiExecution[]>([]);
+  const [loading, setLoading]           = useState(true);
+  const [showDelete, setShowDelete]     = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -400,6 +361,16 @@ export default function KaryvahiDetailScreen() {
           ]);
           setKaryvahi(k);
           setExecutions(execs);
+          if (k?.step_code) {
+            try {
+              const pi = await getChecklistItemByStepCode(k.step_code);
+              setPlaybookItem(pi);
+            } catch {
+              setPlaybookItem(null);
+            }
+          } else {
+            setPlaybookItem(null);
+          }
         } catch { /* ignore */ }
         finally { setLoading(false); }
       })();
@@ -436,7 +407,10 @@ export default function KaryvahiDetailScreen() {
   const execCount   = karyvahi.execution_count ?? 0;
   const done        = execCount > 0;
   const isUserAdded = karyvahi.source === 'user';
-  const sections    = deriveKnowledgeSections(karyvahi.name, karyvahi.precautions);
+  const sections    = resolveKnowledgeSections(karyvahi.name, karyvahi.precautions, playbookItem, t);
+  const defKey      = matchDefaultKaryvahi(karyvahi.name);
+  const defKnowledge = defKey ? getDefaultKnowledge(defKey) : null;
+  const headerDescription = defKnowledge ? defKnowledge.what : (karyvahi.precautions || undefined);
 
   return (
     <View className="flex-1 bg-background">
@@ -476,12 +450,17 @@ export default function KaryvahiDetailScreen() {
               <Text className="text-base font-bold text-foreground" numberOfLines={2}>
                 {karyvahi.name}
               </Text>
+              {headerDescription ? (
+                <Text className="text-xs text-muted-foreground mt-0.5 leading-5">
+                  {headerDescription}
+                </Text>
+              ) : null}
               <Text
                 className="text-xs mt-0.5"
                 style={{ color: done ? '#16a34a' : '#9CA3AF' }}
               >
                 {done
-                  ? `${t('fir.karyvahiDetail.completed')} · ${t('fir.karyvahiDetail.completed_other', { count: execCount })}`
+                  ? t('fir.karyvahiDetail.completed', { count: execCount })
                   : t('fir.karyvahiDetail.pending')}
               </Text>
             </View>
@@ -540,16 +519,21 @@ export default function KaryvahiDetailScreen() {
 
       <AlertDialog open={showDelete} onOpenChange={(o) => { if (!o) setShowDelete(false); }}>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('fir.karyvahiDetail.deleteTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              "{karyvahi.name}" {t('fir.karyvahiDetail.deleteDesc')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setShowDelete(false)}><Text>{t('fir.karyvahiDetail.cancel')}</Text></AlertDialogCancel>
-            <AlertDialogAction onPress={handleDelete}><Text>{t('fir.karyvahiDetail.delete')}</Text></AlertDialogAction>
-          </AlertDialogFooter>
+          <KeyboardAvoidingView
+            behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
+            style={{ width: '100%' }}
+          >
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('fir.karyvahiDetail.deleteTitle')}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t('fir.karyvahiDetail.deleteDesc', { name: karyvahi.name })}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onPress={() => setShowDelete(false)}><Text>{t('fir.karyvahiDetail.cancel')}</Text></AlertDialogCancel>
+              <AlertDialogAction onPress={handleDelete}><Text>{t('fir.karyvahiDetail.delete')}</Text></AlertDialogAction>
+            </AlertDialogFooter>
+          </KeyboardAvoidingView>
         </AlertDialogContent>
       </AlertDialog>
     </View>

@@ -12,6 +12,7 @@ import type {
   LearningEngineState,
   OfficerAction,
 } from './L5Types';
+import { getDatabase, generateUUID } from '@/lib/db/database';
 
 // ── In-process state ──────────────────────────────────────────────────────────
 const state: LearningEngineState = {
@@ -26,10 +27,6 @@ const state: LearningEngineState = {
 // ── Min confirmations before pattern is applied ───────────────────────────────
 const MIN_CONFIRMATIONS = 3;
 
-function uid(): string {
-  return `pat-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-}
-
 export class LearningEngine {
   /** Enable or disable learning. */
   static setEnabled(enabled: boolean): void {
@@ -38,6 +35,46 @@ export class LearningEngine {
 
   static isEnabled(): boolean {
     return state.isEnabled;
+  }
+
+  /**
+   * Load stored patterns from SQLite database.
+   * Runs once on startup. Safe fallback on error leaves state.patterns empty.
+   */
+  static async loadPatterns(): Promise<void> {
+    try {
+      const db = await getDatabase();
+      const rows = await db.getAllAsync<Record<string, unknown>>(
+        'SELECT * FROM ai_learning_patterns'
+      );
+      state.patterns = rows.map((row) => {
+        let triggers: string[] = [];
+        try {
+          triggers = JSON.parse((row.trigger_conditions as string) || '[]');
+        } catch {
+          triggers = [];
+        }
+        const unixSec = typeof row.last_updated_at === 'number'
+          ? row.last_updated_at
+          : Math.floor(Date.now() / 1000);
+
+        return {
+          id: String(row.id),
+          patternType: (row.pattern_type as LearningPattern['patternType']) || 'recommendation',
+          description: String(row.description || ''),
+          crimeType: row.crime_type ? String(row.crime_type) : undefined,
+          triggerConditions: triggers,
+          recommendedAction: String(row.recommended_action || ''),
+          confirmationCount: Number(row.confirmation_count || 0),
+          rejectionCount: Number(row.rejection_count || 0),
+          confidenceBoost: Number(row.confidence_boost || 0),
+          lastUpdatedAt: new Date(unixSec * 1000).toISOString(),
+          isActive: Number(row.is_active || 0) === 1,
+        };
+      });
+    } catch {
+      state.patterns = [];
+    }
   }
 
   /**
@@ -98,6 +135,12 @@ export class LearningEngine {
     state.totalAcceptedInteractions = 0;
     state.totalRejectedInteractions = 0;
     state.lastTrainingAt            = undefined;
+
+    // Fire-and-forget deletion from database
+    (async () => {
+      const db = await getDatabase();
+      await db.runAsync('DELETE FROM ai_learning_patterns');
+    })().catch(() => {});
   }
 
   // ── Internal ──────────────────────────────────────────────────────────────
@@ -117,7 +160,7 @@ export class LearningEngine {
 
     if (!pat) {
       pat = {
-        id:                uid(),
+        id:                generateUUID(),
         patternType:       'recommendation',
         description:       `Learned pattern: "${title}"`,
         crimeType,
@@ -149,5 +192,32 @@ export class LearningEngine {
 
     // Suppress unused-variable warning for key (used conceptually)
     void key;
+
+    // Fire-and-forget persistence to database
+    const snapshot = { ...pat };
+    (async () => {
+      const db = await getDatabase();
+      const unixSec = Math.floor(new Date(snapshot.lastUpdatedAt).getTime() / 1000);
+      await db.runAsync(
+        `INSERT OR REPLACE INTO ai_learning_patterns (
+          id, pattern_type, description, crime_type, trigger_conditions,
+          recommended_action, confirmation_count, rejection_count,
+          confidence_boost, last_updated_at, is_active
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          snapshot.id,
+          snapshot.patternType,
+          snapshot.description,
+          snapshot.crimeType ?? null,
+          JSON.stringify(snapshot.triggerConditions),
+          snapshot.recommendedAction,
+          snapshot.confirmationCount,
+          snapshot.rejectionCount,
+          snapshot.confidenceBoost,
+          unixSec,
+          snapshot.isActive ? 1 : 0,
+        ]
+      );
+    })().catch(() => {});
   }
 }

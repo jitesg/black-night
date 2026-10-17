@@ -52,10 +52,10 @@ export class NextActionEngine {
     // Milestones — check by name pattern
     const milestones: Array<{ label: string; pattern: RegExp }> = [
       { label: 'FIR Registration',         pattern: /fir|mukadma|registration/i },
-      { label: 'Complainant Statement',     pattern: /bayan vadi|complainant statement/i },
-      { label: 'Crime Scene Inspection',   pattern: /ghatnasthal|scene inspection/i },
-      { label: 'Witness Statements',       pattern: /gavah|witness/i },
-      { label: 'Evidence Collection',      pattern: /evidence|panchnama|seizure/i },
+      { label: 'Complainant Statement',     pattern: /bayan vadi|complainant statement|वादी.*बयान|बयान.*वादी/i },
+      { label: 'Crime Scene Inspection',   pattern: /ghatnasthal|scene inspection|घटनास्थल/i },
+      { label: 'Witness Statements',       pattern: /gavah|witness|बयान|गवाह/i },
+      { label: 'Evidence Collection',      pattern: /evidence|panchnama|seizure|पंचनामा|जब्ती|साक्ष्य/i },
       { label: 'Medical/FSL Reports',      pattern: /medical|fsl|forensic|report/i },
       { label: 'Accused Examination',      pattern: /accused|aaropit|dharasana/i },
       { label: 'Arrest Proceedings',       pattern: /arrest|giraftari/i },

@@ -17,6 +17,8 @@ import {
   getCaseDiaryById, getEntriesByDiary, deserializePlaces,
   type CaseDiary, type CaseDiaryEntry,
 } from '@/lib/db/caseDiaryRepo';
+import { getFIRById, type FIR } from '@/lib/db/firRepo';
+import { FirBasisCard } from '@/components/caseDiary/FirBasisCard';
 
 const NAVY = '#6366F1';
 
@@ -115,6 +117,7 @@ export default function ViewCaseDiaryScreen() {
   const { t } = useTranslation();
   const [diary, setDiary]         = useState<CaseDiary | null>(null);
   const [entries, setEntries]     = useState<CaseDiaryEntry[]>([]);
+  const [fir, setFir]             = useState<FIR | null>(null);
   const [loading, setLoading]     = useState(true);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
@@ -126,13 +129,18 @@ export default function ViewCaseDiaryScreen() {
       setLoading(true);
       (async () => {
         try {
-          const [d, e] = await Promise.all([getCaseDiaryById(diaryId), getEntriesByDiary(diaryId)]);
+          const [d, e, f] = await Promise.all([
+            getCaseDiaryById(diaryId),
+            getEntriesByDiary(diaryId),
+            firId ? getFIRById(firId) : Promise.resolve(null),
+          ]);
           setDiary(d);
           setEntries(e);
+          if (f) setFir(f);
         } catch { /* ignore */ }
         finally { setLoading(false); }
       })();
-    }, [diaryId]),
+    }, [diaryId, firId]),
   );
 
   const handleExport = async () => {
@@ -221,6 +229,9 @@ export default function ViewCaseDiaryScreen() {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
       >
+        {/* ── FIR आधार Collapsible Card ────────────────────────────────────── */}
+        <FirBasisCard fir={fir} />
+
         {/* Export error banner */}
         {exportError ? (
           <View className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-3 flex-row items-center gap-2">

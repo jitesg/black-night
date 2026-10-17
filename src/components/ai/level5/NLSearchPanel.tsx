@@ -11,6 +11,8 @@ import {
   View, Text, ScrollView, Pressable, Modal, TextInput,
 } from 'react-native';
 import { Search, RefreshCw, X } from 'lucide-react-native';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
 import type { NLQResult } from '../../../ai/level5/L5Types';
 
 // ── Suggestion chips ──────────────────────────────────────────────────────────
@@ -34,6 +36,9 @@ interface Props {
 
 export function NLSearchPanel({ visible, onClose, onQuery, result, isLoading }: Props) {
   const [query, setQuery] = useState('');
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
 
   function handleSubmit() {
     const q = query.trim();
@@ -63,7 +68,7 @@ export function NLSearchPanel({ visible, onClose, onQuery, result, isLoading }: 
             <TextInput
               className="flex-1 text-sm text-foreground"
               placeholder="Ask about FIRs in plain language…"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={C.mutedForeground}
               value={query}
               onChangeText={setQuery}
               onSubmitEditing={handleSubmit}
@@ -120,8 +125,17 @@ export function NLSearchPanel({ visible, onClose, onQuery, result, isLoading }: 
               {/* Query meta */}
               <View className="mb-4">
                 {result.correctedQuery && (
-                  <View className="flex-row items-center gap-2 mb-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                    <Text className="text-xs text-amber-700 flex-1">
+                  <View
+                    className="flex-row items-center gap-2 mb-2 rounded-lg px-3 py-2 border"
+                    style={{
+                      backgroundColor: isDark ? 'rgba(245, 158, 11, 0.15)' : '#FFFBEB',
+                      borderColor: isDark ? 'rgba(245, 158, 11, 0.3)' : '#FDE68A',
+                    }}
+                  >
+                    <Text
+                      className="text-xs flex-1"
+                      style={{ color: isDark ? '#FDE68A' : '#B45309' }}
+                    >
                       Auto-corrected: "{result.correctedQuery}"
                     </Text>
                   </View>

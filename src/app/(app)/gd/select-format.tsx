@@ -11,6 +11,7 @@
  * "Insert into GD" populates add-gd.tsx via gdFormatBridge.
  */
 import { logger } from '@/lib/logger';
+import { useTranslation } from 'react-i18next';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import { T } from '@/lib/typography';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -38,11 +39,11 @@ const GD_TYPE = 'GD' as const;
 
 type ChipFilter = 'All' | 'Favorites' | 'Recently Used' | 'Created By Me';
 
-const CHIP_FILTERS: { label: string; value: ChipFilter }[] = [
-  { label: 'All',            value: 'All' },
-  { label: 'Favorites',      value: 'Favorites' },
-  { label: 'Recently Used',  value: 'Recently Used' },
-  { label: 'Created By Me',  value: 'Created By Me' },
+const CHIP_FILTERS: { labelKey: string; value: ChipFilter }[] = [
+  { labelKey: 'common.all',            value: 'All' },
+  { labelKey: 'filters.favorites',     value: 'Favorites' },
+  { labelKey: 'filters.recentlyUsed',  value: 'Recently Used' },
+  { labelKey: 'filters.createdByMe',   value: 'Created By Me' },
 ];
 
 // ─── Apply chip filter to an already-GD-scoped list ───────────────────────
@@ -63,6 +64,7 @@ function applyChipFilter(list: FormatWithMeta[], chip: ChipFilter): FormatWithMe
 
 // ─── Screen ───────────────────────────────────────────────────────────────
 export default function GdSelectFormatScreen() {
+  const { t } = useTranslation();
   const [allGdFormats, setAllGdFormats] = useState<FormatWithMeta[]>([]);
   const [displayed, setDisplayed] = useState<FormatWithMeta[]>([]);
   const [loading, setLoading] = useState(true);
@@ -153,16 +155,16 @@ export default function GdSelectFormatScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Select GD Template" subtitle="GD" showBack />
+      <AppHeader title={t('formatPicker.titleGd')} subtitle="GD" showBack />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
         {/* Search box */}
         <SearchBar
           value={query}
           onChangeText={handleSearch}
-          placeholder="Search GD templates…"
+          placeholder={t('formatPicker.searchPlaceholderGd')}
           variant="light"
           returnKeyType="search"
-          accessibilityLabel="Search GD templates"
+          accessibilityLabel={t('formatPicker.searchPlaceholderGd')}
         />
 
         {/* Chip filters — operate on the GD-scoped dataset only */}
@@ -182,7 +184,7 @@ export default function GdSelectFormatScreen() {
               >
                 {Icon && <Icon size={11} color={active ? '#fff' : '#6B7280'} fill={f.value === 'Favorites' && active ? '#fff' : 'none'} />}
                 <Text className="text-xs font-medium" style={{ color: active ? '#fff' : '#374151' }}>
-                  {f.label}
+                  {t(f.labelKey)}
                 </Text>
               </Pressable>
             );
@@ -245,7 +247,11 @@ export default function GdSelectFormatScreen() {
                   <View className="flex-row items-center gap-1">
                     <Clock size={10} color="#9CA3AF" />
                     <Text className="text-xs text-muted-foreground">
-                      {`Used ${new Date(item.last_used_at * 1000).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`}
+                      {t('formatPicker.usedOn', {
+                        date: new Date(item.last_used_at * 1000).toLocaleDateString('en-IN', {
+                          day: '2-digit', month: 'short', year: 'numeric',
+                        }),
+                      })}
                     </Text>
                   </View>
                 ) : null}
@@ -256,6 +262,7 @@ export default function GdSelectFormatScreen() {
                 onPress={(e) => { e.stopPropagation(); setPreviewFormat(item); }}
                 className="p-2 active:opacity-60 mr-1"
                 hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                accessibilityLabel={t('formatPicker.previewTitle')}
               >
                 <Eye size={16} color="#9CA3AF" />
               </Pressable>
@@ -272,14 +279,18 @@ export default function GdSelectFormatScreen() {
                 <FileWarning size={30} color={GD_COLOR} />
               </View>
               <Text className="text-base font-semibold text-foreground text-center">
-                {chip !== 'All' ? `No ${chip} GD templates` : 'No GD templates found'}
+                {chip !== 'All'
+                  ? t('formatPicker.noFilteredTemplatesGd', {
+                      filter: t(CHIP_FILTERS.find((f) => f.value === chip)?.labelKey ?? 'common.all'),
+                    })
+                  : t('formatPicker.noTemplatesGd')}
               </Text>
               <Text className="text-sm text-muted-foreground text-center leading-5">
                 {query.trim()
-                  ? 'Try a different search term.'
+                  ? t('formatPicker.emptySearchHint')
                   : chip !== 'All'
-                  ? 'Try the "All" filter to see all GD templates.'
-                  : 'Create a template with Format Type = GD in the Predefine Format module.'}
+                  ? t('formatPicker.emptyFilterHintGd')
+                  : t('formatPicker.createTemplateHintGd')}
               </Text>
             </View>
           }
@@ -290,7 +301,7 @@ export default function GdSelectFormatScreen() {
       <BottomSheet
         visible={!!previewFormat}
         onClose={() => setPreviewFormat(null)}
-        title={previewFormat ? `${previewFormat.title} (Preview)` : 'Preview'}
+        title={previewFormat ? t('formatPicker.previewTitleWithFormat', { title: previewFormat.title }) : t('formatPicker.previewTitle')}
         snapHeight={480}
       >
         <ScrollView

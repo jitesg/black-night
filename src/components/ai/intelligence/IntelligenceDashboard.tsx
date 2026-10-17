@@ -5,7 +5,7 @@
  * Minimal, whitespace-first layout.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -21,7 +21,10 @@ import {
   TrendingUp,
   FileWarning,
 } from 'lucide-react-native';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
 import type { InvestigationIntelligenceReport, HealthStatus } from '@/ai/intelligence/IntelligenceTypes';
+import { AIAuditEngine } from '@/ai/level5/AIAuditEngine';
 import { IntelligenceScorePanel } from './IntelligenceScorePanel';
 import { VisualDecisionCard } from './VisualDecisionCard';
 
@@ -40,11 +43,11 @@ const TABS: Array<{ id: TabId; label: string }> = [
 
 // ── Health badge ───────────────────────────────────────────────────────────────
 
-const HEALTH_CONFIG: Record<HealthStatus, { bg: string; text: string; label: string }> = {
-  healthy:  { bg: '#f0fdf4', text: '#16a34a', label: '🟢 Healthy'  },
-  pending:  { bg: '#fffbeb', text: '#d97706', label: '🟡 Pending'  },
-  critical: { bg: '#fef2f2', text: '#dc2626', label: '🔴 Critical' },
-};
+const getHealthConfig = (isDark: boolean): Record<HealthStatus, { bg: string; text: string; label: string }> => ({
+  healthy:  { bg: isDark ? 'rgba(34, 197, 94, 0.15)' : '#f0fdf4', text: isDark ? '#4ade80' : '#16a34a', label: '🟢 Healthy'  },
+  pending:  { bg: isDark ? 'rgba(245, 158, 11, 0.15)' : '#fffbeb', text: isDark ? '#fbbf24' : '#d97706', label: '🟡 Pending'  },
+  critical: { bg: isDark ? 'rgba(239, 68, 68, 0.15)' : '#fef2f2', text: isDark ? '#f87171' : '#dc2626', label: '🔴 Critical' },
+});
 
 function SeverityChip({ label, color }: { label: string; color: string }) {
   return (
@@ -57,8 +60,11 @@ function SeverityChip({ label, color }: { label: string; color: string }) {
 // ── Sub-panels ─────────────────────────────────────────────────────────────────
 
 function SummaryPanel({ report }: { report: InvestigationIntelligenceReport }) {
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
   const h = report.healthReport;
-  const hCfg = HEALTH_CONFIG[h.healthStatus];
+  const hCfg = getHealthConfig(isDark)[h.healthStatus];
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
@@ -80,7 +86,7 @@ function SummaryPanel({ report }: { report: InvestigationIntelligenceReport }) {
       {h.criticalIssues.length > 0 && (
         <View className="bg-card rounded-2xl p-4 mb-4" style={{ borderCurve: 'continuous' } as object}>
           <View className="flex-row items-center gap-2 mb-3">
-            <AlertTriangle size={14} color="#dc2626" />
+            <AlertTriangle size={14} color={isDark ? '#f87171' : '#dc2626'} />
             <Text className="text-sm font-semibold text-foreground">Critical Issues</Text>
           </View>
           {h.criticalIssues.map((issue, i) => (
@@ -128,7 +134,11 @@ function SummaryPanel({ report }: { report: InvestigationIntelligenceReport }) {
             className="h-full rounded-full"
             style={{
               width: `${h.chargeSheetReadinessPct}%`,
-              backgroundColor: h.chargeSheetReadinessPct >= 70 ? '#16a34a' : h.chargeSheetReadinessPct >= 40 ? '#d97706' : '#dc2626',
+              backgroundColor: h.chargeSheetReadinessPct >= 70
+                ? (isDark ? '#4ade80' : '#16a34a')
+                : h.chargeSheetReadinessPct >= 40
+                  ? (isDark ? '#fbbf24' : '#d97706')
+                  : (isDark ? '#f87171' : '#dc2626'),
             }}
           />
         </View>
@@ -168,6 +178,30 @@ function SummaryPanel({ report }: { report: InvestigationIntelligenceReport }) {
 
 function RecommendationsPanel({ report }: { report: InvestigationIntelligenceReport }) {
   const recs = report.recommendationReport.recommendations;
+
+  const auditEntryIds = useMemo(() => {
+    const map: Record<string, string> = {};
+    const logMethod = (typeof (AIAuditEngine as unknown as { log?: typeof AIAuditEngine.record }).log === 'function'
+      ? (AIAuditEngine as unknown as { log: typeof AIAuditEngine.record }).log
+      : AIAuditEngine.record).bind(AIAuditEngine);
+
+    for (const rec of recs) {
+      const entry = logMethod({
+        firId: report.firId,
+        firNumber: report.firNumber,
+        module: 'ai-audit',
+        recommendationTitle: rec.title,
+        recommendationReason: rec.reason,
+        confidence: rec.confidencePct,
+        supportingContext: rec.supportingContext,
+        applicableRule: rec.applicableRule,
+        sessionId: report.sessionId ?? 'session',
+      });
+      map[rec.id] = entry.id;
+    }
+    return map;
+  }, [recs, report.firId, report.firNumber, report.sessionId]);
+
   if (recs.length === 0) {
     return (
       <View className="flex-1 items-center justify-center py-16">
@@ -183,7 +217,13 @@ function RecommendationsPanel({ report }: { report: InvestigationIntelligenceRep
         {recs.length} recommendation(s) · {report.recommendationReport.blockingCount} blocking
       </Text>
       {recs.map((rec, i) => (
-        <VisualDecisionCard key={rec.id} recommendation={rec} index={i} />
+        <VisualDecisionCard
+          key={rec.id}
+          recommendation={rec}
+          index={i}
+          auditEntryId={auditEntryIds[rec.id]}
+          crimeType={(report as { crimeType?: string }).crimeType ?? report.playbookReport?.crimeCategory}
+        />
       ))}
       <View className="h-8" />
     </ScrollView>
@@ -191,6 +231,9 @@ function RecommendationsPanel({ report }: { report: InvestigationIntelligenceRep
 }
 
 function CompliancePanel({ report }: { report: InvestigationIntelligenceReport }) {
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
   const c = report.complianceReport;
   const allFindings = [...c.legalRisks, ...c.missingProcedures];
   return (
@@ -204,7 +247,14 @@ function CompliancePanel({ report }: { report: InvestigationIntelligenceReport }
         <View className="h-2 rounded-full bg-muted overflow-hidden mb-2">
           <View
             className="h-full rounded-full"
-            style={{ width: `${c.compliancePct}%`, backgroundColor: c.compliancePct >= 80 ? '#16a34a' : c.compliancePct >= 50 ? '#d97706' : '#dc2626' }}
+            style={{
+              width: `${c.compliancePct}%`,
+              backgroundColor: c.compliancePct >= 80
+                ? (isDark ? '#4ade80' : '#16a34a')
+                : c.compliancePct >= 50
+                  ? (isDark ? '#fbbf24' : '#d97706')
+                  : (isDark ? '#f87171' : '#dc2626'),
+            }}
           />
         </View>
         <Text className="text-xs text-muted-foreground">{c.passedChecks}/{c.totalChecks} checks passed</Text>
@@ -221,7 +271,7 @@ function CompliancePanel({ report }: { report: InvestigationIntelligenceReport }
             <View className="flex-row items-center gap-2 mb-2">
               <SeverityChip
                 label={f.severity.toUpperCase()}
-                color={f.severity === 'critical' ? '#dc2626' : f.severity === 'high' ? '#d97706' : '#2563eb'}
+                color={f.severity === 'critical' ? (isDark ? '#f87171' : '#dc2626') : f.severity === 'high' ? (isDark ? '#fbbf24' : '#d97706') : (isDark ? '#60a5fa' : '#2563eb')}
               />
               <Text className="flex-1 text-sm font-semibold text-foreground" numberOfLines={1}>{f.ruleTitle}</Text>
             </View>
@@ -237,6 +287,9 @@ function CompliancePanel({ report }: { report: InvestigationIntelligenceReport }
 }
 
 function EvidencePanel({ report }: { report: InvestigationIntelligenceReport }) {
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
   const e = report.evidenceGraphReport;
   return (
     <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
@@ -249,7 +302,14 @@ function EvidencePanel({ report }: { report: InvestigationIntelligenceReport }) 
         <View className="h-2 rounded-full bg-muted overflow-hidden mb-2">
           <View
             className="h-full rounded-full"
-            style={{ width: `${e.strengthScore}%`, backgroundColor: e.strengthScore >= 70 ? '#16a34a' : e.strengthScore >= 40 ? '#d97706' : '#dc2626' }}
+            style={{
+              width: `${e.strengthScore}%`,
+              backgroundColor: e.strengthScore >= 70
+                ? (isDark ? '#4ade80' : '#16a34a')
+                : e.strengthScore >= 40
+                  ? (isDark ? '#fbbf24' : '#d97706')
+                  : (isDark ? '#f87171' : '#dc2626'),
+            }}
           />
         </View>
         <Text className="text-xs text-muted-foreground">
@@ -261,20 +321,28 @@ function EvidencePanel({ report }: { report: InvestigationIntelligenceReport }) 
       <View className="bg-card rounded-2xl p-4 mb-4" style={{ borderCurve: 'continuous' } as object}>
         <Text className="text-sm font-semibold text-foreground mb-3">Evidence Nodes</Text>
         <View className="flex-row flex-wrap gap-2">
-          {e.nodes.map((n) => (
-            <View
-              key={n.id}
-              className="px-3 py-1.5 rounded-full"
-              style={{ backgroundColor: n.isPresent ? (n.isOrphan ? '#fffbeb' : '#f0fdf4') : '#fef2f2' }}
-            >
-              <Text
-                className="text-xs font-medium"
-                style={{ color: n.isPresent ? (n.isOrphan ? '#d97706' : '#16a34a') : '#dc2626' }}
+          {e.nodes.map((n) => {
+            const nodeBg = n.isPresent
+              ? (n.isOrphan ? (isDark ? 'rgba(245, 158, 11, 0.15)' : '#fffbeb') : (isDark ? 'rgba(34, 197, 94, 0.15)' : '#f0fdf4'))
+              : (isDark ? 'rgba(239, 68, 68, 0.15)' : '#fef2f2');
+            const nodeColor = n.isPresent
+              ? (n.isOrphan ? (isDark ? '#fbbf24' : '#d97706') : (isDark ? '#4ade80' : '#16a34a'))
+              : (isDark ? '#f87171' : '#dc2626');
+            return (
+              <View
+                key={n.id}
+                className="px-3 py-1.5 rounded-full"
+                style={{ backgroundColor: nodeBg }}
               >
-                {n.isPresent ? '✓' : '✗'} {n.label}
-              </Text>
-            </View>
-          ))}
+                <Text
+                  className="text-xs font-medium"
+                  style={{ color: nodeColor }}
+                >
+                  {n.isPresent ? '✓' : '✗'} {n.label}
+                </Text>
+              </View>
+            );
+          })}
         </View>
       </View>
 
@@ -284,7 +352,7 @@ function EvidencePanel({ report }: { report: InvestigationIntelligenceReport }) 
           <View className="flex-row items-center gap-2 mb-1">
             <SeverityChip
               label={issue.severity.toUpperCase()}
-              color={issue.severity === 'critical' ? '#dc2626' : issue.severity === 'high' ? '#d97706' : '#6b7280'}
+              color={issue.severity === 'critical' ? (isDark ? '#f87171' : '#dc2626') : issue.severity === 'high' ? (isDark ? '#fbbf24' : '#d97706') : C.mutedForeground}
             />
           </View>
           <Text className="text-xs text-foreground leading-4 mb-1">{issue.description}</Text>
@@ -297,14 +365,17 @@ function EvidencePanel({ report }: { report: InvestigationIntelligenceReport }) 
 }
 
 function ContradictionsPanel({ report }: { report: InvestigationIntelligenceReport }) {
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
   const c = report.contradictionReport;
   return (
     <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
       <View className="flex-row gap-3 mb-4">
         {[
-          { label: 'Critical', count: c.criticalCount, color: '#dc2626' },
-          { label: 'Warning',  count: c.warningCount,  color: '#d97706' },
-          { label: 'Info',     count: c.infoCount,     color: '#6b7280' },
+          { label: 'Critical', count: c.criticalCount, color: isDark ? '#f87171' : '#dc2626' },
+          { label: 'Warning',  count: c.warningCount,  color: isDark ? '#fbbf24' : '#d97706' },
+          { label: 'Info',     count: c.infoCount,     color: C.mutedForeground },
         ].map((s) => (
           <View key={s.label} className="flex-1 bg-card rounded-2xl p-3 items-center" style={{ borderCurve: 'continuous' } as object}>
             <Text className="text-xl font-bold" style={{ color: s.color }}>{s.count}</Text>
@@ -328,7 +399,7 @@ function ContradictionsPanel({ report }: { report: InvestigationIntelligenceRepo
             <View className="flex-row items-center gap-2 mb-2">
               <SeverityChip
                 label={item.type.toUpperCase()}
-                color={item.type === 'critical' ? '#dc2626' : item.type === 'warning' ? '#d97706' : '#6b7280'}
+                color={item.type === 'critical' ? (isDark ? '#f87171' : '#dc2626') : item.type === 'warning' ? (isDark ? '#fbbf24' : '#d97706') : C.mutedForeground}
               />
             </View>
             <Text className="text-sm font-semibold text-foreground mb-1">{item.title}</Text>
@@ -353,15 +424,18 @@ function ContradictionsPanel({ report }: { report: InvestigationIntelligenceRepo
 }
 
 function RisksPanel({ report }: { report: InvestigationIntelligenceReport }) {
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
   const r = report.riskReport;
-  const riskColor = (rl: string) => rl === 'high' ? '#dc2626' : rl === 'medium' ? '#d97706' : '#16a34a';
+  const riskColor = (rl: string) => rl === 'high' ? (isDark ? '#f87171' : '#dc2626') : rl === 'medium' ? (isDark ? '#fbbf24' : '#d97706') : (isDark ? '#4ade80' : '#16a34a');
   return (
     <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
       {/* Overall risk badge */}
       <View
         className="rounded-2xl p-4 mb-4"
         style={{
-          backgroundColor: riskColor(r.overallRiskLevel) + '18',
+          backgroundColor: isDark ? 'rgba(239, 68, 68, 0.12)' : riskColor(r.overallRiskLevel) + '18',
           borderCurve: 'continuous',
         } as object}
       >
@@ -381,9 +455,9 @@ function RisksPanel({ report }: { report: InvestigationIntelligenceReport }) {
           <View key={risk.id} className="bg-card rounded-2xl p-4 mb-3" style={{ borderCurve: 'continuous' } as object}>
             <View className="flex-row items-center gap-2 mb-2">
               <SeverityChip label={risk.riskLevel.toUpperCase()} color={riskColor(risk.riskLevel)} />
-              <SeverityChip label={`${risk.likelihood}% likely`} color="#6b7280" />
+              <SeverityChip label={`${risk.likelihood}% likely`} color={C.mutedForeground} />
               {risk.daysToEvent !== undefined && (
-                <SeverityChip label={risk.daysToEvent === 0 ? 'Overdue' : `${risk.daysToEvent}d`} color={risk.daysToEvent === 0 ? '#dc2626' : '#d97706'} />
+                <SeverityChip label={risk.daysToEvent === 0 ? 'Overdue' : `${risk.daysToEvent}d`} color={risk.daysToEvent === 0 ? (isDark ? '#f87171' : '#dc2626') : (isDark ? '#fbbf24' : '#d97706')} />
               )}
             </View>
             <Text className="text-sm font-semibold text-foreground mb-1">{risk.title}</Text>

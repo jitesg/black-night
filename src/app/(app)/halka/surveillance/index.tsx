@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, FlatList, Pressable, ScrollView,
+  ActivityIndicator, FlatList, KeyboardAvoidingView, Pressable, ScrollView,
   Text, TextInput, View,
 } from 'react-native';
 import { Image } from 'expo-image';
@@ -17,6 +18,7 @@ import {
 const NAVY = '#1E3A5F';
 
 function TargetCard({ target }: { target: SurveillanceTarget }) {
+  const { t } = useTranslation();
   return (
     <View
       className="bg-card border border-border rounded-2xl overflow-hidden flex-row gap-3 px-4 py-3"
@@ -42,7 +44,7 @@ function TargetCard({ target }: { target: SurveillanceTarget }) {
         </Text>
         {target.father_name ? (
           <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-            S/o {target.father_name}
+            {t('halka.surveillance.sonOf', { name: target.father_name })}
           </Text>
         ) : null}
         <Text className="text-xs text-muted-foreground" numberOfLines={1}>
@@ -63,6 +65,7 @@ function TargetCard({ target }: { target: SurveillanceTarget }) {
 }
 
 export default function SurveillanceListScreen() {
+  const { t } = useTranslation();
   const [targets, setTargets]         = useState<SurveillanceTarget[]>([]);
   const [loading, setLoading]         = useState(true);
   const [query, setQuery]             = useState('');
@@ -104,8 +107,8 @@ export default function SurveillanceListScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title="Surveillance Targets"
-        subtitle="निगरानी वाले व्यक्ति"
+        title={t('halka.surveillance.title')}
+        subtitle={t('halka.surveillance.subtitle')}
         showBack
         actions={
           <Pressable
@@ -114,68 +117,73 @@ export default function SurveillanceListScreen() {
             style={{ backgroundColor: '#E11D4818', borderWidth: 1, borderColor: '#E11D4830' }}
           >
             <Plus size={14} color="#E11D48" />
-            <Text style={{ fontSize: 12, fontWeight: '700', color: '#E11D48' }}>Add</Text>
+            <Text style={{ fontSize: 12, fontWeight: '700', color: '#E11D48' }}>{t('common.add')}</Text>
           </Pressable>
         }
       />
 
       {/* ── Toolbar ────────────────────────────────────────────────────────── */}
-      <View className="px-4 pt-2 pb-1.5 border-b border-border bg-background gap-1.5">
-        {/* Search row */}
-        {searchExpanded ? (
-          <View className="flex-row items-center gap-2">
-            <View className="flex-1 flex-row items-center bg-secondary rounded-lg px-3 h-8 gap-2">
-              <Search size={13} color="#9CA3AF" />
-              <TextInput
-                value={query}
-                onChangeText={handleQueryChange}
-                placeholder="Search by name, GP…"
-                placeholderTextColor="#9CA3AF"
-                autoFocus
-                className="flex-1 text-xs text-foreground"
-                style={{ height: 32 }}
-              />
+      <KeyboardAvoidingView
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
+        style={{ width: '100%' }}
+      >
+        <View className="px-4 pt-2 pb-1.5 border-b border-border bg-background gap-1.5">
+          {/* Search row */}
+          {searchExpanded ? (
+            <View className="flex-row items-center gap-2">
+              <View className="flex-1 flex-row items-center bg-secondary rounded-lg px-3 h-8 gap-2">
+                <Search size={13} color="#9CA3AF" />
+                <TextInput
+                  value={query}
+                  onChangeText={handleQueryChange}
+                  placeholder={t('halka.surveillance.searchPlaceholder')}
+                  placeholderTextColor="#9CA3AF"
+                  autoFocus
+                  className="flex-1 text-xs text-foreground"
+                  style={{ height: 32 }}
+                />
+              </View>
+              <Pressable
+                onPress={() => { setSearchExp(false); handleQueryChange(''); }}
+                hitSlop={8}
+                className="active:opacity-60"
+              >
+                <X size={16} color="#6B7280" />
+              </Pressable>
             </View>
-            <Pressable
-              onPress={() => { setSearchExp(false); handleQueryChange(''); }}
-              hitSlop={8}
-              className="active:opacity-60"
-            >
-              <X size={16} color="#6B7280" />
-            </Pressable>
-          </View>
-        ) : (
-          <View className="flex-row items-center justify-between">
-            <Text style={{ fontSize: 11, fontWeight: '700', color: NAVY }}>
-              {targets.length} targets
-            </Text>
-            <Pressable onPress={() => setSearchExp(true)} hitSlop={8} className="active:opacity-60">
-              <Search size={18} color="#6B7280" />
-            </Pressable>
-          </View>
-        )}
+          ) : (
+            <View className="flex-row items-center justify-between">
+              <Text style={{ fontSize: 11, fontWeight: '700', color: NAVY }}>
+                {t('halka.surveillance.targetCount', { count: targets.length })}
+              </Text>
+              <Pressable onPress={() => setSearchExp(true)} hitSlop={8} className="active:opacity-60">
+                <Search size={18} color="#6B7280" />
+              </Pressable>
+            </View>
+          )}
 
-        {/* Activity filter chips */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
-          <View className="flex-row gap-1.5 px-1">
-            {CRIMINAL_ACTIVITIES.map((act) => {
-              const active = activityFilter === act;
-              return (
-                <Pressable
-                  key={act}
-                  onPress={() => handleActivityFilter(act)}
-                  className="rounded-full px-2.5 py-1 active:opacity-70"
-                  style={{ backgroundColor: active ? '#E11D48' : '#F3F4F6' }}
-                >
-                  <Text style={{ fontSize: 11, fontWeight: '600', color: active ? '#fff' : '#6B7280' }}>
-                    {act}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </ScrollView>
-      </View>
+          {/* Activity filter chips */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
+            <View className="flex-row gap-1.5 px-1">
+              {CRIMINAL_ACTIVITIES.map((act) => {
+                const active = activityFilter === act;
+                return (
+                  <Pressable
+                    key={act}
+                    onPress={() => handleActivityFilter(act)}
+                    className="rounded-full px-2.5 py-1 active:opacity-70"
+                    style={{ backgroundColor: active ? '#E11D48' : '#F3F4F6' }}
+                  >
+                    <Text style={{ fontSize: 11, fontWeight: '600', color: active ? '#fff' : '#6B7280' }}>
+                      {act}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
@@ -194,9 +202,9 @@ export default function SurveillanceListScreen() {
               <View className="w-14 h-14 rounded-2xl items-center justify-center" style={{ backgroundColor: '#FEE2E2' }}>
                 <Eye size={24} color="#E11D48" />
               </View>
-              <Text className="text-sm font-semibold text-foreground">No surveillance targets</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('halka.surveillance.emptyTitle')}</Text>
               <Text className="text-xs text-muted-foreground text-center px-10 leading-5">
-                Tap "Add" to register a person under surveillance
+                {t('halka.surveillance.emptySubtitle')}
               </Text>
             </View>
           }

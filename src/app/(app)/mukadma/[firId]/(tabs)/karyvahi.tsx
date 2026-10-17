@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { logger } from '@/lib/logger';
-import { View, Text, Pressable, ActivityIndicator, TextInput, ScrollView, Modal } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, TextInput, ScrollView, Modal, KeyboardAvoidingView } from 'react-native';
 import Svg, { Circle as SvgCircle } from 'react-native-svg';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -9,7 +9,7 @@ import { useColorScheme } from 'nativewind';
 import {
   Plus, CheckCircle2, Circle, Trash2, AlertTriangle, ChevronRight,
   Info, BookOpen, ChevronDown, ChevronUp, Ban, Pause,
-  PlayCircle, Lock, CalendarDays, Search, X,
+  PlayCircle, Lock, CalendarDays, Search, X, ListChecks,
 } from 'lucide-react-native';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -29,6 +29,8 @@ import {
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useFIRContext } from '@/context/FIRContext';
 import { THEME } from '@/lib/theme';
+import { matchDefaultKaryvahi } from '@/lib/karyvahiNames';
+import { getDefaultKnowledge } from '@/lib/defaultKaryvahiKnowledge';
 
 type FilterMode = 'all' | 'pending' | 'completed';
 type ActiveView = 'general' | 'diary';
@@ -310,31 +312,36 @@ function ReasonModal({
   return (
     <AlertDialog open={visible} onOpenChange={(o) => { if (!o) onCancel(); }}>
       <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Reason Required</AlertDialogTitle>
-          <AlertDialogDescription>
-            Please provide a reason for marking this action as "{statusLabel}".
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <TextInput
-          value={reason}
-          onChangeText={setReason}
-          placeholder="Enter reason…"
-          multiline
-          numberOfLines={3}
-          className="border border-border rounded-xl px-3 py-2 text-sm text-foreground bg-card"
-          style={{ minHeight: 72, textAlignVertical: 'top' }}
-          placeholderTextColor={c.mutedForeground}
-        />
-        <AlertDialogFooter>
-          <AlertDialogCancel onPress={onCancel}><Text>Cancel</Text></AlertDialogCancel>
-          <AlertDialogAction
-            onPress={() => { if (reason.trim()) onConfirm(reason.trim()); }}
-            disabled={!reason.trim()}
-          >
-            <Text>Confirm</Text>
-          </AlertDialogAction>
-        </AlertDialogFooter>
+        <KeyboardAvoidingView
+          behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
+          style={{ width: '100%' }}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reason Required</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please provide a reason for marking this action as "{statusLabel}".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <TextInput
+            value={reason}
+            onChangeText={setReason}
+            placeholder="Enter reason…"
+            multiline
+            numberOfLines={3}
+            className="border border-border rounded-xl px-3 py-2 text-sm text-foreground bg-card"
+            style={{ minHeight: 72, textAlignVertical: 'top' }}
+            placeholderTextColor={c.mutedForeground}
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel onPress={onCancel}><Text>Cancel</Text></AlertDialogCancel>
+            <AlertDialogAction
+              onPress={() => { if (reason.trim()) onConfirm(reason.trim()); }}
+              disabled={!reason.trim()}
+            >
+              <Text>Confirm</Text>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </KeyboardAvoidingView>
       </AlertDialogContent>
     </AlertDialog>
   );
@@ -372,6 +379,10 @@ function KaryvahiCard({
   const status: KaryvahiStatus = done ? 'COMPLETED' : ((item.status as KaryvahiStatus) ?? 'PENDING');
   const priority     = (item.priority as KaryvahiPriority) ?? 'MANDATORY';
   const queued       = (item.queued_for_diary ?? 0) === 1;
+
+  const defKey       = matchDefaultKaryvahi(item.name);
+  const defKnowledge = defKey ? getDefaultKnowledge(defKey) : null;
+  const subtitleWhat = defKnowledge?.what;
 
   const leftAccentColor = multipleExec
     ? sem.CONDITIONAL.fg
@@ -419,6 +430,11 @@ function KaryvahiCard({
 
   const subtitleContent = (
     <View className="gap-0.5">
+      {subtitleWhat ? (
+        <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
+          {subtitleWhat}
+        </Text>
+      ) : null}
       {done && diaryNumber !== null && (
         <View className="flex-row items-center gap-1 mt-0.5">
           <BookOpen size={11} color={c.mutedForeground} />
@@ -1355,23 +1371,49 @@ export default function KaryvahiTab() {
               </>
             )}
 
-            {/* Add custom */}
-            <Pressable
-              onPress={() => router.push(`/(app)/mukadma/${stableFirId}/add-karyvahi` as never)}
-              className="flex-row items-center justify-between border border-dashed border-border bg-card rounded-2xl px-4 py-3.5 mt-1 active:opacity-70"
-              style={{ borderCurve: 'continuous' }}
-            >
-              <View className="flex-row items-center gap-3">
-                <View
-                  className="w-8 h-8 rounded-lg items-center justify-center"
-                  style={{ backgroundColor: `${c.primary}18` }}
-                >
-                  <Plus size={16} color={c.primary} />
+            {/* Add actions: Add from Checklist + Add custom */}
+            <View className="gap-2.5 mt-2">
+              <Pressable
+                onPress={() => router.push(`/(app)/mukadma/${stableFirId}/add-karyvahi-checklist` as never)}
+                className="flex-row items-center justify-between border border-dashed border-border bg-card rounded-2xl px-4 py-3.5 active:opacity-70"
+                style={{ borderCurve: 'continuous' }}
+              >
+                <View className="flex-row items-center gap-3">
+                  <View
+                    className="w-8 h-8 rounded-lg items-center justify-center"
+                    style={{ backgroundColor: `${c.primary}18` }}
+                  >
+                    <ListChecks size={16} color={c.primary} />
+                  </View>
+                  <View>
+                    <Text className="text-sm font-semibold text-foreground">
+                      {t('fir.karyvahi.addFromChecklist', 'चेकलिस्ट से जोड़ें')}
+                    </Text>
+                    <Text className="text-xs text-muted-foreground">
+                      {t('fir.karyvahi.addFromChecklistSub', 'मानक विवेचना चेकलिस्ट से कार्य चुनें')}
+                    </Text>
+                  </View>
                 </View>
-                <Text className="text-sm font-semibold text-foreground">{t('fir.karyvahi.addCustom')}</Text>
-              </View>
-              <ChevronRight size={16} color={c.mutedForeground} />
-            </Pressable>
+                <ChevronRight size={16} color={c.mutedForeground} />
+              </Pressable>
+
+              <Pressable
+                onPress={() => router.push(`/(app)/mukadma/${stableFirId}/add-karyvahi` as never)}
+                className="flex-row items-center justify-between border border-dashed border-border bg-card rounded-2xl px-4 py-3.5 active:opacity-70"
+                style={{ borderCurve: 'continuous' }}
+              >
+                <View className="flex-row items-center gap-3">
+                  <View
+                    className="w-8 h-8 rounded-lg items-center justify-center"
+                    style={{ backgroundColor: `${c.primary}18` }}
+                  >
+                    <Plus size={16} color={c.primary} />
+                  </View>
+                  <Text className="text-sm font-semibold text-foreground">{t('fir.karyvahi.addCustom')}</Text>
+                </View>
+                <ChevronRight size={16} color={c.mutedForeground} />
+              </Pressable>
+            </View>
           </ScrollView>
         </>
       ) : (

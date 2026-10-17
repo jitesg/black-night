@@ -6,6 +6,7 @@ import {
   getChecklistItemsForCrimeTypes,
   getChecklistsByCrimeType,
   getItemsByChecklist,
+  parseCrimeTypePairs,
   type SubtypePair,
   type ChecklistItem,
 } from './checklistRepo';
@@ -40,6 +41,8 @@ export interface FIRKaryvahi {
   is_locked?: number; // 0 = unlocked, 1 = locked (waiting for a blocker)
   // Phase 4 additive field — optional: format to auto-open on COMPLETED
   auto_generate_format_id?: string;
+  // Investigation Playbook field (optional)
+  step_code?: string;
   // Diary queue flag: 1 = officer flagged this item for the next Case Diary session
   queued_for_diary?: number; // 0 | 1, DEFAULT 0
   created_at: number;
@@ -51,12 +54,141 @@ export type FIRKaryvahiInput = Omit<FIRKaryvahi, 'id' | 'created_at' | 'updated_
 
 // Five mandatory Karyvahi added to every FIR at creation time (sort_order 0–4)
 export const DEFAULT_KARYVAHI = [
-  { name: 'Avlokan Nakal Chick',        precautions: 'Review and verify the Nakal Chick entry.'    },
-  { name: 'Avlokan Nakal Rapat',        precautions: 'Review and verify the Nakal Rapat entry.'    },
-  { name: 'Bayan Vadi / Vadini',        precautions: 'Record statement of complainant/victim.'     },
-  { name: 'Ghatnasthal Nirikshan',      precautions: 'Conduct site inspection of the crime scene.' },
-  { name: 'e-Sakshya App Videography', precautions: 'Record videography via e-Sakshya app.'       },
+  { name: 'नकल चिक का अवलोकन', precautions: 'नकल चिक की प्रविष्टि का अवलोकन कर सत्यापित करें।' },
+  { name: 'नकल रपट का अवलोकन', precautions: 'नकल रपट की प्रविष्टि का अवलोकन कर सत्यापित करें।' },
+  { name: 'वादी/वादिनी का बयान', precautions: 'वादी/पीड़ित का बयान दर्ज करें।' },
+  { name: 'घटनास्थल निरीक्षण', precautions: 'घटनास्थल का निरीक्षण करें।' },
+  { name: 'ई-साक्ष्य ऐप से वीडियोग्राफी', precautions: 'ई-साक्ष्य ऐप से वीडियोग्राफी करें।' },
 ] as const;
+
+export const LEGACY_DEFAULT_KARYVAHI_NAMES: readonly string[] = [
+  'Avlokan Nakal Chick',
+  'Avlokan Nakal Rapat',
+  'Bayan Vadi / Vadini',
+  'Ghatnasthal Nirikshan',
+  'e-Sakshya App Videography',
+];
+
+/**
+ * 34 standard investigation steps officers can select from when adding
+ * Karyvahi to an existing FIR from the Common Investigation Checklist screen.
+ */
+export const COMMON_INVESTIGATION_CHECKLIST: Array<{ name: string; precautions: string }> = [
+  { name: 'एफआईआर/सूचना पंजीकरण', precautions: 'सूचना को सही धाराओं में दर्ज करें।' },
+  { name: 'एफआईआर की प्रति सूचनादाता/पीड़ित को', precautions: 'निःशुल्क प्रति तुरंत उपलब्ध कराएं।' },
+  { name: 'जीडी प्रविष्टि', precautions: 'थाने की जीडी में घटना दर्ज करें।' },
+  { name: 'विवेचक नियुक्ति', precautions: 'सक्षम अधिकारी द्वारा विवेचक नामित करें।' },
+  { name: 'घटनास्थल हेतु रवानगी', precautions: 'तुरंत घटनास्थल के लिए रवाना हों।' },
+  { name: 'घटनास्थल सुरक्षा', precautions: 'साक्ष्य नष्ट होने से बचाने हेतु घेराबंदी करें।' },
+  { name: 'घटनास्थल निरीक्षण', precautions: 'घटनास्थल का सूक्ष्मता से निरीक्षण करें।' },
+  { name: 'नक्शा नजरी (साइट प्लान)', precautions: 'दूरी/दिशा सहित सही नक्शा बनाएं।' },
+  { name: 'फोटोग्राफी', precautions: 'घटनास्थल की फोटो लें।' },
+  { name: 'वीडियोग्राफी', precautions: 'ई-साक्ष्य ऐप से वीडियोग्राफी कराएं।' },
+  { name: 'भौतिक साक्ष्य संकलन', precautions: 'वैज्ञानिक विधि से साक्ष्य एकत्र करें।' },
+  { name: 'गवाहों की पहचान', precautions: 'सभी संभावित गवाहों को चिन्हित करें।' },
+  { name: 'गवाहों के बयान', precautions: 'धारा के अनुसार बयान दर्ज करें।' },
+  { name: 'सीसीटीवी खोज', precautions: 'आसपास के सीसीटीवी फुटेज एकत्र करें।' },
+  { name: 'इलेक्ट्रॉनिक साक्ष्य संरक्षण', precautions: 'डिजिटल साक्ष्य सुरक्षित रखें।' },
+  { name: 'संदिग्ध की पहचान', precautions: 'संभावित संदिग्धों को चिन्हित करें।' },
+  { name: 'अभियुक्त से पूछताछ', precautions: 'विधिक प्रक्रिया अनुसार पूछताछ करें।' },
+  { name: 'गिरफ्तारी आवश्यकता का आकलन', precautions: 'आवश्यकता का विधिक मूल्यांकन करें।' },
+  { name: 'गिरफ्तारी ज्ञापन (यदि गिरफ्तार हो)', precautions: 'गिरफ्तारी मेमो तैयार करें।' },
+  { name: 'व्यक्तिगत तलाशी', precautions: 'गिरफ्तारी पर तलाशी लें।' },
+  { name: 'चिकित्सीय परीक्षण (जहां लागू हो)', precautions: 'एमएलसी करवाएं।' },
+  { name: 'केस डायरी प्रविष्टियां', precautions: 'नियमित रूप से डायरी अंकित करें।' },
+  { name: 'जब्त माल मालखाना', precautions: 'जब्त सामान मालखाना जमा करें।' },
+  { name: 'एफएसएल परीक्षण (जहां आवश्यक हो)', precautions: 'नमूने एफएसएल भेजें।' },
+  { name: 'विशेषज्ञ राय', precautions: 'आवश्यकतानुसार विशेषज्ञ राय लें।' },
+  { name: 'बरामदगी (यदि हो)', precautions: 'बरामदगी का पंचनामा तैयार करें।' },
+  { name: 'पहचान परेड (यदि आवश्यक हो)', precautions: 'टीआई परेड कराएं।' },
+  { name: 'पूर्व आपराधिक इतिहास सत्यापन', precautions: 'अभियुक्त का रिकॉर्ड जांचें।' },
+  { name: 'सीडीआर/आईपीडीआर/लोकेशन डाटा', precautions: 'विधिक अनुमति से प्राप्त करें।' },
+  { name: 'वित्तीय/बैंक ट्रेल', precautions: 'बैंक खाता विवरण प्राप्त करें।' },
+  { name: 'अभिप्रेरणा (मोटिव) की जांच', precautions: 'घटना के कारण की जांच करें।' },
+  { name: 'बयानों का सत्यापन/विरोधाभास जांच', precautions: 'बयानों में विरोधाभास जांचें।' },
+  { name: 'लंबित साक्ष्य समीक्षा', precautions: 'सभी साक्ष्यों की समीक्षा करें।' },
+  { name: 'अंतिम राय', precautions: 'विवेचना की अंतिम राय तैयार करें।' },
+  { name: 'आरोप पत्र/अंतिम रिपोर्ट', precautions: 'न्यायालय में प्रस्तुत करें।' },
+];
+
+export const DEFAULT_KARYVAHI_RENAME_MAP = [
+  {
+    oldName: 'Avlokan Nakal Chick',
+    newName: 'नकल चिक का अवलोकन',
+    oldPrecaution: 'Review and verify the Nakal Chick entry.',
+    newPrecaution: 'नकल चिक की प्रविष्टि का अवलोकन कर सत्यापित करें।',
+  },
+  {
+    oldName: 'Avlokan Nakal Rapat',
+    newName: 'नकल रपट का अवलोकन',
+    oldPrecaution: 'Review and verify the Nakal Rapat entry.',
+    newPrecaution: 'नकल रपट की प्रविष्टि का अवलोकन कर सत्यापित करें।',
+  },
+  {
+    oldName: 'Bayan Vadi / Vadini',
+    newName: 'वादी/वादिनी का बयान',
+    oldPrecaution: 'Record statement of complainant/victim.',
+    newPrecaution: 'वादी/पीड़ित का बयान दर्ज करें।',
+  },
+  {
+    oldName: 'Ghatnasthal Nirikshan',
+    newName: 'घटनास्थल निरीक्षण',
+    oldPrecaution: 'Conduct site inspection of the crime scene.',
+    newPrecaution: 'घटनास्थल का निरीक्षण करें।',
+  },
+  {
+    oldName: 'e-Sakshya App Videography',
+    newName: 'ई-साक्ष्य ऐप से वीडियोग्राफी',
+    oldPrecaution: 'Record videography via e-Sakshya app.',
+    newPrecaution: 'ई-साक्ष्य ऐप से वीडियोग्राफी करें।',
+  },
+] as const;
+
+export async function migrateDefaultKaryvahiHindiNames(): Promise<void> {
+  const db = await getDatabase();
+  const now = nowTimestamp();
+
+  try {
+    await db.withTransactionAsync(async () => {
+      for (const item of DEFAULT_KARYVAHI_RENAME_MAP) {
+        // UPDATE fir_karyvahi SET name=<new>, updated_at=now WHERE LOWER(TRIM(name)) = LOWER(old) AND (source IS NULL OR source != 'user')
+        await db.runAsync(
+          `UPDATE fir_karyvahi
+           SET name = ?, updated_at = ?
+           WHERE LOWER(TRIM(name)) = LOWER(?)
+             AND (source IS NULL OR source != 'user')`,
+          [item.newName, now, item.oldName]
+        );
+
+        // Also set precautions to the new Hindi precautions only where precautions equals the OLD default precaution text
+        await db.runAsync(
+          `UPDATE fir_karyvahi
+           SET precautions = ?, updated_at = ?
+           WHERE precautions = ?`,
+          [item.newPrecaution, now, item.oldPrecaution]
+        );
+
+        // UPDATE case_diary_entries SET karyvahi_name=<new> WHERE karyvahi_name=<old>
+        await db.runAsync(
+          `UPDATE case_diary_entries
+           SET karyvahi_name = ?
+           WHERE karyvahi_name = ?`,
+          [item.newName, item.oldName]
+        );
+
+        // same for case_diary_karyvahi.karyvahi_name
+        await db.runAsync(
+          `UPDATE case_diary_karyvahi
+           SET karyvahi_name = ?
+           WHERE karyvahi_name = ?`,
+          [item.newName, item.oldName]
+        );
+      }
+    });
+  } catch (err) {
+    logger.warn('[migration] v340_default_karyvahi_hindi_names failed:', err);
+  }
+}
 
 // ─── Read ─────────────────────────────────────────────────────────────────────
 
@@ -174,7 +306,10 @@ export async function seedFIRKaryvahi(firId: string, crimeType: string): Promise
   // If crimeType contains ':' → legacy path (getChecklistItemsForPairs / legacy checklist tables).
   // If no ':' → new flat path (getChecklistItemsForCrimeTypes via M2M table).
   // Either way seededNames guards DEFAULT_KARYVAHI from being overwritten.
-  const seededNames = new Set(DEFAULT_KARYVAHI.map((k) => k.name.toLowerCase().trim()));
+  const seededNames = new Set([
+    ...DEFAULT_KARYVAHI.map((k) => k.name.toLowerCase().trim()),
+    ...LEGACY_DEFAULT_KARYVAHI_NAMES.map((name) => name.toLowerCase().trim()),
+  ]);
   const checklistItems: ChecklistItem[] = [];
 
   const isLegacyFormat = crimeType.includes(':');
@@ -183,31 +318,7 @@ export async function seedFIRKaryvahi(firId: string, crimeType: string): Promise
     // ── LEGACY path: "CrimeType:Sub1,Sub2|CrimeType2:Sub3" ─────────────────
     logger.warn(`[TRACE] seedFIRKaryvahi legacy format detected for crimeType="${crimeType}"`);
 
-    const pairs: SubtypePair[] = [];
-    const groups = crimeType.split('|').map((g) => g.trim()).filter(Boolean);
-    for (const group of groups) {
-      const colonIdx = group.indexOf(':');
-      if (colonIdx === -1) {
-        const ct = group.trim();
-        if (ct) pairs.push({ crimeType: ct, subType: '' });
-      } else {
-        const ct = group.slice(0, colonIdx).trim();
-        const subsRaw = group.slice(colonIdx + 1);
-        const subs = subsRaw.split(',').map((s) => s.trim()).filter(Boolean);
-        for (const sub of subs) {
-          if (ct) pairs.push({ crimeType: ct, subType: sub });
-        }
-        if (subs.length === 0 && ct) pairs.push({ crimeType: ct, subType: '' });
-      }
-    }
-
-    const seenPairKeys = new Set<string>();
-    const uniquePairs = pairs.filter((p) => {
-      const key = `${p.crimeType.toLowerCase()}:::${p.subType.toLowerCase()}`;
-      if (seenPairKeys.has(key)) return false;
-      seenPairKeys.add(key);
-      return true;
-    });
+    const uniquePairs = parseCrimeTypePairs(crimeType);
 
     logger.warn(
       `[TRACE] seedFIRKaryvahi legacy: ${uniquePairs.length} (type,subtype) pairs`
@@ -348,14 +459,14 @@ export async function seedFIRKaryvahi(firId: string, crimeType: string): Promise
       const formatId = item.auto_generate_format_id ?? null;
       const sql = hasSortOrder
         ? `INSERT INTO fir_karyvahi
-             (id, fir_id, name, precautions, is_completed, sort_order, priority, status, auto_generate_format_id, created_at, updated_at)
-           VALUES (?, ?, ?, ?, 0, ?, ?, 'PENDING', ?, ?, ?)`
+             (id, fir_id, name, precautions, is_completed, sort_order, priority, status, auto_generate_format_id, step_code, created_at, updated_at)
+           VALUES (?, ?, ?, ?, 0, ?, ?, 'PENDING', ?, ?, ?, ?)`
         : `INSERT INTO fir_karyvahi
-             (id, fir_id, name, precautions, is_completed, priority, status, auto_generate_format_id, created_at, updated_at)
-           VALUES (?, ?, ?, ?, 0, ?, 'PENDING', ?, ?, ?)`;
+             (id, fir_id, name, precautions, is_completed, priority, status, auto_generate_format_id, step_code, created_at, updated_at)
+           VALUES (?, ?, ?, ?, 0, ?, 'PENDING', ?, ?, ?, ?)`;
       const params = hasSortOrder
-        ? [generateUUID(), firId, item.task_name.trim(), item.brief_description?.trim() || null, 10 + i, priority, formatId, now + offset, now + offset]
-        : [generateUUID(), firId, item.task_name.trim(), item.brief_description?.trim() || null, priority, formatId, now + offset, now + offset];
+        ? [generateUUID(), firId, item.task_name.trim(), item.brief_description?.trim() || null, 10 + i, priority, formatId, item.step_code ?? null, now + offset, now + offset]
+        : [generateUUID(), firId, item.task_name.trim(), item.brief_description?.trim() || null, priority, formatId, item.step_code ?? null, now + offset, now + offset];
 
       txState = `checklist INSERT ${i + 1} of ${checklistItems.length}`;
       try {

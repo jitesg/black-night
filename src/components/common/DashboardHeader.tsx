@@ -5,7 +5,7 @@
  * Layout: [☰ Menu] — [IS · InvestSuite / Investigation Operating System] — [🔔 Bell]
  *
  * Theme-aware: reads useColorScheme + THEME so dark mode is honoured.
- * IS badge accent (indigo) is kept fixed — brand identity, not a surface color.
+ * IS badge uses theme primary tokens for cohesive Trust Green styling.
  */
 import { View, Text, Pressable } from 'react-native';
 import { T } from '@/lib/typography';
@@ -14,12 +14,7 @@ import { Menu, Bell } from 'lucide-react-native';
 import { H } from '@/lib/headerTokens';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-
-// IS badge — fixed indigo brand accent (intentional, not a surface color)
-const INDIGO_BADGE_BG     = '#6366F115';
-const INDIGO_BADGE_BORDER = 'rgba(99,102,241,0.25)';
-const INDIGO_BADGE_TEXT   = '#6366F1';
-const INDIGO_DOT          = '#6366F1';
+import { useTranslation } from 'react-i18next';
 
 // ── Sub-component: icon button ────────────────────────────────────────────────
 function HeaderIconBtn({
@@ -71,6 +66,7 @@ export function DashboardHeader({
   syncStatus,
   aiStatus,
 }: DashboardHeaderProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const colors = THEME[colorScheme ?? 'light'];
@@ -98,23 +94,23 @@ export function DashboardHeader({
         }}
       >
         {/* ── Left: Hamburger ──────────────────────────────────────── */}
-        <HeaderIconBtn onPress={onMenuPress} accessibilityLabel="Open navigation menu">
+        <HeaderIconBtn onPress={onMenuPress} accessibilityLabel={t('header.openMenu')}>
           <Menu size={H.iconSize} color={colors.foreground} strokeWidth={2} />
         </HeaderIconBtn>
 
         {/* ── Center: Brand mark ───────────────────────────────────── */}
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-          {/* "IS" badge — fixed indigo brand accent */}
+          {/* "IS" badge — theme primary accent */}
           <View
             style={{
               width: 28, height: 28, borderRadius: 8,
-              backgroundColor: INDIGO_BADGE_BG,
-              borderWidth: 1, borderColor: INDIGO_BADGE_BORDER,
+              backgroundColor: `${colors.primary}15`,
+              borderWidth: 1, borderColor: `${colors.primary}40`,
               alignItems: 'center', justifyContent: 'center',
             }}
           >
             <Text
-              style={{ ...T.caption2, fontWeight: '800', color: INDIGO_BADGE_TEXT, letterSpacing: 0.3 }}
+              style={{ ...T.caption2, fontWeight: '800', color: colors.primary, letterSpacing: 0.3 }}
             >
               IS
             </Text>
@@ -130,7 +126,7 @@ export function DashboardHeader({
             <Text
               style={{ ...T.micro, fontWeight: '400', letterSpacing: 0.1, lineHeight: 13, color: colors.mutedForeground }}
             >
-              Investigation Operating System
+              {t('header.subtitle')}
             </Text>
           </View>
 
@@ -148,10 +144,10 @@ export function DashboardHeader({
             <View
               style={{
                 borderRadius: 999, paddingHorizontal: 6, paddingVertical: 2,
-                backgroundColor: '#1E3A5F', marginLeft: 2,
+                backgroundColor: colors.accent, marginLeft: 2,
               }}
             >
-              <Text style={{ ...T.micro, fontWeight: '700', color: '#60A5FA', letterSpacing: 0.3 }}>
+              <Text style={{ ...T.micro, fontWeight: '700', color: colors.accentForeground, letterSpacing: 0.3 }}>
                 AI
               </Text>
             </View>
@@ -162,7 +158,7 @@ export function DashboardHeader({
         <View style={{ width: H.iconBtnSize, height: H.iconBtnSize }}>
           <HeaderIconBtn
             onPress={onBellPress ?? (() => {})}
-            accessibilityLabel={showBadge ? `Notifications, ${badgeLabel} unread` : 'Notifications'}
+            accessibilityLabel={showBadge ? t('header.notificationsWithCount', { count: badgeLabel }) : t('header.notifications')}
           >
             <Bell size={H.iconSize} color={colors.foreground} strokeWidth={1.8} />
           </HeaderIconBtn>
@@ -173,13 +169,13 @@ export function DashboardHeader({
               style={{
                 top: 4, right: 4,
                 minWidth: 16, height: 16, borderRadius: 8,
-                backgroundColor: INDIGO_DOT,
+                backgroundColor: colors.primary,
                 paddingHorizontal: 3,
                 borderWidth: 1.5, borderColor: colors.card,
               }}
               pointerEvents="none"
             >
-              <Text style={{ fontSize: 8, fontWeight: '800', color: '#FFFFFF', lineHeight: 10 }}>
+              <Text style={{ fontSize: 8, fontWeight: '800', color: colors.primaryForeground, lineHeight: 10 }}>
                 {badgeLabel}
               </Text>
             </View>

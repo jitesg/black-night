@@ -4,9 +4,10 @@ import { Pressable, ScrollView, Text, View, ActivityIndicator } from 'react-nati
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  BookOpen, ChevronRight, ClipboardList,
+  BookOpen, ChevronRight,
   FileText, Search, Shield, Users,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
@@ -25,14 +26,6 @@ interface GuideSection {
 }
 
 const GUIDE_SECTIONS: GuideSection[] = [
-  {
-    type: 'checklists',
-    label: 'Investigation Checklists',
-    subtitle: 'Master Checklist Library · auto-fills Mukadma Karyvahi',
-    icon: ClipboardList,
-    route: '/(app)/knowledge/checklists',
-    subcategory: 'Investigation Checklists',
-  },
   {
     type: 'sops',
     label: 'Crime-wise Investigation SOPs',
@@ -81,25 +74,17 @@ async function getGuideCounts(): Promise<Record<string, number>> {
   return map;
 }
 
-async function getChecklistCount(): Promise<number> {
-  const db = await getDatabase();
-  const row = await db.getFirstAsync<{ cnt: number }>(
-    `SELECT COUNT(*) as cnt FROM investigation_checklists WHERE deleted_at IS NULL`
-  );
-  return row?.cnt ?? 0;
-}
-
 // ─── Section Card ─────────────────────────────────────────────────────────
 function SectionCard({
   section, count, onPress,
 }: {
   section: GuideSection; count: number; onPress: () => void;
 }) {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const COLOR = colorScheme === 'dark' ? '#22D3EE' : '#0891B2';
   const Icon = section.icon;
-  const isChecklist = section.type === 'checklists';
   return (
     <Pressable
       onPress={onPress}
@@ -114,10 +99,10 @@ function SectionCard({
       </View>
       <View className="flex-1" style={{ minWidth: 0 }}>
         <Text className="text-sm font-semibold text-foreground leading-5">
-          {section.label}
+          {t(`knowledge.guide.${section.type}.label`)}
         </Text>
         <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
-          {section.subtitle}
+          {t(`knowledge.guide.${section.type}.subtitle`)}
         </Text>
       </View>
       <View className="items-end gap-1">
@@ -129,11 +114,6 @@ function SectionCard({
             {count}
           </Text>
         </View>
-        {isChecklist && (
-          <View className="rounded-full px-2 py-0.5 bg-secondary">
-            <Text className="text-[10px] font-medium text-muted-foreground">SSOT</Text>
-          </View>
-        )}
       </View>
       <ChevronRight size={16} color={C.mutedForeground} />
     </Pressable>
@@ -142,6 +122,7 @@ function SectionCard({
 
 // ─── Main Screen ──────────────────────────────────────────────────────────
 export default function InvestigationGuidesHomeScreen() {
+  const { t } = useTranslation();
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
@@ -150,11 +131,8 @@ export default function InvestigationGuidesHomeScreen() {
       (async () => {
         setLoading(true);
         try {
-          const [guideCounts, clCount] = await Promise.all([
-            getGuideCounts(),
-            getChecklistCount(),
-          ]);
-          setCounts({ ...guideCounts, 'Investigation Checklists': clCount });
+          const guideCounts = await getGuideCounts();
+          setCounts(guideCounts);
         } catch (e) {
           logger.error('[InvestigationGuides] counts error:', e);
         } finally {
@@ -171,7 +149,7 @@ export default function InvestigationGuidesHomeScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Investigation Guides" subtitle="Knowledge"
+      <AppHeader title={t('knowledge.guide.title')} subtitle={t('knowledge.guide.subtitle')}
         showBack
       />
 
@@ -187,8 +165,7 @@ export default function InvestigationGuidesHomeScreen() {
           {/* Intro note */}
           <View className="bg-secondary rounded-xl px-4 py-3 mb-1">
             <Text className="text-xs text-muted-foreground leading-5">
-              Centralized investigation knowledge repository. Investigation Checklists act as the
-              Single Source of Truth (SSOT) and auto-populate the Mukadma Karyvahi tab on FIR creation.
+              {t('knowledge.guide.introNote')}
             </Text>
           </View>
 

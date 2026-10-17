@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useRef, useEffect, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
   BackHandler, View, Text, ScrollView, Pressable, FlatList,
@@ -62,6 +63,20 @@ const CHIP_BORDER        = { light: '#CBD5E1', dark: '#475569' } as const;
 const STATUS_BG   = { light: { Finished: '#D1FAE5', Overdue: '#FEE2E2', Pending: '#FEF3C7' }, dark: { Finished: '#052E16', Overdue: '#450A0A', Pending: '#451A03' } } as const;
 const STATUS_TEXT = { light: { Finished: '#065F46', Overdue: '#991B1B', Pending: '#92400E' }, dark: { Finished: '#6EE7B7', Overdue: '#FCA5A5', Pending: '#FCD34D' } } as const;
 const DAY_COLOR   = { light: { finished: '#065F46', positive: '#1D4ED8', overdue: '#DC2626' }, dark: { finished: '#6EE7B7', positive: '#93C5FD', overdue: '#F87171' } } as const;
+
+const STATUS_LABEL_KEY = {
+  Finished: 'fir.list.filterFinished',
+  Overdue: 'nyayalay.status.overdue',
+  Pending: 'fir.list.filterPending',
+} as const;
+
+const DOC_TYPE_I18N_KEYS: Record<DocType, string> = {
+  NBW: 'nyayalay.docType.NBW',
+  Summons: 'nyayalay.docType.Summons',
+  Bail_Lower_Court: 'nyayalay.docType.Bail_Lower_Court',
+  High_Court_Documents: 'nyayalay.docType.High_Court_Documents',
+  Anya: 'nyayalay.docType.Anya',
+};
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -140,6 +155,7 @@ const DocCard = memo(function DocCard({
   onDelete: () => void;
   scheme: 'light' | 'dark';
 }) {
+  const { t } = useTranslation();
   const palette = THEME[scheme];
   const today = todayStr();
   const days = nylDaysUntilDeadline(doc.deadline_date, doc.status);
@@ -147,10 +163,10 @@ const DocCard = memo(function DocCard({
   const isOverdue = !isFinished && doc.deadline_date < today;
 
   const dayLabel = isFinished
-    ? 'Finished'
-    : days > 0 ? `${days}d left`
-    : days === 0 ? 'Due today'
-    : `${Math.abs(days)}d overdue`;
+    ? t('fir.list.filterFinished')
+    : days > 0 ? t('nyayalay.daysLeft', { count: days })
+    : days === 0 ? t('nyayalay.dueToday')
+    : t('nyayalay.daysOverdue', { count: Math.abs(days) });
 
   const dayColorKey = isFinished ? 'finished' : days > 0 ? 'positive' : 'overdue';
   const dayColor = DAY_COLOR[scheme][dayColorKey];
@@ -158,7 +174,7 @@ const DocCard = memo(function DocCard({
   const statusKey: 'Finished' | 'Overdue' | 'Pending' = isFinished ? 'Finished' : isOverdue ? 'Overdue' : 'Pending';
   const statusBg    = STATUS_BG[scheme][statusKey];
   const statusColor = STATUS_TEXT[scheme][statusKey];
-  const statusLabel = isFinished ? 'Finished' : isOverdue ? 'Overdue' : 'Pending';
+  const statusLabel = t(STATUS_LABEL_KEY[statusKey]);
 
   // Type badge — use accent token so it adapts to both themes
   const typeBadgeBg   = palette.accent;
@@ -176,7 +192,7 @@ const DocCard = memo(function DocCard({
           <View className="flex-row items-center gap-2 mb-2">
             <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: typeBadgeBg }}>
               <Text className="text-xs font-semibold" style={{ color: typeBadgeText }}>
-                {DOC_TYPE_LABELS[doc.doc_type]}
+                {t(DOC_TYPE_I18N_KEYS[doc.doc_type])}
               </Text>
             </View>
             {doc.sub_type ? (
@@ -199,12 +215,12 @@ const DocCard = memo(function DocCard({
           ) : null}
           {doc.vad_sankhya ? (
             <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-              Vad: {doc.vad_sankhya}
+              {t('nyayalay.vadPrefix', { number: doc.vad_sankhya })}
             </Text>
           ) : null}
           {doc.fir_number ? (
             <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-              FIR: {doc.fir_number}
+              {t('nyayalay.firPrefix', { number: doc.fir_number })}
             </Text>
           ) : null}
 
@@ -225,7 +241,7 @@ const DocCard = memo(function DocCard({
             className="w-9 h-9 items-center justify-center active:opacity-70"
             hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
             accessibilityRole="button"
-            accessibilityLabel="Edit court document"
+            accessibilityLabel={t('nyayalay.accessibility.editDoc')}
           >
             <Edit3 size={16} color={palette.mutedForeground} />
           </Pressable>
@@ -234,7 +250,7 @@ const DocCard = memo(function DocCard({
             className="w-9 h-9 items-center justify-center active:opacity-70"
             hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
             accessibilityRole="button"
-            accessibilityLabel="Delete court document"
+            accessibilityLabel={t('nyayalay.accessibility.deleteDoc')}
           >
             <Trash2 size={16} color={palette.destructive} />
           </Pressable>
@@ -248,6 +264,7 @@ const DocCard = memo(function DocCard({
 // ── Main Screen ───────────────────────────────────────────────────────────
 
 export default function NyayalayScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const fabBottom = Math.max(insets.bottom + 16, 24);
   const { colorScheme } = useColorScheme();
@@ -392,14 +409,14 @@ export default function NyayalayScreen() {
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <AppHeader
-        title="Nyayalay"
-        subtitle={`${filtered.length} document${filtered.length !== 1 ? 's' : ''}`}
+        title={t('nyayalay.title')}
+        subtitle={filtered.length === 1 ? t('nyayalay.docCount_one', { count: filtered.length }) : t('nyayalay.docCount_other', { count: filtered.length })}
         onMenuPress={() => setDrawerOpen(true)}
         actions={
           <HeaderIconBtn
             icon={Plus}
             onPress={() => router.push('/(app)/nyayalay/add' as never)}
-            label="Add Court Document"
+            label={t('nyayalay.addCourtDocument')}
             color={NYL_COLOR}
           />
         }
@@ -411,25 +428,54 @@ export default function NyayalayScreen() {
           value={query}
           onChangeText={handleSearch}
           onSubmitEditing={handleSubmitSearch}
-          placeholder="Search court, vad sankhya, FIR…"
+          placeholder={t('nyayalay.searchPlaceholder')}
           variant="light"
           returnKeyType="search"
-          accessibilityLabel="Search court documents"
+          accessibilityLabel={t('nyayalay.searchAccessibility')}
           collapsible
         />
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {(['All', 'Pending', 'Finished'] as StatusFilter[]).map((f) => (
-            <FilterChip key={f} label={f} active={statusFilter === f} scheme={scheme}
-              onPress={() => setStatusFilter(f)} />
-          ))}
-          <FilterChip label="Due Today" active={timeFilter === 'Due Today'} scheme={scheme}
-            onPress={() => setTimeFilter((p) => p === 'Due Today' ? null : 'Due Today')} />
-          <FilterChip label="Overdue" active={timeFilter === 'Overdue'} scheme={scheme}
-            onPress={() => setTimeFilter((p) => p === 'Overdue' ? null : 'Overdue')} />
+          <FilterChip
+            key="All"
+            label={t('common.all')}
+            active={statusFilter === 'All'}
+            scheme={scheme}
+            onPress={() => setStatusFilter('All')}
+          />
+          <FilterChip
+            key="Pending"
+            label={t('fir.list.filterPending')}
+            active={statusFilter === 'Pending'}
+            scheme={scheme}
+            onPress={() => setStatusFilter('Pending')}
+          />
+          <FilterChip
+            key="Finished"
+            label={t('fir.list.filterFinished')}
+            active={statusFilter === 'Finished'}
+            scheme={scheme}
+            onPress={() => setStatusFilter('Finished')}
+          />
+          <FilterChip
+            label={t('nyayalay.filterDueToday')}
+            active={timeFilter === 'Due Today'}
+            scheme={scheme}
+            onPress={() => setTimeFilter((p) => p === 'Due Today' ? null : 'Due Today')}
+          />
+          <FilterChip
+            label={t('nyayalay.status.overdue')}
+            active={timeFilter === 'Overdue'}
+            scheme={scheme}
+            onPress={() => setTimeFilter((p) => p === 'Overdue' ? null : 'Overdue')}
+          />
           {DOC_TYPES.map((type) => (
-            <FilterChip key={type} label={DOC_TYPE_LABELS[type]} scheme={scheme}
+            <FilterChip
+              key={type}
+              label={t(DOC_TYPE_I18N_KEYS[type])}
+              scheme={scheme}
               active={typeFilter === type}
-              onPress={() => setTypeFilter((p) => p === type ? null : type)} />
+              onPress={() => setTypeFilter((p) => p === type ? null : type)}
+            />
           ))}
         </ScrollView>
       </View>
@@ -451,12 +497,12 @@ export default function NyayalayScreen() {
               <Pressable
                 onPress={() => setAnalyticsExpanded((v) => !v)}
                 accessibilityRole="button"
-                accessibilityLabel="Toggle analytics"
+                accessibilityLabel={t('nyayalay.accessibility.toggleAnalytics')}
                 className="py-1"
               >
                 <View className="flex-row items-center justify-between">
                   <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    Overall
+                    {t('nyayalay.overview')}
                   </Text>
                   <Animated.View style={chevronStyle}>
                     <ChevronDown size={16} color={palette.mutedForeground} />
@@ -467,7 +513,7 @@ export default function NyayalayScreen() {
                     numberOfLines={1}
                     className="text-xs text-muted-foreground mt-1"
                   >
-                    {`${analytics.overall.total} Total · ${analytics.overall.pending} Pending · ${analytics.overall.finished} Finished · ${analytics.overall.overdue} Overdue`}
+                    {`${analytics.overall.total} ${t('nyayalay.analyticsTotal')} · ${analytics.overall.pending} ${t('fir.list.filterPending')} · ${analytics.overall.finished} ${t('fir.list.filterFinished')} · ${analytics.overall.overdue} ${t('nyayalay.status.overdue')}`}
                   </Text>
                 )}
               </Pressable>
@@ -476,7 +522,7 @@ export default function NyayalayScreen() {
                 <View className="flex-row items-center mt-1.5">
                   <View className="flex-row items-center bg-muted rounded-full pl-2.5 pr-1.5 py-1 border border-border">
                     <Text className="text-xs text-foreground font-medium mr-1.5">
-                      Filtered: {DOC_TYPE_LABELS[typeFilter]}
+                      {t('nyayalay.filteredPrefix', { type: t(DOC_TYPE_I18N_KEYS[typeFilter]) })}
                     </Text>
                     <Pressable
                       onPress={(e) => {
@@ -485,7 +531,7 @@ export default function NyayalayScreen() {
                       }}
                       hitSlop={6}
                       accessibilityRole="button"
-                      accessibilityLabel="Clear filter"
+                      accessibilityLabel={t('nyayalay.accessibility.clearFilter')}
                       className="w-4 h-4 rounded-full bg-muted-foreground/20 items-center justify-center active:opacity-60"
                     >
                       <X size={10} color={palette.foreground} />
@@ -506,14 +552,14 @@ export default function NyayalayScreen() {
                     style={{ borderCurve: 'continuous', borderLeftWidth: 3, borderLeftColor: NYL_COLOR }}
                   >
                     <Text className="text-xs font-bold uppercase tracking-widest mb-2 text-muted-foreground">
-                      Overall
+                      {t('nyayalay.overview')}
                     </Text>
                     <View className="flex-row gap-2">
                       {[
-                        { label: 'Total',   val: analytics.overall.total,    colorKey: 'cardForeground' as const },
-                        { label: 'Pending', val: analytics.overall.pending,  colorKey: null, statusKey: 'Pending' as const },
-                        { label: 'Finished',val: analytics.overall.finished, colorKey: null, statusKey: 'Finished' as const },
-                        { label: 'Overdue', val: analytics.overall.overdue,  colorKey: null, statusKey: 'Overdue' as const },
+                        { label: t('nyayalay.analyticsTotal'),   val: analytics.overall.total,    colorKey: 'cardForeground' as const },
+                        { label: t('fir.list.filterPending'), val: analytics.overall.pending,  colorKey: null, statusKey: 'Pending' as const },
+                        { label: t('fir.list.filterFinished'),val: analytics.overall.finished, colorKey: null, statusKey: 'Finished' as const },
+                        { label: t('nyayalay.status.overdue'), val: analytics.overall.overdue,  colorKey: null, statusKey: 'Overdue' as const },
                       ].map(({ label, val, colorKey, statusKey }) => (
                         <View key={label} className="flex-1 items-center">
                           <Text className="text-base font-bold leading-tight" style={{ color: colorKey ? palette[colorKey] : STATUS_TEXT[scheme][statusKey!] }}>{val}</Text>
@@ -533,7 +579,7 @@ export default function NyayalayScreen() {
                     {DOC_TYPES.map((type) => (
                       <AnalyticsCard
                         key={type}
-                        label={DOC_TYPE_LABELS[type]}
+                        label={t(DOC_TYPE_I18N_KEYS[type])}
                         total={analytics.byType[type].total}
                         pending={analytics.byType[type].pending}
                         finished={analytics.byType[type].finished}
@@ -550,7 +596,7 @@ export default function NyayalayScreen() {
 
             {/* List count */}
             <Text className="text-xs font-bold uppercase tracking-widest mb-3 text-muted-foreground">
-              Documents ({filtered.length})
+              {t('nyayalay.documents')} ({filtered.length})
             </Text>
 
             {loading && (
@@ -566,12 +612,14 @@ export default function NyayalayScreen() {
             <View className="px-5 items-center py-16">
               <Scale size={40} color={palette.border} />
               <Text className="text-base font-semibold text-foreground mt-4 mb-1">
-                No documents found
+                {query || statusFilter !== 'All' || timeFilter || typeFilter
+                  ? t('nyayalay.noMatchingDocs')
+                  : t('nyayalay.noDocs')}
               </Text>
               <Text className="text-sm text-muted-foreground text-center">
                 {query || statusFilter !== 'All' || timeFilter || typeFilter
-                  ? 'Try adjusting your search or filters'
-                  : 'Tap + to add the first court document'}
+                  ? t('nyayalay.noMatchingDocsHint')
+                  : t('nyayalay.noDocsHint')}
               </Text>
             </View>
           ) : null
@@ -585,7 +633,7 @@ export default function NyayalayScreen() {
         style={{ backgroundColor: NYL_COLOR, bottom: fabBottom }}
       >
         <Plus size={17} color="#fff" />
-        <Text className="text-sm font-bold text-white">Add Court Doc</Text>
+        <Text className="text-sm font-bold text-white">{t('nyayalay.addCourtDoc')}</Text>
       </Pressable>
 
       {/* Delete dialog */}
@@ -595,20 +643,20 @@ export default function NyayalayScreen() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Document?</AlertDialogTitle>
+            <AlertDialogTitle>{t('nyayalay.dialog.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. The document will be permanently removed.
+              {t('nyayalay.dialog.deleteDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setDeleteTarget(null)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               onPress={handleDeleteConfirm}
               className="bg-destructive"
             >
-              <Text className="text-destructive-foreground font-semibold">Delete</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

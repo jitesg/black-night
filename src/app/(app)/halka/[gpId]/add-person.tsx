@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View,
 } from 'react-native';
@@ -14,12 +15,12 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 
-const PERSON_TYPE_LABELS: Record<string, string> = {
-  [PERSON_TYPES.CURRENT_PRADHAN]: 'Current Gram Pradhan',
-  [PERSON_TYPES.FORMER_PRADHAN]: 'Former Gram Pradhan',
-  [PERSON_TYPES.BDC]: 'BDC Member',
-  [PERSON_TYPES.IMPORTANT]: 'Important Person',
-  [PERSON_TYPES.HISTORY_SHEETER]: 'History Sheeter (HS)',
+const PERSON_TYPE_KEYS: Record<string, string> = {
+  [PERSON_TYPES.CURRENT_PRADHAN]: 'halka.personType.currentPradhan',
+  [PERSON_TYPES.FORMER_PRADHAN]: 'halka.personType.formerPradhan',
+  [PERSON_TYPES.BDC]: 'halka.personType.bdc',
+  [PERSON_TYPES.IMPORTANT]: 'halka.personType.important',
+  [PERSON_TYPES.HISTORY_SHEETER]: 'halka.personType.historySheeter',
 };
 
 function emptyForm() {
@@ -37,6 +38,7 @@ function HSFormCard({
   form: FormState;
   onChange: (key: keyof FormState) => (val: string) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <View
       className="bg-card border border-border rounded-2xl px-5 py-5 gap-4"
@@ -44,60 +46,61 @@ function HSFormCard({
     >
       {total > 1 && (
         <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          Entry {index + 1} of {total}
+          {t('halka.person.entryCount', { index: index + 1, total })}
         </Text>
       )}
 
       {/* Name */}
       <View className="gap-1.5">
         <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          Name <Text className="text-destructive">*</Text>
+          {t('halka.person.fieldName')} <Text className="text-destructive">*</Text>
         </Text>
-        <Input value={form.name} onChangeText={onChange('name')} placeholder="Full name" />
+        <Input value={form.name} onChangeText={onChange('name')} placeholder={t('halka.person.placeholderName')} />
       </View>
 
       {/* Name With Full Address */}
       <View className="gap-1.5">
-        <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Name With Full Address</Text>
+        <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldNameAddress')}</Text>
         <Input type="multiline" value={form.address} onChangeText={onChange('address')}
-          placeholder="Name and complete residential address" numberOfLines={2} />
+          placeholder={t('halka.person.placeholderNameAddress')} numberOfLines={2} />
       </View>
 
       {/* HS Number */}
       <View className="gap-1.5">
-        <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">History Sheet Number</Text>
-        <Input value={form.category} onChangeText={onChange('category')} placeholder="e.g. HS/001/2024" />
+        <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldHSNumber')}</Text>
+        <Input value={form.category} onChangeText={onChange('category')} placeholder={t('halka.person.placeholderHSNumber')} />
       </View>
 
       {/* Hamlet */}
       <View className="gap-1.5">
-        <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Hamlet / Majra</Text>
-        <Input value={form.designation} onChangeText={onChange('designation')} placeholder="Village / Hamlet name" />
+        <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldHamlet')}</Text>
+        <Input value={form.designation} onChangeText={onChange('designation')} placeholder={t('halka.person.placeholderHamlet')} />
       </View>
 
       {/* Mobile */}
       <View className="flex-row gap-3">
         <View className="flex-1 gap-1.5">
-          <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Mobile</Text>
-          <Input type="mobile" value={form.mobile} onChangeText={onChange('mobile')} placeholder="Primary" />
+          <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldMobile')}</Text>
+          <Input type="mobile" value={form.mobile} onChangeText={onChange('mobile')} placeholder={t('halka.person.placeholderMobile')} />
         </View>
         <View className="flex-1 gap-1.5">
-          <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Alt. Mobile</Text>
-          <Input type="mobile" value={form.alternate_mobile} onChangeText={onChange('alternate_mobile')} placeholder="Alternate" />
+          <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldAltMobile')}</Text>
+          <Input type="mobile" value={form.alternate_mobile} onChangeText={onChange('alternate_mobile')} placeholder={t('halka.person.placeholderAltMobile')} />
         </View>
       </View>
 
       {/* Remarks */}
       <View className="gap-1.5">
-        <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Remarks</Text>
+        <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldRemarks')}</Text>
         <Input type="multiline" value={form.remarks} onChangeText={onChange('remarks')}
-          placeholder="Optional remarks…" numberOfLines={2} />
+          placeholder={t('halka.person.placeholderRemarks')} numberOfLines={2} />
       </View>
     </View>
   );
 }
 
 export default function AddPersonScreen() {
+  const { t } = useTranslation();
   const { gpId, type, editId, count: countParam } = useLocalSearchParams<{
     gpId: string; type: string; editId?: string; count?: string;
   }>();
@@ -169,7 +172,7 @@ export default function AddPersonScreen() {
   const handleSave = async () => {
     // Validate: at least name required in every entry
     const invalid = forms.find((f) => !f.name.trim());
-    if (invalid) { setError('Name is required for every entry'); return; }
+    if (invalid) { setError(t('halka.person.errorNameAllRequired')); return; }
     setSaving(true);
     try {
       if (isEdit && editId) {
@@ -198,22 +201,23 @@ export default function AddPersonScreen() {
       }
       router.back();
     } catch {
-      setError('Failed to save. Please try again.');
+      setError(t('halka.person.errorSaveFailed'));
     }
     setSaving(false);
   };
 
-  const title = PERSON_TYPE_LABELS[personType] ?? 'Person';
+  const titleKey = PERSON_TYPE_KEYS[personType];
+  const title = titleKey ? t(titleKey) : t('common.name');
 
   // ── History Sheeter batch form ────────────────────────────────────────────
   if (isHS) {
     return (
       <View className="flex-1 bg-background">
         <AppHeader
-          title={`${isEdit ? 'Edit' : 'Add'} ${title}`}
-          countLabel={!isEdit && batchCount > 1 ? `${batchCount} entries` : undefined}
+          title={isEdit ? t('halka.person.editTitle', { title }) : t('halka.person.addTitle', { title })}
+          countLabel={!isEdit && batchCount > 1 ? t('halka.person.entriesCount', { count: batchCount }) : undefined}
         />
-        <KeyboardAvoidingView behavior="padding" className="flex-1">
+        <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1">
 
           <ScrollView
             contentContainerClassName="px-6 py-5 gap-4 pb-10"
@@ -239,7 +243,7 @@ export default function AddPersonScreen() {
             >
               <Save size={18} color="#fff" />
               <Text className="text-primary-foreground font-semibold text-base">
-                {saving ? 'Saving…' : isEdit ? `Update ${title}` : `Save ${batchCount > 1 ? `${batchCount} Entries` : title}`}
+                {saving ? t('common.saving') : isEdit ? t('halka.person.updatePerson', { title }) : batchCount > 1 ? t('halka.person.saveEntries', { count: batchCount }) : t('halka.person.savePerson', { title })}
               </Text>
             </Pressable>
           </ScrollView>
@@ -255,18 +259,18 @@ export default function AddPersonScreen() {
       <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
-            <AlertDialogDescription>Unsaved changes will be lost.</AlertDialogDescription>
+            <AlertDialogTitle>{t('common.unsavedTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('common.unsavedDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setShowDiscardDialog(false)}>Keep editing</AlertDialogCancel>
-            <AlertDialogAction onPress={() => { setShowDiscardDialog(false); router.back(); }}>Discard</AlertDialogAction>
+            <AlertDialogCancel onPress={() => setShowDiscardDialog(false)}>{t('common.stay')}</AlertDialogCancel>
+            <AlertDialogAction onPress={() => { setShowDiscardDialog(false); router.back(); }}>{t('common.discard')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      <AppHeader title={`${isEdit ? 'Edit' : 'Add'} Person`} onBack={handleBackPress} />
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
+      <AppHeader title={isEdit ? t('halka.person.editPerson') : t('halka.person.addPerson')} onBack={handleBackPress} />
+      <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1">
 
         <ScrollView
           contentContainerClassName="px-6 py-6 gap-5"
@@ -276,22 +280,22 @@ export default function AddPersonScreen() {
           {/* Name */}
           <View className="gap-1.5">
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Name <Text className="text-destructive">*</Text>
+              {t('halka.person.fieldName')} <Text className="text-destructive">*</Text>
             </Text>
-            <Input value={form.name} onChangeText={updateSingle('name')} placeholder="Full name" />
+            <Input value={form.name} onChangeText={updateSingle('name')} placeholder={t('halka.person.placeholderName')} />
           </View>
 
           {/* Category (only for important persons) */}
           {personType === PERSON_TYPES.IMPORTANT && (
             <View className="gap-1.5">
-              <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Category</Text>
+              <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldCategory')}</Text>
               <Pressable
                 onPress={() => setShowCategories(!showCategories)}
                 className="border border-border rounded-xl px-4 py-3 flex-row items-center justify-between bg-card active:opacity-70"
                 style={{ borderCurve: 'continuous' }}
               >
                 <Text className={form.category ? 'text-base text-foreground' : 'text-base text-muted-foreground'}>
-                  {form.category || 'Select category'}
+                  {form.category || t('halka.person.selectCategory')}
                 </Text>
                 <ChevronDown size={16} color="#9CA3AF" />
               </Pressable>
@@ -313,28 +317,28 @@ export default function AddPersonScreen() {
 
           {/* Address */}
           <View className="gap-1.5">
-            <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Full Address</Text>
+            <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldFullAddress')}</Text>
             <Input type="multiline" value={form.address} onChangeText={updateSingle('address')}
-              placeholder="House/Village/Town" numberOfLines={2} />
+              placeholder={t('halka.person.placeholderFullAddress')} numberOfLines={2} />
           </View>
 
           {/* Mobile */}
           <View className="flex-row gap-3">
             <View className="flex-1 gap-1.5">
-              <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Mobile</Text>
-              <Input type="mobile" value={form.mobile} onChangeText={updateSingle('mobile')} placeholder="Primary number" />
+              <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldMobile')}</Text>
+              <Input type="mobile" value={form.mobile} onChangeText={updateSingle('mobile')} placeholder={t('halka.person.placeholderPrimaryMobile')} />
             </View>
             <View className="flex-1 gap-1.5">
-              <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Alternate Mobile</Text>
-              <Input type="mobile" value={form.alternate_mobile} onChangeText={updateSingle('alternate_mobile')} placeholder="Alt. number" />
+              <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldAltMobile')}</Text>
+              <Input type="mobile" value={form.alternate_mobile} onChangeText={updateSingle('alternate_mobile')} placeholder={t('halka.person.placeholderAltNumber')} />
             </View>
           </View>
 
           {/* Remarks */}
           <View className="gap-1.5">
-            <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Remarks</Text>
+            <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldRemarks')}</Text>
             <Input type="multiline" value={form.remarks} onChangeText={updateSingle('remarks')}
-              placeholder="Optional remarks…" numberOfLines={2} />
+              placeholder={t('halka.person.placeholderRemarks')} numberOfLines={2} />
           </View>
 
           {error ? <Text className="text-destructive text-sm">{error}</Text> : null}
@@ -346,7 +350,7 @@ export default function AddPersonScreen() {
           >
             <Save size={18} color="#fff" />
             <Text className="text-primary-foreground font-semibold text-base">
-              {saving ? 'Saving…' : `Save ${title}`}
+              {saving ? t('common.saving') : t('halka.person.savePerson', { title })}
             </Text>
           </Pressable>
         </ScrollView>

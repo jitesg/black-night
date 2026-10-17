@@ -1,60 +1,106 @@
 /**
- * AI Assistant Settings Screen — Future Ready (all disabled)
+ * AI Assistant Settings Screen
  */
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Switch } from 'react-native';
 import { Sparkles, FileEdit, Library, FileBarChart, Lock } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { useColorScheme } from 'nativewind';
+import { useTranslation } from 'react-i18next';
+import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
-const AI_ITEMS = [
-  { icon: Sparkles,    color: '#7C3AED', label: 'AI Suggestions',       desc: 'Context-aware suggestions while working on cases' },
-  { icon: FileEdit,    color: '#1D4ED8', label: 'AI Draft Assistance',  desc: 'Automatically draft FIR and case summaries' },
-  { icon: Library,     color: '#0F766E', label: 'AI Knowledge Search',  desc: 'AI-powered semantic search across knowledge base' },
-  { icon: FileBarChart,color: '#D97706', label: 'AI Report Generation', desc: 'Generate investigation reports with AI assistance' },
-  { icon: Lock,        color: '#6B7280', label: 'AI Privacy Settings',  desc: 'Control what data AI features can access' },
+type AIKey = keyof Pick<SettingsState,
+  'aiSuggestions' | 'aiDraftAssistance' | 'aiKnowledgeSearch' | 'aiReportGeneration' | 'aiRestrictCaseData'
+>;
+
+interface AIItem {
+  key: AIKey;
+  labelKey: string;
+  descKey: string;
+  icon: typeof Sparkles;
+  color: string;
+}
+
+const AI_ITEMS: AIItem[] = [
+  {
+    key: 'aiSuggestions',
+    icon: Sparkles,
+    color: '#7C3AED',
+    labelKey: 'settings.ai.suggestions',
+    descKey: 'settings.ai.suggestionsDesc',
+  },
+  {
+    key: 'aiDraftAssistance',
+    icon: FileEdit,
+    color: '#1D4ED8',
+    labelKey: 'settings.ai.draftAssistance',
+    descKey: 'settings.ai.draftAssistanceDesc',
+  },
+  {
+    key: 'aiKnowledgeSearch',
+    icon: Library,
+    color: '#0F766E',
+    labelKey: 'settings.ai.knowledgeSearch',
+    descKey: 'settings.ai.knowledgeSearchDesc',
+  },
+  {
+    key: 'aiReportGeneration',
+    icon: FileBarChart,
+    color: '#D97706',
+    labelKey: 'settings.ai.reportGeneration',
+    descKey: 'settings.ai.reportGenerationDesc',
+  },
+  {
+    key: 'aiRestrictCaseData',
+    icon: Lock,
+    color: '#6B7280',
+    labelKey: 'settings.ai.privacy',
+    descKey: 'settings.ai.privacyDesc',
+  },
 ];
 
 export default function AiAssistantScreen() {
+  const { settings, update } = useSettingsStore();
+  const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
+  const isDark = colorScheme === 'dark';
+
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="AI Assistant" subtitle="Configure AI-powered features" showBack />
+      <AppHeader title={t('settings.ai.title')} subtitle={t('settings.ai.subtitle')} showBack />
 
       <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
-        {/* Coming Soon Banner */}
-        <View
-          className="rounded-2xl p-4 mb-5 flex-row items-center gap-3"
-          style={{ backgroundColor: '#7C3AED12', borderWidth: 1, borderColor: '#7C3AED30', borderCurve: 'continuous' }}
-        >
-          <Sparkles size={20} color="#7C3AED" />
-          <View className="flex-1">
-            <Text className="text-sm font-bold" style={{ color: '#7C3AED' }}>AI Features — Coming Soon</Text>
-            <Text className="text-xs text-muted-foreground mt-0.5 leading-4">
-              InvestSuite AI is being built for intelligent investigation assistance. These settings will be activated in a future update.
-            </Text>
-          </View>
-        </View>
-
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">AI Features</Text>
-        <View className="bg-muted/30 border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.ai.aiFeatures')}</Text>
+        <View className="bg-card border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
           {AI_ITEMS.map((item, idx) => {
             const Icon = item.icon;
+            const value = settings[item.key];
             return (
               <View
-                key={item.label}
+                key={item.key}
                 className={`flex-row items-center gap-3 px-4 py-4 ${idx < AI_ITEMS.length - 1 ? 'border-b border-border' : ''}`}
               >
-                <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: `${item.color}10` }}>
-                  <Icon size={16} color={`${item.color}60`} />
+                <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: `${item.color}15` }}>
+                  <Icon size={16} color={item.color} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-sm font-semibold text-muted-foreground">{item.label}</Text>
-                  <Text className="text-xs text-muted-foreground/70 mt-0.5 leading-4">{item.desc}</Text>
+                  <Text className="text-sm font-semibold text-foreground">{t(item.labelKey)}</Text>
+                  <Text className="text-xs text-muted-foreground mt-0.5 leading-4">{t(item.descKey)}</Text>
                 </View>
-                <View className="px-2 py-1 rounded-full bg-muted">
-                  <Text className="text-xs font-semibold text-muted-foreground">Soon</Text>
-                </View>
+                <Switch
+                  value={value}
+                  onValueChange={(v) => update(item.key, v)}
+                  trackColor={{ false: isDark ? '#374151' : '#E5E7EB', true: `${'#F59E0B'}60` }}
+                  thumbColor={value ? '#F59E0B' : (isDark ? '#6B7280' : '#9CA3AF')}
+                />
               </View>
             );
           })}
+        </View>
+
+        <View className="bg-muted/50 rounded-2xl p-4 mt-4" style={{ borderCurve: 'continuous' }}>
+          <Text className="text-xs text-muted-foreground leading-5">
+            {t('settings.ai.disclaimer')}
+          </Text>
         </View>
       </ScrollView>
     </View>

@@ -7,8 +7,12 @@
 
 import React, { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { ChevronDown, ChevronUp, AlertTriangle, CheckCircle2, Clock } from 'lucide-react-native';
+import { ChevronDown, ChevronUp, AlertTriangle, CheckCircle2, Clock, CheckCircle, XCircle } from 'lucide-react-native';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
 import type { SmartRecommendation, IntelSeverity, IntelPriority } from '@/ai/intelligence/IntelligenceTypes';
+import { AIAuditEngine } from '@/ai/level5/AIAuditEngine';
+import { LearningEngine } from '@/ai/level5/LearningEngine';
 
 // ── Status helpers ─────────────────────────────────────────────────────────────
 
@@ -18,11 +22,29 @@ function statusFromSeverity(s: IntelSeverity): 'critical' | 'pending' | 'healthy
   return 'healthy';
 }
 
-const STATUS_CONFIG = {
-  critical: { emoji: '🔴', label: 'Critical', bg: '#fef2f2', border: '#fecaca', text: '#dc2626', Icon: AlertTriangle },
-  pending:  { emoji: '🟡', label: 'Pending',  bg: '#fffbeb', border: '#fde68a', text: '#d97706', Icon: Clock         },
-  healthy:  { emoji: '🟢', label: 'Healthy',  bg: '#f0fdf4', border: '#bbf7d0', text: '#16a34a', Icon: CheckCircle2  },
-};
+const getStatusConfig = (isDark: boolean) => ({
+  critical: {
+    emoji: '🔴', label: 'Critical',
+    bg: isDark ? 'rgba(239, 68, 68, 0.15)' : '#fef2f2',
+    border: isDark ? 'rgba(239, 68, 68, 0.3)' : '#fecaca',
+    text: isDark ? '#f87171' : '#dc2626',
+    Icon: AlertTriangle,
+  },
+  pending: {
+    emoji: '🟡', label: 'Pending',
+    bg: isDark ? 'rgba(245, 158, 11, 0.15)' : '#fffbeb',
+    border: isDark ? 'rgba(245, 158, 11, 0.3)' : '#fde68a',
+    text: isDark ? '#fbbf24' : '#d97706',
+    Icon: Clock,
+  },
+  healthy: {
+    emoji: '🟢', label: 'Healthy',
+    bg: isDark ? 'rgba(34, 197, 94, 0.15)' : '#f0fdf4',
+    border: isDark ? 'rgba(34, 197, 94, 0.3)' : '#bbf7d0',
+    text: isDark ? '#4ade80' : '#16a34a',
+    Icon: CheckCircle2,
+  },
+});
 
 const PRIORITY_LABELS: Record<IntelPriority, string> = {
   urgent: 'Urgent',
@@ -36,13 +58,25 @@ const PRIORITY_LABELS: Record<IntelPriority, string> = {
 interface Props {
   recommendation: SmartRecommendation;
   index?: number;
+  auditEntryId?: string;
+  crimeType?: string;
 }
 
-export function VisualDecisionCard({ recommendation: rec, index }: Props) {
+export function VisualDecisionCard({ recommendation: rec, index, auditEntryId, crimeType }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [officerAction, setOfficerAction] = useState<'accepted' | 'rejected' | null>(null);
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
   const status = statusFromSeverity(rec.severity);
-  const cfg    = STATUS_CONFIG[status];
+  const cfg    = getStatusConfig(isDark)[status];
   const Icon   = cfg.Icon;
+
+  const handleAction = (action: 'accepted' | 'rejected') => {
+    if (auditEntryId) AIAuditEngine.updateAction(auditEntryId, action);
+    LearningEngine.recordFeedback(rec.title, crimeType, rec.dependencies ?? [], action);
+    setOfficerAction(action);
+  };
 
   return (
     <View
@@ -66,7 +100,10 @@ export function VisualDecisionCard({ recommendation: rec, index }: Props) {
               <Text className="text-xs font-semibold uppercase tracking-wider" style={{ color: cfg.text }}>
                 {cfg.label}
               </Text>
-              <View className="px-1.5 py-0.5 rounded-full bg-white/60">
+              <View
+                className="px-1.5 py-0.5 rounded-full"
+                style={{ backgroundColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.6)' }}
+              >
                 <Text className="text-xs font-medium" style={{ color: cfg.text }}>
                   {PRIORITY_LABELS[rec.priority]}
                 </Text>
@@ -96,6 +133,47 @@ export function VisualDecisionCard({ recommendation: rec, index }: Props) {
         </View>
       </Pressable>
 
+      {/* Officer action buttons / feedback confirmation */}
+      <View className="px-4 pb-3 flex-row items-center justify-between">
+        <View className="flex-row items-center gap-2">
+          {officerAction === null ? (
+            <>
+              <Pressable
+                onPress={() => handleAction('accepted')}
+                className="flex-row items-center gap-1.5 px-2.5 py-1 rounded-lg border active:opacity-70"
+                style={{
+                  borderColor: isDark ? 'rgba(34, 197, 94, 0.4)' : '#bbf7d0',
+                  backgroundColor: isDark ? 'rgba(34, 197, 94, 0.15)' : '#f0fdf4',
+                }}
+              >
+                <CheckCircle size={13} color={isDark ? '#4ade80' : '#16a34a'} />
+                <Text className="text-xs font-medium" style={{ color: isDark ? '#4ade80' : '#16a34a' }}>
+                  Accept
+                </Text>
+              </Pressable>
+
+              <Pressable
+                onPress={() => handleAction('rejected')}
+                className="flex-row items-center gap-1.5 px-2.5 py-1 rounded-lg border active:opacity-70"
+                style={{
+                  borderColor: isDark ? 'rgba(239, 68, 68, 0.4)' : '#fecaca',
+                  backgroundColor: isDark ? 'rgba(239, 68, 68, 0.15)' : '#fef2f2',
+                }}
+              >
+                <XCircle size={13} color={isDark ? '#f87171' : '#dc2626'} />
+                <Text className="text-xs font-medium" style={{ color: isDark ? '#f87171' : '#dc2626' }}>
+                  Not Relevant
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <Text className="text-xs text-muted-foreground">
+              {officerAction === 'accepted' ? '✓ Accepted' : '✗ Marked not relevant'}
+            </Text>
+          )}
+        </View>
+      </View>
+
       {/* Expanded explainability section */}
       {expanded && (
         <View className="px-4 pb-4 gap-3 border-t" style={{ borderColor: cfg.border }}>
@@ -121,7 +199,11 @@ export function VisualDecisionCard({ recommendation: rec, index }: Props) {
               <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Dependencies</Text>
               <View className="flex-row flex-wrap gap-1">
                 {rec.dependencies.map((dep) => (
-                  <View key={dep} className="px-2 py-0.5 rounded-full bg-white/70">
+                  <View
+                    key={dep}
+                    className="px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.7)' }}
+                  >
                     <Text className="text-xs text-muted-foreground">{dep}</Text>
                   </View>
                 ))}
@@ -139,7 +221,10 @@ export function VisualDecisionCard({ recommendation: rec, index }: Props) {
 
           {/* Legal Reference */}
           {rec.legalReference ? (
-            <View className="rounded-lg bg-white/60 px-3 py-2">
+            <View
+              className="rounded-lg px-3 py-2"
+              style={{ backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.6)' }}
+            >
               <Text className="text-xs font-medium" style={{ color: cfg.text }}>{rec.legalReference}</Text>
             </View>
           ) : null}

@@ -19,6 +19,7 @@
  */
 import { useCallback, useEffect, useRef } from 'react';
 import { T } from '@/lib/typography';
+import { useTranslation } from 'react-i18next';
 import {
   Animated,
   Modal,
@@ -66,6 +67,7 @@ const INDIGO = '#6366F1';
 // ── Nav item model ────────────────────────────────────────────────────────────
 interface NavItem {
   id: string;
+  labelKey: string;
   label: string;
   icon: React.ComponentType<{ size: number; color: string; strokeWidth?: number }>;
   route: string;
@@ -77,24 +79,24 @@ interface NavItem {
 
 // ── Navigation data ───────────────────────────────────────────────────────────
 const MAIN_NAV: NavItem[] = [
-  { id: 'home',        label: 'Dashboard',            icon: LayoutDashboard, route: '/(app)/home',           color: INDIGO },
-  { id: 'mukadma',     label: 'Mukadma',              icon: FileText,        route: '/(app)/mukadma',        color: '#7C3AED' },
-  { id: 'gd',          label: 'General Diary',        icon: BookMarked,      route: '/(app)/gd',             color: '#D97706' },
-  { id: 'nyayalay',    label: 'Nyayalay',             icon: Scale,           route: '/(app)/nyayalay',       color: '#1D4ED8' },
-  { id: 'prarthna',    label: 'Prarthna Patra',       icon: Scroll,          route: '/(app)/prarthna-patra', color: '#7C3AED' },
-  { id: 'nirodhatmak', label: 'Nirodhatmak Karyvahi', icon: ShieldAlert,     route: '/(app)/nirodhatmak',    color: '#DC2626' },
-  { id: 'halka',       label: 'My Halka',             icon: BookOpen,        route: '/(app)/halka',          color: '#0891B2' },
-  { id: 'knowledge',   label: 'Knowledge',            icon: Library,         route: '/(app)/knowledge',      color: '#16A34A' },
-  { id: 'formats',     label: 'Predefine Formats',    icon: LayoutTemplate,  route: '/(app)/formats',        color: '#0891B2' },
+  { id: 'home',        labelKey: 'drawer.navDashboard',   label: 'Dashboard',            icon: LayoutDashboard, route: '/(app)/home',           color: INDIGO },
+  { id: 'mukadma',     labelKey: 'drawer.navMukadma',     label: 'Mukadma',              icon: FileText,        route: '/(app)/mukadma',        color: '#7C3AED' },
+  { id: 'gd',          labelKey: 'drawer.navGd',          label: 'General Diary',        icon: BookMarked,      route: '/(app)/gd',             color: '#D97706' },
+  { id: 'nyayalay',    labelKey: 'drawer.navNyayalay',    label: 'Nyayalay',             icon: Scale,           route: '/(app)/nyayalay',       color: '#1D4ED8' },
+  { id: 'prarthna',    labelKey: 'drawer.navPrarthna',    label: 'Prarthna Patra',       icon: Scroll,          route: '/(app)/prarthna-patra', color: '#7C3AED' },
+  { id: 'nirodhatmak', labelKey: 'drawer.navNirodhatmak', label: 'Nirodhatmak Karyvahi', icon: ShieldAlert,     route: '/(app)/nirodhatmak',    color: '#DC2626' },
+  { id: 'halka',       labelKey: 'drawer.navHalka',       label: 'My Halka',             icon: BookOpen,        route: '/(app)/halka',          color: '#0891B2' },
+  { id: 'knowledge',   labelKey: 'drawer.navKnowledge',   label: 'Knowledge',            icon: Library,         route: '/(app)/knowledge',      color: '#16A34A' },
+  { id: 'formats',     labelKey: 'drawer.navFormats',     label: 'Predefine Formats',    icon: LayoutTemplate,  route: '/(app)/formats',        color: '#0891B2' },
 ];
 
 const SECONDARY_NAV: NavItem[] = [
-  { id: 'master-data', label: 'Master Data Hub',    icon: Database,    route: '/(app)/workspace-setup',     color: '#6B7280' },
-  { id: 'reminders',   label: 'Reminders',          icon: Bell,        route: '/(app)/settings/reminders',  color: '#D97706' },
-  { id: 'attachments', label: 'Attachment Library', icon: FolderOpen,  route: '/(app)/knowledge',            color: '#6B7280' },
-  { id: 'settings',    label: 'Settings',           icon: Settings,    route: '/(app)/settings',             color: '#6B7280' },
-  { id: 'help',        label: 'Help',               icon: HelpCircle,  route: '/(app)/settings/help',        color: '#6B7280' },
-  { id: 'about',       label: 'About InvestSuite',  icon: Info,        route: '/(app)/settings/about',       color: '#6B7280' },
+  { id: 'master-data', labelKey: 'drawer.navMasterData',  label: 'Master Data Hub',    icon: Database,    route: '/(app)/workspace-setup',     color: '#6B7280' },
+  { id: 'reminders',   labelKey: 'drawer.navReminders',   label: 'Reminders',          icon: Bell,        route: '/(app)/settings/reminders',  color: '#D97706' },
+  { id: 'attachments', labelKey: 'drawer.navAttachments', label: 'Attachment Library', icon: FolderOpen,  route: '/(app)/knowledge',            color: '#6B7280' },
+  { id: 'settings',    labelKey: 'drawer.navSettings',    label: 'Settings',           icon: Settings,    route: '/(app)/settings',             color: '#6B7280' },
+  { id: 'help',        labelKey: 'drawer.navHelp',        label: 'Help',               icon: HelpCircle,  route: '/(app)/settings/help',        color: '#6B7280' },
+  { id: 'about',       labelKey: 'drawer.navAbout',       label: 'About InvestSuite',  icon: Info,        route: '/(app)/settings/about',       color: '#6B7280' },
 ];
 
 // ── Sub-component: DrawerHeader ───────────────────────────────────────────────
@@ -107,6 +109,7 @@ function DrawerHeader({
   safeTop: number;
   colors: typeof THEME.light;
 }) {
+  const { t } = useTranslation();
   return (
     <View
       style={{
@@ -138,14 +141,14 @@ function DrawerHeader({
             InvestSuite
           </Text>
           <Text style={{ ...T.micro, fontWeight: T.weight.regular, color: colors.mutedForeground, letterSpacing: 0.1, lineHeight: 14, textTransform: undefined }}>
-            Investigation Operating System
+            {t('drawer.subtitle')}
           </Text>
         </View>
 
         {/* Close button */}
         <Pressable
           onPress={onClose}
-          accessibilityLabel="Close navigation menu"
+          accessibilityLabel={t('drawer.closeAria')}
           accessibilityRole="button"
           style={{
             width: 36, height: 36, borderRadius: 10,
@@ -174,11 +177,12 @@ function DrawerProfileCard({
   onPress: () => void;
   colors: typeof THEME.light;
 }) {
+  const { t } = useTranslation();
   const initial = (officerName || 'O')[0].toUpperCase();
   return (
     <Pressable
       onPress={onPress}
-      accessibilityLabel="Officer profile"
+      accessibilityLabel={t('drawer.officerProfileAria')}
       style={{
         marginHorizontal: T.space.md - 4,
         marginTop: T.space.md - 4,
@@ -221,7 +225,7 @@ function DrawerProfileCard({
           numberOfLines={1}
           style={{ ...T.subhead, fontWeight: T.weight.semibold, color: colors.foreground, letterSpacing: -0.1 }}
         >
-          {officerName || 'Officer'}
+          {officerName || t('drawer.officerDefault')}
         </Text>
         {policeStation ? (
           <Text
@@ -278,12 +282,14 @@ function DrawerNavItem({
   onPress: () => void;
   colors: typeof THEME.light;
 }) {
+  const { t } = useTranslation();
   const Icon = item.icon;
+  const label = t(item.labelKey);
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="menuitem"
-      accessibilityLabel={item.label}
+      accessibilityLabel={label}
       accessibilityState={{ selected: active }}
       style={{
         flexDirection: 'row',
@@ -323,7 +329,7 @@ function DrawerNavItem({
           letterSpacing: -0.1,
         }}
       >
-        {item.label}
+        {label}
       </Text>
 
       {/* Optional badge */}
@@ -358,7 +364,7 @@ function DrawerNavItem({
 // ── Sub-component: DrawerPinnedChip ───────────────────────────────────────────
 function DrawerPinnedChip({
   label,
-  color,
+  color: _color,
   onPress,
   onLongPress,
   colors,
@@ -369,11 +375,12 @@ function DrawerPinnedChip({
   onLongPress: () => void;
   colors: typeof THEME.light;
 }) {
+  const { t } = useTranslation();
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
-      accessibilityHint="Long press to unpin"
+      accessibilityHint={t('home.pinnedHintShort')}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -405,6 +412,7 @@ function DrawerPinnedChip({
 
 // ── Sub-component: DrawerFooter ───────────────────────────────────────────────
 function DrawerFooter({ safeBottom, colors }: { safeBottom: number; colors: typeof THEME.light }) {
+  const { t } = useTranslation();
   return (
     <View
       style={{
@@ -420,13 +428,15 @@ function DrawerFooter({ safeBottom, colors }: { safeBottom: number; colors: type
     >
       <View>
         <Text style={{ ...T.caption1, fontWeight: T.weight.semibold, color: colors.foreground }}>InvestSuite</Text>
-        <Text style={{ ...T.micro, fontWeight: T.weight.regular, color: colors.mutedForeground, marginTop: 1, textTransform: undefined }}>v1.0.123 · Build 1</Text>
+        <Text style={{ ...T.micro, fontWeight: T.weight.regular, color: colors.mutedForeground, marginTop: 1, textTransform: undefined }}>
+          {t('drawer.versionBuild', { version: '1.0.123', build: '1' })}
+        </Text>
       </View>
 
       {/* Sync status — fixed green (semantic status, not a surface color) */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: T.space.xs + 1 }}>
         <Wifi size={12} color='#16A34A' strokeWidth={2} />
-        <Text style={{ ...T.micro, color: '#16A34A', textTransform: undefined }}>Online</Text>
+        <Text style={{ ...T.micro, color: '#16A34A', textTransform: undefined }}>{t('common.online')}</Text>
       </View>
     </View>
   );
@@ -440,6 +450,7 @@ interface AppDrawerProps {
 
 // ── Main component ────────────────────────────────────────────────────────────
 export function AppDrawer({ visible, onClose }: AppDrawerProps) {
+  const { t } = useTranslation();
   const { workspace } = useWorkspace();
   const pathname = usePathname();
   const { width: windowWidth } = useWindowDimensions();
@@ -517,7 +528,7 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
         <Pressable
           style={{ flex: 1 }}
           onPress={onClose}
-          accessibilityLabel="Close navigation menu"
+          accessibilityLabel={t('drawer.closeAria')}
         />
       </Animated.View>
 
@@ -553,7 +564,7 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
 
           {/* ── Quick Access (pinned) ── */}
           {pinnedItems.length > 0 && (
-            <DrawerSection label="Quick Access" colors={colors}>
+            <DrawerSection label={t('drawer.quickAccess')} colors={colors}>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -574,7 +585,7 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
           )}
 
           {/* ── Main navigation ── */}
-          <DrawerSection label="Navigation" colors={colors}>
+          <DrawerSection label={t('drawer.navigation')} colors={colors}>
             {MAIN_NAV.map((item) => (
               <DrawerNavItem
                 key={item.id}
@@ -587,7 +598,7 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
           </DrawerSection>
 
           {/* ── Secondary ── */}
-          <DrawerSection label="More" colors={colors}>
+          <DrawerSection label={t('drawer.more')} colors={colors}>
             {SECONDARY_NAV.map((item) => (
               <DrawerNavItem
                 key={item.id}
@@ -602,6 +613,7 @@ export function AppDrawer({ visible, onClose }: AppDrawerProps) {
               <DrawerNavItem
                 item={{
                   id: 'dev-options',
+                  labelKey: 'drawer.developerOptions',
                   label: 'Developer Options',
                   icon: Terminal,
                   route: '/(app)/dev-options',

@@ -12,6 +12,7 @@
  * For all other types: unchanged original report-editor behaviour.
  */
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View, Text, ScrollView, Pressable, KeyboardAvoidingView,
   BackHandler, ActivityIndicator, TextInput, type NativeSyntheticEvent,
@@ -49,6 +50,7 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
 
 // ── Main screen ───────────────────────────────────────────────────────────────
 export default function ReportScreen() {
+  const { t } = useTranslation();
   const { ppId } = useLocalSearchParams<{ ppId: string }>();
   const [pp, setPP] = useState<PPWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -124,8 +126,8 @@ export default function ReportScreen() {
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
-    if (!reportDate.trim()) e.reportDate = 'Report date is required';
-    if (!reportContent.trim()) e.reportContent = 'Report content is required';
+    if (!reportDate.trim()) e.reportDate = t('prarthnaPatra.report.errorReportDate');
+    if (!reportContent.trim()) e.reportContent = t('prarthnaPatra.report.errorReportContent');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -139,7 +141,7 @@ export default function ReportScreen() {
       setIsDirty(false);
       router.back();
     } catch {
-      setErrors({ general: 'Failed to save report. Please try again.' });
+      setErrors({ general: t('prarthnaPatra.report.errorSaveFailed') });
     } finally {
       setSaving(false);
     }
@@ -182,12 +184,12 @@ export default function ReportScreen() {
   if (useInlineFlow) {
     return (
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
         <View className="flex-1 bg-background">
           <AppHeader
-            title={pp?.report ? 'Edit Report' : 'Add Report'}
+            title={pp?.report ? t('prarthnaPatra.report.editTitle') : t('prarthnaPatra.report.addTitle')}
             subtitle={pp?.registration_number ?? ''}
             onBack={handleBack}
             rightActions={
@@ -198,7 +200,7 @@ export default function ReportScreen() {
                   className="bg-primary rounded-xl px-4 py-2 active:opacity-70"
                 >
                   <Text className="text-sm font-semibold text-primary-foreground">
-                    {saving ? 'Saving…' : 'सेव'}
+                    {saving ? t('common.saving') : t('prarthnaPatra.report.btnSave')}
                   </Text>
                 </Pressable>
               ) : null
@@ -215,20 +217,20 @@ export default function ReportScreen() {
             <View className="bg-card border border-border rounded-2xl p-4 mt-4"
               style={{ borderCurve: 'continuous' }}>
               <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
-                Petition Details
+                {t('prarthnaPatra.report.sectionPetitionDetails')}
               </Text>
-              <DetailRow label="Reg. No." value={pp?.registration_number} />
-              <DetailRow label="Type" value={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : undefined} />
-              <DetailRow label="Date of Receipt" value={pp?.date_of_receipt} />
-              <DetailRow label="Deadline" value={pp?.deadline_date} />
-              <DetailRow label="Investigator" value={pp?.investigator_name} />
-              <DetailRow label="Matter" value={pp?.matter} />
+              <DetailRow label={t('prarthnaPatra.report.labelRegNo')} value={pp?.registration_number} />
+              <DetailRow label={t('prarthnaPatra.report.labelType')} value={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : undefined} />
+              <DetailRow label={t('prarthnaPatra.report.labelDateOfReceipt')} value={pp?.date_of_receipt} />
+              <DetailRow label={t('prarthnaPatra.report.labelDeadline')} value={pp?.deadline_date} />
+              <DetailRow label={t('prarthnaPatra.report.labelInvestigator')} value={pp?.investigator_name} />
+              <DetailRow label={t('prarthnaPatra.report.labelMatter')} value={pp?.matter} />
               {pp?.complainants.map((c, i) => (
-                <DetailRow key={c.id} label={`Complainant ${i + 1}`}
+                <DetailRow key={c.id} label={t('prarthnaPatra.report.labelComplainant', { number: i + 1 })}
                   value={[c.name, c.mobile, c.full_address].filter(Boolean).join(' · ')} />
               ))}
               {pp?.accused.map((a, i) => (
-                <DetailRow key={a.id} label={`Accused ${i + 1}`}
+                <DetailRow key={a.id} label={t('prarthnaPatra.report.labelAccused', { number: i + 1 })}
                   value={[a.name, a.mobile, a.full_address].filter(Boolean).join(' · ')} />
               ))}
             </View>
@@ -245,7 +247,9 @@ export default function ReportScreen() {
                 style={{ borderCurve: 'continuous' }}
               >
                 <FileText size={16} color="#fff" />
-                <Text className="text-base font-bold text-primary-foreground">रिपोर्ट लगाएं</Text>
+                <Text className="text-base font-bold text-primary-foreground">
+                  {t('prarthnaPatra.report.btnAttachReport')}
+                </Text>
               </Pressable>
             )}
 
@@ -255,7 +259,7 @@ export default function ReportScreen() {
                 {/* Report date */}
                 <Input
                   type="date"
-                  label="Report Preparation Date"
+                  label={t('prarthnaPatra.report.fieldReportDate')}
                   placeholder="YYYY-MM-DD"
                   value={reportDate}
                   onChangeText={setReportDate}
@@ -270,7 +274,7 @@ export default function ReportScreen() {
                 >
                   <Plus size={15} color="#6B7280" />
                   <Text className="text-sm text-muted-foreground font-medium">
-                    Add from Format (Prarthna Patra)
+                    {t('prarthnaPatra.report.btnAddFromFormat')}
                   </Text>
                 </Pressable>
 
@@ -285,7 +289,7 @@ export default function ReportScreen() {
                     multiline
                     scrollEnabled={false}
                     onContentSizeChange={handleContentSizeChange}
-                    placeholder="रिपोर्ट का विवरण यहाँ लिखें…"
+                    placeholder={t('prarthnaPatra.report.contentPlaceholder')}
                     placeholderTextColor="#9CA3AF"
                     style={{
                       fontSize: 14, color: '#111827', lineHeight: 21,
@@ -307,7 +311,7 @@ export default function ReportScreen() {
                   style={{ borderCurve: 'continuous', opacity: saving ? 0.6 : 1 }}
                 >
                   <Text className="text-base font-bold text-primary-foreground">
-                    {saving ? 'Saving…' : 'सेव'}
+                    {saving ? t('common.saving') : t('prarthnaPatra.report.btnSave')}
                   </Text>
                 </Pressable>
               </View>
@@ -319,20 +323,20 @@ export default function ReportScreen() {
         <AlertDialog open={backDialogOpen} onOpenChange={setBackDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+              <AlertDialogTitle>{t('prarthnaPatra.report.unsavedTitle')}</AlertDialogTitle>
               <AlertDialogDescription>
-                You have unsaved changes. Discard them?
+                {t('prarthnaPatra.report.unsavedDesc')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onPress={() => setBackDialogOpen(false)}>
-                <Text>Cancel</Text>
+                <Text>{t('common.cancel')}</Text>
               </AlertDialogCancel>
               <AlertDialogAction onPress={() => { setBackDialogOpen(false); setIsDirty(false); router.back(); }}>
-                <Text>Discard</Text>
+                <Text>{t('common.discard')}</Text>
               </AlertDialogAction>
               <AlertDialogAction onPress={() => { setBackDialogOpen(false); handleSave(); }}>
-                <Text>Save</Text>
+                <Text>{t('common.save')}</Text>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -344,17 +348,17 @@ export default function ReportScreen() {
   // ── Original report editor (all other petition types) ─────────────────────
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       className="flex-1"
     >
       <View className="flex-1 bg-background">
         <AppHeader
-          title={pp?.report ? 'Edit Report' : 'Add Report'}
+          title={pp?.report ? t('prarthnaPatra.report.editTitle') : t('prarthnaPatra.report.addTitle')}
           subtitle={pp?.registration_number ?? ''}
           onBack={handleBack}
           rightActions={
             <Pressable onPress={handleSave} disabled={saving} className="bg-primary rounded-xl px-4 py-2 active:opacity-70">
-              <Text className="text-sm font-semibold text-primary-foreground">{saving ? 'Saving…' : 'Save'}</Text>
+              <Text className="text-sm font-semibold text-primary-foreground">{saving ? t('common.saving') : t('common.save')}</Text>
             </Pressable>
           }
         />
@@ -375,7 +379,7 @@ export default function ReportScreen() {
               </Text>
               {pp.complainants[0]?.name ? (
                 <Text className="text-xs text-muted-foreground mt-0.5">
-                  Complainant: {pp.complainants[0].name}
+                  {t('prarthnaPatra.report.complainantName', { name: pp.complainants[0].name })}
                 </Text>
               ) : null}
             </View>
@@ -389,7 +393,7 @@ export default function ReportScreen() {
           <View className="mt-5">
             <Input
               type="date"
-              label="Report Preparation Date"
+              label={t('prarthnaPatra.report.fieldReportDate')}
               placeholder="YYYY-MM-DD"
               value={reportDate}
               onChangeText={setReportDate}
@@ -399,11 +403,11 @@ export default function ReportScreen() {
 
           {/* Report Editor */}
           <Text className="text-xs text-muted-foreground font-medium uppercase tracking-widest mt-5 mb-2">
-            Report (जांच / निस्तारी रिपोर्ट)
+            {t('prarthnaPatra.report.sectionReportEditor')}
           </Text>
           <GeneratedReportView
             content={reportContent}
-            title="Prarthna Patra Report"
+            title={t('prarthnaPatra.report.editorTitle')}
             onSave={async (v) => { setReportContent(v); setIsDirty(true); }}
           />
           {errors.reportContent ? (
@@ -412,9 +416,7 @@ export default function ReportScreen() {
 
           <View className="mt-4 bg-muted rounded-xl p-3">
             <Text className="text-xs text-muted-foreground">
-              Saving this report will automatically set the petition status to{' '}
-              <Text className="font-semibold">Nistarit</Text> and record the report
-              preparation date as the disposal date.
+              {t('prarthnaPatra.report.statusNote')}
             </Text>
           </View>
         </ScrollView>
@@ -424,20 +426,20 @@ export default function ReportScreen() {
       <AlertDialog open={backDialogOpen} onOpenChange={setBackDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogTitle>{t('prarthnaPatra.report.unsavedTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Do you want to save this report before leaving?
+              {t('prarthnaPatra.report.unsavedDescWithSave')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setBackDialogOpen(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={() => { setBackDialogOpen(false); setIsDirty(false); router.back(); }}>
-              <Text>Discard</Text>
+              <Text>{t('common.discard')}</Text>
             </AlertDialogAction>
             <AlertDialogAction onPress={() => { setBackDialogOpen(false); handleSave(); }}>
-              <Text>Save</Text>
+              <Text>{t('common.save')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

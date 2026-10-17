@@ -1,32 +1,34 @@
 /**
  * Notifications Settings Screen
  */
-import { View, Text, Pressable, ScrollView, Switch } from 'react-native';
+import { View, Text, ScrollView, Switch } from 'react-native';
 import { Bell, Scale, Clock, BarChart2, Search } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 type NotifKey = keyof Pick<SettingsState,
   'notifReminders' | 'notifCourtAlerts' | 'notifDeadlines' | 'notifDailySummary' | 'notifInvestigations'
 >;
 
-const NOTIF_ITEMS: { key: NotifKey; label: string; desc: string; icon: typeof Bell; color: string }[] = [
-  { key: 'notifReminders', label: 'Reminder Notifications', desc: 'Alerts for scheduled reminders and due dates', icon: Clock, color: '#2563EB' },
-  { key: 'notifCourtAlerts', label: 'Court Alerts', desc: 'Hearing dates, court appearances, and filings', icon: Scale, color: '#1D4ED8' },
-  { key: 'notifDeadlines', label: 'Deadline Alerts', desc: 'Investigation and case deadline notifications', icon: Bell, color: '#DC2626' },
-  { key: 'notifDailySummary', label: 'Daily Summary', desc: 'Morning digest of pending items and activity', icon: BarChart2, color: '#10B981' },
-  { key: 'notifInvestigations', label: 'Investigation Alerts', desc: 'Updates on active investigation cases', icon: Search, color: '#7C3AED' },
+const NOTIF_ITEMS: { key: NotifKey; labelKey: string; descKey: string; icon: typeof Bell; color: string }[] = [
+  { key: 'notifReminders', labelKey: 'settings.notifications.reminders', descKey: 'settings.notifications.remindersDesc', icon: Clock, color: '#2563EB' },
+  { key: 'notifCourtAlerts', labelKey: 'settings.notifications.courtAlerts', descKey: 'settings.notifications.courtAlertsDesc', icon: Scale, color: '#1D4ED8' },
+  { key: 'notifDeadlines', labelKey: 'settings.notifications.deadlines', descKey: 'settings.notifications.deadlinesDesc', icon: Bell, color: '#DC2626' },
+  { key: 'notifDailySummary', labelKey: 'settings.notifications.dailySummary', descKey: 'settings.notifications.dailySummaryDesc', icon: BarChart2, color: '#10B981' },
+  { key: 'notifInvestigations', labelKey: 'settings.notifications.investigations', descKey: 'settings.notifications.investigationsDesc', icon: Search, color: '#7C3AED' },
 ];
 
 export default function NotificationsScreen() {
   const { settings, update } = useSettingsStore();
+  const { t } = useTranslation();
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Notifications" showBack />
+      <AppHeader title={t('settings.notifications.title')} showBack />
 
       <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Notification Types</Text>
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.notifications.types')}</Text>
         <View className="bg-card border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
           {NOTIF_ITEMS.map((item, idx) => {
             const Icon = item.icon;
@@ -37,8 +39,8 @@ export default function NotificationsScreen() {
                   <Icon size={16} color={item.color} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-sm font-semibold text-foreground">{item.label}</Text>
-                  <Text className="text-xs text-muted-foreground mt-0.5 leading-4">{item.desc}</Text>
+                  <Text className="text-sm font-semibold text-foreground">{t(item.labelKey)}</Text>
+                  <Text className="text-xs text-muted-foreground mt-0.5 leading-4">{t(item.descKey)}</Text>
                 </View>
                 <Switch
                   value={value}
@@ -53,7 +55,7 @@ export default function NotificationsScreen() {
 
         <View className="bg-muted/50 rounded-2xl p-4 mt-4" style={{ borderCurve: 'continuous' }}>
           <Text className="text-xs text-muted-foreground leading-5">
-            Notifications require device permission. If notifications are not appearing, enable them in your device Settings → InvestSuite → Notifications.
+            {t('settings.notifications.disclaimer')}
           </Text>
         </View>
       </ScrollView>

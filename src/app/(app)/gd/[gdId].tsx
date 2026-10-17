@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import { Pressable, ScrollView, Share, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -26,6 +27,13 @@ const TYPE_COLORS: Record<string, string> = {
   'अन्य':   '#6B7280',
 };
 
+const GD_TYPE_KEYS: Record<string, string> = {
+  'रवानगी': 'departure',
+  'वापसी':  'return',
+  'तस्करा': 'taskara',
+  'अन्य':   'other',
+};
+
 function fmtDate(str: string): string {
   if (!str) return '';
   const [y, m, d] = str.split('-');
@@ -42,6 +50,7 @@ function fmtTs(ts: number): string {
 
 export default function GdDetailScreen() {
   const { gdId } = useLocalSearchParams<{ gdId: string }>();
+  const { t } = useTranslation();
 
   const [entry, setEntry] = useState<GdEntry | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,7 +106,7 @@ export default function GdDetailScreen() {
   if (loading) {
     return (
       <View className="flex-1 bg-background items-center justify-center">
-        <Text className="text-muted-foreground">Loading…</Text>
+        <Text className="text-muted-foreground">{t('common.loading')}</Text>
       </View>
     );
   }
@@ -105,9 +114,9 @@ export default function GdDetailScreen() {
   if (!entry) {
     return (
       <View className="flex-1 bg-background items-center justify-center gap-3 px-6">
-        <Text className="text-base font-semibold text-foreground">Entry not found</Text>
+        <Text className="text-base font-semibold text-foreground">{t('gd.detail.notFound')}</Text>
         <Pressable onPress={() => router.back()} className="active:opacity-70">
-          <Text className="text-sm text-primary">Go back</Text>
+          <Text className="text-sm text-primary">{t('common.back')}</Text>
         </Pressable>
       </View>
     );
@@ -118,11 +127,11 @@ export default function GdDetailScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title={entry.gd_type}
+        title={GD_TYPE_KEYS[entry.gd_type] ? t('gd.type.' + GD_TYPE_KEYS[entry.gd_type]) : entry.gd_type}
         subtitle={fmtDate(entry.preparation_date)}
         showBack
         actions={
-          <Pressable onPress={async () => { try { await toggleGdFavorite(entry.id, entry.is_favorite); setEntry((prev) => prev ? { ...prev, is_favorite: prev.is_favorite ? 0 : 1 } : prev); } catch {} }} className="w-9 h-9 items-center justify-center rounded-xl active:opacity-60" accessibilityLabel="Toggle favourite">
+          <Pressable onPress={async () => { try { await toggleGdFavorite(entry.id, entry.is_favorite); setEntry((prev) => prev ? { ...prev, is_favorite: prev.is_favorite ? 0 : 1 } : prev); } catch {} }} className="w-9 h-9 items-center justify-center rounded-xl active:opacity-60" accessibilityLabel={t('gd.card.toggleFavorite')}>
             <Star size={20} color={entry.is_favorite ? '#D97706' : '#D1D5DB'} fill={entry.is_favorite ? '#D97706' : 'none'} />
           </Pressable>
         }
@@ -137,7 +146,7 @@ export default function GdDetailScreen() {
             style={{ borderCurve: 'continuous' }}
           >
             <Edit2 size={14} color="#374151" />
-            <Text className="text-sm font-medium text-foreground">Edit</Text>
+            <Text className="text-sm font-medium text-foreground">{t('common.edit')}</Text>
           </Pressable>
           <Pressable
             onPress={handleCopy}
@@ -146,7 +155,7 @@ export default function GdDetailScreen() {
           >
             <Copy size={14} color={copied ? '#059669' : '#374151'} />
             <Text className={`text-sm font-medium ${copied ? 'text-[#059669]' : 'text-foreground'}`}>
-              {copied ? 'Copied!' : 'Copy'}
+              {copied ? t('common.copied') : t('common.copy')}
             </Text>
           </Pressable>
           <Pressable
@@ -155,12 +164,13 @@ export default function GdDetailScreen() {
             style={{ borderCurve: 'continuous' }}
           >
             <Share2 size={14} color="#374151" />
-            <Text className="text-sm font-medium text-foreground">Share</Text>
+            <Text className="text-sm font-medium text-foreground">{t('common.share')}</Text>
           </Pressable>
           <Pressable
             onPress={() => setShowDelete(true)}
             className="w-10 items-center justify-center rounded-xl active:opacity-70 border border-border bg-card"
             style={{ borderCurve: 'continuous' }}
+            accessibilityLabel={t('gd.card.deleteAccessibility')}
           >
             <Trash2 size={14} color="#DC2626" />
           </Pressable>
@@ -178,7 +188,7 @@ export default function GdDetailScreen() {
             style={{ backgroundColor: `${typeColor}15` }}
           >
             <Text className="text-xs font-semibold" style={{ color: typeColor }}>
-              {entry.gd_type}
+              {GD_TYPE_KEYS[entry.gd_type] ? t('gd.type.' + GD_TYPE_KEYS[entry.gd_type]) : entry.gd_type}
             </Text>
           </View>
           {entry.ta_da_flag === 1 && (
@@ -189,7 +199,7 @@ export default function GdDetailScreen() {
           {entry.format_id && (
             <View className="rounded-full px-3 py-1 flex-row items-center gap-1" style={{ backgroundColor: '#0891B210' }}>
               <LayoutTemplate size={10} color="#0891B2" />
-              <Text className="text-xs font-medium text-[#0891B2]">From Template</Text>
+              <Text className="text-xs font-medium text-[#0891B2]">{t('gd.detail.fromTemplate')}</Text>
             </View>
           )}
         </View>
@@ -199,7 +209,7 @@ export default function GdDetailScreen() {
           <View className="flex-row items-center gap-2">
             <Calendar size={14} color={GD_COLOR} />
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Preparation Date
+              {t('gd.detail.prepDate')}
             </Text>
           </View>
           <Text className="text-base font-medium text-foreground">{fmtDate(entry.preparation_date)}</Text>
@@ -208,7 +218,7 @@ export default function GdDetailScreen() {
         {/* Vivran */}
         <View className="bg-card border border-border rounded-2xl p-4 gap-3" style={{ borderCurve: 'continuous' }}>
           <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Vivran (Content)
+            {t('gd.detail.vivranLabel')}
           </Text>
           <Text className="text-base text-foreground leading-7" selectable>
             {stripHtmlTags(entry.vivran_content)}
@@ -219,11 +229,11 @@ export default function GdDetailScreen() {
         <View className="gap-2">
           <View className="flex-row items-center gap-2">
             <Clock size={12} color="#9CA3AF" />
-            <Text className="text-xs text-muted-foreground">Created: {fmtTs(entry.created_at)}</Text>
+            <Text className="text-xs text-muted-foreground">{t('gd.detail.created', { date: fmtTs(entry.created_at) })}</Text>
           </View>
           <View className="flex-row items-center gap-2">
             <Clock size={12} color="#9CA3AF" />
-            <Text className="text-xs text-muted-foreground">Modified: {fmtTs(entry.updated_at)}</Text>
+            <Text className="text-xs text-muted-foreground">{t('gd.detail.modified', { date: fmtTs(entry.updated_at) })}</Text>
           </View>
         </View>
       </ScrollView>
@@ -232,21 +242,20 @@ export default function GdDetailScreen() {
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete GD Entry</AlertDialogTitle>
+            <AlertDialogTitle>{t('gd.dialog.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Delete this{' '}
-              <Text className="font-semibold text-foreground">{entry.gd_type}</Text>
-              {' '}entry dated{' '}
-              <Text className="font-semibold text-foreground">{fmtDate(entry.preparation_date)}</Text>
-              ? This cannot be undone.
+              {t('gd.dialog.deleteDesc', {
+                type: GD_TYPE_KEYS[entry.gd_type] ? t('gd.type.' + GD_TYPE_KEYS[entry.gd_type]) : entry.gd_type,
+                date: fmtDate(entry.preparation_date),
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setShowDelete(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleDeleteConfirm} className="bg-destructive">
-              <Text className="text-destructive-foreground font-semibold">Delete</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Share, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Clock, ClipboardList, Edit2, Share2, Trash2 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import {
@@ -25,6 +26,7 @@ function fmtTs(ts: number): string {
 }
 
 export default function ChecklistDetailScreen() {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const COLOR = colorScheme === 'dark' ? '#22D3EE' : '#0891B2';
@@ -56,10 +58,10 @@ export default function ChecklistDetailScreen() {
     const crimeLabel = [checklist.crime_type, checklist.crime_subtype].filter(Boolean).join(' › ');
     const lines = [
       checklist.title,
-      crimeLabel ? `Crime Type: ${crimeLabel}` : '',
+      crimeLabel ? t('knowledge.checklist.shareCrimeType', { crime: crimeLabel }) : '',
       checklist.description ? `\n${checklist.description}` : '',
       '',
-      'Checklist Items:',
+      t('knowledge.checklist.shareChecklistItems'),
       ...items.map((it) =>
         `${it.serial_no}. ${it.task_name}${it.brief_description ? `\n   ${it.brief_description}` : ''}`
       ),
@@ -79,7 +81,7 @@ export default function ChecklistDetailScreen() {
   if (loading) {
     return (
       <View className="flex-1 bg-background items-center justify-center">
-        <Text className="text-muted-foreground">Loading…</Text>
+        <Text className="text-muted-foreground">{t('common.loading')}</Text>
       </View>
     );
   }
@@ -87,9 +89,9 @@ export default function ChecklistDetailScreen() {
   if (!checklist) {
     return (
       <View className="flex-1 bg-background items-center justify-center gap-3 px-6">
-        <Text className="text-base font-semibold text-foreground">Checklist not found</Text>
+        <Text className="text-base font-semibold text-foreground">{t('knowledge.checklist.notFound')}</Text>
         <Pressable onPress={() => router.back()} className="active:opacity-70">
-          <Text className="text-sm text-primary">Go back</Text>
+          <Text className="text-sm text-primary">{t('knowledge.checklist.goBack')}</Text>
         </Pressable>
       </View>
     );
@@ -115,7 +117,7 @@ export default function ChecklistDetailScreen() {
             style={{ borderCurve: 'continuous' }}
           >
             <Edit2 size={14} color={C.mutedForeground} />
-            <Text className="text-sm font-medium text-foreground">Edit</Text>
+            <Text className="text-sm font-medium text-foreground">{t('common.edit')}</Text>
           </Pressable>
           <Pressable
             onPress={handleShare}
@@ -123,7 +125,7 @@ export default function ChecklistDetailScreen() {
             style={{ borderCurve: 'continuous' }}
           >
             <Share2 size={14} color={C.mutedForeground} />
-            <Text className="text-sm font-medium text-foreground">Share</Text>
+            <Text className="text-sm font-medium text-foreground">{t('common.share')}</Text>
           </Pressable>
           <Pressable
             onPress={() => setShowDelete(true)}
@@ -153,7 +155,7 @@ export default function ChecklistDetailScreen() {
           ) : null}
           <View className="rounded-full px-3 py-1 bg-secondary">
             <Text className="text-xs font-medium text-muted-foreground">
-              {items.length} item{items.length !== 1 ? 's' : ''}
+              {t('knowledge.checklist.itemCount', { count: items.length })}
             </Text>
           </View>
         </View>
@@ -165,7 +167,7 @@ export default function ChecklistDetailScreen() {
             style={{ borderCurve: 'continuous' }}
           >
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Description
+              {t('knowledge.checklist.description')}
             </Text>
             <Text className="text-base text-foreground leading-7" selectable>
               {checklist.description}
@@ -191,12 +193,12 @@ export default function ChecklistDetailScreen() {
         >
           <View className="px-4 py-3 border-b border-border/60">
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Checklist Items ({items.length})
+              {t('knowledge.checklist.itemsHeading', { count: items.length })}
             </Text>
           </View>
           {items.length === 0 ? (
             <View className="items-center py-10 gap-2">
-              <Text className="text-sm text-muted-foreground">No items in this checklist</Text>
+              <Text className="text-sm text-muted-foreground">{t('knowledge.checklist.noItemsInChecklist')}</Text>
             </View>
           ) : (
             items.map((it, index) => (
@@ -235,12 +237,10 @@ export default function ChecklistDetailScreen() {
         {checklist.crime_type ? (
           <View className="bg-secondary rounded-xl px-4 py-3">
             <Text className="text-xs text-muted-foreground leading-5">
-              🔗 When a new FIR with Crime Type matching{' '}
-              <Text className="font-semibold text-foreground">
-                {[checklist.crime_type, checklist.crime_subtype].filter(Boolean).join(' › ')}
-              </Text>
-              {' '}is created in Mukadma, these {items.length} items will be automatically
-              added to the Karyvahi list.
+              {t('knowledge.checklist.karyvahiNote', {
+                crimeType: [checklist.crime_type, checklist.crime_subtype].filter(Boolean).join(' › '),
+                count: items.length,
+              })}
             </Text>
           </View>
         ) : null}
@@ -250,13 +250,13 @@ export default function ChecklistDetailScreen() {
           <View className="flex-row items-center gap-2">
             <Clock size={12} color={C.mutedForeground} />
             <Text className="text-xs text-muted-foreground">
-              Created: {fmtTs(checklist.created_at)}
+              {t('knowledge.checklist.created', { date: fmtTs(checklist.created_at) })}
             </Text>
           </View>
           <View className="flex-row items-center gap-2">
             <Clock size={12} color={C.mutedForeground} />
             <Text className="text-xs text-muted-foreground">
-              Modified: {fmtTs(checklist.updated_at)}
+              {t('knowledge.checklist.modified', { date: fmtTs(checklist.updated_at) })}
             </Text>
           </View>
         </View>
@@ -266,19 +266,17 @@ export default function ChecklistDetailScreen() {
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Checklist</AlertDialogTitle>
+            <AlertDialogTitle>{t('knowledge.checklist.deleteChecklistTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Delete{' '}
-              <Text className="font-semibold text-foreground">{checklist.title}</Text>
-              ? All {items.length} items will also be deleted. This cannot be undone.
+              {t('knowledge.checklist.deleteChecklistDesc', { title: checklist.title, count: items.length })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setShowDelete(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleDeleteConfirm} className="bg-destructive">
-              <Text className="text-destructive-foreground font-semibold">Delete</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

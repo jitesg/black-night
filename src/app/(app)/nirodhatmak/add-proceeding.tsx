@@ -12,6 +12,7 @@
  *    on both header button and Android hardware back
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
   BackHandler, KeyboardAvoidingView, Pressable, ScrollView,
@@ -30,6 +31,7 @@ import {
   type NirodhatmakType,
 } from '@/lib/db/nirodhatmakRepo';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { nirodhatmakFormatBridge } from '@/lib/nirodhatmakFormatBridge';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
@@ -38,6 +40,14 @@ import {
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 
 const MODULE_COLOR = '#DC2626';
+
+const NIRODHATMAK_TYPE_KEYS: Record<string, string> = {
+  'बीट सूचना':    'beatInfo',
+  'मुकदमा':       'case',
+  'प्रार्थनापत्र': 'petition',
+  'जमीनी विवाद':  'landDispute',
+  'अन्य':         'other',
+};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 function todayDateObj(): Date {
@@ -62,6 +72,7 @@ function fmtDate(str: string): string {
 
 // ─── Screen ───────────────────────────────────────────────────────────────
 export default function AddProceedingScreen() {
+  const { t } = useTranslation();
   const { editId } = useLocalSearchParams<{ editId?: string }>();
   const isEdit = Boolean(editId);
 
@@ -219,7 +230,7 @@ export default function AddProceedingScreen() {
   const handleSave = async () => {
     setError('');
     if (!editorContent.trim()) {
-      setError('Proceeding content (editor) is required.');
+      setError(t('nirodhatmak.form.errorContentRequired'));
       return;
     }
     setSaving(true);
@@ -260,7 +271,7 @@ export default function AddProceedingScreen() {
       if (__DEV__) console.log('[AddProceeding] saved — navigating back');
       router.back();
     } catch (e) {
-      setError('Failed to save. Please try again.');
+      setError(t('nirodhatmak.form.errorSaveFailed'));
       logger.warn('[AddProceeding] save error:', e);
     } finally {
       setSaving(false);
@@ -307,30 +318,35 @@ export default function AddProceedingScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title={isEdit ? 'Edit Proceeding' : 'New Proceeding'}
-        subtitle="Nirodhatmak Karyvahi"
+        title={isEdit ? t('nirodhatmak.form.editTitle') : t('nirodhatmak.form.newTitle')}
+        subtitle={t('nirodhatmak.subtitle', 'निरोधात्मक')}
         onBack={handleBack}
         rightActions={
-          <Pressable onPress={handleSave} disabled={saving} className="flex-row items-center gap-1.5 px-4 py-2 rounded-xl active:opacity-70" style={{ backgroundColor: MODULE_COLOR, borderCurve: 'continuous', opacity: saving ? 0.6 : 1 }}>
+          <Pressable
+            onPress={handleSave}
+            disabled={saving}
+            className="flex-row items-center gap-1.5 px-4 py-2 rounded-xl active:opacity-70"
+            style={{ backgroundColor: '#6366F1', borderCurve: 'continuous', opacity: saving ? 0.6 : 1 }}
+          >
             <Save size={15} color="#fff" />
-            <Text className="text-sm font-bold text-white">{saving ? 'Saving…' : 'Save'}</Text>
+            <Text className="text-sm font-bold text-white">{saving ? t('common.saving') : t('common.save')}</Text>
           </Pressable>
         }
       />
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
 
         <ScrollView
-          contentContainerClassName="px-6 py-5 gap-5 pb-16"
+          contentContainerClassName="px-6 py-5 gap-5 pb-32"
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           {/* ── Proceeding Date ───────────────────────────────── */}
           <View className="gap-1.5">
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Proceeding Date <Text className="text-destructive">*</Text>
+              {t('nirodhatmak.form.proceedingDate')} <Text className="text-destructive">*</Text>
             </Text>
             <Pressable
               onPress={() => { setShowDatePicker(true); setShowTypeDropdown(false); }}
@@ -346,7 +362,7 @@ export default function AddProceedingScreen() {
             <DatePickerModal
               visible={showDatePicker}
               value={proceedingDateStr}
-              label="Proceeding Date"
+              label={t('nirodhatmak.form.proceedingDate')}
               accentColor={MODULE_COLOR}
               onConfirm={(v) => {
                 const [y, m, d] = v.split('-').map(Number);
@@ -359,7 +375,7 @@ export default function AddProceedingScreen() {
           {/* ── Type Dropdown ─────────────────────────────────── */}
           <View className="gap-1.5">
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Proceeding Type <Text className="text-destructive">*</Text>
+              {t('nirodhatmak.form.proceedingType')} <Text className="text-destructive">*</Text>
             </Text>
             <Pressable
               onPress={() => { setShowTypeDropdown(!showTypeDropdown); setShowDatePicker(false); }}
@@ -367,20 +383,24 @@ export default function AddProceedingScreen() {
               style={{ borderCurve: 'continuous' }}
             >
               <FileWarning size={16} color={MODULE_COLOR} />
-              <Text className="flex-1 text-base text-foreground">{proceedingType}</Text>
+              <Text className="flex-1 text-base text-foreground">
+                {NIRODHATMAK_TYPE_KEYS[proceedingType] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[proceedingType]) : proceedingType}
+              </Text>
               <ChevronDown size={16} color="#9CA3AF" />
             </Pressable>
             {showTypeDropdown && (
               <View className="border border-border rounded-xl bg-card overflow-hidden"
                 style={{ borderCurve: 'continuous' }}>
-                {NIRODHATMAK_TYPES.map((t) => (
+                {NIRODHATMAK_TYPES.map((tVal) => (
                   <Pressable
-                    key={t}
-                    onPress={() => { setProceedingType(t); setShowTypeDropdown(false); }}
+                    key={tVal}
+                    onPress={() => { setProceedingType(tVal); setShowTypeDropdown(false); }}
                     className="px-4 py-3 border-b border-border active:opacity-70"
-                    style={{ backgroundColor: proceedingType === t ? `${MODULE_COLOR}08` : undefined }}
+                    style={{ backgroundColor: proceedingType === tVal ? `${MODULE_COLOR}08` : undefined }}
                   >
-                    <Text className="text-sm text-foreground">{t}</Text>
+                    <Text className="text-sm text-foreground">
+                      {NIRODHATMAK_TYPE_KEYS[tVal] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[tVal]) : tVal}
+                    </Text>
                   </Pressable>
                 ))}
               </View>
@@ -391,7 +411,7 @@ export default function AddProceedingScreen() {
           <View className="gap-1.5">
             <View className="flex-row items-center justify-between">
               <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Proceeding Content <Text className="text-destructive">*</Text>
+                {t('nirodhatmak.form.contentLabel')} <Text className="text-destructive">*</Text>
               </Text>
               {formatTitle && (
                 <View className="flex-row items-center gap-1.5 bg-secondary rounded-full px-2.5 py-1">
@@ -405,10 +425,11 @@ export default function AddProceedingScreen() {
             <DocumentEditor
               value={editorContent}
               onChangeText={(v) => { setEditorContent(v); setError(''); }}
-              title="Nirodhatmak Karyvahi"
-              placeholder="Enter proceeding details here…"
-              accessibilityLabel="Proceeding content editor"
+              title={t('nirodhatmak.form.editorTitle')}
+              placeholder={t('nirodhatmak.form.editorPlaceholder')}
+              accessibilityLabel={t('nirodhatmak.form.editorAccessibility')}
             />
+            <FardCheckButton text={editorContent} title={formatTitle || proceedingType} className="mt-1" />
           </View>
 
           {/* ── Add From Format Button ─────────────────────────── */}
@@ -419,7 +440,7 @@ export default function AddProceedingScreen() {
           >
             <LayoutTemplate size={16} color={MODULE_COLOR} />
             <Text className="text-sm font-semibold" style={{ color: MODULE_COLOR }}>
-              Add From Format
+              {t('nirodhatmak.form.addFromFormat')}
             </Text>
           </Pressable>
 
@@ -432,19 +453,6 @@ export default function AddProceedingScreen() {
               </View>
             </View>
           ) : null}
-
-          {/* ── Save Button (bottom) ───────────────────────────── */}
-          <Pressable
-            onPress={handleSave}
-            disabled={saving}
-            className="rounded-xl py-4 flex-row items-center justify-center gap-2 active:opacity-80 mt-2"
-            style={{ backgroundColor: MODULE_COLOR, borderCurve: 'continuous', opacity: saving ? 0.6 : 1 }}
-          >
-            <Save size={18} color="#fff" />
-            <Text className="text-white font-bold text-base">
-              {saving ? 'Saving…' : isEdit ? 'Update Proceeding' : 'Save Proceeding'}
-            </Text>
-          </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
 
@@ -455,23 +463,23 @@ export default function AddProceedingScreen() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogTitle>{t('nirodhatmak.dialog.unsavedTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Save before leaving?
+              {t('nirodhatmak.dialog.unsavedDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setShowUnsavedDialog(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleDiscard} className="bg-destructive">
-              <Text className="text-destructive-foreground font-semibold">Discard</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.discard')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
               onPress={() => { setShowUnsavedDialog(false); handleSave(); }}
               style={{ backgroundColor: MODULE_COLOR }}
             >
-              <Text className="text-white font-semibold">Save</Text>
+              <Text className="text-white font-semibold">{t('common.save')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -484,23 +492,23 @@ export default function AddProceedingScreen() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Editor Already Has Content</AlertDialogTitle>
+            <AlertDialogTitle>{t('nirodhatmak.dialog.replaceTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Replace the existing content with the new format, or append below it?
+              {t('nirodhatmak.dialog.replaceDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={handleReplaceDialogCancel}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleAppendChoice} className="bg-secondary">
-              <Text className="text-foreground font-semibold">Append</Text>
+              <Text className="text-foreground font-semibold">{t('nirodhatmak.dialog.append')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
               onPress={handleReplaceChoice}
               style={{ backgroundColor: MODULE_COLOR }}
             >
-              <Text className="text-white font-semibold">Replace</Text>
+              <Text className="text-white font-semibold">{t('nirodhatmak.dialog.replace')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

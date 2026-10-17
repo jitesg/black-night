@@ -106,7 +106,7 @@ const HANDLERS: Array<{ patterns: RegExp[]; handler: Handler }> = [
       if (completionPct < 70) factors.push(`Only ${completionPct}% karyvahi completed`);
       if (daysSinceDiary_ > 7) factors.push(`Case diary not updated for ${daysSinceDiary_} days`);
       if (overdue > 0) factors.push(`${overdue} overdue compliance items`);
-      if (!ctx.karyvahi.completed.some((k) => /bayan|witness/.test(k.name.toLowerCase())))
+      if (!ctx.karyvahi.completed.some((k) => /bayan|witness|बयान|गवाह|वादी/.test(k.name.toLowerCase())))
         factors.push('Witness statements not completed');
 
       const structured = [
@@ -245,7 +245,7 @@ function defaultAnswer(question: string, ctx: InvestigationContext): NLInvestiga
 function getSuggestedQuestions(ctx: InvestigationContext): string[] {
   const suggestions = ['What is pending?', 'What evidence is missing?', 'What is the highest risk?'];
   if (ctx.courtDocs.length > 0) suggestions.push('What is the next court date?');
-  if (ctx.karyvahi.all.some((k) => /bayan|witness/i.test(k.name))) suggestions.push('Which witness remains?');
+  if (ctx.karyvahi.all.some((k) => /bayan|witness|बयान|गवाह|वादी/i.test(k.name))) suggestions.push('Which witness remains?');
   suggestions.push('Why is the readiness score low?');
   return suggestions.slice(0, 5);
 }

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import {
@@ -60,6 +61,19 @@ const TYPE_CHIP_COLORS: Record<string, string> = {
   'अन्य':         '#6B7280',
 };
 
+const NIRODHATMAK_TYPE_KEYS: Record<string, string> = {
+  'बीट सूचना':    'beatInfo',
+  'मुकदमा':       'case',
+  'प्रार्थनापत्र': 'petition',
+  'जमीनी विवाद':  'landDispute',
+  'अन्य':         'other',
+};
+
+const NIRODHATMAK_STATUS_KEYS: Record<string, string> = {
+  'Active': 'active',
+  'Closed': 'closed',
+};
+
 // ─── Action Menu ──────────────────────────────────────────────────────────
 function ActionMenu({
   item, onEdit, onDelete, onClose, scheme,
@@ -70,7 +84,12 @@ function ActionMenu({
   onClose: () => void;
   scheme: 'light' | 'dark';
 }) {
+  const { t } = useTranslation();
   const palette = THEME[scheme];
+  const typeDisplay = item.proceeding_type
+    ? (NIRODHATMAK_TYPE_KEYS[item.proceeding_type] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type]) : item.proceeding_type)
+    : '';
+
   return (
     <View
       className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm shadow-black/5"
@@ -79,9 +98,9 @@ function ActionMenu({
       <View className="px-4 py-3 border-b border-border flex-row items-center justify-between">
         <View className="flex-1 gap-0.5" style={{ minWidth: 0 }}>
           <Text className="text-sm font-semibold text-foreground" numberOfLines={1}>
-            {item.format_title || 'Proceeding'}
+            {item.format_title || t('nirodhatmak.card.defaultTitle')}
           </Text>
-          <Text className="text-xs text-muted-foreground">{item.proceeding_type || ''}</Text>
+          <Text className="text-xs text-muted-foreground">{typeDisplay}</Text>
         </View>
         {/* Close: 36×36dp + hitSlop 4 = 44dp touch target */}
         <Pressable
@@ -89,18 +108,18 @@ function ActionMenu({
           className="w-9 h-9 items-center justify-center active:opacity-70"
           hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
           accessibilityRole="button"
-          accessibilityLabel="Close action menu"
+          accessibilityLabel={t('nirodhatmak.menu.closeAccessibility')}
         >
           <X size={16} color={palette.mutedForeground} />
         </Pressable>
       </View>
       <Pressable onPress={onEdit} className="flex-row items-center gap-3 px-4 py-3 active:opacity-70 border-b border-border">
         <Edit2 size={16} color={palette.foreground} />
-        <Text className="text-sm text-foreground">Edit</Text>
+        <Text className="text-sm text-foreground">{t('common.edit')}</Text>
       </Pressable>
       <Pressable onPress={onDelete} className="flex-row items-center gap-3 px-4 py-3 active:opacity-70">
         <Trash2 size={16} color={palette.destructive} />
-        <Text className="text-sm text-destructive">Delete</Text>
+        <Text className="text-sm text-destructive">{t('common.delete')}</Text>
       </Pressable>
     </View>
   );
@@ -120,6 +139,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
   onPress: () => void;
   onLongPress: () => void;
 }) {
+  const { t } = useTranslation();
   const palette = THEME[scheme];
   const typeColor = TYPE_CHIP_COLORS[item.proceeding_type] ?? '#6B7280';
   const dateStr = item.proceeding_date
@@ -157,7 +177,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
               <HighlightText text={item.village_name} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1} />
             </View>
           ) : (
-            <HighlightText text={item.format_title || 'Nirodhatmak Proceeding'} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1} />
+            <HighlightText text={item.format_title || t('nirodhatmak.card.defaultTitle')} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1} />
           )}
           {/* Date + Status */}
           <View className="flex-row items-center gap-2 flex-wrap">
@@ -174,7 +194,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
                   className="text-xs font-medium"
                   style={{ color: statusText }}
                 >
-                  {item.status}
+                  {NIRODHATMAK_STATUS_KEYS[item.status] ? t('nirodhatmak.status.' + NIRODHATMAK_STATUS_KEYS[item.status]) : item.status}
                 </Text>
               </View>
             ) : null}
@@ -187,7 +207,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
           style={{ backgroundColor: `${typeColor}12` }}
         >
           <Text className="text-xs font-semibold" style={{ color: typeColor }} numberOfLines={1}>
-            {item.proceeding_type || 'अन्य'}
+            {NIRODHATMAK_TYPE_KEYS[item.proceeding_type] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type]) : (item.proceeding_type || t('nirodhatmak.type.other'))}
           </Text>
         </View>
       </View>
@@ -205,6 +225,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
 // ─── Main Screen ──────────────────────────────────────────────────────────
 export default function NirodhatmakHomeScreen() {
   const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
   const scheme = colorScheme === 'dark' ? 'dark' : 'light';
   const chipInactiveBg   = CHIP_INACTIVE_BG[scheme];
   const chipInactiveText = CHIP_INACTIVE_TEXT[scheme];
@@ -314,14 +335,14 @@ export default function NirodhatmakHomeScreen() {
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <AppHeader
-        title="Nirodhatmak Karyvahi"
-        subtitle={loading ? 'Loading…' : `${records.length} proceeding${records.length !== 1 ? 's' : ''}`}
+        title={t('nirodhatmak.list.title')}
+        subtitle={loading ? t('common.loading') : t('nirodhatmak.list.proceedingCount', { count: records.length })}
         onMenuPress={() => setDrawerOpen(true)}
         actions={
           <HeaderIconBtn
             icon={Plus}
             onPress={() => router.push('/(app)/nirodhatmak/add-proceeding' as never)}
-            label="Add Proceeding"
+            label={t('nirodhatmak.list.addProceeding')}
             color={MODULE_COLOR}
           />
         }
@@ -333,10 +354,10 @@ export default function NirodhatmakHomeScreen() {
           <SearchBar
             value={query}
             onChangeText={handleSearch}
-            placeholder="Search village, type, matter…"
+            placeholder={t('nirodhatmak.list.searchPlaceholder')}
             variant="light"
             containerStyle={{ flex: 1 }}
-            accessibilityLabel="Search nirodhatmak karyvahi"
+            accessibilityLabel={t('nirodhatmak.list.searchAccessibility')}
             collapsible
           />
           {/* Filter button: h-12 (48dp) to match SearchBar; solid themed inactive bg */}
@@ -351,7 +372,7 @@ export default function NirodhatmakHomeScreen() {
           >
             <Filter size={13} color={activeType ? MODULE_COLOR : chipInactiveText} />
             <Text className="text-xs font-semibold" style={{ color: activeType ? MODULE_COLOR : chipInactiveText }}>
-              {activeType ?? 'Filter'}
+              {activeType ? (NIRODHATMAK_TYPE_KEYS[activeType] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[activeType]) : activeType) : t('common.filter')}
             </Text>
           </Pressable>
         </View>
@@ -366,19 +387,21 @@ export default function NirodhatmakHomeScreen() {
                 borderColor:     activeType === null ? MODULE_COLOR : chipBorder,
               }}
             >
-              <Text className="text-xs font-semibold" style={{ color: activeType === null ? '#fff' : chipInactiveText }}>All</Text>
+              <Text className="text-xs font-semibold" style={{ color: activeType === null ? '#fff' : chipInactiveText }}>{t('common.all')}</Text>
             </Pressable>
-            {NIRODHATMAK_TYPES.map((t) => (
+            {NIRODHATMAK_TYPES.map((tVal) => (
               <Pressable
-                key={t}
-                onPress={() => handleTypeFilter(t)}
+                key={tVal}
+                onPress={() => handleTypeFilter(tVal)}
                 className="mr-2 rounded-full px-3 py-1.5 border active:opacity-70"
                 style={{
-                  backgroundColor: activeType === t ? MODULE_COLOR : chipInactiveBg,
-                  borderColor:     activeType === t ? MODULE_COLOR : chipBorder,
+                  backgroundColor: activeType === tVal ? MODULE_COLOR : chipInactiveBg,
+                  borderColor:     activeType === tVal ? MODULE_COLOR : chipBorder,
                 }}
               >
-                <Text className="text-xs font-semibold" style={{ color: activeType === t ? '#fff' : chipInactiveText }}>{t}</Text>
+                <Text className="text-xs font-semibold" style={{ color: activeType === tVal ? '#fff' : chipInactiveText }}>
+                  {NIRODHATMAK_TYPE_KEYS[tVal] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[tVal]) : tVal}
+                </Text>
               </Pressable>
             ))}
           </ScrollView>
@@ -415,13 +438,13 @@ export default function NirodhatmakHomeScreen() {
               </View>
               <Text className="text-base font-semibold text-foreground">
                 {query.trim() || activeType
-                  ? 'No proceedings found'
-                  : 'No proceedings yet'}
+                  ? t('nirodhatmak.list.noProceedingsFound')
+                  : t('nirodhatmak.list.noProceedingsYet')}
               </Text>
               <Text className="text-sm text-muted-foreground text-center px-10">
                 {query.trim() || activeType
-                  ? 'Try adjusting your search or filter'
-                  : 'Tap the button below to start a new proceeding'}
+                  ? t('nirodhatmak.list.noProceedingsFoundHint')
+                  : t('nirodhatmak.list.noProceedingsYetHint')}
               </Text>
             </View>
           }
@@ -437,17 +460,17 @@ export default function NirodhatmakHomeScreen() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Proceeding</AlertDialogTitle>
+            <AlertDialogTitle>{t('nirodhatmak.dialog.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Delete this proceeding? This cannot be undone.
+              {t('nirodhatmak.dialog.deleteDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setDeleteTarget(null)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleDeleteConfirm} className="bg-destructive">
-              <Text className="text-destructive-foreground font-semibold">Delete</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -16,6 +16,7 @@
 import type { Explanation, Finding } from './ReasoningTypes';
 import type { InvestigationContext } from '../InvestigationContext';
 import { ConfidenceEngine } from './ConfidenceEngine';
+import i18n from '@/lib/i18n';
 
 export class ExplanationEngine {
   static explain(finding: Finding, ctx: InvestigationContext): Explanation {
@@ -122,9 +123,11 @@ export class ExplanationEngine {
       }
     }
 
-    // Missing fields note
+    // Missing fields note (localized)
     if (ctx.confidence.missingFields.length > 0) {
-      evidence.push(`Note: Some data unavailable — ${ctx.confidence.missingFields.slice(0, 2).join(', ')}`);
+      const isHi = (i18n?.language || 'hi').startsWith('hi');
+      const prefix = isHi ? 'नोट: कुछ जानकारी अनुपलब्ध — ' : 'Note: Some data unavailable — ';
+      evidence.push(`${prefix}${ctx.confidence.missingFields.slice(0, 2).join(', ')}`);
     }
 
     return evidence;

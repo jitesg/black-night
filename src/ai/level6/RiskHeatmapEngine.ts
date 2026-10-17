@@ -87,7 +87,7 @@ export class RiskHeatmapEngine {
 
     // ── Witness ───────────────────────────────────────────────────────────────
     const witnessKaryvahi = ctx.karyvahi.all.filter(
-      (k) => k.name.toLowerCase().includes('witness') || k.name.toLowerCase().includes('bayan')
+      (k) => k.name.toLowerCase().includes('witness') || k.name.toLowerCase().includes('bayan') || k.name.includes('बयान') || k.name.includes('वादी') || k.name.includes('गवाह')
     );
     const pendingWitness = witnessKaryvahi.filter((k) => k.is_completed === 0);
     const witnessScore   = witnessKaryvahi.length === 0 ? 80

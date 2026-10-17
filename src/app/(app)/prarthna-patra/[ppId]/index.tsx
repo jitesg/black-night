@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -36,12 +37,13 @@ function SectionHeader({ title }: { title: string }) {
 }
 
 function StatusChip({ pp }: { pp: PPWithDetails }) {
+  const { t } = useTranslation();
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
   if (pp.status === 'Nistarit') {
     return (
       <View className="flex-row items-center gap-1.5 rounded-full px-3 py-1" style={{ backgroundColor: '#D1FAE5' }}>
         <CheckCircle size={13} color="#065F46" />
-        <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>Nistarit</Text>
+        <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
       </View>
     );
   }
@@ -49,7 +51,7 @@ function StatusChip({ pp }: { pp: PPWithDetails }) {
     return (
       <View className="flex-row items-center gap-1.5 rounded-full px-3 py-1" style={{ backgroundColor: '#EDE9FE' }}>
         <CheckCircle size={13} color="#5B21B6" />
-        <Text className="text-xs font-semibold" style={{ color: '#5B21B6' }}>Finished</Text>
+        <Text className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{t('fir.list.filterFinished')}</Text>
       </View>
     );
   }
@@ -57,14 +59,14 @@ function StatusChip({ pp }: { pp: PPWithDetails }) {
     return (
       <View className="flex-row items-center gap-1.5 rounded-full px-3 py-1" style={{ backgroundColor: '#FEE2E2' }}>
         <AlertCircle size={13} color="#991B1B" />
-        <Text className="text-xs font-semibold" style={{ color: '#991B1B' }}>Overdue</Text>
+        <Text className="text-xs font-semibold" style={{ color: '#991B1B' }}>{t('prarthnaPatra.filters.overdue')}</Text>
       </View>
     );
   }
   return (
     <View className="flex-row items-center gap-1.5 rounded-full px-3 py-1" style={{ backgroundColor: '#FEF3C7' }}>
       <Clock size={13} color="#92400E" />
-      <Text className="text-xs font-semibold" style={{ color: '#92400E' }}>Pending</Text>
+      <Text className="text-xs font-semibold" style={{ color: '#92400E' }}>{t('fir.list.filterPending')}</Text>
     </View>
   );
 }
@@ -72,6 +74,7 @@ function StatusChip({ pp }: { pp: PPWithDetails }) {
 // ── Screen ────────────────────────────────────────────────────────────────
 
 export default function PPDetailScreen() {
+  const { t } = useTranslation();
   const { ppId } = useLocalSearchParams<{ ppId: string }>();
   const [pp, setPP] = useState<PPWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -99,9 +102,9 @@ export default function PPDetailScreen() {
   if (!pp) {
     return (
       <View className="flex-1 bg-background items-center justify-center px-8">
-        <Text className="text-base font-semibold text-muted-foreground">Petition not found</Text>
+        <Text className="text-base font-semibold text-muted-foreground">{t('prarthnaPatra.detail.notFound')}</Text>
         <Pressable onPress={() => router.back()} className="mt-4 active:opacity-70">
-          <Text className="text-sm text-primary">Go Back</Text>
+          <Text className="text-sm text-primary">{t('prarthnaPatra.detail.goBack')}</Text>
         </Pressable>
       </View>
     );
@@ -110,9 +113,9 @@ export default function PPDetailScreen() {
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
   const dayLabel = (pp.status === 'Nistarit' || pp.status === 'Finished')
     ? null
-    : days > 0 ? `${days} day${days !== 1 ? 's' : ''} remaining`
-    : days === 0 ? 'Due today'
-    : `${Math.abs(days)} day${Math.abs(days) !== 1 ? 's' : ''} overdue`;
+    : days > 0 ? t('prarthnaPatra.dayLabel.remaining', { count: days })
+    : days === 0 ? t('prarthnaPatra.dayLabel.dueToday')
+    : t('prarthnaPatra.dayLabel.overdue', { count: Math.abs(days) });
   const dayColor = (pp.status === 'Nistarit' || pp.status === 'Finished') ? '#6B7280'
     : days > 0 ? '#2D52B8' : '#DC2626';
 
@@ -155,21 +158,21 @@ export default function PPDetailScreen() {
         </View>
 
         {/* ── Petition info ── */}
-        <SectionHeader title="Petition Details" />
+        <SectionHeader title={t('prarthnaPatra.detail.sectionPetitionDetails')} />
         <View
           className="bg-card border border-border rounded-2xl p-4"
           style={{ borderCurve: 'continuous' }}
         >
-          <InfoRow label="Registration No." value={pp.registration_number} />
-          <InfoRow label="Petition Type" value={PETITION_TYPE_LABELS[pp.petition_type]} />
-          <InfoRow label="Date of Receipt" value={pp.date_of_receipt} />
-          <InfoRow label="Deadline Date" value={pp.deadline_date} />
-          <InfoRow label="Investigator" value={pp.investigator_name} />
-          {pp.disposal_date && <InfoRow label="Disposal Date" value={pp.disposal_date} />}
+          <InfoRow label={t('prarthnaPatra.detail.regNo')} value={pp.registration_number} />
+          <InfoRow label={t('prarthnaPatra.detail.petitionType')} value={PETITION_TYPE_LABELS[pp.petition_type]} />
+          <InfoRow label={t('prarthnaPatra.detail.dateOfReceipt')} value={pp.date_of_receipt} />
+          <InfoRow label={t('prarthnaPatra.detail.deadlineDate')} value={pp.deadline_date} />
+          <InfoRow label={t('prarthnaPatra.detail.investigator')} value={pp.investigator_name} />
+          {pp.disposal_date && <InfoRow label={t('prarthnaPatra.detail.disposalDate')} value={pp.disposal_date} />}
         </View>
 
         {/* ── Complainants ── */}
-        <SectionHeader title={`Complainants (${pp.complainants.length})`} />
+        <SectionHeader title={t('prarthnaPatra.detail.sectionComplainants', { count: pp.complainants.length })} />
         {pp.complainants.map((c, i) => (
           <View
             key={c.id}
@@ -178,25 +181,27 @@ export default function PPDetailScreen() {
           >
             <View className="flex-row items-center gap-2 mb-3">
               <User size={14} color="#6B7280" />
-              <Text className="text-sm font-semibold text-foreground">Complainant {i + 1}</Text>
+              <Text className="text-sm font-semibold text-foreground">
+                {t('prarthnaPatra.detail.complainantCardTitle', { number: i + 1 })}
+              </Text>
             </View>
-            <InfoRow label="Name" value={c.name} />
-            <InfoRow label="Father/Husband" value={c.father_husband_name} />
-            <InfoRow label="Mobile" value={c.mobile} />
-            <InfoRow label="Alt Mobile" value={c.alternate_mobile} />
-            <InfoRow label="Address" value={c.full_address} />
-            <InfoRow label="Village" value={c.village} />
-            <InfoRow label="Police Station" value={c.police_station} />
-            <InfoRow label="District" value={c.district} />
-            <InfoRow label="Age / Gender" value={[c.age, c.gender].filter(Boolean).join(' / ')} />
-            <InfoRow label="जाति" value={c.jati} />
+            <InfoRow label={t('prarthnaPatra.detail.name')} value={c.name} />
+            <InfoRow label={t('prarthnaPatra.detail.fatherHusband')} value={c.father_husband_name} />
+            <InfoRow label={t('prarthnaPatra.detail.mobile')} value={c.mobile} />
+            <InfoRow label={t('prarthnaPatra.detail.altMobile')} value={c.alternate_mobile} />
+            <InfoRow label={t('prarthnaPatra.detail.address')} value={c.full_address} />
+            <InfoRow label={t('prarthnaPatra.detail.village')} value={c.village} />
+            <InfoRow label={t('prarthnaPatra.detail.policeStation')} value={c.police_station} />
+            <InfoRow label={t('prarthnaPatra.detail.district')} value={c.district} />
+            <InfoRow label={t('prarthnaPatra.detail.ageGender')} value={[c.age, c.gender].filter(Boolean).join(' / ')} />
+            <InfoRow label={t('prarthnaPatra.detail.caste')} value={c.jati} />
           </View>
         ))}
 
         {/* ── Matter ── */}
         {pp.matter ? (
           <>
-            <SectionHeader title="Matter (विवरण)" />
+            <SectionHeader title={t('prarthnaPatra.detail.sectionMatter')} />
             <View
               className="bg-card border border-border rounded-2xl p-4"
               style={{ borderCurve: 'continuous' }}
@@ -209,7 +214,7 @@ export default function PPDetailScreen() {
         {/* ── Accused ── */}
         {pp.accused.length > 0 && (
           <>
-            <SectionHeader title={`Accused (${pp.accused.length})`} />
+            <SectionHeader title={t('prarthnaPatra.detail.sectionAccused', { count: pp.accused.length })} />
             {pp.accused.map((a, i) => (
               <View
                 key={a.id}
@@ -218,18 +223,20 @@ export default function PPDetailScreen() {
               >
                 <View className="flex-row items-center gap-2 mb-3">
                   <Users size={14} color="#6B7280" />
-                  <Text className="text-sm font-semibold text-foreground">Accused {i + 1}</Text>
+                  <Text className="text-sm font-semibold text-foreground">
+                    {t('prarthnaPatra.detail.accusedCardTitle', { number: i + 1 })}
+                  </Text>
                 </View>
-                <InfoRow label="Name" value={a.name} />
-                <InfoRow label="Father Name" value={a.father_name} />
-                <InfoRow label="Mobile" value={a.mobile} />
-                <InfoRow label="Alt Mobile" value={a.alternate_mobile} />
-                <InfoRow label="Address" value={a.full_address} />
-                <InfoRow label="Village" value={a.village} />
-                <InfoRow label="Police Station" value={a.police_station} />
-                <InfoRow label="District" value={a.district} />
-                <InfoRow label="जाति / उम्र / लिंग" value={[a.jati, a.age, a.gender].filter(Boolean).join(' / ')} />
-                <InfoRow label="Remarks" value={a.remarks} />
+                <InfoRow label={t('prarthnaPatra.detail.name')} value={a.name} />
+                <InfoRow label={t('prarthnaPatra.detail.fatherName')} value={a.father_name} />
+                <InfoRow label={t('prarthnaPatra.detail.mobile')} value={a.mobile} />
+                <InfoRow label={t('prarthnaPatra.detail.altMobile')} value={a.alternate_mobile} />
+                <InfoRow label={t('prarthnaPatra.detail.address')} value={a.full_address} />
+                <InfoRow label={t('prarthnaPatra.detail.village')} value={a.village} />
+                <InfoRow label={t('prarthnaPatra.detail.policeStation')} value={a.police_station} />
+                <InfoRow label={t('prarthnaPatra.detail.district')} value={a.district} />
+                <InfoRow label={t('prarthnaPatra.detail.casteAgeGender')} value={[a.jati, a.age, a.gender].filter(Boolean).join(' / ')} />
+                <InfoRow label={t('prarthnaPatra.detail.remarks')} value={a.remarks} />
               </View>
             ))}
           </>
@@ -238,7 +245,7 @@ export default function PPDetailScreen() {
         {/* ── Report section ── */}
         {pp.report && (
           <>
-            <SectionHeader title="Report" />
+            <SectionHeader title={t('prarthnaPatra.detail.sectionReport')} />
             <View
               className="bg-card border border-border rounded-2xl p-4"
               style={{ borderCurve: 'continuous' }}
@@ -246,7 +253,7 @@ export default function PPDetailScreen() {
               <View className="flex-row items-center gap-2 mb-3">
                 <Calendar size={14} color="#6B7280" />
                 <Text className="text-xs text-muted-foreground">
-                  Report Date: {pp.report.report_preparation_date}
+                  {t('prarthnaPatra.detail.reportDate', { date: pp.report.report_preparation_date })}
                 </Text>
               </View>
               <Text className="text-sm text-foreground leading-6">{stripHtmlTags(pp.report.report_content)}</Text>
@@ -257,7 +264,7 @@ export default function PPDetailScreen() {
         {/* ── Actions section (Beat / NCR) ── */}
         {useActionFlow && pp.actions.length > 0 && (
           <>
-            <SectionHeader title={`Actions (${pp.actions.length})`} />
+            <SectionHeader title={t('prarthnaPatra.detail.sectionActions', { count: pp.actions.length })} />
             {pp.actions.map((action) => (
               <View
                 key={action.id}
@@ -266,7 +273,9 @@ export default function PPDetailScreen() {
               >
                 <View className="flex-row items-center gap-2 mb-2">
                   <Zap size={14} color="#7C3AED" />
-                  <Text className="text-xs text-muted-foreground">Date: {action.action_date}</Text>
+                  <Text className="text-xs text-muted-foreground">
+                    {t('prarthnaPatra.detail.actionDate', { date: action.action_date })}
+                  </Text>
                   {action.action_type ? (
                     <View className="rounded-full px-2 py-0.5 bg-secondary ml-auto">
                       <Text className="text-xs text-muted-foreground">{action.action_type}</Text>
@@ -275,7 +284,7 @@ export default function PPDetailScreen() {
                 </View>
                 {action.format_title ? (
                   <Text className="text-xs text-muted-foreground mb-1">
-                    Format: {action.format_title}
+                    {t('prarthnaPatra.detail.actionFormat', { title: action.format_title })}
                   </Text>
                 ) : null}
                 <Text className="text-sm text-foreground leading-6">{stripHtmlTags(action.action_content)}</Text>
@@ -283,7 +292,7 @@ export default function PPDetailScreen() {
                   style={{ backgroundColor: action.is_complete ? '#EDE9FE' : '#FEF3C7' }}>
                   <Text className="text-xs font-semibold"
                     style={{ color: action.is_complete ? '#5B21B6' : '#92400E' }}>
-                    {action.is_complete ? 'Finished' : 'Pending'}
+                    {action.is_complete ? t('fir.list.filterFinished') : t('fir.list.filterPending')}
                   </Text>
                 </View>
               </View>
@@ -300,7 +309,7 @@ export default function PPDetailScreen() {
               style={{ backgroundColor: '#7C3AED' }}
             >
               <Text className="text-sm font-semibold text-white">
-                <Zap size={15} color="#fff" /> Take Action
+                <Zap size={15} color="#fff" /> {t('prarthnaPatra.detail.takeActionBtn')}
               </Text>
             </Pressable>
           ) : (
@@ -310,7 +319,7 @@ export default function PPDetailScreen() {
               style={{ backgroundColor: pp.status === 'Pending' ? '#2D52B8' : '#059669' }}
             >
               <Text className="text-sm font-semibold text-white">
-                {pp.status === 'Pending' ? 'रिपोर्ट लगाए (Add Report)' : 'View / Edit Report'}
+                {pp.status === 'Pending' ? t('prarthnaPatra.detail.addReportBtn') : t('prarthnaPatra.detail.viewEditReportBtn')}
               </Text>
             </Pressable>
           )}

@@ -9,6 +9,8 @@ export default function KnowledgeLayout() {
       <Stack.Screen name="[knowledgeId]" />
       <Stack.Screen name="checklists" />
       <Stack.Screen name="investigation-guides" />
+      <Stack.Screen name="fard" />
+      <Stack.Screen name="law" />
     </Stack>
   );
 }

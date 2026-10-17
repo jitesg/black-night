@@ -10,6 +10,7 @@ import { View, Text } from 'react-native';
 import { Shield, User } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   source?: string | null;
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export function SourceBadge({ source, size = 'sm' }: Props) {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const isSystem = source === 'system';
@@ -32,7 +34,7 @@ export function SourceBadge({ source, size = 'sm' }: Props) {
     ? (isSystem ? '#1D4ED815' : '#05966915')
     : (isSystem ? '#1D4ED812' : '#05966912');
 
-  const label = isSystem ? 'System' : 'User';
+  const label = isSystem ? t('header.system') : t('header.user');
   const Icon = isSystem ? Shield : User;
   const iconSize = size === 'xs' ? 9 : 11;
   const textClass = size === 'xs' ? 'text-[9px]' : 'text-[10px]';

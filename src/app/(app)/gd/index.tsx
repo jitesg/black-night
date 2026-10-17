@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import {
@@ -46,10 +47,30 @@ const CHIP_INACTIVE_BG   = { light: '#F1F5F9', dark: '#334155' } as const;
 const CHIP_INACTIVE_TEXT = { light: '#475569', dark: '#CBD5E1' } as const;
 const CHIP_BORDER        = { light: '#CBD5E1', dark: '#475569' } as const;
 
-const FILTER_OPTIONS = [
-  'All', 'रवानगी', 'वापसी', 'तस्करा', 'अन्य',
-  'Today', 'This Week', 'This Month', 'Favorites', 'Recently Added',
+const GD_TYPE_KEYS: Record<string, string> = {
+  'रवानगी': 'departure',
+  'वापसी':  'return',
+  'तस्करा': 'taskara',
+  'अन्य':   'other',
+};
+
+const FILTER_OPTIONS: { value: string; labelKey: string }[] = [
+  { value: 'All',            labelKey: 'common.all' },
+  { value: 'रवानगी',        labelKey: 'gd.type.departure' },
+  { value: 'वापसी',         labelKey: 'gd.type.return' },
+  { value: 'तस्करा',        labelKey: 'gd.type.taskara' },
+  { value: 'अन्य',          labelKey: 'gd.type.other' },
+  { value: 'Today',          labelKey: 'filters.today' },
+  { value: 'This Week',      labelKey: 'filters.thisWeek' },
+  { value: 'This Month',     labelKey: 'filters.thisMonth' },
+  { value: 'Favorites',      labelKey: 'filters.favorites' },
+  { value: 'Recently Added', labelKey: 'filters.recentlyAdded' },
 ];
+
+const getFilterLabel = (val: string, t: (key: string) => string): string => {
+  const item = FILTER_OPTIONS.find((f) => f.value === val);
+  return item ? t(item.labelKey) : val;
+};
 
 function fmtDate(str: string): string {
   if (!str) return '';
@@ -80,6 +101,7 @@ const GdCard = memo(function GdCard({
   onDelete: () => void;
 }) {
   const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
   const palette = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
   const typeColor = TYPE_COLORS[entry.gd_type] ?? '#6B7280';
   const rawPreview = stripHtmlTags(entry.vivran_content);
@@ -106,7 +128,7 @@ const GdCard = memo(function GdCard({
               style={{ backgroundColor: `${typeColor}15` }}
             >
               <Text className="text-xs font-semibold" style={{ color: typeColor }}>
-                {entry.gd_type}
+                {GD_TYPE_KEYS[entry.gd_type] ? t('gd.type.' + GD_TYPE_KEYS[entry.gd_type]) : entry.gd_type}
               </Text>
             </View>
             {entry.ta_da_flag === 1 && (
@@ -127,7 +149,7 @@ const GdCard = memo(function GdCard({
           style={{ width: 36, height: 36 }}
           hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
           accessibilityRole="button"
-          accessibilityLabel={entry.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
+          accessibilityLabel={entry.is_favorite ? t('gd.card.removeFromFavorites') : t('gd.card.addToFavorites')}
         >
           <Star
             size={18}
@@ -157,7 +179,7 @@ const GdCard = memo(function GdCard({
       {/* Footer */}
       <View className="flex-row items-center justify-between pt-1 border-t border-border/50">
         <Text className="text-xs text-muted-foreground">
-          Modified {fmtTs(entry.updated_at)}
+          {t('gd.card.modified', { date: fmtTs(entry.updated_at) })}
         </Text>
         {/* Action buttons: 36×36dp + hitSlop 4 = 44dp minimum touch target each */}
         <View className="flex-row items-center gap-1">
@@ -167,7 +189,7 @@ const GdCard = memo(function GdCard({
             style={{ backgroundColor: '#6366F110' }}
             hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
             accessibilityRole="button"
-            accessibilityLabel="Edit GD entry"
+            accessibilityLabel={t('gd.card.editAccessibility')}
           >
             <Edit2 size={14} color="#6366F1" />
           </Pressable>
@@ -177,7 +199,7 @@ const GdCard = memo(function GdCard({
             style={{ backgroundColor: '#05966910' }}
             hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
             accessibilityRole="button"
-            accessibilityLabel="Duplicate GD entry"
+            accessibilityLabel={t('gd.card.duplicateAccessibility')}
           >
             <Copy size={14} color="#059669" />
           </Pressable>
@@ -187,7 +209,7 @@ const GdCard = memo(function GdCard({
             style={{ backgroundColor: '#0891B210' }}
             hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
             accessibilityRole="button"
-            accessibilityLabel="Share GD entry"
+            accessibilityLabel={t('gd.card.shareAccessibility')}
           >
             <Share2 size={14} color="#0891B2" />
           </Pressable>
@@ -197,7 +219,7 @@ const GdCard = memo(function GdCard({
             style={{ backgroundColor: '#DC262610' }}
             hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
             accessibilityRole="button"
-            accessibilityLabel="Delete GD entry"
+            accessibilityLabel={t('gd.card.deleteAccessibility')}
           >
             <Trash2 size={14} color={palette.destructive} />
           </Pressable>
@@ -210,6 +232,7 @@ const GdCard = memo(function GdCard({
 // ─── Main Screen ──────────────────────────────────────────────────────────
 export default function GdScreen() {
   const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
   const palette = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
   const chipInactiveBg   = CHIP_INACTIVE_BG[colorScheme === 'dark' ? 'dark' : 'light'];
   const chipInactiveText = CHIP_INACTIVE_TEXT[colorScheme === 'dark' ? 'dark' : 'light'];
@@ -347,14 +370,14 @@ export default function GdScreen() {
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <AppHeader
-        title="General Diary"
-        subtitle={loading ? 'Loading…' : `${entries.length} entr${entries.length !== 1 ? 'ies' : 'y'}`}
+        title={t('gd.list.title')}
+        subtitle={loading ? t('common.loading') : t('gd.list.entryCount', { count: entries.length })}
         onMenuPress={() => setDrawerOpen(true)}
         actions={
           <HeaderIconBtn
             icon={Plus}
             onPress={() => router.push('/(app)/gd/add-gd' as never)}
-            label="Add GD"
+            label={t('gd.list.addGd')}
             color={GD_COLOR}
           />
         }
@@ -367,11 +390,11 @@ export default function GdScreen() {
             value={query}
             onChangeText={handleSearch}
             onSubmitEditing={handleSearchSubmit}
-            placeholder="Search type, date, content…"
+            placeholder={t('gd.list.searchPlaceholder')}
             variant="light"
             returnKeyType="search"
             containerStyle={{ flex: 1 }}
-            accessibilityLabel="Search GD entries"
+            accessibilityLabel={t('gd.list.searchAccessibility')}
             collapsible
           />
           {/* Filter button: h-12 (48dp) to match SearchBar; solid themed inactive bg */}
@@ -386,7 +409,7 @@ export default function GdScreen() {
           >
             <Filter size={13} color={activeFilter !== 'All' ? GD_COLOR : chipInactiveText} />
             <Text className="text-xs font-semibold" style={{ color: activeFilter !== 'All' ? GD_COLOR : chipInactiveText }}>
-              {activeFilter !== 'All' ? activeFilter : 'Filter'}
+              {activeFilter !== 'All' ? getFilterLabel(activeFilter, t) : t('common.filter')}
             </Text>
           </Pressable>
         </View>
@@ -394,16 +417,16 @@ export default function GdScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {FILTER_OPTIONS.map((f) => (
               <Pressable
-                key={f}
-                onPress={() => handleFilter(f)}
+                key={f.value}
+                onPress={() => handleFilter(f.value)}
                 className="mr-2 rounded-full px-3 py-1.5 border active:opacity-70"
                 style={{
-                  backgroundColor: activeFilter === f ? GD_COLOR : chipInactiveBg,
-                  borderColor: activeFilter === f ? GD_COLOR : chipBorder,
+                  backgroundColor: activeFilter === f.value ? GD_COLOR : chipInactiveBg,
+                  borderColor: activeFilter === f.value ? GD_COLOR : chipBorder,
                 }}
               >
-                <Text className="text-xs font-semibold" style={{ color: activeFilter === f ? '#fff' : chipInactiveText }}>
-                  {f}
+                <Text className="text-xs font-semibold" style={{ color: activeFilter === f.value ? '#fff' : chipInactiveText }}>
+                  {t(f.labelKey)}
                 </Text>
               </Pressable>
             ))}
@@ -439,12 +462,12 @@ export default function GdScreen() {
                 <BookMarked size={30} color={GD_COLOR} />
               </View>
               <Text className="text-base font-semibold text-foreground">
-                {query.trim() || activeFilter !== 'All' ? 'No entries found' : 'No GD entries yet'}
+                {query.trim() || activeFilter !== 'All' ? t('gd.list.noEntriesFound') : t('gd.list.noEntriesYet')}
               </Text>
               <Text className="text-sm text-muted-foreground text-center px-10">
                 {query.trim() || activeFilter !== 'All'
-                  ? 'Try adjusting your search or filter'
-                  : 'Tap + to create your first General Diary entry'}
+                  ? t('gd.list.noEntriesFoundHint')
+                  : t('gd.list.noEntriesYetHint')}
               </Text>
             </View>
           }
@@ -459,7 +482,7 @@ export default function GdScreen() {
           style={{ backgroundColor: ACCENT, borderCurve: 'continuous' }}
         >
           <Plus size={17} color="#fff" />
-          <Text className="text-sm font-bold text-white">Add GD</Text>
+          <Text className="text-sm font-bold text-white">{t('gd.list.addGd')}</Text>
         </Pressable>
       </View>
       {/* Delete confirmation */}
@@ -469,23 +492,20 @@ export default function GdScreen() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete GD Entry</AlertDialogTitle>
+            <AlertDialogTitle>{t('gd.dialog.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Delete this{' '}
-              <Text className="font-semibold text-foreground">{deleteTarget?.gd_type ?? ''}</Text>
-              {' '}entry dated{' '}
-              <Text className="font-semibold text-foreground">
-                {deleteTarget ? fmtDate(deleteTarget.preparation_date) : ''}
-              </Text>
-              ? This cannot be undone.
+              {t('gd.dialog.deleteDesc', {
+                type: GD_TYPE_KEYS[deleteTarget?.gd_type ?? ''] ? t('gd.type.' + GD_TYPE_KEYS[deleteTarget?.gd_type ?? '']) : (deleteTarget?.gd_type ?? ''),
+                date: deleteTarget ? fmtDate(deleteTarget.preparation_date) : '',
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setDeleteTarget(null)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleDeleteConfirm} className="bg-destructive">
-              <Text className="text-destructive-foreground font-semibold">Delete</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

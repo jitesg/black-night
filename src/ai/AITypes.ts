@@ -29,6 +29,7 @@ export type AIToolName =
   | 'GetGDTool'
   | 'GetKnowledgeTool'
   | 'SearchLawTool'
+  | 'LawLookupTool'
   | 'TimelineTool'
   | 'EvidenceTool'
   | 'AnalyticsTool'
@@ -86,6 +87,7 @@ export type QuickActionId =
   | 'analytics'
   | 'pending-tasks'
   | 'recent-activity'
+  | 'find-section'
   // ── Level-5 quick actions ──────────────────────────────────────────────────
   | 'l5-memory'
   | 'l5-predict'

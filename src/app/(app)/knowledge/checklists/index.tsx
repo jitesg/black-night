@@ -198,6 +198,18 @@ export default function ChecklistsIndexScreen() {
     setDeleteTarget(null);
   };
 
+  const renderItem = useCallback(
+    ({ item }: { item: ChecklistItemM2M }) => (
+      <ItemCard
+        item={item}
+        query={query}
+        onEdit={() => router.push(`/(app)/knowledge/checklists/add-checklist?editId=${item.id}` as never)}
+        onDelete={() => setDeleteTarget(item)}
+      />
+    ),
+    [query, router]
+  );
+
   return (
     <View className="flex-1 bg-background">
       <AppHeader
@@ -267,14 +279,7 @@ export default function ChecklistsIndexScreen() {
         <FlatList
           data={filtered}
           keyExtractor={(item) => item.id}
-          renderItem={useCallback(({ item }: { item: ChecklistItemM2M }) => (
-            <ItemCard
-              item={item}
-              query={query}
-              onEdit={() => router.push(`/(app)/knowledge/checklists/add-checklist?editId=${item.id}` as never)}
-              onDelete={() => setDeleteTarget(item)}
-            />
-          ), [query])}
+          renderItem={renderItem}
           contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 48, gap: 12 }}
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"

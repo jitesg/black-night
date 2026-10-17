@@ -2,12 +2,14 @@ import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
+import { getEntryPreviewText } from '@/lib/knowledge/knowledgeDisplay';
 import {
   ActivityIndicator, FlatList, Pressable,
   ScrollView, Text, View,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import { BookOpen, ChevronRight } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import { SearchBar } from '@/components/SearchBar';
@@ -16,6 +18,7 @@ import {
   getKnowledgeAnalytics, searchKnowledgeAll,
   type KnowledgeAnalytics, type KnowledgeEntry,
 } from '@/lib/db/knowledgeRepo';
+import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
 import {
   KNOWLEDGE_CATEGORIES, ANALYTICS_LABELS,
   type KnowledgeCategory,
@@ -65,11 +68,17 @@ function AnalyticsCard({
 }
 
 // ─── Category Row ─────────────────────────────────────────────────────────
-function CategoryRow({ cat }: { cat: KnowledgeCategory }) {
+function CategoryRow({ cat, count }: { cat: KnowledgeCategory; count?: number | string }) {
+  const { t } = useTranslation();
   const Icon = cat.icon;
+  const isLaw = cat.id === 'Law';
+  const displayLabel = isLaw
+    ? t('knowledge.categories.Law', 'विधि पुस्तकालय')
+    : t(`knowledge.categories.${cat.id}`, cat.label);
+
   const handlePress = () => {
-    if (cat.id === 'Checklist') {
-      router.push('/(app)/knowledge/checklists' as never);
+    if (isLaw) {
+      router.push('/(app)/knowledge/law' as never);
     } else if (cat.id === 'Investigation Guides') {
       router.push('/(app)/knowledge/investigation-guides' as never);
     } else {
@@ -89,10 +98,11 @@ function CategoryRow({ cat }: { cat: KnowledgeCategory }) {
         <Icon size={18} color={cat.color} />
       </View>
       <View className="flex-1" style={{ minWidth: 0 }}>
-        <Text className="text-base font-semibold text-foreground">{cat.label}</Text>
+        <Text className="text-base font-semibold text-foreground">{displayLabel}</Text>
         <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
-          {cat.subcategories.slice(0, 3).join(' · ')}
-          {cat.subcategories.length > 3 ? ' …' : ''}
+          {isLaw
+            ? 'BNS · BNSS · BSA · 1059+ धाराएं'
+            : `${cat.subcategories.slice(0, 3).join(' · ')}${cat.subcategories.length > 3 ? ' …' : ''}`}
         </Text>
       </View>
       <View
@@ -100,7 +110,7 @@ function CategoryRow({ cat }: { cat: KnowledgeCategory }) {
         style={{ backgroundColor: `${cat.color}15` }}
       >
         <Text className="text-xs font-semibold" style={{ color: cat.color }}>
-          {cat.subcategories.length}
+          {count ?? (isLaw ? '1059+' : 0)}
         </Text>
       </View>
     </Pressable>
@@ -141,8 +151,8 @@ function SearchResultRow({
       }
       {item.description ? (
         highlight
-          ? <HighlightText text={stripHtmlTags(item.description)} query={query} style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2} typoTolerant={typoTolerant} />
-          : <Text style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2}>{stripHtmlTags(item.description)}</Text>
+          ? <HighlightText text={getEntryPreviewText(stripHtmlTags(item.description))} query={query} style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2} typoTolerant={typoTolerant} />
+          : <Text style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2}>{getEntryPreviewText(stripHtmlTags(item.description))}</Text>
       ) : null}
       <Text className="text-xs text-muted-foreground">{fmtTs(item.updated_at)}</Text>
     </Pressable>
@@ -164,17 +174,39 @@ export default function KnowledgeHomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      let isMounted = true;
       (async () => {
         setLoading(true);
         try {
+          // Await seedReady before the first query if seeding is in flight
+          await Promise.race([
+            seedReady,
+            new Promise((resolve) => setTimeout(resolve, 800)),
+          ]);
           const counts = await getKnowledgeAnalytics();
-          setAnalytics(counts);
+          if (isMounted) setAnalytics(counts);
         } catch (e) {
           logger.warn('[Knowledge] analytics error:', e);
         } finally {
-          setLoading(false);
+          if (isMounted) setLoading(false);
         }
       })();
+
+      // Auto re-query when seeding completes
+      const unsubscribe = onSeedComplete(async () => {
+        if (!isMounted) return;
+        try {
+          const counts = await getKnowledgeAnalytics();
+          if (isMounted) setAnalytics(counts);
+        } catch (e) {
+          logger.warn('[Knowledge] onSeedComplete analytics error:', e);
+        }
+      });
+
+      return () => {
+        isMounted = false;
+        unsubscribe();
+      };
     }, [])
   );
 
@@ -281,21 +313,62 @@ export default function KnowledgeHomeScreen() {
                 showsHorizontalScrollIndicator={false}
                 contentContainerClassName="gap-3 pr-2"
               >
-                {ANALYTICS_LABELS.map(({ label, categoryId }) => (
-                  <AnalyticsCard
-                    key={categoryId}
-                    label={label}
-                    categoryId={categoryId}
-                    count={analytics[categoryId] ?? 0}
-                    onPress={() =>
-                      router.push(
-                        `/(app)/knowledge/list?category=${encodeURIComponent(categoryId)}` as never
-                      )
-                    }
-                  />
-                ))}
+                {ANALYTICS_LABELS.map(({ label, categoryId }) => {
+                  const isLaw = categoryId === 'Law';
+                  const displayLabel = isLaw
+                    ? t('knowledge.categories.Law', 'विधि पुस्तकालय')
+                    : t(`knowledge.categories.${categoryId}`, label);
+                  // For Law: include 358 (BNS) + 531 (BNSS) + 170 (BSA) official sections + user notes
+                  const displayCount = isLaw
+                    ? 358 + 531 + 170 + (analytics['Law'] ?? 0)
+                    : (analytics[categoryId] ?? 0);
+                  return (
+                    <AnalyticsCard
+                      key={categoryId}
+                      label={displayLabel}
+                      categoryId={categoryId}
+                      count={displayCount}
+                      onPress={() => {
+                        if (isLaw) {
+                          router.push('/(app)/knowledge/law' as never);
+                        } else {
+                          router.push(
+                            `/(app)/knowledge/list?category=${encodeURIComponent(categoryId)}` as never
+                          );
+                        }
+                      }}
+                    />
+                  );
+                })}
               </ScrollView>
             )}
+          </View>
+
+          {/* ── Fard Knowledge Study Guide ── */}
+          <View className="px-6 pt-6 gap-3">
+            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              {t('fard.sectionHeader', 'अध्ययन सामग्री')}
+            </Text>
+            <Pressable
+              onPress={() => router.push('/(app)/knowledge/fard' as never)}
+              className="flex-row items-center gap-4 px-5 py-4 bg-card border border-border rounded-2xl active:opacity-70"
+              style={{ borderCurve: 'continuous' }}
+            >
+              <View
+                className="w-10 h-10 rounded-xl items-center justify-center bg-indigo-500/10"
+              >
+                <BookOpen size={20} color="#6366F1" />
+              </View>
+              <View className="flex-1" style={{ minWidth: 0 }}>
+                <Text className="text-base font-semibold text-foreground">
+                  {t('fard.entryTitle', 'फर्द ज्ञान')}
+                </Text>
+                <Text className="text-xs text-muted-foreground mt-0.5">
+                  {t('fard.entrySubtitle', 'फर्द और ज़रूरी दस्तावेज़')}
+                </Text>
+              </View>
+              <ChevronRight size={18} color={C.mutedForeground} />
+            </Pressable>
           </View>
 
           {/* ── Categories ── */}
@@ -303,9 +376,13 @@ export default function KnowledgeHomeScreen() {
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               {t('knowledge.sectionCategories')}
             </Text>
-            {KNOWLEDGE_CATEGORIES.map((cat) => (
-              <CategoryRow key={cat.id} cat={cat} />
-            ))}
+            {KNOWLEDGE_CATEGORIES.map((cat) => {
+              const isLaw = cat.id === 'Law';
+              const displayCount = isLaw ? '1059+' : (analytics[cat.id] ?? 0);
+              return (
+                <CategoryRow key={cat.id} cat={cat} count={displayCount} />
+              );
+            })}
           </View>
         </ScrollView>
       )}

@@ -1,6 +1,8 @@
 import { Stack, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { View } from 'react-native';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
 import { preventScreenCaptureAsync, allowScreenCaptureAsync } from 'expo-screen-capture';
 import { FloatingAIButton } from '@/components/ai/FloatingAIButton';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
@@ -33,6 +35,7 @@ export default function AppLayout() {
   // Uses the web-safe wrapper above instead of usePreventScreenCapture()
   // directly, which throws UnavailabilityError on Web.
   useScreenCaptureProtection();
+  const { colorScheme } = useColorScheme();
   const segments = useSegments() as readonly string[];
   const insideFIR =
     segments.includes('mukadma') &&
@@ -50,12 +53,13 @@ export default function AppLayout() {
             // Fix white flash: pre-fill the inter-screen background with the
             // app's off-white theme colour so no bare white shows during
             // screen transitions on Web and native.
-            contentStyle: { backgroundColor: '#F4F7FE' },
+            contentStyle: { backgroundColor: THEME[colorScheme ?? 'light'].background },
           }}
         >
           <Stack.Screen name="home" />
           <Stack.Screen name="workspace-setup" />
           <Stack.Screen name="settings" />
+          <Stack.Screen name="reminders" />
           <Stack.Screen name="halka" />
           <Stack.Screen name="map" />
           <Stack.Screen name="mukadma" />
@@ -65,6 +69,8 @@ export default function AppLayout() {
           <Stack.Screen name="nirodhatmak" />
           <Stack.Screen name="prarthna-patra" />
           <Stack.Screen name="nyayalay" />
+          <Stack.Screen name="ai-draft-preview" />
+          <Stack.Screen name="app-lock" />
           {/* DEV-ONLY: hidden from normal users, __DEV__ gate inside the screen */}
           {__DEV__ && <Stack.Screen name="dev-seed-manager" />}
           {/* DEV-ONLY: Developer Options Console — accessed via secret tap on Build Number in About */}

@@ -13,24 +13,26 @@
 import { useRef, useState, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import { Info, FileText, Shield, Scale, BookOpen, ChevronRight } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { FileText, Shield, Scale, BookOpen, ChevronRight } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { hasPinSet, isDevSessionActive } from '@/lib/devOptionsAuth';
 
 const APP_VERSION = '1.0.0';
 const BUILD_NUMBER = '106';
 
 const LEGAL_ITEMS = [
-  { icon: FileText, color: '#6B7280', label: 'Release Notes',       desc: 'What\'s new in this version' },
-  { icon: FileText, color: '#1D4ED8', label: 'Terms & Conditions',  desc: 'Usage terms and legal agreement' },
-  { icon: Shield,   color: '#10B981', label: 'Privacy Policy',      desc: 'How we handle your data' },
-  { icon: Scale,    color: '#7C3AED', label: 'Open Source Licenses', desc: 'Third-party library licenses' },
+  { icon: FileText, color: '#6B7280', labelKey: 'settings.about.releaseNotes', descKey: 'settings.about.releaseNotesDesc' },
+  { icon: FileText, color: '#1D4ED8', labelKey: 'settings.about.terms',        descKey: 'settings.about.termsDesc' },
+  { icon: Shield,   color: '#10B981', labelKey: 'settings.about.privacy',      descKey: 'settings.about.privacyDesc' },
+  { icon: Scale,    color: '#7C3AED', labelKey: 'settings.about.licenses',     descKey: 'settings.about.licensesDesc' },
 ];
 
 export default function AboutScreen() {
   const tapCount   = useRef(0);
   const tapTimer   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hint, setHint] = useState('');
+  const { t } = useTranslation();
 
   // BUG-H2 FIX: clear the reset-timer on unmount to prevent a setState call
   // on an unmounted component (fires 4 s after last tap if user navigates away).
@@ -59,15 +61,10 @@ export default function AboutScreen() {
     }
 
     // 5 taps → Developer Options Console (PIN-protected; available in all builds)
-    // No __DEV__ guard here — the guard was the bug. On a release APK __DEV__ is
-    // always false, so the 5-tap gesture silently fell through to the 7-tap path
-    // and opened the System Format Manager login instead of Dev Options.
-    // Security is enforced by the PIN flow in devOptionsAuth.ts, not by __DEV__.
     if (tapCount.current === 5) {
       tapCount.current = 0;
       setHint('');
       if (tapTimer.current) clearTimeout(tapTimer.current);
-      // Route to PIN gate: setup (first time) → entry (has PIN, no session) → index (active session)
       (async () => {
         const pinExists = await hasPinSet();
         if (!pinExists) {
@@ -83,12 +80,13 @@ export default function AboutScreen() {
 
     const remaining = 7 - tapCount.current;
     if (tapCount.current >= 3) {
-      setHint(remaining > 0 ? `${remaining} more tap${remaining !== 1 ? 's' : ''} for owner access` : '');
+      setHint(remaining > 0 ? t('settings.about.ownerHint', { count: remaining }) : '');
     }
   }
+
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="About" subtitle="InvestSuite v1.0" showBack />
+      <AppHeader title={t('settings.about.title')} subtitle={t('settings.about.subtitle')} showBack />
 
       <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
         {/* Logo & App identity */}
@@ -99,23 +97,23 @@ export default function AboutScreen() {
           >
             <Text className="text-4xl font-black" style={{ color: '#2563EB' }}>IS</Text>
           </View>
-          <Text className="text-xl font-bold text-foreground text-center">InvestSuite</Text>
-          <Text className="text-sm text-muted-foreground text-center mt-1">Investigation Operating System</Text>
+          <Text className="text-xl font-bold text-foreground text-center">{t('settings.about.appName')}</Text>
+          <Text className="text-sm text-muted-foreground text-center mt-1">{t('settings.about.tagline')}</Text>
           <View className="flex-row items-center gap-4 mt-3">
             <View className="items-center">
               <Text className="text-base font-bold text-foreground">v{APP_VERSION}</Text>
-              <Text className="text-xs text-muted-foreground">Version</Text>
+              <Text className="text-xs text-muted-foreground">{t('settings.about.version')}</Text>
             </View>
             <View className="w-px h-8 bg-border" />
             {/* Secret tap zone — 7 taps within 4 s opens owner panel */}
             <Pressable onPress={handleBuildTap} className="items-center active:opacity-70">
               <Text className="text-base font-bold text-foreground">{BUILD_NUMBER}</Text>
-              <Text className="text-xs text-muted-foreground">Build</Text>
+              <Text className="text-xs text-muted-foreground">{t('settings.about.build')}</Text>
             </Pressable>
             <View className="w-px h-8 bg-border" />
             <View className="items-center">
-              <Text className="text-base font-bold text-foreground">Stable</Text>
-              <Text className="text-xs text-muted-foreground">Channel</Text>
+              <Text className="text-base font-bold text-foreground">{t('settings.about.stable')}</Text>
+              <Text className="text-xs text-muted-foreground">{t('settings.about.channel')}</Text>
             </View>
           </View>
           {!!hint && (
@@ -127,21 +125,21 @@ export default function AboutScreen() {
         <View className="bg-card border border-border rounded-2xl p-4 mb-5" style={{ borderCurve: 'continuous' }}>
           <View className="flex-row items-center gap-2 mb-2">
             <BookOpen size={14} color='#1E3A5F' />
-            <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground">About</Text>
+            <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{t('settings.about.aboutCardTitle')}</Text>
           </View>
           <Text className="text-sm text-foreground leading-6">
-            InvestSuite is a purpose-built Investigation Operating System for law enforcement officers. It provides a unified platform to manage FIRs, general diaries, court work, beat intelligence, and investigations — all offline-first with enterprise-grade security.
+            {t('settings.about.aboutCardDesc')}
           </Text>
         </View>
 
         {/* Legal & docs */}
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Legal & Documentation</Text>
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.about.legalDocs')}</Text>
         <View className="bg-card border border-border rounded-2xl overflow-hidden mb-5" style={{ borderCurve: 'continuous' }}>
           {LEGAL_ITEMS.map((item, idx) => {
             const Icon = item.icon;
             return (
               <Pressable
-                key={item.label}
+                key={item.labelKey}
                 onPress={() => {}}
                 className={`flex-row items-center gap-3 px-4 py-4 active:opacity-70 ${idx < LEGAL_ITEMS.length - 1 ? 'border-b border-border' : ''}`}
               >
@@ -149,8 +147,8 @@ export default function AboutScreen() {
                   <Icon size={16} color={item.color} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-sm font-semibold text-foreground">{item.label}</Text>
-                  <Text className="text-xs text-muted-foreground mt-0.5">{item.desc}</Text>
+                  <Text className="text-sm font-semibold text-foreground">{t(item.labelKey)}</Text>
+                  <Text className="text-xs text-muted-foreground mt-0.5">{t(item.descKey)}</Text>
                 </View>
                 <ChevronRight size={15} color="#D1D5DB" />
               </Pressable>
@@ -158,8 +156,8 @@ export default function AboutScreen() {
           })}
         </View>
 
-        <Text className="text-xs text-muted-foreground text-center pb-2">
-          © 2026 InvestSuite. All rights reserved.{'\n'}Built for Indian Law Enforcement.
+        <Text className="text-xs text-muted-foreground text-center pb-2 whitespace-pre-line">
+          {t('settings.about.copyright')}
         </Text>
       </ScrollView>
     </View>

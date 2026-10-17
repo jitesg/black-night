@@ -89,7 +89,7 @@ export class SmartReminderEngine {
 
     // ── Witness statement pending ─────────────────────────────────────────────
     const witnessPending = ctx.karyvahi.all.filter(
-      (k) => (k.name.toLowerCase().includes('witness') || k.name.toLowerCase().includes('bayan'))
+      (k) => (k.name.toLowerCase().includes('witness') || k.name.toLowerCase().includes('bayan') || k.name.includes('बयान') || k.name.includes('वादी') || k.name.includes('गवाह'))
            && k.is_completed === 0
     );
     if (witnessPending.length > 0) {

@@ -2,7 +2,7 @@
   "expo": {
     "name": "InvestSuite Core Layer Development",
     "slug": "investsuite-core",
-    "version": "1.0.478",
+    "version": "1.0.583",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -19,7 +19,8 @@
       "predictiveBackGestureEnabled": false,
       "versionCode": 1,
       "package": "com.miaoda.appd2z6dwnk2jnl",
-      "backgroundColor": "#111827"
+      "backgroundColor": "#111827",
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "bundler": "metro",
@@ -48,9 +49,32 @@
       "expo-document-picker",
       "expo-web-browser",
       "expo-image",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#111827"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/adaptive-icon.png",
+          "color": "#1E3A5F",
+          "defaultChannel": "default"
+        }
+      ],
       "@react-native-async-storage/expo-with-async-storage",
       "expo-sharing",
       "expo-file-system",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow InvestSuite to use Face ID for authentication."
+        }
+      ],
       [
         "expo-audio",
         {

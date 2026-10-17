@@ -37,6 +37,7 @@ import { PolicyEngine } from './PolicyEngine';
 import { ComplianceEngine } from './ComplianceEngine';
 import { ConsistencyEngine } from './ConsistencyEngine';
 import { TimelineEngine } from './TimelineEngine';
+import { PlaybookStepEngine } from './PlaybookStepEngine';
 import { EvidenceDependencyEngine } from './EvidenceDependencyEngine';
 import { RiskEngine } from './RiskEngine';
 import { ConfidenceEngine } from './ConfidenceEngine';
@@ -69,6 +70,9 @@ export class ReasoningEngine {
     // ── Stage 5: Timeline analysis ────────────────────────────────────────
     const { gaps: timelineGaps, findings: timelineFindings } = TimelineEngine.analyze(ctx);
 
+    // ── Playbook Step reasoning ───────────────────────────────────────────
+    const playbookFindings = PlaybookStepEngine.evaluate(ctx);
+
     // Merge all findings
     const allFindings: Finding[] = [
       ...ruleFindings,
@@ -76,6 +80,7 @@ export class ReasoningEngine {
       ...complianceFindings,
       ...consistencyFindings,
       ...timelineFindings,
+      ...playbookFindings,
     ];
     // Dedup by ruleId (keep highest severity)
     const dedupedFindings = ReasoningEngine._dedup(allFindings);

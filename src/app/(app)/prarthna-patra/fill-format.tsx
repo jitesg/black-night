@@ -6,6 +6,7 @@
  *   - mode=report: generates text → ppReportDraftStore → back to report screen
  */
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView, Pressable, ScrollView,
   Text, View,
@@ -36,6 +37,7 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 const MODULE_COLOR = '#7C3AED';
 
 export default function PPFillFormatScreen() {
+  const { t } = useTranslation();
   const { formatId, mode } = useLocalSearchParams<{ formatId: string; mode?: string }>();
   const isReportMode = mode === 'report';
   const { workspace } = useWorkspace();
@@ -109,19 +111,19 @@ export default function PPFillFormatScreen() {
   const handleGenerate = async () => {
     if (!format) return;
     if (missingWorkspaceFields.length > 0) {
-      setBannerError(`Workspace incomplete — fill in: ${missingWorkspaceFields.join(', ')}`);
+      setBannerError(t('format.fill.errorWorkspace', { fields: missingWorkspaceFields.join(', ') }));
       return;
     }
     // Block save if any group card has validation errors
     const invalidGroups = Object.entries(groupValid).filter(([, valid]) => !valid);
     if (invalidGroups.length > 0) {
-      setBannerError('Please fix all errors in the highlighted cards before generating.');
+      setBannerError(t('format.fill.errorGroupInvalid'));
       return;
     }
     const { fieldErrors: errs, firstErrorKey, hasErrors } = validateRequiredFields(dynamicKeys, values);
     if (hasErrors) {
       setFieldErrors(errs);
-      setBannerError('Please fill all mandatory fields before generating the report.');
+      setBannerError(t('format.fill.errorRequiredFields'));
       if (firstErrorKey && fieldRefs.current[firstErrorKey]) {
         fieldRefs.current[firstErrorKey]?.measureLayout(
           scrollRef.current as never,
@@ -155,7 +157,7 @@ export default function PPFillFormatScreen() {
         router.back();
       }
     } catch {
-      setBannerError('Failed to generate. Please try again.');
+      setBannerError(t('prarthnaPatra.fillFormat.errorGenerateFailed'));
     } finally {
       setSaving(false);
     }
@@ -164,7 +166,7 @@ export default function PPFillFormatScreen() {
   if (!format) {
     return (
       <View className="flex-1 bg-background items-center justify-center">
-        <Text className="text-muted-foreground text-sm">Loading format…</Text>
+        <Text className="text-muted-foreground text-sm">{t('prarthnaPatra.fillFormat.loadingFormat')}</Text>
       </View>
     );
   }
@@ -175,7 +177,7 @@ export default function PPFillFormatScreen() {
     <View className="flex-1 bg-background">
       <AppHeader
         title={format.title}
-        subtitle={isReportMode ? 'Prarthna Patra Report' : 'Prarthna Patra Format'}
+        subtitle={isReportMode ? t('prarthnaPatra.fillFormat.subtitleReport') : t('prarthnaPatra.fillFormat.subtitleFormat')}
         onBack={handleBackPress}
         rightActions={
           <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: `${MODULE_COLOR}12` }}>
@@ -184,7 +186,7 @@ export default function PPFillFormatScreen() {
         }
       />
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
 
@@ -203,19 +205,18 @@ export default function PPFillFormatScreen() {
               <View className="flex-row items-center gap-2">
                 <Settings2 size={14} color="#92400E" />
                 <Text className="text-xs font-semibold text-amber-900 flex-1">
-                  Station Workspace Incomplete
+                  {t('format.fill.workspaceIncomplete')}
                 </Text>
               </View>
               <Text className="text-xs text-amber-800 leading-4">
-                Auto-fill needs:{' '}
-                <Text className="font-semibold">{missingWorkspaceFields.join(', ')}</Text>
+                {t('format.fill.workspaceNeeds', { fields: missingWorkspaceFields.join(', ') })}
               </Text>
               <Pressable
                 onPress={() => router.push('/(app)/workspace-setup' as never)}
                 className="self-start mt-0.5 active:opacity-70"
               >
                 <Text className="text-xs font-bold text-amber-900 underline">
-                  Go to Workspace Setup →
+                  {t('format.fill.workspaceSetup')}
                 </Text>
               </Pressable>
             </View>
@@ -225,7 +226,7 @@ export default function PPFillFormatScreen() {
           {autoFilledKeyNames.length > 0 && (
             <View className="gap-2">
               <Text className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                Auto-filled from Workspace
+                {t('format.fill.autoFilledLabel')}
               </Text>
               <View className="flex-row flex-wrap gap-2">
                 {autoFilledKeyNames.map((k) => (
@@ -251,13 +252,13 @@ export default function PPFillFormatScreen() {
             <View className="items-center py-10 gap-3">
               <AlertCircle size={28} color="#9CA3AF" />
               <Text className="text-sm text-muted-foreground text-center">
-                No variable fields — tap Insert to add this format.
+                {t('format.fill.noKeysNote')}
               </Text>
             </View>
           ) : dynamicKeys.length > 0 ? (
             <>
               <Text className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                Fill in the required details
+                {t('format.fill.fillFieldsLabel')}
               </Text>
               {dynamicKeys.map((key) =>
                 key.field_type === 'accused_group' ? (
@@ -318,7 +319,7 @@ export default function PPFillFormatScreen() {
             }}
           >
             <Text className="text-white font-bold text-base">
-              {saving ? 'Generating…' : isReportMode ? 'Insert into Report' : 'Insert into Action'}
+              {saving ? t('format.fill.generating') : isReportMode ? t('prarthnaPatra.fillFormat.btnGenerateReport') : t('prarthnaPatra.fillFormat.btnGenerateAction')}
             </Text>
           </Pressable>
         </ScrollView>
@@ -327,18 +328,18 @@ export default function PPFillFormatScreen() {
       <AlertDialog open={showDiscardDialog} onOpenChange={(v) => { if (!v) setShowDiscardDialog(false); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
-            <AlertDialogDescription>Your changes have not been saved.</AlertDialogDescription>
+            <AlertDialogTitle>{t('common.unsavedTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('common.unsavedDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setShowDiscardDialog(false)}>
-              <Text>Continue Editing</Text>
+              <Text>{t('common.stay')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               onPress={() => { setShowDiscardDialog(false); router.back(); }}
               className="bg-destructive"
             >
-              <Text className="text-destructive-foreground font-semibold">Discard</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.discard')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

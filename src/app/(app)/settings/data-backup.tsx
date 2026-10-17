@@ -3,11 +3,25 @@
  */
 import { useState } from 'react';
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from 'react-native';
-import { Database, RotateCcw, Info, CloudOff, Repeat, Trash2 } from 'lucide-react-native';
+import { Database, RotateCcw, Info } from 'lucide-react-native';
+import * as FileSystem from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
+import * as DocumentPicker from 'expo-document-picker';
+import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { clearStubCache } from '@/lib/db/database';
 import { dcClearAll } from '@/lib/devContentPersistence';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '@/components/ui/alert-dialog';
 
 export default function DataBackupScreen() {
   const { settings, update } = useSettingsStore();
@@ -15,22 +29,61 @@ export default function DataBackupScreen() {
   const [restoring, setRestoring] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [backupMsg, setBackupMsg] = useState('');
+  const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
+  const { t } = useTranslation();
 
   const handleBackup = async () => {
     setBacking(true);
     setBackupMsg('');
-    await new Promise((r) => setTimeout(r, 1200)); // simulate backup
-    const now = new Date().toLocaleString('en-IN');
-    update('lastBackupDate', now);
-    setBackupMsg(`Backup completed: ${now}`);
-    setBacking(false);
+    try {
+      if (process.env.EXPO_OS === 'web') {
+        setBackupMsg(t('settings.backup.backupWebMsg'));
+        return;
+      }
+      const dbPath = `${FileSystem.documentDirectory}SQLite/investsuite.db`;
+      const dbInfo = await FileSystem.getInfoAsync(dbPath);
+      if (!dbInfo.exists) throw new Error('Database file not found');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const backupPath = `${FileSystem.cacheDirectory}investsuite-backup-${timestamp}.db`;
+      await FileSystem.copyAsync({ from: dbPath, to: backupPath });
+      const canShare = await Sharing.isAvailableAsync();
+      if (canShare) {
+        await Sharing.shareAsync(backupPath, {
+          mimeType: 'application/octet-stream',
+          dialogTitle: 'Save InvestSuite Backup',
+        });
+      }
+      const now = new Date().toLocaleString('en-IN');
+      update('lastBackupDate', now);
+      setBackupMsg(t('settings.backup.backupSuccess', { date: now }));
+    } catch (e) {
+      setBackupMsg(t('settings.backup.backupFailed', { error: e instanceof Error ? e.message : 'Unknown error' }));
+    } finally {
+      setBacking(false);
+    }
   };
 
   const handleRestore = async () => {
     setRestoring(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setRestoring(false);
-    setBackupMsg('Restore from backup file is available in the full release.');
+    setBackupMsg('');
+    try {
+      if (process.env.EXPO_OS === 'web') {
+        setBackupMsg(t('settings.backup.restoreWebMsg'));
+        return;
+      }
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/octet-stream',
+        copyToCacheDirectory: true,
+      });
+      if (result.canceled || !result.assets?.[0]) return;
+      const dbPath = `${FileSystem.documentDirectory}SQLite/investsuite.db`;
+      await FileSystem.copyAsync({ from: result.assets[0].uri, to: dbPath });
+      setBackupMsg(t('settings.backup.restoreSuccess'));
+    } catch (e) {
+      setBackupMsg(t('settings.backup.restoreFailed', { error: e instanceof Error ? e.message : 'Unknown error' }));
+    } finally {
+      setRestoring(false);
+    }
   };
 
   const handleClearCache = async () => {
@@ -39,22 +92,22 @@ export default function DataBackupScreen() {
     await new Promise((r) => setTimeout(r, 300)); // allow UI to update
     clearStubCache();           // wipe Web SQLite stub _mem + localStorage
     await dcClearAll();         // wipe devContentPersistence keys
-    setBackupMsg('Cache cleared. Restart the app to reseed from defaults.');
+    setBackupMsg(t('settings.backup.cacheCleared'));
     setClearing(false);
   };
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Data & Backup" subtitle="Import, export, sync" showBack />
+      <AppHeader title={t('settings.backup.title')} subtitle={t('settings.backup.subtitle')} showBack />
 
       <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
         {/* Backup info card */}
         <View className="bg-card border border-border rounded-2xl p-4 mb-5 flex-row items-start gap-3" style={{ borderCurve: 'continuous' }}>
           <Info size={16} color="#6B7280" />
           <View className="flex-1">
-            <Text className="text-sm font-semibold text-foreground">Backup Information</Text>
+            <Text className="text-sm font-semibold text-foreground">{t('settings.backup.infoCardTitle')}</Text>
             <Text className="text-xs text-muted-foreground mt-1">
-              Last Backup: {settings.lastBackupDate ?? 'Never'}
+              {t('settings.backup.lastBackup', { date: settings.lastBackupDate ?? t('settings.backup.never') })}
             </Text>
             {backupMsg ? (
               <Text className="text-xs mt-1.5 font-medium" style={{ color: '#10B981' }}>{backupMsg}</Text>
@@ -62,7 +115,7 @@ export default function DataBackupScreen() {
           </View>
         </View>
 
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Backup Actions</Text>
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.backup.actions')}</Text>
         <View className="bg-card border border-border rounded-2xl overflow-hidden mb-5" style={{ borderCurve: 'continuous' }}>
           {/* Manual Backup */}
           <Pressable
@@ -74,14 +127,14 @@ export default function DataBackupScreen() {
               {backing ? <ActivityIndicator size="small" color='#2563EB' /> : <Database size={16} color='#2563EB' />}
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Manual Backup</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Create a backup of all local data now</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.backup.manualBackup')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.backup.manualBackupDesc')}</Text>
             </View>
           </Pressable>
 
           {/* Restore Backup */}
           <Pressable
-            onPress={handleRestore}
+            onPress={() => setShowRestoreConfirm(true)}
             disabled={restoring}
             className="flex-row items-center gap-3 px-4 py-4 active:opacity-70"
           >
@@ -89,56 +142,37 @@ export default function DataBackupScreen() {
               {restoring ? <ActivityIndicator size="small" color="#1D4ED8" /> : <RotateCcw size={16} color="#1D4ED8" />}
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Restore Backup</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">Restore data from a previous backup file</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('settings.backup.restoreBackup')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.backup.restoreBackupDesc')}</Text>
             </View>
           </Pressable>
         </View>
 
-        {/* Cache */}
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Cache</Text>
-        <View className="bg-card border border-border rounded-2xl overflow-hidden mb-5" style={{ borderCurve: 'continuous' }}>
-          <Pressable
-            onPress={handleClearCache}
-            disabled={clearing}
-            className="flex-row items-center gap-3 px-4 py-4 active:opacity-70"
-          >
-            <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: '#EF444415' }}>
-              {clearing
-                ? <ActivityIndicator size="small" color="#EF4444" />
-                : <Trash2 size={16} color="#EF4444" />}
-            </View>
-            <View className="flex-1">
-              <Text className="text-sm font-semibold text-foreground">Clear Local Cache</Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">
-                Wipes the local database cache and developer content. Data will reseed from defaults on next launch.
-              </Text>
-            </View>
-          </Pressable>
-        </View>
-
-        {/* Future Ready */}
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Future Features</Text>
-        <View className="bg-muted/30 border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
-          {[
-            { icon: Repeat, color: '#10B981', label: 'Auto Backup', desc: 'Automatically backup on a schedule' },
-            { icon: CloudOff, color: '#0891B2', label: 'Cloud Sync', desc: 'Sync data securely to cloud storage' },
-          ].map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <View key={item.label} className={`flex-row items-center gap-3 px-4 py-4 ${idx === 0 ? 'border-b border-border' : ''}`}>
-                <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: `${item.color}10` }}>
-                  <Icon size={16} color={`${item.color}60`} />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-sm font-semibold text-muted-foreground">{item.label}</Text>
-                  <Text className="text-xs text-muted-foreground/70 mt-0.5">{item.desc}</Text>
-                </View>
-                <View className="px-2 py-1 rounded-full bg-muted"><Text className="text-xs font-semibold text-muted-foreground">Soon</Text></View>
-              </View>
-            );
-          })}
-        </View>
+        {/* Restore Confirmation Dialog */}
+        <AlertDialog open={showRestoreConfirm} onOpenChange={setShowRestoreConfirm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('settings.backup.restoreDialogTitle')}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t('settings.backup.restoreDialogDesc')}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onPress={() => setShowRestoreConfirm(false)}>
+                <Text className="text-foreground">{t('common.cancel')}</Text>
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onPress={() => {
+                  setShowRestoreConfirm(false);
+                  handleRestore();
+                }}
+                className="bg-destructive"
+              >
+                <Text className="text-destructive-foreground">{t('settings.backup.replaceData')}</Text>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </ScrollView>
     </View>
   );

@@ -10,6 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { useTranslation } from 'react-i18next';
 import {
   BookOpen, FileText,
   BookMarked, ShieldAlert, Scroll, Scale,
@@ -30,25 +31,24 @@ import { HighlightText } from '@/components/HighlightText';
 import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
 import { SectionHeader, StatusChip, EmptyState, SkeletonList } from '@/components/ui/ds';
 
-// ── Semantic colour aliases — Soft Indigo palette ────────────────────────────
+// ── Semantic colour aliases — Trust Green palette ─────────────────────────────
 const C_FIXED = {
-  purple:    '#7C3AED',
-  blue:      '#2563EB',
+  purple:    '#16A34A',
+  blue:      '#15803D',
   amber:     '#D97706',
   red:       '#DC2626',
-  teal:      '#0891B2',
-  cyan:      '#0891B2',
-  navy:      '#1D4ED8',
-  action:    '#6366F1',   // indigo — primary action (fixed regardless of theme)
+  teal:      '#0F766E',
+  cyan:      '#0F766E',
+  navy:      '#166534',
 } as const;
 
 const MC: Record<string, string> = {
-  Mukadma:          '#7C3AED',
-  Nyayalay:         '#1D4ED8',
-  'Prarthna Patra': '#7C3AED',
+  Mukadma:          '#16A34A',
+  Nyayalay:         '#15803D',
+  'Prarthna Patra': '#16A34A',
   GD:               '#D97706',
   Nirodhatmak:      '#DC2626',
-  Halka:            '#0891B2',
+  Halka:            '#0F766E',
   Knowledge:        '#16A34A',
 };
 
@@ -62,6 +62,7 @@ function usePalette() {
   const p = colorScheme === 'dark' ? THEME.dark : THEME.light;
   return {
     ...C_FIXED,
+    action:    p.primary,
     text:      p.foreground,
     textMuted: p.mutedForeground,
     bg:        p.background,
@@ -122,11 +123,16 @@ function QuickAction({ label, icon: Icon, color, onPress }: {
 
 // ── ReminderRow ──────────────────────────────────────────────────────────────
 function ReminderRow({ item }: { item: ReminderItem }) {
+  const { t } = useTranslation();
   const C = usePalette();
   const isOverdue = item.daysLeft < 0;
   const isToday   = item.daysLeft === 0;
   const variant   = isOverdue ? 'error' : isToday ? 'warning' : 'neutral';
-  const badge     = isOverdue ? `${Math.abs(item.daysLeft)}d late` : isToday ? 'Today' : `${item.daysLeft}d`;
+  const badge     = isOverdue
+    ? t('home.daysLate', { count: Math.abs(item.daysLeft) })
+    : isToday
+    ? t('home.today')
+    : t('home.daysRemaining', { count: item.daysLeft });
   return (
     <Pressable
       onPress={() => router.push(item.route as never)}
@@ -146,14 +152,15 @@ function ReminderRow({ item }: { item: ReminderItem }) {
 
 // ── ContinueRow ──────────────────────────────────────────────────────────────
 function ContinueRow({ item }: { item: RecentActivity }) {
+  const { t } = useTranslation();
   const C = usePalette();
   const timeAgo = useMemo(() => {
     const diff = Math.floor(Date.now() / 1000) - item.time;
-    if (diff < 60) return 'Just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return `${Math.floor(diff / 86400)}d ago`;
-  }, [item.time]);
+    if (diff < 60) return t('home.justNow');
+    if (diff < 3600) return t('home.minutesAgo', { count: Math.floor(diff / 60) });
+    if (diff < 86400) return t('home.hoursAgo', { count: Math.floor(diff / 3600) });
+    return t('home.daysAgo', { count: Math.floor(diff / 86400) });
+  }, [item.time, t]);
   return (
     <Pressable
       onPress={() => router.push(item.route as never)}
@@ -187,12 +194,13 @@ function ContinueRow({ item }: { item: RecentActivity }) {
 
 // ── PinnedChip ────────────────────────────────────────────────────────────────
 function PinnedChip({ item, onUnpin }: { item: PinnedItem; onUnpin: () => void }) {
+  const { t } = useTranslation();
   const C = usePalette();
   return (
     <Pressable
       onPress={() => router.push(item.route as never)}
       onLongPress={onUnpin}
-      accessibilityHint="Long press to unpin"
+      accessibilityHint={t('home.pinnedHintShort')}
       className="flex-row items-center gap-2 active:opacity-70 mr-2.5 shadow-sm shadow-black/5"
       style={{
         paddingHorizontal: 12, paddingVertical: 10,
@@ -248,12 +256,13 @@ function SearchResultRow({ item, query, onPress }: { item: UniversalSearchItem; 
 
 // ── ProductivityBar ───────────────────────────────────────────────────────────
 function ProductivityBar({ pct }: { pct: number }) {
+  const { t } = useTranslation();
   const C = usePalette();
   const color = pct >= 70 ? '#16A34A' : pct >= 40 ? '#D97706' : '#DC2626';
   return (
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-        <Text style={{ ...T.caption1, color: C.textMuted, fontWeight: '500' }}>Completion Rate</Text>
+        <Text style={{ ...T.caption1, color: C.textMuted, fontWeight: '500' }}>{t('home.completionRate')}</Text>
         <Text style={{ ...T.caption1, fontWeight: '700', color }}>{pct}%</Text>
       </View>
       <View style={{ height: 6, backgroundColor: C.divider, borderRadius: 3, overflow: 'hidden' }}>
@@ -271,6 +280,7 @@ export default function HomeScreen() {
   const palette = scheme === 'dark' ? THEME.dark : THEME.light;
   const C = {
     ...C_FIXED,
+    action:    palette.primary,
     text:      palette.foreground,
     textMuted: palette.mutedForeground,
     bg:        palette.background,
@@ -279,6 +289,7 @@ export default function HomeScreen() {
     divider:   palette.muted,
   };
   const statusBarStyle = scheme === 'dark' ? 'light' : 'dark';
+  const { t } = useTranslation();
   const { workspace } = useWorkspace();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -301,12 +312,12 @@ export default function HomeScreen() {
         return true;
       }
       lastBackPressTime.current = now;
-      ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
+      ToastAndroid.show(t('home.pressBackToExit'), ToastAndroid.SHORT);
       return true;
     };
     const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
     return () => sub.remove();
-  }, []));
+  }, [t]));
 
   useFocusEffect(useCallback(() => {
     let cancelled = false;
@@ -364,7 +375,7 @@ export default function HomeScreen() {
         <StatusBar style={statusBarStyle} backgroundColor={C.surface} />
         <DashboardHeader
           onMenuPress={() => setDrawerOpen(true)}
-          onBellPress={() => {}}
+          onBellPress={() => router.push('/(app)/reminders' as never)}
           unreadCount={0}
         />
         <View style={{
@@ -379,7 +390,7 @@ export default function HomeScreen() {
     );
   }
 
-  const { today, reminders, recentActivity, productivity } = data;
+  const { today, reminders, recentActivity, productivity, nirodhatmak } = data;
   const showSearch = searchQuery.length > 0;
 
   return (
@@ -391,7 +402,7 @@ export default function HomeScreen() {
       {/* ── Dashboard Header ────────────────────────────────────── */}
       <DashboardHeader
         onMenuPress={() => setDrawerOpen(true)}
-        onBellPress={() => router.push('/(app)/mukadma' as never)}
+        onBellPress={() => router.push('/(app)/reminders' as never)}
         unreadCount={reminders.filter(r => r.daysLeft <= 0).length}
       />
 
@@ -404,7 +415,7 @@ export default function HomeScreen() {
         <SearchBar
           value={searchQuery}
           onChangeText={handleSearchChange}
-          placeholder="Search FIR, GD, person, village, BNS…"
+          placeholder={t('home.searchPlaceholder')}
           variant="light"
         />
       </View>
@@ -418,8 +429,8 @@ export default function HomeScreen() {
             </View>
           ) : searchSections.length === 0 ? (
             <EmptyState
-              title={`No results for "${searchQuery}"`}
-              description="Try FIR number, person name, village, BNS section, or case type"
+              title={t('home.noResultsFor', { query: searchQuery })}
+              description={t('home.noResultsDesc')}
             />
           ) : (
             <SectionList
@@ -466,14 +477,14 @@ export default function HomeScreen() {
           >
             {/* Greeting row */}
             <View style={{ gap: 1 }}>
-              <Text style={{ fontSize: 11, fontWeight: '500', color: 'rgba(255,255,255,0.75)' }}>
+              <Text style={{ fontSize: 11, fontWeight: '500', color: palette.primaryForeground, opacity: 0.75 }}>
                 {todayFmt}
               </Text>
-              <Text style={{ fontSize: 17, fontWeight: '700', color: '#FFFFFF', letterSpacing: -0.3, lineHeight: 22 }}>
-                {workspace.officer_name ? `Hello, ${workspace.officer_name} 👋` : 'Good morning, Officer 👋'}
+              <Text style={{ fontSize: 17, fontWeight: '700', color: palette.primaryForeground, letterSpacing: -0.3, lineHeight: 22 }}>
+                {workspace.officer_name ? t('home.helloOfficer', { name: workspace.officer_name }) : t('home.goodMorningOfficer')}
               </Text>
               {workspace.police_station ? (
-                <Text style={{ fontSize: 11, fontWeight: '400', color: 'rgba(255,255,255,0.70)', marginTop: 1 }}>
+                <Text style={{ fontSize: 11, fontWeight: '400', color: palette.primaryForeground, opacity: 0.7, marginTop: 1 }}>
                   {workspace.police_station}{workspace.district ? `  ·  ${workspace.district}` : ''}
                 </Text>
               ) : null}
@@ -483,16 +494,16 @@ export default function HomeScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <View style={{
                 flex: 1,
-                backgroundColor: 'rgba(255,255,255,0.15)',
+                backgroundColor: `${palette.primaryForeground}26`,
                 borderRadius: 12,
                 padding: 10,
                 gap: 2,
               }}>
-                <Text style={{ fontSize: 22, fontWeight: '800', color: '#FFFFFF', lineHeight: 26 }}>
+                <Text style={{ fontSize: 22, fontWeight: '800', color: palette.primaryForeground, lineHeight: 26 }}>
                   {today.activeCase}
                 </Text>
-                <Text style={{ fontSize: 10, fontWeight: '500', color: 'rgba(255,255,255,0.80)' }}>
-                  Active Investigations
+                <Text style={{ fontSize: 10, fontWeight: '500', color: palette.primaryForeground, opacity: 0.8 }}>
+                  {t('home.activeInvestigations')}
                 </Text>
               </View>
               <Pressable
@@ -509,50 +520,50 @@ export default function HomeScreen() {
                 className="active:opacity-80"
               >
                 <TrendingUp size={16} color={C.action} />
-                <Text style={{ fontSize: 10, fontWeight: '700', color: C.action }}>View All</Text>
+                <Text style={{ fontSize: 10, fontWeight: '700', color: C.action }}>{t('home.viewAll')}</Text>
               </Pressable>
             </View>
           </View>
 
           {/* ── Today's Summary ── */}
           <View style={{ gap: 10 }}>
-            <SectionHeader title="Today's Summary" icon={<CalendarDays size={13} color={C.textMuted} />} />
+            <SectionHeader title={t('home.todaysSummary')} icon={<CalendarDays size={13} color={C.textMuted} />} />
             <View style={{ flexDirection: 'row', gap: 10 }}>
-              <StatCard label="Pending FIR" value={today.activeCase} color={C.purple}
+              <StatCard label={t('home.pendingFir')} value={today.activeCase} color={C.purple}
                 onPress={() => router.push('/(app)/mukadma' as never)} />
-              <StatCard label="Pending GD" value={today.todayGD} color={C.amber}
+              <StatCard label={t('home.pendingGd')} value={today.todayGD} color={C.amber}
                 onPress={() => router.push('/(app)/gd' as never)} />
             </View>
             <View style={{ flexDirection: 'row', gap: 10 }}>
-              <StatCard label="Court Work" value={today.activeCourtDocs} color={C.blue}
+              <StatCard label={t('home.courtWork')} value={today.activeCourtDocs} color={C.blue}
                 onPress={() => router.push('/(app)/nyayalay' as never)} />
-              <StatCard label="BNSS Actions" value={today.todayPending} color={C.red}
+              <StatCard label={t('home.bnssActions')} value={nirodhatmak?.total ?? 0} color={C.red}
                 onPress={() => router.push('/(app)/nirodhatmak' as never)} />
             </View>
             <View style={{ flexDirection: 'row', gap: 10 }}>
-              <StatCard label="Reminders" value={reminders.length}
+              <StatCard label={t('home.reminders')} value={reminders.length}
                 color={reminders.some(r => r.daysLeft < 0) ? C.red : C.amber}
                 onPress={() => router.push('/(app)/mukadma' as never)} />
-              <StatCard label="Petitions" value={today.pendingPrarthnaPatra} color={C.teal}
+              <StatCard label={t('home.petitions')} value={today.pendingPrarthnaPatra} color={C.teal}
                 onPress={() => router.push('/(app)/prarthna-patra' as never)} />
             </View>
           </View>
 
           {/* ── Quick Actions ── */}
           <View style={{ gap: 10 }}>
-            <SectionHeader title="Quick Actions" icon={<Zap size={13} color={C.textMuted} />} />
+            <SectionHeader title={t('home.quickActions')} icon={<Zap size={13} color={C.textMuted} />} />
             {/* Primary module row — horizontal scroll */}
             <ScrollView horizontal showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ gap: 10, paddingRight: 4 }}>
               {[
-                { label: 'New FIR',    icon: FileText,    color: MC.Mukadma,          route: '/(app)/mukadma/add-fir' },
-                { label: 'New GD',     icon: BookMarked,  color: MC.GD,               route: '/(app)/gd/add-gd' },
-                { label: 'Court Work', icon: Scale,       color: MC.Nyayalay,         route: '/(app)/nyayalay/add' },
-                { label: 'Petition',   icon: Scroll,      color: MC['Prarthna Patra'],route: '/(app)/prarthna-patra/add' },
-                { label: 'BNSS',       icon: ShieldAlert, color: MC.Nirodhatmak,      route: '/(app)/nirodhatmak' },
-                { label: 'Beat Book',  icon: BookOpen,    color: MC.Halka,            route: '/(app)/halka' },
+                { label: t('home.newFir'),    icon: FileText,    color: MC.Mukadma,          route: '/(app)/mukadma/add-fir' },
+                { label: t('home.newGd'),     icon: BookMarked,  color: MC.GD,               route: '/(app)/gd/add-gd' },
+                { label: t('home.courtWork'), icon: Scale,       color: MC.Nyayalay,         route: '/(app)/nyayalay/add' },
+                { label: t('home.petition'),  icon: Scroll,      color: MC['Prarthna Patra'],route: '/(app)/prarthna-patra/add' },
+                { label: t('home.bnss'),      icon: ShieldAlert, color: MC.Nirodhatmak,      route: '/(app)/nirodhatmak' },
+                { label: t('home.beatBook'),  icon: BookOpen,    color: MC.Halka,            route: '/(app)/halka' },
               ].map((item) => (
-                <View key={item.label} style={{ width: 76 }}>
+                <View key={item.route} style={{ width: 76 }}>
                   <QuickAction
                     label={item.label}
                     icon={item.icon}
@@ -568,9 +579,9 @@ export default function HomeScreen() {
           {pinnedLoaded && (
             <View style={{ gap: 10 }}>
               <SectionHeader
-                title="Pinned"
+                title={t('home.pinned')}
                 icon={<Star size={13} color={C.textMuted} />}
-                actionLabel={pinnedItems.length > 0 ? 'Manage' : undefined}
+                actionLabel={pinnedItems.length > 0 ? t('home.manage') : undefined}
                 onAction={() => setDrawerOpen(true)}
               />
               {pinnedItems.length === 0 ? (
@@ -583,7 +594,7 @@ export default function HomeScreen() {
                 >
                   <StarOff size={20} color={C.textMuted} />
                   <Text style={{ ...T.caption1, color: C.textMuted, textAlign: 'center' }}>
-                    Long-press any screen link to pin it here.
+                    {t('home.pinnedHint')}
                   </Text>
                 </View>
               ) : (
@@ -602,7 +613,7 @@ export default function HomeScreen() {
                     } as object}
                   >
                     <MoreHorizontal size={14} color={C.textMuted} />
-                    <Text style={{ ...T.footnote, color: C.textMuted }}>More</Text>
+                    <Text style={{ ...T.footnote, color: C.textMuted }}>{t('home.more')}</Text>
                   </Pressable>
                 </ScrollView>
               )}
@@ -612,7 +623,7 @@ export default function HomeScreen() {
           {/* ── Continue Working ── */}
           {recentActivity.length > 0 && (
             <View style={{ gap: 10 }}>
-              <SectionHeader title="Continue Working" icon={<Clock size={13} color={C.textMuted} />} />
+              <SectionHeader title={t('home.continueWorking')} icon={<Clock size={13} color={C.textMuted} />} />
               <View
                 className="shadow-sm shadow-black/5"
                 style={{
@@ -630,7 +641,7 @@ export default function HomeScreen() {
           {/* ── Upcoming Reminders ── */}
           {reminders.length > 0 && (
             <View style={{ gap: 10 }}>
-              <SectionHeader title="Reminders" icon={<Bell size={13} color={C.textMuted} />} />
+              <SectionHeader title={t('home.reminders')} icon={<Bell size={13} color={C.textMuted} />} />
               <View
                 className="shadow-sm shadow-black/5"
                 style={{
@@ -642,7 +653,7 @@ export default function HomeScreen() {
                 {reminders.length > 6 ? (
                   <View style={{ paddingVertical: 12, alignItems: 'center' }}>
                     <Text style={{ ...T.caption1, fontWeight: '600', color: C.action }}>
-                      +{reminders.length - 6} more reminders
+                      {t('home.moreReminders', { count: reminders.length - 6 })}
                     </Text>
                   </View>
                 ) : null}
@@ -652,7 +663,7 @@ export default function HomeScreen() {
 
           {/* ── Productivity ── */}
           <View style={{ gap: 10 }}>
-            <SectionHeader title="Productivity" icon={<TrendingUp size={13} color={C.textMuted} />} />
+            <SectionHeader title={t('home.productivity')} icon={<TrendingUp size={13} color={C.textMuted} />} />
             <View
               className="shadow-sm shadow-black/5"
               style={{
@@ -662,9 +673,9 @@ export default function HomeScreen() {
             >
               <View style={{ flexDirection: 'row', gap: 0 }}>
                 {[
-                  { label: 'Today',      value: productivity.createdToday },
-                  { label: 'This Week',  value: productivity.createdThisWeek },
-                  { label: 'This Month', value: productivity.createdThisMonth },
+                  { label: t('home.today'),      value: productivity.createdToday },
+                  { label: t('home.thisWeek'),  value: productivity.createdThisWeek },
+                  { label: t('home.thisMonth'), value: productivity.createdThisMonth },
                 ].map((s, i) => (
                   <View key={s.label} style={{
                     flex: 1, alignItems: 'center',
@@ -679,11 +690,11 @@ export default function HomeScreen() {
               <View style={{ flexDirection: 'row', gap: 16 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                   <CheckCircle size={12} color="#16A34A" />
-                  <Text style={{ ...T.caption1, color: C.textMuted }}>{productivity.totalFinished} finished</Text>
+                  <Text style={{ ...T.caption1, color: C.textMuted }}>{t('home.finishedCount', { count: productivity.totalFinished })}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                   <Clock size={12} color="#D97706" />
-                  <Text style={{ ...T.caption1, color: C.textMuted }}>{productivity.totalPending} pending</Text>
+                  <Text style={{ ...T.caption1, color: C.textMuted }}>{t('home.pendingCount', { count: productivity.totalPending })}</Text>
                 </View>
               </View>
             </View>

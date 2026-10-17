@@ -19,6 +19,7 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { AlertTriangle, RefreshCw } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ interface State {
 // Functional sub-component so we can use useState for press tracking
 // (the parent is a class component — hooks are not allowed there).
 function ResetButton({ onPress }: { onPress: () => void }) {
+  const { t } = useTranslation();
   const [pressed, setPressed] = useState(false);
   return (
     <Pressable
@@ -51,7 +53,7 @@ function ResetButton({ onPress }: { onPress: () => void }) {
     >
       <RefreshCw size={16} color="#FFFFFF" strokeWidth={2} />
       <Text style={{ fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}>
-        Try Again
+        {t('errors.tryAgain')}
       </Text>
     </Pressable>
   );
@@ -67,6 +69,7 @@ function ErrorFallback({
   componentStack: string | null;
   onReset: () => void;
 }) {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const colors = THEME[colorScheme ?? 'light'];
 
@@ -92,7 +95,7 @@ function ErrorFallback({
           fontSize: 18, fontWeight: '700', color: colors.foreground,
           textAlign: 'center', marginBottom: 8, letterSpacing: -0.3,
         }}>
-          {__DEV__ ? 'Runtime Error' : 'Something went wrong'}
+          {__DEV__ ? t('errors.runtimeError') : t('errors.somethingWrong')}
         </Text>
 
         {/* Subtitle */}
@@ -101,8 +104,8 @@ function ErrorFallback({
           textAlign: 'center', lineHeight: 20, marginBottom: 24,
         }}>
           {__DEV__
-            ? 'A JavaScript error was caught by the Error Boundary.\nSee the details below.'
-            : 'An unexpected error occurred. Please try again.'}
+            ? t('errors.devErrorSubtitle')
+            : t('errors.prodErrorSubtitle')}
         </Text>
 
         {/* DEV: error message box */}
@@ -118,7 +121,7 @@ function ErrorFallback({
               color: colorScheme === 'dark' ? '#fca5a5' : '#9F1239',
               marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5,
             }}>
-              Error
+              {t('errors.errorLabel')}
             </Text>
             <Text style={{
               fontSize: 13,
@@ -141,7 +144,7 @@ function ErrorFallback({
               fontSize: 11, fontWeight: '700', color: colors.foreground,
               marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5,
             }}>
-              Component Stack
+              {t('errors.componentStack')}
             </Text>
             <Text style={{
               fontSize: 11, color: colors.mutedForeground,

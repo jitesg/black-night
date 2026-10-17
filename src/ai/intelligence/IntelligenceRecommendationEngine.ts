@@ -13,6 +13,7 @@ import type {
   IntelPriority,
   IntelSeverity,
 } from './IntelligenceTypes';
+import { LearningEngine } from '@/ai/level5/LearningEngine';
 
 let recId = 0;
 const mkRec = (
@@ -32,7 +33,8 @@ const mkRec = (
 ): SmartRecommendation => ({
   id: `REC-${String(++recId).padStart(3, '0')}`,
   action, title, reason, supportingContext, applicableRule,
-  confidencePct, expectedOutcome, priority, severity, isBlocking,
+  confidencePct: Math.min(100, confidencePct + LearningEngine.getConfidenceBoost(title)),
+  expectedOutcome, priority, severity, isBlocking,
   category, dependencies, legalReference,
 });
 

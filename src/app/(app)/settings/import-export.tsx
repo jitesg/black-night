@@ -4,21 +4,23 @@
 import { useState } from 'react';
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 import { Download, Upload, FileText, FileBarChart, Braces } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { useTranslation } from 'react-i18next';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 type ActionKey = 'exportDb' | 'importDb' | 'exportReports' | 'exportPdf' | 'exportJson';
 
-const EXPORT_ITEMS: { key: ActionKey; icon: typeof Download; color: string; label: string; desc: string }[] = [
-  { key: 'exportDb',      icon: Download,    color: '#2563EB',   label: 'Export Database',  desc: 'Export full SQLite database as .db file' },
-  { key: 'importDb',      icon: Upload,      color: '#1D4ED8', label: 'Import Database',  desc: 'Replace local database from a .db file' },
-  { key: 'exportReports', icon: FileBarChart, color: '#10B981', label: 'Export Reports',   desc: 'Export case reports as PDF or Excel' },
-  { key: 'exportPdf',     icon: FileText,    color: '#DC2626', label: 'Export PDF',        desc: 'Export selected documents as PDF files' },
-  { key: 'exportJson',    icon: Braces,      color: '#7C3AED', label: 'Export JSON',       desc: 'Export data records as structured JSON' },
+const EXPORT_ITEMS: { key: ActionKey; icon: typeof Download; color: string; labelKey: string; descKey: string }[] = [
+  { key: 'exportDb',      icon: Download,    color: '#2563EB',   labelKey: 'settings.importExport.exportDb',      descKey: 'settings.importExport.exportDbDesc' },
+  { key: 'importDb',      icon: Upload,      color: '#1D4ED8',   labelKey: 'settings.importExport.importDb',      descKey: 'settings.importExport.importDbDesc' },
+  { key: 'exportReports', icon: FileBarChart, color: '#10B981',   labelKey: 'settings.importExport.exportReports', descKey: 'settings.importExport.exportReportsDesc' },
+  { key: 'exportPdf',     icon: FileText,    color: '#DC2626',   labelKey: 'settings.importExport.exportPdf',     descKey: 'settings.importExport.exportPdfDesc' },
+  { key: 'exportJson',    icon: Braces,      color: '#7C3AED',   labelKey: 'settings.importExport.exportJson',    descKey: 'settings.importExport.exportJsonDesc' },
 ];
 
 export default function ImportExportScreen() {
   const [loading, setLoading] = useState<ActionKey | null>(null);
   const [msg, setMsg] = useState('');
+  const { t } = useTranslation();
 
   const handleAction = async (key: ActionKey) => {
     setLoading(key);
@@ -26,15 +28,17 @@ export default function ImportExportScreen() {
     await new Promise((r) => setTimeout(r, 1000));
     setLoading(null);
     if (key === 'importDb') {
-      setMsg('Database import will be available in the full release with file picker support.');
+      setMsg(t('settings.importExport.importDbMsg'));
     } else {
-      setMsg(`${EXPORT_ITEMS.find((i) => i.key === key)?.label ?? 'Export'} will save to your Documents folder in the full release.`);
+      const item = EXPORT_ITEMS.find((i) => i.key === key);
+      const name = item ? t(item.labelKey) : t('common.export');
+      setMsg(t('settings.importExport.exportMsg', { name }));
     }
   };
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Import / Export" showBack />
+      <AppHeader title={t('settings.importExport.title')} showBack />
 
       <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
         {msg ? (
@@ -43,7 +47,7 @@ export default function ImportExportScreen() {
           </View>
         ) : null}
 
-        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Operations</Text>
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{t('settings.importExport.operations')}</Text>
         <View className="bg-card border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
           {EXPORT_ITEMS.map((item, idx) => {
             const Icon = item.icon;
@@ -62,8 +66,8 @@ export default function ImportExportScreen() {
                   }
                 </View>
                 <View className="flex-1">
-                  <Text className="text-sm font-semibold text-foreground">{item.label}</Text>
-                  <Text className="text-xs text-muted-foreground mt-0.5">{item.desc}</Text>
+                  <Text className="text-sm font-semibold text-foreground">{t(item.labelKey)}</Text>
+                  <Text className="text-xs text-muted-foreground mt-0.5">{t(item.descKey)}</Text>
                 </View>
               </Pressable>
             );
@@ -72,7 +76,7 @@ export default function ImportExportScreen() {
 
         <View className="bg-muted/50 rounded-2xl p-4 mt-4" style={{ borderCurve: 'continuous' }}>
           <Text className="text-xs text-muted-foreground leading-5">
-            All exports are saved to your device's Documents folder. Import operations will replace existing data — always create a backup before importing.
+            {t('settings.importExport.disclaimer')}
           </Text>
         </View>
       </ScrollView>

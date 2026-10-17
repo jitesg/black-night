@@ -18,6 +18,7 @@ import {
   View,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
+import { useTranslation } from 'react-i18next';
 import {
   Copy, CheckCheck, BookOpen, Bookmark, RefreshCw, AlertCircle,
   Bot, ChevronDown, ChevronUp, Loader,
@@ -27,33 +28,35 @@ import type { AIMessage, AIToolCall } from '@/ai/AITypes';
 import { AIResponseFormatter } from '@/ai/AIResponseFormatter';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { useRouter } from 'expo-router';
+import { openSection } from '@/lib/law/openLaw';
+import type { ActId } from '@/lib/law/lawLibrary';
 
-// ── Minimal colour tokens — now theme-aware via hook ─────────────────────────
-// C is defined per-render inside the component; this top-level stub is kept
-// only so ToolCallChip (which can't call hooks) still compiles — it accesses
-// C.toolBg / C.muted / C.accent which are intentionally theme-neutral.
-const C = {
-  aiSurface:   '#FFFFFF',   // overridden by hook inside component
-  aiText:      '#111827',
-  aiTimestamp: '#9CA3AF',
-  aiBorder:    '#F3F4F6',
-  userSurface: '#F3F4F6',
-  userText:    '#111827',
-  userBorder:  'transparent',
-  accent:      '#1E3A8A',
-  muted:       '#6B7280',
-  toolBg:      '#F8F9FA',
-};
+// ── Minimal colour tokens — theme-aware hook ─────────────────────────
+interface ThemePalette {
+  aiSurface: string;
+  aiText: string;
+  aiTimestamp: string;
+  aiBorder: string;
+  userSurface: string;
+  userText: string;
+  userBorder: 'transparent';
+  accent: string;
+  muted: string;
+  toolBg: string;
+}
 
 interface Props {
   message: AIMessage;
   onOpenDraft?: (draft: NonNullable<AIMessage['draft']>) => void;
   onRegenerate?: (messageId: string) => void;
+  onSaveToDiary?: () => void;
 }
 
 export const AIMessageBubble = memo(function AIMessageBubble({
-  message, onOpenDraft, onRegenerate,
+  message, onOpenDraft, onRegenerate, onSaveToDiary,
 }: Props) {
+  const { t } = useTranslation();
   const [copied, setCopied]               = useState(false);
   const [toolsExpanded, setToolsExpanded] = useState(false);
   const [toolbarVisible, setToolbarVisible] = useState(false);
@@ -63,19 +66,19 @@ export const AIMessageBubble = memo(function AIMessageBubble({
   const isUser    = message.role === 'user';
   const isLoading = message.content === '…';
   const { colorScheme } = useColorScheme();
-  const colors = THEME[colorScheme ?? 'light'];
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   // Theme-resolved bubble palette
-  const TC = {
-    aiSurface:   colors.card,
-    aiText:      colors.foreground,
-    aiTimestamp: colors.mutedForeground,
-    aiBorder:    colors.border,
-    userSurface: colors.muted,
-    userText:    colors.foreground,
-    userBorder:  'transparent' as const,
-    accent:      colors.primary,
-    muted:       colors.mutedForeground,
-    toolBg:      colors.muted,
+  const TC: ThemePalette = {
+    aiSurface:   C.card,
+    aiText:      C.foreground,
+    aiTimestamp: C.mutedForeground,
+    aiBorder:    C.border,
+    userSurface: C.muted,
+    userText:    C.foreground,
+    userBorder:  'transparent',
+    accent:      C.primary,
+    muted:       C.mutedForeground,
+    toolBg:      C.muted,
   };
 
   // Entrance: fade-in + 4dp slide-up, 180ms ease-out
@@ -147,7 +150,7 @@ export const AIMessageBubble = memo(function AIMessageBubble({
             onLongPress={() => !isLoading && setToolbarVisible(true)}
             delayLongPress={350}
             accessibilityRole="button"
-            accessibilityLabel="AI message — tap for actions"
+            accessibilityLabel={t('ai.messageActions')}
           >
             <View style={{
               backgroundColor: isLoading ? TC.toolBg : TC.aiSurface,
@@ -167,6 +170,7 @@ export const AIMessageBubble = memo(function AIMessageBubble({
               copied={copied}
               onRegenerate={onRegenerate ? () => onRegenerate(message.id) : undefined}
               onSave={message.draft ? () => {} : undefined}
+              onSaveToDiary={onSaveToDiary}
             />
           )}
 
@@ -177,10 +181,10 @@ export const AIMessageBubble = memo(function AIMessageBubble({
                 onPress={() => setToolsExpanded(v => !v)}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 3 }}
                 accessibilityRole="button"
-                accessibilityLabel="Toggle tool calls"
+                accessibilityLabel={t('ai.toggleTools')}
               >
                 <Text style={{ ...T.caption2, color: TC.muted, fontSize: 10 }}>
-                  {message.toolCalls.length} tool{message.toolCalls.length > 1 ? 's' : ''} used
+                  {t('ai.toolUsed', { count: message.toolCalls.length })}
                 </Text>
                 {toolsExpanded
                   ? <ChevronUp size={9} color={TC.muted} />
@@ -218,13 +222,17 @@ export const AIMessageBubble = memo(function AIMessageBubble({
 
 // ── Inline toolbar — minimal: icon-only row, no background card ───────────────
 function MessageToolbar({
-  onCopy, copied, onRegenerate, onSave,
+  onCopy, copied, onRegenerate, onSave, onSaveToDiary,
 }: {
   onCopy: () => void;
   copied: boolean;
   onRegenerate?: () => void;
   onSave?: () => void;
+  onSaveToDiary?: () => void;
 }) {
+  const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   return (
     <View style={{
       flexDirection: 'row', alignItems: 'center', gap: 2,
@@ -232,17 +240,20 @@ function MessageToolbar({
     }}>
       <ToolbarBtn
         icon={copied ? CheckCheck : Copy}
-        label={copied ? 'Copied' : 'Copy'}
-        color={copied ? C.accent : C.muted}
+        label={copied ? t('ai.copied') : t('ai.copy')}
+        color={copied ? C.primary : C.mutedForeground}
         onPress={onCopy}
       />
       {onRegenerate && (
-        <ToolbarBtn icon={RefreshCw} label="Retry" color={C.muted} onPress={onRegenerate} />
+        <ToolbarBtn icon={RefreshCw} label={t('ai.retry')} color={C.mutedForeground} onPress={onRegenerate} />
       )}
       {onSave && (
-        <ToolbarBtn icon={Bookmark} label="Save" color={C.muted} onPress={onSave} />
+        <ToolbarBtn icon={Bookmark} label={t('ai.save')} color={C.mutedForeground} onPress={onSave} />
       )}
-      <ToolbarBtn icon={BookOpen} label="Diary" color={C.muted} onPress={() => {}} />    </View>
+      {onSaveToDiary && (
+        <ToolbarBtn icon={BookOpen} label={t('ai.diary')} color={C.mutedForeground} onPress={onSaveToDiary} />
+      )}
+    </View>
   );
 }
 
@@ -273,6 +284,8 @@ function ToolbarBtn({
 
 // ── Typing Indicator — 3 minimal dots, opacity pulse ─────────────────────────
 function TypingIndicator() {
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const dots = [
     useRef(new Animated.Value(0.25)).current,
     useRef(new Animated.Value(0.25)).current,
@@ -299,7 +312,7 @@ function TypingIndicator() {
       {dots.map((dot, i) => (
         <Animated.View key={i} style={{
           width: 6, height: 6, borderRadius: 3,
-          backgroundColor: C.accent, opacity: dot,
+          backgroundColor: C.primary, opacity: dot,
         }} />
       ))}
     </View>
@@ -308,7 +321,10 @@ function TypingIndicator() {
 
 // ── Markdown renderer ─────────────────────────────────────────────────────────
 
-function MarkdownText({ content, colors: tc }: { content: string; colors: typeof C }) {
+function MarkdownText({ content, colors: tc }: { content: string; colors: ThemePalette }) {
+  const router = useRouter();
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const lines  = content.split('\n');
   const TEXT   = tc.aiText;
   const MUTED  = tc.muted;
@@ -327,10 +343,10 @@ function MarkdownText({ content, colors: tc }: { content: string; colors: typeof
         inCode = false;
         rendered.push(
           <View key={`code-${i}`} style={{
-            backgroundColor: '#0F172A', borderRadius: 10,
+            backgroundColor: colorScheme === 'dark' ? '#090D16' : '#0F172A', borderRadius: 10,
             padding: 12, marginVertical: 4,
           }}>
-            <Text style={{ fontSize: 12, color: '#7DD3FC', fontFamily: 'monospace', lineHeight: 18 }}>
+            <Text style={{ fontSize: 12, color: colorScheme === 'dark' ? '#93C5FD' : '#7DD3FC', fontFamily: 'monospace', lineHeight: 18 }}>
               {codeLines.join('\n')}
             </Text>
           </View>
@@ -363,15 +379,15 @@ function MarkdownText({ content, colors: tc }: { content: string; colors: typeof
     rendered.push(
       <View key={i} style={{ flexDirection: 'row', gap: isBullet || isNum ? 8 : 0, marginTop }}>
         {isBullet && (
-          <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#2563EB', marginTop: 8, flexShrink: 0 }} />
+          <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: C.primary, marginTop: 8, flexShrink: 0 }} />
         )}
         {isNum && (
-          <Text style={{ fontSize: 13, color: '#2563EB', lineHeight: 20, flexShrink: 0, fontWeight: '600' }}>
+          <Text style={{ fontSize: 13, color: C.primary, lineHeight: 20, flexShrink: 0, fontWeight: '600' }}>
             {line.match(/^\d+/)?.[0]}.
           </Text>
         )}
         <Text style={{ fontSize, fontWeight, color, lineHeight: 20, flex: 1 }}>
-          {renderInline(stripped, MUTED, tc)}
+          {renderInline(stripped, MUTED, tc, router)}
         </Text>
       </View>
     );
@@ -380,15 +396,19 @@ function MarkdownText({ content, colors: tc }: { content: string; colors: typeof
   return <View style={{ gap: 2 }}>{rendered}</View>;
 }
 
-/** Renders inline **bold** and `code` within a text node */
-function renderInline(text: string, mutedColor: string, tc: typeof C): React.ReactNode {
+/** Renders inline **bold**, `code`, and tappable legal section links within a text node */
+function renderInline(text: string, mutedColor: string, tc: ThemePalette, router: ReturnType<typeof useRouter>): React.ReactNode {
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
-  if (parts.length === 1) return text;
   return (
     <>
       {parts.map((part, i) => {
         if (part.startsWith('**') && part.endsWith('**')) {
-          return <Text key={i} style={{ fontWeight: '700', color: tc.aiText }}>{part.slice(2, -2)}</Text>;
+          const inner = part.slice(2, -2);
+          return (
+            <Text key={i} style={{ fontWeight: '700', color: tc.aiText }}>
+              {renderLegalLinks(inner, tc, router)}
+            </Text>
+          );
         }
         if (part.startsWith('`') && part.endsWith('`')) {
           return (
@@ -401,20 +421,130 @@ function renderInline(text: string, mutedColor: string, tc: typeof C): React.Rea
             </Text>
           );
         }
-        return <Text key={i}>{part}</Text>;
+        return <React.Fragment key={i}>{renderLegalLinks(part, tc, router)}</React.Fragment>;
       })}
     </>
   );
 }
 
+function renderLegalLinks(text: string, tc: ThemePalette, router: ReturnType<typeof useRouter>): React.ReactNode {
+  // 1) Match markdown links like [📖 पूरा SOP खोलें](sop:sys-sop-...) or [✅ चेकलिस्ट खोलें](sop_checklist:sys-sop-...)
+  const linkRegex = /\[([^\]]+)\]\((?:(sop|sop_checklist):)?(sys-[a-z0-9-]+|sop-[a-z0-9-]+)\)/gi;
+  if (linkRegex.test(text)) {
+    const parts: React.ReactNode[] = [];
+    let last = 0;
+    linkRegex.lastIndex = 0;
+    let lm: RegExpExecArray | null;
+    while ((lm = linkRegex.exec(text)) !== null) {
+      if (lm.index > last) {
+        parts.push(text.slice(last, lm.index));
+      }
+      const label = lm[1];
+      const scheme = lm[2];
+      const targetId = lm[3];
+      const isChecklist = scheme === 'sop_checklist' || label.includes('चेकलिस्ट');
+
+      parts.push(
+        <Text
+          key={`mdlink-${lm.index}`}
+          onPress={() =>
+            router.push(
+              `/(app)/knowledge/${targetId}${isChecklist ? '?tab=checklist' : ''}` as any
+            )
+          }
+          style={{
+            color: '#0F766E',
+            fontWeight: '700',
+            textDecorationLine: 'underline',
+          }}
+        >
+          {label}
+        </Text>
+      );
+      last = lm.index + lm[0].length;
+    }
+    if (last < text.length) {
+      parts.push(text.slice(last));
+    }
+    return parts;
+  }
+
+  // Match both:
+  // 1) Buttons / Action links: [धारा खोलें: BNS 103] or धारा खोलें → BNS 103
+  // 2) Standard statutory references: BNS 103 or धारा 35 BNSS
+  const secRegex = /(?:\[धारा खोलें[:\s→➔]*|धारा खोलें[:\s→➔]+)(BNS|BNSS|BSA)\s+(\d+)(?:\((\w+)\))?\]?|\b(BNS|BNSS|BSA)\s+(\d+)(?:\((\w+)\))?|\bधारा\s+(\d+)\s+(BNS|BNSS|BSA)\b/gi;
+  const nodes: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = secRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(text.slice(lastIndex, match.index));
+    }
+    const matchedText = match[0];
+    let act: ActId = 'BNS';
+    let n = 0;
+
+    if (match[1] && match[2]) {
+      act = match[1].toUpperCase() as ActId;
+      n = parseInt(match[2], 10);
+    } else if (match[4] && match[5]) {
+      act = match[4].toUpperCase() as ActId;
+      n = parseInt(match[5], 10);
+    } else if (match[7] && match[8]) {
+      n = parseInt(match[7], 10);
+      act = match[8].toUpperCase() as ActId;
+    }
+
+    const isButtonVariant = matchedText.includes('धारा खोलें');
+
+    nodes.push(
+      <Text
+        key={`sec-${match.index}`}
+        onPress={() => openSection(router, act, n)}
+        style={
+          isButtonVariant
+            ? {
+                color: '#2563EB',
+                fontWeight: '700',
+                textDecorationLine: 'none',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                paddingHorizontal: 6,
+                paddingVertical: 2,
+                borderRadius: 6,
+              }
+            : {
+                color: '#2563EB',
+                textDecorationLine: 'underline',
+                fontWeight: '600',
+              }
+        }
+      >
+        {matchedText}
+      </Text>
+    );
+
+    lastIndex = match.index + matchedText.length;
+  }
+
+  if (lastIndex < text.length) {
+    nodes.push(text.slice(lastIndex));
+  }
+
+  return nodes.length === 0 ? text : nodes;
+}
+
 // ── Tool Call Chip ────────────────────────────────────────────────────────────
 
 function ToolCallChip({ toolCall }: { toolCall: AIToolCall }) {
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const isDark = colorScheme === 'dark';
   const statusMap = {
-    idle:    { color: C.muted,    icon: null },
-    running: { color: C.accent,   icon: <Loader size={9} color={C.accent} /> },
-    done:    { color: '#16A34A',  icon: <CheckCheck size={9} color="#16A34A" /> },
-    error:   { color: '#DC2626',  icon: <AlertCircle size={9} color="#DC2626" /> },
+    idle:    { color: C.mutedForeground, icon: null },
+    running: { color: C.primary,         icon: <Loader size={9} color={C.primary} /> },
+    done:    { color: isDark ? '#4ADE80' : '#16A34A',  icon: <CheckCheck size={9} color={isDark ? '#4ADE80' : '#16A34A'} /> },
+    error:   { color: C.destructive,     icon: <AlertCircle size={9} color={C.destructive} /> },
   };
   const cfg   = statusMap[toolCall.status] ?? statusMap.idle;
   const label = toolCall.toolName.replace('Tool', '').replace(/([A-Z])/g, ' $1').trim();
@@ -422,7 +552,7 @@ function ToolCallChip({ toolCall }: { toolCall: AIToolCall }) {
   return (
     <View style={{
       flexDirection: 'row', alignItems: 'center', gap: 5,
-      backgroundColor: C.toolBg, borderRadius: 6,
+      backgroundColor: C.muted, borderRadius: 6,
       paddingHorizontal: 8, paddingVertical: 4,
     }}>
       {cfg.icon}
@@ -437,35 +567,40 @@ function DraftPreviewCard({ draft, onOpen }: {
   draft: NonNullable<AIMessage['draft']>;
   onOpen: () => void;
 }) {
+  const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const plainPreview = draft.content
     .replace(/<[^>]+>/g, ' ').replace(/\s{2,}/g, ' ').trim().slice(0, 100);
 
   return (
     <View style={{
       marginTop: 8, borderRadius: 12,
-      borderWidth: 1, borderColor: C.aiBorder,
-      backgroundColor: C.toolBg, padding: 12, gap: 7,
+      borderWidth: 1, borderColor: C.border,
+      backgroundColor: C.card, padding: 12, gap: 7,
     }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: C.accent }} />
-        <Text style={{ fontSize: 12, fontWeight: '600', color: C.aiText, flex: 1 }} numberOfLines={1}>
+        <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: C.primary }} />
+        <Text style={{ fontSize: 12, fontWeight: '600', color: C.foreground, flex: 1 }} numberOfLines={1}>
           {draft.title}
         </Text>
       </View>
-      <Text style={{ fontSize: 11, color: C.muted, lineHeight: 16 }} numberOfLines={2}>
+      <Text style={{ fontSize: 11, color: C.mutedForeground, lineHeight: 16 }} numberOfLines={2}>
         {plainPreview}…
       </Text>
       <Pressable
         onPress={onOpen}
+        accessibilityRole="button"
+        accessibilityLabel={t('ai.openInEditor')}
         className="active:opacity-60"
         style={{
-          borderWidth: 1, borderColor: C.accent,
+          borderWidth: 1, borderColor: C.primary,
           borderRadius: 8, paddingVertical: 7,
           alignItems: 'center',
         }}
       >
-        <Text style={{ fontSize: 11, fontWeight: '600', color: C.accent, letterSpacing: 0.2 }}>
-          Open in Editor
+        <Text style={{ fontSize: 11, fontWeight: '600', color: C.primary, letterSpacing: 0.2 }}>
+          {t('ai.openInEditor')}
         </Text>
       </Pressable>
     </View>

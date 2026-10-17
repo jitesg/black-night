@@ -50,7 +50,7 @@ const MUTED   = '#6B7280';
 
 const APP_VERSION   = '1.0.0';
 const BUILD_NUMBER  = '119';
-const DB_VERSION    = 3;
+const DB_VERSION    = 4;
 const ENVIRONMENT   = __DEV__ ? 'Development' : 'Production';
 
 // ── Shared UI primitives ───────────────────────────────────────────────────────

@@ -43,7 +43,7 @@ export default function SignIn() {
     <View className="flex-1 bg-background">
       <StatusBar style="dark" />
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
         <View className="flex-1 px-7 justify-center gap-8">

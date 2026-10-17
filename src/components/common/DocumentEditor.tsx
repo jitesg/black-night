@@ -64,6 +64,8 @@ import type { DocumentModel } from '@/lib/formatParsingEngine';
 import type { LayoutProfile } from '@/lib/db/predefinedFormatRepo';
 import { PhraseLibraryModal } from './PhraseLibraryModal';
 import { incrementUsage } from '@/lib/db/phraseLibraryRepo';
+import { useSettingsStore } from '@/hooks/useSettingsStore';
+import { useTranslation } from 'react-i18next';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const NAVY   = '#1E3A5F';
@@ -197,6 +199,11 @@ export function buildPrintHtml(bodyHtml: string, title: string): string {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${title}</title>
 <style>
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
   /* ── Reset ──────────────────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -336,7 +343,11 @@ export function buildPrintHtml(bodyHtml: string, title: string): string {
   /* ── Print overrides ───────────────────────────────────── */
   @media print {
     body { background: #fff; padding: 0; }
-    .page { box-shadow: none; width: 100%; padding: 15mm; }
+    .page {
+      box-shadow: none;
+      width: 100%;
+      padding: var(--doc-margin-top) var(--doc-margin-right) var(--doc-margin-bottom) var(--doc-margin-left);
+    }
     .no-print { display: none; }
     .doc-letter + .doc-letter { page-break-before: always; }
   }
@@ -367,6 +378,7 @@ interface PrintPreviewProps {
 }
 
 function PrintPreviewModal({ visible, onClose, value, title }: PrintPreviewProps) {
+  const { t } = useTranslation();
   const html = useMemo(() => buildPrintHtml(prepareHtml(value), title), [value, title]);
   const isWeb = process.env.EXPO_OS === 'web';
   const { colorScheme } = useColorScheme();
@@ -380,13 +392,13 @@ function PrintPreviewModal({ visible, onClose, value, title }: PrintPreviewProps
           flexDirection: 'row', alignItems: 'center', gap: T.space.sm + 2,
           backgroundColor: NAVY, borderBottomWidth: 1, borderBottomColor: '#1a3a6e',
         }}>
-          <Pressable onPress={onClose} style={{ padding: T.space.xs }} accessibilityLabel="Close preview">
+          <Pressable onPress={onClose} style={{ padding: T.space.xs }} accessibilityLabel={t('editor.closePreview')}>
             <ArrowLeft size={22} color="#fff" />
           </Pressable>
           <Text style={{ flex: 1, ...T.body, fontWeight: T.weight.bold, color: '#fff' }} numberOfLines={1}>
-            Print Preview
+            {t('editor.printPreview')}
           </Text>
-          <Text style={{ ...T.caption1, color: colors.mutedForeground }}>A4</Text>
+          <Text style={{ ...T.caption1, color: colors.mutedForeground }}>{t('editor.a4')}</Text>
         </View>
 
         {isWeb ? (
@@ -427,6 +439,8 @@ interface FullScreenProps {
 }
 
 function FullScreenModal({ visible, onClose, value, onChange, title, placeholder }: FullScreenProps) {
+  const { t } = useTranslation();
+  const { settings } = useSettingsStore();
   // ── [DEBUG] render trace ─────────────────────────────────────────────────
   logger.warn('[DocEditor] RENDER visible=' + visible + ' value.length=' +
     (value?.length ?? 0) + ' valuePreview="' + (value?.slice(0, 50) ?? '') + '"');
@@ -632,7 +646,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
         try {
           const uri = audioRecorder.uri;
           if (!uri) {
-            setMicError('Recording file unavailable');
+            setMicError(t('editor.recordingFileUnavailable'));
             return;
           }
           const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
@@ -656,7 +670,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
             insertTextAtCursor(json.text);
           }
         } catch {
-          setMicError('Transcription failed — check your connection');
+          setMicError(t('editor.transcriptionFailed'));
         } finally {
           setTranscribing(false);
         }
@@ -666,7 +680,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
       }
     } catch (e) {
       if (__DEV__) console.warn('[DocEditor] Mic toggle error:', e);
-      setMicError('Microphone error — check permissions');
+      setMicError(t('editor.micError'));
     }
   };
 
@@ -680,7 +694,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
         minHeight: 40,
         backgroundColor: recorderState.isRecording ? `${colors.destructive}20` : colors.muted,
       }}
-      accessibilityLabel={recorderState.isRecording ? 'Stop recording' : 'Voice dictation'}
+      accessibilityLabel={recorderState.isRecording ? t('editor.stopRecording') : t('editor.voiceDictation')}
     >
       {transcribing ? (
         <ActivityIndicator size={12} color={colors.primary} />
@@ -694,7 +708,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
         color: recorderState.isRecording ? colors.destructive : colors.mutedForeground,
         fontWeight: '600',
       }}>
-        {recorderState.isRecording ? 'Stop' : 'Voice'}
+        {recorderState.isRecording ? t('editor.stop') : t('editor.voice')}
       </Text>
     </Pressable>
   );
@@ -720,16 +734,16 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
       });
       const json = await res.json() as { expandedText?: string; error?: string };
       if (json.error) {
-        setExpandError(json.error || 'Expansion failed');
+        setExpandError(json.error || t('editor.expansionFailed'));
         return;
       }
       if (json.expandedText) {
         setExpandPreview({ original: plainTextToExpand, expanded: json.expandedText });
       } else {
-        setExpandError('Expansion failed — empty response');
+        setExpandError(t('editor.expansionFailedEmpty'));
       }
     } catch {
-      setExpandError('Expansion failed — check your connection');
+      setExpandError(t('editor.expansionFailedConn'));
     } finally {
       setExpanding(false);
     }
@@ -763,7 +777,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
         minHeight: 40,
         backgroundColor: expanding ? `${colors.primary}20` : colors.muted,
       }}
-      accessibilityLabel={expanding ? 'Expanding with AI…' : 'Expand with AI'}
+      accessibilityLabel={expanding ? t('editor.expandingWithAi') : t('editor.expandWithAi')}
     >
       {expanding ? (
         <ActivityIndicator size={12} color={colors.primary} />
@@ -775,7 +789,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
         color: expanding ? colors.primary : colors.mutedForeground,
         fontWeight: '600',
       }}>
-        {expanding ? 'Expanding…' : 'Expand'}
+        {expanding ? t('editor.expanding') : t('editor.expand')}
       </Text>
     </Pressable>
   );
@@ -802,7 +816,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
             <Pressable
               onPress={isWeb ? handleWebSave : onClose}
               style={{ padding: T.space.xs, flexShrink: 0 }}
-              accessibilityLabel="Close"
+              accessibilityLabel={t('common.close')}
             >
               <ArrowLeft size={22} color={colors.foreground} />
             </Pressable>
@@ -820,7 +834,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
               }}
             >
               {renderMicButton()}
-              {renderExpandButton()}
+              {settings.aiDraftAssistance && renderExpandButton()}
               <Pressable
                 onPress={() => setShowPhraseModal(true)}
                 style={{
@@ -829,10 +843,10 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                   minHeight: 40,
                   backgroundColor: colors.muted,
                 }}
-                accessibilityLabel="Phrase Library"
+                accessibilityLabel={t('editor.phraseLibrary')}
               >
                 <BookMarked size={13} color={colors.mutedForeground} />
-                <Text style={{ fontSize: 11, color: colors.mutedForeground, fontWeight: '600' }}>Phrases</Text>
+                <Text style={{ fontSize: 11, color: colors.mutedForeground, fontWeight: '600' }}>{t('editor.phrases')}</Text>
               </Pressable>
               {!isWeb && (
                 <Pressable
@@ -843,10 +857,10 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                     minHeight: 40,
                     backgroundColor: colors.muted,
                   }}
-                  accessibilityLabel="Print preview"
+                  accessibilityLabel={t('editor.printPreview')}
                 >
                   <Eye size={13} color={colors.mutedForeground} />
-                  <Text style={{ fontSize: 11, color: colors.mutedForeground, fontWeight: '600' }}>Preview</Text>
+                  <Text style={{ fontSize: 11, color: colors.mutedForeground, fontWeight: '600' }}>{t('common.preview')}</Text>
                 </Pressable>
               )}
             </ScrollView>
@@ -861,10 +875,10 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                 backgroundColor: NAVY,
                 flexShrink: 0,
               }}
-              accessibilityLabel="Save"
+              accessibilityLabel={t('common.save')}
             >
               <FileText size={14} color="#fff" />
-              <Text style={{ ...T.footnote, color: '#fff', fontWeight: T.weight.bold }}>Save</Text>
+              <Text style={{ ...T.footnote, color: '#fff', fontWeight: T.weight.bold }}>{t('common.save')}</Text>
             </Pressable>
           </View>
 
@@ -877,7 +891,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
             }}>
               <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.destructive }} />
               <Text style={{ ...T.caption1, color: colors.destructive, fontWeight: T.weight.semibold }}>
-                Recording… Tap Stop when done
+                {t('editor.recordingNotice')}
               </Text>
             </View>
           )}
@@ -890,7 +904,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
             }}>
               <ActivityIndicator size={12} color={colors.primary} />
               <Text style={{ ...T.caption1, color: colors.primary, fontWeight: T.weight.semibold }}>
-                Transcribing audio…
+                {t('editor.transcribingAudio')}
               </Text>
             </View>
           )}
@@ -904,7 +918,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
               <Text style={{ flex: 1, ...T.caption1, color: colors.destructive, fontWeight: T.weight.medium }} numberOfLines={2}>
                 {micError}
               </Text>
-              <Pressable onPress={() => setMicError('')} style={{ padding: 4 }} accessibilityLabel="Dismiss error">
+              <Pressable onPress={() => setMicError('')} style={{ padding: 4 }} accessibilityLabel={t('editor.dismissError')}>
                 <X size={14} color={colors.destructive} />
               </Pressable>
             </View>
@@ -918,7 +932,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
             }}>
               <ActivityIndicator size={12} color={colors.primary} />
               <Text style={{ ...T.caption1, color: colors.primary, fontWeight: T.weight.semibold }}>
-                Expanding with AI…
+                {t('editor.expandingWithAi')}
               </Text>
             </View>
           )}
@@ -932,7 +946,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
               <Text style={{ flex: 1, ...T.caption1, color: colors.destructive, fontWeight: T.weight.medium }} numberOfLines={2}>
                 {expandError}
               </Text>
-              <Pressable onPress={() => setExpandError('')} style={{ padding: 4 }} accessibilityLabel="Dismiss error">
+              <Pressable onPress={() => setExpandError('')} style={{ padding: 4 }} accessibilityLabel={t('editor.dismissError')}>
                 <X size={14} color={colors.destructive} />
               </Pressable>
             </View>
@@ -950,8 +964,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                 boxShadow: [{ offsetX: 0, offsetY: 1, blurRadius: 4, color: 'rgba(0,0,0,0.06)' }],
               }}>
                 <Text style={{ ...T.caption2, color: colors.mutedForeground, marginBottom: 8 }}>
-                  Full WYSIWYG editing is available on the mobile app.
-                  Your content is preserved below.
+                  {t('editor.webWysiwygNotice')}
                 </Text>
                 <TextInput
                   value={webValue}
@@ -1077,10 +1090,10 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ ...T.subhead, fontWeight: T.weight.bold, color: colors.foreground }} numberOfLines={1}>
-                    Review AI Expansion
+                    {t('editor.reviewAiExpansion')}
                   </Text>
                   <Text style={{ ...T.caption2, color: colors.mutedForeground }} numberOfLines={1}>
-                    Compare original notes with formal Hindi draft
+                    {t('editor.compareOriginalAi')}
                   </Text>
                 </View>
               </View>
@@ -1094,7 +1107,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                accessibilityLabel="Close"
+                accessibilityLabel={t('common.close')}
               >
                 <X size={16} color={colors.mutedForeground} />
               </Pressable>
@@ -1110,10 +1123,10 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
               <View style={{ gap: 6 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Text style={{ ...T.caption1, fontWeight: T.weight.bold, color: colors.mutedForeground, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    Original
+                    {t('editor.original')}
                   </Text>
                   <Text style={{ ...T.caption2, color: colors.mutedForeground }}>
-                    {expandPreview?.original.length || 0} chars
+                    {t('editor.charsCount', { count: expandPreview?.original.length || 0 })}
                   </Text>
                 </View>
                 <View style={{
@@ -1137,11 +1150,11 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                     <Sparkles size={13} color={colors.primary} />
                     <Text style={{ ...T.caption1, fontWeight: T.weight.bold, color: colors.primary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                      AI Expanded
+                      {t('editor.aiExpanded')}
                     </Text>
                   </View>
                   <Text style={{ ...T.caption2, color: colors.mutedForeground }}>
-                    {expandPreview?.expanded.length || 0} chars
+                    {t('editor.charsCount', { count: expandPreview?.expanded.length || 0 })}
                   </Text>
                 </View>
                 <View style={{
@@ -1179,11 +1192,11 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                   flexDirection: 'row',
                   gap: 8,
                 }}
-                accessibilityLabel="Use Expanded Version"
+                accessibilityLabel={t('editor.useExpandedVersion')}
               >
                 <Sparkles size={16} color={colors.primaryForeground} />
                 <Text style={{ ...T.subhead, fontWeight: T.weight.bold, color: colors.primaryForeground }}>
-                  Use Expanded Version
+                  {t('editor.useExpandedVersion')}
                 </Text>
               </Pressable>
 
@@ -1196,10 +1209,10 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                accessibilityLabel="Keep Original"
+                accessibilityLabel={t('editor.keepOriginal')}
               >
                 <Text style={{ ...T.footnote, fontWeight: T.weight.semibold, color: colors.mutedForeground }}>
-                  Keep Original
+                  {t('editor.keepOriginal')}
                 </Text>
               </Pressable>
             </View>
@@ -1238,6 +1251,7 @@ export function DocumentEditor({
   error = false,
   accessibilityLabel,
 }: DocumentEditorProps) {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [printPreview, setPrintPreview] = useState(false);
   const { colorScheme } = useColorScheme();
@@ -1261,12 +1275,12 @@ export function DocumentEditor({
         }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: T.space.xs }}>
             <FileText size={13} color={colors.mutedForeground} />
-            <Text style={{ ...T.caption2, color: colors.mutedForeground, fontWeight: T.weight.medium }}>Document</Text>
+            <Text style={{ ...T.caption2, color: colors.mutedForeground, fontWeight: T.weight.medium }}>{t('editor.document')}</Text>
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: T.space.sm }}>
             <Text style={{ ...T.caption2, color: colors.mutedForeground }}>
-              {wordCount} {wordCount === 1 ? 'word' : 'words'}
+              {t('editor.wordCount', { count: wordCount })}
             </Text>
 
             <Pressable
@@ -1277,10 +1291,10 @@ export function DocumentEditor({
                 borderRadius: 6, backgroundColor: colors.card,
                 borderWidth: 1, borderColor: colors.border,
               }}
-              accessibilityLabel="Print preview"
+              accessibilityLabel={t('editor.printPreview')}
             >
               <Eye size={12} color={colors.mutedForeground} />
-              <Text style={{ ...T.caption2, color: colors.mutedForeground, fontWeight: T.weight.medium }}>Preview</Text>
+              <Text style={{ ...T.caption2, color: colors.mutedForeground, fontWeight: T.weight.medium }}>{t('common.preview')}</Text>
             </Pressable>
 
             <Pressable
@@ -1290,10 +1304,10 @@ export function DocumentEditor({
                 paddingHorizontal: T.space.sm, paddingVertical: T.space.xs,
                 borderRadius: 6, backgroundColor: NAVY,
               }}
-              accessibilityLabel="Open full screen editor"
+              accessibilityLabel={t('editor.openFullScreenEditor')}
             >
               <Maximize2 size={12} color="#fff" />
-              <Text style={{ ...T.caption2, color: '#fff', fontWeight: T.weight.semibold }}>Edit</Text>
+              <Text style={{ ...T.caption2, color: '#fff', fontWeight: T.weight.semibold }}>{t('common.edit')}</Text>
             </Pressable>
           </View>
         </View>
@@ -1301,7 +1315,7 @@ export function DocumentEditor({
         {/* Read-only text preview */}
         <Pressable
           onPress={() => setFullScreen(true)}
-          accessibilityLabel={accessibilityLabel ?? `${title} editor — tap to edit`}
+          accessibilityLabel={accessibilityLabel ?? t('editor.editorTapToEdit', { title })}
           style={{
             minHeight,
             backgroundColor: colors.card,

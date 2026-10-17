@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View, ActivityIndicator,
 } from 'react-native';
@@ -15,6 +16,7 @@ import {
 
 // ─── Edit mode: single hamlet ────────────────────────────────────────────────
 function EditHamletScreen({ gpId, editId }: { gpId: string; editId: string }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({ name: '', population: '', remarks: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -41,7 +43,7 @@ function EditHamletScreen({ gpId, editId }: { gpId: string; editId: string }) {
   };
 
   const handleSave = async () => {
-    if (!form.name.trim()) { setError('Name is required'); return; }
+    if (!form.name.trim()) { setError(t('halka.hamlet.errorNameRequired')); return; }
     setSaving(true);
     try {
       await updateHamlet(editId, {
@@ -52,7 +54,7 @@ function EditHamletScreen({ gpId, editId }: { gpId: string; editId: string }) {
       });
       router.back();
     } catch {
-      setError('Failed to update. Please try again.');
+      setError(t('halka.hamlet.errorUpdateFailed'));
       setSaving(false);
     }
   };
@@ -67,10 +69,10 @@ function EditHamletScreen({ gpId, editId }: { gpId: string; editId: string }) {
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Edit Hamlet / Majra"
+      <AppHeader title={t('halka.hamlet.editTitle')}
         showBack
       />
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
+      <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1">
 
         <ScrollView
           contentContainerClassName="px-6 py-6 gap-5"
@@ -80,22 +82,22 @@ function EditHamletScreen({ gpId, editId }: { gpId: string; editId: string }) {
           <View className="bg-card border border-border rounded-2xl p-4 gap-4" style={{ borderCurve: 'continuous' }}>
             <View className="gap-1.5">
               <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Name <Text className="text-destructive">*</Text>
+                {t('halka.person.fieldName')} <Text className="text-destructive">*</Text>
               </Text>
-              <Input value={form.name} onChangeText={update('name')} placeholder="Hamlet name" />
+              <Input value={form.name} onChangeText={update('name')} placeholder={t('halka.hamlet.placeholderName')} />
             </View>
 
             <View className="gap-1.5">
               <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Population (Optional)
+                {t('halka.hamlet.fieldPopulation')}
               </Text>
-              <Input type="number" value={form.population} onChangeText={update('population')} placeholder="Approximate population" />
+              <Input type="number" value={form.population} onChangeText={update('population')} placeholder={t('halka.hamlet.placeholderPopulation')} />
             </View>
 
             <View className="gap-1.5">
-              <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Remarks</Text>
+              <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldRemarks')}</Text>
               <Input type="multiline" value={form.remarks} onChangeText={update('remarks')}
-                placeholder="Optional remarks…" numberOfLines={2} />
+                placeholder={t('halka.person.placeholderRemarks')} numberOfLines={2} />
             </View>
           </View>
 
@@ -108,7 +110,7 @@ function EditHamletScreen({ gpId, editId }: { gpId: string; editId: string }) {
           >
             <Save size={18} color="#fff" />
             <Text className="text-primary-foreground font-semibold text-base">
-              {saving ? 'Saving…' : 'Update Hamlet'}
+              {saving ? t('common.saving') : t('halka.hamlet.btnUpdate')}
             </Text>
           </Pressable>
         </ScrollView>
@@ -130,6 +132,7 @@ export default function AddHamletScreen() {
 }
 
 function AddHamletBatchScreen({ gpId }: { gpId: string }) {
+  const { t } = useTranslation();
   const [count, setCount] = useState(1);
   const [hamlets, setHamlets] = useState([{ name: '', population: '', remarks: '' }]);
   const [saving, setSaving] = useState(false);
@@ -172,7 +175,7 @@ function AddHamletBatchScreen({ gpId }: { gpId: string }) {
 
   const handleSave = async () => {
     const empty = hamlets.findIndex((h) => !h.name.trim());
-    if (empty >= 0) { setError(`Hamlet ${empty + 1} name is required`); return; }
+    if (empty >= 0) { setError(t('halka.hamlet.errorHamletNameRequired', { index: empty + 1 })); return; }
     setSaving(true);
     try {
       for (const h of hamlets) {
@@ -185,7 +188,7 @@ function AddHamletBatchScreen({ gpId }: { gpId: string }) {
       }
       router.back();
     } catch {
-      setError('Failed to save hamlets. Please try again.');
+      setError(t('halka.hamlet.errorSaveFailed'));
       setSaving(false);
     }
   };
@@ -196,18 +199,18 @@ function AddHamletBatchScreen({ gpId }: { gpId: string }) {
       <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
-            <AlertDialogDescription>Unsaved changes will be lost.</AlertDialogDescription>
+            <AlertDialogTitle>{t('common.unsavedTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('common.unsavedDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setShowDiscardDialog(false)}>Keep editing</AlertDialogCancel>
-            <AlertDialogAction onPress={() => { setShowDiscardDialog(false); router.back(); }}>Discard</AlertDialogAction>
+            <AlertDialogCancel onPress={() => setShowDiscardDialog(false)}>{t('common.stay')}</AlertDialogCancel>
+            <AlertDialogAction onPress={() => { setShowDiscardDialog(false); router.back(); }}>{t('common.discard')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      <AppHeader title="Add Hamlets / Majre" onBack={handleBackPress} />
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
+      <AppHeader title={t('halka.hamlet.addTitle')} onBack={handleBackPress} />
+      <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1">
 
         <ScrollView
           contentContainerClassName="px-6 py-6 gap-6"
@@ -217,7 +220,7 @@ function AddHamletBatchScreen({ gpId }: { gpId: string }) {
           {/* Count selector */}
           <View className="gap-2">
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              How many Hamlets do you want to add?
+              {t('halka.hamlet.countPrompt')}
             </Text>
             <View className="flex-row items-center gap-4">
               <Pressable
@@ -243,24 +246,24 @@ function AddHamletBatchScreen({ gpId }: { gpId: string }) {
               className="bg-card border border-border rounded-2xl p-4 gap-4"
               style={{ borderCurve: 'continuous' }}
             >
-              <Text className="text-sm font-semibold text-foreground">Hamlet {idx + 1}</Text>
+              <Text className="text-sm font-semibold text-foreground">{t('halka.hamlet.hamletNumber', { index: idx + 1 })}</Text>
 
               <View className="gap-1.5">
                 <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Name <Text className="text-destructive">*</Text>
+                  {t('halka.person.fieldName')} <Text className="text-destructive">*</Text>
                 </Text>
-                <Input value={h.name} onChangeText={(v) => updateField(idx, 'name', v)} placeholder="Hamlet name" />
+                <Input value={h.name} onChangeText={(v) => updateField(idx, 'name', v)} placeholder={t('halka.hamlet.placeholderName')} />
               </View>
 
               <View className="gap-1.5">
-                <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Population (Optional)</Text>
-                <Input type="number" value={h.population} onChangeText={(v) => updateField(idx, 'population', v)} placeholder="Approximate population" />
+                <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.hamlet.fieldPopulation')}</Text>
+                <Input type="number" value={h.population} onChangeText={(v) => updateField(idx, 'population', v)} placeholder={t('halka.hamlet.placeholderPopulation')} />
               </View>
 
               <View className="gap-1.5">
-                <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Remarks</Text>
+                <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldRemarks')}</Text>
                 <Input type="multiline" value={h.remarks} onChangeText={(v) => updateField(idx, 'remarks', v)}
-                  placeholder="Optional remarks…" numberOfLines={2} />
+                  placeholder={t('halka.person.placeholderRemarks')} numberOfLines={2} />
               </View>
             </View>
           ))}
@@ -275,7 +278,7 @@ function AddHamletBatchScreen({ gpId }: { gpId: string }) {
           >
             <Save size={18} color="#fff" />
             <Text className="text-primary-foreground font-semibold text-base">
-              {saving ? 'Saving…' : `Save ${count} Hamlet${count > 1 ? 's' : ''}`}
+              {saving ? t('common.saving') : t('halka.hamlet.btnSave', { count })}
             </Text>
           </Pressable>
         </ScrollView>

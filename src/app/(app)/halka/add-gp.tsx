@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView, Pressable, ScrollView, Text, View,
 } from 'react-native';
@@ -16,6 +17,7 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 
 export default function AddGramPanchayatScreen() {
+  const { t } = useTranslation();
   const { workspace } = useWorkspace();
   const params = useLocalSearchParams<{ editId?: string }>();
   const isEdit = !!params.editId;
@@ -57,8 +59,8 @@ export default function AddGramPanchayatScreen() {
   };
 
   const handleSave = async () => {
-    if (!form.name.trim()) { setError('Gram Panchayat name is required'); return; }
-    if (!form.tehsil.trim()) { setError('Tehsil is required'); return; }
+    if (!form.name.trim()) { setError(t('halka.errorGPNameRequired')); return; }
+    if (!form.tehsil.trim()) { setError(t('halka.errorTehsilRequired')); return; }
     setSaving(true);
     try {
       if (isEdit && params.editId) {
@@ -83,17 +85,17 @@ export default function AddGramPanchayatScreen() {
       // setSaving(false) intentionally omitted here — component unmounts on navigation
       router.back();
     } catch {
-      setError('Failed to save. Please try again.');
+      setError(t('halka.errorSaveFailed'));
       setSaving(false);
     }
   };
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title={isEdit ? 'Edit Gram Panchayat' : 'Add Gram Panchayat'}
+      <AppHeader title={isEdit ? t('halka.editGPTitle') : t('halka.addGPTitle')}
         showBack
       />
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
+      <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1">
 
         <ScrollView
           contentContainerClassName="px-6 py-6 gap-5"
@@ -103,41 +105,41 @@ export default function AddGramPanchayatScreen() {
           {/* GP Name */}
           <View className="gap-1.5">
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Gram Panchayat Name <Text className="text-destructive">*</Text>
+              {t('halka.fieldGPName')} <Text className="text-destructive">*</Text>
             </Text>
-            <Input value={form.name} onChangeText={update('name')} placeholder="Enter GP name" />
+            <Input value={form.name} onChangeText={update('name')} placeholder={t('halka.placeholderGPName')} />
           </View>
 
           {/* Tehsil */}
           <View className="gap-1.5">
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Tehsil <Text className="text-destructive">*</Text>
+              {t('halka.fieldTehsil')} <Text className="text-destructive">*</Text>
             </Text>
-            <Input value={form.tehsil} onChangeText={update('tehsil')} placeholder="Enter tehsil" />
+            <Input value={form.tehsil} onChangeText={update('tehsil')} placeholder={t('halka.placeholderTehsil')} />
           </View>
 
           {/* Auto-filled fields */}
           <View className="bg-secondary rounded-2xl p-4 gap-3" style={{ borderCurve: 'continuous' }}>
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Auto-filled from Workspace
+              {t('halka.autoFilledFromWorkspace')}
             </Text>
             {[
-              { label: 'Police Station', value: form.police_station, key: 'police_station' as const },
-              { label: 'District', value: form.district, key: 'district' as const },
-              { label: 'State', value: form.state, key: 'state' as const },
+              { label: t('halka.fieldPoliceStation'), value: form.police_station, key: 'police_station' as const },
+              { label: t('halka.fieldDistrict'), value: form.district, key: 'district' as const },
+              { label: t('halka.fieldState'), value: form.state, key: 'state' as const },
             ].map(({ label, value, key }) => (
               <View key={key} className="gap-1">
                 <Text className="text-xs text-muted-foreground">{label}</Text>
-                <Input value={value} onChangeText={update(key)} placeholder={`Enter ${label.toLowerCase()}`} />
+                <Input value={value} onChangeText={update(key)} placeholder={t('halka.placeholderEnter', { field: label.toLowerCase() })} />
               </View>
             ))}
           </View>
 
           {/* Remarks */}
           <View className="gap-1.5">
-            <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Remarks</Text>
+            <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.fieldRemarks')}</Text>
             <Input type="multiline" value={form.remarks} onChangeText={update('remarks')}
-              placeholder="Optional remarks…" numberOfLines={3} />
+              placeholder={t('halka.placeholderRemarks')} numberOfLines={3} />
           </View>
 
           {error ? (
@@ -152,7 +154,7 @@ export default function AddGramPanchayatScreen() {
           >
             <Save size={18} color="#fff" />
             <Text className="text-primary-foreground font-semibold text-base">
-              {saving ? 'Saving…' : isEdit ? 'Update' : 'Save Gram Panchayat'}
+              {saving ? t('common.saving') : isEdit ? t('common.update') : t('halka.btnSaveGP')}
             </Text>
           </Pressable>
         </ScrollView>

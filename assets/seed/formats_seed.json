@@ -2333,6 +2333,184 @@
         }
       ],
       "last_updated": "2026-07-17"
+    },
+    {
+      "id": "fard_baramadgi",
+      "title": "फर्द बरामदगी",
+      "format_type": "Case Diary",
+      "category": "Case Diary",
+      "sys_category": "Case Diary",
+      "vivran": "फर्द बरामदगी\nथाना: {{PoliceStation}} मु.अ.सं.: {{FIRNumber}} धारा: {{Sections}} दिनांक: {{Date}}\nस्थान: ____ कार्यवाही प्रारंभ: ____ बजे, समाप्त: ____ बजे\nआज दिनांक {{Date}} को मैं {{OfficerName}} (पद) थाना {{PoliceStation}} अभियुक्त ____ पुत्र ____ निवासी ____ की गिरफ्तारी/पूछताछ/निशानदेही पर, जो उसने स्वेच्छा से बताया, कि ____ , उसके साथ गवाहान सहित ____ स्थान पर पहुँचा।\nगवाहान (स्वतंत्र):\n1. ____ पुत्र ____ निवासी ____ पहचान: ____\n2. ____ पुत्र ____ निवासी ____ पहचान: ____\nस्थान का वर्णन (घटनास्थल से दिशा/दूरी/पहचान चिह्न): ____\nअभियुक्त के बताए अनुसार उक्त स्थान से निम्न वस्तु बरामद हुई:\nक्र. | वस्तु का विवरण (संख्या, वज़न, माप, कंपनी, रंग, नंबर/IMEI/चेसिस) | विशेष पहचान चिह्न\n1 | ____ | ____\nअभियुक्त का कथन (उसके शब्दों में): ____\nबरामद माल को ____ में रखकर ____ मुहर से सील किया गया। नमूना मुहर ____ अलग रखी गई। पर्ची पर गवाहान के हस्ताक्षर कराए गए।\nई-साक्ष्य ऐप से वीडियोग्राफी: हाँ / नहीं (कारण: ____ ) अपलोड संख्या/रसीद: ____\nफर्द पढ़कर सुनाई गई, सही पाई जाने पर सभी के हस्ताक्षर कराए गए। एक प्रति अभियुक्त/कब्ज़ेदार को दी गई।\nमाल मालखाना में जमा: रजिस्टर संख्या ____ दिनांक ____\nहस्ताक्षर: गवाह 1 ____ गवाह 2 ____ अभियुक्त ____ विवेचक (नाम/पद) {{OfficerName}}",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "फर्द",
+        "बरामदगी",
+        "जब्ती",
+        "BNSS 105",
+        "BNSS 106",
+        "BNSS 185"
+      ],
+      "keys": [
+        {
+          "key_name": "FIRNumber",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 1,
+          "default_value": "@FIR.fir_number"
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 2,
+          "default_value": "@FIR.section"
+        },
+        {
+          "key_name": "Date",
+          "label": "दिनांक",
+          "field_type": "date",
+          "is_required": 1,
+          "sort_order": 3,
+          "default_value": "@LAST_CD.preparation_date"
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 4
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "विवेचक (नाम/पद)",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 5
+        }
+      ],
+      "last_updated": "2026-10-07"
+    },
+    {
+      "id": "fard_jamatalashi",
+      "title": "फर्द जामातलाशी/जब्ती",
+      "format_type": "Case Diary",
+      "category": "Case Diary",
+      "sys_category": "Case Diary",
+      "vivran": "फर्द जामातलाशी / जब्ती\nथाना: {{PoliceStation}} मु.अ.सं.: {{FIRNumber}} धारा: {{Sections}} दिनांक: {{Date}} समय: ____\nतलाशी का स्थान/व्यक्ति: ____ तलाशी का आधार (BNSS 185/वारंट/आपात): ____\nगवाहान (स्वतंत्र): 1. ____ 2. ____\nतलाशी से पूर्व स्वयं और दल की तलाशी देकर तलाशी ली गई (हाँ/नहीं): ____\nतलाशी में मिली वस्तुएँ (क्र. | विवरण | कहाँ से मिली | पहचान चिह्न): ____\nजब्ती की कार्यवाही (BNSS 106): ____ सीलिंग विवरण: ____ नमूना मुहर: ____\nई-साक्ष्य वीडियोग्राफी (BNSS 105): हाँ/नहीं, अपलोड रसीद: ____\nतलाशी लेने वाले का हस्ताक्षर, गवाहान के हस्ताक्षर, कब्ज़ेदार के हस्ताक्षर: ____ प्रति कब्ज़ेदार को दी गई: हाँ/नहीं",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "फर्द",
+        "बरामदगी",
+        "जब्ती",
+        "BNSS 105",
+        "BNSS 106",
+        "BNSS 185"
+      ],
+      "keys": [
+        {
+          "key_name": "FIRNumber",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 1,
+          "default_value": "@FIR.fir_number"
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 2,
+          "default_value": "@FIR.section"
+        },
+        {
+          "key_name": "Date",
+          "label": "दिनांक",
+          "field_type": "date",
+          "is_required": 1,
+          "sort_order": 3,
+          "default_value": "@LAST_CD.preparation_date"
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 4
+        }
+      ],
+      "last_updated": "2026-10-07"
+    },
+    {
+      "id": "fard_jabti",
+      "title": "फर्द जब्ती चल संपत्ति/वाहन/मोबाइल",
+      "format_type": "Case Diary",
+      "category": "Case Diary",
+      "sys_category": "Case Diary",
+      "vivran": "फर्द जब्ती\nथाना: {{PoliceStation}} मु.अ.सं.: {{FIRNumber}} धारा: {{Sections}} दिनांक: {{Date}}\nजब्त वस्तु: ____ (वाहन: नं./चेसिस/इंजन; मोबाइल: IMEI 1/2, सिम; बैंक: खाता/UTR)\nजब्ती का स्थान और समय: ____ जब्ती का कारण/संबंध (अपराध से): ____\nकब्ज़ेदार का नाम/कथन: ____\nबैंक/डिजिटल साक्ष्य हो तो BSA 63 प्रमाणपत्र: ____ हैश/फोरेंसिक इमेज: ____\nसीलिंग: ____ गवाहान: 1. ____ 2. ____\nहस्ताक्षर: ____",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "फर्द",
+        "बरामदगी",
+        "जब्ती",
+        "BNSS 105",
+        "BNSS 106",
+        "BNSS 185"
+      ],
+      "keys": [
+        {
+          "key_name": "FIRNumber",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 1,
+          "default_value": "@FIR.fir_number"
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 2,
+          "default_value": "@FIR.section"
+        },
+        {
+          "key_name": "Date",
+          "label": "दिनांक",
+          "field_type": "date",
+          "is_required": 1,
+          "sort_order": 3,
+          "default_value": "@LAST_CD.preparation_date"
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 4
+        }
+      ],
+      "last_updated": "2026-10-07"
     }
   ]
 }

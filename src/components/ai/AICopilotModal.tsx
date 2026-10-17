@@ -25,11 +25,15 @@ import {
   Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { X, Send, Bot, Brain, Cpu, Mic, Paperclip } from 'lucide-react-native';
+import { X, Send, Bot, Brain, Cpu } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import type { RelativePathString } from 'expo-router';
 import { useColorScheme } from 'nativewind';
+import { useTranslation } from 'react-i18next';
 import { THEME } from '@/lib/theme';
+import { generateUUID } from '@/lib/db/database';
+import { openSection } from '@/lib/law/openLaw';
+import type { ActId } from '@/lib/law/lawLibrary';
 
 import { AICopilotService, QUICK_ACTIONS } from '@/ai/AICopilotService';
 import { AIContextBuilder } from '@/ai/AIContextBuilder';
@@ -94,6 +98,7 @@ import type { Level7IntelligenceReport } from '@/ai/level7/L7Types';
 
 // Store draft for navigation hand-off
 import { aiDraftStore } from '@/lib/ai/aiDraftStore';
+import { useSettingsStore } from '@/hooks/useSettingsStore';
 
 interface Props {
   visible: boolean;
@@ -102,11 +107,13 @@ interface Props {
 }
 
 export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const colors = THEME[colorScheme ?? 'light'];
   const router = useRouter();
   const listRef = useRef<FlatList<AIMessage>>(null);
+  const { settings } = useSettingsStore();
 
   const [service, setService] = useState<AICopilotService | null>(null);
   const [messages, setMessages] = useState<AIMessage[]>([]);
@@ -170,6 +177,10 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
     (async () => {
       const svc = await AICopilotService.create(activeFirId);
       if (cancelled) return;
+      svc.setAIPreferences({
+        reportGeneration: settings.aiReportGeneration,
+        restrictCaseData: settings.aiRestrictCaseData,
+      });
       setService(svc);
       setMessages([]);
       setSuggestedActions([]);
@@ -217,7 +228,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       } else {
         const welcome = mem.addMessage({
           role: 'assistant',
-          content: `Hello! I am your AI Investigation Copilot.\n\n${AIContextBuilder.formatContextHeader(snapshot)}\n\nHow can I assist you today? Use the quick actions below or type your question.`,
+          content: `${t('ai.welcomeGreeting')}\n\n${AIContextBuilder.formatContextHeader(snapshot)}\n\n${t('ai.welcomeHelp')}`,
         });
         if (!cancelled) {
           setMessages([welcome]);
@@ -228,6 +239,15 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
 
     return () => { cancelled = true; };
   }, [visible, activeFirId]);
+
+  useEffect(() => {
+    if (service) {
+      service.setAIPreferences({
+        reportGeneration: settings.aiReportGeneration,
+        restrictCaseData: settings.aiRestrictCaseData,
+      });
+    }
+  }, [service, settings.aiReportGeneration, settings.aiRestrictCaseData]);
 
   // ── Open draft in editor ──────────────────────────────────────────────────────
   const handleOpenDraft = useCallback(
@@ -240,6 +260,28 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       }
     },
     [onClose, router]
+  );
+
+  // ── Save message to Case Diary ───────────────────────────────────────────────
+  const handleSaveMessageToDiary = useCallback(
+    (msg: AIMessage) => {
+      if (!activeFirId) return;
+      const draft: AIDraft = {
+        id: generateUUID(),
+        type: 'case-diary',
+        title: 'From AI Copilot',
+        content: msg.content,
+        createdAt: Date.now(),
+        firId: activeFirId,
+        sections: [],
+      };
+      aiDraftStore.setDraft(draft);
+      onClose();
+      setTimeout(() => {
+        router.push(`/(app)/mukadma/${activeFirId}/add-case-diary` as RelativePathString);
+      }, 300);
+    },
+    [activeFirId, onClose, router]
   );
 
   // ── Level-5: load report (shared by multiple panels) ─────────────────────────
@@ -520,6 +562,15 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
   // ── Quick action ──────────────────────────────────────────────────────────────
   const handleQuickAction = useCallback(
     async (actionId: QuickActionId) => {
+      // Find section opens Law Library directly
+      if (actionId === 'find-section') {
+        onClose();
+        setTimeout(() => {
+          router.push('/(app)/knowledge/law' as RelativePathString);
+        }, 150);
+        return;
+      }
+
       // Intercept Level-5 quick actions — open panels directly
       switch (actionId) {
         case 'l5-memory':  handleOpenMemory();   return;
@@ -579,6 +630,124 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
   // ── Suggested follow-up ───────────────────────────────────────────────────────
   const handleSuggestedAction = useCallback(
     (action: string) => {
+      // Suggested action chips handling: open SOP in Knowledge detail or Checklist tab
+      if (action.includes('चेकलिस्ट खोलें') || action.startsWith('चेकलिस्ट खोलें')) {
+        let sopId: string | null = null;
+        const m = action.match(/sys-sop-[a-z0-9-]+/i) || action.match(/sop-[a-z0-9-]+/i);
+        if (m) {
+          sopId = m[0];
+        } else {
+          // Inspect last assistant message for a SOP ID
+          for (let i = messages.length - 1; i >= 0; i--) {
+            const msg = messages[i];
+            if (msg.role === 'assistant') {
+              const found = msg.content.match(/sys-sop-[a-z0-9-]+/i) || msg.content.match(/sop-[a-z0-9-]+/i);
+              if (found) {
+                sopId = found[0];
+                break;
+              }
+            }
+          }
+        }
+
+        if (sopId) {
+          onClose();
+          setTimeout(() => {
+            router.push(`/(app)/knowledge/${sopId}?tab=checklist` as any);
+          }, 150);
+          return;
+        }
+      }
+
+      if (action.includes('पूरा SOP खोलें') || action.startsWith('पूरा SOP खोलें') || action.includes('SOP खोलें')) {
+        let sopId: string | null = null;
+        const m = action.match(/sys-sop-[a-z0-9-]+/i) || action.match(/sop-[a-z0-9-]+/i);
+        if (m) {
+          sopId = m[0];
+        } else {
+          // Inspect last assistant message for a SOP ID
+          const lastAssistantMsg = [...messages].reverse().find((msg) => msg.role === 'assistant');
+          if (lastAssistantMsg) {
+            const idMatch = lastAssistantMsg.content.match(/\b(sys-sop-[a-z0-9-]+)\b/i);
+            if (idMatch) {
+              sopId = idMatch[1];
+            }
+          }
+        }
+        if (sopId) {
+          onClose();
+          setTimeout(() => {
+            router.push(`/(app)/knowledge/${sopId}` as RelativePathString);
+          }, 150);
+          return;
+        }
+      }
+
+      // Suggested action chips handling: open circular in Knowledge detail
+      if (action === 'परिपत्र खोलें' || action.startsWith('परिपत्र खोलें') || action.includes('परिपत्र खोलें')) {
+        let circId: string | null = null;
+        const m = action.match(/sys-circ-[a-z0-9-]+/i);
+        if (m) {
+          circId = m[0];
+        } else {
+          // Inspect last assistant message for a circular ID or number
+          const lastAssistantMsg = [...messages].reverse().find((msg) => msg.role === 'assistant');
+          if (lastAssistantMsg) {
+            const idMatch = lastAssistantMsg.content.match(/\b(sys-circ-[a-z0-9-]+)\b/i);
+            if (idMatch) {
+              circId = idMatch[1];
+            } else if (lastAssistantMsg.content.includes('12/2012')) {
+              circId = 'sys-circ-dg-12-2012';
+            } else if (lastAssistantMsg.content.includes('14/2012')) {
+              circId = 'sys-circ-ardh-14-2012';
+            } else if (lastAssistantMsg.content.includes('15/2012')) {
+              circId = 'sys-circ-ardh-dg-15-2012';
+            }
+          }
+        }
+        if (circId) {
+          onClose();
+          setTimeout(() => {
+            router.push(`/(app)/knowledge/${circId}` as RelativePathString);
+          }, 150);
+          return;
+        }
+      }
+
+      if (action === 'धारा खोलें' || action.startsWith('धारा खोलें')) {
+        const m = action.match(/\b(BNS|BNSS|BSA)\s+(\d+)\b/i);
+        if (m) {
+          onClose();
+          openSection(router, m[1].toUpperCase() as ActId, parseInt(m[2], 10));
+          return;
+        }
+        // If bare 'धारा खोलें', inspect the last assistant message for a section to open
+        const lastAssistantMsg = [...messages].reverse().find((msg) => msg.role === 'assistant');
+        if (lastAssistantMsg) {
+          const secMatch = lastAssistantMsg.content.match(/\b(BNS|BNSS|BSA)\s+(\d+)\b/i);
+          if (secMatch) {
+            onClose();
+            openSection(router, secMatch[1].toUpperCase() as ActId, parseInt(secMatch[2], 10));
+            return;
+          }
+        }
+      }
+
+      if (action === 'तत्व जाँचें' || action === 'FIR में क्या लिखें') {
+        const lastAssistantMsg = [...messages].reverse().find((msg) => msg.role === 'assistant');
+        if (lastAssistantMsg) {
+          const secMatch = lastAssistantMsg.content.match(/\b(BNS|BNSS|BSA)\s+(\d+)\b/i);
+          if (secMatch) {
+            handleSend(`${action} (${secMatch[1]} ${secMatch[2]})`);
+            return;
+          }
+        }
+      }
+
+      if (action.includes('धारा खोजें') || action.toLowerCase().includes('find section')) {
+        handleQuickAction('find-section');
+        return;
+      }
       // Map suggestion text to quick action id if possible
       const match = QUICK_ACTIONS.find((a) =>
         a.label.toLowerCase() === action.toLowerCase()
@@ -642,7 +811,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
           {/* Minimal avatar: 28dp circle */}
           <View style={{
             width: 28, height: 28, borderRadius: 14,
-            backgroundColor: '#1E3A8A',
+            backgroundColor: colors.primary,
             alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
           }}>
@@ -655,18 +824,18 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
               numberOfLines={1}
               style={{ fontSize: 15, fontWeight: '700', color: colors.foreground, letterSpacing: -0.3 }}
             >
-              AI Investigation Copilot
+              {t('ai.title')}
             </Text>
             <Text style={{ fontSize: 10, color: colors.mutedForeground, marginTop: 1 }}>
-              Read-only · Drafts require confirmation
+              {t('ai.subtitle')}
             </Text>
           </View>
 
           {/* Analysis / Intel buttons — only when FIR is active */}
           {activeFirId && (
             <View style={{ flexDirection: 'row', gap: 5 }}>
-              <HeaderActionBtn icon={Brain} label="Analysis" badge={criticalReasoning}    onPress={handleOpenReasoning}    colors={colors} />
-              <HeaderActionBtn icon={Cpu}   label="Intel"    badge={criticalIntelligence} onPress={handleOpenIntelligence} colors={colors} />
+              <HeaderActionBtn icon={Brain} label={t('ai.analysis')} badge={criticalReasoning}    onPress={handleOpenReasoning}    colors={colors} />
+              <HeaderActionBtn icon={Cpu}   label={t('ai.intel')}    badge={criticalIntelligence} onPress={handleOpenIntelligence} colors={colors} />
             </View>
           )}
 
@@ -674,7 +843,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
           <Pressable
             onPress={onClose}
             accessibilityRole="button"
-            accessibilityLabel="Close AI Copilot"
+            accessibilityLabel={t('ai.closeCopilot')}
             className="active:opacity-50"
             style={{
               width: 30, height: 30, borderRadius: 15,
@@ -719,7 +888,11 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
               data={messages}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
-                <AIMessageBubble message={item} onOpenDraft={handleOpenDraft} />
+                <AIMessageBubble
+                  message={item}
+                  onOpenDraft={handleOpenDraft}
+                  onSaveToDiary={activeFirId ? () => handleSaveMessageToDiary(item) : undefined}
+                />
               )}
               style={{ flex: 1 }}
               contentContainerStyle={{
@@ -738,7 +911,9 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
                   {investigationCtx && nextActionReport && (
                     <InvestigationDashboard ctx={investigationCtx} report={nextActionReport} />
                   )}
-                  <AISuggestedPrompts hasFir={!!activeFirId} onSend={handleSend} />
+                  {settings.aiSuggestions && (
+                    <AISuggestedPrompts hasFir={!!activeFirId} onSend={handleSend} />
+                  )}
                 </View>
               }
             />
@@ -747,7 +922,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
             <View style={{ flexShrink: 0, backgroundColor: colors.card }}>
 
               {/* Suggested follow-up actions — only after first AI reply */}
-              {hasMessages && suggestedActions.length > 0 && (
+              {settings.aiSuggestions && hasMessages && suggestedActions.length > 0 && (
                 <View style={{ borderTopWidth: 1, borderTopColor: colors.border }}>
                   <AISuggestedActions
                     actions={suggestedActions}
@@ -758,7 +933,11 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
               )}
 
               {/* Quick action chips — single horizontal row above composer */}
-              <AIQuickChips onAction={handleQuickAction} disabled={isProcessing} />
+              <AIQuickChips
+                onAction={handleQuickAction}
+                disabled={isProcessing}
+                hideDraftActions={!settings.aiDraftAssistance}
+              />
 
               {/* Composer */}
               <StickyComposer
@@ -850,7 +1029,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
 
       {/* ── Level-6 panels ─────────────────────────────────────────────────── */}
       <L6PanelShell
-        title="Readiness Dashboard"
+        title={t('ai.panel.readiness')}
         visible={l6ReadinessVisible}
         onClose={() => setL6ReadinessVisible(false)}
         onRefresh={() => { setLevel6Report(null); ensureLevel6(); }}
@@ -860,7 +1039,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       </L6PanelShell>
 
       <L6PanelShell
-        title="Risk Heatmap"
+        title={t('ai.panel.heatmap')}
         visible={l6HeatmapVisible}
         onClose={() => setL6HeatmapVisible(false)}
         onRefresh={() => { setLevel6Report(null); ensureLevel6(); }}
@@ -870,7 +1049,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       </L6PanelShell>
 
       <L6PanelShell
-        title="Timeline Replay"
+        title={t('ai.panel.timelineReplay')}
         visible={l6TimelineVisible}
         onClose={() => setL6TimelineVisible(false)}
         onRefresh={() => { setLevel6Report(null); ensureLevel6(); }}
@@ -880,7 +1059,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       </L6PanelShell>
 
       <L6PanelShell
-        title="Smart Reminders"
+        title={t('ai.panel.smartReminders')}
         visible={l6RemindersVisible}
         onClose={() => setL6RemindersVisible(false)}
         onRefresh={() => { setLevel6Report(null); ensureLevel6(); }}
@@ -890,7 +1069,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       </L6PanelShell>
 
       <L6PanelShell
-        title="Dependency Graph"
+        title={t('ai.panel.dependencyGraph')}
         visible={l6DependencyVisible}
         onClose={() => setL6DependencyVisible(false)}
         onRefresh={() => { setLevel6Report(null); ensureLevel6(); }}
@@ -900,7 +1079,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       </L6PanelShell>
 
       <L6PanelShell
-        title="Decision Assistant"
+        title={t('ai.panel.decisionAssistant')}
         visible={l6DecisionVisible}
         onClose={() => setL6DecisionVisible(false)}
         onRefresh={() => { setLevel6Report(null); ensureLevel6(); }}
@@ -910,7 +1089,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       </L6PanelShell>
 
       <L6PanelShell
-        title="Supervisor View"
+        title={t('ai.panel.supervisorView')}
         visible={l6SupervisorVisible}
         onClose={() => setL6SupervisorVisible(false)}
         onRefresh={() => { setLevel6Report(null); ensureLevel6(); }}
@@ -922,7 +1101,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
       </L6PanelShell>
 
       <L6PanelShell
-        title="Multi-FIR Links"
+        title={t('ai.panel.multiFirLinks')}
         visible={l6MultiFIRVisible}
         onClose={() => setL6MultiFIRVisible(false)}
         onRefresh={() => { setLevel6Report(null); ensureLevel6(); }}
@@ -1024,7 +1203,7 @@ function HeaderActionBtn({
       {badge > 0 && (
         <View style={{
           minWidth: 14, height: 14, borderRadius: 7,
-          backgroundColor: '#DC2626',
+          backgroundColor: colors.destructive,
           alignItems: 'center', justifyContent: 'center',
           paddingHorizontal: 3,
         }}>
@@ -1051,6 +1230,7 @@ function StickyComposer({
   bottomInset: number;
   colors: typeof THEME['light'];
 }) {
+  const { t } = useTranslation();
   const sendScale = React.useRef(new Animated.Value(1)).current;
 
   const animateSend = () => {
@@ -1077,29 +1257,19 @@ function StickyComposer({
         backgroundColor: colors.muted,
         borderRadius: 20,
         borderWidth: 1, borderColor: colors.border,
-        paddingLeft: 4, paddingRight: 4, paddingVertical: 4,
+        paddingLeft: 12, paddingRight: 4, paddingVertical: 4,
         minHeight: 44,
       }}>
-        <Pressable
-          onPress={() => { /* document picker */ }}
-          accessibilityRole="button"
-          accessibilityLabel="Attach file"
-          className="active:opacity-50"
-          style={{ width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-        >
-          <Paperclip size={16} color={colors.mutedForeground} strokeWidth={2} />
-        </Pressable>
-
         <TextInput
           value={value}
           onChangeText={onChangeText}
-          placeholder="Ask anything about your investigation…"
+          placeholder={t('ai.composerPlaceholder')}
           placeholderTextColor={colors.mutedForeground}
           multiline
           maxLength={1000}
           returnKeyType="default"
           editable={!isProcessing}
-          accessibilityLabel="Message input"
+          accessibilityLabel={t('ai.messageInput')}
           style={{
             flex: 1,
             fontSize: 14,
@@ -1112,28 +1282,16 @@ function StickyComposer({
           } as object}
         />
 
-        {!value.trim() && !isProcessing && (
-          <Pressable
-            onPress={() => { /* voice recording */ }}
-            accessibilityRole="button"
-            accessibilityLabel="Voice input"
-            className="active:opacity-50"
-            style={{ width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-          >
-            <Mic size={16} color={colors.mutedForeground} strokeWidth={2} />
-          </Pressable>
-        )}
-
         <Animated.View style={{ transform: [{ scale: sendScale }], flexShrink: 0 }}>
           <Pressable
             onPress={() => { animateSend(); onSend(); }}
             disabled={!canSend}
             accessibilityRole="button"
-            accessibilityLabel="Send message"
+            accessibilityLabel={t('ai.sendMessage')}
             style={{
               width: 36, height: 36, borderRadius: 18,
               alignItems: 'center', justifyContent: 'center',
-              backgroundColor: canSend ? '#1E3A8A' : colors.muted,
+              backgroundColor: canSend ? colors.primary : colors.muted,
             }}
           >
             {isProcessing
@@ -1167,7 +1325,7 @@ function getDraftRoute(draft: AIDraft): string | null {
     case 'evidence-summary':
     case 'witness-summary':
     case 'pending-work-summary':
-      return '/(app)/home';
+      return '/(app)/ai-draft-preview';
     default:
       return null;
   }

@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BackHandler, KeyboardAvoidingView, Pressable,
   ScrollView, Text, View,
 } from 'react-native';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { router, useLocalSearchParams } from 'expo-router';
 import { CalendarDays, CheckSquare, ChevronDown, Plus, Square, Trash2, X } from 'lucide-react-native';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
@@ -100,6 +102,7 @@ function Picker<T extends string>({
   optionLabels?: Partial<Record<T, string>>;
   onChange: (v: T) => void; error?: string; placeholder?: string;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <Field label={label} error={error}>
@@ -131,7 +134,7 @@ function Picker<T extends string>({
             </Pressable>
           ))}
           <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setOpen(false)}><Text>Cancel</Text></AlertDialogCancel>
+            <AlertDialogCancel onPress={() => setOpen(false)}><Text>{t('common.cancel')}</Text></AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -162,6 +165,7 @@ function PersonCard({
   onUpdate: (field: keyof PersonForm, val: string) => void;
   onRemove: () => void; canRemove: boolean; nameError?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <View className="border border-border rounded-2xl p-4 mb-3" style={{ borderCurve: 'continuous' }}>
       <View className="flex-row items-center justify-between mb-3">
@@ -172,24 +176,24 @@ function PersonCard({
           </Pressable>
         )}
       </View>
-      <Field label="Name *" error={nameError}>
-        <Input value={person.name} onChangeText={(v) => onUpdate('name', v)} placeholder="Full name" />
+      <Field label={t('nyayalay.form.nameRequired')} error={nameError}>
+        <Input value={person.name} onChangeText={(v) => onUpdate('name', v)} placeholder={t('nyayalay.form.fullNamePlaceholder')} />
       </Field>
-      <Field label="Father Name">
-        <Input value={person.father_name} onChangeText={(v) => onUpdate('father_name', v)} placeholder="Father name" />
+      <Field label={t('nyayalay.form.fatherName')}>
+        <Input value={person.father_name} onChangeText={(v) => onUpdate('father_name', v)} placeholder={t('nyayalay.form.fatherNamePlaceholder')} />
       </Field>
       <View className="flex-row gap-3">
         <View className="flex-1">
-          <Field label="Mobile">
-            <Input type="mobile" value={person.mobile} onChangeText={(v) => onUpdate('mobile', v)} placeholder="Mobile" />
+          <Field label={t('nyayalay.form.mobile')}>
+            <Input type="mobile" value={person.mobile} onChangeText={(v) => onUpdate('mobile', v)} placeholder={t('nyayalay.form.mobilePlaceholder')} />
           </Field>
         </View>
       </View>
-      <Field label="Address">
-        <Input type="multiline" value={person.address} onChangeText={(v) => onUpdate('address', v)} numberOfLines={2} placeholder="Address" />
+      <Field label={t('nyayalay.form.address')}>
+        <Input type="multiline" value={person.address} onChangeText={(v) => onUpdate('address', v)} numberOfLines={2} placeholder={t('nyayalay.form.addressPlaceholder')} />
       </Field>
-      <Field label="Remarks">
-        <Input value={person.remarks} onChangeText={(v) => onUpdate('remarks', v)} placeholder="Remarks" />
+      <Field label={t('nyayalay.form.remarks')}>
+        <Input value={person.remarks} onChangeText={(v) => onUpdate('remarks', v)} placeholder={t('nyayalay.form.remarksPlaceholder')} />
       </Field>
     </View>
   );
@@ -204,23 +208,24 @@ function emptyFir(): FirForm { return { number: '', year: String(new Date().getF
 function FirSection({
   fir, onChange, errors, optional,
 }: { fir: FirForm; onChange: (f: FirForm) => void; errors?: Record<string, string>; optional?: boolean }) {
+  const { t } = useTranslation();
   return (
     <>
-      <Section title={`FIR Details${optional ? ' (Optional)' : ''}`} />
+      <Section title={optional ? t('nyayalay.form.sectionFirDetailsOptional') : t('nyayalay.form.sectionFirDetails')} />
       <View className="flex-row gap-3">
         <View className="flex-1">
-          <Field label={optional ? 'FIR Number' : 'FIR Number *'} error={errors?.fir_number}>
-            <Input type="number" value={fir.number} onChangeText={(v) => onChange({ ...fir, number: v })} placeholder="FIR No." />
+          <Field label={optional ? t('nyayalay.form.firNumber') : t('nyayalay.form.firNumberRequired')} error={errors?.fir_number}>
+            <Input type="number" value={fir.number} onChangeText={(v) => onChange({ ...fir, number: v })} placeholder={t('nyayalay.form.firNumberPlaceholder')} />
           </Field>
         </View>
         <View style={{ width: 88 }}>
-          <Field label="Year *" error={errors?.fir_year}>
+          <Field label={t('nyayalay.form.yearRequired')} error={errors?.fir_year}>
             <Input type="number" value={fir.year} onChangeText={(v) => onChange({ ...fir, year: v })} placeholder={String(new Date().getFullYear())} />
           </Field>
         </View>
       </View>
-      <Field label="Police Station *" error={errors?.fir_ps}>
-        <Input value={fir.ps} onChangeText={(v) => onChange({ ...fir, ps: v })} placeholder="Police station" />
+      <Field label={t('nyayalay.form.policeStationRequired')} error={errors?.fir_ps}>
+        <Input value={fir.ps} onChangeText={(v) => onChange({ ...fir, ps: v })} placeholder={t('nyayalay.form.policeStationPlaceholder')} />
       </Field>
     </>
   );
@@ -342,6 +347,7 @@ function ChecklistSection({
 // ── Main Screen ───────────────────────────────────────────────────────────
 
 export default function AddNyayalayScreen() {
+  const { t } = useTranslation();
   const { editId } = useLocalSearchParams<{ editId?: string }>();
   const isEdit = !!editId;
 
@@ -453,44 +459,44 @@ export default function AddNyayalayScreen() {
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
-    if (!docType) { e.docType = 'Please select a document type'; }
+    if (!docType) { e.docType = t('nyayalay.form.errorDocTypeRequired'); }
 
     const needsCourtFields = docType === 'NBW' || docType === 'Summons';
     if (needsCourtFields) {
-      if (!courtName.trim()) e.courtName = 'Court name is required';
-      if (!vadSankhya.trim()) e.vadSankhya = 'Vad Sankhya is required';
-      if (!apradhSankhya.trim()) e.apradhSankhya = 'Apradh Sankhya is required';
-      if (!applicableSections.trim()) e.applicableSections = 'Applicable sections are required';
-      if (!accused[0]?.name.trim()) e.accused0 = 'At least one accused name is required';
+      if (!courtName.trim()) e.courtName = t('nyayalay.form.errorCourtNameRequired');
+      if (!vadSankhya.trim()) e.vadSankhya = t('nyayalay.form.errorVadSankhyaRequired');
+      if (!apradhSankhya.trim()) e.apradhSankhya = t('nyayalay.form.errorApradhSankhyaRequired');
+      if (!applicableSections.trim()) e.applicableSections = t('nyayalay.form.errorSectionsRequired');
+      if (!accused[0]?.name.trim()) e.accused0 = t('nyayalay.form.errorAccusedRequired');
     }
 
     if (docType === 'Bail_Lower_Court') {
-      if (!appellants[0]?.name.trim()) e.appellant0 = 'At least one appellant name is required';
-      if (!fir.number.trim()) e.fir_number = 'FIR number is required';
-      if (!fir.year.trim()) e.fir_year = 'FIR year is required';
-      if (!fir.ps.trim()) e.fir_ps = 'Police station is required';
+      if (!appellants[0]?.name.trim()) e.appellant0 = t('nyayalay.form.errorAppellantRequired');
+      if (!fir.number.trim()) e.fir_number = t('nyayalay.form.errorFirNumberRequired');
+      if (!fir.year.trim()) e.fir_year = t('nyayalay.form.errorFirYearRequired');
+      if (!fir.ps.trim()) e.fir_ps = t('nyayalay.form.errorPoliceStationRequired');
     }
 
     if (docType === 'High_Court_Documents') {
-      if (!subType) e.subType = 'Please select High Court document type (Bail / Writ)';
+      if (!subType) e.subType = t('nyayalay.form.errorHighCourtTypeRequired');
       if (subType === 'Bail') {
-        if (!fir.number.trim()) e.fir_number = 'FIR number is required';
-        if (!fir.year.trim()) e.fir_year = 'FIR year is required';
-        if (!fir.ps.trim()) e.fir_ps = 'Police station is required';
+        if (!fir.number.trim()) e.fir_number = t('nyayalay.form.errorFirNumberRequired');
+        if (!fir.year.trim()) e.fir_year = t('nyayalay.form.errorFirYearRequired');
+        if (!fir.ps.trim()) e.fir_ps = t('nyayalay.form.errorPoliceStationRequired');
       }
       if (subType === 'Writ') {
-        if (!writType) e.writType = 'Please select Writ type';
-        if (!appellants[0]?.name.trim()) e.appellant0 = 'At least one appellant name is required';
-        if (!matter.trim()) e.matter = 'Matter is required';
+        if (!writType) e.writType = t('nyayalay.form.errorWritTypeRequired');
+        if (!appellants[0]?.name.trim()) e.appellant0 = t('nyayalay.form.errorAppellantRequired');
+        if (!matter.trim()) e.matter = t('nyayalay.form.errorMatterRequired');
       }
     }
 
     if (docType === 'Anya') {
-      if (!documentTitle.trim()) e.documentTitle = 'Document title is required';
-      if (!appellants[0]?.name.trim()) e.appellant0 = 'At least one appellant / person name is required';
+      if (!documentTitle.trim()) e.documentTitle = t('nyayalay.form.errorDocumentTitleRequired');
+      if (!appellants[0]?.name.trim()) e.appellant0 = t('nyayalay.form.errorAppellantPersonRequired');
     }
 
-    if (!deadlineDate.trim()) e.deadlineDate = 'Deadline date is required';
+    if (!deadlineDate.trim()) e.deadlineDate = t('nyayalay.form.errorDeadlineDateRequired');
 
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -546,7 +552,7 @@ export default function AddNyayalayScreen() {
       setIsDirty(false);
       router.back();
     } catch {
-      setErrors({ general: 'Failed to save. Please try again.' });
+      setErrors({ general: t('nyayalay.form.errorSaveFailed') });
     } finally {
       setSaving(false);
     }
@@ -583,18 +589,18 @@ export default function AddNyayalayScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       keyboardVerticalOffset={process.env.EXPO_OS === 'ios' ? 56 : 0}
       className="flex-1"
     >
       <View className="flex-1 bg-background">
         <AppHeader
-          title="Court Document"
-          subtitle={isEdit ? 'Edit' : 'New'}
+          title={t('nyayalay.form.title')}
+          subtitle={isEdit ? t('nyayalay.form.editTitle') : t('nyayalay.form.newTitle')}
           onBack={handleBack}
           rightActions={
             <Pressable onPress={handleSave} disabled={saving} className="bg-primary rounded-xl px-4 py-2 active:opacity-70">
-              <Text className="text-sm font-semibold text-primary-foreground">{saving ? 'Saving…' : 'Save'}</Text>
+              <Text className="text-sm font-semibold text-primary-foreground">{saving ? t('common.saving') : t('common.save')}</Text>
             </Pressable>
           }
         />
@@ -609,47 +615,53 @@ export default function AddNyayalayScreen() {
           ) : null}
 
           {/* ── Document Type ── */}
-          <Section title="Document Type" />
+          <Section title={t('nyayalay.form.sectionDocType')} />
           <Picker
             label=""
             value={docType}
             options={DOC_TYPES}
-            optionLabels={DOC_TYPE_LABELS as Record<string, string>}
+            optionLabels={{
+              NBW: t('nyayalay.docType.NBW'),
+              Summons: t('nyayalay.docType.Summons'),
+              Bail_Lower_Court: t('nyayalay.docType.Bail_Lower_Court'),
+              High_Court_Documents: t('nyayalay.docType.High_Court_Documents'),
+              Anya: t('nyayalay.docType.Anya'),
+            }}
             onChange={handleDocTypeChange}
             error={errors.docType}
-            placeholder="Select document type…"
+            placeholder={t('nyayalay.form.selectDocTypePlaceholder')}
           />
 
           {/* ── NBW / Summons fields ── */}
           {showCourtFields && (
             <>
-              <Section title="Court Details" />
-              <Field label="Court Name *" error={errors.courtName}>
-                <Input value={courtName} onChangeText={(v) => { setCourtName(v); markDirty(); }} placeholder="Court name" />
+              <Section title={t('nyayalay.form.sectionCourtDetails')} />
+              <Field label={t('nyayalay.form.courtNameRequired')} error={errors.courtName}>
+                <Input value={courtName} onChangeText={(v) => { setCourtName(v); markDirty(); }} placeholder={t('nyayalay.form.courtNamePlaceholder')} />
               </Field>
               <View className="flex-row gap-3">
                 <View className="flex-1">
-                  <Field label="Vad Sankhya *" error={errors.vadSankhya}>
-                    <Input value={vadSankhya} onChangeText={(v) => { setVadSankhya(v); markDirty(); }} placeholder="Vad no." />
+                  <Field label={t('nyayalay.form.vadSankhyaRequired')} error={errors.vadSankhya}>
+                    <Input value={vadSankhya} onChangeText={(v) => { setVadSankhya(v); markDirty(); }} placeholder={t('nyayalay.form.vadSankhyaPlaceholder')} />
                   </Field>
                 </View>
                 <View className="flex-1">
-                  <Field label="Apradh Sankhya *" error={errors.apradhSankhya}>
-                    <Input value={apradhSankhya} onChangeText={(v) => { setApradhSankhya(v); markDirty(); }} placeholder="Apradh no." />
+                  <Field label={t('nyayalay.form.apradhSankhyaRequired')} error={errors.apradhSankhya}>
+                    <Input value={apradhSankhya} onChangeText={(v) => { setApradhSankhya(v); markDirty(); }} placeholder={t('nyayalay.form.apradhSankhyaPlaceholder')} />
                   </Field>
                 </View>
               </View>
-              <Field label="Applicable Sections *" error={errors.applicableSections}>
-                <Input type="multiline" value={applicableSections} onChangeText={(v) => { setApplicableSections(v); markDirty(); }} placeholder="e.g. IPC 302, 307" numberOfLines={2} />
+              <Field label={t('nyayalay.form.applicableSectionsRequired')} error={errors.applicableSections}>
+                <Input type="multiline" value={applicableSections} onChangeText={(v) => { setApplicableSections(v); markDirty(); }} placeholder={t('nyayalay.form.applicableSectionsPlaceholder')} numberOfLines={2} />
               </Field>
 
-              <Section title="Accused Details" />
+              <Section title={t('nyayalay.form.sectionAccusedDetails')} />
               {accused.map((a, idx) => (
                 <PersonCard
                   key={a._key}
                   person={a}
                   index={idx}
-                  label="Accused"
+                  label={t('nyayalay.form.accused')}
                   onUpdate={(f, v) => updateAccused(idx, f, v)}
                   onRemove={() => removeAccused(idx)}
                   canRemove={accused.length > 1}
@@ -661,7 +673,7 @@ export default function AddNyayalayScreen() {
                 className="border border-dashed border-border rounded-xl p-3 items-center flex-row justify-center gap-2 mb-2 active:opacity-70"
               >
                 <Plus size={16} color="#6B7280" />
-                <Text className="text-sm text-muted-foreground">Add Another Accused</Text>
+                <Text className="text-sm text-muted-foreground">{t('nyayalay.form.addAnotherAccused')}</Text>
               </Pressable>
             </>
           )}
@@ -669,13 +681,13 @@ export default function AddNyayalayScreen() {
           {/* ── Bail Lower Court ── */}
           {showBailLower && (
             <>
-              <Section title="Appellant Details" />
+              <Section title={t('nyayalay.form.sectionAppellantDetails')} />
               {appellants.map((a, idx) => (
                 <PersonCard
                   key={a._key}
                   person={a}
                   index={idx}
-                  label="Appellant"
+                  label={t('nyayalay.form.appellant')}
                   onUpdate={(f, v) => updateAppellant(idx, f, v)}
                   onRemove={() => removeAppellant(idx)}
                   canRemove={appellants.length > 1}
@@ -687,7 +699,7 @@ export default function AddNyayalayScreen() {
                 className="border border-dashed border-border rounded-xl p-3 items-center flex-row justify-center gap-2 mb-2 active:opacity-70"
               >
                 <Plus size={16} color="#6B7280" />
-                <Text className="text-sm text-muted-foreground">Add Another Appellant</Text>
+                <Text className="text-sm text-muted-foreground">{t('nyayalay.form.addAnotherAppellant')}</Text>
               </Pressable>
               <FirSection fir={fir} onChange={(f) => { setFir(f); markDirty(); }} errors={errors} />
             </>
@@ -696,14 +708,18 @@ export default function AddNyayalayScreen() {
           {/* ── High Court Documents ── */}
           {showHC && (
             <>
-              <Section title="High Court Document Type" />
+              <Section title={t('nyayalay.form.sectionHighCourtDocType')} />
               <Picker
                 label=""
                 value={subType}
                 options={['Bail', 'Writ']}
+                optionLabels={{
+                  Bail: t('nyayalay.form.subTypeBail'),
+                  Writ: t('nyayalay.form.subTypeWrit'),
+                }}
                 onChange={handleSubTypeChange}
                 error={errors.subType}
-                placeholder="Select Bail or Writ…"
+                placeholder={t('nyayalay.form.selectBailOrWritPlaceholder')}
               />
 
               {/* HC Bail */}
@@ -717,23 +733,23 @@ export default function AddNyayalayScreen() {
               {/* HC Writ */}
               {showHCWrit && (
                 <>
-                  <Section title="Writ Type" />
+                  <Section title={t('nyayalay.form.sectionWritType')} />
                   <Picker
                     label=""
                     value={writType}
                     options={WRIT_TYPES}
                     onChange={(v) => { setWritType(v); markDirty(); }}
                     error={errors.writType}
-                    placeholder="Select MB / CRLP / Anya…"
+                    placeholder={t('nyayalay.form.selectWritPlaceholder')}
                   />
 
-                  <Section title="Appellant Details" />
+                  <Section title={t('nyayalay.form.sectionAppellantDetails')} />
                   {appellants.map((a, idx) => (
                     <PersonCard
                       key={a._key}
                       person={a}
                       index={idx}
-                      label="Appellant"
+                      label={t('nyayalay.form.appellant')}
                       onUpdate={(f, v) => updateAppellant(idx, f, v)}
                       onRemove={() => removeAppellant(idx)}
                       canRemove={appellants.length > 1}
@@ -745,20 +761,21 @@ export default function AddNyayalayScreen() {
                     className="border border-dashed border-border rounded-xl p-3 items-center flex-row justify-center gap-2 mb-2 active:opacity-70"
                   >
                     <Plus size={16} color="#6B7280" />
-                    <Text className="text-sm text-muted-foreground">Add Another Appellant</Text>
+                    <Text className="text-sm text-muted-foreground">{t('nyayalay.form.addAnotherAppellant')}</Text>
                   </Pressable>
 
-                  <Section title="Matter" />
+                  <Section title={t('nyayalay.form.sectionMatter')} />
                   <Field label="" error={errors.matter}>
                     <DocumentEditor
                       value={matter}
                       onChangeText={(v) => { setMatter(v); markDirty(); }}
-                      title="Matter"
-                      placeholder="Describe the matter…"
+                      title={t('nyayalay.form.matter')}
+                      placeholder={t('nyayalay.form.matterPlaceholder')}
                       minHeight={110}
                       error={!!errors.matter}
-                      accessibilityLabel="Matter editor"
+                      accessibilityLabel={t('nyayalay.form.matterEditorAccessibility')}
                     />
+                    <FardCheckButton text={matter} title={documentTitle} className="mt-1" />
                   </Field>
                 </>
               )}
@@ -768,18 +785,18 @@ export default function AddNyayalayScreen() {
           {/* ── Anya ── */}
           {showAnya && (
             <>
-              <Section title="Document Details" />
-              <Field label="Document Title *" error={errors.documentTitle}>
-                <Input value={documentTitle} onChangeText={(v) => { setDocumentTitle(v); markDirty(); }} placeholder="e.g. Pragati Aakhya, Mrityu Aakhya…" />
+              <Section title={t('nyayalay.form.sectionDocumentDetails')} />
+              <Field label={t('nyayalay.form.documentTitleRequired')} error={errors.documentTitle}>
+                <Input value={documentTitle} onChangeText={(v) => { setDocumentTitle(v); markDirty(); }} placeholder={t('nyayalay.form.documentTitlePlaceholder')} />
               </Field>
 
-              <Section title="Appellant / Person Details" />
+              <Section title={t('nyayalay.form.sectionPersonDetails')} />
               {appellants.map((a, idx) => (
                 <PersonCard
                   key={a._key}
                   person={a}
                   index={idx}
-                  label="Person"
+                  label={t('nyayalay.form.person')}
                   onUpdate={(f, v) => updateAppellant(idx, f, v)}
                   onRemove={() => removeAppellant(idx)}
                   canRemove={appellants.length > 1}
@@ -791,7 +808,7 @@ export default function AddNyayalayScreen() {
                 className="border border-dashed border-border rounded-xl p-3 items-center flex-row justify-center gap-2 mb-2 active:opacity-70"
               >
                 <Plus size={16} color="#6B7280" />
-                <Text className="text-sm text-muted-foreground">Add Another Person</Text>
+                <Text className="text-sm text-muted-foreground">{t('nyayalay.form.addAnotherPerson')}</Text>
               </Pressable>
 
               <FirSection fir={fir} onChange={(f) => { setFir(f); markDirty(); }} errors={errors} optional />
@@ -801,13 +818,13 @@ export default function AddNyayalayScreen() {
           {/* ── Deadline Date (all types) — DateTimePicker ── */}
           {docType && (
             <>
-              <Section title="Deadline" />
+              <Section title={t('nyayalay.form.sectionDeadline')} />
               <DatePickerField
-                label="Deadline Date *"
+                label={t('nyayalay.form.deadlineDateRequired')}
                 value={deadlineDate}
                 onChange={(v) => { setDeadlineDate(v); markDirty(); }}
                 error={errors.deadlineDate}
-                hint={showHC ? 'Auto-set to today + 15 days for new High Court docs. Edit if needed.' : undefined}
+                hint={showHC ? t('nyayalay.form.hcDeadlineHint') : undefined}
               />
             </>
           )}
@@ -817,18 +834,18 @@ export default function AddNyayalayScreen() {
         <AlertDialog open={backDialog} onOpenChange={setBackDialog}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Discard Changes?</AlertDialogTitle>
+              <AlertDialogTitle>{t('nyayalay.dialog.discardTitle')}</AlertDialogTitle>
             </AlertDialogHeader>
             <Text className="px-4 pb-2 text-sm text-muted-foreground">
-              You have unsaved changes. Are you sure you want to discard this document?
+              {t('nyayalay.dialog.discardDesc')}
             </Text>
             <AlertDialogFooter>
-              <AlertDialogCancel onPress={() => setBackDialog(false)}><Text>Cancel</Text></AlertDialogCancel>
+              <AlertDialogCancel onPress={() => setBackDialog(false)}><Text>{t('common.cancel')}</Text></AlertDialogCancel>
               <Pressable
                 onPress={() => { setBackDialog(false); router.back(); }}
                 className="bg-destructive rounded-xl px-4 py-2 ml-2 active:opacity-70"
               >
-                <Text className="text-destructive-foreground text-sm font-semibold">Discard</Text>
+                <Text className="text-destructive-foreground text-sm font-semibold">{t('common.discard')}</Text>
               </Pressable>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -26,6 +26,7 @@ import { useColorScheme } from 'nativewind';
 import { H } from '@/lib/headerTokens';
 import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
+import { useTranslation } from 'react-i18next';
 
 export interface ScreenHeaderProps {
   title: string;
@@ -53,6 +54,7 @@ export const ScreenHeader = memo(function ScreenHeader({
   children,
   containerStyle,
 }: ScreenHeaderProps) {
+  const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const colors = THEME[colorScheme ?? 'light'];
@@ -92,7 +94,7 @@ export const ScreenHeader = memo(function ScreenHeader({
           {showBackButton && (
             <Pressable
               onPress={handleBack}
-              accessibilityLabel="Go back"
+              accessibilityLabel={t('header.goBack')}
               accessibilityRole="button"
               className="active:opacity-60"
               style={{

@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, memo } from 'react';
 import { logger } from '@/lib/logger';
 import {
   BackHandler, View, Text, FlatList, Pressable, ActivityIndicator, useWindowDimensions,
+  Share,
 } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import { router } from 'expo-router';
@@ -11,7 +12,7 @@ import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
-  Plus, Filter, ChevronDown, Pencil, Trash2, FileText,
+  Plus, Filter, ChevronDown, Pencil, Trash2, FileText, Sparkles,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
 import { matchesQuery, fuzzyMatch } from '@/lib/searchUtils';
@@ -70,6 +71,16 @@ const FIRCard = memo(function FIRCard({
   const registrationDate = new Date(fir.created_at).toLocaleDateString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
+
+  const handleAskAI = async (e?: any) => {
+    e?.stopPropagation?.();
+    const prompt = `Suggest an important investigation checklist for a "${fir.crime_type}" case.`;
+    try {
+      await Share.share({ message: prompt });
+    } catch {
+      // user cancelled the share sheet - no action needed
+    }
+  };
 
   return (
     <Pressable
@@ -150,6 +161,16 @@ const FIRCard = memo(function FIRCard({
         >
           <Trash2 size={14} color={palette.destructive} />
           <Text className="text-xs font-semibold text-destructive">{t('fir.list.delete')}</Text>
+        </Pressable>
+        <Pressable
+          onPress={handleAskAI}
+          className="flex-row items-center gap-1.5 active:opacity-60"
+          style={{ minWidth: 44, minHeight: 44, alignItems: 'center' }}
+          accessibilityRole="button"
+          accessibilityLabel="Ask AI"
+        >
+          <Sparkles size={14} color={palette.primary} />
+          <Text style={{ fontSize: 12, fontWeight: '600', color: palette.primary }}>Ask AI</Text>
         </Pressable>
       </View>
     </Pressable>

@@ -5,11 +5,11 @@
 @layer base {
   :root {
     /* ──────────────────────────────────────────────────────────────────────
-     * InvestSuite Design System — Soft Indigo (v300)
+     * InvestSuite Design System — Trust Green
      *
-     * Base:    Off-white (#F4F7FE) root, pure white (#FFFFFF) surfaces
-     * Primary: Vibrant Indigo (#6366F1) — CTAs, active states, focus rings
-     * Text:    Charcoal (#111827) primary, slate (#6B7280) muted
+     * Base:    Warm off-white (#F7FAF5) root, pure white (#FFFFFF) surfaces
+     * Primary: Deep Trust Green (#16A34A) — CTAs, active states, focus rings
+     * Text:    Charcoal (#111827) primary, green-slate (#5D6B5D) muted
      *
      * Status semantics (WCAG AA on white):
      *   Success  → #16A34A / bg rgba(22,163,74,0.10)
@@ -19,89 +19,89 @@
      * ────────────────────────────────────────────────────────────────────── */
 
     /* Base surfaces */
-    --background:        228 60% 97%;        /* #F4F7FE — soft off-white */
-    --foreground:        222 47% 11%;        /* #111827 — charcoal */
+    --background:        80 25% 97%;        /* warm off-white */
+    --foreground:        222 47% 11%;        /* charcoal, unchanged */
 
     /* Card — pure white lifted surface */
-    --card:              0 0% 100%;          /* #FFFFFF */
-    --card-foreground:   222 47% 11%;        /* #111827 */
+    --card:               0 0% 100%;
+    --card-foreground:   222 47% 11%;
 
-    --popover:           0 0% 100%;          /* #FFFFFF */
+    --popover:            0 0% 100%;
     --popover-foreground:222 47% 11%;
 
-    /* Primary: vibrant indigo — CTAs, active states, focus rings */
-    --primary:           239 84% 67%;        /* #6366F1 */
-    --primary-foreground:0 0% 100%;          /* white text on indigo */
+    /* Primary: deep trust green — CTAs, active states, focus rings */
+    --primary:           142 76% 36%;        /* deep trust green */
+    --primary-foreground: 0 0% 100%;
 
     /* Secondary: light slate — tray, chips */
-    --secondary:         220 14% 96%;        /* #F1F5F9 */
-    --secondary-foreground: 222 47% 11%;     /* #111827 */
+    --secondary:         140 14% 96%;
+    --secondary-foreground: 222 47% 11%;
 
     /* Muted: soft surface for backgrounds, skeleton loaders */
-    --muted:             220 14% 96%;        /* #F1F5F9 */
-    --muted-foreground:  220 9% 46%;         /* #6B7280 */
+    --muted:             140 14% 96%;
+    --muted-foreground:  140 8% 40%;
 
-    /* Accent: indigo tint surface */
-    --accent:            239 84% 95%;        /* #EEF2FF — indigo-50 */
-    --accent-foreground: 239 84% 50%;        /* #4F46E5 — indigo-600 */
+    /* Accent: trust green tint surface */
+    --accent:            138 76% 97%;
+    --accent-foreground: 142 72% 29%;
 
     /* Semantic */
-    --destructive:       0 84% 60%;          /* #DC2626 */
+    --destructive:         0 84% 60%;        /* unchanged - red stays red */
     --destructive-foreground: 0 0% 100%;
 
     /* Borders + inputs — hairline on light bg */
-    --border:            220 13% 91%;        /* #E5E7EB */
-    --input:             220 13% 91%;        /* #E5E7EB */
-    --ring:              239 84% 67%;        /* indigo focus ring */
+    --border:            140 13% 90%;
+    --input:              140 13% 90%;
+    --ring:               142 76% 36%;
 
     /* Radius */
-    --radius:            1rem;
+    --radius:            1.25rem;             /* slightly rounder cards */
   }
 
   .dark {
     /* ──────────────────────────────────────────────────────────────────────
-     * Midnight Indigo — dark palette
+     * Trust Green — dark palette
      *
-     * Base:    Deep navy (#0F172A) root, lifted slate (#1E293B) surfaces
-     * Primary: Soft indigo (#818CF8) — CTAs, active states, focus rings
-     * Text:    Cool slate (#F1F5F9) primary, muted slate (#94A3B8) muted
+     * Base:    Deep green-slate (#14201A) root, lifted dark slate (#1C2B22) surfaces
+     * Primary: Bright green (#4ADE80) — CTAs, active states, focus rings
+     * Text:    Cool slate (#F1F5F9) primary, muted sage (#9CAFA3) muted
      * ────────────────────────────────────────────────────────────────────── */
 
     /* Base surfaces */
-    --background:        222 47% 11%;        /* #0F172A — deep navy */
-    --foreground:        214 32% 91%;        /* #F1F5F9 — cool slate */
+    --background:        160 15% 10%;
+    --foreground:        214 32% 91%;
 
-    /* Card — lifted slate surface */
-    --card:              215 28% 17%;        /* #1E293B */
-    --card-foreground:   214 32% 91%;        /* #F1F5F9 */
+    /* Card — lifted dark slate surface */
+    --card:               160 12% 15%;
+    --card-foreground:   214 32% 91%;
 
-    --popover:           215 28% 17%;        /* #1E293B */
-    --popover-foreground:214 32% 91%;        /* #F1F5F9 */
+    --popover:            160 12% 15%;
+    --popover-foreground:214 32% 91%;
 
-    /* Primary: soft indigo — CTAs, active states, focus rings */
-    --primary:           234 89% 74%;        /* #818CF8 */
-    --primary-foreground:222 47% 11%;        /* #0F172A — dark text on soft indigo */
+    /* Primary: bright green for dark mode — CTAs, active states, focus rings */
+    --primary:           141 69% 58%;        /* bright green for dark mode */
+    --primary-foreground: 160 30% 10%;
 
-    /* Secondary: same lifted slate */
-    --secondary:         215 28% 17%;        /* #1E293B */
-    --secondary-foreground: 214 32% 91%;     /* #F1F5F9 */
+    /* Secondary: same lifted surface */
+    --secondary:          160 12% 15%;
+    --secondary-foreground: 214 32% 91%;
 
-    /* Muted: same slate surface for skeletons */
-    --muted:             215 28% 17%;        /* #1E293B */
-    --muted-foreground:  215 20% 65%;        /* #94A3B8 */
+    /* Muted: same surface for skeletons */
+    --muted:              160 12% 15%;
+    --muted-foreground:  150 10% 65%;
 
-    /* Accent: deep indigo tint surface */
-    --accent:            245 76% 20%;        /* #1E1B4B — indigo-950 */
-    --accent-foreground: 231 77% 90%;        /* #C7D2FE — indigo-200 */
+    /* Accent: deep green tint surface */
+    --accent:             150 40% 15%;
+    --accent-foreground: 141 60% 80%;
 
     /* Semantic */
-    --destructive:       0 91% 71%;          /* #F87171 — red-400 */
-    --destructive-foreground: 222 47% 11%;   /* #0F172A */
+    --destructive:         0 91% 71%;        /* unchanged */
+    --destructive-foreground: 222 47% 11%;
 
     /* Borders + inputs — visible hairline on dark bg */
-    --border:            215 25% 27%;        /* #334155 — slate-700 */
-    --input:             215 25% 27%;        /* #334155 */
-    --ring:              234 89% 74%;        /* #818CF8 — soft indigo focus ring */
+    --border:             150 15% 25%;
+    --input:               150 15% 25%;
+    --ring:                141 69% 58%;
   }
 }
 

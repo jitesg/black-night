@@ -5,7 +5,7 @@
  * Manages the working copy of bundled seed JSON (Formats + Knowledge).
  * Changes are persisted to AsyncStorage and exportable as JSON.
  */
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   View, Text, Pressable, FlatList, ScrollView,
   ActivityIndicator, Share, Modal, TextInput,
@@ -16,9 +16,13 @@ import {
   Plus, Download, Trash2, Edit2,
   FileText, BookOpen, AlertTriangle, Copy, Check, RotateCcw,
   Search, SlidersHorizontal, ArrowUpDown, Shield, Tag,
-  Eye, Upload,
+  Eye, Upload, RefreshCw,
 } from 'lucide-react-native';
 import { useDevSeedStore, type SeedFormat, type SeedKnowledge } from '@/lib/devSeedStore';
+import { isDevSessionActive } from '@/lib/devOptionsAuth';
+import { getPerSeedFileStatus, type SeedFileStatus } from '@/lib/db/seedManager';
+import { runKnowledgeDiagnostics } from '@/lib/diagnostics/knowledgeDiagnostics';
+import { getKnowledgeAnalytics, type KnowledgeAnalytics } from '@/lib/db/knowledgeRepo';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
@@ -223,6 +227,17 @@ function ItemRow({ item, onEdit, onDelete, onPreview }: {
 
 // ─── Main screen ──────────────────────────────────────────────────────────────
 export default function DevSeedManagerScreen() {
+  useFocusEffect(
+    useCallback(() => {
+      if (!isDevSessionActive()) {
+        router.replace(
+          '/(app)/dev-options/pin-entry?returnTo=' +
+          encodeURIComponent('/(app)/dev-seed-manager') as never
+        );
+      }
+    }, [])
+  );
+
   const store = useDevSeedStore();
 
   // UI state
@@ -233,6 +248,45 @@ export default function DevSeedManagerScreen() {
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; kind: 'format' | 'knowledge'; title: string } | null>(null);
   const [showExport,   setShowExport  ] = useState(false);
   const [exportData,   setExportData  ] = useState({ formatsJson: '', knowledgeJson: '' });
+
+  // ── Knowledge Diagnostics (Task L18D) ───────────────────────────────────────
+  const [diagReport,   setDiagReport  ] = useState<string>('');
+  const [diagLoading,  setDiagLoading ] = useState(false);
+  const [diagCopied,   setDiagCopied  ] = useState(false);
+  const [mergedCounts, setMergedCounts] = useState<KnowledgeAnalytics>({});
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).__runKnowledgeDiagnostics = runKnowledgeDiagnostics;
+    }
+  }, []);
+
+  const runDiag = useCallback(async () => {
+    setDiagLoading(true);
+    try {
+      const rep = await runKnowledgeDiagnostics();
+      setDiagReport(rep);
+      const counts = await getKnowledgeAnalytics();
+      setMergedCounts(counts);
+    } catch (err: any) {
+      setDiagReport(`Error running diagnostics: ${err?.message || String(err)}`);
+    } finally {
+      setDiagLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      runDiag();
+    }, [runDiag])
+  );
+
+  const handleCopyReport = async () => {
+    if (!diagReport) return;
+    await Clipboard.setStringAsync(diagReport);
+    setDiagCopied(true);
+    setTimeout(() => setDiagCopied(false), 2000);
+  };
 
   // Refresh on focus
   useFocusEffect(useCallback(() => {}, []));
@@ -321,6 +375,127 @@ export default function DevSeedManagerScreen() {
           <StatCard label="Knowledge" value={store.stats.totalKnowledge} accent="#7C3AED" />
           <StatCard label="SOPs"      value={store.stats.totalSops}      accent="#059669" />
           <StatCard label="Guides"    value={store.stats.totalGuides}    accent="#D97706" />
+        </View>
+      </View>
+
+      {/* ── Per-seed-file Loader Status ───────────────────────────────────── */}
+      {(() => {
+        const seedStatuses = getPerSeedFileStatus();
+        if (seedStatuses.length === 0) return null;
+        return (
+          <View className="px-5 pb-3">
+            <View className="bg-card border border-border rounded-xl p-3" style={{ borderCurve: 'continuous' }}>
+              <View className="flex-row items-center justify-between mb-2">
+                <Text className="text-xs font-semibold text-foreground">Seed Loader Engine Status</Text>
+                <Text className="text-[10px] text-muted-foreground">{seedStatuses.length} files tracked</Text>
+              </View>
+              <View className="gap-1.5">
+                {seedStatuses.map((st) => (
+                  <View key={st.fileName} className="flex-row items-center justify-between py-1 border-b border-border/40">
+                    <View className="flex-1 mr-2">
+                      <Text className="text-xs font-medium text-foreground" numberOfLines={1}>{st.fileName}</Text>
+                      <Text className="text-[10px] text-muted-foreground">
+                        Read: {st.entriesRead} • +{st.inserted} ins • ~{st.updated} upd • {st.skipped} skip
+                      </Text>
+                    </View>
+                    <View className="items-end">
+                      <Text
+                        className="text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                        style={{
+                          backgroundColor: st.errors > 0 ? '#FEE2E2' : '#DCFCE7',
+                          color: st.errors > 0 ? '#DC2626' : '#16A34A',
+                        }}
+                      >
+                        {st.errors > 0 ? `${st.errors} err` : 'OK'}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+
+              {/* Merged Active Category Counts (Read-Through Layer) */}
+              <View className="mt-3 pt-2.5 border-t border-border/50">
+                <Text className="text-[11px] font-semibold text-foreground mb-1.5">
+                  Merged Category Counts (DB + Bundled)
+                </Text>
+                <View className="flex-row flex-wrap gap-1.5">
+                  {Object.entries(mergedCounts).map(([catName, cnt]) => (
+                    <View
+                      key={catName}
+                      className="flex-row items-center gap-1 bg-secondary px-2 py-0.5 rounded-full"
+                    >
+                      <Text className="text-[10px] text-muted-foreground">{catName}:</Text>
+                      <Text className="text-[10px] font-bold text-foreground">{cnt}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </View>
+          </View>
+        );
+      })()}
+
+      {/* ── Knowledge Diagnostics Section (Task L18D) ────────────────────── */}
+      <View className="px-5 pb-3">
+        <View className="bg-card border border-border rounded-xl p-3" style={{ borderCurve: 'continuous' }}>
+          <View className="flex-row items-center justify-between mb-2">
+            <View className="flex-row items-center gap-1.5">
+              <Shield size={14} color="#0F766E" />
+              <Text className="text-xs font-semibold text-foreground">Knowledge Diagnostics</Text>
+            </View>
+            <View className="flex-row items-center gap-2">
+              <Pressable
+                onPress={runDiag}
+                disabled={diagLoading}
+                className="flex-row items-center gap-1 px-2 py-1 rounded bg-secondary active:opacity-70"
+              >
+                {diagLoading ? (
+                  <ActivityIndicator size={10} color="#0F766E" />
+                ) : (
+                  <RefreshCw size={10} color="#0F766E" />
+                )}
+                <Text className="text-[10px] font-semibold text-foreground">Refresh</Text>
+              </Pressable>
+              <Pressable
+                onPress={handleCopyReport}
+                disabled={!diagReport}
+                className="flex-row items-center gap-1 px-2 py-1 rounded active:opacity-70"
+                style={{ backgroundColor: diagCopied ? '#DCFCE7' : '#0F766E' }}
+              >
+                {diagCopied ? (
+                  <Check size={10} color="#16A34A" />
+                ) : (
+                  <Copy size={10} color="#FFFFFF" />
+                )}
+                <Text
+                  className="text-[10px] font-semibold"
+                  style={{ color: diagCopied ? '#16A34A' : '#FFFFFF' }}
+                >
+                  {diagCopied ? 'Copied' : 'Copy report'}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+
+          {diagLoading && !diagReport ? (
+            <View className="py-4 items-center justify-center">
+              <ActivityIndicator size="small" color="#0F766E" />
+              <Text className="text-[10px] text-muted-foreground mt-1">Collecting live diagnostics…</Text>
+            </View>
+          ) : (
+            <ScrollView
+              style={{ maxHeight: 220 }}
+              nestedScrollEnabled
+              className="bg-muted/40 p-2 rounded-lg border border-border/50"
+            >
+              <Text
+                selectable
+                className="text-[11px] font-mono text-foreground leading-4"
+              >
+                {diagReport || 'No diagnostic data collected yet.'}
+              </Text>
+            </ScrollView>
+          )}
         </View>
       </View>
 

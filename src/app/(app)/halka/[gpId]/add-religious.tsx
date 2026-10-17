@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View, ActivityIndicator,
 } from 'react-native';
@@ -23,7 +24,9 @@ import {
 function Dropdown({
   label, value, options, onSelect,
 }: { label: string; value: string; options: readonly string[]; onSelect: (v: string) => void }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const cleanLabel = label.replace('*', '').trim();
   return (
     <View className="gap-1.5">
       <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</Text>
@@ -33,7 +36,7 @@ function Dropdown({
         style={{ borderCurve: 'continuous' }}
       >
         <Text className={value ? 'text-base text-foreground' : 'text-base text-muted-foreground'}>
-          {value || `Select ${label}`}
+          {value || t('halka.religious.selectField', { label: cleanLabel })}
         </Text>
         <ChevronDown size={16} color="#9CA3AF" />
       </Pressable>
@@ -79,6 +82,7 @@ function Field({
 }
 
 export default function AddReligiousScreen() {
+  const { t } = useTranslation();
   const { gpId, editId } = useLocalSearchParams<{ gpId: string; editId?: string }>();
   const isEdit = !!editId;
 
@@ -138,8 +142,8 @@ export default function AddReligiousScreen() {
   const updateEvent = (key: keyof typeof newEvent) => (val: string) => setNewEvent((p) => ({ ...p, [key]: val }));
 
   const handleSavePlaceAndAuthority = async () => {
-    if (!form.category) { setError('Category is required'); return; }
-    if (!form.name.trim()) { setError('Name is required'); return; }
+    if (!form.category) { setError(t('halka.religious.errorCategoryRequired')); return; }
+    if (!form.name.trim()) { setError(t('halka.religious.errorNameRequired')); return; }
     setSaving(true);
     try {
       let pid = placeId;
@@ -165,15 +169,15 @@ export default function AddReligiousScreen() {
       }
       if (!isEdit) { router.back(); return; }
     } catch {
-      setError('Failed to save. Please try again.');
+      setError(t('halka.religious.errorSaveFailed'));
     }
     setSaving(false);
   };
 
   const handleAddEvent = async () => {
-    if (!placeId) { setError('Save the religious place first'); return; }
-    if (!newEvent.event_name.trim()) { setError('Event name is required'); return; }
-    if (!newEvent.event_type) { setError('Event type is required'); return; }
+    if (!placeId) { setError(t('halka.religious.errorSavePlaceFirst')); return; }
+    if (!newEvent.event_name.trim()) { setError(t('halka.religious.errorEventNameRequired')); return; }
+    if (!newEvent.event_type) { setError(t('halka.religious.errorEventTypeRequired')); return; }
     setSavingEvent(true);
     try {
       const created = await createReligiousEvent({
@@ -186,7 +190,7 @@ export default function AddReligiousScreen() {
       setEvents((p) => [...p, created]);
       setNewEvent({ event_name: '', event_type: '', event_date: '', description: '', expected_crowd: '', remarks: '' });
       setShowEventForm(false);
-    } catch { setError('Failed to add event.'); }
+    } catch { setError(t('halka.religious.errorAddEventFailed')); }
     setSavingEvent(false);
   };
 
@@ -204,45 +208,45 @@ export default function AddReligiousScreen() {
       <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
-            <AlertDialogDescription>Unsaved changes will be lost.</AlertDialogDescription>
+            <AlertDialogTitle>{t('common.unsavedTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('common.unsavedDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setShowDiscardDialog(false)}>Keep editing</AlertDialogCancel>
-            <AlertDialogAction onPress={() => { setShowDiscardDialog(false); router.back(); }}>Discard</AlertDialogAction>
+            <AlertDialogCancel onPress={() => setShowDiscardDialog(false)}>{t('common.stay')}</AlertDialogCancel>
+            <AlertDialogAction onPress={() => { setShowDiscardDialog(false); router.back(); }}>{t('common.discard')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      <AppHeader title={isEdit ? 'Edit Religious Place' : 'Add Religious Place'}
+      <AppHeader title={isEdit ? t('halka.religious.editTitle') : t('halka.religious.addTitle')}
         onBack={handleBackPress}
       />
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
+      <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1">
 
         <ScrollView contentContainerClassName="px-6 py-6 gap-6" keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           {/* Place Details */}
           <View className="gap-4">
-            <Text className="text-sm font-semibold text-foreground">Place Details</Text>
-            <Dropdown label="Category *" value={form.category} options={RELIGIOUS_CATEGORIES} onSelect={update('category')} />
-            <Field label="Name" value={form.name} onChange={update('name')} required />
-            <Field label="Address" value={form.address} onChange={update('address')} placeholder="Village/area address" multiline />
-            <Field label="Remarks" value={form.remarks} onChange={update('remarks')} multiline />
+            <Text className="text-sm font-semibold text-foreground">{t('halka.religious.placeDetails')}</Text>
+            <Dropdown label={`${t('halka.religious.fieldCategory')} *`} value={form.category} options={RELIGIOUS_CATEGORIES} onSelect={update('category')} />
+            <Field label={t('halka.person.fieldName')} value={form.name} onChange={update('name')} required />
+            <Field label={t('halka.shop.fieldAddress')} value={form.address} onChange={update('address')} placeholder={t('halka.religious.placeholderPlaceAddress')} multiline />
+            <Field label={t('halka.person.fieldRemarks')} value={form.remarks} onChange={update('remarks')} multiline />
           </View>
 
           {/* Religious Authority */}
           {form.category ? (
             <View className="bg-accent/30 rounded-2xl p-4 gap-4" style={{ borderCurve: 'continuous' }}>
               <Text className="text-sm font-semibold text-foreground">
-                {AUTHORITY_LABELS[form.category] ?? 'Religious Authority'}
+                {AUTHORITY_LABELS[form.category] ?? t('halka.religious.authorityTitle')}
               </Text>
-              <Field label="Name" value={authorityForm.name} onChange={updateAuth('name')} placeholder="Authority name" />
-              <Field label="Address" value={authorityForm.address} onChange={updateAuth('address')} multiline />
+              <Field label={t('halka.person.fieldName')} value={authorityForm.name} onChange={updateAuth('name')} placeholder={t('halka.religious.placeholderAuthorityName')} />
+              <Field label={t('halka.shop.fieldAddress')} value={authorityForm.address} onChange={updateAuth('address')} multiline />
               <View className="flex-row gap-3">
                 <View className="flex-1">
-                  <Field label="Mobile" value={authorityForm.mobile} onChange={updateAuth('mobile')} inputType="mobile" />
+                  <Field label={t('halka.person.fieldMobile')} value={authorityForm.mobile} onChange={updateAuth('mobile')} inputType="mobile" />
                 </View>
                 <View className="flex-1">
-                  <Field label="Alternate Mobile" value={authorityForm.alternate_mobile} onChange={updateAuth('alternate_mobile')} inputType="mobile" />
+                  <Field label={t('halka.person.fieldAltMobile')} value={authorityForm.alternate_mobile} onChange={updateAuth('alternate_mobile')} inputType="mobile" />
                 </View>
               </View>
             </View>
@@ -257,7 +261,7 @@ export default function AddReligiousScreen() {
           >
             <Save size={18} color="#fff" />
             <Text className="text-primary-foreground font-semibold text-base">
-              {saving ? 'Saving…' : isEdit ? 'Update' : 'Save Religious Place'}
+              {saving ? t('common.saving') : isEdit ? t('common.update') : t('halka.religious.btnSave')}
             </Text>
           </Pressable>
 
@@ -266,10 +270,10 @@ export default function AddReligiousScreen() {
             <View className="gap-4">
               <View className="h-px bg-border" />
               <View className="flex-row items-center justify-between">
-                <Text className="text-sm font-semibold text-foreground">Religious Events ({events.length})</Text>
+                <Text className="text-sm font-semibold text-foreground">{t('halka.religious.eventCount', { count: events.length })}</Text>
                 <Pressable onPress={() => setShowEventForm(!showEventForm)} className="flex-row items-center gap-1 active:opacity-60">
                   <Plus size={14} color="#2D52B8" />
-                  <Text className="text-sm text-primary font-medium">Add Event</Text>
+                  <Text className="text-sm text-primary font-medium">{t('halka.religious.btnAddEvent')}</Text>
                 </Pressable>
               </View>
 
@@ -288,18 +292,18 @@ export default function AddReligiousScreen() {
 
               {showEventForm && (
                 <View className="bg-card border border-border rounded-2xl p-4 gap-4" style={{ borderCurve: 'continuous' }}>
-                  <Text className="text-sm font-semibold text-foreground">New Event</Text>
-                  <Field label="Event Name" value={newEvent.event_name} onChange={updateEvent('event_name')} required />
-                  <Dropdown label="Event Type *" value={newEvent.event_type} options={EVENT_TYPES} onSelect={updateEvent('event_type')} />
-                  <Field label="Event Date" value={newEvent.event_date} onChange={updateEvent('event_date')} placeholder="e.g. 2025-03-15" />
-                  <Field label="Description" value={newEvent.description} onChange={updateEvent('description')} multiline />
-                  <Field label="Expected Crowd" value={newEvent.expected_crowd} onChange={updateEvent('expected_crowd')} inputType="number" />
+                  <Text className="text-sm font-semibold text-foreground">{t('halka.religious.newEventTitle')}</Text>
+                  <Field label={t('halka.religious.fieldEventName')} value={newEvent.event_name} onChange={updateEvent('event_name')} required />
+                  <Dropdown label={`${t('halka.religious.fieldEventType')} *`} value={newEvent.event_type} options={EVENT_TYPES} onSelect={updateEvent('event_type')} />
+                  <Field label={t('halka.religious.fieldEventDate')} value={newEvent.event_date} onChange={updateEvent('event_date')} placeholder={t('halka.religious.placeholderEventDate')} />
+                  <Field label={t('halka.religious.fieldDescription')} value={newEvent.description} onChange={updateEvent('description')} multiline />
+                  <Field label={t('halka.religious.fieldExpectedCrowd')} value={newEvent.expected_crowd} onChange={updateEvent('expected_crowd')} inputType="number" />
                   <Pressable
                     onPress={handleAddEvent} disabled={savingEvent}
                     className="bg-accent rounded-xl py-3 items-center active:opacity-80"
                     style={{ borderCurve: 'continuous' }}
                   >
-                    <Text className="text-accent-foreground font-semibold text-sm">{savingEvent ? 'Adding…' : 'Add Event'}</Text>
+                    <Text className="text-accent-foreground font-semibold text-sm">{savingEvent ? t('common.saving') : t('halka.religious.btnAddEvent')}</Text>
                   </Pressable>
                 </View>
               )}

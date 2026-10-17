@@ -48,5 +48,13 @@ export function useSearchHistory() {
     await AsyncStorage.removeItem(HISTORY_KEY).catch(() => null);
   }, []);
 
-  return { history, addToHistory, clearHistory };
+  const removeFromHistory = useCallback(async (query: string) => {
+    setHistory((prev) => {
+      const updated = prev.filter((q) => q !== query);
+      AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated)).catch(() => null);
+      return updated;
+    });
+  }, []);
+
+  return { history, addToHistory, clearHistory, removeFromHistory };
 }

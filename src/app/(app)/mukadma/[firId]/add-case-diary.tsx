@@ -34,7 +34,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useFIRContext } from '@/context/FIRContext';
 import { recordFieldValues, FIELD_KEYS } from '@/lib/db/fieldValueHistoryRepo';
-import { getFIRById } from '@/lib/db/firRepo';
+import { getFIRById, type FIR } from '@/lib/db/firRepo';
+import { FirBasisCard } from '@/components/caseDiary/FirBasisCard';
 
 // ─── UI helpers ───────────────────────────────────────────────────────────────
 
@@ -50,7 +51,11 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function DateField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const { i18n } = useTranslation();
+  const isHi = i18n.language === 'hi';
   const [show, setShow] = useState(false);
+  const cleanLabel = label.replace(/\s*\*+\s*$/, '');
+  const placeholder = isHi ? 'तारीख चुनें' : 'Select date';
   return (
     <Field label={label}>
       <Pressable
@@ -59,13 +64,13 @@ function DateField({ label, value, onChange }: { label: string; value: string; o
         style={{ borderCurve: 'continuous' }}
       >
         <Text className={`text-sm ${value ? 'text-foreground' : 'text-muted-foreground'}`}>
-          {value || `Select ${label}`}
+          {value || placeholder}
         </Text>
       </Pressable>
       <DatePickerModal
         visible={show}
         value={value}
-        label={label}
+        label={cleanLabel}
         onConfirm={(v) => { onChange(v); setShow(false); }}
         onClose={() => setShow(false)}
       />
@@ -138,6 +143,7 @@ export default function AddCaseDiaryScreen() {
   const [endTime, setEndTime]     = useState('');
   const [places, setPlaces]       = useState<string[]>([]);
   const [diaryNumber, setDiaryNumber] = useState<number | null>(null);
+  const [fir, setFir] = useState<FIR | null>(null);
 
   const [diary, setDiary]   = useState<CaseDiary | null>(null);
   const [loading, setLoading] = useState(isEdit);
@@ -167,7 +173,11 @@ export default function AddCaseDiaryScreen() {
     if (!firId) return;
     (async () => {
       try {
-        const allDiaries = await getCaseDiariesByFIR(firId);
+        const [firRecord, allDiaries] = await Promise.all([
+          getFIRById(firId),
+          getCaseDiariesByFIR(firId),
+        ]);
+        if (firRecord) setFir(firRecord);
         if (isEdit && paramDiaryId) {
           const sorted = [...allDiaries].sort((a, b) => a.created_at - b.created_at);
           const pos = sorted.findIndex((d) => d.id === paramDiaryId);
@@ -297,7 +307,7 @@ export default function AddCaseDiaryScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       className="flex-1 bg-background"
     >
       {/* ── Discard-changes confirmation ──────────────────────────────────── */}
@@ -339,6 +349,9 @@ export default function AddCaseDiaryScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
+        {/* ── FIR आधार Collapsible Card ────────────────────────────────────── */}
+        <FirBasisCard fir={fir} />
+
         {error ? (
           <View className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex-row items-center gap-2">
             <AlertCircle size={14} color="#DC2626" />
@@ -354,7 +367,7 @@ export default function AddCaseDiaryScreen() {
             {diaryNumber !== null && (
               <View className="bg-secondary rounded-full px-3 py-1">
                 <Text className="text-xs font-bold text-foreground">
-                  {t('fir.addCaseDiary.diaryNoLabel')}: {String(diaryNumber).padStart(2, '0')}
+                  {t('fir.addCaseDiary.diaryNoLabel', { n: String(diaryNumber).padStart(2, '0') })}
                 </Text>
               </View>
             )}

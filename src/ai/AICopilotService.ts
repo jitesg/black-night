@@ -19,6 +19,7 @@ import { NextActionEngine } from './NextActionEngine';
 import { ReasoningEngine } from './reasoning/ReasoningEngine';
 import { InvestigationIntelligenceEngine } from './intelligence/InvestigationIntelligenceEngine';
 import { AIProviderManager } from './level5/AIProviderManager';
+import i18n from '@/lib/i18n';
 import type { ReasoningReport } from './reasoning/ReasoningTypes';
 import type { InvestigationIntelligenceReport } from './intelligence/IntelligenceTypes';
 import {
@@ -57,9 +58,71 @@ import type { Level6IntelligenceReport } from './level6/L6Types';
 
 // ── Quick action definitions ──────────────────────────────────────────────────
 
+import type { ChecklistItem } from '@/lib/db/checklistRepo';
+import type { FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
+import { detectFardType } from './fard/fardChecker';
+import { getFardEntry, getCommon } from '@/knowledge/fard/fardKb';
+
+function getPendingMandatoryPlaybookSummary(ctx: InvestigationContext): string[] {
+  const allKaryvahi = ctx.karyvahi?.all ?? [];
+  const hasAnyStepCode = allKaryvahi.some(
+    (k) => typeof k.step_code === 'string' && k.step_code.trim().length > 0
+  );
+  if (!hasAnyStepCode) return [];
+
+  const playbookSteps = ctx.playbookSteps ?? [];
+  if (playbookSteps.length === 0) return [];
+
+  const pendingMandatory: ChecklistItem[] = [];
+  for (const step of playbookSteps) {
+    if (step.priority !== 'MANDATORY') continue;
+
+    let matched: FIRKaryvahi | undefined;
+    if (step.step_code) {
+      matched = allKaryvahi.find((k) => k.step_code === step.step_code);
+    }
+    if (!matched && step.task_name) {
+      const normStep = step.task_name.trim().toLowerCase().replace(/\s+/g, ' ');
+      matched = allKaryvahi.find((k) => k.name.trim().toLowerCase().replace(/\s+/g, ' ') === normStep);
+    }
+
+    if (matched) {
+      if (matched.status === 'NOT_APPLICABLE' || matched.status === 'COMPLETED' || matched.is_completed === 1) {
+        continue;
+      }
+    }
+
+    pendingMandatory.push(step);
+  }
+
+  if (pendingMandatory.length === 0) return [];
+
+  const phaseOrder: Record<string, number> = {
+    IMMEDIATE: 1,
+    INVESTIGATION: 2,
+    CLOSURE: 3,
+  };
+
+  pendingMandatory.sort((a, b) => {
+    const pA = phaseOrder[a.phase ?? ''] ?? 99;
+    const pB = phaseOrder[b.phase ?? ''] ?? 99;
+    if (pA !== pB) return pA - pB;
+    return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+  });
+
+  const top6 = pendingMandatory.slice(0, 6);
+  const block: string[] = ['Pending required investigation steps:'];
+  for (const step of top6) {
+    const risk = (step.risk_text || '').slice(0, 120);
+    block.push(`- ${step.task_name}: ${risk}`);
+  }
+  return block;
+}
+
 function buildConciseContextSummary(
   ctx: InvestigationContext,
-  toolResults: Map<AIToolName, unknown>
+  toolResults: Map<AIToolName, unknown>,
+  userMessage?: string
 ): string {
   const lines: string[] = [];
   if (ctx.fir) {
@@ -84,12 +147,49 @@ function buildConciseContextSummary(
     lines.push(`Overdue: ${overdue}`);
   }
 
-  if (toolResults.size > 0) {
-    const executed = Array.from(toolResults.entries()).map(([k, v]) => {
+  const playbookSummary = getPendingMandatoryPlaybookSummary(ctx);
+  if (playbookSummary.length > 0) {
+    lines.push(playbookSummary.join('\n'));
+  }
+
+  const lawResult = toolResults.get('SearchLawTool') as
+    { results?: Array<{ title: string; category: string; snippet: string }> } | undefined;
+  if (lawResult?.results && lawResult.results.length > 0) {
+    const kb = lawResult.results
+      .map((r) => `- [${r.category}] ${r.title}: ${r.snippet}`)
+      .join('\n');
+    lines.push(`Relevant Knowledge Base entries:\n${kb}`);
+  }
+
+  const otherToolEntries = Array.from(toolResults.entries()).filter(
+    ([k]) => !(k === 'SearchLawTool' && lawResult?.results && lawResult.results.length > 0)
+  );
+
+  if (otherToolEntries.length > 0) {
+    const executed = otherToolEntries.map(([k, v]) => {
       const summary = typeof v === 'object' && v !== null ? JSON.stringify(v).slice(0, 100) : String(v).slice(0, 100);
       return `${k}: ${summary}`;
     }).join(' | ');
     lines.push(`Tool Results: ${executed}`);
+  }
+
+  // Attach matching Fard Knowledge Base entry when user question mentions Fard keywords
+  const mentionsFard = /फर्द|बरामदगी|जब्ती|तलाशी|पंचनामा|शनाख्त|सुपुर्दगी/i.test(userMessage || '');
+  if (mentionsFard) {
+    const code = detectFardType(userMessage || '') || 'BARAMADGI';
+    const entry = getFardEntry(code);
+    const common = getCommon();
+    if (entry) {
+      lines.push(`\n[Fard Knowledge Base — ${entry.name} (${entry.code})]`);
+      lines.push(`Legal Basis: ${entry.legal}`);
+      lines.push(`Purpose: ${entry.purpose}`);
+      lines.push(`Essentials: ${entry.essentials.join('; ')}`);
+      lines.push(`Mistakes to Avoid: ${entry.mistakes.slice(0, 3).join('; ')}`);
+      lines.push(`Court Scrutiny: ${entry.court.join('; ')}`);
+      if (common) {
+        lines.push(`Common Fard Essentials: ${common.essentials.slice(0, 5).join('; ')}`);
+      }
+    }
   }
 
   return lines.join('\n').slice(0, 3000);
@@ -110,6 +210,7 @@ export const QUICK_ACTIONS: QuickAction[] = [
   { id: 'analytics',         label: 'Analytics',          prompt: 'Show investigation analytics and workload.',       icon: 'BarChart2'      },
   { id: 'pending-tasks',     label: 'Pending Tasks',      prompt: 'What are my pending investigation tasks?',         icon: 'ListTodo'       },
   { id: 'recent-activity',   label: 'Recent Activity',    prompt: 'Show my recent investigation activity.',          icon: 'Activity'       },
+  { id: 'find-section',      label: 'धारा खोजें / Find section', prompt: 'विधि पुस्तकालय में धारा खोजें',             icon: 'Scale'          },
   // ── Level-5 quick actions ──────────────────────────────────────────────────
   { id: 'l5-memory',         label: 'Memory',             prompt: 'Show investigation memory for this FIR.',          icon: 'Clock'          },
   { id: 'l5-predict',        label: 'Predict Risks',      prompt: 'Predict future investigation risks.',              icon: 'AlertTriangle'  },
@@ -142,6 +243,12 @@ export const QUICK_ACTIONS: QuickAction[] = [
 
 export class AICopilotService {
   private memory: AIConversationMemory;
+  private aiPreferences = { reportGeneration: true, restrictCaseData: false };
+
+  setAIPreferences(prefs: { reportGeneration: boolean; restrictCaseData: boolean }): void {
+    this.aiPreferences = prefs;
+  }
+
   /** Cached InvestigationContext — rebuilt when activeFirId changes */
   private cachedCtx?: InvestigationContext;
   private ctxFirId?: string;
@@ -325,7 +432,11 @@ export class AICopilotService {
     const report = NextActionEngine.analyze(ctx);
     const content = report.investigationSummary;
     const assistantMsg = this.memory.addMessage({ role: 'assistant', content });
-    const missingNote = InvestigationContextBuilder.getMissingDataNote(ctx);
+    const missingNote = InvestigationContextBuilder.getMissingDataNote(
+      ctx,
+      'investigation-summary',
+      i18n.language
+    );
     const fullContent = content + missingNote;
     this.memory.updateMessage(assistantMsg.id, { content: fullContent });
     return AIResponseFormatter.format({
@@ -396,9 +507,9 @@ export class AICopilotService {
       const suggestedActions = offlineResult.suggestedActions;
 
       let cloudAnswerUsed = false;
-      if (AIProviderManager.hasOnlineProvider()) {
+      if (AIProviderManager.hasOnlineProvider() && this.aiPreferences.reportGeneration) {
         try {
-          const contextSummary = buildConciseContextSummary(ctx, toolResults);
+          const contextSummary = this.aiPreferences.restrictCaseData ? '' : buildConciseContextSummary(ctx, toolResults, message);
           const cloudResponse = await AIProviderManager.execute({
             prompt: message,
             context: contextSummary,
@@ -415,10 +526,14 @@ export class AICopilotService {
         }
       }
 
-      // Append missing-data note as before, using `finalContent` from
-      // whichever source was used above.
-      const missingNote = InvestigationContextBuilder.getMissingDataNote(ctx);
-      const withMissingNote = finalContent.includes('Unavailable') ? finalContent : finalContent + missingNote;
+      // Append deterministic, localized missing-data note via helper
+      // (suppresses on General Mode, non-relevant intents, and deduplicates)
+      const missingNote = InvestigationContextBuilder.getMissingDataNote(
+        ctx,
+        intent,
+        i18n.language
+      );
+      const withMissingNote = finalContent + missingNote;
 
       const response = AIResponseFormatter.format({
         content: withMissingNote, toolCalls, draft, suggestedActions,

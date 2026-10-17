@@ -6,7 +6,7 @@ import {
   BackHandler, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View,
 } from 'react-native';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { Zap, AlertCircle, LayoutTemplate, Settings2, CheckCircle2, Pencil } from 'lucide-react-native';
+import { Zap, AlertCircle, LayoutTemplate, Settings2, CheckCircle2, Pencil, Printer } from 'lucide-react-native';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
@@ -47,6 +47,19 @@ const FORMAT_TYPE_COLORS: Record<string, string> = {
   'BNSS Karyavahi':  '#DC2626',
   'Any':             '#6B7280',
 };
+
+function getFormatTypeLabel(type: string, t: (k: string) => string): string {
+  switch (type) {
+    case 'GD': return t('format.type.gd');
+    case 'Case Diary': return t('format.type.caseDiary');
+    case 'Narrative': return t('format.type.narrative');
+    case 'Nyayalay': return t('format.type.nyayalay');
+    case 'Prarthna Patra': return t('format.type.prarthnaPatra');
+    case 'BNSS Karyavahi': return t('format.type.bnssKaryavahi');
+    case 'Any': return t('format.type.any');
+    default: return type;
+  }
+}
 
 /** Draft key for AsyncStorage — scoped to formatId and firId so multiple formats/cases don't conflict. */
 function _draftKey(formatId: string, firId?: string) {
@@ -167,14 +180,14 @@ export default function FillScreen() {
             setBannerError('');
             loadedFormatIdRef.current = loadKey;
           } else {
-            setBannerError('Failed to load format.');
+            setBannerError(t('format.fill.errorLoadFailed'));
           }
         } catch {
-          if (active) setBannerError('Failed to load format.');
+          if (active) setBannerError(t('format.fill.errorLoadFailed'));
         }
       })();
       return () => { active = false; };
-    }, [formatId, firId, workspace])
+    }, [formatId, firId, workspace, t])
   );
 
   const setValue = (keyName: string, val: string) => {
@@ -304,10 +317,39 @@ export default function FillScreen() {
       // Surface any pipeline error visibly — never fail silently on the generate button
       const msg = err instanceof Error ? err.message : String(err);
       console.error('[Fill] generate pipeline error:', err);
-      setBannerError(`रिपोर्ट बनाने में त्रुटि: ${msg}`);
+      setBannerError(t('format.fill.errorReportGeneration', { msg }));
     } finally {
       setGenerating(false);
     }
+  };
+
+  const handlePrintBlank = async () => {
+    if (!format) return;
+    // Build a version of the template where workspace-known fields
+    // (Police Station, District, Officer Name — already in autoValues)
+    // stay filled in as usual, but every OTHER dynamic field the
+    // officer would normally type becomes a blank line instead of its
+    // {{key}} marker, so the printed page has ready-to-hand-write blanks.
+    const blankValues: Record<string, string> = { ...autoValues };
+    for (const key of dynamicKeys) {
+      if (!(key.key_name in blankValues)) {
+        blankValues[key.key_name] = '…………………………………';
+      }
+    }
+    const blankedText = generateReport(format.vivran, blankValues, dynamicKeys);
+    const profile = format.layout_profile ?? DEFAULT_LAYOUT_PROFILE;
+    const subLetters = splitIntoSubLetters(blankedText);
+    const models = subLetters.map(parseIntoDocumentModel);
+    const PAGE_BREAK = '';
+    const combinedHtml = models.map((m) => renderDocumentModel(m, profile)).join(PAGE_BREAK);
+    const fullHtml = buildPrintHtml(combinedHtml, format.title);
+    const { html: fixedHtml } = fixFormat(fullHtml, profile, format.title);
+    const editorHtml = renderModelsForEditor(models);
+    formatPreviewBridge.set({ reportText: blankedText, formatHtml: fixedHtml, formatEditorHtml: editorHtml });
+    const callingParam = callingModule ? `&callingModule=${encodeURIComponent(callingModule)}` : '';
+    router.push(
+      `/(app)/formats/preview?formatId=${encodeURIComponent(format.id)}&formatTitle=${encodeURIComponent(format.title)}&isBlankPrint=true${callingParam}` as never
+    );
   };
 
   if (!format) {
@@ -328,8 +370,8 @@ export default function FillScreen() {
       <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('fill.discardTitle', 'Leave this form?')}</AlertDialogTitle>
-            <AlertDialogDescription>{t('fill.discardDesc', 'Your draft will be saved and you can return to continue.')}</AlertDialogDescription>
+            <AlertDialogTitle>{t('format.fill.discardTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('format.fill.discardDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2">
             {/* Leave — discard draft and exit */}
@@ -341,7 +383,7 @@ export default function FillScreen() {
               }}
               className="bg-destructive"
             >
-              <Text className="text-white font-semibold text-sm">{t('fill.discardConfirm', 'छोड़ें (Leave)')}</Text>
+              <Text className="text-white font-semibold text-sm">{t('format.fill.discardConfirm')}</Text>
             </AlertDialogAction>
             {/* Save as Draft — flush current values to AsyncStorage then exit */}
             <AlertDialogAction
@@ -352,11 +394,11 @@ export default function FillScreen() {
               }}
               className="bg-primary"
             >
-              <Text className="text-primary-foreground font-semibold text-sm">{t('fill.discardDraft', 'ड्राफ्ट सेव करें')}</Text>
+              <Text className="text-primary-foreground font-semibold text-sm">{t('format.fill.discardDraft')}</Text>
             </AlertDialogAction>
             {/* Stay — dismiss dialog, keep editing */}
             <AlertDialogCancel onPress={() => setShowDiscardDialog(false)}>
-              <Text className="font-semibold text-sm">{t('fill.discardCancel', 'रुकें (Stay)')}</Text>
+              <Text className="font-semibold text-sm">{t('format.fill.discardCancel')}</Text>
             </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -364,7 +406,7 @@ export default function FillScreen() {
 
       <AppHeader
         title={format.title}
-        subtitle={format.format_type}
+        subtitle={getFormatTypeLabel(format.format_type, t)}
         onBack={handleBackPress}
         rightActions={
           <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: `${typeColor}15` }}>
@@ -373,7 +415,7 @@ export default function FillScreen() {
         }
       />
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         keyboardVerticalOffset={process.env.EXPO_OS === 'ios' ? 56 : 0}
         className="flex-1"
       >
@@ -537,6 +579,23 @@ export default function FillScreen() {
             <Zap size={18} color="#0D0D0D" />
             <Text style={{ fontSize: 16, fontWeight: '700', color: '#0D0D0D' }}>
               {generating ? t('format.fill.generating') : t('format.fill.generate')}
+            </Text>
+          </Pressable>
+
+          {/* ── Print Blank Form button — secondary outline CTA ─── */}
+          <Pressable
+            onPress={handlePrintBlank}
+            className="active:opacity-80"
+            style={{
+              borderRadius: 12, paddingVertical: 14, marginTop: 10,
+              borderWidth: 1, borderColor: C.border,
+              backgroundColor: 'transparent',
+              flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}
+          >
+            <Printer size={18} color={C.foreground} />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: C.foreground }}>
+              {t('format.fill.printBlank')}
             </Text>
           </Pressable>
         </ScrollView>

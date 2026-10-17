@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, Pressable, ScrollView, Text, View,
 } from 'react-native';
@@ -24,6 +25,7 @@ function PrintPreviewModal({
 }: { visible: boolean; onClose: () => void; html: string; title: string }) {
   const isWeb = process.env.EXPO_OS === 'web';
   const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
 
   return (
@@ -35,7 +37,7 @@ function PrintPreviewModal({
           flexDirection: 'row', alignItems: 'center', gap: 12,
           backgroundColor: C.primary, borderBottomWidth: 1, borderBottomColor: C.primary,
         }}>
-          <Pressable onPress={onClose} style={{ padding: 4 }} accessibilityLabel="Close preview">
+          <Pressable onPress={onClose} style={{ padding: 4 }} accessibilityLabel={t('format.preview.closePreview')}>
             <ArrowLeft size={22} color="#fff" />
           </Pressable>
           <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: '#fff' }} numberOfLines={1}>
@@ -50,7 +52,7 @@ function PrintPreviewModal({
             <iframe
               srcDoc={html}
               style={{ flex: 1, border: 'none', width: '100%', height: '100%' }}
-              title="Print Preview"
+              title={t('format.preview.printPreview')}
             />
           </View>
         ) : (
@@ -68,14 +70,16 @@ function PrintPreviewModal({
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function PreviewScreen() {
   const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
 
   // Phase 1: only lightweight IDs come via URL — payloads come from bridge
-  const { formatTitle, formatId, callingModule } =
+  const { formatTitle, formatId, callingModule, isBlankPrint } =
     useLocalSearchParams<{
       formatTitle: string;
       formatId: string;
       callingModule?: string;
+      isBlankPrint?: string;
     }>();
   const navigation = useNavigation();
 
@@ -93,9 +97,10 @@ export default function PreviewScreen() {
     formatPreviewBridge.clear();
   }, []);
 
-  const isFromGD = callingModule === 'GD';
-  const isFromNK = callingModule === 'NK';
-  const title    = safeDecode(formatTitle) || 'Generated Report';
+  const isBlank  = isBlankPrint === 'true';
+  const isFromGD = !isBlank && callingModule === 'GD';
+  const isFromNK = !isBlank && callingModule === 'NK';
+  const title    = safeDecode(formatTitle) || t('format.preview.title');
 
   const handleInsertIntoGD = () => {
     gdFormatBridge.set(reportContent, formatId);
@@ -112,7 +117,7 @@ export default function PreviewScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title="Generated Report"
+        title={t('format.preview.title')}
         subtitle={title}
         showBack
         rightActions={
@@ -123,7 +128,7 @@ export default function PreviewScreen() {
               style={{ backgroundColor: colorScheme === 'dark' ? `${C.primary}25` : `${C.primary}15` }}
             >
               <Eye size={15} color={C.primary} />
-              <Text className="text-xs font-semibold" style={{ color: C.primary }}>A4 Preview</Text>
+              <Text className="text-xs font-semibold" style={{ color: C.primary }}>{t('format.preview.a4Preview')}</Text>
             </Pressable>
           ) : undefined
         }
@@ -139,7 +144,7 @@ export default function PreviewScreen() {
               style={{ borderCurve: 'continuous' }}
             >
               <BookOpen size={15} color="#fff" />
-              <Text className="text-sm font-bold text-primary-foreground">GD में डालें</Text>
+              <Text className="text-sm font-bold text-primary-foreground">{t('format.preview.insertIntoGD')}</Text>
             </Pressable>
           )}
           {isFromNK && (
@@ -149,7 +154,7 @@ export default function PreviewScreen() {
               style={{ backgroundColor: '#DC2626', borderCurve: 'continuous' }}
             >
               <FileWarning size={15} color="#fff" />
-              <Text className="text-sm font-bold text-white">कार्यवाही सेव करें</Text>
+              <Text className="text-sm font-bold text-white">{t('format.preview.saveProceeding')}</Text>
             </Pressable>
           )}
         </View>
@@ -164,7 +169,7 @@ export default function PreviewScreen() {
           fixedHtml={decodedHtml || undefined}
           editorHtml={decodedEditorHtml || undefined}
           title={title}
-          onSave={async (v) => setReportContent(v)}
+          onSave={isBlank ? undefined : async (v) => setReportContent(v)}
         />
       </ScrollView>
 

@@ -11,6 +11,7 @@
 
 import type { InvestigationContext } from '../InvestigationContext';
 import type { Finding } from './ReasoningTypes';
+import { extractRefs, getSection } from '@/lib/law/lawLibrary';
 
 interface MandatoryRequirement {
   id: string;
@@ -135,6 +136,56 @@ export class ComplianceEngine {
       } catch {
         // Non-fatal
       }
+    }
+
+    // ── Rule LAW1 (info): Flag any section cited with explicit act name (BNS/BNSS/BSA)
+    // that does not exist in the Law Library (n > total or no such section).
+    try {
+      const textsToCheck: string[] = [];
+      if (ctx.fir?.section) {
+        textsToCheck.push(ctx.fir.section);
+      }
+      if (ctx.caseDiaries && Array.isArray(ctx.caseDiaries)) {
+        for (const cd of ctx.caseDiaries) {
+          if (cd.places_visited) textsToCheck.push(cd.places_visited);
+        }
+      }
+      if (ctx.karyvahi?.all && Array.isArray(ctx.karyvahi.all)) {
+        for (const k of ctx.karyvahi.all) {
+          if (k.name) textsToCheck.push(k.name);
+          if (k.precautions) textsToCheck.push(k.precautions);
+        }
+      }
+
+      const combinedText = textsToCheck.join(' ');
+      if (combinedText.trim()) {
+        const explicitRefs = extractRefs(combinedText);
+        const flagged = new Set<string>();
+
+        for (const ref of explicitRefs) {
+          const key = `${ref.act}:${ref.n}`;
+          if (flagged.has(key)) continue;
+
+          const sec = getSection(ref.act, ref.n);
+          if (!sec) {
+            flagged.add(key);
+            findings.push({
+              id: `comp-finding-${++fc}`,
+              ruleId: 'LAW1',
+              ruleTitle: 'यह धारा संख्या अधिनियम में नहीं मिली: जाँचें',
+              severity: 'info',
+              title: 'यह धारा संख्या अधिनियम में नहीं मिली: जाँचें / Section number not found in act: verify',
+              detail: `धारा संख्या ${ref.act} ${ref.n} अधिनियम में नहीं मिली: जाँचें / Section ${ref.act} ${ref.n} was not found in the official Act.`,
+              recommendation: 'अधिनियम के आधिकारिक गजट में धारा संख्या की पुष्टि करें / Verify section number in official Act',
+              modulesAnalysed: ['FIR', 'CaseDiary'],
+              legalReference: `${ref.act} Section Registry (Official Gazette 2023)`,
+              generatedAt: now,
+            });
+          }
+        }
+      }
+    } catch {
+      // Missing or invalid input skips silently
     }
 
     return findings;

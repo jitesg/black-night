@@ -6,6 +6,7 @@ import {
   BookOpen, Clock, Edit2, FileText, Paperclip,
   Search, Trash2, Users,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import {
@@ -68,6 +69,7 @@ interface AttachmentItem {
 }
 
 export default function GuideDetailScreen() {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const COLOR = colorScheme === 'dark' ? '#22D3EE' : '#0891B2';
@@ -108,7 +110,7 @@ export default function GuideDetailScreen() {
   if (loading) {
     return (
       <View className="flex-1 bg-background items-center justify-center">
-        <Text className="text-muted-foreground">Loading…</Text>
+        <Text className="text-muted-foreground">{t('common.loading')}</Text>
       </View>
     );
   }
@@ -116,9 +118,9 @@ export default function GuideDetailScreen() {
   if (!entry) {
     return (
       <View className="flex-1 bg-background items-center justify-center gap-3 px-6">
-        <Text className="text-base font-semibold text-foreground">Record not found</Text>
+        <Text className="text-base font-semibold text-foreground">{t('knowledge.guide.recordNotFound')}</Text>
         <Pressable onPress={() => router.back()} className="active:opacity-70">
-          <Text className="text-sm" style={{ color: COLOR }}>Go back</Text>
+          <Text className="text-sm" style={{ color: COLOR }}>{t('knowledge.guide.goBack')}</Text>
         </Pressable>
       </View>
     );
@@ -126,7 +128,7 @@ export default function GuideDetailScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title={entry.title} subtitle={config.label}
+      <AppHeader title={entry.title} subtitle={t(`knowledge.guide.${guideType}.label`)}
         showBack
       />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
@@ -142,7 +144,7 @@ export default function GuideDetailScreen() {
             style={{ borderCurve: 'continuous' }}
           >
             <Edit2 size={14} color={C.mutedForeground} />
-            <Text className="text-sm font-medium text-foreground">Edit</Text>
+            <Text className="text-sm font-medium text-foreground">{t('common.edit')}</Text>
           </Pressable>
           <Pressable
             onPress={() => setShowDelete(true)}
@@ -166,7 +168,7 @@ export default function GuideDetailScreen() {
               style={{ backgroundColor: `${COLOR}15` }}
             >
               <Text className="text-xs font-semibold" style={{ color: COLOR }}>
-                {entry.crime_type}
+                {t('knowledge.guide.crimeType.' + entry.crime_type, { defaultValue: entry.crime_type })}
               </Text>
             </View>
           ) : null}
@@ -183,7 +185,7 @@ export default function GuideDetailScreen() {
           style={{ borderCurve: 'continuous' }}
         >
           <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            {config.contentLabel}
+            {t(`knowledge.guide.${guideType}.contentLabel`)}
           </Text>
           <Text className="text-base text-foreground leading-7" selectable>
             {entry.description}
@@ -210,7 +212,7 @@ export default function GuideDetailScreen() {
             <View className="px-4 py-3 border-b border-border/60 flex-row items-center gap-2">
               <Paperclip size={13} color={C.mutedForeground} />
               <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Attachments ({attachments.length})
+                {t('knowledge.guide.attachmentsHeading', { count: attachments.length })}
               </Text>
             </View>
             {attachments.map((att, idx) => (
@@ -237,13 +239,13 @@ export default function GuideDetailScreen() {
           <View className="flex-row items-center gap-2">
             <Clock size={12} color={C.mutedForeground} />
             <Text className="text-xs text-muted-foreground">
-              Created: {fmtTs(entry.created_at)}
+              {t('knowledge.guide.created', { date: fmtTs(entry.created_at) })}
             </Text>
           </View>
           <View className="flex-row items-center gap-2">
             <Clock size={12} color={C.mutedForeground} />
             <Text className="text-xs text-muted-foreground">
-              Modified: {fmtTs(entry.updated_at)}
+              {t('knowledge.guide.modified', { date: fmtTs(entry.updated_at) })}
             </Text>
           </View>
         </View>
@@ -253,19 +255,17 @@ export default function GuideDetailScreen() {
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Record</AlertDialogTitle>
+            <AlertDialogTitle>{t('knowledge.guide.deleteRecord')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Delete{' '}
-              <Text className="font-semibold text-foreground">{entry.title}</Text>
-              ? This cannot be undone.
+              {t('knowledge.guide.deleteRecordDesc', { title: entry.title })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setShowDelete(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleDeleteConfirm} className="bg-destructive">
-              <Text className="text-destructive-foreground font-semibold">Delete</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

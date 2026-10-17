@@ -1,6 +1,8 @@
 import * as SQLite from 'expo-sqlite';
 import { CREATE_TABLES_SQL } from './schema';
 import checklistItemsSeed from '../../../assets/seed/checklist_items_seed.json';
+import { ensurePlaybookSeeded } from './playbookSeed';
+import { logger } from '../logger';
 
 // expo-sqlite's accepted bind-parameter type
 type BindParams = SQLite.SQLiteBindValue[];
@@ -157,6 +159,30 @@ function makeStub(): SQLite.SQLiteDatabase {
         const table   = ins[1];
         const cols    = ins[2].split(',').map((c) => c.trim());
         const tokens  = ins[3].split(',').map((t) => t.trim());
+
+        // Validate column existence for known sensitive tables
+        if (table === 'workspace_settings') {
+          const valid = new Set(['id', 'police_station', 'district', 'state', 'halka', 'beat', 'officer_name', 'updated_at']);
+          for (const col of cols) {
+            if (!valid.has(col)) {
+              throw new Error(`Error code 1: no such column: ${col}`);
+            }
+          }
+        } else if (table === 'app_settings') {
+          const valid = new Set(['key', 'value', 'updated_at']);
+          for (const col of cols) {
+            if (!valid.has(col)) {
+              throw new Error(`Error code 1: no such column: ${col}`);
+            }
+          }
+        } else if (table === 'knowledge_notes') {
+          const valid = new Set(['entry_id', 'note', 'updated_at']);
+          for (const col of cols) {
+            if (!valid.has(col)) {
+              throw new Error(`Error code 1: no such column: ${col}`);
+            }
+          }
+        }
         const isIgnore  = /INSERT\s+OR\s+IGNORE/i.test(s);
         const isReplace = /INSERT\s+OR\s+REPLACE/i.test(s);
         let pi = 0;
@@ -415,6 +441,12 @@ function makeStub(): SQLite.SQLiteDatabase {
       const fromMatch = s.match(/FROM\s+(\w+)/i);
       if (!fromMatch) return [];
 
+      if (fromMatch[1] === 'workspace_settings') {
+        if (/\b(value|key)\b/i.test(s)) {
+          throw new Error('Error code 1: no such column: ' + (/\bvalue\b/i.test(s) ? 'value' : 'key'));
+        }
+      }
+
       // ── COUNT(*) aggregate queries ────────────────────────────────────────
       // Run the WHERE filter normally and return [{alias: N}] so getFirstAsync
       // callers (e.g. updateFIRStatus) get the correct row count.
@@ -659,6 +691,23 @@ function makeStub(): SQLite.SQLiteDatabase {
             continue;
           }
 
+          // IN operator: col IN (?, ?, ...)
+          const inMatch = cond.match(/([\w.]+)\s+IN\s*\(([^)]+)\)/i);
+          if (inMatch) {
+            const col = resolveCol(inMatch[1]);
+            const bare = _bareCol(col);
+            const rawItems = inMatch[2].split(',').map((item) => item.trim());
+            const vals = rawItems.map((item) => {
+              if (item === '?') return p[pi++];
+              return _parseLiteral(item);
+            });
+            rows = rows.filter((r) => {
+              const val = r[col] ?? r[bare];
+              return vals.includes(val);
+            });
+            continue;
+          }
+
           // col = ? | col = literal | col IS NULL | col IS NOT NULL
           // All accept alias-qualified col names (e.g. k.is_completed, nd.deleted_at)
           const eq      = cond.match(/([\w.]+)\s*=\s*(\?|'[^']*'|-?\d+(?:\.\d+)?)/i);
@@ -693,6 +742,33 @@ function makeStub(): SQLite.SQLiteDatabase {
             });
           }
         }
+      }
+
+      // ── GROUP BY support ──────────────────────────────────────────────────
+      // Handles queries like:
+      //   SELECT category, COUNT(*) as cnt FROM knowledge_entries WHERE ... GROUP BY category
+      const groupByMatch = s.match(/GROUP\s+BY\s+([\w.]+)/i);
+      if (groupByMatch) {
+        const groupColRaw = groupByMatch[1];
+        const groupCol = _bareCol(groupColRaw);
+        const countAliasMatch = s.match(/COUNT\([^)]*\)\s+(?:AS\s+)?(\w+)/i);
+        const cntAlias = countAliasMatch ? countAliasMatch[1] : 'cnt';
+
+        const groups = new Map<unknown, number>();
+        for (const row of rows) {
+          const key = row[groupCol] ?? row[groupColRaw];
+          if (key !== undefined) {
+            groups.set(key, (groups.get(key) ?? 0) + 1);
+          }
+        }
+        const groupedRows: Record<string, unknown>[] = [];
+        for (const [key, count] of groups.entries()) {
+          groupedRows.push({
+            [groupCol]: key,
+            [cntAlias]: count,
+          });
+        }
+        return groupedRows as unknown as T[];
       }
 
       // ── COUNT(*) short-circuit ────────────────────────────────────────────
@@ -956,6 +1032,15 @@ async function _openDatabase(): Promise<void> {
 }
 
 async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> {
+  // Ensure app_settings table exists immediately before any migrations or seeds
+  await database.execAsync(`
+    CREATE TABLE IF NOT EXISTS app_settings (
+      key        TEXT PRIMARY KEY,
+      value      TEXT NOT NULL,
+      updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))
+    );
+  `);
+
   const statements = CREATE_TABLES_SQL
     .split(';')
     .map((s) => s.trim())
@@ -1240,6 +1325,20 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   // General karyvahi view. Safe default: existing rows get 0 (not queued).
   await _ensureColumn(database, 'fir_karyvahi', 'queued_for_diary', 'INTEGER NOT NULL DEFAULT 0');
 
+  // ── Investigation Playbook: structured investigation steps ────────────────
+  await _ensureColumn(database, 'checklist_items', 'step_code',      'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'phase',          'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'proves',         'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'condition_note', 'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'legal_basis',    'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'why_text',       'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'court_text',     'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'care_text',      'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'risk_text',      'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'steps_text',     'TEXT');
+  await _ensureColumn(database, 'checklist_items', 'docs_text',      'TEXT');
+  await _ensureColumn(database, 'fir_karyvahi',    'step_code',      'TEXT');
+
   // ── Flat taxonomy seed (v2) — checklist_items + checklist_item_subtypes ───
   // checklistItemsSeed.items are bundled with the app binary. Every item has:
   //   task_name, brief_description, priority, crime_types: string[]
@@ -1247,6 +1346,11 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   // checklist_item_subtypes.crime_subtype is set to '' for all flat-taxonomy
   // items (the flat model has no subtypes; the column exists for legacy rows).
   await _seedChecklistItems(database);
+  try {
+    await ensurePlaybookSeeded(database);
+  } catch (err) {
+    logger.warn('[database] ensurePlaybookSeeded failed:', err);
+  }
 }
 
 /**

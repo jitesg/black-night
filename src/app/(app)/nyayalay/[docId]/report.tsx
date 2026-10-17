@@ -19,6 +19,7 @@ import {
   Pressable, ScrollView, Text, View,
 } from 'react-native';
 import { GeneratedReportView } from '@/components/common/GeneratedReportView';
+import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import {
   DatePickerModal,
   dateStrToObj,
@@ -104,6 +105,7 @@ function DatePickerField({
   error?: string;
   onConfirm: (v: string) => void;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <View>
@@ -121,7 +123,7 @@ function DatePickerField({
         <Text className="flex-1 text-sm text-foreground font-medium">
           {fmtDate(value)}
         </Text>
-        <Text className="text-xs font-medium" style={{ color: accentColor }}>Change</Text>
+        <Text className="text-xs font-medium" style={{ color: accentColor }}>{t('common.edit')}</Text>
       </Pressable>
       {error ? (
         <Text className="text-xs text-destructive mt-1">{error}</Text>
@@ -215,8 +217,8 @@ export default function NyayalayReportScreen() {
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
-    if (!actionDate.trim()) e.actionDate = 'Action date is required';
-    if (!reportContent.trim()) e.reportContent = 'Report content cannot be empty';
+    if (!actionDate.trim()) e.actionDate = t('nyayalay.report.errorActionDateRequired');
+    if (!reportContent.trim()) e.reportContent = t('nyayalay.report.errorReportEmpty');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -238,7 +240,7 @@ export default function NyayalayReportScreen() {
       router.back();
       router.back();
     } catch {
-      setErrors({ general: 'Failed to save. Please try again.' });
+      setErrors({ general: t('nyayalay.form.errorSaveFailed') });
     } finally {
       setSaving(false);
     }
@@ -268,11 +270,11 @@ export default function NyayalayReportScreen() {
   const allAccused = doc?.persons.filter((p) => p.person_type === 'accused') ?? [];
 
   return (
-    <KeyboardAvoidingView behavior="padding" className="flex-1">
+    <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1">
       <View className="flex-1 bg-background">
         <AppHeader
-          title={existingReport ? 'Edit Report' : 'Generate Report'}
-          subtitle={doc ? DOC_TYPE_LABELS[doc.doc_type] : 'Court Document'}
+          title={existingReport ? t('nyayalay.report.editReport') : t('nyayalay.report.generateReport')}
+          subtitle={doc ? (DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type) : t('nyayalay.form.title')}
           onBack={handleBack}
           rightActions={
             <Pressable
@@ -282,7 +284,7 @@ export default function NyayalayReportScreen() {
               style={{ backgroundColor: isAlreadyFinished ? '#9CA3AF' : MODULE_COLOR }}
             >
               <Text className="text-sm font-semibold text-white">
-                {saving ? 'Saving…' : 'Final Save'}
+                {saving ? t('common.saving') : t('nyayalay.report.finalSave')}
               </Text>
             </Pressable>
           }
@@ -315,7 +317,7 @@ export default function NyayalayReportScreen() {
                     {doc.registration_number}
                   </Text>
                   <Text className="text-xs text-muted-foreground">
-                    {DOC_TYPE_LABELS[doc.doc_type]}{doc.sub_type ? ` · ${doc.sub_type}` : ''}
+                    {DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type}{doc.sub_type ? ` · ${doc.sub_type}` : ''}
                   </Text>
                 </View>
                 {/* Status badge */}
@@ -329,7 +331,7 @@ export default function NyayalayReportScreen() {
                     className="text-[10px] font-semibold"
                     style={{ color: doc.status === 'Finished' ? '#065F46' : '#92400E' }}
                   >
-                    {doc.status}
+                    {doc.status === 'Finished' ? t('fir.list.filterFinished') : t('fir.list.filterPending')}
                   </Text>
                 </View>
               </View>
@@ -338,14 +340,14 @@ export default function NyayalayReportScreen() {
               <View className="px-4 pt-4 pb-2 gap-3">
                 {/* Row 1: Court + Vad Sankhya */}
                 <View className="flex-row gap-4">
-                  <InfoCell label="Court Name"    value={doc.court_name} />
-                  <InfoCell label="Vad Sankhya"   value={doc.vad_sankhya} />
+                  <InfoCell label={t('nyayalay.detail.courtName')}    value={doc.court_name} />
+                  <InfoCell label={t('nyayalay.detail.vadSankhya')}   value={doc.vad_sankhya} />
                 </View>
 
                 {/* Row 2: Apradh Sankhya + Sections */}
                 <View className="flex-row gap-4">
-                  <InfoCell label="Apradh Sankhya"  value={doc.apradh_sankhya} />
-                  <InfoCell label="Sections"         value={doc.applicable_sections} />
+                  <InfoCell label={t('nyayalay.detail.apradhSankhya')}  value={doc.apradh_sankhya} />
+                  <InfoCell label={t('nyayalay.detail.applicableSections')}         value={doc.applicable_sections} />
                 </View>
 
                 <Divider />
@@ -354,20 +356,20 @@ export default function NyayalayReportScreen() {
                 {accused ? (
                   <>
                     <View className="flex-row gap-4">
-                      <InfoCell label="Accused Name" value={accused.name} />
-                      <InfoCell label="Father Name"  value={accused.father_name} />
+                      <InfoCell label={t('nyayalay.form.nameRequired')} value={accused.name} />
+                      <InfoCell label={t('nyayalay.form.fatherName')}  value={accused.father_name} />
                     </View>
                     <View className="flex-row gap-4">
-                      <InfoCell label="Mobile"  value={accused.mobile} />
-                      <InfoCell label="Address" value={accused.address} />
+                      <InfoCell label={t('nyayalay.form.mobile')}  value={accused.mobile} />
+                      <InfoCell label={t('nyayalay.form.address')} value={accused.address} />
                     </View>
                     {accused.remarks ? (
-                      <InfoCell label="Remarks" value={accused.remarks} />
+                      <InfoCell label={t('nyayalay.form.remarks')} value={accused.remarks} />
                     ) : null}
                   </>
                 ) : (
                   <Text className="text-xs text-muted-foreground italic">
-                    No accused on record.
+                    {t('nyayalay.detail.noAccusedOnRecord')}
                   </Text>
                 )}
 
@@ -382,7 +384,7 @@ export default function NyayalayReportScreen() {
                         className="text-[10px] font-semibold"
                         style={{ color: MODULE_COLOR }}
                       >
-                        +{allAccused.length - 1} more accused
+                        {t('nyayalay.detail.moreAccusedCount', { count: allAccused.length - 1 })}
                       </Text>
                     </View>
                   </View>
@@ -401,10 +403,10 @@ export default function NyayalayReportScreen() {
               style={{ backgroundColor: '#D1FAE5', borderWidth: 1, borderColor: '#6EE7B7' }}
             >
               <Text className="text-sm font-semibold" style={{ color: '#065F46' }}>
-                ✓ Report saved — document is Finished
+                {t('nyayalay.report.finishedBannerTitle')}
               </Text>
               <Text className="text-xs mt-1" style={{ color: '#047857' }}>
-                You can still edit and re-save the report below.
+                {t('nyayalay.report.finishedBannerDesc')}
               </Text>
             </View>
           )}
@@ -453,11 +455,11 @@ export default function NyayalayReportScreen() {
                       </Text>
                       {formatTitle ? (
                         <Text className="text-xs text-muted-foreground">
-                          Tap to change template
+                          {t('nyayalay.report.tapToChangeTemplate')}
                         </Text>
                       ) : (
                         <Text className="text-xs" style={{ color: '#D97706' }}>
-                          Select a Nyayalay template
+                          {t('nyayalay.report.selectNyayalayTemplate')}
                         </Text>
                       )}
                     </View>
@@ -481,11 +483,11 @@ export default function NyayalayReportScreen() {
 
           {/* ── Prompt 3: Report content — GeneratedReportView ──── */}
           <Text className="text-xs text-muted-foreground font-medium uppercase tracking-widest mt-5 mb-2">
-            Report Content
+            {t('nyayalay.report.reportContentLabel')}
           </Text>
           <GeneratedReportView
             content={reportContent}
-            title="Court Report"
+            title={t('nyayalay.report.courtReportTitle')}
             onSave={async (v) => { setReportContent(v); setIsDirty(true); }}
             sharePrefix={
               doc
@@ -493,6 +495,7 @@ export default function NyayalayReportScreen() {
                 : undefined
             }
           />
+          <FardCheckButton text={reportContent} title={formatTitle || doc?.registration_number} className="mt-2" />
           {errors.reportContent ? (
             <Text className="text-xs text-destructive mt-1">{errors.reportContent}</Text>
           ) : null}
@@ -500,8 +503,7 @@ export default function NyayalayReportScreen() {
           {/* Final Save note */}
           <View className="mt-4 bg-muted rounded-xl p-3" style={{ borderCurve: 'continuous' }}>
             <Text className="text-xs text-muted-foreground">
-              Final Save will permanently attach this report and automatically set
-              document status to <Text className="font-semibold">Finished</Text>.
+              {t('nyayalay.report.finalSaveNotePrefix')} <Text className="font-semibold">{t('fir.list.filterFinished')}</Text>.
             </Text>
           </View>
         </ScrollView>
@@ -511,25 +513,25 @@ export default function NyayalayReportScreen() {
       <AlertDialog open={backDialog} onOpenChange={setBackDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogTitle>{t('common.unsavedTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Do you want to save before leaving?
+              {t('common.unsavedDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setBackDialog(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               onPress={() => { setBackDialog(false); setIsDirty(false); router.back(); }}
             >
-              <Text>Discard</Text>
+              <Text>{t('common.discard')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
               onPress={() => { setBackDialog(false); handleFinalSave(); }}
               className="bg-primary"
             >
-              <Text className="text-primary-foreground font-semibold">Save</Text>
+              <Text className="text-primary-foreground font-semibold">{t('common.save')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

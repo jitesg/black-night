@@ -32,6 +32,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Constants from 'expo-constants';
 import formatsSeedData from '../../assets/seed/formats_seed.json';
 import knowledgeSeedData from '../../assets/seed/knowledge_seed.json';
+import circularsSeedData from '../../assets/seed/circulars_seed.json';
 import {
   dcGet, dcSet, dcRemove, dcClearAll,
   DC_KEY_FORMATS, DC_KEY_KNOWLEDGE, DC_KEY_LAST_EXPORT,
@@ -169,7 +170,19 @@ export interface DevSeedStore {
 }
 
 const BUNDLED_FORMATS   = (formatsSeedData   as { formats:   SeedFormat[]   }).formats;
-const BUNDLED_KNOWLEDGE = (knowledgeSeedData as { knowledge: SeedKnowledge[] }).knowledge;
+const RAW_BUNDLED_KNOWLEDGE = (knowledgeSeedData as { knowledge: SeedKnowledge[] }).knowledge;
+const RAW_CIRCULARS = ((circularsSeedData as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map((k) => ({
+  ...k,
+  source: 'system' as const,
+  editable: 0 as const,
+  content_type: k.content_type || 'circular',
+}));
+const BUNDLED_KNOWLEDGE: SeedKnowledge[] = [
+  ...RAW_BUNDLED_KNOWLEDGE.filter(
+    (k) => !(k.source === 'system' && (k.category === 'Law' || k.category === 'Laws & Sections'))
+  ),
+  ...RAW_CIRCULARS,
+];
 
 export function useDevSeedStore(): DevSeedStore {
   const [formats,        setFormats       ] = useState<SeedFormat[]  >(BUNDLED_FORMATS);

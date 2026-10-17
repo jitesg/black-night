@@ -75,6 +75,8 @@ const FIR_RESOLVERS: Record<string, (firId: string) => Promise<string>> = {
     const fir = await getFIRById(firId);
     return fir?.complainant_name ?? '';
   },
+  date: async () => todayLocalISO(),
+  preparation_date: async (firId) => LAST_CD_RESOLVERS.preparation_date(firId),
 };
 
 /**

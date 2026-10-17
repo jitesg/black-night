@@ -14,9 +14,10 @@ import { getAllNyayalayDocuments } from '@/lib/db/nyayalayRepo';
 import { getAllGdEntries } from '@/lib/db/gdRepo';
 import { getAllPrarthnaPatra } from '@/lib/db/prarthnaPatraRepo';
 import { getAllNirodhatmakKaryvahi } from '@/lib/db/nirodhatmakRepo';
-import { searchKnowledgeAll } from '@/lib/db/knowledgeRepo';
+import { searchKnowledgeAll, type KnowledgeEntry } from '@/lib/db/knowledgeRepo';
 import { loadDashboardData } from '@/lib/db/dashboardRepo';
 import { generateUUID } from '@/lib/db/database';
+import { getPlaybookStepsForPairs, parseCrimeTypePairs, type ChecklistItem } from '@/lib/db/checklistRepo';
 import type {
   InvestigationContext,
   OfficerProfile,
@@ -49,6 +50,17 @@ function fieldStatus(ok: boolean, count: number | boolean): ContextFieldStatus {
 }
 
 // ── Main builder ──────────────────────────────────────────────────────────────
+
+// ── In-memory deduplication for missing data notes ───────────────────────────
+let _activeFirForNotes: string | undefined;
+const _shownNotesForFir = new Set<string>();
+
+export function resetMissingNoteMemory(firId?: string): void {
+  if (firId !== _activeFirForNotes) {
+    _activeFirForNotes = firId;
+    _shownNotesForFir.clear();
+  }
+}
 
 export class InvestigationContextBuilder {
   /**
@@ -98,11 +110,17 @@ export class InvestigationContextBuilder {
       ? allCourtDocs.filter((d) => d.fir_number === fir.fir_number)
       : allCourtDocs.slice(0, 10);
 
-    // Knowledge: search by crime type if FIR available, else return empty
-    const knowledgeResult = fir?.crime_type
-      ? await safe(() => searchKnowledgeAll(fir.crime_type), [])
-      : { value: [], ok: true };
+    // Knowledge & Playbook: search by crime type if FIR available, else return empty
+    const [knowledgeResult, playbookResult] = await Promise.all([
+      fir?.crime_type
+        ? safe(() => searchKnowledgeAll(fir.crime_type), [])
+        : Promise.resolve({ value: [] as KnowledgeEntry[], ok: true }),
+      fir?.crime_type
+        ? safe(() => getPlaybookStepsForPairs(parseCrimeTypePairs(fir.crime_type ?? '')), [] as ChecklistItem[])
+        : Promise.resolve({ value: [] as ChecklistItem[], ok: true }),
+    ]);
     const relevantKnowledge = knowledgeResult.value.slice(0, 10);
+    const playbookSteps = playbookResult.value;
 
     // ── Karyvahi summary ────────────────────────────────────────────────────
     const completed = allKaryvahi.filter((k) => k.is_completed === 1);
@@ -185,6 +203,7 @@ export class InvestigationContextBuilder {
       prarthnaPatra: allPP,
       nirodhatmak: allNirodhatmak,
       relevantKnowledge,
+      playbookSteps,
       analytics,
       overdueItems: analytics?.overdue ?? [],
       reminders: analytics?.reminders ?? [],
@@ -211,10 +230,129 @@ export class InvestigationContextBuilder {
     return parts.join(' | ');
   }
 
-  /** One-line missing-data disclaimer for AI responses. */
-  static getMissingDataNote(ctx: InvestigationContext): string {
-    if (ctx.confidence.missingFields.length === 0) return '';
-    return `\n\n_Note: The following information is unavailable: ${ctx.confidence.missingFields.join(', ')}._`;
+  /**
+   * Deterministic, localized missing-data note for AI Copilot responses.
+   *
+   * Rules:
+   * 1. Returns '' when:
+   *    - There is no active FIR (General Mode);
+   *    - OR intent is 'law-lookup', 'search-law', 'search', 'general', 'analytics';
+   *    - OR answer comes from Law Library / Knowledge;
+   *    - OR missingFields is empty.
+   * 2. Maps intent -> strictly RELEVANT fields only, and shows only truly empty fields
+   *    (underlying data has 0 records; failed/unavailable repos are omitted, never 'Legal Knowledge').
+   * 3. Plain text, NO markdown/underscores, max 3 labels, never '(empty)'.
+   * 4. Deduplicated per FIR per field set (shows at most once per conversation).
+   */
+  static getMissingDataNote(
+    ctx: InvestigationContext,
+    intent?: string,
+    lang?: string
+  ): string {
+    // Rule 1: General Mode (no active FIR) or exempt intents -> no note
+    if (!ctx.fir || !ctx.activeFirId) return '';
+    if (!intent) return '';
+
+    const exemptIntents = new Set([
+      'law-lookup',
+      'search-law',
+      'search',
+      'general',
+      'analytics',
+    ]);
+    if (exemptIntents.has(intent)) return '';
+
+    // If context confidence reports no missing fields at all -> no note
+    if (!ctx.confidence?.missingFields || ctx.confidence.missingFields.length === 0) return '';
+
+    // Intent -> relevant field keys
+    // Only map: fir, karyvahi, caseDiary, prarthnaPatra
+    type RelevantKey = 'fir' | 'karyvahi' | 'caseDiary' | 'prarthnaPatra';
+    let relevantKeys: RelevantKey[] = [];
+
+    switch (intent) {
+      case 'investigation-summary':
+      case 'case-readiness':
+      case 'health-score':
+        relevantKeys = ['fir', 'karyvahi', 'caseDiary'];
+        break;
+      case 'draft-case-diary':
+      case 'next-step':
+      case 'pending-tasks':
+      case 'timeline':
+      case 'checklist':
+        relevantKeys = ['fir', 'caseDiary', 'karyvahi'];
+        break;
+      case 'draft-notice':
+      case 'draft-court-report':
+      case 'draft-gd':
+        relevantKeys = ['fir', 'prarthnaPatra'];
+        break;
+      case 'evidence-summary':
+      case 'witness-summary':
+        relevantKeys = ['fir', 'karyvahi'];
+        break;
+      default:
+        return '';
+    }
+
+    // Filter to keys where underlying data TRULY has 0 records for the ACTIVE FIR
+    // (status === 'empty' only, do NOT report 'unavailable' or network/repo failures)
+    const trulyEmptyKeys = relevantKeys.filter((k) => {
+      if (k === 'fir') {
+        return !ctx.fir;
+      }
+      if (k === 'karyvahi') {
+        return ctx.confidence.karyvahi === 'empty' || ctx.karyvahi.all.length === 0;
+      }
+      if (k === 'caseDiary') {
+        return ctx.confidence.caseDiary === 'empty' || ctx.caseDiaries.length === 0;
+      }
+      if (k === 'prarthnaPatra') {
+        return ctx.confidence.prarthnaPatra === 'empty' || ctx.prarthnaPatra.length === 0;
+      }
+      return false;
+    });
+
+    if (trulyEmptyKeys.length === 0) return '';
+
+    // Max 3 labels
+    const selectedKeys = trulyEmptyKeys.slice(0, 3);
+
+    // Track in-memory deduplication per FIR per field set
+    const firId = ctx.activeFirId || ctx.fir.id;
+    if (_activeFirForNotes !== firId) {
+      _activeFirForNotes = firId;
+      _shownNotesForFir.clear();
+    }
+    const labelSetKey = selectedKeys.join(',');
+    if (_shownNotesForFir.has(labelSetKey)) {
+      return '';
+    }
+    _shownNotesForFir.add(labelSetKey);
+
+    const isHindi = (lang || 'hi').toLowerCase().startsWith('hi');
+
+    // Label dictionaries (NEVER include '(empty)')
+    const HI_LABELS: Record<RelevantKey, string> = {
+      fir: 'FIR विवरण',
+      karyvahi: 'कार्यवाही',
+      caseDiary: 'केस डायरी',
+      prarthnaPatra: 'प्रार्थना पत्र',
+    };
+    const EN_LABELS: Record<RelevantKey, string> = {
+      fir: 'FIR Details',
+      karyvahi: 'Investigation Actions',
+      caseDiary: 'Case Diary',
+      prarthnaPatra: 'Prarthna Patra',
+    };
+
+    const labels = selectedKeys.map((k) => (isHindi ? HI_LABELS[k] : EN_LABELS[k]));
+
+    if (isHindi) {
+      return `\n\nध्यान दें: इस उत्तर के लिए ये जानकारी उपलब्ध नहीं है — ${labels.join(', ')}।`;
+    }
+    return `\n\nNote: this answer could not use — ${labels.join(', ')}.`;
   }
 }
 
@@ -309,7 +447,7 @@ function computeCaseHealth(
     'Investigation Stalled';
 
   const pendingStatements = karyvahi.pending
-    .filter((k) => /bayan|statement|gavah|witness/i.test(k.name))
+    .filter((k) => /bayan|statement|gavah|witness|बयान|गवाह|वादी/i.test(k.name))
     .map((k) => k.name);
 
   const missingEvidence = karyvahi.pending
@@ -375,7 +513,7 @@ function buildNextActions(
 
   // Pending statements
   karyvahi.pending
-    .filter((k) => /bayan|statement|gavah|witness/i.test(k.name))
+    .filter((k) => /bayan|statement|gavah|witness|बयान|गवाह|वादी/i.test(k.name))
     .slice(0, 3)
     .forEach((k) => {
       actions.push({
@@ -403,7 +541,7 @@ function buildNextActions(
 
   // Remaining pending karyvahi
   karyvahi.pending
-    .filter((k) => !/bayan|statement|gavah|witness|evidence|panchnama|seizure|fsl|medical|report/i.test(k.name))
+    .filter((k) => !/bayan|statement|gavah|witness|evidence|panchnama|seizure|fsl|medical|report|बयान|गवाह|वादी|साक्ष्य|पंचनामा/i.test(k.name))
     .slice(0, 4)
     .forEach((k) => {
       actions.push({

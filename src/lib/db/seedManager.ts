@@ -35,12 +35,82 @@
  *   automatically differ — no manual bump is needed.
  */
 import { getDatabase, dbRunAsync, dbGetFirstAsync, dbGetAllAsync, generateUUID, nowTimestamp } from './database';
+import { logger } from '../logger';
 
 // ─── Result type ─────────────────────────────────────────────────────────────
 export interface SeedResult {
   added: number;
   updated: number;
   skipped: number;
+}
+
+export interface SeedFileStatus {
+  fileName: string;
+  entriesRead: number;
+  inserted: number;
+  updated: number;
+  skipped: number;
+  errors: number;
+  errorMessages: string[];
+  appliedHash: string;
+}
+
+let _perSeedFileStatuses: SeedFileStatus[] = [];
+
+export interface SeedTimestamps {
+  appStart: number | null;
+  seedStart: number | null;
+  seedEnd: number | null;
+  seedCompleted: boolean;
+  firstKnowledgeCountQuery: number | null;
+}
+
+const _timestamps: SeedTimestamps = {
+  appStart: Date.now(),
+  seedStart: null,
+  seedEnd: null,
+  seedCompleted: false,
+  firstKnowledgeCountQuery: null,
+};
+
+export function recordAppStartTime(): void {
+  if (!_timestamps.appStart) _timestamps.appStart = Date.now();
+}
+
+export function recordFirstKnowledgeCountQueryTime(): void {
+  if (!_timestamps.firstKnowledgeCountQuery) {
+    _timestamps.firstKnowledgeCountQuery = Date.now();
+  }
+}
+
+export function getSeedTimestamps(): SeedTimestamps {
+  return { ..._timestamps };
+}
+
+export function getPerSeedFileStatus(): SeedFileStatus[] {
+  return [..._perSeedFileStatuses];
+}
+
+let _resolveSeedReady: () => void;
+export const seedReady: Promise<void> = new Promise<void>((resolve) => {
+  _resolveSeedReady = resolve;
+});
+
+type SeedCompleteListener = (result?: SeedResult) => void;
+const _seedListeners = new Set<SeedCompleteListener>();
+
+export function onSeedComplete(listener: SeedCompleteListener): () => void {
+  _seedListeners.add(listener);
+  if (_timestamps.seedCompleted) {
+    try {
+      listener();
+    } catch (e) {
+      logger.warn('[SeedManager] onSeedComplete immediate callback failed:', e);
+    }
+  }
+  return () => {
+    _seedListeners.delete(listener);
+  };
 }
 
 // ─── Seed data types ──────────────────────────────────────────────────────────
@@ -91,9 +161,222 @@ interface SeedKnowledge {
 // ─── Load bundled JSON (Metro resolves static imports at build time) ──────────
 import formatsSeedData from '../../../assets/seed/formats_seed.json';
 import knowledgeSeedData from '../../../assets/seed/knowledge_seed.json';
+import circularsSeedData from '../../../assets/seed/circulars_seed.json';
+import circularsSeed2Data from '../../../assets/seed/circulars_seed_2.json';
+import circularsSeed3Data from '../../../assets/seed/circulars_seed_3.json';
+import circularsSeed4Data from '../../../assets/seed/circulars_seed_4.json';
+import circularsSeed5Data from '../../../assets/seed/circulars_seed_5.json';
+import circularsSeed6Data from '../../../assets/seed/circulars_seed_6.json';
+import circularsSeed7Data from '../../../assets/seed/circulars_seed_7.json';
+import circularsSeed8Data from '../../../assets/seed/circulars_seed_8.json';
+import sopSeed1Data from '../../../assets/seed/sop_seed_1.json';
+import sopSeed2Data from '../../../assets/seed/sop_seed_2.json';
 
 const FORMATS_SEED = formatsSeedData as { formats: SeedFormat[] };
-const KNOWLEDGE_SEED = knowledgeSeedData as { knowledge: SeedKnowledge[] };
+// Filter out legacy system Law / Laws & Sections entries from bundled knowledge seed
+const RAW_KNOWLEDGE_SEED = knowledgeSeedData as { knowledge: SeedKnowledge[] };
+const KNOWLEDGE_BASE_SEED: SeedKnowledge[] = RAW_KNOWLEDGE_SEED.knowledge.filter(
+  (k) => !(k.source === 'system' && (k.category === 'Law' || k.category === 'Laws & Sections'))
+);
+
+const CIRCULARS_1_ENTRIES: SeedKnowledge[] = ((circularsSeedData as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'circular',
+  })
+);
+
+const CIRCULARS_2_ENTRIES: SeedKnowledge[] = ((circularsSeed2Data as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'circular',
+  })
+);
+
+const CIRCULARS_3_ENTRIES: SeedKnowledge[] = ((circularsSeed3Data as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'circular',
+  })
+);
+
+const CIRCULARS_4_ENTRIES: SeedKnowledge[] = ((circularsSeed4Data as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'circular',
+  })
+);
+
+const CIRCULARS_5_ENTRIES: SeedKnowledge[] = ((circularsSeed5Data as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'circular',
+  })
+);
+
+const CIRCULARS_6_ENTRIES: SeedKnowledge[] = ((circularsSeed6Data as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'circular',
+  })
+);
+
+const CIRCULARS_7_ENTRIES: SeedKnowledge[] = ((circularsSeed7Data as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'circular',
+  })
+);
+
+const CIRCULARS_8_ENTRIES: SeedKnowledge[] = ((circularsSeed8Data as { knowledge?: SeedKnowledge[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'circular',
+  })
+);
+
+const SOP_1_ENTRIES: SeedKnowledge[] = ((sopSeed1Data as unknown as { knowledge?: any[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'sop',
+  })
+);
+
+const SOP_2_ENTRIES: SeedKnowledge[] = ((sopSeed2Data as unknown as { knowledge?: any[] })?.knowledge ?? []).map(
+  (k) => ({
+    ...k,
+    source: 'system',
+    editable: 0,
+    content_type: k.content_type || 'sop',
+  })
+);
+
+export interface CircularSeedFileDef {
+  fileName: string;
+  entries: SeedKnowledge[];
+  tokenKey: string;
+  fileToken: string;
+}
+
+function _computeCircularFileToken(fileName: string, entries: SeedKnowledge[]): string {
+  const parts = entries
+    .map((c) => `c:${c.id}:${c.seed_version}:${_djb2Hash(c.description || '')}`)
+    .sort()
+    .join('|');
+  return _djb2Hash(`${fileName}||${parts}`);
+}
+
+export const CIRCULAR_SEED_FILES: CircularSeedFileDef[] = [
+  {
+    fileName: 'circulars_seed.json',
+    entries: CIRCULARS_1_ENTRIES,
+    tokenKey: 'seed_file:circulars_seed.json',
+    fileToken: _computeCircularFileToken('circulars_seed.json', CIRCULARS_1_ENTRIES),
+  },
+  {
+    fileName: 'circulars_seed_2.json',
+    entries: CIRCULARS_2_ENTRIES,
+    tokenKey: 'seed_file:circulars_seed_2.json',
+    fileToken: _computeCircularFileToken('circulars_seed_2.json', CIRCULARS_2_ENTRIES),
+  },
+  {
+    fileName: 'circulars_seed_3.json',
+    entries: CIRCULARS_3_ENTRIES,
+    tokenKey: 'seed_file:circulars_seed_3.json',
+    fileToken: _computeCircularFileToken('circulars_seed_3.json', CIRCULARS_3_ENTRIES),
+  },
+  {
+    fileName: 'circulars_seed_4.json',
+    entries: CIRCULARS_4_ENTRIES,
+    tokenKey: 'seed_file:circulars_seed_4.json',
+    fileToken: _computeCircularFileToken('circulars_seed_4.json', CIRCULARS_4_ENTRIES),
+  },
+  {
+    fileName: 'circulars_seed_5.json',
+    entries: CIRCULARS_5_ENTRIES,
+    tokenKey: 'seed_file:circulars_seed_5.json',
+    fileToken: _computeCircularFileToken('circulars_seed_5.json', CIRCULARS_5_ENTRIES),
+  },
+  {
+    fileName: 'circulars_seed_6.json',
+    entries: CIRCULARS_6_ENTRIES,
+    tokenKey: 'seed_file:circulars_seed_6.json',
+    fileToken: _computeCircularFileToken('circulars_seed_6.json', CIRCULARS_6_ENTRIES),
+  },
+  {
+    fileName: 'circulars_seed_7.json',
+    entries: CIRCULARS_7_ENTRIES,
+    tokenKey: 'seed_file:circulars_seed_7.json',
+    fileToken: _computeCircularFileToken('circulars_seed_7.json', CIRCULARS_7_ENTRIES),
+  },
+  {
+    fileName: 'circulars_seed_8.json',
+    entries: CIRCULARS_8_ENTRIES,
+    tokenKey: 'seed_file:circulars_seed_8.json',
+    fileToken: _computeCircularFileToken('circulars_seed_8.json', CIRCULARS_8_ENTRIES),
+  },
+  {
+    fileName: 'sop_seed_1.json',
+    entries: SOP_1_ENTRIES,
+    tokenKey: 'seed_file:sop_seed_1.json',
+    fileToken: _computeCircularFileToken('sop_seed_1.json', SOP_1_ENTRIES),
+  },
+  {
+    fileName: 'sop_seed_2.json',
+    entries: SOP_2_ENTRIES,
+    tokenKey: 'seed_file:sop_seed_2.json',
+    fileToken: _computeCircularFileToken('sop_seed_2.json', SOP_2_ENTRIES),
+  },
+];
+
+// Backwards-compatible exported constants
+export const CIRCULARS_SEED = CIRCULARS_1_ENTRIES;
+export const CIRCULARS_2_SEED = CIRCULARS_2_ENTRIES;
+export const CIRCULARS_3_SEED = CIRCULARS_3_ENTRIES;
+export const CIRCULARS_4_SEED = CIRCULARS_4_ENTRIES;
+export const CIRCULARS_5_SEED = CIRCULARS_5_ENTRIES;
+export const CIRCULARS_6_SEED = CIRCULARS_6_ENTRIES;
+export const CIRCULARS_7_SEED = CIRCULARS_7_ENTRIES;
+export const CIRCULARS_8_SEED = CIRCULARS_8_ENTRIES;
+export const SOP_1_SEED = SOP_1_ENTRIES;
+export const SOP_2_SEED = SOP_2_ENTRIES;
+export const CIRCULARS_FILE_TOKEN = CIRCULAR_SEED_FILES[0].fileToken;
+export const CIRCULARS_2_FILE_TOKEN = CIRCULAR_SEED_FILES[1].fileToken;
+export const CIRCULARS_3_FILE_TOKEN = CIRCULAR_SEED_FILES[2].fileToken;
+export const CIRCULARS_4_FILE_TOKEN = CIRCULAR_SEED_FILES[3].fileToken;
+export const CIRCULARS_5_FILE_TOKEN = CIRCULAR_SEED_FILES[4].fileToken;
+export const CIRCULARS_6_FILE_TOKEN = CIRCULAR_SEED_FILES[5].fileToken;
+export const CIRCULARS_7_FILE_TOKEN = CIRCULAR_SEED_FILES[6].fileToken;
+export const CIRCULARS_8_FILE_TOKEN = CIRCULAR_SEED_FILES[7].fileToken;
+export const SOP_1_FILE_TOKEN = CIRCULAR_SEED_FILES[8].fileToken;
+export const SOP_2_FILE_TOKEN = CIRCULAR_SEED_FILES[9].fileToken;
+
+const ALL_CIRCULARS_COMBINED: SeedKnowledge[] = CIRCULAR_SEED_FILES.flatMap((f) => f.entries);
+
+const KNOWLEDGE_SEED: { knowledge: SeedKnowledge[] } = {
+  knowledge: [
+    ...KNOWLEDGE_BASE_SEED,
+    ...ALL_CIRCULARS_COMBINED,
+  ],
+};
 
 // ─── djb2 content hash ────────────────────────────────────────────────────────
 /**
@@ -110,20 +393,36 @@ function _djb2Hash(str: string): string {
   return hash.toString(16).padStart(8, '0');
 }
 
+function _parseIsoDateToUnix(dateStr?: string): number {
+  if (!dateStr) return nowTimestamp();
+  const parsed = Date.parse(dateStr);
+  if (isNaN(parsed)) return nowTimestamp();
+  return Math.floor(parsed / 1000);
+}
+
 const SEED_VERSION_KEY = 'seed_content_version';
-// v4: force full reconcile on all existing installs to repair any rows whose
-// format_type was stored with the wrong spelling ('BNSS Karyvahi' → 'BNSS Karyavahi')
-// and to pick up the corrected filter-query logic (param-order fix in sysFormatRepo).
-const SEED_VERSION_SALT = 'v4';
+const SEED_VERSION_SALT = 'v8';
+
+/** Per-seed-file tokens to track applied state independently per file */
+export const FORMATS_FILE_TOKEN: string = (() => {
+  const parts = FORMATS_SEED.formats
+    .map(f => `f:${f.id}:${f.seed_version}`)
+    .sort()
+    .join('|');
+  return _djb2Hash(`formats_seed.json||${parts}`);
+})();
+
+export const KNOWLEDGE_FILE_TOKEN: string = (() => {
+  const parts = KNOWLEDGE_BASE_SEED
+    .map(k => `k:${k.id}:${k.seed_version}`)
+    .sort()
+    .join('|');
+  return _djb2Hash(`knowledge_seed.json||${parts}`);
+})();
 
 /**
  * Corpus token — a single hash that summarises the entire bundled seed.
- *
- * Covers: every format id + seed_version, every knowledge id + seed_version,
- * in stable sorted order. Changing ANY item's content bumps its seed_version
- * (by convention), which changes this token and triggers the full reconcile.
- *
- * Computed once at module load (in-memory, ~1 ms) and reused for all launches.
+ * Maintained for legacy compatibility.
  */
 const SEED_CORPUS_VERSION: string = (() => {
   const fmtParts = FORMATS_SEED.formats
@@ -171,152 +470,393 @@ function _knowledgeHash(kn: SeedKnowledge): string {
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 /**
- * Idempotent System Content Update Engine.
+ * Idempotent System Content Update Engine with Per-Seed-File Tracking.
  * Returns a SeedResult with Added / Updated / Skipped counts.
  * Call once after getDatabase() resolves at app startup.
  */
 export async function seedSystemContent(): Promise<SeedResult> {
   const t0 = Date.now();
+  _timestamps.seedStart = t0;
   const result: SeedResult = { added: 0, updated: 0, skipped: 0 };
+  const newStatuses: SeedFileStatus[] = [];
+
   try {
-    // ── Fast-path guard ───────────────────────────────────────────────────────
-    // SEED_CORPUS_VERSION is a hash of all bundled seed IDs + seed_versions,
-    // computed once at module load (~1 ms). If it matches the value stored in
-    // workspace_settings AND the actual row counts are within expected range,
-    // the bundled content hasn't changed since the last run and we can skip
-    // the full per-row reconciliation.
-    //
-    // DEFENSIVE COUNT CHECK: token match alone is not sufficient. A previous
-    // build may have crashed mid-seed yet still persisted the token (e.g. the
-    // token write succeeded but a DB transaction for the actual rows did not).
-    // Without this check every subsequent launch would silently skip seeding
-    // forever, leaving the table empty with no error shown.
-    //
-    // Minimum expected counts are derived directly from the bundled seed at
-    // runtime, so they stay accurate as the seed grows — no manual constant
-    // to maintain.
-    //
-    // The stored token is updated at the END of a successful full reconcile so
-    // that a crash mid-seed doesn't permanently bypass the reconcile on the
-    // next launch.
-    const storedVersionRow = await dbGetFirstAsync<{ value: string }>(
-      `SELECT value FROM workspace_settings WHERE key = ?`,
-      [SEED_VERSION_KEY]
-    );
-    const storedVersion = storedVersionRow?.value ?? null;
-
-    if (storedVersion === SEED_CORPUS_VERSION) {
-      // Token matches — now verify the tables aren't suspiciously empty.
-      const minFormats   = FORMATS_SEED.formats.length;
-      const minKnowledge = KNOWLEDGE_SEED.knowledge.length;
-
-      const fmtCountRow = await dbGetFirstAsync<{ n: number }>(
-        `SELECT COUNT(*) as n FROM predefined_formats WHERE deleted_at IS NULL`
-      );
-      const knCountRow = await dbGetFirstAsync<{ n: number }>(
-        `SELECT COUNT(*) as n FROM knowledge_entries WHERE deleted_at IS NULL`
-      );
-      const fmtCount = fmtCountRow?.n ?? 0;
-      const knCount  = knCountRow?.n  ?? 0;
-
-      if (fmtCount >= minFormats && knCount >= minKnowledge) {
-        // Fast-path: token valid and tables are fully populated.
-        if (__DEV__) console.info(
-          `[SeedManager] Fast-path: corpus token matches (${SEED_CORPUS_VERSION}), ` +
-          `formats=${fmtCount}/${minFormats}, knowledge=${knCount}/${minKnowledge} — skipping full reconcile`
-        );
-        // Always-on post-seed row-count report (visible in on-device log viewer).
-        // Uses console.info (not AppLogger which is __DEV__-only) so it appears
-        // in the debugLogStore ring-buffer on production builds too.
-        console.info(
-          `[SeedManager] STARTUP REPORT (fast-path): ` +
-          `predefined_formats active=${fmtCount} | knowledge_entries active=${knCount}`
-        );
-        return { added: 0, updated: 0, skipped: minFormats + minKnowledge };
-      }
-
-      // Stale-token recovery: token matched but tables are under-populated.
-      // This means a prior build failed partway through seeding but still
-      // wrote the token. Clear the token and fall through to the full reconcile.
-      console.warn(
-        `[SeedManager] STALE-TOKEN RECOVERY: corpus token matched (${SEED_CORPUS_VERSION}) ` +
-        `but row counts are below expected minimum — ` +
-        `formats=${fmtCount} (expected≥${minFormats}), knowledge=${knCount} (expected≥${minKnowledge}). ` +
-        `Clearing stored token and running full reconcile.`
-      );
-      await dbRunAsync(
-        `DELETE FROM workspace_settings WHERE key = ?`,
-        [SEED_VERSION_KEY]
-      );
-      // Fall through to full reconcile below.
-    }
-
-    if (__DEV__) console.info(
-      `[SeedManager] Corpus token changed (stored: ${storedVersion ?? 'none'} → bundled: ${SEED_CORPUS_VERSION}) — running full reconcile`
-    );
-    // ── End fast-path guard ───────────────────────────────────────────────────
+    // ── One-time migration: retire legacy system Law seed entries ─────────────
+    await _retireOldSystemLawSeed();
 
     // ── Step 0: Clean up legacy/retired format rows ───────────────────────────
-    // (a) Remove the one confirmed near-duplicate (pre-stable-ID legacy row).
-    // (b) Soft-delete two retired BNSS formats that were removed from the seed.
-    // Both run before _seedFormats so row counts are accurate after seeding.
     await _dedupSystemFormats();
 
-    // Row-count snapshot BEFORE seeding — confirms what was already present.
-    const beforeRow = await dbGetFirstAsync<{ n: number }>(
-      `SELECT COUNT(*) as n FROM predefined_formats WHERE deleted_at IS NULL`
-    );
-    const countBefore = beforeRow?.n ?? 0;
-    if (__DEV__) console.info(`[SeedManager] predefined_formats row count BEFORE seed: ${countBefore}`);
+    // ── File 1: formats_seed.json ─────────────────────────────────────────────
+    try {
+      let storedFmtToken: string | null = null;
+      try {
+        const storedRow = await dbGetFirstAsync<{ value: string }>(
+          `SELECT value FROM app_settings WHERE key = 'seed_file:formats_seed.json'`
+        );
+        storedFmtToken = storedRow?.value ?? null;
+      } catch (tokenErr) {
+        logger.warn('[SeedManager] formats_seed.json token read failed, treating as not applied:', tokenErr);
+      }
 
-    const fmtResult = await _seedFormats(FORMATS_SEED.formats);
-    const knResult  = await _seedKnowledge(KNOWLEDGE_SEED.knowledge);
-    result.added   = fmtResult.added   + knResult.added;
-    result.updated = fmtResult.updated + knResult.updated;
-    result.skipped = fmtResult.skipped + knResult.skipped;
+      const activeFmtCountRow = await dbGetFirstAsync<{ n: number }>(
+        `SELECT COUNT(*) as n FROM predefined_formats WHERE deleted_at IS NULL`
+      ).catch(() => ({ n: 0 }));
+      const activeFmtCount = activeFmtCountRow?.n ?? 0;
+      const shouldSkipFormats =
+        storedFmtToken === FORMATS_FILE_TOKEN &&
+        activeFmtCount >= FORMATS_SEED.formats.length;
 
-    // Row-count snapshot AFTER seeding — proves all records persisted.
-    const afterRow = await dbGetFirstAsync<{ n: number }>(
+      if (shouldSkipFormats) {
+        newStatuses.push({
+          fileName: 'formats_seed.json',
+          entriesRead: FORMATS_SEED.formats.length,
+          inserted: 0,
+          updated: 0,
+          skipped: FORMATS_SEED.formats.length,
+          errors: 0,
+          errorMessages: [],
+          appliedHash: FORMATS_FILE_TOKEN,
+        });
+        result.skipped += FORMATS_SEED.formats.length;
+      } else {
+        const fmtRes = await _seedFormats(FORMATS_SEED.formats);
+        result.added += fmtRes.added;
+        result.updated += fmtRes.updated;
+        result.skipped += fmtRes.skipped;
+
+        await dbRunAsync(
+          `INSERT OR REPLACE INTO app_settings (key, value) VALUES ('seed_file:formats_seed.json', ?)`,
+          [FORMATS_FILE_TOKEN]
+        );
+        await dbRunAsync(`DELETE FROM app_settings WHERE key = 'seed_last_error:formats_seed.json'`).catch(() => {});
+
+        newStatuses.push({
+          fileName: 'formats_seed.json',
+          entriesRead: FORMATS_SEED.formats.length,
+          inserted: fmtRes.added,
+          updated: fmtRes.updated,
+          skipped: fmtRes.skipped,
+          errors: 0,
+          errorMessages: [],
+          appliedHash: FORMATS_FILE_TOKEN,
+        });
+      }
+    } catch (fmtErr) {
+      const errMsg = fmtErr instanceof Error ? fmtErr.message : String(fmtErr);
+      logger.warn(`[SeedManager] formats_seed.json seeding failed: ${errMsg}`, fmtErr);
+      await dbRunAsync(
+        `INSERT OR REPLACE INTO app_settings (key, value) VALUES ('seed_last_error:formats_seed.json', ?)`,
+        [errMsg]
+      ).catch(() => {});
+      newStatuses.push({
+        fileName: 'formats_seed.json',
+        entriesRead: FORMATS_SEED.formats.length,
+        inserted: 0,
+        updated: 0,
+        skipped: 0,
+        errors: 1,
+        errorMessages: [errMsg],
+        appliedHash: '',
+      });
+    }
+
+    // ── File 2: knowledge_seed.json ───────────────────────────────────────────
+    try {
+      let storedKnToken: string | null = null;
+      try {
+        const storedRow = await dbGetFirstAsync<{ value: string }>(
+          `SELECT value FROM app_settings WHERE key = 'seed_file:knowledge_seed.json'`
+        );
+        storedKnToken = storedRow?.value ?? null;
+      } catch (tokenErr) {
+        logger.warn('[SeedManager] knowledge_seed.json token read failed, treating as not applied:', tokenErr);
+      }
+
+      const knPlaceholders = KNOWLEDGE_BASE_SEED.map(() => '?').join(',');
+      const knActiveRows = await dbGetAllAsync<{ id: string }>(
+        `SELECT id FROM knowledge_entries WHERE deleted_at IS NULL AND id IN (${knPlaceholders})`,
+        KNOWLEDGE_BASE_SEED.map(k => k.id)
+      ).catch(() => []);
+      const shouldSkipKnowledge =
+        storedKnToken === KNOWLEDGE_FILE_TOKEN &&
+        knActiveRows.length === KNOWLEDGE_BASE_SEED.length;
+
+      if (shouldSkipKnowledge) {
+        newStatuses.push({
+          fileName: 'knowledge_seed.json',
+          entriesRead: KNOWLEDGE_BASE_SEED.length,
+          inserted: 0,
+          updated: 0,
+          skipped: KNOWLEDGE_BASE_SEED.length,
+          errors: 0,
+          errorMessages: [],
+          appliedHash: KNOWLEDGE_FILE_TOKEN,
+        });
+        result.skipped += KNOWLEDGE_BASE_SEED.length;
+      } else {
+        const knRes = await _seedKnowledgeEntries(KNOWLEDGE_BASE_SEED, 'knowledge_seed.json');
+        result.added += knRes.added;
+        result.updated += knRes.updated;
+        result.skipped += knRes.skipped;
+
+        await dbRunAsync(
+          `INSERT OR REPLACE INTO app_settings (key, value) VALUES ('seed_file:knowledge_seed.json', ?)`,
+          [KNOWLEDGE_FILE_TOKEN]
+        );
+        await dbRunAsync(`DELETE FROM app_settings WHERE key = 'seed_last_error:knowledge_seed.json'`).catch(() => {});
+
+        newStatuses.push({
+          fileName: 'knowledge_seed.json',
+          entriesRead: KNOWLEDGE_BASE_SEED.length,
+          inserted: knRes.added,
+          updated: knRes.updated,
+          skipped: knRes.skipped,
+          errors: knRes.errors,
+          errorMessages: knRes.errorMessages,
+          appliedHash: KNOWLEDGE_FILE_TOKEN,
+        });
+      }
+    } catch (knErr) {
+      const errMsg = knErr instanceof Error ? knErr.message : String(knErr);
+      logger.warn(`[SeedManager] knowledge_seed.json seeding failed: ${errMsg}`, knErr);
+      await dbRunAsync(
+        `INSERT OR REPLACE INTO app_settings (key, value) VALUES ('seed_last_error:knowledge_seed.json', ?)`,
+        [errMsg]
+      ).catch(() => {});
+      newStatuses.push({
+        fileName: 'knowledge_seed.json',
+        entriesRead: KNOWLEDGE_BASE_SEED.length,
+        inserted: 0,
+        updated: 0,
+        skipped: 0,
+        errors: 1,
+        errorMessages: [errMsg],
+        appliedHash: '',
+      });
+    }
+
+    // ── Circular Seed Files (Generic Multi-File Loader) ─────────────────────
+    for (const seedFile of CIRCULAR_SEED_FILES) {
+      try {
+        let storedCircToken: string | null = null;
+        try {
+          const storedRow = await dbGetFirstAsync<{ value: string }>(
+            `SELECT value FROM app_settings WHERE key = ?`,
+            [seedFile.tokenKey]
+          );
+          storedCircToken = storedRow?.value ?? null;
+        } catch (tokenErr) {
+          logger.warn(`[SeedManager] ${seedFile.fileName} token read failed, treating as not applied:`, tokenErr);
+        }
+
+        const circPlaceholders = seedFile.entries.map(() => '?').join(',');
+        const circActiveRows = await dbGetAllAsync<{ id: string }>(
+          `SELECT id FROM knowledge_entries WHERE deleted_at IS NULL AND id IN (${circPlaceholders})`,
+          seedFile.entries.map((c) => c.id)
+        ).catch(() => []);
+        const shouldSkipCirculars =
+          storedCircToken === seedFile.fileToken &&
+          circActiveRows.length === seedFile.entries.length;
+
+        if (shouldSkipCirculars) {
+          newStatuses.push({
+            fileName: seedFile.fileName,
+            entriesRead: seedFile.entries.length,
+            inserted: 0,
+            updated: 0,
+            skipped: seedFile.entries.length,
+            errors: 0,
+            errorMessages: [],
+            appliedHash: seedFile.fileToken,
+          });
+          result.skipped += seedFile.entries.length;
+        } else {
+          const circRes = await _seedKnowledgeEntries(seedFile.entries, seedFile.fileName);
+          result.added += circRes.added;
+          result.updated += circRes.updated;
+          result.skipped += circRes.skipped;
+
+          await dbRunAsync(
+            `INSERT OR REPLACE INTO app_settings (key, value) VALUES (?, ?)`,
+            [seedFile.tokenKey, seedFile.fileToken]
+          );
+          await dbRunAsync(
+            `DELETE FROM app_settings WHERE key = ?`,
+            [`seed_last_error:${seedFile.fileName}`]
+          ).catch(() => {});
+
+          newStatuses.push({
+            fileName: seedFile.fileName,
+            entriesRead: seedFile.entries.length,
+            inserted: circRes.added,
+            updated: circRes.updated,
+            skipped: circRes.skipped,
+            errors: circRes.errors,
+            errorMessages: circRes.errorMessages,
+            appliedHash: seedFile.fileToken,
+          });
+        }
+      } catch (circErr) {
+        const errMsg = circErr instanceof Error ? circErr.message : String(circErr);
+        logger.warn(`[SeedManager] ${seedFile.fileName} seeding failed: ${errMsg}`, circErr);
+        await dbRunAsync(
+          `INSERT OR REPLACE INTO app_settings (key, value) VALUES (?, ?)`,
+          [`seed_last_error:${seedFile.fileName}`, errMsg]
+        ).catch(() => {});
+        newStatuses.push({
+          fileName: seedFile.fileName,
+          entriesRead: seedFile.entries.length,
+          inserted: 0,
+          updated: 0,
+          skipped: 0,
+          errors: 1,
+          errorMessages: [errMsg],
+          appliedHash: '',
+        });
+      }
+    }
+
+    _perSeedFileStatuses = newStatuses;
+
+    // Persist per-file last run info so it survives reloads (Task L18D / L19 diagnostics)
+    for (const st of _perSeedFileStatuses) {
+      try {
+        await dbRunAsync(
+          `INSERT OR REPLACE INTO app_settings (key, value) VALUES (?, ?)`,
+          [`seed_last_run:${st.fileName}`, JSON.stringify({
+            timestamp: Date.now(),
+            entriesRead: st.entriesRead,
+            inserted: st.inserted,
+            updated: st.updated,
+            skipped: st.skipped,
+            errors: st.errors,
+            errorMessages: st.errorMessages,
+            appliedHash: st.appliedHash,
+          })]
+        );
+      } catch (err) {
+        console.warn(`[SeedManager] Failed to persist seed_last_run for ${st.fileName}:`, err);
+      }
+    }
+
+    // ── Startup debug log: row counts per table & category ────────────────────
+    const circCountRow = await dbGetFirstAsync<{ n: number }>(
+      `SELECT COUNT(*) as n FROM knowledge_entries WHERE deleted_at IS NULL AND category IN ('Circular', 'Circulars', 'परिपत्र')`
+    ).catch(() => ({ n: 0 }));
+    const sopCountRow = await dbGetFirstAsync<{ n: number }>(
+      `SELECT COUNT(*) as n FROM knowledge_entries WHERE deleted_at IS NULL AND category IN ('SOP', 'एसओपी')`
+    ).catch(() => ({ n: 0 }));
+    const courtCountRow = await dbGetFirstAsync<{ n: number }>(
+      `SELECT COUNT(*) as n FROM knowledge_entries WHERE deleted_at IS NULL AND category IN ('Court Judgment', 'Court Judgments', 'अदालत का निर्णय')`
+    ).catch(() => ({ n: 0 }));
+    const policeFmtCountRow = await dbGetFirstAsync<{ n: number }>(
+      `SELECT COUNT(*) as n FROM knowledge_entries WHERE deleted_at IS NULL AND category IN ('Police Format', 'Police Formats', 'पुलिस प्रारूप')`
+    ).catch(() => ({ n: 0 }));
+    const lawCountRow = await dbGetFirstAsync<{ n: number }>(
+      `SELECT COUNT(*) as n FROM knowledge_entries WHERE deleted_at IS NULL AND category IN ('Law', 'Laws & Sections')`
+    ).catch(() => ({ n: 0 }));
+    const totalFormatsRow = await dbGetFirstAsync<{ n: number }>(
       `SELECT COUNT(*) as n FROM predefined_formats WHERE deleted_at IS NULL`
+    ).catch(() => ({ n: 0 }));
+
+    console.info(
+      `[KnowledgeSeedDebug] Table counts: knowledge_entries: ` +
+      `Circular=${circCountRow?.n ?? 0}, SOP=${sopCountRow?.n ?? 0}, ` +
+      `Court Judgment=${courtCountRow?.n ?? 0}, Police Format=${policeFmtCountRow?.n ?? 0}, ` +
+      `Law=${lawCountRow?.n ?? 0} | predefined_formats: Formats=${totalFormatsRow?.n ?? 0}`
     );
-    const afterKnRow = await dbGetFirstAsync<{ n: number }>(
-      `SELECT COUNT(*) as n FROM knowledge_entries WHERE deleted_at IS NULL`
-    );
-    const countAfter   = afterRow?.n   ?? 0;
-    const countAfterKn = afterKnRow?.n ?? 0;
-    if (__DEV__) console.info(
-      `[SeedManager] predefined_formats row count AFTER seed: ${countAfter} (delta: +${countAfter - countBefore})`
-    );
+
+    console.info(`[SeedManager] Per-seed-file reconcile summary:`);
+    for (const st of _perSeedFileStatuses) {
+      console.info(
+        `  • ${st.fileName}: Read=${st.entriesRead}, Inserted=${st.inserted}, ` +
+        `Updated=${st.updated}, Skipped=${st.skipped}, Errors=${st.errors}`
+      );
+    }
+
+    // ── Persist legacy corpus token for backwards compatibility ───────────────
+    await dbRunAsync(
+      `INSERT OR REPLACE INTO app_settings (key, value) VALUES (?, ?)`,
+      [SEED_VERSION_KEY, SEED_CORPUS_VERSION]
+    ).catch(() => {});
 
     const elapsed = Date.now() - t0;
-    if (__DEV__) console.info(
-      `[SeedManager] seedSystemContent complete in ${elapsed}ms — ` +
-      `Added: ${result.added}, Updated: ${result.updated}, Skipped: ${result.skipped}`
-    );
-
-    // Always-on post-seed row-count report (visible in on-device log viewer on
-    // production builds). Uses console.info — NOT AppLogger which is __DEV__-only —
-    // so it is captured by the debugLogStore ring-buffer regardless of build type.
-    // Search for "[SeedManager] STARTUP REPORT" in the Log Viewer to verify seeding.
-    console.info(
-      `[SeedManager] STARTUP REPORT (full reconcile): ` +
-      `predefined_formats active=${countAfter} (expected≥${FORMATS_SEED.formats.length}) | ` +
-      `knowledge_entries active=${countAfterKn} (expected≥${KNOWLEDGE_SEED.knowledge.length}) | ` +
-      `added=${result.added} updated=${result.updated} elapsed=${elapsed}ms`
-    );
-
-    // ── Persist corpus token so next launch takes the fast path ──────────────
-    // Only written after a fully successful reconcile (no exception above).
-    // Uses INSERT OR REPLACE so it works both on first launch and updates.
-    await dbRunAsync(
-      `INSERT OR REPLACE INTO workspace_settings (key, value) VALUES (?, ?)`,
-      [SEED_VERSION_KEY, SEED_CORPUS_VERSION]
-    );
-    if (__DEV__) console.info(`[SeedManager] Stored corpus token: ${SEED_CORPUS_VERSION}`);
+    if (__DEV__) {
+      console.info(
+        `[SeedManager] seedSystemContent complete in ${elapsed}ms — ` +
+        `Added: ${result.added}, Updated: ${result.updated}, Skipped: ${result.skipped}`
+      );
+    }
   } catch (e) {
     console.error('[SeedManager] seed failed:', e);
+  } finally {
+    _timestamps.seedEnd = Date.now();
+    _timestamps.seedCompleted = true;
+    _resolveSeedReady?.();
+    for (const listener of _seedListeners) {
+      try {
+        listener(result);
+      } catch (listenerErr) {
+        logger.warn('[SeedManager] onSeedComplete listener error:', listenerErr);
+      }
+    }
   }
   return result;
+}
+
+// ─── Retire legacy Law system seed entries ────────────────────────────────────
+/**
+ * One-time migration: soft-deletes legacy system-seeded Law entries
+ * (e.g. "BNS Section 101 — completely born. Murder") which had incorrect
+ * titles and sections.
+ *
+ * Guarded by stored flag 'law_seed_retired_v1' in app_settings.
+ * NEVER touches user-created notes (source != 'system') or non-Law categories
+ * (SOP, Checklist, Circular, etc.).
+ */
+async function _retireOldSystemLawSeed(): Promise<void> {
+  const RETIRE_KEY = 'law_seed_retired_v1';
+  try {
+    const existing = await dbGetFirstAsync<{ value: string }>(
+      `SELECT value FROM app_settings WHERE key = ?`,
+      [RETIRE_KEY]
+    );
+    if (existing?.value === '1') {
+      return;
+    }
+
+    const now = nowTimestamp();
+    const toDeleteRows = await dbGetAllAsync<{ id: string }>(
+      `SELECT id FROM knowledge_entries
+       WHERE source = 'system'
+         AND category IN ('Law', 'Laws & Sections')
+         AND deleted_at IS NULL`
+    );
+
+    if (toDeleteRows.length > 0) {
+      await dbRunAsync(
+        `UPDATE knowledge_entries
+         SET deleted_at = ?, updated_at = ?
+         WHERE source = 'system'
+           AND category IN ('Law', 'Laws & Sections')
+           AND deleted_at IS NULL`,
+        [now, now]
+      );
+      logger.log(
+        `[SeedManager] Retired ${toDeleteRows.length} legacy system Law entries from knowledge_entries`
+      );
+    } else {
+      logger.log('[SeedManager] No legacy system Law entries to retire');
+    }
+
+    await dbRunAsync(
+      `INSERT OR REPLACE INTO app_settings (key, value) VALUES (?, '1')`,
+      [RETIRE_KEY]
+    );
+  } catch (err) {
+    logger.warn('[SeedManager] _retireOldSystemLawSeed failed:', err);
+  }
 }
 
 // ─── Legacy format cleanup ────────────────────────────────────────────────────
@@ -674,31 +1214,52 @@ async function _seedFormats(formats: SeedFormat[]): Promise<SeedResult> {
   return result;
 }
 
-// ─── Knowledge seeding ────────────────────────────────────────────────────────
-async function _seedKnowledge(entries: SeedKnowledge[]): Promise<SeedResult> {
-  const result: SeedResult = { added: 0, updated: 0, skipped: 0 };
+// ─── Knowledge seeding with per-file reporting and constraint safety ─────────
+async function _seedKnowledgeEntries(
+  entries: SeedKnowledge[],
+  fileName: string
+): Promise<{ added: number; updated: number; skipped: number; errors: number; errorMessages: string[] }> {
+  const result = { added: 0, updated: 0, skipped: 0, errors: 0, errorMessages: [] as string[] };
+  if (entries.length === 0) return result;
 
-  // ── Prefetch ALL existing rows via serialized wrapper ─────────────────────
+  // Prefetch existing rows (include deleted_at so we know if row exists in DB, avoiding UNIQUE constraint error)
   const knPlaceholders = entries.map(() => '?').join(',');
   const knExistingRows = await dbGetAllAsync<{
-    id: string; seed_version: number; source: string; content_hash: string;
+    id: string; seed_version: number; source: string; content_hash: string; deleted_at: number | null;
   }>(
-    `SELECT id, seed_version, source, content_hash FROM knowledge_entries
-     WHERE deleted_at IS NULL AND id IN (${knPlaceholders})`,
+    `SELECT id, seed_version, source, content_hash, deleted_at FROM knowledge_entries
+     WHERE id IN (${knPlaceholders})`,
     entries.map(e => e.id)
   );
   const knExistingMap = new Map(knExistingRows.map(r => [r.id, r]));
-  if (__DEV__) console.log(`[SeedManager] _seedKnowledge prefetch: ${knExistingRows.length} existing rows for ${entries.length} seed entries`);
+  if (__DEV__) {
+    console.log(`[SeedManager] _seedKnowledgeEntries (${fileName}) prefetch: ${knExistingRows.length} existing rows for ${entries.length} seed entries`);
+  }
 
-  // ── Per-row upserts via serialized dbRunAsync — no transaction wrapper ────
   for (const kn of entries) {
     try {
       const bundledHash = _knowledgeHash(kn);
       const existing = knExistingMap.get(kn.id) ?? null;
 
+      // Column mapping & constraint guarantees
+      const tagsStr = typeof kn.tags === 'string'
+        ? kn.tags
+        : Array.isArray(kn.tags)
+          ? (kn.tags as string[]).join(',')
+          : '';
+      const attachmentUris = typeof kn.attachment_uris === 'string'
+        ? kn.attachment_uris
+        : JSON.stringify(kn.attachment_uris ?? []);
+      const contentType = kn.content_type || (kn.category === 'Circular' ? 'circular' : 'knowledge');
+      const crimeType = kn.crime_type ?? '';
+      const subcategory = kn.subcategory ?? '';
+      const appVersion = kn.app_version ?? '';
+      const seedVersion = kn.seed_version ?? 1;
+      const lastUpdated = kn.last_updated ?? '';
+      const itemTimestamp = _parseIsoDateToUnix(lastUpdated);
+
       if (!existing) {
-        // ── INSERT: new system content ─────────────────────────────────────
-        const now = nowTimestamp();
+        // INSERT: new system row
         await dbRunAsync(
           `INSERT INTO knowledge_entries
              (id, title, category, subcategory, crime_type, description,
@@ -708,62 +1269,67 @@ async function _seedKnowledge(entries: SeedKnowledge[]): Promise<SeedResult> {
               created_at, updated_at, version, sync_status)
            VALUES (?,?,?,?,?,?, ?,?, ?,?,?,?,?, ?,?, ?,?,1,'synced')`,
           [
-            kn.id, kn.title, kn.category, kn.subcategory, kn.crime_type, kn.description,
-            kn.tags, kn.attachment_uris,
+            kn.id, kn.title, kn.category, subcategory, crimeType, kn.description ?? '',
+            tagsStr, attachmentUris,
             'system', 0,
-            kn.content_type ?? 'knowledge',
-            kn.seed_version ?? 1,
-            kn.app_version  ?? '',
+            contentType,
+            seedVersion,
+            appVersion,
             bundledHash,
-            kn.last_updated ?? '',
-            now, now,
+            lastUpdated,
+            itemTimestamp, itemTimestamp,
           ]
         );
-
         result.added++;
-
       } else if (existing.source === 'system') {
-        // ── UPDATE: version bump OR content changed ────────────────────────
         const storedVersion = existing.seed_version ?? 0;
-        const storedHash    = existing.content_hash  ?? '';
-        const needsUpdate   = kn.seed_version > storedVersion || bundledHash !== storedHash;
+        const storedHash = existing.content_hash ?? '';
+        // Keep soft-deleted-by-user system rows hidden; do not revive with deleted_at=NULL
+        const needsUpdate = seedVersion > storedVersion || bundledHash !== storedHash;
 
         if (needsUpdate) {
           const now = nowTimestamp();
           await dbRunAsync(
             `UPDATE knowledge_entries
                SET title=?, category=?, subcategory=?, crime_type=?, description=?,
-                   tags=?, seed_version=?, app_version=?,
+                   tags=?, attachment_uris=?, content_type=?, seed_version=?, app_version=?,
                    content_hash=?, last_updated=?,
                    updated_at=?, version=version+1
              WHERE id=?`,
             [
-              kn.title, kn.category, kn.subcategory, kn.crime_type, kn.description,
-              kn.tags,
-              kn.seed_version ?? 1,
-              kn.app_version  ?? '',
+              kn.title, kn.category, subcategory, crimeType, kn.description ?? '',
+              tagsStr, attachmentUris, contentType,
+              seedVersion,
+              appVersion,
               bundledHash,
-              kn.last_updated ?? '',
+              lastUpdated,
               now,
               kn.id,
             ]
           );
-
           result.updated++;
         } else {
           result.skipped++;
         }
-        // existing.source === 'user' → skip, never overwrite
       } else {
+        // User entry with same ID: never overwrite user rows
         result.skipped++;
       }
-    } catch (e) {
-      console.error(`[SeedManager] knowledge seed failed for ${kn.id}:`, e);
-      result.skipped++;
+    } catch (e: unknown) {
+      const err = e instanceof Error ? e.message : String(e);
+      console.warn(`[SeedManager] Insert/update failed for entry ${kn.id} in ${fileName}: ${err}`);
+      logger.warn(`[SeedManager] Insert/update failed for entry ${kn.id} in ${fileName}:`, e);
+      result.errors++;
+      result.errorMessages.push(`${kn.id}: ${err}`);
     }
   }
 
   return result;
+}
+
+async function _seedKnowledge(entries: SeedKnowledge[]): Promise<SeedResult> {
+  const res = await _seedKnowledgeEntries(entries, 'knowledge_seed.json');
+  return { added: res.added, updated: res.updated, skipped: res.skipped };
 }
 
 // ─── Developer Content Restore ────────────────────────────────────────────────

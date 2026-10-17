@@ -45,6 +45,13 @@ export interface SettingsState {
   notifDailySummary: boolean;
   notifInvestigations: boolean;
 
+  // AI Assistant
+  aiSuggestions: boolean;
+  aiDraftAssistance: boolean;
+  aiKnowledgeSearch: boolean;
+  aiReportGeneration: boolean;
+  aiRestrictCaseData: boolean;
+
   // Reminders
   reminderTime: string;        // "HH:MM" 24h
   reminderSound: 'default' | 'bell' | 'chime' | 'silent';
@@ -81,6 +88,11 @@ const DEFAULTS: SettingsState = {
   notifDeadlines: true,
   notifDailySummary: false,
   notifInvestigations: true,
+  aiSuggestions: true,
+  aiDraftAssistance: true,
+  aiKnowledgeSearch: true,
+  aiReportGeneration: true,
+  aiRestrictCaseData: false,
   reminderTime: '09:00',
   reminderSound: 'default',
   reminderSnooze: 10,
@@ -207,4 +219,18 @@ export function useSettingsStore(): SettingsStoreValue {
     throw new Error('useSettingsStore must be used inside <SettingsStoreProvider>');
   }
   return ctx;
+}
+
+/**
+ * Reads persisted settings from AsyncStorage directly outside of React components.
+ */
+export async function getPersistedSettings(): Promise<SettingsState> {
+  try {
+    const raw = await AsyncStorage.getItem(KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<SettingsState>;
+      return { ...DEFAULTS, ...parsed };
+    }
+  } catch {}
+  return DEFAULTS;
 }

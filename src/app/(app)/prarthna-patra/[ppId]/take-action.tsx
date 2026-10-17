@@ -9,6 +9,7 @@
  *   is_complete=false → status stays Pending (draft)
  */
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View, Text, ScrollView, Pressable,
   KeyboardAvoidingView, BackHandler, ActivityIndicator,
@@ -47,6 +48,7 @@ function SectionLabel({ title }: { title: string }) {
 function ActionTypePicker({
   value, onChange, error,
 }: { value: NCRActionType | ''; onChange: (v: NCRActionType) => void; error?: string }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -56,7 +58,7 @@ function ActionTypePicker({
         style={{ borderColor: error ? '#DC2626' : '#E5E7EB', borderCurve: 'continuous' }}
       >
         <Text className="text-sm" style={{ color: value ? '#111827' : '#9CA3AF' }}>
-          {value || 'Select action type…'}
+          {value || t('prarthnaPatra.action.selectActionType')}
         </Text>
         <ChevronDown size={16} color="#9CA3AF" />
       </Pressable>
@@ -65,20 +67,20 @@ function ActionTypePicker({
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Select Action Type</AlertDialogTitle>
+            <AlertDialogTitle>{t('prarthnaPatra.action.selectActionTypeTitle')}</AlertDialogTitle>
           </AlertDialogHeader>
-          {NCR_ACTION_TYPES.map((t) => (
+          {NCR_ACTION_TYPES.map((tVal) => (
             <Pressable
-              key={t}
-              onPress={() => { onChange(t); setOpen(false); }}
+              key={tVal}
+              onPress={() => { onChange(tVal); setOpen(false); }}
               className="py-3 px-4 border-b border-border active:bg-muted flex-row items-center justify-between"
             >
-              <Text className="text-sm text-foreground">{t}</Text>
-              {value === t && <Text style={{ color: MODULE_COLOR }}>✓</Text>}
+              <Text className="text-sm text-foreground">{tVal}</Text>
+              {value === tVal && <Text style={{ color: MODULE_COLOR }}>✓</Text>}
             </Pressable>
           ))}
           <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setOpen(false)}><Text>Cancel</Text></AlertDialogCancel>
+            <AlertDialogCancel onPress={() => setOpen(false)}><Text>{t('common.cancel')}</Text></AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -89,6 +91,7 @@ function ActionTypePicker({
 // ── Main Screen ───────────────────────────────────────────────────────────
 
 export default function TakeActionScreen() {
+  const { t } = useTranslation();
   const { ppId } = useLocalSearchParams<{ ppId: string }>();
 
   const [pp, setPP] = useState<PPWithDetails | null>(null);
@@ -179,9 +182,9 @@ export default function TakeActionScreen() {
 
   const validate = (isComplete: boolean): boolean => {
     const e: Record<string, string> = {};
-    if (isNCR && !actionType) e.actionType = 'Please select an action type';
-    if (!actionDate.trim()) e.actionDate = 'Action date is required';
-    if (!actionContent.trim()) e.actionContent = 'Action content is required';
+    if (isNCR && !actionType) e.actionType = t('prarthnaPatra.action.errorActionType');
+    if (!actionDate.trim()) e.actionDate = t('prarthnaPatra.action.errorActionDate');
+    if (!actionContent.trim()) e.actionContent = t('prarthnaPatra.action.errorActionContent');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -203,7 +206,7 @@ export default function TakeActionScreen() {
       setIsDirty(false);
       router.back();
     } catch {
-      setErrors({ general: 'Failed to save. Please try again.' });
+      setErrors({ general: t('prarthnaPatra.action.errorSaveFailed') });
     } finally {
       setSaving(false);
     }
@@ -219,11 +222,11 @@ export default function TakeActionScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       className="flex-1"
     >
       <View className="flex-1 bg-background">
-        <AppHeader title="Take Action" subtitle={pp?.registration_number ?? ''}
+        <AppHeader title={t('prarthnaPatra.action.title')} subtitle={pp?.registration_number ?? ''}
           onBack={handleBack}
         />
 
@@ -253,7 +256,7 @@ export default function TakeActionScreen() {
           {/* ── NCR: Action Type dropdown ── */}
           {isNCR && (
             <>
-              <SectionLabel title="Action Type" />
+              <SectionLabel title={t('prarthnaPatra.action.sectionActionType')} />
               <ActionTypePicker
                 value={actionType}
                 onChange={setActionType}
@@ -263,7 +266,7 @@ export default function TakeActionScreen() {
           )}
 
           {/* ── Action Date ── */}
-          <SectionLabel title="Action Date" />
+          <SectionLabel title={t('prarthnaPatra.action.sectionActionDate')} />
           <Input
             type="date"
             placeholder="YYYY-MM-DD"
@@ -273,7 +276,7 @@ export default function TakeActionScreen() {
           />
 
           {/* ── Add From Format ── */}
-          <SectionLabel title="Add From Format" />
+          <SectionLabel title={t('prarthnaPatra.action.sectionAddFromFormat')} />
           <Pressable
             onPress={() => router.push({ pathname: '/(app)/prarthna-patra/select-format' as never, params: { mode: 'action', ppId } })}
             className="border border-border rounded-xl px-4 py-3 flex-row items-center gap-3 active:opacity-70 bg-card"
@@ -286,29 +289,29 @@ export default function TakeActionScreen() {
               <LayoutTemplate size={16} color={MODULE_COLOR} />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-medium text-foreground">Add From Format</Text>
+              <Text className="text-sm font-medium text-foreground">{t('prarthnaPatra.action.addFromFormat')}</Text>
               {usedFormatTitle ? (
                 <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-                  Last used: {usedFormatTitle}
+                  {t('prarthnaPatra.action.lastUsed', { title: usedFormatTitle })}
                 </Text>
               ) : (
                 <Text className="text-xs text-muted-foreground">
-                  {hasFormats ? 'Select a BNSS Karyavahi format' : 'No BNSS Karyavahi formats found'}
+                  {hasFormats ? t('prarthnaPatra.action.selectFormatHint') : t('prarthnaPatra.action.noFormatsHint')}
                 </Text>
               )}
             </View>
           </Pressable>
 
           {/* ── Action Editor ── */}
-          <SectionLabel title="Action (कार्यवाही)" />
+          <SectionLabel title={t('prarthnaPatra.action.sectionActionEditor')} />
           <DocumentEditor
             value={actionContent}
             onChangeText={(v) => { setActionContent(v); setErrors((e) => ({ ...e, actionContent: '' })); }}
-            title="Action (Karyvahi)"
-            placeholder="Type the action here, or use Add From Format above to insert a BNSS Karyavahi document…"
+            title={t('prarthnaPatra.action.editorTitle')}
+            placeholder={t('prarthnaPatra.action.editorPlaceholder')}
             minHeight={280}
             error={!!errors.actionContent}
-            accessibilityLabel="Action content editor"
+            accessibilityLabel={t('prarthnaPatra.action.editorTitle')}
           />
           {errors.actionContent ? (
             <Text className="text-xs text-destructive mt-1">{errors.actionContent}</Text>
@@ -317,10 +320,7 @@ export default function TakeActionScreen() {
           {/* ── Info note ── */}
           <View className="mt-4 bg-muted rounded-xl p-3">
             <Text className="text-xs text-muted-foreground">
-              <Text className="font-semibold">Save as Complete</Text> → Status becomes{' '}
-              <Text className="font-semibold">Finished</Text>.{' '}
-              <Text className="font-semibold">Save as Draft</Text> → Status stays{' '}
-              <Text className="font-semibold">Pending</Text>.
+              {t('prarthnaPatra.action.infoNote')}
             </Text>
           </View>
 
@@ -333,7 +333,7 @@ export default function TakeActionScreen() {
               style={{ backgroundColor: MODULE_COLOR }}
             >
               <Text className="text-sm font-semibold text-white">
-                {saving ? 'Saving…' : 'Save as Complete (Finished)'}
+                {saving ? t('common.saving') : t('prarthnaPatra.action.btnSaveComplete')}
               </Text>
             </Pressable>
             <Pressable
@@ -342,7 +342,7 @@ export default function TakeActionScreen() {
               className="rounded-xl py-3.5 items-center border border-border active:opacity-70 bg-card"
             >
               <Text className="text-sm font-semibold text-foreground">
-                Save as Draft (Pending)
+                {t('prarthnaPatra.action.btnSaveDraft')}
               </Text>
             </Pressable>
           </View>
@@ -353,24 +353,24 @@ export default function TakeActionScreen() {
       <AlertDialog open={backDialogOpen} onOpenChange={setBackDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogTitle>{t('prarthnaPatra.action.unsavedTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Do you want to save before leaving?
+              {t('prarthnaPatra.action.unsavedDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setBackDialogOpen(false)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               onPress={() => { setBackDialogOpen(false); setIsDirty(false); router.back(); }}
             >
-              <Text>Discard</Text>
+              <Text>{t('common.discard')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
               onPress={() => { setBackDialogOpen(false); handleSave(false); }}
             >
-              <Text>Save Draft</Text>
+              <Text>{t('prarthnaPatra.action.btnSaveDraftShort')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

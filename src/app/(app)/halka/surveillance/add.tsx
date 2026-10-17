@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
   ActivityIndicator, KeyboardAvoidingView, Modal, Pressable,
@@ -34,6 +35,7 @@ function AnchorDropdown<T extends string>({
   placeholder?: string;
   error?: string;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const display = value ? (renderOption ? renderOption(value) : value) : null;
   return (
@@ -44,7 +46,7 @@ function AnchorDropdown<T extends string>({
         className="flex-row items-center justify-between border border-border rounded-xl px-3 h-11 bg-card active:opacity-70"
       >
         <Text className={display ? 'text-sm text-foreground' : 'text-sm text-muted-foreground'}>
-          {display ?? placeholder ?? 'Select…'}
+          {display ?? placeholder ?? t('common.select')}
         </Text>
         {open ? <ChevronUp size={15} color="#9CA3AF" /> : <ChevronDown size={15} color="#9CA3AF" />}
       </Pressable>
@@ -84,17 +86,18 @@ function GPDropdown({
   onSelect: (gp: GramPanchayat) => void;
   error?: string;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const selected = gps.find((g) => g.id === value) ?? null;
   return (
     <View className="gap-1">
-      <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Gram Panchayat *</Text>
+      <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('halka.surveillance.fieldGP')}</Text>
       <Pressable
         onPress={() => setOpen((v) => !v)}
         className="flex-row items-center justify-between border border-border rounded-xl px-3 h-11 bg-card active:opacity-70"
       >
         <Text className={selected ? 'text-sm text-foreground' : 'text-sm text-muted-foreground'}>
-          {selected ? selected.name : 'Select GP…'}
+          {selected ? selected.name : t('halka.surveillance.placeholderGP')}
         </Text>
         {open ? <ChevronUp size={15} color="#9CA3AF" /> : <ChevronDown size={15} color="#9CA3AF" />}
       </Pressable>
@@ -125,6 +128,7 @@ function GPDropdown({
 
 // ── Main form ─────────────────────────────────────────────────────────────────
 export default function AddSurveillanceScreen() {
+  const { t } = useTranslation();
   const [gps, setGps]               = useState<GramPanchayat[]>([]);
   const [saving, setSaving]         = useState(false);
 
@@ -172,9 +176,9 @@ export default function AddSurveillanceScreen() {
 
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!name.trim())     errs.name     = 'Name is required';
-    if (!gpId)            errs.gp       = 'GP is required';
-    if (!activity)        errs.activity = 'Activity is required';
+    if (!name.trim())     errs.name     = t('halka.surveillance.errorNameRequired');
+    if (!gpId)            errs.gp       = t('halka.surveillance.errorGPRequired');
+    if (!activity)        errs.activity = t('halka.surveillance.errorActivityRequired');
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -194,7 +198,7 @@ export default function AddSurveillanceScreen() {
       router.back();
     } catch (e) {
       logger.warn('[Surveillance/Add] Save failed:', e);
-      setErrors({ _global: 'Failed to save. Please try again.' });
+      setErrors({ _global: t('halka.surveillance.errorSaveFailed') });
     } finally {
       setSaving(false);
     }
@@ -202,7 +206,7 @@ export default function AddSurveillanceScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Add Target" subtitle="निगरानी वाले व्यक्ति" showBack />
+      <AppHeader title={t('halka.surveillance.addTitle')} subtitle={t('halka.surveillance.subtitle')} showBack />
 
       <KeyboardAvoidingView
         behavior={process.env.EXPO_OS === 'ios' ? 'padding' : 'height'}
@@ -228,14 +232,14 @@ export default function AddSurveillanceScreen() {
                 className="flex-row items-center gap-1.5 border border-border rounded-lg px-3 py-2 active:opacity-70"
               >
                 <Camera size={14} color={NAVY} />
-                <Text className="text-xs font-semibold" style={{ color: NAVY }}>Camera</Text>
+                <Text className="text-xs font-semibold" style={{ color: NAVY }}>{t('halka.surveillance.camera')}</Text>
               </Pressable>
               <Pressable
                 onPress={() => pickImage('gallery')}
                 className="flex-row items-center gap-1.5 border border-border rounded-lg px-3 py-2 active:opacity-70"
               >
                 <ImageIcon size={14} color={NAVY} />
-                <Text className="text-xs font-semibold" style={{ color: NAVY }}>Gallery</Text>
+                <Text className="text-xs font-semibold" style={{ color: NAVY }}>{t('halka.surveillance.gallery')}</Text>
               </Pressable>
               {photoUri && (
                 <Pressable
@@ -250,11 +254,11 @@ export default function AddSurveillanceScreen() {
 
           {/* Name */}
           <View className="gap-1">
-            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Name *</Text>
+            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('halka.surveillance.fieldName')}</Text>
             <TextInput
               value={name}
               onChangeText={setName}
-              placeholder="Enter full name"
+              placeholder={t('halka.surveillance.placeholderName')}
               placeholderTextColor="#9CA3AF"
               className="border border-border rounded-xl px-3 h-11 text-sm text-foreground bg-card"
             />
@@ -263,11 +267,11 @@ export default function AddSurveillanceScreen() {
 
           {/* Father name */}
           <View className="gap-1">
-            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Father's Name</Text>
+            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('halka.surveillance.fieldFatherName')}</Text>
             <TextInput
               value={fatherName}
               onChangeText={setFatherName}
-              placeholder="Enter father's name"
+              placeholder={t('halka.surveillance.placeholderFatherName')}
               placeholderTextColor="#9CA3AF"
               className="border border-border rounded-xl px-3 h-11 text-sm text-foreground bg-card"
             />
@@ -283,11 +287,11 @@ export default function AddSurveillanceScreen() {
 
           {/* Activity dropdown */}
           <AnchorDropdown
-            label="Criminal Activity *"
+            label={t('halka.surveillance.fieldActivity')}
             value={activity}
             options={[...CRIMINAL_ACTIVITIES]}
             onSelect={(v) => { setActivity(v); setErrors((e) => ({ ...e, activity: '' })); }}
-            placeholder="Select activity…"
+            placeholder={t('halka.surveillance.placeholderActivity')}
             error={errors.activity}
           />
 
@@ -306,7 +310,7 @@ export default function AddSurveillanceScreen() {
             {saving ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text className="text-sm font-bold text-white">Save Target</Text>
+              <Text className="text-sm font-bold text-white">{t('halka.surveillance.btnSaveTarget')}</Text>
             )}
           </Pressable>
         </ScrollView>

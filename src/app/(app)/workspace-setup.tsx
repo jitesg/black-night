@@ -7,9 +7,11 @@ import {
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { Input } from '@/components/ui/input';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { useTranslation } from 'react-i18next';
 
 const ACTION = '#2563EB';
 export default function WorkspaceSetupScreen() {
+  const { t } = useTranslation();
   const { workspace, updateWorkspace } = useWorkspace();
   const [form, setForm] = useState({ ...workspace });
   const [saving, setSaving] = useState(false);
@@ -28,38 +30,38 @@ export default function WorkspaceSetupScreen() {
 
   const fieldGroups = [
     {
-      title: 'Officer Information',
+      title: t('workspace.officerInfo'),
       icon: User,
       color: '#1E3A5F',
       fields: [
-        { key: 'officer_name' as const, label: 'Officer Name', placeholder: 'Full name' },
+        { key: 'officer_name' as const, label: t('workspace.officerName'), placeholder: t('workspace.officerNamePlaceholder') },
       ],
     },
     {
-      title: 'Police Station',
+      title: t('workspace.policeStation'),
       icon: Building2,
       color: '#1D4ED8',
       fields: [
-        { key: 'police_station' as const, label: 'Station Name', placeholder: 'Police station' },
-        { key: 'district' as const, label: 'District', placeholder: 'District name' },
-        { key: 'state' as const, label: 'State', placeholder: 'State name' },
+        { key: 'police_station' as const, label: t('workspace.stationName'), placeholder: t('workspace.stationPlaceholder') },
+        { key: 'district' as const, label: t('workspace.district'), placeholder: t('workspace.districtPlaceholder') },
+        { key: 'state' as const, label: t('workspace.state'), placeholder: t('workspace.statePlaceholder') },
       ],
     },
     {
-      title: 'Beat Area',
+      title: t('workspace.beatArea'),
       icon: MapPin,
       color: '#059669',
       fields: [
-        { key: 'halka' as const, label: 'Halka', placeholder: 'Halka name' },
-        { key: 'beat' as const, label: 'Beat', placeholder: 'Beat name' },
+        { key: 'halka' as const, label: t('workspace.halka'), placeholder: t('workspace.halkaPlaceholder') },
+        { key: 'beat' as const, label: t('workspace.beat'), placeholder: t('workspace.beatPlaceholder') },
       ],
     },
   ];
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Workspace Setup" showBack />
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
+      <AppHeader title={t('workspace.title')} showBack />
+      <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1">
         <ScrollView
           contentContainerClassName="px-5 py-5 gap-5 pb-16"
           keyboardShouldPersistTaps="handled"
@@ -110,7 +112,7 @@ export default function WorkspaceSetupScreen() {
               style={{ backgroundColor: '#DCFCE7', borderCurve: 'continuous' }}>
               <CheckCircle2 size={18} color="#16A34A" />
               <Text className="text-sm font-semibold" style={{ color: '#15803D' }}>
-                Workspace settings saved successfully
+                {t('workspace.savedSuccess')}
               </Text>
             </View>
           )}
@@ -127,7 +129,7 @@ export default function WorkspaceSetupScreen() {
           >
             <Save size={18} color="#fff" />
             <Text className="text-white font-bold text-base">
-              {saving ? 'Saving…' : 'Save Settings'}
+              {saving ? t('common.saving') : t('workspace.saveSettings')}
             </Text>
           </Pressable>
         </ScrollView>

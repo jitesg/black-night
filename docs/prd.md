@@ -4,30 +4,21 @@
 
 **Application Name**: InvestSuite AI Copilot
 
-**Application Description**: An intelligent investigation assistant mobile app for police officers. Provides AI-powered support for investigation, legal research, court work, documentation, beat policing, preventive action, official writing, automated document field extraction, and format filling. Features include AI chat interaction with structured responses and drafting, intelligent ranked fuzzy search with typo tolerance across departmental records, fuzzy-aware text highlighting, typo-tolerant autocomplete suggestions, predictive search ranking, cohesive light/dark theming across all UI components including format fill banners and pills, format auto-fill with compact inline editable workspace pills, and an OCR document scanning service (ocr-extract-fields) utilizing the Gemini API with dynamic model auto-discovery and warm-instance model caching to extract Hindi and English form field values directly into departmental records (such as Prarthna Patra, Mukadma, and GD). Chat history and record queries operate locally without mandatory login.
+**Application Description**: An intelligent offline legal and procedural investigation assistant mobile application for police officers. The application provides statutory lookups (BNS 2023, BNSS 2023, BSA 2023), Schedule I offence classifications, Knowledge module documentation (DGP Circulars and SOPs), FIR / Case management, and AI Copilot assistance. This update (Task L30 - SOP Library Part 2) introduces a structured multi-block SOP viewer with in-document search and fallback rendering, an interactive and persistent SOP Checklist tab with Case linking, and checklist quick-action access via AI Copilot `SOP_LOOKUP` responses.
 
 ---
 
 ## 2. Users and Usage Scenarios
 
 **Target Users**:
-- Police officers conducting investigations
-- Officers requiring legal research and procedural guidance
-- Officers preparing court-related documents, formats, and filings
-- Officers drafting official records (FIR, Case Diary, Arrest Memo, GD, Seizure Memo, Prarthna Patra, official format templates, etc.)
-- Officers digitizing handwritten complaints, printed notices, identity documents, and application forms
-- Officers searching case records, legal knowledge, and beat/halka records with flexible matching
+- Investigating police officers following step-by-step crime-scene and investigation checklists for specific cases or general procedures.
+- Supervisory officers verifying procedural adherence against standard checklists and investigating officers' recorded notes.
 
 **Core Usage Scenarios**:
-- Officer asks investigation or legal questions via natural language chat and receives structured guidance with legal provisions and actionable checklists
-- Officer opens a document format fill form where workspace values (Police Station, District, Officer Name, etc.) are pre-populated as interactive pills, allowing immediate inline editing with compact text inputs without navigating away from the form
-- Officer operates format fill screens in either light or dark mode with auto-filled pills and missing workspace warning banners dynamically matching active theme colors
-- Officer scans or uploads an image of a Hindi/English complaint or identity document in Prarthna Patra, Mukadma, or GD entry modules, triggering automated field extraction to populate form values
-- Officer searches departmental records (Mukadma, GD, Nyayalay, Prarthna Patra, Knowledge base, Halka) with typos or partial keywords, receiving accurately ranked results with matched terms highlighted
-- Officer types in input forms with autocomplete inputs adhering to the active light/dark theme and receiving typo-tolerant suggestions based on field history
-- Officer performs predictive search in Halka beat management with immediate ranked recommendations
-- Officer drafts official notices or memos using pre-built action prompts or custom queries
-- Officer reviews, copies, or shares investigation guidance while retaining offline access to local records and chat history
+- **Viewing Structured SOP Content**: An officer opens an SOP detail screen to view structured blocks (headings, steps, do/don't tables, crime-type accordions, flowchart steps, forms, and law chips) with sticky in-SOP keyword search.
+- **Executing and Tracking Checklists**: An officer selects a specific registered Case (or general mode 「बिना केस (सामान्य)」) in the SOP Checklist tab, checks off procedural steps, filters mandatory steps (✱), adds step notes, and tracks overall completion progress.
+- **Accessing SOP Checklists from Case Detail**: An officer views associated SOP checklists directly from the Case Detail screen and adds new SOPs to the case.
+- **Direct Copilot Checklist Access**: An officer asks Copilot for investigation guidance and taps 「चेकलिस्ट खोलें」 directly from the `SOP_LOOKUP` response to launch the corresponding interactive checklist.
 
 ---
 
@@ -37,221 +28,112 @@
 
 ```
 InvestSuite AI Copilot
-├── Chat Screen (Main Copilot)
-│   ├── Chat Header
-│   ├── Message List
-│   ├── Quick Action Prompts
-│   └── Input Bar
-├── Search & Module Screens
-│   ├── Global & Module Search (Mukadma, GD, Nyayalay, Prarthna Patra)
-│   ├── Knowledge Base (Index & Detail List)
-│   └── Halka / Beat Search (Predictive Search & Results)
-├── Document Entry & Formats
-│   ├── Record Form Inputs (Mukadma, GD, Prarthna Patra)
-│   ├── Format Fill Screen
-│   │   ├── Missing Workspace Notice Banner (Themed)
-│   │   ├── Auto-Filled Workspace Pills (Themed, Inline Editable)
-│   │   └── Format Template Fields
-│   ├── OCR Scan Trigger & Image Picker
-│   └── OCR Field Extraction Preview & Confirmation Sheet
-├── Chat History Screen
-│   ├── History List
-│   └── New Chat Action
-├── Common Input Components
-│   ├── Autocomplete Input (Themed & Typo-Tolerant)
-│   └── Highlighted Text Display (Fuzzy Highlight Support)
-└── Settings Screen
-    ├── Theme Preferences (Light, Dark, System Default)
-    ├── Search Settings (Typo Tolerance Toggle)
-    └── Data Management (Clear Chat History)
+├── Navigation & Drawer
+├── Knowledge Module
+│   ├── Knowledge Category List Screen (SOP Category Badge Count: 38)
+│   └── SOP Category Screen
+│       ├── Subcategory Filter Chips
+│       ├── SOP Search Bar
+│       ├── SOP Entry List
+│       └── SOP Detail Screen
+│           ├── Header (Title, EN Subtitle, Source Chip, Page Number, Law & Circular Chips)
+│           ├── Sticky In-SOP Search Bar (Keyword highlight and block filtering)
+│           ├── Tab 1: 'विवरण' (Structured Block Viewer / Fallback Text Viewer)
+│           └── Tab 2: 'चेकलिस्ट' (Interactive Step Checklist & Case Selector)
+├── Law Library Module (Statute Lookup & Section Detail)
+├── FIR / Case Management Module
+│   └── Case Detail Screen
+│       └── SOP Checklist Section (List of active checklists + '+ SOP जोड़ें' button)
+└── AI Copilot Module
+    └── AI Copilot Chat Screen (SOP_LOOKUP with 'पूरा SOP खोलें' and 'चेकलिस्ट खोलें' actions)
 ```
 
-### 3.2 Chat Screen (Main)
+### 3.2 Structured SOP Viewer ('विवरण' Tab)
 
-**Chat Header**:
-- Displays application title 「InvestSuite AI Copilot」
-- Navigation menu providing access to Chat History, Records Search, and Settings
+- **Data Source & Asset Management (`tasks/sop_struct_1.json`, `tasks/sop_struct_2.json`)**:
+  - Stored as bundled read-only static JSON assets (loaded lazily on demand and cached in memory, not as database rows).
+  - SOP Struct 1 contains 31 SOPs (`src: \"b1\" | \"b2\"`), SOP Struct 2 contains 5 SOPs (`src: \"b3\"`).
+  - Fallback mechanism: If structured asset data is absent or fails to load for a given record, the screen falls back to the plain-text viewer.
 
-**Message List**:
-- Vertical scrollable message stream distinguishing user and AI messages
-- User message: right-aligned with distinct visual container
-- AI message: left-aligned with Markdown formatting (headings, numbered lists, bullet lists)
-- Action buttons per AI message: Copy to clipboard and system Share sheet trigger
-- Loading indicator during response generation
+- **Header Components**:
+  - SOP Hindi title and English subtitle (`en`).
+  - Source badge (`src`) and original booklet page reference: 「पृष्ठ <pages> (मूल पुस्तिका)」.
+  - Law cross-reference chips (`laws`): Displays `- [Old Law] → [New Law]` chips routing to the relevant statute section in Law Library.
+  - Circular reference chips (`circ`): Displays 「DG n/YYYY」; taps navigate to circular detail if ID exists; renders disabled chip with 「ऐप में नहीं」 if ID is null.
+  - Sticky in-SOP search bar: Allows case-insensitive Hindi and English searching, filtering matching blocks and highlighting query matches in real time.
 
-**Quick Action Prompts**:
-- Horizontal scrollable row containing standard prompt chips:
-  + 「Draft FIR」
-  + 「Draft Arrest Memo」
-  + 「Draft Seizure Memo」
-  + 「Explain BNSS Section」
-  + 「Investigation Checklist」
-  + 「Court Procedure」
-- Tapping prompt automatically fills the input bar and submits the query
+- **Block Kind Rendering Support**:
+  - `text`: Bold label with formatted paragraph body.
+  - `steps`: Section heading (`title`), numbered items, indented sub-bullets; mandatory steps (`must: 1`) marked with 「✱ ज़रूरी」 badge; prohibited items (`dont: 1`) styled in red tint with 「✗」.
+  - `form`: Heading rows with checkbox-style field items (e.g., missing-person proforma).
+  - `intro`: Introductory styled text.
+  - `cards`: Informational card list with bold titles and descriptions.
+  - `points`: Bulleted text point lists.
+  - `dd`: Two-column comparison table (「करें ✓」 in green and 「न करें ✗」 in red) with supporting row images.
+  - `crimetypes`: Collapsible accordion sections (first accordion expanded by default) containing items and figures.
+  - `steps` (b3): Numbered accordion sections.
+  - `evtype`: Evidence cards with badges for साक्ष्य (Evidence), अपराध (Offence), and पैकिंग (Packaging).
+  - `table`: Horizontally scrollable data table with sticky first column and table note.
+  - `note`: Highlighted amber caution box.
+  - `law`: Statutory reference list with figures.
+  - `devices`: Device cards with titles, descriptions, and device images.
+  - `two`: Two-column comparison block.
+  - `dd2`: Distinct green 「करें」 and red 「न करें」 stacked lists.
+  - `flow`: Vertical process flow diagram with directional connectors.
+  - `terms`: Glossary block with bold terms and definitions.
+  - Unknown block kinds: Render any contained string values as fallback bullet points without crashing.
 
-**Input Bar**:
-- Multiline text input expanding up to 4 lines
-- Send trigger disabled when input field is empty
+- **Image Handling**:
+  - Blocks referencing figures/images render an image container.
+  - If the target image record is not present in local database storage, display a placeholder container showing 「फोटो उपलब्ध नहीं」 alongside the caption.
 
-**AI System Prompt Specification**:
-- Configured to act as an authoritative police investigation assistant
-- Delivers structured responses covering: Summary, Detailed Explanation, Relevant Legal Provisions (BNSS/BNS/Evidence Act), Investigation Checklist, Documents/Formats Required, Practical Tips, Important Precautions, and Conclusion
-- Enforces strict factual integrity without fabricating provisions
+- **Performance & Virtualization**:
+  - Content rendered with list virtualization or lazy-loaded accordions to ensure rapid opening (<500 ms for multi-block SOPs).
+  - No horizontal page scroll permitted, except within designated `table` block containers.
 
-### 3.3 Search and Module Screens
+### 3.3 Interactive SOP Checklist ('चेकलिस्ट' Tab)
 
-**Module Records Search (Mukadma, GD, Nyayalay, Prarthna Patra)**:
-- Search bar accepting free-text queries with typo-tolerant fuzzy matching
-- Result list displaying matched records ranked strictly by similarity and relevance score in descending order
-- Match highlighting: matching word segments highlighted within record titles and summaries according to typo-tolerance rules
+- **Checklist Structure & Data Source**:
+  - Step data sourced from in-memory SOP index (`sop_index.json`).
+  - Checklist state persisted locally in database table `sop_checklist`:
+    - Schema: `id` (PK), `sop_id`, `case_id` (NULLABLE), `step_id`, `done` (0/1), `note` (TEXT), `updated_at`.
+    - Unique constraint: `UNIQUE(sop_id, IFNULL(case_id, ''), step_id)`.
+  - Checklist progress and state persisted separately per (SOP, Case) tuple and across application restarts.
 
-**Knowledge Base Search (Index and List Views)**:
-- Search interface covering legal sections, reference guides, and standard operating procedures
-- Fuzzy-aware highlight segments displayed in search results
+- **UI Controls & Functionality**:
+  - Case Selector dropdown (「केस चुनें」): Allows selecting from existing registered cases or selecting 「बिना केस (सामान्य)」 for standalone procedures.
+  - Progress Bar: Displays dynamic progress text: 「x / N पूरे」 with visual completion indicator.
+  - Mandatory Filter Toggle: 「सिर्फ ✱ ज़रूरी」 toggle to filter and view only mandatory steps (`must: 1`).
+  - Step List:
+    - Group headers based on step category (`step.g`).
+    - Step item: Interactive checkbox, step text.
+    - Step indicators: Mandatory steps highlighted with 「✱ ज़रूरी」; cautionary steps (`dont: 1`) prefixed with 「ध्यान: ...」.
+    - Step Note: Option to add, view, or edit a short text note per step.
+  - Reset Action: 「रीसेट」 button with confirmation dialog to clear all checked items and notes for the selected SOP and case context.
 
-**Halka / Beat Search Screen**:
-- Search interface for beat officers, areas, and contacts
-- Predictive search functionality providing dynamic ranked candidate matches as the officer types, ordered by match score
+### 3.4 Case Detail Screen Integration
 
-### 3.4 Document Entry, Format Fill, & OCR Scanning Helper
+- **SOP Checklist Section**:
+  - Adds a dedicated row/section 「SOP चेकलिस्ट」 within existing Case Detail screen.
+  - Lists all SOP checklists initiated for that specific case alongside their completion progress (e.g., 「3 / N」).
+  - Tapping an item navigates directly to that SOP's Checklist tab with the case pre-selected.
+  - Provides a 「+ SOP जोड़ें」 button opening an SOP picker modal with keyword search and crime-type filter chips.
 
-**Format Fill Screen**:
-- Displays official document format templates ready for entry and generation
-- Missing Workspace Banner:
-  + Shown when workspace defaults are absent
-  + Styled dynamically according to active light/dark theme colors, without hardcoded static color values
-- 「AUTO-FILLED FROM WORKSPACE」 Pills:
-  + Displayed for pre-filled workspace attributes (Police Station, District, Officer Name, etc.)
-  + Visual styling dynamically inherits the active light or dark theme mode
-  + Editable in-place: tapping a pill switches it or reveals a compact inline text input directly on the form without redirecting the officer away from the screen
-  + Changes made via inline text input update the active format document data immediately
+### 3.5 AI Copilot Integration
 
-**Module Record Forms (Prarthna Patra, Mukadma, GD)**:
-- Form entry screens contain an 「Auto-fill via OCR Scan」 action trigger
-- Allows capturing an image using the camera or picking an existing image from the device gallery
-
-**OCR Field Extraction Preview & Review**:
-- Displays scanning progress state while processing the image
-- Presents extracted Hindi/English key-value pairs matching the target form required fields (such as Complainant Name, Accused Name, Address, Incident Date/Time, Act/Section, Subject, Summary of Complaint)
-- Officer can review, edit, and confirm extracted fields before merging them into the active form inputs
-
-### 3.5 Common Input and Text Components
-
-**Autocomplete Input Component**:
-- Used across data entry and query forms
-- Visual styling dynamically inherits the active light or dark theme mode (consistent with entity group inputs), avoiding hardcoded contrasting palettes
-- Suggestion dropdown provides historical suggestions matched against input using typo-tolerant fuzzy comparison based on user settings
-
-**Highlight Text Component**:
-- Renders matched character segments with visual emphasis
-- Supports exact match highlighting and typo-tolerant fuzzy segment highlighting across search result views
-
-### 3.6 Chat History Screen
-
-**History List**:
-- Displays past conversation sessions sorted with newest first
-- Shows conversation title and creation date
-- Tapping an entry loads the full conversation into the Chat Screen
-- Empty state illustration and prompt when no history exists
-
-**New Chat Trigger**:
-- Opens a clean, empty conversation session
-
-### 3.7 Settings Screen
-
-**Preferences**:
-- Theme selection: Light, Dark, or System Default
-- Search preferences: Typo tolerance sensitivity configuration
-- Clear chat history action with confirmation prompt
+- **`SOP_LOOKUP` Response Enhancement**:
+  - In addition to the existing 「पूरा SOP खोलें」 action button, renders a 「चेकलिस्ट खोलें」 action button.
+  - Tapping 「चेकलिस्ट खोलें」 navigates directly to the Checklist tab of the matched SOP.
 
 ---
 
 ## 4. Business Rules and Logic
 
-### 4.1 Format Fill and Workspace Data Rules
-
-**Inline Editing of Workspace Auto-Filled Values**:
-- Workspace pills for Police Station, District, Officer Name, and related attributes must allow immediate inline editing
-- Editing must not trigger a full page navigation, modal dismissal, or form reset; it operates via compact inline text inputs embedded directly in the form flow
-- Updated values are preserved in the current format session for generation
-
-**Dynamic Theming for Format Banners and Pills**:
-- The 'AUTO-FILLED FROM WORKSPACE' pills and missing workspace banner must dynamically resolve their background, text, and border colors from the active theme tokens (Light or Dark)
-- Hardcoded background colors, static borders, and fixed warning palette values are prohibited
-
-### 4.2 OCR Field Extraction Function (ocr-extract-fields)
-
-**Endpoint Specification**:
-- Interface: POST request accepting JSON payload: `{ imageBase64: string, mimeType: string, fields: Array<{ key: string, label: string }> }`
-- Response format: `{ fields: Record<string, string> }`
-- CORS: Enables Cross-Origin Resource Sharing headers on all incoming requests and preflight OPTIONS queries
-
-**Input Validation Rules**:
-- Permitted MIME types: strictly restricted to `image/jpeg`, `image/png`, and `image/webp`
-- Maximum payload size: image Base64 data string must not exceed 8MB (8,000,000 characters)
-- Target field definition: requires non-empty `fields` array containing valid `key` and `label` definitions for targeted form parameters
-
-**Model Auto-Discovery & Caching Logic**:
-- Dynamically discovers available Gemini models via the Gemini API model listing endpoint instead of relying on a hardcoded model name
-- Filters models to those supporting `generateContent`, matching flash models while excluding vision-deprecated or experimental thinking variants
-- Selects the newest available flash candidate, falling back to `gemini-2.0-flash` if model listing fails or yields no suitable candidate
-- Caches the discovered model name per warm instance for 10 minutes (600,000 ms) to avoid redundant discovery requests on every scan
-- Clears the cached model entry immediately if the active model encounters an API error, triggering fresh model discovery on subsequent invocation
-
-**AI Processing & Extraction Rules**:
-- Utilizes the auto-discovered Gemini model with the configured secret key (`GEMINI_API_KEY`)
-- Configured with a system instruction and JSON response schema to extract form values from scanned documents, identity cards, handwritten notes, and official forms specifically formatted for Uttar Pradesh Police records
-- Supports bilingual text comprehension across Hindi (Devanagari script) and English
-- Matches extracted values directly to requested field keys and labels without guessing; returns empty strings for fields not found in the document image
-- Preserves original spellings for proper nouns, names, and addresses as found in the scanned image
-
-**Error Handling and Rate Limiting**:
-- Validates presence of `GEMINI_API_KEY`; returns HTTP 500 server configuration error if missing
-- Returns HTTP 400 with descriptive error on invalid payload structure, missing parameters, unsupported MIME types, or oversized image data
-- If Gemini API returns rate limit or quota exhaustion (HTTP 429), endpoint returns an HTTP 502 status with a friendly rate limit retry message
-- If Gemini API is unreachable or returns non-200 responses, endpoint clears cached model and returns HTTP 502 with error details
-- If Gemini output cannot be parsed as JSON or returns empty content, returns HTTP 502
-
-### 4.3 Theme Application Rules
-
-**Consistent Color Tokens**:
-- Form input elements including autocomplete inputs, workspace pills, and missing workspace banners must dynamically resolve colors based on the active color scheme (Light or Dark)
-- Fixed or hardcoded distinct accent themes (such as dark gold palettes or static warning amber) are prohibited in shared form components, banners, and pills
-- Backgrounds, borders, placeholder text, and dropdown suggestion menus must strictly mirror standard light/dark application tokens
-
-### 4.4 Ranked Fuzzy Search and Matching Rules
-
-**Scored Fuzzy Matching**:
-- Search queries execute fuzzy comparison allowing an edit distance threshold (default distance of 1)
-- Candidate results are assigned a numeric score reflecting string similarity, prefix match priority, and edit distance
-- Search result lists in global search and individual modules must be sorted descending by match score
-
-**Predictive Search in Halka**:
-- As the user types in Halka search, predictive suggestions are generated and ordered dynamically by scored fuzzy relevance
-
-**Typo-Tolerant Autocomplete Suggestions**:
-- Field value history suggestion retrieval respects the application typo-tolerance setting
-- When typo tolerance is enabled, suggestions within acceptable edit distance are returned alongside exact prefix matches
-
-**Fuzzy Match Highlighting**:
-- Highlight components calculate matched substring intervals corresponding to the search term
-- When typo tolerance is active, fuzzy-matched segments are highlighted within text views across Mukadma, GD, Nyayalay, Prarthna Patra, Knowledge base, and Halka views
-
-### 4.5 Chat and AI Rules
-
-**Context Maintenance**:
-- Active chat sessions retain conversational context by including recent conversation history with each outgoing query
-- Responses are parsed and rendered with structural Markdown elements
-
-**Message Actions**:
-- Copy action places clean text onto the device clipboard with confirmation feedback
-- Share action invokes the native operating system sharing sheet
-
-### 4.6 Data Storage Rules
-
-**Local Persistence**:
-- Chat conversations, format fill drafts, and field value history are persisted locally on the device
-- Search indexes and historical suggestion stores operate locally for responsive offline access
+1. **Data Isolation & Read-Only Source**: Structured SOP asset files (`tasks/sop_struct_1.json`, `tasks/sop_struct_2.json`) are bundled read-only static files. Checklist execution state is stored in the local SQLite database.
+2. **Case Independence**: Checking off steps or adding notes under one case does not affect checklist states for other cases or the standalone 「बिना केस (सामान्य)」 context.
+3. **Viewer Graceful Fallback**: If structured JSON data for a specific SOP ID or Knowledge ID is missing, corrupted, or unsupported, the viewer seamlessly displays the plain-text SOP description.
+4. **Non-destructive Migration**: Introduction of the `sop_checklist` table operates via standard database migration without altering or dropping existing tables, case records, or statutory databases.
+5. **Offline Operation**: All block rendering, search highlighting, checklist tracking, and Copilot navigation execute fully on-device without internet access.
 
 ---
 
@@ -259,47 +141,32 @@ InvestSuite AI Copilot
 
 | Scenario | Handling |
 |---|---|
-| User edits auto-filled workspace pill inline and clears all text | Compact input allows empty entry; placeholder text indicates field requirement without blocking navigation |
-| Device theme toggles while viewing Format Fill screen | Workspace pills and missing workspace banner immediately transition to active theme colors without losing entered inline edits |
-| Missing workspace banner displayed in Dark mode | Banner renders with dark theme background, border, and text tokens instead of hardcoded bright or static warning colors |
-| User uploads image with unsupported format (e.g. PDF, GIF, HEIC) for OCR | Client rejects image before request; displays alert indicating only JPEG, PNG, and WebP formats are supported |
-| Uploaded image Base64 size exceeds 8MB | Client notifies user that document image exceeds 8MB size limit and requests a compressed image |
-| Hardcoded or selected Gemini model returns 404 Not Found | Service model auto-discovery queries active models and selects available flash model; resets invalid cache on error |
-| Gemini API responds with rate limit status (HTTP 429) | Edge function clears cache if necessary and responds with 502 status; app displays friendly message prompting user to retry shortly |
-| Handwritten text in document is illegible or missing requested fields | Service returns empty strings for unidentifiable fields without guessing; client leaves corresponding inputs blank for manual officer input |
-| Network disconnected during OCR extraction | Displays network error notification with option to retry once connection is restored |
-| User enters query with multiple misspellings exceeding allowable edit distance | System returns nearest partial matches if available; otherwise displays empty result state with suggestion to refine query |
-| Search term is empty | Clears search results, restores default recent list or placeholder guidance |
-| Typo tolerance setting is disabled by user | Search, autocomplete, and highlighting revert strictly to exact prefix/substring matching |
-| Autocomplete input rendered in Dark mode | Automatically applies dark theme surface, border, and text tokens without legacy styling artifacts |
-| Predictive search yields zero score matches | Predictive dropdown remains hidden, leaving search input active |
-| Network unavailable during AI Copilot query | Chat displays error prompt indicating no connection; local history and search remain fully accessible |
-| Clipboard write permission restricted | Displays notice that clipboard access could not be completed |
+| Structured SOP asset missing or unreadable | SOP Detail screen automatically falls back to rendering L29 plain-text viewer |
+| Block kind in structured JSON is unrecognized | Parses and renders all text strings found within the block as bullet points without crashing |
+| Image reference ID has no data in local database | Displays a neat grey placeholder showing 「फोटो उपलब्ध नहीं」 with the image caption |
+| Case linked to active checklists is deleted | Checklist records retain consistency; orphaned checklist entries are safely ignored or pruned |
+| Reset confirmed on checklist | Clears all completion flags (`done = 0`) and notes for that specific SOP and case combination only |
+| In-SOP search yields no matching text | Displays clear empty search state while keeping search input active |
 
 ---
 
 ## 6. Acceptance Criteria
 
-1. Officer navigates to the Format Fill screen and views pre-populated 'AUTO-FILLED FROM WORKSPACE' pills (Police Station, District, Officer Name)
-2. Officer taps an auto-filled pill, edits the text using the compact inline text input directly within the form, and verifies the revised value is retained without navigating away
-3. Officer switches app theme between Light and Dark mode, verifying that the auto-filled pills and missing workspace banner dynamically apply matching theme tokens
-4. Officer navigates to a record form (Prarthna Patra, Mukadma, or GD) and taps 「Auto-fill via OCR Scan」
-5. Officer selects a scanned document image (JPEG, PNG, or WebP under 8MB) containing Hindi or English police complaint details
-6. System invokes `ocr-extract-fields` edge function, which auto-discovers an active Gemini flash model (or uses cached model within 10-minute validity) and successfully extracts field values
-7. Officer views the extracted fields in the review confirmation sheet and confirms insertion into the active record form
-8. Officer enters a misspelled search keyword into Module Search, system returns matching records ranked by score descending with typo-tolerant fuzzy matching and matched text segments highlighted
-9. Officer sends an investigation query in Chat Screen, system displays a formatted AI response with legal provisions and checklist
+1. Structured SOP assets `tasks/sop_struct_1.json` (31 SOPs) and `tasks/sop_struct_2.json` (5 SOPs) load and cache on demand without database insertion.
+2. SOP Detail screen displays two functional tabs: 「विवरण」 (Structured Viewer) and 「चेकलिस्ट」 (Checklist).
+3. Structured Viewer correctly renders all specified block types (`steps`, `cards`, `dd`, `crimetypes`, `evtype`, `table`, `flow`, `form`, `terms`) and falls back to plain-text viewer if structured data is absent.
+4. In-SOP search bar filters matching blocks and highlights searched terms in Hindi and English.
+5. Missing images render a grey placeholder box with 「फोटो उपलब्ध नहीं」 and caption without throwing errors.
+6. Checklist tab displays case selector (including 「बिना केस (सामान्य)」), progress bar 「x / N पूरे」, 「सिर्फ ✱ ज़रूरी」 toggle, mandatory badges (✱), cautionary notes (ध्यान), and note-taking capability.
+7. Checking steps in Case A does not affect checked steps in Case B or 「बिना केस (सामान्य)」, and state persists across app relaunches.
+8. Case Detail screen displays the 「SOP चेकलिस्ट」 section listing linked checklists with progress, and allows attaching new SOPs via 「+ SOP जोड़ें」.
+9. AI Copilot `SOP_LOOKUP` responses include the 「चेकलिस्ट खोलें」 button, opening the corresponding SOP Checklist tab.
+10. All operations execute offline with clean TypeScript validation and zero regressions on statutory/circular data.
 
 ---
 
 ## 7. Out of Scope for This Release
 
-- User account registration or cloud login mechanisms
-- Cross-device cloud synchronization of chat history or local search indexes
-- Voice input or audio recording transcription
-- Direct video streaming analysis or live video OCR feeds
-- Multi-language user interface localization outside standard English and Hindi support
-- Direct real-time bidirectional integration with external central police database servers
-- Manual reordering or drag-and-drop customization of quick action prompt chips
-- Document file export to proprietary external formats
-- In-app payment or subscription billing gateways
+- Custom user-created SOP templates or editable SOP text definitions (reserved for SOP Part 3).
+- Binary image asset bundle preloading (Task L31).
+- External export or PDF generation of filled checklists.

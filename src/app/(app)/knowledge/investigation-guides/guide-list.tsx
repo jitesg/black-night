@@ -10,6 +10,7 @@ import {
   BookOpen, Edit2, FileText, Filter,
   Plus, Search, Trash2, Users,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { SearchBar } from '@/components/SearchBar';
@@ -86,6 +87,7 @@ function GuideCard({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const COLOR = colorScheme === 'dark' ? '#22D3EE' : '#0891B2';
@@ -111,7 +113,7 @@ function GuideCard({
               style={{ backgroundColor: `${COLOR}15` }}
             >
               <Text className="text-xs font-medium" style={{ color: COLOR }}>
-                {item.crime_type}
+                {t('knowledge.guide.crimeType.' + item.crime_type, { defaultValue: item.crime_type })}
               </Text>
             </View>
           ) : null}
@@ -153,10 +155,12 @@ function GuideCard({
       )}
 
       <View className="flex-row items-center justify-between pt-1 border-t border-border/50">
-        <Text className="text-xs text-muted-foreground">Updated {fmtTs(item.updated_at)}</Text>
+        <Text className="text-xs text-muted-foreground">
+          {t('knowledge.guide.updated', { date: fmtTs(item.updated_at) })}
+        </Text>
         {attachCount > 0 && (
           <Text className="text-xs text-muted-foreground">
-            {attachCount} file{attachCount !== 1 ? 's' : ''}
+            {t('knowledge.guide.fileCount', { count: attachCount })}
           </Text>
         )}
       </View>
@@ -166,6 +170,7 @@ function GuideCard({
 
 // ─── Main Screen ──────────────────────────────────────────────────────────
 export default function GuideListScreen() {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const COLOR = colorScheme === 'dark' ? '#22D3EE' : '#0891B2';
@@ -240,10 +245,10 @@ export default function GuideListScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title={config.label}
+        title={t(`knowledge.guide.${guideType}.label`)}
         showBack
         actions={
-          <HeaderIconBtn icon={Plus} onPress={() => router.push(config.addRoute(guideType) as never)} label="Add Guide" color={COLOR} />
+          <HeaderIconBtn icon={Plus} onPress={() => router.push(config.addRoute(guideType) as never)} label={t('knowledge.guide.addGuide')} color={COLOR} />
         }
       />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
@@ -252,10 +257,10 @@ export default function GuideListScreen() {
           <SearchBar
             value={query}
             onChangeText={handleSearch}
-            placeholder="Search title, crime type, tags…"
+            placeholder={t('knowledge.guide.searchPlaceholder')}
             variant="light"
             containerStyle={{ flex: 1 }}
-            accessibilityLabel="Search investigation guides"
+            accessibilityLabel={t('knowledge.guide.searchAccessibility')}
             collapsible
           />
           <Pressable
@@ -269,7 +274,9 @@ export default function GuideListScreen() {
               numberOfLines={1}
               style={{ color: activeCrimeType !== 'All' ? COLOR : C.mutedForeground, maxWidth: 72 }}
             >
-              {activeCrimeType !== 'All' ? activeCrimeType : 'Filter'}
+              {activeCrimeType !== 'All'
+                ? t('knowledge.guide.crimeType.' + activeCrimeType, { defaultValue: activeCrimeType })
+                : t('knowledge.guide.filter')}
             </Text>
           </Pressable>
         </View>
@@ -288,7 +295,7 @@ export default function GuideListScreen() {
                   className="text-xs font-medium"
                   style={{ color: activeCrimeType === ct ? '#fff' : C.foreground }}
                 >
-                  {ct}
+                  {ct === 'All' ? t('knowledge.guide.all') : t('knowledge.guide.crimeType.' + ct, { defaultValue: ct })}
                 </Text>
               </Pressable>
             ))}
@@ -335,12 +342,14 @@ export default function GuideListScreen() {
                 <Icon size={30} color={COLOR} />
               </View>
               <Text className="text-base font-semibold text-foreground">
-                {query.trim() || activeCrimeType !== 'All' ? 'No records found' : 'No records yet'}
+                {query.trim() || activeCrimeType !== 'All'
+                  ? t('knowledge.guide.noRecordsFound')
+                  : t('knowledge.guide.noRecordsYet')}
               </Text>
               <Text className="text-sm text-muted-foreground text-center px-10">
                 {query.trim() || activeCrimeType !== 'All'
-                  ? 'Try adjusting your search or filter'
-                  : `Tap Add to create your first ${config.label.toLowerCase()} entry`}
+                  ? t('knowledge.guide.tryAdjusting')
+                  : t('knowledge.guide.tapAddFirst', { label: t(`knowledge.guide.${guideType}.label`).toLowerCase() })}
               </Text>
             </View>
           }
@@ -354,21 +363,17 @@ export default function GuideListScreen() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Record</AlertDialogTitle>
+            <AlertDialogTitle>{t('knowledge.guide.deleteRecord')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Delete{' '}
-              <Text className="font-semibold text-foreground">
-                {deleteTarget?.title ?? ''}
-              </Text>
-              ? This cannot be undone.
+              {t('knowledge.guide.deleteRecordDesc', { title: deleteTarget?.title ?? '' })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setDeleteTarget(null)}>
-              <Text>Cancel</Text>
+              <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction onPress={handleDeleteConfirm} className="bg-destructive">
-              <Text className="text-destructive-foreground font-semibold">Delete</Text>
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

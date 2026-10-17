@@ -14,9 +14,15 @@ import { useTranslation } from 'react-i18next';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import {
-  searchKnowledge, deleteKnowledgeEntry, duplicateKnowledgeAsUser, type KnowledgeEntry,
+  searchKnowledge, deleteKnowledgeEntry, getKnowledgeAnalytics, type KnowledgeEntry,
 } from '@/lib/db/knowledgeRepo';
-import { KNOWLEDGE_CATEGORY_MAP, getCategoryLabel } from '@/lib/knowledgeConstants';
+import { getAllKnowledgeNotesMap } from '@/lib/db/knowledgeNotesRepo';
+import { getDisplayShortTitle, getCircularNumberChip, getEntryStatus, getEntryPreviewText } from '@/lib/knowledge/knowledgeDisplay';
+import { getSopStepCount } from '@/ai/sopIndex';
+import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
+import {
+  KNOWLEDGE_CATEGORY_MAP, getCategoryLabel, getCanonicalCategory,
+} from '@/lib/knowledgeConstants';
 import { SourceBadge } from '@/components/common/SourceBadge';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
@@ -26,6 +32,8 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+
+export const KNOWLEDGE_DIAG_BUILD = 'L18D';
 
 // Source filter options
 const SOURCE_FILTERS = ['All', 'System', 'User'] as const;
@@ -39,9 +47,10 @@ function fmtTs(ts: number): string {
 
 // ─── Record Card ──────────────────────────────────────────────────────────
 function RecordCard({
-  item, color, query, highlight, typoTolerant, onPress, onEdit, onDelete, onDuplicateAsUser,
+  item, userNote, color, query, highlight, typoTolerant, onPress, onEdit, onDelete,
 }: {
   item: KnowledgeEntry;
+  userNote?: string;
   color: string;
   query: string;
   highlight: boolean;
@@ -49,12 +58,15 @@ function RecordCard({
   onPress: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  onDuplicateAsUser: () => void;
 }) {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const isSystem = item.source === 'system';
+  const hasUserNote = Boolean(userNote && userNote.trim());
+  const derivedStatus = getEntryStatus(item, hasUserNote);
+  const circChip = getCircularNumberChip(item);
+  const displayTitle = getDisplayShortTitle(item);
   const attachCount = (() => {
     try { return (JSON.parse(item.attachment_uris) as unknown[]).length; } catch { return 0; }
   })();
@@ -73,38 +85,67 @@ function RecordCard({
       {/* Title row */}
       <View className="flex-row items-start gap-3">
         <View className="flex-1" style={{ minWidth: 0 }}>
-          <Text className="text-sm font-semibold text-foreground leading-5" numberOfLines={2}>
-            {highlight
-              ? <HighlightText text={item.title} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20 }} numberOfLines={2} typoTolerant={typoTolerant} />
-              : item.title
-            }
-          </Text>
-          <View className="flex-row items-center gap-1.5 mt-1.5 flex-wrap">
-            {item.subcategory ? (
+          {circChip ? (
+            <View className="flex-row items-center mb-1.5">
               <View
-                className="rounded-full px-2 py-0.5"
-                style={{ backgroundColor: `${color}15` }}
+                className="rounded-md px-2 py-0.5 border"
+                style={{ backgroundColor: `${color}15`, borderColor: `${color}30` }}
               >
-                <Text className="text-xs font-medium" style={{ color }}>
-                  {item.subcategory}
+                <Text className="text-[11px] font-semibold" style={{ color }}>
+                  {circChip}
                 </Text>
               </View>
-            ) : null}
-            <SourceBadge source={item.source} size="xs" />
-          </View>
+            </View>
+          ) : null}
+          <Text className="text-sm font-semibold text-foreground leading-5" numberOfLines={2}>
+            {highlight
+              ? <HighlightText text={displayTitle} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20 }} numberOfLines={2} typoTolerant={typoTolerant} />
+              : displayTitle
+            }
+          </Text>
+            <View className="flex-row items-center gap-1.5 mt-1.5 flex-wrap">
+              {item.subcategory ? (
+                <View
+                  className="rounded-full px-2 py-0.5"
+                  style={{ backgroundColor: `${color}15` }}
+                >
+                  <Text className="text-xs font-medium" style={{ color }}>
+                    {item.subcategory}
+                  </Text>
+                </View>
+              ) : null}
+              {/* Crime Type Chip for SOP */}
+              {item.crime_type ? (
+                <View
+                  className="rounded-full px-2 py-0.5 border"
+                  style={{ backgroundColor: `${color}10`, borderColor: `${color}35` }}
+                >
+                  <Text className="text-xs font-semibold" style={{ color }}>
+                    {item.crime_type}
+                  </Text>
+                </View>
+              ) : null}
+              {/* N चरण Badge for SOP */}
+              {(() => {
+                const stepCount = getSopStepCount(item.id);
+                if (stepCount > 0 && (item.content_type === 'sop' || Boolean(item.crime_type))) {
+                  return (
+                    <View
+                      className="rounded-full px-2 py-0.5 bg-secondary border border-border"
+                    >
+                      <Text className="text-xs font-medium text-foreground">
+                        {stepCount} चरण
+                      </Text>
+                    </View>
+                  );
+                }
+                return null;
+              })()}
+              <SourceBadge source={derivedStatus} size="xs" />
+            </View>
         </View>
         <View className="flex-row gap-1 mt-0.5">
-          {isSystem ? (
-            <Pressable
-              onPress={onDuplicateAsUser}
-              className="flex-row items-center gap-1 px-2 py-1 rounded-lg active:opacity-60"
-              style={{ backgroundColor: `${C.primary}15` }}
-              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-            >
-              <Copy size={11} color={C.primary} />
-              <Text className="text-[10px] font-semibold" style={{ color: C.primary }}>{t('knowledge.list.duplicateEdit')}</Text>
-            </Pressable>
-          ) : (
+          {!isSystem ? (
             <>
               <Pressable
                 onPress={onEdit}
@@ -123,15 +164,30 @@ function RecordCard({
                 <Trash2 size={13} color={C.destructive} />
               </Pressable>
             </>
-          )}
+          ) : null}
         </View>
       </View>
 
       {/* Description */}
       {item.description ? (
         highlight
-          ? <HighlightText text={stripHtmlTags(item.description)} query={query} style={{ fontSize: 12, lineHeight: 16, color: 'inherit' }} numberOfLines={2} typoTolerant={typoTolerant} />
-          : <Text style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2}>{stripHtmlTags(item.description)}</Text>
+          ? <HighlightText text={getEntryPreviewText(stripHtmlTags(item.description))} query={query} style={{ fontSize: 12, lineHeight: 16, color: 'inherit' }} numberOfLines={2} typoTolerant={typoTolerant} />
+          : <Text style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2}>{getEntryPreviewText(stripHtmlTags(item.description))}</Text>
+      ) : null}
+
+      {/* मेरा नोट Card Indicator */}
+      {hasUserNote ? (
+        <View
+          className="rounded-xl px-3 py-2 border border-border/80 gap-0.5"
+          style={{ backgroundColor: `${C.primary}08` }}
+        >
+          <View className="flex-row items-center gap-1">
+            <Text className="text-[11px] font-semibold text-foreground">📝 मेरा नोट</Text>
+          </View>
+          <Text className="text-[12px] text-muted-foreground leading-4" numberOfLines={1}>
+            {userNote!.split('\n')[0]}
+          </Text>
+        </View>
       ) : null}
 
       {/* Tags */}
@@ -162,10 +218,17 @@ export default function KnowledgeListScreen() {
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const { settings } = useSettingsStore();
-  const { category } = useLocalSearchParams<{ category: string }>();
-  const cat = KNOWLEDGE_CATEGORY_MAP[category ?? ''];
+  const { category: rawCategoryParam } = useLocalSearchParams<{ category: string }>();
+  const category = getCanonicalCategory(rawCategoryParam);
+  const cat = KNOWLEDGE_CATEGORY_MAP[category] ?? KNOWLEDGE_CATEGORY_MAP[rawCategoryParam ?? ''];
   const color = cat?.color ?? '#0F766E';
-  const subcategories = cat?.subcategories ?? [];
+  const isSopCategory = category === 'SOP';
+  const SOP_SUBCATEGORIES = [
+    '22 मानक प्रक्रियाएँ — विवेचना',
+    'UP पुलिस विवेचना हस्त-पुस्तिका (DGP O.P. Singh)',
+    'FSL/तकनीकी सेवाएँ — Crime Scene SOP',
+  ];
+  const subcategories = isSopCategory ? SOP_SUBCATEGORIES : (cat?.subcategories ?? []);
 
   const [allEntries, setAllEntries] = useState<KnowledgeEntry[]>([]);
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
@@ -192,51 +255,129 @@ export default function KnowledgeListScreen() {
   // mutating actions (delete, duplicate) so the next focus does reload.
   const hasLoadedRef = useRef(false);
   const needsRefreshRef = useRef(false);
+  const loadedCategoryRef = useRef<string | null>(null);
 
-  const applySourceFilter = (data: KnowledgeEntry[], sf: SourceFilter) => {
-    if (sf === 'System') return data.filter((e) => e.source === 'system');
-    if (sf === 'User') return data.filter((e) => e.source !== 'system');
+  const [notesMap, setNotesMap] = useState<Map<string, string>>(new Map());
+  const notesMapRef = useRef(notesMap);
+  useEffect(() => { notesMapRef.current = notesMap; }, [notesMap]);
+
+  const applySourceFilter = (data: KnowledgeEntry[], sf: SourceFilter, nMap: Map<string, string>) => {
+    if (sf === 'System') return data.filter((e) => getEntryStatus(e, Boolean(nMap.get(e.id)?.trim())) === 'system');
+    if (sf === 'User') return data.filter((e) => getEntryStatus(e, Boolean(nMap.get(e.id)?.trim())) === 'user');
     return data;
   };
 
   // Stable loadData: reads current values from refs, no volatile deps.
   const loadData = useCallback(
     async (q?: string, sub?: string, sf?: SourceFilter, showSpinner = true) => {
-      if (!category) return;
+      const targetCategory = category || getCanonicalCategory(rawCategoryParam);
+      if (!targetCategory) return;
       const resolvedQ = q ?? queryRef.current;
       const resolvedSub = sub ?? activeSubcatRef.current;
       const resolvedSf = sf ?? sourceFilterRef.current;
       if (showSpinner) setLoading(true);
       try {
-        const res = await searchKnowledge(
-          category,
-          resolvedQ,
-          resolvedSub === 'All' ? undefined : resolvedSub,
-          undefined,
-          settings.typoTolerance ? { typoTolerance: true } : undefined,
-        );
+        const [res, loadedNotes] = await Promise.all([
+          searchKnowledge(
+            targetCategory,
+            resolvedQ,
+            resolvedSub === 'All' ? undefined : resolvedSub,
+            undefined,
+            settings.typoTolerance ? { typoTolerance: true } : undefined,
+          ),
+          getAllKnowledgeNotesMap(),
+        ]);
+        setNotesMap(loadedNotes);
+
+        if (targetCategory === 'Circular') {
+          res.sort((a, b) => {
+            const dateA = a.last_updated || '';
+            const dateB = b.last_updated || '';
+            if (dateA && dateB) return dateB.localeCompare(dateA);
+            return (b.updated_at || 0) - (a.updated_at || 0);
+          });
+        }
         setAllEntries(res);
-        setEntries(applySourceFilter(res, resolvedSf));
+        setEntries(applySourceFilter(res, resolvedSf, loadedNotes));
+
+        // Requirement 5: tiny dev diagnostic log line (logger.debug only)
+        // printing per category: count source value vs list result length
+        try {
+          const analytics = await getKnowledgeAnalytics();
+          const expectedCount = analytics[targetCategory] ?? analytics[rawCategoryParam ?? ''] ?? 0;
+          logger.debug(
+            `[KnowledgeDiagnostic] category="${targetCategory}" (raw="${rawCategoryParam}") | badge/analytics count=${expectedCount} | list length=${res.length}`
+          );
+        } catch {
+          // ignore diagnostic error
+        }
       } catch (e) {
         logger.warn('[KnowledgeList] load error:', e);
       } finally {
         setLoading(false);
       }
     },
-    [category, settings.typoTolerance]
+    [category, rawCategoryParam, settings.typoTolerance]
   );
 
-  // Only reload on the very first focus or after a mutation — never on plain
-  // back-navigation. This preserves the FlatList scroll offset.
   useFocusEffect(
     useCallback(() => {
-      if (!hasLoadedRef.current || needsRefreshRef.current) {
+      let isMounted = true;
+      const targetCategory = category || getCanonicalCategory(rawCategoryParam);
+      if (
+        targetCategory &&
+        (!hasLoadedRef.current || needsRefreshRef.current || loadedCategoryRef.current !== targetCategory)
+      ) {
         hasLoadedRef.current = true;
         needsRefreshRef.current = false;
-        loadData();
+        loadedCategoryRef.current = targetCategory;
+        (async () => {
+          await Promise.race([
+            seedReady,
+            new Promise((resolve) => setTimeout(resolve, 800)),
+          ]);
+          if (isMounted) loadData();
+        })();
+      } else if (targetCategory && hasLoadedRef.current) {
+        // Refresh notes map on return so any edited note updates status and card indicator immediately
+        (async () => {
+          try {
+            const freshNotes = await getAllKnowledgeNotesMap();
+            if (isMounted) {
+              setNotesMap(freshNotes);
+              setEntries(applySourceFilter(allEntriesRef.current, sourceFilterRef.current, freshNotes));
+            }
+          } catch {
+            // ignore
+          }
+        })();
       }
-    }, [loadData])
+
+      const unsubscribe = onSeedComplete(() => {
+        if (!isMounted) return;
+        needsRefreshRef.current = true;
+        loadData();
+      });
+
+      return () => {
+        isMounted = false;
+        unsubscribe();
+      };
+    }, [category, rawCategoryParam, loadData])
   );
+
+  const allEntriesRef = useRef(allEntries);
+  useEffect(() => { allEntriesRef.current = allEntries; }, [allEntries]);
+
+  useEffect(() => {
+    const targetCategory = category || getCanonicalCategory(rawCategoryParam);
+    if (targetCategory && loadedCategoryRef.current !== targetCategory) {
+      hasLoadedRef.current = true;
+      needsRefreshRef.current = false;
+      loadedCategoryRef.current = targetCategory;
+      loadData();
+    }
+  }, [category, rawCategoryParam, loadData]);
 
   const handleSearch = (text: string) => {
     setQuery(text);
@@ -252,19 +393,15 @@ export default function KnowledgeListScreen() {
 
   const handleSubcat = (sub: string) => {
     setActiveSubcat(sub);
-    setShowFilter(false);
+    if (!isSopCategory) {
+      setShowFilter(false);
+    }
     loadData(undefined, sub);
   };
 
   const handleSourceFilter = (sf: SourceFilter) => {
     setSourceFilter(sf);
-    setEntries(applySourceFilter(allEntries, sf));
-  };
-
-  const handleDuplicateAsUser = async (item: KnowledgeEntry) => {
-    await duplicateKnowledgeAsUser(item.id);
-    needsRefreshRef.current = true;
-    loadData();
+    setEntries(applySourceFilter(allEntries, sf, notesMapRef.current));
   };
 
   const handleDeleteConfirm = async () => {
@@ -280,6 +417,7 @@ export default function KnowledgeListScreen() {
     <View className="flex-1 bg-background">
       <AppHeader
         title={cat ? getCategoryLabel(cat.id, t) : category ?? t('knowledge.title')}
+        subtitle={__DEV__ ? `build: ${KNOWLEDGE_DIAG_BUILD}` : undefined}
         showBack
         actions={
           <HeaderIconBtn icon={Plus} onPress={() => router.push(`/(app)/knowledge/add-knowledge?category=${encodeURIComponent(category ?? '')}` as never)} label={t('knowledge.list.addArticle')} color={color} />
@@ -315,24 +453,48 @@ export default function KnowledgeListScreen() {
           </Pressable>
         </View>
 
-        {/* Subcategory chips */}
-        {showFilter && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
-            {['All', ...subcategories].map((sub) => (
-              <Pressable
-                key={sub}
-                onPress={() => handleSubcat(sub)}
-                className="mx-1 rounded-full px-3 py-1.5 active:opacity-70"
-                style={{ backgroundColor: activeSubcat === sub ? color : C.muted }}
-              >
-                <Text
-                  className="text-xs font-medium"
-                  style={{ color: activeSubcat === sub ? '#fff' : C.foreground }}
+        {/* Subcategory chips — always visible for SOP or when showFilter is toggled */}
+        {(isSopCategory || showFilter) && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1 py-0.5">
+            {['All', ...subcategories].map((sub) => {
+              const count = sub === 'All' ? allEntries.length : allEntries.filter((e) => e.subcategory === sub).length;
+              const isSelected = activeSubcat === sub;
+              const displayLabel = sub === 'All' ? (isSopCategory ? 'सभी' : t('knowledge.list.filterAll')) : sub;
+
+              return (
+                <Pressable
+                  key={sub}
+                  onPress={() => handleSubcat(sub)}
+                  className="mx-1 rounded-full px-3 py-1.5 flex-row items-center gap-1.5 active:opacity-70"
+                  style={{
+                    backgroundColor: isSelected ? color : `${color}15`,
+                    borderCurve: 'continuous',
+                  }}
                 >
-                  {sub === 'All' ? t('knowledge.list.filterAll') : sub}
-                </Text>
-              </Pressable>
-            ))}
+                  <Text
+                    className="text-xs font-semibold"
+                    style={{ color: isSelected ? '#fff' : color }}
+                  >
+                    {displayLabel}
+                  </Text>
+                  {isSopCategory && (
+                    <View
+                      className="rounded-full px-1.5 py-0.2"
+                      style={{
+                        backgroundColor: isSelected ? 'rgba(255,255,255,0.25)' : `${color}25`,
+                      }}
+                    >
+                      <Text
+                        className="text-[10px] font-bold"
+                        style={{ color: isSelected ? '#fff' : color }}
+                      >
+                        {count}
+                      </Text>
+                    </View>
+                  )}
+                </Pressable>
+              );
+            })}
           </ScrollView>
         )}
 
@@ -378,6 +540,7 @@ export default function KnowledgeListScreen() {
           renderItem={({ item }) => (
             <RecordCard
               item={item}
+              userNote={notesMap.get(item.id)}
               color={color}
               query={query}
               highlight={settings.highlightMatches}
@@ -389,7 +552,6 @@ export default function KnowledgeListScreen() {
                 )
               }
               onDelete={() => setDeleteTarget(item)}
-              onDuplicateAsUser={() => handleDuplicateAsUser(item)}
             />
           )}
           ListEmptyComponent={

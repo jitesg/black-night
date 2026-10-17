@@ -453,7 +453,7 @@ export default function AddChecklistScreen() {
       />
 
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
         <ScrollView

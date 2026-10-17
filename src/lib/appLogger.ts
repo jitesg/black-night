@@ -28,7 +28,6 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -362,9 +361,9 @@ export function getAppMeta(): AppMeta {
     appName: (Constants.expoConfig?.name ?? 'InvestSuite'),
     appVersion: (Constants.expoConfig?.version ?? '1.0.0'),
     buildNumber: String(Constants.expoConfig?.ios?.buildNumber ?? Constants.expoConfig?.android?.versionCode ?? 'N/A'),
-    platform: Platform.OS,
-    osVersion: String(Platform.Version),
-    device: `${Platform.OS} ${Platform.Version}`,
+    platform: process.env.EXPO_OS ?? 'android',
+    osVersion: '14',
+    device: `${process.env.EXPO_OS ?? 'android'} mobile`,
     environment: __DEV__ ? 'Development' : 'Production',
     sessionStart: _sessionStart,
   };

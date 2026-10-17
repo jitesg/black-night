@@ -30,7 +30,9 @@ import {
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { renderMarkdown } from '@/lib/markdownRenderer';
+import { useTranslation } from 'react-i18next';
 
 interface GeneratedReportViewProps {
   /** The generated report content (plain text or lightly formatted) */
@@ -70,6 +72,7 @@ export function GeneratedReportView({
   onSave,
   sharePrefix,
 }: GeneratedReportViewProps) {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const successColor = colorScheme === 'dark' ? '#34D399' : '#059669';
@@ -182,7 +185,7 @@ export function GeneratedReportView({
             style={{ borderCurve: 'continuous' }}
           >
             <X size={13} color={C.mutedForeground} />
-            <Text className="text-xs font-medium text-muted-foreground">Cancel</Text>
+            <Text className="text-xs font-medium text-muted-foreground">{t('common.cancel')}</Text>
           </Pressable>
 
           <View className="flex-1" />
@@ -195,7 +198,7 @@ export function GeneratedReportView({
             style={{ borderCurve: 'continuous' }}
           >
             <Share2 size={13} color={C.foreground} />
-            <Text className="text-xs font-medium text-foreground">Share</Text>
+            <Text className="text-xs font-medium text-foreground">{t('common.share')}</Text>
           </Pressable>
 
           {/* Save */}
@@ -209,7 +212,7 @@ export function GeneratedReportView({
               ? <ActivityIndicator size={13} color={C.primaryForeground} />
               : <Save size={13} color={C.primaryForeground} />}
             <Text style={{ color: C.primaryForeground }} className="text-xs font-semibold">
-              {saving ? 'Saving…' : 'Save'}
+              {saving ? t('common.saving') : t('common.save')}
             </Text>
           </Pressable>
         </View>
@@ -219,10 +222,11 @@ export function GeneratedReportView({
           value={draft}
           onChangeText={setDraft}
           title={title}
-          placeholder="Edit report content…"
+          placeholder={t('editor.editReportPlaceholder')}
           minHeight={300}
-          accessibilityLabel="Generated report editor"
+          accessibilityLabel={t('editor.reportEditorAccessibility')}
         />
+        <FardCheckButton text={draft} title={title} className="mt-2" />
       </View>
     );
   }
@@ -241,7 +245,7 @@ export function GeneratedReportView({
             ? <CheckCircle size={13} color={successColor} />
             : <Copy size={13} color={C.foreground} />}
           <Text className="text-xs font-medium" style={{ color: copied ? successColor : C.foreground }}>
-            {copied ? 'Copied!' : 'Copy'}
+            {copied ? t('common.copied') : t('common.copy')}
           </Text>
         </Pressable>
 
@@ -251,7 +255,7 @@ export function GeneratedReportView({
           style={{ borderCurve: 'continuous' }}
         >
           <Share2 size={13} color={C.foreground} />
-          <Text className="text-xs font-medium text-foreground">Share</Text>
+          <Text className="text-xs font-medium text-foreground">{t('common.share')}</Text>
         </Pressable>
 
         {/* PDF Export — always shown; uses fixedHtml when available */}
@@ -265,7 +269,7 @@ export function GeneratedReportView({
             ? <ActivityIndicator size={13} color={C.foreground} />
             : <FileDown size={13} color={C.foreground} />}
           <Text className="text-xs font-medium text-foreground">
-            {exporting ? 'Exporting…' : 'Export PDF'}
+            {exporting ? t('editor.exporting') : t('common.exportPdf')}
           </Text>
         </Pressable>
 
@@ -276,7 +280,7 @@ export function GeneratedReportView({
             style={{ borderCurve: 'continuous' }}
           >
             <Edit3 size={13} color={C.foreground} />
-            <Text className="text-xs font-medium text-foreground">Edit</Text>
+            <Text className="text-xs font-medium text-foreground">{t('common.edit')}</Text>
           </Pressable>
         ) : null}
       </View>

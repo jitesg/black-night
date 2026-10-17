@@ -13,6 +13,7 @@
  * (Mirrors the GD module gd/select-format.tsx pattern exactly.)
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
   ActivityIndicator, FlatList, Pressable, ScrollView,
@@ -35,6 +36,7 @@ const NK_FORMAT_TYPE = 'BNSS Karyavahi' as const;
 
 // ─── Format Selection Screen ───────────────────────────────────────────────
 export default function NkSelectFormatScreen() {
+  const { t } = useTranslation();
   // Accept the proceeding type passed from add-proceeding to pre-populate search
   const { type: initialTypeQuery } = useLocalSearchParams<{ type?: string }>();
 
@@ -90,16 +92,20 @@ export default function NkSelectFormatScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title="Select Format" subtitle="Nirodhatmak" showBack />
+      <AppHeader
+        title={t('formatPicker.titleNirodhatmak')}
+        subtitle={t('nirodhatmak.subtitle', 'निरोधात्मक')}
+        showBack
+      />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
         {/* Search */}
         <SearchBar
           value={query}
           onChangeText={handleSearch}
-          placeholder="Search BNSS Karyavahi formats…"
+          placeholder={t('formatPicker.searchPlaceholderNirodhatmak')}
           variant="light"
           returnKeyType="search"
-          accessibilityLabel="Search nirodhatmak formats"
+          accessibilityLabel={t('formatPicker.searchPlaceholderNirodhatmak')}
         />
       </View>
 
@@ -135,13 +141,13 @@ export default function NkSelectFormatScreen() {
               </View>
               <Text className="text-base font-semibold text-foreground text-center">
                 {query.trim()
-                  ? 'No formats found'
-                  : 'No BNSS Karyavahi formats available'}
+                  ? t('formatPicker.noFormatsFound')
+                  : t('formatPicker.noFormatsAvailableNirodhatmak')}
               </Text>
               <Text className="text-sm text-muted-foreground text-center">
                 {query.trim()
-                  ? 'Try a different search term.'
-                  : 'Create a format with type "BNSS Karyavahi" in the Predefine Format module first.'}
+                  ? t('formatPicker.emptySearchHint')
+                  : t('formatPicker.createFormatHintNirodhatmak')}
               </Text>
             </View>
           }

@@ -5,7 +5,7 @@
 import '@/lib/debugLogStore';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, type AppStateStatus, View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { PortalHost } from '@rn-primitives/portal';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -16,14 +16,23 @@ import { useFonts } from 'expo-font';
 import { WorkspaceProvider } from '@/context/WorkspaceContext';
 import { I18nProvider } from '@/components/I18nProvider';
 import { SettingsStoreProvider, useSettingsStore } from '@/hooks/useSettingsStore';
+import { AppLockProvider, useAppLock } from '@/context/AppLockContext';
 import { getDatabase } from '@/lib/db/database';
-import { seedSystemContent, restoreDevContent } from '@/lib/db/seedManager';
-import { migrateCompletedToExecutions } from '@/lib/db/firKaryvahiRepo';
+import { seedSystemContent, restoreDevContent, getPerSeedFileStatus, seedReady } from '@/lib/db/seedManager';
+import { runKnowledgeDiagnostics } from '@/lib/diagnostics/knowledgeDiagnostics';
+import * as knowledgeRepo from '@/lib/db/knowledgeRepo';
+import { lookupCirculars, isCircularLookupQuery } from '@/ai/circularLookup';
+import { lookupSop, isSopLookupQuery } from '@/ai/sopLookup';
+import { getAll as getAllSops, getById as getSopById, search as searchSops, getSopStepCount } from '@/ai/sopIndex';
+import { migrateCompletedToExecutions, migrateDefaultKaryvahiHindiNames } from '@/lib/db/firKaryvahiRepo';
 import { seedDefaultPhrasesIfEmpty } from '@/lib/db/phraseLibraryRepo';
 import { AppLogger } from '@/lib/appLogger';
 import { clearDevSession } from '@/lib/devOptionsAuth';
 import { clearSession } from '@/lib/sysFormatAuth';
+import { requestReminderPermissions, setupReminderCategories, registerSnoozeHandler } from '@/lib/reminderNotifications';
+import { syncAppNotifications } from '@/lib/appNotificationSync';
 import { AIProviderManager } from '@/ai/level5/AIProviderManager';
+import { LearningEngine } from '@/ai/level5/LearningEngine';
 import { NAV_THEME } from '@/lib/theme';
 import "../global.css";
 
@@ -81,6 +90,10 @@ const MIGRATIONS: Array<{ name: string; run: () => Promise<unknown> }> = [
     name: 'v290_phrase_library_seed',
     run:  seedDefaultPhrasesIfEmpty,
   },
+  {
+    name: 'v340_default_karyvahi_hindi_names',
+    run:  migrateDefaultKaryvahiHindiNames,
+  },
 ];
 
 async function runOneTimeMigrations(): Promise<void> {
@@ -128,6 +141,58 @@ function LoadingSpinner({
   );
 }
 
+function AppNavigatorContent({
+  isBackground, navTheme, isDark, hideSensitive,
+}: {
+  isBackground: boolean;
+  navTheme: typeof NAV_THEME.light;
+  isDark: boolean;
+  hideSensitive: boolean;
+}) {
+  const { locked } = useAppLock();
+  const router = useRouter();
+  const segments = useSegments() as readonly string[];
+  const isAppLockScreen = segments.includes('app-lock');
+
+  useEffect(() => {
+    if (locked) {
+      router.replace('/(app)/app-lock/pin-entry');
+    }
+  }, [locked, router]);
+
+  return (
+    <SafeAreaProvider style={{ flex: 1 }}>
+      <StatusBar
+        style={isDark ? 'light' : 'dark'}
+        backgroundColor={navTheme.colors.background}
+        translucent={false}
+      />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <WorkspaceProvider>
+          {locked && !isAppLockScreen ? (
+            <LoadingSpinner navTheme={navTheme} isDark={isDark} />
+          ) : (
+            <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: navTheme.colors.background } }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="(app)" />
+            </Stack>
+          )}
+          <PortalHost />
+          {/* App-switcher blur shield — covers the entire screen when the app
+              is backgrounded so the OS screenshot does not capture FIR/case data. */}
+          {isBackground && hideSensitive && (
+            <View style={StyleSheet.absoluteFillObject} className="bg-background items-center justify-center">
+              <View className="w-16 h-16 rounded-2xl items-center justify-center" style={{ backgroundColor: `${navTheme.colors.primary}15` }}>
+                <View className="w-8 h-8 rounded-lg bg-muted" />
+              </View>
+            </View>
+          )}
+        </WorkspaceProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
+  );
+}
+
 // ── AppNavigator — must sit inside SettingsStoreProvider ──────────────────────
 // Reads themeReady AND dbReady before mounting screens. Both are required:
 //   • themeReady — colorScheme.set() has been called; first frame is correct theme.
@@ -142,38 +207,26 @@ function AppNavigator({
   navTheme: typeof NAV_THEME.light;
   isDark: boolean;
 }) {
-  const { themeReady } = useSettingsStore();
+  const { themeReady, settings } = useSettingsStore();
+
+  useEffect(() => {
+    const unregister = registerSnoozeHandler(settings.reminderSnooze);
+    return unregister;
+  }, [settings.reminderSnooze]);
 
   if (!themeReady || !dbReady) {
     return <LoadingSpinner navTheme={navTheme} isDark={isDark} />;
   }
 
   return (
-    <SafeAreaProvider style={{ flex: 1 }}>
-      <StatusBar
-        style={isDark ? 'light' : 'dark'}
-        backgroundColor={navTheme.colors.background}
-        translucent={false}
+    <AppLockProvider>
+      <AppNavigatorContent
+        isBackground={isBackground}
+        navTheme={navTheme}
+        isDark={isDark}
+        hideSensitive={settings.hideSensitive}
       />
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <WorkspaceProvider>
-          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: navTheme.colors.background } }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="(app)" />
-          </Stack>
-          <PortalHost />
-          {/* App-switcher blur shield — covers the entire screen when the app
-              is backgrounded so the OS screenshot does not capture FIR/case data. */}
-          {isBackground && (
-            <View style={StyleSheet.absoluteFillObject} className="bg-background items-center justify-center">
-              <View className="w-16 h-16 rounded-2xl items-center justify-center" style={{ backgroundColor: `${navTheme.colors.primary}15` }}>
-                <View className="w-8 h-8 rounded-lg bg-muted" />
-              </View>
-            </View>
-          )}
-        </WorkspaceProvider>
-      </GestureHandlerRootView>
-    </SafeAreaProvider>
+    </AppLockProvider>
   );
 }
 
@@ -229,6 +282,25 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
+    requestReminderPermissions();
+    setupReminderCategories();
+  }, []);
+
+  useEffect(() => {
+    LearningEngine.loadPatterns();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await syncAppNotifications();
+      } catch (e) {
+        if (__DEV__) console.warn('[AppNotificationSync] Startup sync failed:', e);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
     const sub = AppState.addEventListener('change', (next: AppStateStatus) => {
       const prev = appStateRef.current;
       appStateRef.current = next;
@@ -249,6 +321,13 @@ export default function RootLayout() {
           clearDevSession();   // Dev Options PIN session
           clearSession();      // System Format Manager PIN session
         }
+        (async () => {
+          try {
+            await syncAppNotifications();
+          } catch (e) {
+            if (__DEV__) console.warn('[AppNotificationSync] Active transition sync failed:', e);
+          }
+        })();
       }
     });
     return () => sub.remove();
@@ -267,6 +346,15 @@ export default function RootLayout() {
     (async () => {
       try {
         const t0 = Date.now();
+        if (typeof window !== 'undefined') {
+          (window as any).__runKnowledgeDiagnostics = runKnowledgeDiagnostics;
+          (window as any).__knowledgeRepo = knowledgeRepo;
+          (window as any).__seedManager = { getPerSeedFileStatus, seedReady, seedSystemContent };
+          (window as any).__circularLookup = { lookupCirculars, isCircularLookupQuery };
+          (window as any).__sopLookup = { lookupSop, isSopLookupQuery };
+          (window as any).__sopIndex = { getAll: getAllSops, getById: getSopById, search: searchSops, getSopStepCount };
+          (window as any).__getDatabase = getDatabase;
+        }
         AppLogger.sync('App Start — DB init', { phase: 'start' });
 
         await getDatabase(); // schema + migrations

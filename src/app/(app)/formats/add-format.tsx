@@ -6,6 +6,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import {
   Save, Plus, Trash2, ChevronDown, ChevronUp,
@@ -519,7 +520,7 @@ export default function AddFormatScreen() {
         }
       />
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
 
@@ -608,6 +609,7 @@ export default function AddFormatScreen() {
               placeholder={t('format.addFormat.vivranPlaceholder')}
               accessibilityLabel={t('format.addFormat.vivranAccessibility')}
             />
+            <FardCheckButton text={vivran} title={title} className="mt-1" />
             <Text className="text-xs text-muted-foreground">
               {t('format.addFormat.vivranHint')}
             </Text>

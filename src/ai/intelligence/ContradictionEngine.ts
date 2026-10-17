@@ -7,6 +7,7 @@
 
 import type { InvestigationContext } from '../InvestigationContext';
 import type { ContradictionReport, Contradiction, ContradictionType } from './IntelligenceTypes';
+import { evaluateFirBasis } from '@/lib/firBasis';
 
 let cid = 0;
 function makeId() { return `CONTR-${String(++cid).padStart(3, '0')}`; }
@@ -184,6 +185,53 @@ export class ContradictionEngine {
         modulesInvolved: ['PrarthnaPatra'],
         recommendation: 'Review and resolve overdue Prarthna Patra immediately.',
       });
+    }
+
+    // ── FIR Basis Contradictions (FB3, FB4, FB5 and FB1 per Case Diary) ────────
+    if (ctx.fir) {
+      // General checks for FB3 (nakal chick), FB4 (nakal rapat), FB5 (24h delay reason)
+      const baseHints = evaluateFirBasis({
+        fir: ctx.fir,
+        hasDiaries: ctx.caseDiaries.length > 0,
+      });
+
+      // FB1 per case diary preparation date
+      const fb1Hints: typeof baseHints = [];
+      const seenDates = new Set<string>();
+      for (const diary of ctx.caseDiaries) {
+        if (diary.preparation_date && !seenDates.has(diary.preparation_date)) {
+          seenDates.add(diary.preparation_date);
+          const diaryHints = evaluateFirBasis({
+            fir: ctx.fir,
+            diaryDate: diary.preparation_date,
+          });
+          for (const h of diaryHints) {
+            if (h.id === 'FB1') {
+              fb1Hints.push({
+                ...h,
+                detailHi: `[केस डायरी: ${diary.preparation_date}] ${h.detailHi}`,
+                detailEn: `[Case Diary: ${diary.preparation_date}] ${h.detailEn}`,
+              });
+            }
+          }
+        }
+      }
+
+      const relevantFbHints = [
+        ...baseHints.filter((h) => h.id === 'FB3' || h.id === 'FB4' || h.id === 'FB5'),
+        ...fb1Hints,
+      ];
+
+      for (const hint of relevantFbHints) {
+        contradictions.push({
+          id: makeId(),
+          type: hint.level === 'warn' ? 'warning' : 'information',
+          title: hint.titleHi,
+          description: `${hint.detailHi}\n${hint.detailEn}`,
+          modulesInvolved: ['FIR', 'CaseDiary'],
+          recommendation: 'FIR आधार से मिलान करें',
+        });
+      }
     }
 
     const criticalCount = contradictions.filter((c) => c.type === 'critical').length;

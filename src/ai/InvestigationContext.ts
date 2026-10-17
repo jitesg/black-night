@@ -20,6 +20,7 @@ import type { NirodhatmakKaryvahi } from '@/lib/db/nirodhatmakRepo';
 import type { KnowledgeEntry } from '@/lib/db/knowledgeRepo';
 import type { WorkspaceSettings } from '@/lib/db/workspaceRepo';
 import type { DashboardData, OverdueItem, ReminderItem } from '@/lib/db/dashboardRepo';
+import type { ChecklistItem } from '@/lib/db/checklistRepo';
 
 // ── Officer / Station Profile ─────────────────────────────────────────────────
 
@@ -151,6 +152,9 @@ export interface InvestigationContext {
 
   // ── Knowledge
   relevantKnowledge: KnowledgeEntry[];
+
+  // ── Playbook
+  playbookSteps: ChecklistItem[];
 
   // ── Analytics
   analytics?: DashboardData;

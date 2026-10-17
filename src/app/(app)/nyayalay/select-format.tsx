@@ -20,6 +20,7 @@ import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import { T } from '@/lib/typography';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator, FlatList, Pressable,
   ScrollView, Text, View,
@@ -49,11 +50,11 @@ const ANYA_TYPES: FormatType[] = ['Nyayalay', 'Prarthna Patra', 'Any'];
 // ─── Chip filter (used in tag / NBW mode only) ─────────────────────────────
 type ChipFilter = 'All' | 'Favorites' | 'Recently Used' | 'Created By Me';
 
-const CHIP_FILTERS: { label: string; value: ChipFilter }[] = [
-  { label: 'All',            value: 'All' },
-  { label: 'Favorites',      value: 'Favorites' },
-  { label: 'Recently Used',  value: 'Recently Used' },
-  { label: 'Created By Me',  value: 'Created By Me' },
+const CHIP_FILTERS: { labelKey: string; value: ChipFilter }[] = [
+  { labelKey: 'formatPicker.chipAll',          value: 'All' },
+  { labelKey: 'formatPicker.chipFavorites',    value: 'Favorites' },
+  { labelKey: 'formatPicker.chipRecentlyUsed', value: 'Recently Used' },
+  { labelKey: 'formatPicker.chipCreatedByMe',  value: 'Created By Me' },
 ];
 
 function applyChipFilter(list: FormatWithMeta[], chip: ChipFilter): FormatWithMeta[] {
@@ -73,6 +74,7 @@ function applyChipFilter(list: FormatWithMeta[], chip: ChipFilter): FormatWithMe
 
 // ─── Screen ────────────────────────────────────────────────────────────────
 export default function NyayalaySelectFormatScreen() {
+  const { t } = useTranslation();
   const { tag, docId, mode, formatType } = useLocalSearchParams<{
     tag?: string;
     docId: string;
@@ -181,10 +183,10 @@ export default function NyayalaySelectFormatScreen() {
 
   // ── Derived ───────────────────────────────────────────────────────────
   const title = isFormatType
-    ? `${formatType} Templates`
-    : isAnya  ? 'Anya Templates'
-    : tag     ? `${tag} Templates`
-    : 'Select Template';
+    ? t('formatPicker.titleWithTemplates', { tag: formatType, type: formatType })
+    : isAnya  ? t('formatPicker.titleWithTemplates', { tag: 'Anya', type: 'Anya' })
+    : tag     ? t('formatPicker.titleWithTemplates', { tag, type: tag })
+    : t('formatPicker.selectTemplate');
 
   // In tag mode the displayed list comes from chip-filtered state;
   // in other modes it comes from the shared formats state.
@@ -193,7 +195,7 @@ export default function NyayalaySelectFormatScreen() {
   // ── Render ────────────────────────────────────────────────────────────
   return (
     <View className="flex-1 bg-background">
-      <AppHeader title={title} subtitle="Nyayalay" showBack />
+      <AppHeader title={title} subtitle={t('nyayalay.title')} showBack />
 
       {/* ── Tag-mode toolbar: search + chip filters (mirrors GD) ── */}
       {isTagMode && (
@@ -201,10 +203,10 @@ export default function NyayalaySelectFormatScreen() {
           <SearchBar
             value={query}
             onChangeText={handleSearch}
-            placeholder={`Search ${tag} templates…`}
+            placeholder={t('formatPicker.searchTagPlaceholder', { tag })}
             variant="light"
             returnKeyType="search"
-            accessibilityLabel={`Search ${tag} templates`}
+            accessibilityLabel={t('formatPicker.searchTagAccessibility', { tag })}
           />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
             {CHIP_FILTERS.map((f) => {
@@ -231,7 +233,7 @@ export default function NyayalaySelectFormatScreen() {
                     className="text-xs font-medium"
                     style={{ color: active ? '#fff' : '#374151' }}
                   >
-                    {f.label}
+                    {t(f.labelKey)}
                   </Text>
                 </Pressable>
               );
@@ -246,15 +248,15 @@ export default function NyayalaySelectFormatScreen() {
           <SearchBar
             value={query}
             onChangeText={handleSearch}
-            placeholder="Search templates…"
+            placeholder={t('formatPicker.searchPlaceholder')}
             variant="light"
             returnKeyType="search"
-            accessibilityLabel="Search nyayalay templates"
+            accessibilityLabel={t('formatPicker.searchNyayalayAccessibility')}
           />
           <Text className="text-xs text-muted-foreground mt-2 mb-1">
             {isFormatType
-              ? `Showing: ${formatType}`
-              : 'Showing: Nyayalay · Prarthna Patra · Any'}
+              ? t('formatPicker.showingType', { type: formatType })
+              : t('formatPicker.showingAnya')}
           </Text>
         </View>
       )}
@@ -320,9 +322,11 @@ export default function NyayalaySelectFormatScreen() {
                   <View className="flex-row items-center gap-1">
                     <Clock size={10} color="#9CA3AF" />
                     <Text className="text-xs text-muted-foreground">
-                      {`Used ${new Date(item.last_used_at * 1000).toLocaleDateString('en-IN', {
-                        day: '2-digit', month: 'short', year: 'numeric',
-                      })}`}
+                      {t('formatPicker.usedOn', {
+                        date: new Date(item.last_used_at * 1000).toLocaleDateString('en-IN', {
+                          day: '2-digit', month: 'short', year: 'numeric',
+                        }),
+                      })}
                     </Text>
                   </View>
                 ) : (
@@ -357,19 +361,22 @@ export default function NyayalaySelectFormatScreen() {
               </View>
               <Text className="text-base font-semibold text-foreground text-center">
                 {isTagMode && chip !== 'All'
-                  ? `No ${chip} Nyayalay templates`
-                  : 'No templates found'}
+                  ? t('formatPicker.noTemplatesChipTagged', {
+                      chip: t(CHIP_FILTERS.find((c) => c.value === chip)?.labelKey ?? chip),
+                      tag: tag ?? 'Nyayalay',
+                    })
+                  : t('formatPicker.noTemplatesFound')}
               </Text>
               <Text className="text-sm text-muted-foreground text-center leading-5">
                 {query.trim()
-                  ? 'Try a different search term.'
+                  ? t('formatPicker.hintDifferentQuery')
                   : isTagMode && chip !== 'All'
-                  ? 'Try the "All" filter to see all Nyayalay templates.'
+                  ? t('formatPicker.hintTryAllFilterTagged', { tag: tag ?? 'Nyayalay' })
                   : isFormatType
-                  ? `Create a template with type "${formatType}" in the Predefine Format module.`
+                  ? t('formatPicker.hintCreateTypeFormat', { type: formatType, formatType })
                   : isAnya
-                  ? 'Create templates with type Nyayalay, Prarthna Patra, or Any in the Predefine Format module.'
-                  : 'Create a template with format type = Nyayalay in the Predefine Format module.'}
+                  ? t('formatPicker.hintCreateAnyaFormats')
+                  : t('formatPicker.hintCreateNyayalayFormat')}
               </Text>
             </View>
           }
@@ -381,7 +388,7 @@ export default function NyayalaySelectFormatScreen() {
         <BottomSheet
           visible={!!previewFormat}
           onClose={() => setPreviewFormat(null)}
-          title={previewFormat ? `${previewFormat.title} (Preview)` : 'Preview'}
+          title={previewFormat ? t('formatPicker.previewTitleWithFormat', { title: previewFormat.title }) : t('formatPicker.previewTitle')}
           snapHeight={480}
         >
           <ScrollView

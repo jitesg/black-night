@@ -21,6 +21,7 @@ import {
 } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { useTranslation } from 'react-i18next';
 import {
   type Phrase,
   getAllPhrases,
@@ -42,6 +43,7 @@ export function PhraseLibraryModal({
   onClose,
   onSelect,
 }: PhraseLibraryModalProps) {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const palette = isDark ? THEME.dark : THEME.light;
@@ -188,17 +190,17 @@ export function PhraseLibraryModal({
               </View>
               <View className="flex-1">
                 <Text className="text-base font-bold text-foreground" numberOfLines={1}>
-                  वाक्यांश लाइब्रेरी (Phrase Library)
+                  {t('editor.phrasesTitle')}
                 </Text>
                 <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-                  त्वरित प्रविष्टि के लिए वाक्यांश टैप करें / Tap to insert
+                  {t('editor.phrasesSubtitle')}
                 </Text>
               </View>
             </View>
             <Pressable
               onPress={onClose}
               className="w-8 h-8 rounded-full bg-secondary items-center justify-center active:opacity-60"
-              accessibilityLabel="Close"
+              accessibilityLabel={t('common.close')}
             >
               <X size={16} color={palette.mutedForeground} />
             </Pressable>
@@ -211,7 +213,7 @@ export function PhraseLibraryModal({
               <TextInput
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                placeholder="वाक्यांश खोजें... / Search phrases..."
+                placeholder={t('editor.searchPhrasesPlaceholder')}
                 placeholderTextColor={palette.mutedForeground}
                 className="flex-1 ml-2 text-sm text-foreground py-0"
                 style={[
@@ -248,7 +250,7 @@ export function PhraseLibraryModal({
                       : 'text-muted-foreground'
                   }`}
                 >
-                  सभी ({phrases.length})
+                  {t('editor.allWithCount', { count: phrases.length })}
                 </Text>
               </Pressable>
 
@@ -291,7 +293,7 @@ export function PhraseLibraryModal({
               <View className="p-3 mb-3 bg-destructive/10 border border-destructive/20 rounded-xl flex-row items-center justify-between">
                 <View className="flex-1 mr-3">
                   <Text className="text-xs font-semibold text-destructive">
-                    क्या आप यह वाक्यांश हटाना चाहते हैं?
+                    {t('editor.deletePhraseConfirm')}
                   </Text>
                   <Text className="text-xs text-foreground/80 mt-0.5" numberOfLines={2}>
                     &ldquo;{phraseToDelete.phrase_text}&rdquo;
@@ -302,13 +304,13 @@ export function PhraseLibraryModal({
                     onPress={() => setPhraseToDelete(null)}
                     className="px-2.5 py-1 rounded-lg bg-secondary border border-border"
                   >
-                    <Text className="text-xs font-medium text-foreground">रद्द</Text>
+                    <Text className="text-xs font-medium text-foreground">{t('common.cancel')}</Text>
                   </Pressable>
                   <Pressable
                     onPress={() => handleDeleteConfirm(phraseToDelete.id)}
                     className="px-2.5 py-1 rounded-lg bg-destructive"
                   >
-                    <Text className="text-xs font-semibold text-white">हटाएं</Text>
+                    <Text className="text-xs font-semibold text-white">{t('common.delete')}</Text>
                   </Pressable>
                 </View>
               </View>
@@ -318,15 +320,15 @@ export function PhraseLibraryModal({
             {editingPhrase && (
               <View className="p-3.5 mb-4 bg-primary/5 border border-primary/20 rounded-2xl gap-2.5">
                 <Text className="text-xs font-bold text-primary">
-                  वाक्यांश संपादित करें (Edit Phrase)
+                  {t('editor.editPhraseTitle')}
                 </Text>
 
                 <View>
-                  <Text className="text-[11px] text-muted-foreground mb-1">श्रेणी (Category):</Text>
+                  <Text className="text-[11px] text-muted-foreground mb-1">{t('editor.categoryLabel')}</Text>
                   <TextInput
                     value={editCategory}
                     onChangeText={setEditCategory}
-                    placeholder="श्रेणी नाम / Category"
+                    placeholder={t('editor.categoryPlaceholder')}
                     placeholderTextColor={palette.mutedForeground}
                     className="px-3 py-1.5 text-xs bg-background border border-border rounded-lg text-foreground"
                     style={[
@@ -336,7 +338,7 @@ export function PhraseLibraryModal({
                 </View>
 
                 <View>
-                  <Text className="text-[11px] text-muted-foreground mb-1">वाक्यांश (Phrase):</Text>
+                  <Text className="text-[11px] text-muted-foreground mb-1">{t('editor.phraseLabel')}</Text>
                   <TextInput
                     value={editText}
                     onChangeText={setEditText}
@@ -354,13 +356,13 @@ export function PhraseLibraryModal({
                     onPress={() => setEditingPhrase(null)}
                     className="px-3 py-1.5 rounded-lg bg-secondary border border-border"
                   >
-                    <Text className="text-xs font-medium text-foreground">रद्द करें (Cancel)</Text>
+                    <Text className="text-xs font-medium text-foreground">{t('editor.cancelWithLabel')}</Text>
                   </Pressable>
                   <Pressable
                     onPress={handleSaveEdit}
                     className="px-3.5 py-1.5 rounded-lg bg-primary"
                   >
-                    <Text className="text-xs font-semibold text-primary-foreground">सुरक्षित करें (Save)</Text>
+                    <Text className="text-xs font-semibold text-primary-foreground">{t('editor.saveWithLabel')}</Text>
                   </Pressable>
                 </View>
               </View>
@@ -370,11 +372,11 @@ export function PhraseLibraryModal({
             {groupedPhrases.length === 0 && !loading && (
               <View className="py-8 items-center justify-center">
                 <Text className="text-sm font-medium text-muted-foreground">
-                  कोई वाक्यांश नहीं मिला / No phrases found
+                  {t('editor.noPhrasesFound')}
                 </Text>
                 {searchQuery ? (
                   <Text className="text-xs text-muted-foreground mt-1">
-                    खोज शब्द बदलें या नीचे नया वाक्यांश जोड़ें
+                    {t('editor.searchPhrasesHint')}
                   </Text>
                 ) : null}
               </View>
@@ -389,7 +391,7 @@ export function PhraseLibraryModal({
                     {category}
                   </Text>
                   <Text className="text-[11px] text-muted-foreground">
-                    {items.length} वाक्यांश
+                    {t('editor.phrasesCount', { count: items.length })}
                   </Text>
                 </View>
 
@@ -404,14 +406,14 @@ export function PhraseLibraryModal({
                       <Pressable
                         onPress={() => handleSelectPhrase(p)}
                         className="flex-1 mr-2"
-                        accessibilityLabel={`Insert phrase: ${p.phrase_text}`}
+                        accessibilityLabel={t('editor.insertPhraseAria', { text: p.phrase_text })}
                       >
                         <Text className="text-sm text-foreground leading-5 font-normal">
                           {p.phrase_text}
                         </Text>
                         {p.usage_count > 0 && (
                           <Text className="text-[10px] text-muted-foreground mt-1 font-medium">
-                            प्रयोग: {p.usage_count} बार
+                            {t('editor.usageCount', { count: p.usage_count })}
                           </Text>
                         )}
                       </Pressable>
@@ -425,14 +427,14 @@ export function PhraseLibraryModal({
                             setEditCategory(p.category);
                           }}
                           className="w-7 h-7 rounded-lg bg-secondary/80 items-center justify-center active:opacity-60"
-                          accessibilityLabel="Edit phrase"
+                          accessibilityLabel={t('editor.editPhraseAria')}
                         >
                           <Pencil size={12} color={palette.mutedForeground} />
                         </Pressable>
                         <Pressable
                           onPress={() => setPhraseToDelete(p)}
                           className="w-7 h-7 rounded-lg bg-secondary/80 items-center justify-center active:opacity-60"
-                          accessibilityLabel="Delete phrase"
+                          accessibilityLabel={t('editor.deletePhraseAria')}
                         >
                           <Trash2 size={12} color={palette.destructive} />
                         </Pressable>
@@ -448,12 +450,12 @@ export function PhraseLibraryModal({
               {isAdding ? (
                 <View className="p-3.5 bg-secondary/40 border border-border rounded-2xl gap-2.5">
                   <Text className="text-xs font-bold text-foreground">
-                    नया वाक्यांश जोड़ें (Add Custom Phrase)
+                    {t('editor.addPhraseTitle')}
                   </Text>
 
                   {/* Category Selection / Input */}
                   <View>
-                    <Text className="text-[11px] text-muted-foreground mb-1">श्रेणी चुनें या नई लिखें (Category):</Text>
+                    <Text className="text-[11px] text-muted-foreground mb-1">{t('editor.selectOrTypeCategory')}</Text>
                     <View className="flex-row flex-wrap gap-1.5 mb-2">
                       {categories.map((c) => (
                         <Pressable
@@ -478,7 +480,7 @@ export function PhraseLibraryModal({
                     <TextInput
                       value={newCategory}
                       onChangeText={setNewCategory}
-                      placeholder="या नई श्रेणी लिखें... / Or type new category"
+                      placeholder={t('editor.orTypeNewCategory')}
                       placeholderTextColor={palette.mutedForeground}
                       className="px-3 py-1.5 text-xs bg-background border border-border rounded-lg text-foreground"
                       style={[
@@ -489,11 +491,11 @@ export function PhraseLibraryModal({
 
                   {/* Phrase Text */}
                   <View>
-                    <Text className="text-[11px] text-muted-foreground mb-1">वाक्यांश का विवरण (Phrase Text):</Text>
+                    <Text className="text-[11px] text-muted-foreground mb-1">{t('editor.phraseTextLabel')}</Text>
                     <TextInput
                       value={newText}
                       onChangeText={setNewText}
-                      placeholder="वाक्यांश दर्ज करें... / Enter phrase text"
+                      placeholder={t('editor.enterPhrasePlaceholder')}
                       placeholderTextColor={palette.mutedForeground}
                       multiline
                       textAlignVertical="top"
@@ -514,7 +516,7 @@ export function PhraseLibraryModal({
                       }}
                       className="px-3 py-1.5 rounded-lg bg-secondary border border-border"
                     >
-                      <Text className="text-xs font-medium text-foreground">रद्द करें (Cancel)</Text>
+                      <Text className="text-xs font-medium text-foreground">{t('editor.cancelWithLabel')}</Text>
                     </Pressable>
                     <Pressable
                       onPress={handleSaveNew}
@@ -524,7 +526,7 @@ export function PhraseLibraryModal({
                       }`}
                     >
                       <Text className="text-xs font-semibold text-primary-foreground">
-                        जोड़ें (Add Phrase)
+                        {t('editor.addPhraseWithLabel')}
                       </Text>
                     </Pressable>
                   </View>
@@ -536,7 +538,7 @@ export function PhraseLibraryModal({
                 >
                   <Plus size={15} color={palette.primary} />
                   <Text className="text-xs font-semibold text-primary">
-                    + नया वाक्यांश जोड़ें (+ Add Custom Phrase)
+                    {t('editor.addPhraseBtn')}
                   </Text>
                 </Pressable>
               )}

@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
   ActivityIndicator, BackHandler, FlatList, Pressable, Text, View, useWindowDimensions,
@@ -28,6 +29,7 @@ const STAT_CONFIG = [
 type Analytics = Record<typeof STAT_CONFIG[number]['key'], number>;
 
 function AnalyticsCard({ item, value, width }: { item: (typeof STAT_CONFIG)[number]; value: number; width: number }) {
+  const { t } = useTranslation();
   const Icon = item.icon;
   return (
     <Pressable
@@ -43,7 +45,7 @@ function AnalyticsCard({ item, value, width }: { item: (typeof STAT_CONFIG)[numb
         <Icon size={13} color={item.color} />
       </View>
       <Text className="text-lg font-bold text-foreground">{value}</Text>
-      <Text className="text-[10px] text-muted-foreground text-center leading-3">{item.label}</Text>
+      <Text className="text-[10px] text-muted-foreground text-center leading-3">{t('halka.stats.' + item.key)}</Text>
     </Pressable>
   );
 }
@@ -71,6 +73,7 @@ function GPCard({ gp }: { gp: GramPanchayat }) {
 }
 
 export default function HalkaHomeScreen() {
+  const { t } = useTranslation();
   const { workspace } = useWorkspace();
   const { width: screenWidth } = useWindowDimensions();
   // GRID_HORIZONTAL_PADDING matches px-6 (24px * 2) on the FlatList's contentContainerClassName; update if padding changes
@@ -121,9 +124,9 @@ export default function HalkaHomeScreen() {
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <AppHeader
-        title="My Halka"
-        subtitle="Beat Book"
-        countLabel={workspace.halka ? `${workspace.halka}${workspace.beat ? ` · Beat: ${workspace.beat}` : ''}` : undefined}
+        title={t('halka.title')}
+        subtitle={t('halka.subtitle')}
+        countLabel={workspace.halka ? `${workspace.halka}${workspace.beat ? t('halka.beatBadge', { beat: workspace.beat }) : ''}` : undefined}
         variant="navy"
         onMenuPress={() => setDrawerOpen(true)}
         rightActions={
@@ -141,7 +144,7 @@ export default function HalkaHomeScreen() {
               style={{ backgroundColor: '#2563EB' }}
             >
               <Plus size={15} color="#fff" />
-              <Text className="text-xs font-bold text-white">Add GP</Text>
+              <Text className="text-xs font-bold text-white">{t('halka.btnAddGP')}</Text>
             </Pressable>
           </>
         }
@@ -175,7 +178,9 @@ export default function HalkaHomeScreen() {
               ) : null}
 
               {/* Analytics grid */}
-              <Text className="text-xs font-bold uppercase tracking-widest" style={{ color: '#6B7280' }}>Analytics</Text>
+              <Text className="text-xs font-bold uppercase tracking-widest" style={{ color: '#6B7280' }}>
+                {t('halka.analyticsHeading')}
+              </Text>
               <View className="flex-row flex-wrap gap-3">
                 {STAT_CONFIG.map((item) => (
                   <AnalyticsCard key={item.key} item={item} value={analytics[item.key]} width={cardWidth} />
@@ -184,7 +189,7 @@ export default function HalkaHomeScreen() {
 
               <View className="h-px bg-border my-1" />
               <Text className="text-xs font-bold uppercase tracking-widest" style={{ color: '#6B7280' }}>
-                Gram Panchayats ({gps.length})
+                {t('halka.gpCountHeading', { count: gps.length })}
               </Text>
             </View>
           }
@@ -194,9 +199,9 @@ export default function HalkaHomeScreen() {
               <View className="w-16 h-16 rounded-2xl bg-accent items-center justify-center">
                 <BookOpen size={28} color="#2D52B8" />
               </View>
-              <Text className="text-base font-semibold text-foreground">No Gram Panchayats yet</Text>
+              <Text className="text-base font-semibold text-foreground">{t('halka.emptyTitle')}</Text>
               <Text className="text-sm text-muted-foreground text-center leading-6 px-8">
-                Tap "Add GP" to start building your digital beat book
+                {t('halka.emptySubtitle')}
               </Text>
             </View>
           }

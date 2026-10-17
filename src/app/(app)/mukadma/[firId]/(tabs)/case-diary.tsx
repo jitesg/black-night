@@ -108,7 +108,7 @@ function DiaryCard({
             ))}
             {karyvahiList.filter(e => e.entry_type === 'karyvahi').length > 3 && (
               <Text className="text-xs text-muted-foreground pl-3.5">
-                +{karyvahiList.filter(e => e.entry_type === 'karyvahi').length - 3} {t('fir.caseDiary.moreEntries')}
+                {t('fir.caseDiary.moreEntries', { count: karyvahiList.filter(e => e.entry_type === 'karyvahi').length - 3 })}
               </Text>
             )}
           </View>

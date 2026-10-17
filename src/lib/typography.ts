@@ -111,11 +111,11 @@ export const T = {
     fontWeight: '600',
   } satisfies TextStyle,
 
-  /** 16pt · 400 — Default body text, FlatList item text, form field content. */
+  /** 14pt · 400 — Default body text, FlatList item text, form field content (base size = 14, line-height >= 1.4). */
   body: {
     fontFamily: SYSTEM_FONT,
-    fontSize:   16,
-    lineHeight: 22,
+    fontSize:   14,
+    lineHeight: 20,
     fontWeight: '400',
   } satisfies TextStyle,
 
@@ -238,3 +238,22 @@ export const T = {
   },
 
 } as const;
+
+/**
+ * Standard Typography Scale (Task L20)
+ * screen title 20, group/section title 17, card heading 15, body 14, caption/small 12.
+ * Hindi line-height >= 1.4 for proper matra rendering without clipping.
+ * Touch target minimum 44px.
+ */
+export const TYPOGRAPHY_SCALE = {
+  screenTitle: { fontSize: 20, lineHeight: 26, fontWeight: '700' as const },
+  groupTitle:  { fontSize: 17, lineHeight: 23, fontWeight: '600' as const },
+  cardHeading: { fontSize: 15, lineHeight: 21, fontWeight: '600' as const },
+  cardTitle:   { fontSize: 15, lineHeight: 21, fontWeight: '600' as const },
+  body:        { fontSize: 14, lineHeight: 20, fontWeight: '400' as const },
+  caption:     { fontSize: 12, lineHeight: 17, fontWeight: '400' as const },
+  small:       { fontSize: 12, lineHeight: 17, fontWeight: '400' as const },
+} as const;
+
+export const BASE_BODY_FONT_SIZE = 14;
+export const MIN_TOUCH_TARGET = 44;

@@ -31,7 +31,9 @@ import {
   getCaseDiariesByFIR, type CaseDiary,
 } from '@/lib/db/caseDiaryRepo';
 import { getKaryvahiByFIR, addExecution, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
-import { getFIRById } from '@/lib/db/firRepo';
+import { getFIRById, type FIR } from '@/lib/db/firRepo';
+import { FirBasisHintsView } from '@/components/caseDiary/FirBasisHintsView';
+import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import {
   getFormatKeys, type FormatWithMeta, type FormatKey,
 } from '@/lib/db/predefinedFormatRepo';
@@ -324,6 +326,8 @@ interface DiaryEntryCardProps {
   showFormatList: string | null;
   activeFillPanel: { uid: string; fmt: FormatWithMeta; openedAt: number } | null;
   firId: string | undefined;
+  fir?: Partial<FIR> | null;
+  diaryDate?: string | null;
   workspace: ReturnType<typeof useWorkspace>['workspace'];
   /** Draft values keyed by "entryUid::formatId" — persisted across panel open/close. */
   draftFormats: Record<string, Record<string, string>>;
@@ -346,6 +350,8 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
   showFormatList,
   activeFillPanel,
   firId,
+  fir,
+  diaryDate,
   workspace,
   draftFormats,
   updateEntry,
@@ -585,6 +591,21 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
           minHeight={96}
           accessibilityLabel={entry.kind === 'karyvahi' ? t('fir.addCaseDiaryEntry.vivranAccessibility') : t('fir.addCaseDiaryEntry.narrativeAccessibility')}
         />
+        {/* FIR Basis Non-blocking Hints */}
+        <FirBasisHintsView
+          fir={fir}
+          diaryDate={diaryDate}
+          text={entry.kind === 'karyvahi' ? entry.vivran : entry.narrativeText}
+          karyvahiKey={entry.kind === 'karyvahi' ? entry.karyvahiName : undefined}
+          hasDiaries={true}
+        />
+        <FardCheckButton
+          text={entry.kind === 'karyvahi' ? entry.vivran : entry.narrativeText}
+          title={entry.kind === 'karyvahi' ? entry.karyvahiName : undefined}
+          fir={fir}
+          matchKeywords={true}
+          className="mt-1"
+        />
       </View>
 
       {/* Save / Minimize button */}
@@ -606,6 +627,7 @@ export default function AddCaseDiaryKaryvahiScreen() {
   const { t } = useTranslation();
 
   const [diary, setDiary]                 = useState<CaseDiary | null>(null);
+  const [fir, setFir]                     = useState<FIR | null>(null);
   const [firKaryvahi, setFirKaryvahi]     = useState<FIRKaryvahi[]>([]);
   const [caseDiaryFormats, setCaseDiaryFormats] = useState<FormatWithMeta[]>([]);
   const [narrativeFormats, setNarrativeFormats] = useState<FormatWithMeta[]>([]);
@@ -658,6 +680,7 @@ export default function AddCaseDiaryKaryvahiScreen() {
       ]);
       if (isMounted) {
         setDiary(d);
+        if (f) setFir(f);
         setFirKaryvahi(k);
         setCaseDiaryFormats(cdFmts);
         setNarrativeFormats(narFmts);
@@ -866,7 +889,7 @@ export default function AddCaseDiaryKaryvahiScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       className="flex-1 bg-background"
     >
       {/* ── Discard-changes confirmation (3-option) ───────────────────── */}
@@ -974,6 +997,8 @@ export default function AddCaseDiaryKaryvahiScreen() {
             showFormatList={showFormatList}
             activeFillPanel={activeFillPanel}
             firId={firId}
+            fir={fir}
+            diaryDate={diary?.preparation_date}
             workspace={workspace}
             draftFormats={draftFormats}
             updateEntry={updateEntry}

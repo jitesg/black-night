@@ -69,7 +69,7 @@ export class EvidenceStrengthEngine {
     const witnessDone = doneK(['bayan', 'witness', 'statement', 'बयान']);
     if (witnessDone) { oralItems.push('Witness Statements (Bayan)'); oralScore += 50; }
     else oralMissing.push('Witness Statements');
-    const complainantBayan = doneK(['complainant statement', 'vadi bayan', 'vadini bayan']);
+    const complainantBayan = doneK(['complainant statement', 'vadi bayan', 'vadini bayan', 'bayan vadi', 'वादी', 'पीड़ित']);
     if (complainantBayan) { oralItems.push('Complainant/Victim Statement'); oralScore += 30; }
     else oralMissing.push('Complainant Statement');
     const accusedStatement = doneK(['accused statement', 'section 160', 'notice 160']);
@@ -84,7 +84,7 @@ export class EvidenceStrengthEngine {
     if (fslDone) { sciItems.push('FSL Report Received'); sciScore += 60; }
     else if (fslPending) { sciMissing.push('FSL Report (Pending)'); sciScore += 10; }
     else { sciMissing.push('FSL Not Initiated'); }
-    const photoDone = doneK(['photography', 'videography', 'photo', 'e-sakshya']);
+    const photoDone = doneK(['photography', 'videography', 'photo', 'e-sakshya', 'वीडियोग्राफी', 'ई-साक्ष्य']);
     if (photoDone) { sciItems.push('Photography/Videography'); sciScore += 40; }
     else sciMissing.push('Photography/Videography');
 

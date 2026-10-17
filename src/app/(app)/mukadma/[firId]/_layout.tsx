@@ -25,6 +25,7 @@ export default function FIRDetailLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="add-karyvahi" />
+        <Stack.Screen name="add-karyvahi-checklist" />
         <Stack.Screen name="karyvahi-detail" />
         <Stack.Screen name="add-case-diary" />
         <Stack.Screen name="add-case-diary-karyvahi" />

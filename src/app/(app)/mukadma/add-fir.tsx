@@ -26,6 +26,7 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
+import { FIRSectionAssistant, FIRSuggesterButton } from '@/components/law/FIRSectionAssistant';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -66,10 +67,13 @@ function mkAccused(): KnownAccused {
 
 // ─── Small reusable helpers ───────────────────────────────────────────────────
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children, rightAction }: { label: string; children: React.ReactNode; rightAction?: React.ReactNode }) {
   return (
     <View className="gap-1.5">
-      <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</Text>
+      <View className="flex-row items-center justify-between">
+        <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</Text>
+        {rightAction}
+      </View>
       {children}
     </View>
   );
@@ -285,7 +289,11 @@ function FlatCrimeTypeSelect({
 }
 
 function DateField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const { i18n } = useTranslation();
+  const isHi = i18n.language === 'hi';
   const [show, setShow] = useState(false);
+  const cleanLabel = label.replace(/\s*\*+\s*$/, '');
+  const placeholder = isHi ? 'तारीख चुनें' : 'Select date';
   return (
     <Field label={label}>
       <Pressable
@@ -294,14 +302,14 @@ function DateField({ label, value, onChange }: { label: string; value: string; o
         style={{ borderCurve: 'continuous' }}
       >
         <Text className={`text-sm ${value ? 'text-foreground' : 'text-muted-foreground'}`}>
-          {value || `Select ${label}`}
+          {value || placeholder}
         </Text>
         <ChevronDown size={14} color="#9CA3AF" />
       </Pressable>
       <DatePickerModal
         visible={show}
         value={value}
-        label={label}
+        label={cleanLabel}
         onConfirm={(v) => { onChange(v); setShow(false); }}
         onClose={() => setShow(false)}
       />
@@ -332,7 +340,7 @@ function AccusedCard({
           <View className="w-7 h-7 rounded-full bg-secondary items-center justify-center">
             <User size={14} color="#6B7280" />
           </View>
-          <Text className="text-sm font-semibold text-foreground">{t('fir.addFir.accusedLabel')} #{index + 1}</Text>
+          <Text className="text-sm font-semibold text-foreground">{t('fir.addFir.accusedLabel', { n: index + 1 })}</Text>
         </View>
         <Pressable onPress={() => onRemove(accused.id)} className="p-1 active:opacity-60">
           <Trash2 size={16} color="#DC2626" />
@@ -421,6 +429,7 @@ export default function AddFIRScreen() {
   const { t } = useTranslation();
   const [firNumber, setFirNumber] = useState('');
   const [section, setSection] = useState('');
+  const [isSuggesterOpen, setIsSuggesterOpen] = useState(false);
   // Complainant
   const [cName, setCName] = useState('');
   const [cAddress, setCAddress] = useState('');
@@ -733,7 +742,7 @@ export default function AddFIRScreen() {
   };
 
   return (
-    <KeyboardAvoidingView behavior="padding" className="flex-1 bg-background">
+    <KeyboardAvoidingView behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'} className="flex-1 bg-background">
       {/* ── Discard-changes confirmation ─────────────────────────────────── */}
       <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
         <AlertDialogContent>
@@ -800,8 +809,32 @@ export default function AddFIRScreen() {
             <Field label={t('fir.addFir.fieldFIRNumber')}>
               <Input value={firNumber} onChangeText={(v) => { isDirty.current = true; setFirNumber(v); }} placeholder={t('fir.addFir.firNumberPlaceholder')} />
             </Field>
-            <Field label={t('fir.addFir.fieldSection')}>
-              <Input value={section} onChangeText={(v) => { isDirty.current = true; setSection(v); }} placeholder={t('fir.addFir.sectionPlaceholder')} />
+            <Field
+              label={t('fir.addFir.fieldSection')}
+              rightAction={
+                <FIRSuggesterButton onPress={() => setIsSuggesterOpen(true)} />
+              }
+            >
+              <Input
+                value={section}
+                onChangeText={(v) => { isDirty.current = true; setSection(v); }}
+                placeholder={t('fir.addFir.sectionPlaceholder')}
+              />
+              <FIRSectionAssistant
+                section={section}
+                onAddSection={(newSec) => {
+                  isDirty.current = true;
+                  setSection((prev) => {
+                    const trimmed = prev.trim();
+                    if (!trimmed) return newSec;
+                    if (trimmed.includes(newSec)) return trimmed;
+                    return `${trimmed}, ${newSec}`;
+                  });
+                }}
+                incidentFacts={mukadmaSaransh || nakalRapat || nakalChick || ghatnasthal || ''}
+                isSuggesterOpen={isSuggesterOpen}
+                onCloseSuggester={() => setIsSuggesterOpen(false)}
+              />
             </Field>
           </View>
         </View>

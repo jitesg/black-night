@@ -13,6 +13,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
 import { X, RefreshCw, Layers } from 'lucide-react-native';
 
 interface Props {
@@ -26,6 +28,8 @@ interface Props {
 
 export function L6PanelShell({ title, visible, onClose, onRefresh, isLoading, children }: Props) {
   const insets = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
 
   return (
     <Modal
@@ -53,7 +57,7 @@ export function L6PanelShell({ title, visible, onClose, onRefresh, isLoading, ch
               className="w-8 h-8 rounded-full bg-muted items-center justify-center active:opacity-60"
             >
               {isLoading
-                ? <ActivityIndicator size="small" color="#6B7280" />
+                ? <ActivityIndicator size="small" color={C.mutedForeground} />
                 : <RefreshCw size={14} className="text-muted-foreground" />}
             </Pressable>
             <Pressable
@@ -69,7 +73,7 @@ export function L6PanelShell({ title, visible, onClose, onRefresh, isLoading, ch
         <View className="flex-1">
           {isLoading ? (
             <View className="flex-1 items-center justify-center gap-3">
-              <ActivityIndicator size="large" color="#6B7280" />
+              <ActivityIndicator size="large" color={C.mutedForeground} />
               <Text className="text-sm text-muted-foreground">Generating intelligence…</Text>
             </View>
           ) : (
