@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { persistPickedFile } from '@/lib/attachmentFiles';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
@@ -167,7 +168,9 @@ export default function AddSurveillanceScreen() {
         result = await ImagePicker.launchImageLibraryAsync({ quality: 0.7, allowsEditing: true, aspect: [1, 1] });
       }
       if (!result.canceled && result.assets[0]?.uri) {
-        setPhotoUri(result.assets[0].uri);
+        // Keep the photo out of the picker's cache folder, which Android may clear.
+        const asset = result.assets[0];
+        setPhotoUri(await persistPickedFile(asset.uri, asset.fileName ?? 'photo.jpg'));
       }
     } catch (e) {
       logger.warn('[Surveillance/Add] Image pick failed:', e);

@@ -40,6 +40,7 @@ import { RiskPredictionEngine }               from './RiskPredictionEngine';
 import { SupervisorEngine }                   from './SupervisorEngine';
 import { IntelligenceRecommendationEngine }   from './IntelligenceRecommendationEngine';
 import { IntelligenceExplanationEngine }      from './IntelligenceExplanationEngine';
+import * as Crypto from 'expo-crypto';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -117,7 +118,7 @@ export class InvestigationIntelligenceEngine {
     ctx: InvestigationContext,
     sessionId: string
   ): Promise<InvestigationIntelligenceReport> {
-    const id = crypto.randomUUID();
+    const id = Crypto.randomUUID();
     const generatedAt = new Date().toISOString();
 
     // ── Parallel execution of all engines ─────────────────────────────────────

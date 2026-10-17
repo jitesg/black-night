@@ -57,6 +57,7 @@ import {
 } from 'lucide-react-native';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { usePinnedItems } from '@/hooks/usePinnedItems';
+import Constants from 'expo-constants';
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
 // INDIGO: fixed brand accent (IS badge, active nav indicator, pinned chips)
@@ -441,7 +442,10 @@ function DrawerFooter({ safeBottom, colors }: { safeBottom: number; colors: type
       <View>
         <Text style={{ ...T.caption1, fontWeight: T.weight.semibold, color: colors.foreground }}>InvestSuite</Text>
         <Text style={{ ...T.micro, fontWeight: T.weight.regular, color: colors.mutedForeground, marginTop: 1, textTransform: undefined }}>
-          {t('drawer.versionBuild', { version: '1.0.123', build: '1' })}
+          {t('drawer.versionBuild', {
+            version: Constants.expoConfig?.version ?? '—',
+            build: String(Constants.expoConfig?.android?.versionCode ?? '—'),
+          })}
         </Text>
       </View>
 

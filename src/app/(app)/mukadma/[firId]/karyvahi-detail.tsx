@@ -10,6 +10,7 @@
  *   • Delete karyvahi (user-added items only)
  */
 import { useState, useEffect, useCallback } from 'react';
+import { persistPickedFile } from '@/lib/attachmentFiles';
 import {
   View, Text, ScrollView, Pressable, ActivityIndicator,
   TextInput, FlatList, KeyboardAvoidingView,
@@ -226,7 +227,7 @@ function EvidenceSection({ karyvahiId, firId }: EvidenceSectionProps) {
         const added = await addEvidence({
           karyvahi_id: karyvahiId,
           fir_id:      firId,
-          local_uri:   asset.uri,
+          local_uri:   await persistPickedFile(asset.uri, asset.fileName ?? 'evidence.jpg'),
           mime_type:   asset.mimeType ?? 'image/jpeg',
         });
         setItems((prev) => [added, ...prev]);
@@ -252,7 +253,7 @@ function EvidenceSection({ karyvahiId, firId }: EvidenceSectionProps) {
       const added = await addEvidence({
         karyvahi_id: karyvahiId,
         fir_id:      firId,
-        local_uri:   asset.uri,
+        local_uri:   await persistPickedFile(asset.uri, asset.fileName ?? 'evidence.jpg'),
         mime_type:   asset.mimeType ?? 'image/jpeg',
       });
       setItems((prev) => [added, ...prev]);

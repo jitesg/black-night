@@ -36,6 +36,7 @@ jobs:
         run: npx expo prebuild --platform android --no-install
         env:
           CI: 1
+          ANDROID_VERSION_CODE: ${{ github.run_number }}
 
       # Reanimated links against libworklets.so but its task wiring doesn't
       # cover the newer buildCMake* tasks, so build worklets first.

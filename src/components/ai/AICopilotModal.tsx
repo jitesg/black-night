@@ -1265,7 +1265,7 @@ function StickyComposer({
           onChangeText={onChangeText}
           placeholder={t('ai.composerPlaceholder')}
           placeholderTextColor={colors.mutedForeground}
-          multiline
+          multiline textAlignVertical="top"
           maxLength={1000}
           returnKeyType="default"
           editable={!isProcessing}

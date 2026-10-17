@@ -925,6 +925,29 @@ export function clearStubCache(): void {
   } catch { /* access denied — in-memory already cleared */ }
 }
 
+/**
+ * Writes pending WAL changes into the main database file, so copying the
+ * file (backup) captures every change.
+ */
+export async function checkpointDatabase(): Promise<void> {
+  if (_useStub) return;
+  const instance = await getDatabase();
+  await instance.execAsync('PRAGMA wal_checkpoint(TRUNCATE);');
+}
+
+/**
+ * Closes the native connection before a backup file replaces the database.
+ * The next getDatabase() call reopens it (and runs migrations).
+ */
+export async function closeDatabaseForRestore(): Promise<void> {
+  if (_useStub || !db) return;
+  try { await db.execAsync('PRAGMA wal_checkpoint(TRUNCATE);'); } catch { /* best effort */ }
+  await db.closeAsync();
+  db = null;
+  dbReady = false;
+  _initPromise = null;
+}
+
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
   // Fast paths ─ decision already made for this session
   if (_useStub) {

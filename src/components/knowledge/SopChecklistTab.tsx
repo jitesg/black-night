@@ -472,7 +472,7 @@ export function SopChecklistTab({
               onChangeText={setEditingNoteText}
               placeholder="इस चरण के संबंध में कोई विशेष टिप्पणी या जाँच स्थिति…"
               placeholderTextColor="#9CA3AF"
-              multiline
+              multiline textAlignVertical="top"
               numberOfLines={3}
               className="p-3 rounded-xl border border-border bg-background text-sm text-foreground min-h-[80px]"
             />

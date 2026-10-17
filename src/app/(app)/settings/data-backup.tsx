@@ -10,7 +10,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
-import { clearStubCache } from '@/lib/db/database';
+import { clearStubCache, checkpointDatabase, closeDatabaseForRestore, getDatabase } from '@/lib/db/database';
 import { dcClearAll } from '@/lib/devContentPersistence';
 import {
   AlertDialog,
@@ -43,6 +43,8 @@ export default function DataBackupScreen() {
       const dbPath = `${FileSystem.documentDirectory}SQLite/investsuite.db`;
       const dbInfo = await FileSystem.getInfoAsync(dbPath);
       if (!dbInfo.exists) throw new Error('Database file not found');
+      // Flush WAL changes into the main file first, or the copy misses them.
+      await checkpointDatabase();
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupPath = `${FileSystem.cacheDirectory}investsuite-backup-${timestamp}.db`;
       await FileSystem.copyAsync({ from: dbPath, to: backupPath });
@@ -71,13 +73,31 @@ export default function DataBackupScreen() {
         setBackupMsg(t('settings.backup.restoreWebMsg'));
         return;
       }
+      // Android labels .db files with various types (or none), so a
+      // strict 'application/octet-stream' filter greyed the backup out.
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/octet-stream',
+        type: '*/*',
         copyToCacheDirectory: true,
       });
       if (result.canceled || !result.assets?.[0]) return;
+      const src = result.assets[0].uri;
+
+      // Make sure it's a SQLite file before replacing the data.
+      const head = await FileSystem.readAsStringAsync(src, {
+        encoding: FileSystem.EncodingType.Base64, position: 0, length: 15,
+      });
+      if (!head.startsWith('U1FMaXRlIGZvcm1hdCAz')) { // "SQLite format 3"
+        throw new Error('Not an InvestSuite backup file');
+      }
+
+      // Close the open database and drop its WAL files, otherwise the old
+      // WAL is replayed onto the restored file and corrupts it.
       const dbPath = `${FileSystem.documentDirectory}SQLite/investsuite.db`;
-      await FileSystem.copyAsync({ from: result.assets[0].uri, to: dbPath });
+      await closeDatabaseForRestore();
+      await FileSystem.deleteAsync(`${dbPath}-wal`, { idempotent: true });
+      await FileSystem.deleteAsync(`${dbPath}-shm`, { idempotent: true });
+      await FileSystem.copyAsync({ from: src, to: dbPath });
+      await getDatabase(); // reopen + run migrations on the restored data
       setBackupMsg(t('settings.backup.restoreSuccess'));
     } catch (e) {
       setBackupMsg(t('settings.backup.restoreFailed', { error: e instanceof Error ? e.message : 'Unknown error' }));

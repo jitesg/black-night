@@ -1,7 +1,7 @@
 import React, { Component, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, Pressable, ScrollView, Share, Text, TextInput, View,
+  ActivityIndicator, Alert, Pressable, ScrollView, Share, Text, TextInput, View,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -18,7 +18,7 @@ import { openSection } from '@/lib/law/openLaw';
 import { getSection, type ActId } from '@/lib/law/lawLibrary';
 import * as Clipboard from 'expo-clipboard';
 import * as DocumentPicker from 'expo-document-picker';
-import * as WebBrowser from 'expo-web-browser';
+import { openFile, persistPickedFile } from '@/lib/attachmentFiles';
 import NetInfo, { type NetInfoState } from '@react-native-community/netinfo';
 import { supabase } from '@/client/supabase';
 import {
@@ -1177,12 +1177,13 @@ export function SopDetail({
         copyToCacheDirectory: true,
       });
       if (!res.canceled && res.assets) {
-        const picked: Attachment[] = res.assets.map((a) => ({
-          uri: a.uri,
+        // Copy out of the cache folder, which Android may clear.
+        const picked: Attachment[] = await Promise.all(res.assets.map(async (a) => ({
+          uri: await persistPickedFile(a.uri, a.name),
           name: a.name,
           mimeType: a.mimeType ?? 'application/octet-stream',
           size: a.size,
-        }));
+        })));
         const next = [...attachments, ...picked];
         setAttachments(next);
         await persistAttachments(next);
@@ -1196,10 +1197,12 @@ export function SopDetail({
 
   const handleOpenFile = async (a: Attachment) => {
     try {
-      await WebBrowser.openBrowserAsync(a.uri);
-    } catch {
+      await openFile(a.uri, a.mimeType);
+    } catch (err) {
       if (process.env.EXPO_OS === 'web') {
         window.open(a.uri, '_blank');
+      } else {
+        Alert.alert(a.name, err instanceof Error ? err.message : String(err));
       }
     }
   };
@@ -1530,12 +1533,13 @@ export function CircularDetail({ entry }: { entry: KnowledgeEntry }) {
         copyToCacheDirectory: true,
       });
       if (!res.canceled && res.assets) {
-        const picked: Attachment[] = res.assets.map((a) => ({
-          uri: a.uri,
+        // Copy out of the cache folder, which Android may clear.
+        const picked: Attachment[] = await Promise.all(res.assets.map(async (a) => ({
+          uri: await persistPickedFile(a.uri, a.name),
           name: a.name,
           mimeType: a.mimeType ?? 'application/octet-stream',
           size: a.size,
-        }));
+        })));
         const next = [...attachments, ...picked];
         setAttachments(next);
         await persistAttachments(next);
@@ -1549,10 +1553,12 @@ export function CircularDetail({ entry }: { entry: KnowledgeEntry }) {
 
   const handleOpenFile = async (a: Attachment) => {
     try {
-      await WebBrowser.openBrowserAsync(a.uri);
-    } catch {
+      await openFile(a.uri, a.mimeType);
+    } catch (err) {
       if (process.env.EXPO_OS === 'web') {
         window.open(a.uri, '_blank');
+      } else {
+        Alert.alert(a.name, err instanceof Error ? err.message : String(err));
       }
     }
   };
@@ -1819,12 +1825,13 @@ export function LawDetail({ entry }: { entry: KnowledgeEntry }) {
         copyToCacheDirectory: true,
       });
       if (!res.canceled && res.assets) {
-        const picked: Attachment[] = res.assets.map((a) => ({
-          uri: a.uri,
+        // Copy out of the cache folder, which Android may clear.
+        const picked: Attachment[] = await Promise.all(res.assets.map(async (a) => ({
+          uri: await persistPickedFile(a.uri, a.name),
           name: a.name,
           mimeType: a.mimeType ?? 'application/octet-stream',
           size: a.size,
-        }));
+        })));
         const next = [...attachments, ...picked];
         setAttachments(next);
         await persistAttachments(next);
@@ -1838,10 +1845,12 @@ export function LawDetail({ entry }: { entry: KnowledgeEntry }) {
 
   const handleOpenFile = async (a: Attachment) => {
     try {
-      await WebBrowser.openBrowserAsync(a.uri);
-    } catch {
+      await openFile(a.uri, a.mimeType);
+    } catch (err) {
       if (process.env.EXPO_OS === 'web') {
         window.open(a.uri, '_blank');
+      } else {
+        Alert.alert(a.name, err instanceof Error ? err.message : String(err));
       }
     }
   };
@@ -2103,12 +2112,13 @@ export function DefaultDetail({ entry }: { entry: KnowledgeEntry }) {
         copyToCacheDirectory: true,
       });
       if (!res.canceled && res.assets) {
-        const picked: Attachment[] = res.assets.map((a) => ({
-          uri: a.uri,
+        // Copy out of the cache folder, which Android may clear.
+        const picked: Attachment[] = await Promise.all(res.assets.map(async (a) => ({
+          uri: await persistPickedFile(a.uri, a.name),
           name: a.name,
           mimeType: a.mimeType ?? 'application/octet-stream',
           size: a.size,
-        }));
+        })));
         const next = [...attachments, ...picked];
         setAttachments(next);
         await persistAttachments(next);
@@ -2122,10 +2132,12 @@ export function DefaultDetail({ entry }: { entry: KnowledgeEntry }) {
 
   const handleOpenFile = async (a: Attachment) => {
     try {
-      await WebBrowser.openBrowserAsync(a.uri);
-    } catch {
+      await openFile(a.uri, a.mimeType);
+    } catch (err) {
       if (process.env.EXPO_OS === 'web') {
         window.open(a.uri, '_blank');
+      } else {
+        Alert.alert(a.name, err instanceof Error ? err.message : String(err));
       }
     }
   };

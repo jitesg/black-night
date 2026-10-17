@@ -10,9 +10,37 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// Android shows notifications only through a channel. The app.json plugin
+// names 'default' as the default channel, so create it with high importance
+// (heads-up banner + sound). It must exist before asking for permission on
+// Android 13+.
+const ANDROID_CHANNEL_ID = 'default';
+
+async function ensureAndroidChannel(): Promise<void> {
+  if (process.env.EXPO_OS !== 'android') return;
+  await Notifications.setNotificationChannelAsync(ANDROID_CHANNEL_ID, {
+    name: 'Reminders',
+    importance: Notifications.AndroidImportance.HIGH,
+    sound: 'default',
+    vibrationPattern: [0, 250, 250, 250],
+  });
+}
+
 export async function requestReminderPermissions(): Promise<boolean> {
+  try {
+    await ensureAndroidChannel();
+  } catch {
+    // keep going — permission request still matters
+  }
   const { status } = await Notifications.requestPermissionsAsync();
   return status === 'granted';
+}
+
+// expo-notifications needs a typed trigger; untyped objects are rejected,
+// which made every reminder fail to schedule. Calendar-style triggers are
+// also iOS-only, so daily/weekly use the dedicated types.
+function dateTrigger(date: Date): Notifications.NotificationTriggerInput {
+  return { type: Notifications.SchedulableTriggerInputTypes.DATE, date, channelId: ANDROID_CHANNEL_ID };
 }
 
 export async function setupReminderCategories(): Promise<void> {
@@ -32,11 +60,17 @@ export async function scheduleReminderNotification(
 ): Promise<string> {
   const dueMs = dueAt < 10000000000 ? dueAt * 1000 : dueAt;
   const d = new Date(dueMs);
-  const trigger = repeatMode === 'daily'
-    ? ({ hour: d.getHours(), minute: d.getMinutes(), repeats: true } as Notifications.NotificationTriggerInput)
+  const trigger: Notifications.NotificationTriggerInput = repeatMode === 'daily'
+    ? {
+        type: Notifications.SchedulableTriggerInputTypes.DAILY,
+        hour: d.getHours(), minute: d.getMinutes(), channelId: ANDROID_CHANNEL_ID,
+      }
     : repeatMode === 'weekly'
-      ? ({ weekday: d.getDay() + 1, hour: d.getHours(), minute: d.getMinutes(), repeats: true } as Notifications.NotificationTriggerInput)
-      : ({ date: d } as Notifications.NotificationTriggerInput);
+      ? {
+          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+          weekday: d.getDay() + 1, hour: d.getHours(), minute: d.getMinutes(), channelId: ANDROID_CHANNEL_ID,
+        }
+      : dateTrigger(d);
 
   return Notifications.scheduleNotificationAsync({
     content: {
@@ -65,9 +99,7 @@ export async function scheduleLocalNotification(
   triggerDate: Date | null,
   data?: Record<string, unknown>,
 ): Promise<string> {
-  const trigger = triggerDate
-    ? ({ date: triggerDate } as Notifications.NotificationTriggerInput)
-    : null;
+  const trigger = triggerDate ? dateTrigger(triggerDate) : null;
 
   return Notifications.scheduleNotificationAsync({
     content: {
@@ -97,7 +129,7 @@ export function registerSnoozeHandler(snoozeMinutes: number): () => void {
         categoryIdentifier: prevContent.categoryIdentifier ?? undefined,
         sound: prevContent.sound ? true : undefined,
       },
-      trigger: { date: new Date(newDue) } as Notifications.NotificationTriggerInput,
+      trigger: dateTrigger(new Date(newDue)),
     });
   });
   return () => sub.remove();
