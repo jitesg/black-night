@@ -168,7 +168,11 @@ export default function GdSelectFormatScreen() {
         />
 
         {/* Chip filters — operate on the GD-scoped dataset only */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 8, paddingRight: 4 }}
+          >
           {CHIP_FILTERS.map((f) => {
             const active = chip === f.value;
             const Icon =
@@ -179,7 +183,7 @@ export default function GdSelectFormatScreen() {
               <Pressable
                 key={f.value}
                 onPress={() => handleChip(f.value)}
-                className="mx-1 flex-row items-center gap-1.5 rounded-full px-3 py-1.5 active:opacity-70"
+                className="flex-row items-center gap-1.5 rounded-full px-3 py-1.5 active:opacity-70"
                 style={{ backgroundColor: active ? GD_COLOR : '#F3F4F6' }}
               >
                 {Icon && <Icon size={11} color={active ? '#fff' : '#6B7280'} fill={f.value === 'Favorites' && active ? '#fff' : 'none'} />}

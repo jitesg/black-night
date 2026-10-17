@@ -8,7 +8,7 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  Edit2, Filter, Plus, Trash2, Copy,
+  Edit2, Filter, Plus, Trash2, Copy, Shield, User,
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { SearchBar } from '@/components/SearchBar';
@@ -504,12 +504,15 @@ export default function KnowledgeListScreen() {
             <Pressable
               key={sf}
               onPress={() => handleSourceFilter(sf)}
-              className="rounded-full px-3 py-1 active:opacity-70"
+              className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
               style={{
                 backgroundColor: sourceFilter === sf ? color : `${color}15`,
                 borderCurve: 'continuous',
               }}
             >
+              {sf !== 'All' && (sf === 'System'
+                ? <Shield size={11} color={sourceFilter === sf ? '#fff' : color} />
+                : <User size={11} color={sourceFilter === sf ? '#fff' : color} />)}
               <Text
                 className="text-xs font-semibold"
                 style={{ color: sourceFilter === sf ? '#fff' : color }}

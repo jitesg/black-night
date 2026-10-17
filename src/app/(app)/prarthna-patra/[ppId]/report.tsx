@@ -32,6 +32,7 @@ import {
 } from '@/lib/db/prarthnaPatraRepo';
 import { ppReportDraftStore } from '@/lib/ppReportDraftStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 import { FileText, Plus } from 'lucide-react-native';
 
 /** Petition types that use the inline report-attach flow */
@@ -267,16 +268,10 @@ export default function ReportScreen() {
                 />
 
                 {/* Add from Format button */}
-                <Pressable
+                <AddFromFormatCard
+                  title={t('prarthnaPatra.report.btnAddFromFormat')}
                   onPress={handleAddFromFormat}
-                  className="flex-row items-center gap-2 border border-border rounded-xl px-4 py-3 bg-card active:opacity-70"
-                  style={{ borderCurve: 'continuous' }}
-                >
-                  <Plus size={15} color="#6B7280" />
-                  <Text className="text-sm text-muted-foreground font-medium">
-                    {t('prarthnaPatra.report.btnAddFromFormat')}
-                  </Text>
-                </Pressable>
+                />
 
                 {/* Auto-growing inline textarea */}
                 <View

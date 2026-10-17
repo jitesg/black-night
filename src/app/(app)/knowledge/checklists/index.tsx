@@ -5,7 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { ClipboardList, Edit2, Plus, Trash2 } from 'lucide-react-native';
+import { ClipboardList, Edit2, Plus, Shield, Trash2, User } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { SearchBar } from '@/components/SearchBar';
@@ -240,12 +240,15 @@ export default function ChecklistsIndexScreen() {
             <Pressable
               key={sf}
               onPress={() => handleSourceFilter(sf)}
-              className="rounded-full px-3 py-1 active:opacity-70"
+              className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
               style={{
                 backgroundColor: sourceFilter === sf ? COLOR : `${COLOR}15`,
                 borderCurve: 'continuous',
               }}
             >
+              {sf !== 'All' && (sf === 'System'
+                ? <Shield size={11} color={sourceFilter === sf ? '#fff' : COLOR} />
+                : <User size={11} color={sourceFilter === sf ? '#fff' : COLOR} />)}
               <Text className="text-xs font-semibold" style={{ color: sourceFilter === sf ? '#fff' : COLOR }}>
                 {sf === 'System' ? t('knowledge.checklist.filterSystem') : sf === 'User' ? t('knowledge.checklist.filterUser') : t('knowledge.checklist.filterAll')}
               </Text>

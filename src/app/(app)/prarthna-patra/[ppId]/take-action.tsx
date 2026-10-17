@@ -32,6 +32,7 @@ import {
 import { ppActionDraftStore } from '@/lib/ppActionDraftStore';
 import { getPublishedFormatsByType } from '@/lib/db/sysFormatRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const MODULE_COLOR = '#7C3AED';
 
@@ -277,30 +278,14 @@ export default function TakeActionScreen() {
 
           {/* ── Add From Format ── */}
           <SectionLabel title={t('prarthnaPatra.action.sectionAddFromFormat')} />
-          <Pressable
+          <AddFromFormatCard
+            title={t('prarthnaPatra.action.addFromFormat')}
+            subtitle={usedFormatTitle
+              ? t('prarthnaPatra.action.lastUsed', { title: usedFormatTitle })
+              : hasFormats ? t('prarthnaPatra.action.selectFormatHint') : t('prarthnaPatra.action.noFormatsHint')}
             onPress={() => router.push({ pathname: '/(app)/prarthna-patra/select-format' as never, params: { mode: 'action', ppId } })}
-            className="border border-border rounded-xl px-4 py-3 flex-row items-center gap-3 active:opacity-70 bg-card"
-            style={{ borderCurve: 'continuous' }}
-          >
-            <View
-              className="w-8 h-8 rounded-lg items-center justify-center"
-              style={{ backgroundColor: `${MODULE_COLOR}12` }}
-            >
-              <LayoutTemplate size={16} color={MODULE_COLOR} />
-            </View>
-            <View className="flex-1">
-              <Text className="text-sm font-medium text-foreground">{t('prarthnaPatra.action.addFromFormat')}</Text>
-              {usedFormatTitle ? (
-                <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-                  {t('prarthnaPatra.action.lastUsed', { title: usedFormatTitle })}
-                </Text>
-              ) : (
-                <Text className="text-xs text-muted-foreground">
-                  {hasFormats ? t('prarthnaPatra.action.selectFormatHint') : t('prarthnaPatra.action.noFormatsHint')}
-                </Text>
-              )}
-            </View>
-          </Pressable>
+            color={MODULE_COLOR}
+          />
 
           {/* ── Action Editor ── */}
           <SectionLabel title={t('prarthnaPatra.action.sectionActionEditor')} />

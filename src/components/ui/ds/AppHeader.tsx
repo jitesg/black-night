@@ -4,10 +4,10 @@
  * Replaces every custom header (ModuleHeader, ScreenHeader, DashboardHeader variants).
  * Covers: back button, icon-button actions, search slot, status bar colour.
  */
-import React, { memo } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { memo, useCallback } from 'react';
+import { BackHandler, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { ArrowLeft, Menu } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
@@ -82,14 +82,30 @@ export const AppHeader = memo(function AppHeader({
 
   // Bug 2 fix: wrap canGoBack() in try/catch — it may not exist in all
   // Expo Router versions and would otherwise throw at runtime.
+  // Screens opened from the side menu replace Home, so there may be nothing
+  // to go back to; in that case go to Home instead of doing nothing.
   const handleBack = () => {
     if (onBack) { onBack(); return; }
     try {
       if (router.canGoBack()) router.back();
+      else router.replace('/(app)/home' as never);
     } catch {
-      router.back();
+      router.replace('/(app)/home' as never);
     }
   };
+
+  // Same for the Android back button: without this it closed the app.
+  useFocusEffect(useCallback(() => {
+    if (!shouldShowBack || onBack) return;
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      let canGoBack = false;
+      try { canGoBack = router.canGoBack(); } catch { /* treat as no history */ }
+      if (canGoBack) return false; // let the normal back happen
+      router.replace('/(app)/home' as never);
+      return true;
+    });
+    return () => sub.remove();
+  }, [shouldShowBack, onBack]));
 
   const leftButton = shouldShowMenu ? (
     // Hamburger — opens Drawer

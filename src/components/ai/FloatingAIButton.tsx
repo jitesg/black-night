@@ -3,8 +3,8 @@
  * 56dp · theme-aware primary color · bottom-left above tab-bar · spring scale animation
  */
 
-import React, { memo, useState, useRef } from 'react';
-import { Pressable, Animated } from 'react-native';
+import React, { memo, useEffect, useState, useRef } from 'react';
+import { Pressable, Animated, Keyboard } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import { useSegments } from 'expo-router';
@@ -53,6 +53,23 @@ export const FloatingAIButton = memo(function FloatingAIButton({ activeFirId }: 
     ? Math.max(insets.bottom + 92, 104)
     : Math.max(insets.bottom + 20, 32);
 
+  // Form screens (add/edit/fill) are full of inputs the button would sit on
+  // top of, e.g. the FIR number field — keep it off those screens.
+  const isFormScreen = segs.some((s) =>
+    s.startsWith('add') || s.startsWith('edit') || s.startsWith('fill') ||
+    s === 'take-action' || s === 'editor',
+  );
+
+  // While typing, the keyboard lifts the screen and the button would cover
+  // the field being edited, so hide it until the keyboard closes.
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardOpen(true));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardOpen(false));
+    return () => { show.remove(); hide.remove(); };
+  }, []);
+  const hideButton = isFormScreen || keyboardOpen;
+
   const handlePressIn = () =>
     Animated.spring(scaleAnim, { toValue: 0.9, useNativeDriver: true, damping: 15 }).start();
   const handlePressOut = () =>
@@ -60,6 +77,7 @@ export const FloatingAIButton = memo(function FloatingAIButton({ activeFirId }: 
 
   return (
     <>
+      {!hideButton && (
       <Animated.View
         style={{
           position: 'absolute',
@@ -93,6 +111,7 @@ export const FloatingAIButton = memo(function FloatingAIButton({ activeFirId }: 
           <Bot size={22} color={C.primaryForeground} />
         </Pressable>
       </Animated.View>
+      )}
 
       <AICopilotModal
         visible={open}

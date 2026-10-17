@@ -29,6 +29,7 @@ import {
   type NyayalayChecklistItem,
 } from '@/lib/db/nyayalayRepo';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const MODULE_COLOR = '#1D4ED8';
 
@@ -509,24 +510,22 @@ export default function NyayalayDocDetailScreen() {
 
       {/* Vadi Suchna — Add from Format (only 'वादी सूचना' type) */}
       {!isFinished && (
-        <Pressable
+        <AddFromFormatCard
+          title={t('nyayalay.detail.addVadiSuchna')}
           onPress={() => goToSelectFormat({ formatType: 'वादी सूचना' })}
-          className="border border-dashed border-border rounded-xl py-3 px-4 flex-row items-center gap-2 mt-3 active:opacity-70"
-        >
-          <FileText size={14} color="#6B7280" />
-          <Text className="text-sm text-muted-foreground flex-1">{t('nyayalay.detail.addVadiSuchna')}</Text>
-        </Pressable>
+          color={MODULE_COLOR}
+          className="mt-3"
+        />
       )}
 
       {/* DCRB Report — Add from Format (only 'DCRB रिपोर्ट' type) */}
       {!isFinished && (
-        <Pressable
+        <AddFromFormatCard
+          title={t('nyayalay.detail.addDcrbReport')}
           onPress={() => goToSelectFormat({ formatType: 'DCRB रिपोर्ट' })}
-          className="border border-dashed border-border rounded-xl py-3 px-4 flex-row items-center gap-2 mt-2 active:opacity-70"
-        >
-          <FileText size={14} color="#6B7280" />
-          <Text className="text-sm text-muted-foreground flex-1">{t('nyayalay.detail.addDcrbReport')}</Text>
-        </Pressable>
+          color={MODULE_COLOR}
+          className="mt-2"
+        />
       )}
 
       {checklistDirty && (

@@ -1,10 +1,10 @@
 import { buttonTextVariants, buttonVariants } from '@/components/ui/button';
 import { NativeOnlyAnimatedView } from '@/components/ui/native-only-animated-view';
-import { TextClassContext } from '@/components/ui/text';
+import { Text as ThemedText, TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import * as AlertDialogPrimitive from '@rn-primitives/alert-dialog';
 import * as React from 'react';
-import { Platform, View, type ViewProps } from 'react-native';
+import { Platform, Text as RNText, View, type ViewProps } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { FullWindowOverlay as RNFullWindowOverlay } from 'react-native-screens';
 
@@ -110,19 +110,41 @@ function AlertDialogDescription({
   );
 }
 
+/**
+ * Dialog buttons style their label through TextClassContext, which only the
+ * themed <Text> reads. Plain strings showed as blank buttons on Android, and
+ * react-native <Text> ignored the button colour (dark text on dark buttons).
+ * Route both through the themed Text so every label is visible.
+ */
+function themedLabel(children: React.ReactNode): React.ReactNode {
+  return React.Children.map(children, (child) => {
+    if (typeof child === 'string' || typeof child === 'number') {
+      return <ThemedText>{child}</ThemedText>;
+    }
+    if (React.isValidElement(child) && child.type === RNText) {
+      return <ThemedText {...(child.props as React.ComponentProps<typeof ThemedText>)} />;
+    }
+    return child;
+  });
+}
+
 function AlertDialogAction({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action>) {
   return (
     <TextClassContext.Provider value={buttonTextVariants({ className })}>
-      <AlertDialogPrimitive.Action className={cn(buttonVariants(), className)} {...props} />
+      <AlertDialogPrimitive.Action className={cn(buttonVariants(), className)} {...props}>
+        {themedLabel(children as React.ReactNode)}
+      </AlertDialogPrimitive.Action>
     </TextClassContext.Provider>
   );
 }
 
 function AlertDialogCancel({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>) {
   return (
@@ -130,7 +152,9 @@ function AlertDialogCancel({
       <AlertDialogPrimitive.Cancel
         className={cn(buttonVariants({ variant: 'outline' }), className)}
         {...props}
-      />
+      >
+        {themedLabel(children as React.ReactNode)}
+      </AlertDialogPrimitive.Cancel>
     </TextClassContext.Provider>
   );
 }

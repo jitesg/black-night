@@ -843,7 +843,7 @@ export default function AddNyayalayScreen() {
               <AlertDialogCancel onPress={() => setBackDialog(false)}><Text>{t('common.cancel')}</Text></AlertDialogCancel>
               <Pressable
                 onPress={() => { setBackDialog(false); router.back(); }}
-                className="bg-destructive rounded-xl px-4 py-2 ml-2 active:opacity-70"
+                className="bg-destructive h-10 rounded-md px-4 items-center justify-center active:opacity-70"
               >
                 <Text className="text-destructive-foreground text-sm font-semibold">{t('common.discard')}</Text>
               </Pressable>

@@ -208,7 +208,11 @@ export default function NyayalaySelectFormatScreen() {
             returnKeyType="search"
             accessibilityLabel={t('formatPicker.searchTagAccessibility', { tag })}
           />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 8, paddingRight: 4 }}
+          >
             {CHIP_FILTERS.map((f) => {
               const active = chip === f.value;
               const Icon =
@@ -219,7 +223,7 @@ export default function NyayalaySelectFormatScreen() {
                 <Pressable
                   key={f.value}
                   onPress={() => handleChip(f.value)}
-                  className="mx-1 flex-row items-center gap-1.5 rounded-full px-3 py-1.5 active:opacity-70"
+                  className="flex-row items-center gap-1.5 rounded-full px-3 py-1.5 active:opacity-70"
                   style={{ backgroundColor: active ? MODULE_COLOR : '#F3F4F6' }}
                 >
                   {Icon && (
@@ -365,7 +369,7 @@ export default function NyayalaySelectFormatScreen() {
                       chip: t(CHIP_FILTERS.find((c) => c.value === chip)?.labelKey ?? chip),
                       tag: tag ?? 'Nyayalay',
                     })
-                  : t('formatPicker.noTemplatesFound')}
+                  : t('formatPicker.noTemplatesTagged', { tag: tag ?? formatType ?? 'Nyayalay' })}
               </Text>
               <Text className="text-sm text-muted-foreground text-center leading-5">
                 {query.trim()

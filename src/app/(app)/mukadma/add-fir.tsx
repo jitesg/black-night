@@ -788,16 +788,16 @@ export default function AddFIRScreen() {
           className="flex-row items-center justify-between p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/40 active:opacity-75"
           style={{ borderCurve: 'continuous' }}
         >
-          <View className="flex-row items-center gap-3">
+          <View className="flex-1 flex-row items-center gap-3 mr-3">
             <View className="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 items-center justify-center">
               <Sparkles size={18} color="#6366F1" />
             </View>
-            <View>
+            <View className="flex-1">
               <Text className="text-xs font-bold text-foreground">Auto-fill via OCR Scan</Text>
               <Text className="text-[11px] text-muted-foreground">Scan complaint letter or FIR using AI</Text>
             </View>
           </View>
-          <View className="px-3 py-1.5 rounded-xl bg-indigo-600">
+          <View className="shrink-0 px-3 py-1.5 rounded-xl bg-indigo-600">
             <Text className="text-xs font-semibold text-white">Scan</Text>
           </View>
         </Pressable>

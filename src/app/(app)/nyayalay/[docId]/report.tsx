@@ -48,6 +48,7 @@ import {
 } from '@/lib/db/nyayalayRepo';
 import { nyayalayDraftStore } from '@/lib/nyayalayDraftStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const MODULE_COLOR = '#1D4ED8';
 
@@ -422,51 +423,12 @@ export default function NyayalayReportScreen() {
               ? t('nbw.addNbwTemplate')
               : t('nbw.addTemplate');
             return (
-              <Pressable
+              <AddFromFormatCard
+                title={formatTitle || addTemplatePlaceholder}
+                subtitle={formatTitle ? t('nyayalay.report.tapToChangeTemplate') : t('nyayalay.report.selectNyayalayTemplate')}
                 onPress={handleSelectTemplate}
-                className="bg-card border border-border rounded-2xl overflow-hidden active:opacity-70"
-                style={{ borderCurve: 'continuous' }}
-                accessibilityRole="button"
-                accessibilityLabel={formatTitle || addTemplatePlaceholder}
-              >
-                {/* Amber accent left-stripe */}
-                <View className="flex-row items-center">
-                  <View
-                    className="w-1 self-stretch"
-                    style={{ backgroundColor: formatTitle ? '#D97706' : '#E5E7EB' }}
-                  />
-                  <View className="flex-1 flex-row items-center gap-3 px-4 py-4">
-                    <View
-                      className="w-10 h-10 rounded-xl items-center justify-center"
-                      style={{ backgroundColor: formatTitle ? '#FEF3C7' : '#F3F4F6' }}
-                    >
-                      <LayoutTemplate
-                        size={18}
-                        color={formatTitle ? '#D97706' : '#9CA3AF'}
-                      />
-                    </View>
-                    <View className="flex-1 gap-0.5" style={{ minWidth: 0 }}>
-                      <Text
-                        className="text-sm font-semibold"
-                        style={{ color: formatTitle ? '#111827' : '#9CA3AF' }}
-                        numberOfLines={1}
-                      >
-                        {formatTitle || addTemplatePlaceholder}
-                      </Text>
-                      {formatTitle ? (
-                        <Text className="text-xs text-muted-foreground">
-                          {t('nyayalay.report.tapToChangeTemplate')}
-                        </Text>
-                      ) : (
-                        <Text className="text-xs" style={{ color: '#D97706' }}>
-                          {t('nyayalay.report.selectNyayalayTemplate')}
-                        </Text>
-                      )}
-                    </View>
-                    <ChevronRight size={16} color="#9CA3AF" />
-                  </View>
-                </View>
-              </Pressable>
+                color={MODULE_COLOR}
+              />
             );
           })()}
 

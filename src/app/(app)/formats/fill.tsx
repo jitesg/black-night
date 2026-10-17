@@ -18,6 +18,7 @@ import {
   DEFAULT_LAYOUT_PROFILE,
 } from '@/lib/db/predefinedFormatRepo';
 import { generateReport } from '@/lib/templateEngine';
+import { htmlToPlainText } from '@/lib/stringUtils';
 import { splitIntoSubLetters, parseIntoDocumentModel, renderModelsForEditor } from '@/lib/formatParsingEngine';
 import { renderDocumentModel, buildPrintHtml } from '@/components/common/DocumentEditor';
 import { fixFormat } from '@/lib/formatFixingEngine';
@@ -246,7 +247,8 @@ export default function FillScreen() {
         ...autoValues,
         ...values,
       };
-      const resolvedText = generateReport(format.vivran, mergedValues, dynamicKeys);
+      // User formats are saved as editor HTML — convert to plain text first.
+      const resolvedText = htmlToPlainText(generateReport(format.vivran, mergedValues, dynamicKeys));
       if (__DEV__) console.log('[Fill] resolvedText — chars:', resolvedText.length);
 
       // ── Parsing + rendering pipeline (Steps 2–4 from master-ai-builder-prompt) ──
@@ -336,7 +338,7 @@ export default function FillScreen() {
         blankValues[key.key_name] = '…………………………………';
       }
     }
-    const blankedText = generateReport(format.vivran, blankValues, dynamicKeys);
+    const blankedText = htmlToPlainText(generateReport(format.vivran, blankValues, dynamicKeys));
     const profile = format.layout_profile ?? DEFAULT_LAYOUT_PROFILE;
     const subLetters = splitIntoSubLetters(blankedText);
     const models = subLetters.map(parseIntoDocumentModel);

@@ -38,6 +38,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const MODULE_COLOR = '#DC2626';
 
@@ -433,16 +434,11 @@ export default function AddProceedingScreen() {
           </View>
 
           {/* ── Add From Format Button ─────────────────────────── */}
-          <Pressable
+          <AddFromFormatCard
+            title={t('nirodhatmak.form.addFromFormat')}
             onPress={handleAddFromFormat}
-            className="flex-row items-center justify-center gap-2 py-3 rounded-xl border active:opacity-70"
-            style={{ borderColor: MODULE_COLOR, borderCurve: 'continuous' }}
-          >
-            <LayoutTemplate size={16} color={MODULE_COLOR} />
-            <Text className="text-sm font-semibold" style={{ color: MODULE_COLOR }}>
-              {t('nirodhatmak.form.addFromFormat')}
-            </Text>
-          </Pressable>
+            color={MODULE_COLOR}
+          />
 
           {/* ── Error ─────────────────────────────────────────── */}
           {error ? (

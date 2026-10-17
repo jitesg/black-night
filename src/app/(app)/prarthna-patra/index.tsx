@@ -10,9 +10,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  LinearTransition,
-  FadeInDown,
-  FadeOutUp,
 } from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -465,7 +462,7 @@ export default function PrarthnaPatraScreen() {
           <View>
             {/* ── Analytics ── */}
             {analytics && (
-              <Animated.View className="mt-3 mb-2" layout={LinearTransition.duration(200)}>
+              <Animated.View className="mt-3 mb-2">
                 {/* Collapsible Analytics Header + Summary */}
                 <View className="mb-3">
                   <Pressable
@@ -523,8 +520,6 @@ export default function PrarthnaPatraScreen() {
                 {/* Expanded Analytics Block */}
                 {analyticsExpanded && (
                   <Animated.View
-                    entering={FadeInDown.duration(200)}
-                    exiting={FadeOutUp.duration(150)}
                   >
                     {/* Overall card — compact 4-stat row */}
                     <View

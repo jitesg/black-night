@@ -262,12 +262,19 @@ export default function FIRDetailsTab() {
     if (!hasDataRef.current && mountedRef.current) setLoading(true);
 
     try {
-      const [f, acc, karyvahi, chklists] = await Promise.all([
-        getFIRById(requestedId),
-        getAccusedByFIR(requestedId),
-        getKaryvahiByFIR(requestedId, 'DetailsTab'),
-        getCaseChecklists(requestedId),
-      ]);
+      // Load one query at a time, FIR first. Running them in parallel on the
+      // single SQLite connection could fail on Android, and Promise.all then
+      // threw away the FIR too — the details screen showed empty fields.
+      const f = await getFIRById(requestedId);
+      const safe = async <T,>(label: string, q: () => Promise<T>, fallback: T): Promise<T> => {
+        try { return await q(); } catch (e) {
+          logger.warn(`[FIR_DETAILS_LOAD] ${label} failed:`, e);
+          return fallback;
+        }
+      };
+      const acc = await safe('accused', () => getAccusedByFIR(requestedId), [] as FIRAccused[]);
+      const karyvahi = await safe('karyvahi', () => getKaryvahiByFIR(requestedId, 'DetailsTab'), [] as FIRKaryvahi[]);
+      const chklists = await safe('checklists', () => getCaseChecklists(requestedId), [] as Awaited<ReturnType<typeof getCaseChecklists>>);
 
       if (!mountedRef.current) {
         logger.warn(`[FIR_DETAILS_LOAD] UNMOUNTED — discarding`);

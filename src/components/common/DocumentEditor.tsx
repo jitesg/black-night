@@ -526,7 +526,11 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
     // Guard against echoing editor's own content back: compare against the last
     // string the editor itself emitted, not editorHtmlRef (which may have been
     // mutated by a later in-flight bridge event before this comparison runs).
-    if (prepared === lastEmittedRef.current) return; // no real external change
+    // Compare the raw value too: the first keystrokes in an empty editor come
+    // out as plain text, which prepareHtml() wraps in <p>, so `prepared` never
+    // matched and the editor was reset on every keystroke — the cursor jumped
+    // to the start and new letters landed at the front.
+    if (value === lastEmittedRef.current || prepared === lastEmittedRef.current) return; // no real external change
     editorHtmlRef.current = prepared;
     if (visible && editorRef.current) {
       // Final stale check before writing to the WebView
@@ -830,7 +834,8 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                 flexDirection: 'row',
                 alignItems: 'center',
                 gap: 6,
-                paddingHorizontal: 2,
+                paddingLeft: 2,
+                paddingRight: 10, // keep the last button clear of the pinned Save
               }}
             >
               {renderMicButton()}
@@ -838,29 +843,25 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
               <Pressable
                 onPress={() => setShowPhraseModal(true)}
                 style={{
-                  flexDirection: 'row', alignItems: 'center', gap: 4,
-                  borderRadius: 8, paddingHorizontal: 8, paddingVertical: 8,
-                  minHeight: 40,
+                  alignItems: 'center', justifyContent: 'center',
+                  borderRadius: 8, width: 40, height: 40,
                   backgroundColor: colors.muted,
                 }}
                 accessibilityLabel={t('editor.phraseLibrary')}
               >
-                <BookMarked size={13} color={colors.mutedForeground} />
-                <Text style={{ fontSize: 11, color: colors.mutedForeground, fontWeight: '600' }}>{t('editor.phrases')}</Text>
+                <BookMarked size={16} color={colors.mutedForeground} />
               </Pressable>
               {!isWeb && (
                 <Pressable
                   onPress={() => setShowPreview(true)}
                   style={{
-                    flexDirection: 'row', alignItems: 'center', gap: 4,
-                    borderRadius: 8, paddingHorizontal: 8, paddingVertical: 8,
-                    minHeight: 40,
+                    alignItems: 'center', justifyContent: 'center',
+                    borderRadius: 8, width: 40, height: 40,
                     backgroundColor: colors.muted,
                   }}
                   accessibilityLabel={t('editor.printPreview')}
                 >
-                  <Eye size={13} color={colors.mutedForeground} />
-                  <Text style={{ fontSize: 11, color: colors.mutedForeground, fontWeight: '600' }}>{t('common.preview')}</Text>
+                  <Eye size={16} color={colors.mutedForeground} />
                 </Pressable>
               )}
             </ScrollView>

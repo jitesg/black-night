@@ -28,9 +28,6 @@ import {
 } from 'react-native';
 import type { StyleProp } from 'react-native';
 import Animated, {
-  FadeIn,
-  FadeOut,
-  LinearTransition,
   interpolate,
   interpolateColor,
   useAnimatedStyle,
@@ -163,10 +160,14 @@ export const SearchBar = memo(function SearchBar({
 
   const handleCollapse = useCallback(() => {
     onChangeText('');
+    // Reset the focus look right away; blur can arrive after the input has
+    // unmounted, which left the focus border stuck on.
+    setIsFocused(false);
+    focused.value = 0;
     setExpanded(false);
     onExpandedChange?.(false);
     inputRef.current?.blur();
-  }, [onChangeText, onExpandedChange]);
+  }, [onChangeText, onExpandedChange, focused]);
 
   const handleExpand = useCallback(() => {
     setExpanded(true);
@@ -255,13 +256,10 @@ export const SearchBar = memo(function SearchBar({
 
   return (
     <Animated.View
-      layout={LinearTransition.duration(220)}
       style={isExpanded ? containerStyle : { alignSelf: 'flex-start' }}
     >
       {!isExpanded ? (
         <Animated.View
-          entering={FadeIn.duration(150)}
-          exiting={FadeOut.duration(120)}
         >
           <Pressable
             onPress={handleExpand}
@@ -283,8 +281,6 @@ export const SearchBar = memo(function SearchBar({
         </Animated.View>
       ) : (
         <Animated.View
-          entering={FadeIn.duration(150)}
-          exiting={FadeOut.duration(120)}
           style={[
             {
               flexDirection: 'row',

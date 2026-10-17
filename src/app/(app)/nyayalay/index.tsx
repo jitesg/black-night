@@ -47,9 +47,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  LinearTransition,
-  FadeInDown,
-  FadeOutUp,
 } from 'react-native-reanimated';
 
 const NYL_COLOR = '#1D4ED8';
@@ -489,10 +486,10 @@ export default function NyayalayScreen() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ paddingBottom: listPaddingBottom }}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={() => (
+        ListHeaderComponent={(
           <View className="px-5 pt-5">
             {/* Collapsible Analytics Header + Summary */}
-            <Animated.View className="mb-3" layout={LinearTransition.duration(200)}>
+            <Animated.View className="mb-3">
               <Pressable
                 onPress={() => setAnalyticsExpanded((v) => !v)}
                 accessibilityRole="button"
@@ -542,8 +539,6 @@ export default function NyayalayScreen() {
               {/* Expanded Analytics Block */}
               {analyticsExpanded && (
                 <Animated.View
-                  entering={FadeInDown.duration(200)}
-                  exiting={FadeOutUp.duration(150)}
                 >
                   {/* Analytics – compact overall row */}
                   <View

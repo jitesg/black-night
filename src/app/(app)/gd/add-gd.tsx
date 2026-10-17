@@ -22,6 +22,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const GD_COLOR = '#D97706';
 
@@ -470,16 +471,16 @@ export default function AddGdScreen() {
             className="flex-row items-center justify-between p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 active:opacity-75"
             style={{ borderCurve: 'continuous' }}
           >
-            <View className="flex-row items-center gap-3">
+            <View className="flex-1 flex-row items-center gap-3 mr-3">
               <View className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/50 items-center justify-center">
                 <Sparkles size={18} color={GD_COLOR} />
               </View>
-              <View>
+              <View className="flex-1">
                 <Text className="text-xs font-bold text-foreground">{t('gd.form.ocrBannerTitle')}</Text>
                 <Text className="text-[11px] text-muted-foreground">{t('gd.form.ocrBannerSubtitle')}</Text>
               </View>
             </View>
-            <View className="px-3 py-1.5 rounded-xl" style={{ backgroundColor: GD_COLOR }}>
+            <View className="shrink-0 px-3 py-1.5 rounded-xl" style={{ backgroundColor: GD_COLOR }}>
               <Text className="text-xs font-semibold text-white">{t('gd.form.scanBtn')}</Text>
             </View>
           </Pressable>
@@ -588,26 +589,12 @@ export default function AddGdScreen() {
           </View>
 
           {/* ── Add From Format ──────────────────────────────────── */}
-          <Pressable
+          <AddFromFormatCard
+            title={t('gd.form.addFromFormat')}
+            subtitle={t('gd.form.addFromFormatHint')}
             onPress={handleAddFromFormat}
-            className="flex-row items-center gap-3 border border-dashed rounded-xl px-4 py-3 active:opacity-70"
-            style={{ borderColor: GD_COLOR, borderCurve: 'continuous', backgroundColor: `${GD_COLOR}08` }}
-          >
-            <View
-              className="w-8 h-8 rounded-lg items-center justify-center"
-              style={{ backgroundColor: `${GD_COLOR}20` }}
-            >
-              <LayoutTemplate size={16} color={GD_COLOR} />
-            </View>
-            <View className="flex-1">
-              <Text className="text-sm font-semibold" style={{ color: GD_COLOR }}>
-                {t('gd.form.addFromFormat')}
-              </Text>
-              <Text className="text-xs text-muted-foreground mt-0.5">
-                {t('gd.form.addFromFormatHint')}
-              </Text>
-            </View>
-          </Pressable>
+            color={GD_COLOR}
+          />
 
           {/* ── Vivran Editor ────────────────────────────────────── */}
           <View className="gap-1.5">
@@ -661,7 +648,7 @@ export default function AddGdScreen() {
             </AlertDialogCancel>
             <Pressable
               onPress={handleDiscard}
-              className="px-4 py-2 rounded-xl border border-border active:opacity-70"
+              className="h-10 px-4 rounded-md border border-border items-center justify-center active:opacity-70"
             >
               <Text className="text-sm font-medium text-foreground">{t('common.discard')}</Text>
             </Pressable>
@@ -691,7 +678,7 @@ export default function AddGdScreen() {
             </AlertDialogCancel>
             <Pressable
               onPress={handleAppendChoice}
-              className="px-4 py-2 rounded-xl border border-border active:opacity-70"
+              className="h-10 px-4 rounded-md border border-border items-center justify-center active:opacity-70"
             >
               <Text className="text-sm font-medium text-foreground">{t('gd.dialog.append')}</Text>
             </Pressable>

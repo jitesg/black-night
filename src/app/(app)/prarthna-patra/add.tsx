@@ -595,16 +595,16 @@ export default function AddPrarthnaPatraScreen() {
             className="flex-row items-center justify-between p-3.5 mb-4 rounded-2xl bg-primary/10 border border-primary/25 active:opacity-75"
             style={{ borderCurve: 'continuous' }}
           >
-            <View className="flex-row items-center gap-3">
+            <View className="flex-1 flex-row items-center gap-3 mr-3">
               <View className="w-9 h-9 rounded-xl bg-primary/20 items-center justify-center">
                 <Sparkles size={18} color="#2D52B8" />
               </View>
-              <View>
+              <View className="flex-1">
                 <Text className="text-xs font-bold text-foreground">{t('prarthnaPatra.form.ocrScanBtn')}</Text>
                 <Text className="text-[11px] text-muted-foreground">{t('prarthnaPatra.form.ocrScanDesc')}</Text>
               </View>
             </View>
-            <View className="px-3 py-1.5 rounded-xl bg-primary">
+            <View className="shrink-0 px-3 py-1.5 rounded-xl bg-primary">
               <Text className="text-xs font-semibold text-white">{t('prarthnaPatra.form.ocrScan')}</Text>
             </View>
           </Pressable>

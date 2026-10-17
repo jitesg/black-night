@@ -16,7 +16,7 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   Plus, Star, Filter, Eye, X,
-  LayoutTemplate, Clock, Edit2, Trash2,
+  LayoutTemplate, Clock, Edit2, Trash2, Shield, User,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
@@ -527,13 +527,16 @@ export default function FormatsScreen() {
             <Pressable
               key={sf}
               onPress={() => handleSourceFilter(sf)}
-              className="rounded-full px-3 py-1 active:opacity-70"
+              className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
               style={{
                 backgroundColor: sourceFilter === sf ? INDIGO : chipInactiveBg,
                 borderWidth: 1,
                 borderColor: sourceFilter === sf ? INDIGO : chipInactiveBorder,
               }}
             >
+              {sf !== 'All' && (sf === 'System'
+                ? <Shield size={11} color={sourceFilter === sf ? '#fff' : chipInactiveText} />
+                : <User size={11} color={sourceFilter === sf ? '#fff' : chipInactiveText} />)}
               <Text
                 className="text-xs font-semibold"
                 style={{ color: sourceFilter === sf ? '#fff' : chipInactiveText }}
