@@ -275,8 +275,11 @@ export default function GdScreen() {
   useEffect(() => { queryRef.current = query; }, [query]);
   useEffect(() => { activeFilterRef.current = activeFilter; }, [activeFilter]);
 
+  const firstLoadRef = useRef(true);
   useFocusEffect(useCallback(() => {
-    setLoading(true);
+    // Spinner only on the first load; later visits refresh in place so the
+    // list isn't torn down (keeps scroll position, no flash).
+    if (firstLoadRef.current) { firstLoadRef.current = false; setLoading(true); }
     loadData(queryRef.current, activeFilterRef.current);
   }, [loadData]));
 

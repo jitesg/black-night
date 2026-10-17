@@ -90,6 +90,17 @@ function _install(): void {
 // output in memory (data-exposure risk + unnecessary overhead).
 if (__DEV__) {
   _install();
+} else {
+  // Release builds: drop console.log/info/debug entirely. Each call still
+  // formatted its arguments and wrote to the Android system log, and many sit
+  // in hot paths (renders, DB queries), costing frame time. Warnings and
+  // errors are kept.
+  /* eslint-disable no-console */
+  const noop = () => { /* silenced in release */ };
+  console.log = noop;
+  console.info = noop;
+  console.debug = noop;
+  /* eslint-enable no-console */
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────

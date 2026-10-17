@@ -313,9 +313,12 @@ export default function FormatsScreen() {
     };
   }, []);
 
+  const firstLoadRef = useRef(true);
   useFocusEffect(useCallback(() => {
     let isMounted = true;
-    setLoading(true);
+    // Spinner only on the first load; later visits refresh in place so the
+    // list isn't torn down (keeps scroll position, no flash).
+    if (firstLoadRef.current) { firstLoadRef.current = false; setLoading(true); }
     (async () => {
       await Promise.race([
         seedReady,

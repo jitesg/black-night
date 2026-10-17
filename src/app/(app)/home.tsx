@@ -322,13 +322,16 @@ export default function HomeScreen() {
     return () => sub.remove();
   }, [t]));
 
+  // Show the loading state only on the first visit; afterwards refresh in
+  // the background so coming back to Home doesn't flash and re-lay out.
+  const dashboardLoadedRef = useRef(false);
   useFocusEffect(useCallback(() => {
     let cancelled = false;
     (async () => {
-      setLoading(true);
+      if (!dashboardLoadedRef.current) setLoading(true);
       try {
         const d = await loadDashboardData();
-        if (!cancelled) setData(d);
+        if (!cancelled) { setData(d); dashboardLoadedRef.current = true; }
       } finally {
         if (!cancelled) setLoading(false);
       }

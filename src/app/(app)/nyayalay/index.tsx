@@ -294,8 +294,11 @@ export default function NyayalayScreen() {
 
   const today = todayStr();
 
+  const firstLoadRef = useRef(true);
   const load = useCallback(async () => {
-    setLoading(true);
+    // Spinner only on the first load; later visits refresh in place so the
+    // list isn't torn down (keeps scroll position, no flash).
+    if (firstLoadRef.current) { firstLoadRef.current = false; setLoading(true); }
     try {
       const all = await getAllNyayalayDocuments();
       setDocs(all);

@@ -295,8 +295,11 @@ export default function PrarthnaPatraScreen() {
     transform: [{ rotate: `${progress.value * 180}deg` }],
   }));
 
+  const firstLoadRef = useRef(true);
   const load = useCallback(async () => {
-    setLoading(true);
+    // Spinner only on the first load; later visits refresh in place so the
+    // list isn't torn down (keeps scroll position, no flash).
+    if (firstLoadRef.current) { firstLoadRef.current = false; setLoading(true); }
     try {
       const [all, dash] = await Promise.all([getAllPrarthnaPatra(), getDashboardAnalytics()]);
       setItems(all);

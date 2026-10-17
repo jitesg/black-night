@@ -75,6 +75,7 @@
           "faceIDPermission": "Allow InvestSuite to use Face ID for authentication."
         }
       ],
+      "./plugins/withHighRefreshRate",
       [
         "expo-audio",
         {
