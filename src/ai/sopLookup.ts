@@ -6,6 +6,7 @@
  */
 
 import { search as searchSopIndex, getAll as getAllSops, getById as getSopById, type SopIndexEntry, type SopStep } from './sopIndex';
+import { getExplain, memParts, type SopExplain } from './sopExplain';
 
 export interface SopLookupResult {
   content: string;
@@ -56,6 +57,16 @@ export function isSopLookupQuery(query: string): boolean {
       q
     )
   ) {
+    return true;
+  }
+
+  // Explainer-style questions (L32): samjhao / explain / kyu / galti about
+  // an investigation topic
+  if (/(pooch-?\s*tachh|poochtach|puchh?-?tachh|interrogation)/i.test(q)) {
+    return true;
+  }
+  if (/(samjhao|samjha\s*do|explain|kyu|kyon|galti|galtiyan|mistake)/i.test(q) &&
+      /(hatya|murder|balatkar|rape|chori|theft|loot|lut|dakaiti|ghatnasthal|crime\s*scene|vivechna|investigation|gawah|giraftari|medical|lab|fsl)/i.test(q)) {
     return true;
   }
 
@@ -195,6 +206,72 @@ function formatSopEntry(sop: SopIndexEntry): string {
   return lines.join('\n');
 }
 
+// ── Explainer-based answer (L32) ─────────────────────────────────────────────
+// Hinglish words → Hindi words found in phase titles / "how" bullets.
+const PHASE_HINTS: Array<[RegExp, string[]]> = [
+  [/(pehl[ae]|pahl[ae]|ghant[ae]|turant|first\s*hour)/i, ['पहला', 'पहले', 'घंटा', 'तुरंत', 'मिनट']],
+  [/(gawa?h|gavah|bayan|bayaan|statement|witness)/i, ['गवाह', 'बयान']],
+  [/(giraft?ar|arrest|aaropi|aropi|accused|gunah?gar|abhiyukt)/i, ['आरोपी', 'गिरफ्तारी', 'पकड़']],
+  [/(\blab\b|fsl|report|dna|vishesh|forensic)/i, ['लैब', 'रिपोर्ट', 'FSL', 'DNA']],
+  [/(charge\s*sheet|chargesheet|aarop\s*patra|arop\s*patra)/i, ['चार्जशीट', 'आरोप-पत्र']],
+  [/(medical|doctor|daktar|jaanch|janch)/i, ['मेडिकल', 'डॉक्टर']],
+  [/(ghatnasthal|scene|mauk[ae]|spot|crime\s*scene)/i, ['घटनास्थल', 'सीन', 'मौके']],
+  [/(pooch|puchh|poochtachh|interrogat)/i, ['पूछताछ', 'बातचीत', 'तैयारी']],
+  [/(seal|packing|paik|sil\b)/i, ['पैकिंग', 'सील']],
+  [/(gher|nakab|naka|cordon)/i, ['घेर', 'नाके']],
+];
+
+function pickPhase(explain: SopExplain, query: string): number {
+  let best = 0;
+  let bestScore = 0;
+  const words = PHASE_HINTS.filter(([re]) => re.test(query)).flatMap(([, hi]) => hi);
+  if (words.length === 0) return 0;
+  explain.phases.forEach((ph, i) => {
+    const hay = `${ph.t} ${ph.goal} ${ph.how.join(' ')}`;
+    const score = words.reduce((n, w) => n + (hay.includes(w) ? 1 : 0), 0);
+    if (score > bestScore) { bestScore = score; best = i; }
+  });
+  return best;
+}
+
+function formatExplainEntry(sop: SopIndexEntry, explain: SopExplain, query: string): string {
+  const lines: string[] = [];
+  lines.push(`### 📋 ${sop.title}`);
+  lines.push(`**⏱ 30 सेकंड में:** ${explain.tl}\n`);
+  const mem = memParts(explain.mem);
+  if (mem.length) lines.push(`🧠 **याद-सूत्र:** ${mem.join(' → ')}\n`);
+
+  lines.push('#### 🗺 चरण');
+  explain.phases.forEach((ph, i) => lines.push(`${i + 1}. ${ph.ic} ${ph.t} — _${ph.time}_`));
+  lines.push('');
+
+  const pi = pickPhase(explain, query);
+  const ph = explain.phases[pi];
+  if (ph) {
+    lines.push(`#### ${ph.ic} ${ph.t}: कैसे करें`);
+    ph.how.forEach((h) => lines.push(`- ✔ ${h}`));
+    lines.push('');
+  }
+
+  const wantsMistakes = /(galti|galtiyan|galtiya|mistake|chook|chuk)/i.test(query);
+  const mist = wantsMistakes ? explain.mist : explain.mist.slice(0, 2);
+  if (mist.length) {
+    lines.push('#### ⚖ ये गलतियाँ भारी पड़ती हैं');
+    mist.forEach((m) => lines.push(`- ✗ ${m.m} → ${m.r}`));
+    lines.push('');
+  }
+
+  lines.push(`[🧠 समझें खोलें](sop_samjhe:${sop.kid})  [✅ चेकलिस्ट खोलें](sop_checklist:${sop.kid})  [📖 पूरा SOP](sop:${sop.kid})\n`);
+  lines.push(`⚠️ _पुस्तिका सारांश — मूल आदेश से मिलान करें_`);
+  return lines.join('\n');
+}
+
+/** Uses the explainer when the SOP has one, else the booklet summary. */
+function formatAnswer(sop: SopIndexEntry, query: string): string {
+  const explain = getExplain(sop.id);
+  return explain ? formatExplainEntry(sop, explain, query) : formatSopEntry(sop);
+}
+
 /**
  * Main execution function for SOP_LOOKUP intent.
  */
@@ -220,6 +297,7 @@ export async function lookupSop(query: string): Promise<SopLookupResult> {
 
   const primary = matches[0];
   const suggestedActions: string[] = [
+    ...(getExplain(primary.id) ? [`समझें खोलें (${primary.kid})`] : []),
     `पूरा SOP खोलें (${primary.kid})`,
     `चेकलिस्ट खोलें (${primary.kid})`,
   ];
@@ -236,7 +314,7 @@ export async function lookupSop(query: string): Promise<SopLookupResult> {
       );
     });
     chooserLines.push('\n---\n');
-    chooserLines.push(formatSopEntry(primary));
+    chooserLines.push(formatAnswer(primary, query));
 
     topMatches.slice(1).forEach((m) => {
       suggestedActions.push(`पूरा SOP खोलें (${m.kid})`);
@@ -251,7 +329,7 @@ export async function lookupSop(query: string): Promise<SopLookupResult> {
   }
 
   return {
-    content: formatSopEntry(primary),
+    content: formatAnswer(primary, query),
     suggestedActions,
     matchedSopId: primary.id,
     matchedSopKid: primary.kid,

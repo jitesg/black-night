@@ -429,7 +429,7 @@ function renderInline(text: string, mutedColor: string, tc: ThemePalette, router
 
 function renderLegalLinks(text: string, tc: ThemePalette, router: ReturnType<typeof useRouter>): React.ReactNode {
   // 1) Match markdown links like [📖 पूरा SOP खोलें](sop:sys-sop-...) or [✅ चेकलिस्ट खोलें](sop_checklist:sys-sop-...)
-  const linkRegex = /\[([^\]]+)\]\((?:(sop|sop_checklist):)?(sys-[a-z0-9-]+|sop-[a-z0-9-]+)\)/gi;
+  const linkRegex = /\[([^\]]+)\]\((?:(sop|sop_checklist|sop_samjhe):)?(sys-[a-z0-9-]+|sop-[a-z0-9-]+)\)/gi;
   if (linkRegex.test(text)) {
     const parts: React.ReactNode[] = [];
     let last = 0;
@@ -443,13 +443,14 @@ function renderLegalLinks(text: string, tc: ThemePalette, router: ReturnType<typ
       const scheme = lm[2];
       const targetId = lm[3];
       const isChecklist = scheme === 'sop_checklist' || label.includes('चेकलिस्ट');
+      const isSamjhe = scheme === 'sop_samjhe' || label.includes('समझें');
 
       parts.push(
         <Text
           key={`mdlink-${lm.index}`}
           onPress={() =>
             router.push(
-              `/(app)/knowledge/${targetId}${isChecklist ? '?tab=checklist' : ''}` as any
+              `/(app)/knowledge/${targetId}${isChecklist ? '?tab=checklist' : isSamjhe ? '?tab=samjhe' : scheme === 'sop' ? '?tab=details' : ''}` as any
             )
           }
           style={{

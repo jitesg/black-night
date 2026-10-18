@@ -19,6 +19,7 @@ import {
 import { getAllKnowledgeNotesMap } from '@/lib/db/knowledgeNotesRepo';
 import { getDisplayShortTitle, getCircularNumberChip, getEntryStatus, getEntryPreviewText } from '@/lib/knowledge/knowledgeDisplay';
 import { getSopStepCount } from '@/ai/sopIndex';
+import { hasExplain } from '@/ai/sopExplain';
 import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
 import {
   KNOWLEDGE_CATEGORY_MAP, getCategoryLabel, getCanonicalCategory,
@@ -141,6 +142,12 @@ function RecordCard({
                 }
                 return null;
               })()}
+              {/* Explainer available (L32) */}
+              {hasExplain(item.id) ? (
+                <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: '#2563EB18' }}>
+                  <Text className="text-xs font-semibold" style={{ color: '#2563EB' }}>📚 समझाया गया</Text>
+                </View>
+              ) : null}
               <SourceBadge source={derivedStatus} size="xs" />
             </View>
         </View>

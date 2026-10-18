@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import React, { Component, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { logger } from '@/lib/logger';
 import {
   ActivityIndicator, Alert, Pressable, ScrollView, Share, Text, TextInput, View,
@@ -14,6 +14,10 @@ import { useSopStruct, type SopStruct } from '@/ai/sopStruct';
 import { useSopIndex } from '@/ai/sopIndex';
 import { SopStructuredViewer } from '@/components/knowledge/SopStructuredViewer';
 import { SopChecklistTab } from '@/components/knowledge/SopChecklistTab';
+import { SopExplainTab, type SopExplainTabHandle } from '@/components/knowledge/SopExplainTab';
+import { SopImage } from '@/components/knowledge/SopImage';
+import { useSopExplain } from '@/ai/sopExplain';
+import { getDatabase } from '@/lib/db/database';
 import { openSection } from '@/lib/law/openLaw';
 import { getSection, type ActId } from '@/lib/law/lawLibrary';
 import * as Clipboard from 'expo-clipboard';
@@ -1070,6 +1074,37 @@ function SopDetailsTab({
   );
 }
 
+
+// ── SOP tab helpers (L32) ────────────────────────────────────────────────────
+type SopTabKey = 'samjhe' | 'checklist' | 'details' | 'photos';
+/** Last-selected SOP tab per SOP, for this app session. */
+const SOP_LAST_TAB = new Map<string, SopTabKey>();
+
+/** All images referenced by a structured SOP (figs/imgs/img/rowimgs), with captions. */
+function collectSopImageIds(struct: SopStruct | null): { id: string; cap?: string; sens?: number }[] {
+  if (!struct) return [];
+  const ids = new Map<string, { id: string; cap?: string; sens?: number }>();
+  const add = (id: string, cap?: string, sens?: number) => { if (!ids.has(id)) ids.set(id, { id, cap, sens }); };
+  const walk = (v: unknown): void => {
+    if (Array.isArray(v)) { v.forEach(walk); return; }
+    if (!v || typeof v !== 'object') return;
+    const o = v as Record<string, unknown>;
+    for (const key of ['figs', 'imgs']) {
+      const arr = o[key];
+      if (Array.isArray(arr)) arr.forEach((f) => { const fig = f as { id?: unknown; cap?: string; sens?: number }; if (fig && typeof fig.id === 'string') add(fig.id, fig.cap, fig.sens); });
+    }
+    if (typeof o.img === 'string') add(o.img, typeof o.t === 'string' ? o.t : undefined);
+    if (Array.isArray(o.rowimgs)) {
+      (o.rowimgs as Array<Record<string, unknown>>).forEach((r) => {
+        ['do', 'dont'].forEach((side) => { const a = r?.[side]; if (Array.isArray(a)) a.forEach((x) => { if (typeof x === 'string') add(x); }); });
+      });
+    }
+    Object.values(o).forEach((x) => { if (x && typeof x === 'object') walk(x); });
+  };
+  walk(struct.blocks);
+  return [...ids.values()];
+}
+
 // ═════════════════════════════════════════════════════════════════════════════
 // 1. SOP Detail Component (<SopDetail />)
 // ═════════════════════════════════════════════════════════════════════════════
@@ -1089,22 +1124,58 @@ export function SopDetail({
   const color = '#0F766E';
 
   // State & Hooks: ALL hooks called unconditionally at top of SopDetail
-  const [activeTab, setActiveTab] = useState<'details' | 'checklist'>(
-    routeTab === 'checklist' || routeTab === 'चेकलिस्ट' ? 'checklist' : 'details'
-  );
-  const [sopSearchQuery, setSopSearchQuery] = useState('');
-
-  useEffect(() => {
-    if (routeTab === 'checklist' || routeTab === 'चेकलिस्ट') {
-      setActiveTab('checklist');
-    } else if (routeTab === 'details' || routeTab === 'विवरण') {
-      setActiveTab('details');
-    }
-  }, [routeTab]);
-
   // Lazy data loader hooks (ALWAYS called, never conditional)
   const sopStruct = useSopStruct(entry.id);
   const sopIndex = useSopIndex(sopStruct?.kid || sopStruct?.id || entry.id);
+  const explain = useSopExplain(sopIndex?.id || sopStruct?.id || entry.id);
+  const sopKey = sopIndex?.id || sopStruct?.id || entry.id;
+
+  // Tabs (L32): समझें (default when an explainer exists) | चेकलिस्ट | मूल पाठ | फोटो.
+  // The last-selected tab is remembered per SOP for this app session.
+  const routeTabKey = ((): SopTabKey | undefined => {
+    if (routeTab === 'checklist' || routeTab === 'चेकलिस्ट') return 'checklist';
+    if (routeTab === 'details' || routeTab === 'विवरण' || routeTab === 'मूल पाठ') return 'details';
+    if (routeTab === 'samjhe' || routeTab === 'समझें') return 'samjhe';
+    return undefined;
+  })();
+  const [activeTab, setActiveTabState] = useState<SopTabKey>(
+    () => routeTabKey ?? SOP_LAST_TAB.get(sopKey) ?? (explain ? 'samjhe' : 'details'),
+  );
+  const setActiveTab = useCallback((tab: SopTabKey) => {
+    SOP_LAST_TAB.set(sopKey, tab);
+    setActiveTabState(tab);
+  }, [sopKey]);
+  useEffect(() => { if (routeTabKey) setActiveTab(routeTabKey); }, [routeTabKey, setActiveTab]);
+  const effectiveTab: SopTabKey = activeTab === 'samjhe' && !explain ? 'details' : activeTab;
+  const [sopSearchQuery, setSopSearchQuery] = useState('');
+
+  // Case shared by the समझें and चेकलिस्ट tabs
+  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(routeCaseId ?? null);
+
+  // Photo tab only when the SOP's photos are actually stored
+  const sopImageIds = useMemo(() => collectSopImageIds(sopStruct), [sopStruct]);
+  const [storedImageIds, setStoredImageIds] = useState<string[]>([]);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      if (sopImageIds.length === 0) { setStoredImageIds([]); return; }
+      try {
+        const db = await getDatabase();
+        const marks = sopImageIds.map(() => '?').join(',');
+        const rows = await db.getAllAsync<{ id: string }>(`SELECT id FROM sop_images WHERE id IN (${marks})`, sopImageIds.map((x) => x.id));
+        if (alive) setStoredImageIds(rows.map((r) => r.id));
+      } catch {
+        if (alive) setStoredImageIds([]); // table not there yet
+      }
+    })();
+    return () => { alive = false; };
+  }, [sopImageIds]);
+
+  // Scroll plumbing for the समझें roadmap and the sticky mini-bar
+  const scrollRef = useRef<ScrollView>(null);
+  const explainRef = useRef<SopExplainTabHandle>(null);
+  const [progress, setProgress] = useState<{ done: number; total: number }>({ done: 0, total: 0 });
+  const handleProgress = useCallback((done: number, total: number) => setProgress({ done, total }), []);
 
   const [attachments, setAttachments] = useState<Attachment[]>(() => parseAttachments(entry.attachment_uris));
   const [picking, setPicking] = useState(false);
@@ -1265,40 +1336,35 @@ export function SopDetail({
         showBack
       />
 
-      {/* 2-Tab Navigation Bar: विवरण & चेकलिस्ट */}
-      <View className="flex-row border-b border-border bg-card px-4 pt-2">
-        <Pressable
-          onPress={() => setActiveTab('details')}
-          className={`flex-1 py-2.5 items-center justify-center border-b-2 active:opacity-70 ${
-            activeTab === 'details' ? 'border-primary' : 'border-transparent'
-          }`}
-        >
-          <Text
-            className={`text-sm font-bold ${
-              activeTab === 'details' ? 'text-primary' : 'text-muted-foreground'
-            }`}
-          >
-            📖 विवरण
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => setActiveTab('checklist')}
-          className={`flex-1 py-2.5 items-center justify-center border-b-2 active:opacity-70 ${
-            activeTab === 'checklist' ? 'border-primary' : 'border-transparent'
-          }`}
-        >
-          <Text
-            className={`text-sm font-bold ${
-              activeTab === 'checklist' ? 'text-primary' : 'text-muted-foreground'
-            }`}
-          >
-            ✅ चेकलिस्ट
-          </Text>
-        </Pressable>
+      {/* Tab bar (sticky — outside the ScrollView) */}
+      <View className="flex-row border-b border-border bg-card px-2" accessibilityRole="tablist">
+        {([
+          ...(explain ? [{ key: 'samjhe' as const, label: '🧠 समझें' }] : []),
+          { key: 'checklist' as const, label: '✅ चेकलिस्ट' },
+          { key: 'details' as const, label: '📖 मूल पाठ' },
+          ...(storedImageIds.length > 0 ? [{ key: 'photos' as const, label: '🖼 फोटो' }] : []),
+        ]).map((tab) => {
+          const on = effectiveTab === tab.key;
+          return (
+            <Pressable
+              key={tab.key}
+              onPress={() => setActiveTab(tab.key)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: on }}
+              accessibilityLabel={tab.label}
+              className={`flex-1 items-center justify-center border-b-2 active:opacity-70 ${on ? 'border-primary' : 'border-transparent'}`}
+              style={{ minHeight: 44 }}
+            >
+              <Text numberOfLines={1} className={`text-[13px] font-bold ${on ? 'text-primary' : 'text-muted-foreground'}`}>
+                {tab.label}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
       {/* Sticky Search bar when on Details tab and sopStruct exists */}
-      {activeTab === 'details' && sopStruct && (
+      {effectiveTab === 'details' && sopStruct && (
         <View className="px-4 py-2 bg-background border-b border-border/50">
           <View className="flex-row items-center bg-card border border-border rounded-xl px-3 py-2 gap-2">
             <Search size={16} className="text-muted-foreground" />
@@ -1321,11 +1387,19 @@ export function SopDetail({
       )}
 
       <ScrollView
+        ref={scrollRef}
         contentContainerClassName="px-4 py-4 gap-4 pb-20"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         contentInsetAdjustmentBehavior="automatic"
+        scrollEventThrottle={100}
+        onScroll={effectiveTab === 'samjhe' ? (e) => explainRef.current?.onParentScroll(e.nativeEvent.contentOffset.y) : undefined}
       >
+        {!explain && (
+          <View className="self-start rounded-full px-3 py-1" style={{ backgroundColor: '#D9770618' }}>
+            <Text className="text-xs font-semibold" style={{ color: '#B45309' }}>📚 समझाने वाला संस्करण जल्द आ रहा है</Text>
+          </View>
+        )}
         <KnowledgeActionBar
           entry={entry}
           onShare={handleShare}
@@ -1336,13 +1410,37 @@ export function SopDetail({
 
         {/* Tab content wrapped in a local error boundary so tab crash never blanks the screen */}
         <LocalTabErrorBoundary fallbackMessage="यह भाग लोड नहीं हो सका — फिर प्रयास करें">
-          {activeTab === 'checklist' ? (
+          {effectiveTab === 'samjhe' && explain ? (
+            <SopExplainTab
+              ref={explainRef}
+              sopId={sopKey}
+              title={sopIndex?.title || displayTitle}
+              sourceLabel={sopIndex?.src ? `स्रोत: ${sopIndex.src.toUpperCase()}` : undefined}
+              explain={explain}
+              steps={sopIndex?.steps ?? []}
+              selectedCaseId={selectedCaseId}
+              onCaseChange={setSelectedCaseId}
+              onLawPress={handleSopLawPress}
+              scrollTo={(y) => scrollRef.current?.scrollTo({ y, animated: true })}
+              onProgress={handleProgress}
+            />
+          ) : effectiveTab === 'photos' ? (
+            <View className="gap-3">
+              <Text className="text-sm font-semibold text-muted-foreground">पुस्तिका के फोटो ({storedImageIds.length})</Text>
+              {sopImageIds.filter((img) => storedImageIds.includes(img.id)).map((img) => (
+                <SopImage key={img.id} id={img.id} cap={img.cap} sens={!!img.sens} />
+              ))}
+            </View>
+          ) : effectiveTab === 'checklist' ? (
             <SopChecklistTab
               sopId={sopStruct?.id || entry.id}
               sopKid={sopStruct?.kid || entry.id}
-              initialCaseId={routeCaseId}
+              initialCaseId={selectedCaseId}
+              onCaseChange={setSelectedCaseId}
             />
           ) : (
+            <View className="gap-2">
+              <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">पुस्तिका का मूल पाठ</Text>
             <SopDetailsTab
               sopStruct={sopStruct}
               sopIndex={sopIndex}
@@ -1351,6 +1449,7 @@ export function SopDetail({
               onLawPress={handleSopLawPress}
               onCircularPress={handleSopCircularPress}
             />
+            </View>
           )}
         </LocalTabErrorBoundary>
 
@@ -1404,6 +1503,34 @@ export function SopDetail({
           </View>
         </View>
       </ScrollView>
+
+      {/* Sticky mini-bar for the समझें tab */}
+      {effectiveTab === 'samjhe' && explain && (
+        <View
+          className="flex-row items-center gap-2 px-4 py-2 border-t border-border bg-card"
+        >
+          <Text className="flex-1 text-sm font-semibold text-foreground">
+            {progress.done}/{progress.total} पूरे
+          </Text>
+          <Pressable
+            onPress={() => setActiveTab('checklist')}
+            accessibilityRole="button"
+            className="rounded-xl px-3 items-center justify-center active:opacity-80"
+            style={{ minHeight: 40, backgroundColor: '#0F766E' }}
+          >
+            <Text className="text-sm font-semibold text-white">चेकलिस्ट</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}
+            accessibilityRole="button"
+            accessibilityLabel="ऊपर जाएँ"
+            className="rounded-xl px-3 items-center justify-center border border-border active:opacity-80"
+            style={{ minHeight: 40 }}
+          >
+            <Text className="text-sm font-semibold text-foreground">↑ ऊपर</Text>
+          </Pressable>
+        </View>
+      )}
 
       {/* Remove attachment confirmation */}
       <AlertDialog

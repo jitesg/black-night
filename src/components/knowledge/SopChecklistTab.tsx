@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, Pressable, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { CheckSquare, Square, AlertCircle, RotateCcw, FileText, ChevronDown, Check } from 'lucide-react-native';
 import { getById as getIndexById, type SopStep } from '../../ai/sopIndex';
+import { getExplain, phaseSteps } from '../../ai/sopExplain';
 import { getAllFIRs, type FIR } from '../../lib/db/firRepo';
 import {
   getChecklist,
@@ -181,8 +182,26 @@ export function SopChecklistTab({
   const doneCount = rawSteps.filter((s: SopStep) => checkedMap[s.id]?.done).length;
   const progressPercent = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
 
-  // Group steps by group heading (step.g)
+  // Explainer (L32): when present, group by its phases (in order) and show
+  // the teacher's note (anno) under the matching booklet step.
+  const explain = useMemo(() => getExplain(sopKid || sopId), [sopId, sopKid]);
+  const stepNumber = useMemo(() => {
+    const m = new Map<string, number>();
+    rawSteps.forEach((st: SopStep, i: number) => m.set(st.id, i + 1));
+    return m;
+  }, [rawSteps]);
+
+  // Group steps by explainer phase, else by group heading (step.g)
   const groupedSteps = useMemo(() => {
+    if (explain && explain.phases.length > 0) {
+      const visible = new Set(visibleSteps.map((st: SopStep) => st.id));
+      return explain.phases
+        .map((ph) => [
+          `${ph.ic} ${ph.t}`,
+          phaseSteps(ph, rawSteps).map(({ step }) => step).filter((st) => visible.has(st.id)),
+        ] as [string, SopStep[]])
+        .filter(([, list]) => list.length > 0);
+    }
     const map = new Map<string, SopStep[]>();
     for (const st of visibleSteps) {
       const g = st.g || 'जाँच चरण';
@@ -190,7 +209,7 @@ export function SopChecklistTab({
       map.get(g)!.push(st);
     }
     return Array.from(map.entries());
-  }, [visibleSteps]);
+  }, [visibleSteps, explain, rawSteps]);
 
   return (
     <View className="gap-4 pb-8">
@@ -337,6 +356,17 @@ export function SopChecklistTab({
                           >
                             {isDont ? `ध्यान: ${step.t}` : step.t}
                           </Text>
+
+                          {/* Teacher note from the explainer (L32) */}
+                          {(() => {
+                            const n = stepNumber.get(step.id);
+                            const anno = n && explain ? explain.anno[String(n)] : undefined;
+                            return anno ? (
+                              <Text className="text-xs text-foreground/80 leading-4">
+                                {anno.startsWith('⚠') ? anno : `ℹ ${anno}`}
+                              </Text>
+                            ) : null;
+                          })()}
 
                           {/* Existing Note */}
                           {state.note ? (

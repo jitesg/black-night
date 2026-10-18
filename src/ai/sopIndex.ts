@@ -48,6 +48,21 @@ function normalizeHinglishToken(token: string): string {
     .replace(/([a-z])\1+/g, '$1');
 }
 
+const HINGLISH_TERMS: Array<[RegExp, string[]]> = [
+  [/^(hatya|hatyaa|murder|katl|qatl)$/, ['हत्या']],
+  [/^(balatkar|balatkaar|rape|dushkarm)$/, ['बलात्कार']],
+  [/^(chori|chorii|theft|chor)$/, ['चोरी']],
+  [/^(loot|lut|lootpat|robbery)$/, ['लूट']],
+  [/^(dakaiti|dakaity|dacoity)$/, ['डकैती']],
+  [/^(poochtachh|poochtach|puchtach|puchhtachh|interrogation)$/, ['पूछताछ']],
+  [/^(snatching|chhinaiti|chinaiti|jhapatmari)$/, ['स्नेचिंग']],
+  [/^(ghatnasthal|crimescene)$/, ['घटनास्थल', 'अपराध स्थल']],
+  [/^(dahej|dowry)$/, ['दहेज']],
+  [/^(apaharan|kidnap|kidnapping|agwa)$/, ['अपहरण']],
+  [/^(gumshuda|missing|laapata|lapata)$/, ['गुमशुदा']],
+  [/^(cyber|saibar)$/, ['साइबर']],
+];
+
 export interface SopStep {
   id: string;
   t: string;
@@ -143,6 +158,15 @@ export function search(query: string, limit = 5): SopIndexEntry[] {
     .split(/\s+/)
     .map((t) => t.trim())
     .filter((t) => t.length >= 2 && !STOP_WORDS.has(t));
+
+  // Hinglish/English crime words → the Hindi words used in SOP titles/keywords,
+  // so "hatya", "rape", "pooch-tachh" find their SOPs.
+  for (const tok of [...rawTokens]) {
+    const key = tok.replace(/-/g, '');
+    for (const [re, hindi] of HINGLISH_TERMS) {
+      if (re.test(key)) hindi.forEach((h) => { if (!rawTokens.includes(h)) rawTokens.push(h); });
+    }
+  }
 
   const normalizedTokens = rawTokens.map(normalizeHinglishToken);
 

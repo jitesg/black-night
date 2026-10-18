@@ -630,6 +630,22 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
   // ── Suggested follow-up ───────────────────────────────────────────────────────
   const handleSuggestedAction = useCallback(
     (action: string) => {
+      // "समझें खोलें" → SOP explainer tab (L32)
+      if (action.includes('समझें खोलें')) {
+        const m = action.match(/sys-sop-[a-z0-9-]+/i) || action.match(/sop-[a-z0-9-]+/i);
+        let sopId: string | null = m ? m[0] : null;
+        if (!sopId) {
+          const lastAssistantMsg = [...messages].reverse().find((msg) => msg.role === 'assistant');
+          const found = lastAssistantMsg?.content.match(/sys-sop-[a-z0-9-]+/i);
+          if (found) sopId = found[0];
+        }
+        if (sopId) {
+          onClose();
+          setTimeout(() => { router.push(`/(app)/knowledge/${sopId}?tab=samjhe` as any); }, 150);
+          return;
+        }
+      }
+
       // Suggested action chips handling: open SOP in Knowledge detail or Checklist tab
       if (action.includes('चेकलिस्ट खोलें') || action.startsWith('चेकलिस्ट खोलें')) {
         let sopId: string | null = null;
