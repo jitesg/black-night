@@ -311,10 +311,10 @@ export default function LawSectionDetailScreen() {
           {/* Row 1: Act Chip (BNS/BNSS/BSA) + Act Full Name (allows 2-line wrap, flex: 1) */}
           <View className="flex-row items-center gap-2">
             <View
-              className="rounded-full px-2 py-0.5 items-center justify-center"
+              className="rounded-full items-center justify-center px-2.5 py-1"
               style={{ backgroundColor: `${actColor}15`, borderCurve: 'continuous' }}
             >
-              <Text style={{ fontSize: 12, fontWeight: '700', color: actColor }}>
+              <Text textBreakStrategy="simple" style={{ fontSize: 12, fontWeight: '700', color: actColor }}>
                 {actId}
               </Text>
             </View>
@@ -366,12 +366,12 @@ export default function LawSectionDetailScreen() {
                       setActiveOldSec(null);
                       setOldLawModalOpen(true);
                     }}
-                    className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 active:opacity-70"
+                    className="flex-row items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 active:opacity-70 px-3 py-1.5"
                     style={{ borderCurve: 'continuous', minHeight: 32 }}
                     accessibilityRole="button"
                     accessibilityLabel="नया प्रावधान"
                   >
-                    <Text className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                    <Text textBreakStrategy="simple" className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
                       नया प्रावधान
                     </Text>
                   </Pressable>
@@ -381,13 +381,13 @@ export default function LawSectionDetailScreen() {
                       setActiveOldSec(oldLawRef.oldSections[0] || null);
                       setOldLawModalOpen(true);
                     }}
-                    className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 active:opacity-70"
+                    className="flex-row items-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 active:opacity-70 px-3 py-1.5"
                     style={{ borderCurve: 'continuous', minHeight: 32 }}
                     accessibilityRole="button"
                     accessibilityLabel={oldLawRef.displayText}
                   >
                     <ArrowLeftRight size={13} color="#D97706" />
-                    <Text className="text-xs font-bold text-amber-700 dark:text-amber-400">
+                    <Text textBreakStrategy="simple" className="text-xs font-bold text-amber-700 dark:text-amber-400">
                       {oldLawRef.displayText}
                     </Text>
                   </Pressable>
@@ -404,11 +404,11 @@ export default function LawSectionDetailScreen() {
                   {isMultipleClassification ? (
                     <Pressable
                       onPress={scrollToClassification}
-                      className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 active:opacity-70"
+                      className="flex-row items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 active:opacity-70 px-3 py-1.5"
                       style={{ borderCurve: 'continuous', minHeight: 34 }}
                     >
                       <Layers size={14} color={C.primary} />
-                      <Text className="text-xs font-bold text-primary">
+                      <Text textBreakStrategy="simple" className="text-xs font-bold text-primary">
                         {isHi ? 'कई उप-धाराएँ (विवरण देखें)' : 'Multiple Sub-Sections (View Below)'}
                       </Text>
                     </Pressable>
@@ -416,7 +416,7 @@ export default function LawSectionDetailScreen() {
                     <>
                       {/* Cognizable Pill */}
                       <View
-                        className="flex-row items-center gap-1 px-2.5 py-1 rounded-full border"
+                        className="flex-row items-center gap-1 rounded-full border px-2.5 py-1"
                         style={{
                           backgroundColor: isCognizable
                             ? (isDark ? '#7C2D1225' : '#FFF7ED')
@@ -431,7 +431,7 @@ export default function LawSectionDetailScreen() {
                           size={12}
                           color={isCognizable ? '#EA580C' : '#3B82F6'}
                         />
-                        <Text
+                        <Text textBreakStrategy="simple"
                           className="text-xs font-bold"
                           style={{ color: isCognizable ? '#EA580C' : '#2563EB' }}
                         >
@@ -441,7 +441,7 @@ export default function LawSectionDetailScreen() {
 
                       {/* Bailable Pill */}
                       <View
-                        className="flex-row items-center gap-1 px-2.5 py-1 rounded-full border"
+                        className="flex-row items-center gap-1 rounded-full border px-2.5 py-1"
                         style={{
                           backgroundColor: isBailable
                             ? (isDark ? '#064E3B25' : '#ECFDF5')
@@ -456,7 +456,7 @@ export default function LawSectionDetailScreen() {
                           size={12}
                           color={isBailable ? '#059669' : '#DC2626'}
                         />
-                        <Text
+                        <Text textBreakStrategy="simple"
                           className="text-xs font-bold"
                           style={{ color: isBailable ? '#059669' : '#DC2626' }}
                         >
@@ -467,11 +467,11 @@ export default function LawSectionDetailScreen() {
                       {/* Court Pill */}
                       {singleRow.court ? (
                         <View
-                          className="flex-row items-center gap-1 px-2.5 py-1 rounded-full bg-muted border border-border"
+                          className="flex-row items-center gap-1 rounded-full bg-muted border border-border px-2.5 py-1"
                           style={{ borderCurve: 'continuous' }}
                         >
                           <Landmark size={12} color={C.mutedForeground} />
-                          <Text className="text-xs font-semibold text-foreground">
+                          <Text textBreakStrategy="simple" className="text-xs font-semibold text-foreground">
                             {singleRow.court}
                           </Text>
                         </View>
@@ -485,11 +485,11 @@ export default function LawSectionDetailScreen() {
               {linkCounts.total > 0 && (
                 <Pressable
                   onPress={scrollToRelated}
-                  className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 active:opacity-70"
+                  className="flex-row items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 active:opacity-70 px-3 py-1.5"
                   style={{ borderCurve: 'continuous', minHeight: 34 }}
                 >
                   <Link2 size={13} color={C.primary} />
-                  <Text className="text-xs font-bold text-primary">
+                  <Text textBreakStrategy="simple" className="text-xs font-bold text-primary">
                     {isHi ? `संबंधित (${linkCounts.total})` : `Related (${linkCounts.total})`}
                   </Text>
                 </Pressable>
@@ -516,10 +516,10 @@ export default function LawSectionDetailScreen() {
                   {isHi ? 'सरल भाषा में' : 'Simple Explanation'}
                 </Text>
                 <View
-                  className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20"
+                  className="rounded-full bg-primary/10 border border-primary/20 px-2.5 py-1"
                   style={{ borderCurve: 'continuous' }}
                 >
-                  <Text className="text-[11px] font-bold text-primary">
+                  <Text textBreakStrategy="simple" className="text-[11px] font-bold text-primary">
                     {isHi ? 'सहायक व्याख्या' : 'Aide / Guide'}
                   </Text>
                 </View>
@@ -646,10 +646,10 @@ export default function LawSectionDetailScreen() {
               >
                 <View className="flex-row items-center justify-between">
                   <View
-                    className="rounded-full px-2.5 py-0.5 bg-primary/10"
+                    className="rounded-full bg-primary/10 px-2.5 py-1"
                     style={{ borderCurve: 'continuous' }}
                   >
-                    <Text className="text-xs font-bold text-primary">
+                    <Text textBreakStrategy="simple" className="text-xs font-bold text-primary">
                       BNS {row.sec}
                     </Text>
                   </View>
@@ -788,10 +788,10 @@ export default function LawSectionDetailScreen() {
                           <View key={groupAct} className="gap-2">
                             <View className="flex-row items-center gap-1.5">
                               <View
-                                className="px-2 py-0.5 rounded-full"
+                                className="rounded-full px-2.5 py-1"
                                 style={{ backgroundColor: `${gColor}15`, borderCurve: 'continuous' }}
                               >
-                                <Text className="text-[10px] font-bold" style={{ color: gColor }}>
+                                <Text textBreakStrategy="simple" className="text-[10px] font-bold" style={{ color: gColor }}>
                                   {groupAct}
                                 </Text>
                               </View>
@@ -858,10 +858,10 @@ export default function LawSectionDetailScreen() {
                           <View key={groupAct} className="gap-2">
                             <View className="flex-row items-center gap-1.5">
                               <View
-                                className="px-2 py-0.5 rounded-full"
+                                className="rounded-full px-2.5 py-1"
                                 style={{ backgroundColor: `${gColor}15`, borderCurve: 'continuous' }}
                               >
-                                <Text className="text-[10px] font-bold" style={{ color: gColor }}>
+                                <Text textBreakStrategy="simple" className="text-[10px] font-bold" style={{ color: gColor }}>
                                   {groupAct}
                                 </Text>
                               </View>
@@ -1105,8 +1105,8 @@ export default function LawSectionDetailScreen() {
                                   </Text>
                                 </View>
                                 {isCurrent && (
-                                  <View className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25">
-                                    <Text className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                                  <View className="rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-1">
+                                    <Text textBreakStrategy="simple" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                                       वर्तमान धारा
                                     </Text>
                                   </View>

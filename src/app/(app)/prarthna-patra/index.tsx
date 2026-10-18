@@ -71,28 +71,28 @@ function StatusBadge({ pp }: { pp: PrarthnaPatra }) {
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
   if (pp.status === 'Nistarit') {
     return (
-      <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: '#D1FAE5' }}>
-        <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
+      <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#D1FAE5' }}>
+        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
       </View>
     );
   }
   if (pp.status === 'Finished') {
     return (
-      <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: '#EDE9FE' }}>
-        <Text className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{t('fir.list.filterFinished')}</Text>
+      <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#EDE9FE' }}>
+        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{t('fir.list.filterFinished')}</Text>
       </View>
     );
   }
   if (days <= 0) {
     return (
-      <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: '#FEE2E2' }}>
-        <Text className="text-xs font-semibold" style={{ color: '#991B1B' }}>{t('prarthnaPatra.status.overdue')}</Text>
+      <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#FEE2E2' }}>
+        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#991B1B' }}>{t('prarthnaPatra.status.overdue')}</Text>
       </View>
     );
   }
   return (
-    <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: '#FEF3C7' }}>
-      <Text className="text-xs font-semibold" style={{ color: '#92400E' }}>{t('fir.list.filterPending')}</Text>
+    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#FEF3C7' }}>
+      <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#92400E' }}>{t('fir.list.filterPending')}</Text>
     </View>
   );
 }
@@ -113,7 +113,7 @@ function AnalyticsCard({
       onPress={onPress}
       className="bg-card border rounded-2xl p-2.5 mr-2 active:opacity-70"
       style={{
-        borderColor: selected ? '#7C3AED' : '#E5E7EB',
+        borderColor: selected ? '#7C3AED' : '#94A3B855',
         borderWidth: selected ? 1.5 : 1,
         borderCurve: 'continuous',
         minWidth: 120,
@@ -410,13 +410,13 @@ export default function PrarthnaPatraScreen() {
   }: { label: string; active: boolean; onPress: () => void }) => (
     <Pressable
       onPress={onPress}
-      className="rounded-full px-3 py-1.5 mr-2 active:opacity-70 border"
+      className="rounded-full mr-2 active:opacity-70 border px-3 py-1.5"
       style={{
         backgroundColor: active ? '#2D52B8' : 'transparent',
-        borderColor: active ? '#2D52B8' : '#E5E7EB',
+        borderColor: active ? '#2D52B8' : '#94A3B855',
       }}
     >
-      <Text className="text-xs font-medium" style={{ color: active ? '#fff' : '#6B7280' }}>
+      <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: active ? '#fff' : '#6B7280' }}>
         {label}
       </Text>
     </Pressable>

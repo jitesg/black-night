@@ -28,8 +28,8 @@ function FIRRow({ item }: { item: FIRSummaryItem }) {
       <View className="items-end gap-1">
         <Text className="text-xs text-muted-foreground">{item.daysSinceRegistration}d old</Text>
         {item.criticalAlertCount > 0 && (
-          <View className="bg-red-50 border border-red-200 rounded-full px-2 py-0.5">
-            <Text className="text-xs text-red-600 font-medium">{item.criticalAlertCount} critical</Text>
+          <View className="bg-red-50 border border-red-200 rounded-full px-2.5 py-1 dark:bg-red-500/15 dark:border-red-500/30">
+            <Text textBreakStrategy="simple" className="text-xs text-red-600 font-medium dark:text-red-300">{item.criticalAlertCount} critical</Text>
           </View>
         )}
       </View>

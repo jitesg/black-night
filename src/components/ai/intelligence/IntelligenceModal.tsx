@@ -57,8 +57,8 @@ export function IntelligenceModal({ visible, onClose, onRefresh, report, isLoadi
           <View className="flex-row items-center gap-2">
             {/* Context confidence badge */}
             {report && (
-              <View className="px-2 py-0.5 rounded-full bg-muted">
-                <Text className="text-xs text-muted-foreground font-medium">
+              <View className="rounded-full bg-muted px-2.5 py-1">
+                <Text textBreakStrategy="simple" className="text-xs text-muted-foreground font-medium">
                   {report.contextConfidencePct}% context
                 </Text>
               </View>

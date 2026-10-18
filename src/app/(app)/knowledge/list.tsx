@@ -107,10 +107,10 @@ function RecordCard({
             <View className="flex-row items-center gap-1.5 mt-1.5 flex-wrap">
               {item.subcategory ? (
                 <View
-                  className="rounded-full px-2 py-0.5"
+                  className="rounded-full px-2.5 py-1"
                   style={{ backgroundColor: `${color}15` }}
                 >
-                  <Text className="text-xs font-medium" style={{ color }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color }}>
                     {item.subcategory}
                   </Text>
                 </View>
@@ -118,10 +118,10 @@ function RecordCard({
               {/* Crime Type Chip for SOP */}
               {item.crime_type ? (
                 <View
-                  className="rounded-full px-2 py-0.5 border"
+                  className="rounded-full border px-2.5 py-1"
                   style={{ backgroundColor: `${color}10`, borderColor: `${color}35` }}
                 >
-                  <Text className="text-xs font-semibold" style={{ color }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color }}>
                     {item.crime_type}
                   </Text>
                 </View>
@@ -132,9 +132,9 @@ function RecordCard({
                 if (stepCount > 0 && (item.content_type === 'sop' || Boolean(item.crime_type))) {
                   return (
                     <View
-                      className="rounded-full px-2 py-0.5 bg-secondary border border-border"
+                      className="rounded-full bg-secondary border border-border px-2.5 py-1"
                     >
-                      <Text className="text-xs font-medium text-foreground">
+                      <Text textBreakStrategy="simple" className="text-xs font-medium text-foreground">
                         {stepCount} चरण
                       </Text>
                     </View>
@@ -144,8 +144,8 @@ function RecordCard({
               })()}
               {/* Explainer available (L32) */}
               {hasExplain(item.id) ? (
-                <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: '#2563EB18' }}>
-                  <Text className="text-xs font-semibold" style={{ color: '#2563EB' }}>📚 समझाया गया</Text>
+                <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#2563EB18' }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#2563EB' }}>📚 समझाया गया</Text>
                 </View>
               ) : null}
               <SourceBadge source={derivedStatus} size="xs" />
@@ -201,8 +201,8 @@ function RecordCard({
       {tagList.length > 0 && (
         <View className="flex-row flex-wrap gap-1.5">
           {tagList.map((tag, idx) => (
-            <View key={`${idx}-${tag}`} className="bg-secondary rounded-full px-2.5 py-0.5">
-              <Text className="text-xs text-muted-foreground">{tag}</Text>
+            <View key={`${idx}-${tag}`} className="bg-secondary rounded-full px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{tag}</Text>
             </View>
           ))}
         </View>
@@ -472,13 +472,13 @@ export default function KnowledgeListScreen() {
                 <Pressable
                   key={sub}
                   onPress={() => handleSubcat(sub)}
-                  className="mx-1 rounded-full px-3 py-1.5 flex-row items-center gap-1.5 active:opacity-70"
+                  className="mx-1 rounded-full flex-row items-center gap-1.5 active:opacity-70 px-3 py-1.5"
                   style={{
                     backgroundColor: isSelected ? color : `${color}15`,
                     borderCurve: 'continuous',
                   }}
                 >
-                  <Text
+                  <Text textBreakStrategy="simple"
                     className="text-xs font-semibold"
                     style={{ color: isSelected ? '#fff' : color }}
                   >
@@ -486,12 +486,12 @@ export default function KnowledgeListScreen() {
                   </Text>
                   {isSopCategory && (
                     <View
-                      className="rounded-full px-1.5 py-0.2"
+                      className="rounded-full px-2.5 py-1"
                       style={{
                         backgroundColor: isSelected ? 'rgba(255,255,255,0.25)' : `${color}25`,
                       }}
                     >
-                      <Text
+                      <Text textBreakStrategy="simple"
                         className="text-[10px] font-bold"
                         style={{ color: isSelected ? '#fff' : color }}
                       >
@@ -511,7 +511,7 @@ export default function KnowledgeListScreen() {
             <Pressable
               key={sf}
               onPress={() => handleSourceFilter(sf)}
-              className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+              className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
               style={{
                 backgroundColor: sourceFilter === sf ? color : `${color}15`,
                 borderCurve: 'continuous',
@@ -520,7 +520,7 @@ export default function KnowledgeListScreen() {
               {sf !== 'All' && (sf === 'System'
                 ? <Shield size={11} color={sourceFilter === sf ? '#fff' : color} />
                 : <User size={11} color={sourceFilter === sf ? '#fff' : color} />)}
-              <Text
+              <Text textBreakStrategy="simple"
                 className="text-xs font-semibold"
                 style={{ color: sourceFilter === sf ? '#fff' : color }}
               >

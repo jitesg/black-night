@@ -187,10 +187,10 @@ const KaryvahiCard = memo(function KaryvahiCard({
             </View>
             {item.status ? (
               <View
-                className="rounded-full px-2 py-0.5"
+                className="rounded-full px-2.5 py-1"
                 style={{ backgroundColor: statusBg }}
               >
-                <Text
+                <Text textBreakStrategy="simple"
                   className="text-xs font-medium"
                   style={{ color: statusText }}
                 >
@@ -203,10 +203,10 @@ const KaryvahiCard = memo(function KaryvahiCard({
 
         {/* Type chip */}
         <View
-          className="rounded-full px-2.5 py-1 mt-0.5"
+          className="rounded-full mt-0.5 px-2.5 py-1"
           style={{ backgroundColor: `${typeColor}12` }}
         >
-          <Text className="text-xs font-semibold" style={{ color: typeColor }} numberOfLines={1}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: typeColor }} numberOfLines={1}>
             {NIRODHATMAK_TYPE_KEYS[item.proceeding_type] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type]) : (item.proceeding_type || t('nirodhatmak.type.other'))}
           </Text>
         </View>
@@ -384,25 +384,25 @@ export default function NirodhatmakHomeScreen() {
             <Pressable
               key="all"
               onPress={() => handleTypeFilter(null)}
-              className="mr-2 rounded-full px-3 py-1.5 border active:opacity-70"
+              className="mr-2 rounded-full border active:opacity-70 px-3 py-1.5"
               style={{
                 backgroundColor: activeType === null ? MODULE_COLOR : chipInactiveBg,
                 borderColor:     activeType === null ? MODULE_COLOR : chipBorder,
               }}
             >
-              <Text className="text-xs font-semibold" style={{ color: activeType === null ? '#fff' : chipInactiveText }}>{t('common.all')}</Text>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: activeType === null ? '#fff' : chipInactiveText }}>{t('common.all')}</Text>
             </Pressable>
             {NIRODHATMAK_TYPES.map((tVal) => (
               <Pressable
                 key={tVal}
                 onPress={() => handleTypeFilter(tVal)}
-                className="mr-2 rounded-full px-3 py-1.5 border active:opacity-70"
+                className="mr-2 rounded-full border active:opacity-70 px-3 py-1.5"
                 style={{
                   backgroundColor: activeType === tVal ? MODULE_COLOR : chipInactiveBg,
                   borderColor:     activeType === tVal ? MODULE_COLOR : chipBorder,
                 }}
               >
-                <Text className="text-xs font-semibold" style={{ color: activeType === tVal ? '#fff' : chipInactiveText }}>
+                <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: activeType === tVal ? '#fff' : chipInactiveText }}>
                   {NIRODHATMAK_TYPE_KEYS[tVal] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[tVal]) : tVal}
                 </Text>
               </Pressable>

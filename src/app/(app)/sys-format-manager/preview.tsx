@@ -103,18 +103,18 @@ export default function SysFormatPreviewScreen() {
         >
           {/* Meta row */}
           <View className="flex-row flex-wrap items-center gap-2">
-            <View className="px-2.5 py-1 rounded-full"
+            <View className="rounded-full px-2.5 py-1"
               style={{ backgroundColor: `${statusColor}18` }}>
-              <Text className="text-xs font-semibold capitalize" style={{ color: statusColor }}>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold capitalize" style={{ color: statusColor }}>
                 {status}
               </Text>
             </View>
-            <View className="px-2.5 py-1 rounded-full bg-muted">
-              <Text className="text-xs text-muted-foreground">{formatType}</Text>
+            <View className="rounded-full bg-muted px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{formatType}</Text>
             </View>
             {category ? (
-              <View className="px-2.5 py-1 rounded-full bg-muted">
-                <Text className="text-xs text-muted-foreground">{category}</Text>
+              <View className="rounded-full bg-muted px-2.5 py-1">
+                <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{category}</Text>
               </View>
             ) : null}
             <Text className="text-xs text-muted-foreground">v{version}</Text>
@@ -156,8 +156,8 @@ export default function SysFormatPreviewScreen() {
                         <Text className="text-sm font-medium text-foreground">{k.label || k.key_name}</Text>
                         <Text className="text-xs text-muted-foreground">{'{{'}{k.key_name}{'}}'}</Text>
                       </View>
-                      <View className="px-2 py-1 rounded-full bg-muted">
-                        <Text className="text-xs text-muted-foreground capitalize">{k.field_type}</Text>
+                      <View className="rounded-full bg-muted px-2.5 py-1">
+                        <Text textBreakStrategy="simple" className="text-xs text-muted-foreground capitalize">{k.field_type}</Text>
                       </View>
                     </View>
                   </View>
@@ -175,8 +175,8 @@ export default function SysFormatPreviewScreen() {
               </View>
               <View className="flex-row flex-wrap gap-1.5">
                 {tags.map((t, idx) => (
-                  <View key={`${idx}-${t}`} className="px-3 py-1.5 rounded-full bg-card border border-border">
-                    <Text className="text-xs text-foreground">{t}</Text>
+                  <View key={`${idx}-${t}`} className="rounded-full bg-card border border-border px-3 py-1.5">
+                    <Text textBreakStrategy="simple" className="text-xs text-foreground">{t}</Text>
                   </View>
                 ))}
               </View>

@@ -41,32 +41,32 @@ function StatusChip({ pp }: { pp: PPWithDetails }) {
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
   if (pp.status === 'Nistarit') {
     return (
-      <View className="flex-row items-center gap-1.5 rounded-full px-3 py-1" style={{ backgroundColor: '#D1FAE5' }}>
+      <View className="flex-row items-center gap-1.5 rounded-full px-2.5 py-1" style={{ backgroundColor: '#D1FAE5' }}>
         <CheckCircle size={13} color="#065F46" />
-        <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
+        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
       </View>
     );
   }
   if (pp.status === 'Finished') {
     return (
-      <View className="flex-row items-center gap-1.5 rounded-full px-3 py-1" style={{ backgroundColor: '#EDE9FE' }}>
+      <View className="flex-row items-center gap-1.5 rounded-full px-2.5 py-1" style={{ backgroundColor: '#EDE9FE' }}>
         <CheckCircle size={13} color="#5B21B6" />
-        <Text className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{t('fir.list.filterFinished')}</Text>
+        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{t('fir.list.filterFinished')}</Text>
       </View>
     );
   }
   if (days <= 0) {
     return (
-      <View className="flex-row items-center gap-1.5 rounded-full px-3 py-1" style={{ backgroundColor: '#FEE2E2' }}>
+      <View className="flex-row items-center gap-1.5 rounded-full px-2.5 py-1" style={{ backgroundColor: '#FEE2E2' }}>
         <AlertCircle size={13} color="#991B1B" />
-        <Text className="text-xs font-semibold" style={{ color: '#991B1B' }}>{t('prarthnaPatra.filters.overdue')}</Text>
+        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#991B1B' }}>{t('prarthnaPatra.filters.overdue')}</Text>
       </View>
     );
   }
   return (
-    <View className="flex-row items-center gap-1.5 rounded-full px-3 py-1" style={{ backgroundColor: '#FEF3C7' }}>
+    <View className="flex-row items-center gap-1.5 rounded-full px-2.5 py-1" style={{ backgroundColor: '#FEF3C7' }}>
       <Clock size={13} color="#92400E" />
-      <Text className="text-xs font-semibold" style={{ color: '#92400E' }}>{t('fir.list.filterPending')}</Text>
+      <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#92400E' }}>{t('fir.list.filterPending')}</Text>
     </View>
   );
 }
@@ -277,8 +277,8 @@ export default function PPDetailScreen() {
                     {t('prarthnaPatra.detail.actionDate', { date: action.action_date })}
                   </Text>
                   {action.action_type ? (
-                    <View className="rounded-full px-2 py-0.5 bg-secondary ml-auto">
-                      <Text className="text-xs text-muted-foreground">{action.action_type}</Text>
+                    <View className="rounded-full bg-secondary ml-auto px-2.5 py-1">
+                      <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{action.action_type}</Text>
                     </View>
                   ) : null}
                 </View>
@@ -288,9 +288,9 @@ export default function PPDetailScreen() {
                   </Text>
                 ) : null}
                 <Text className="text-sm text-foreground leading-6">{stripHtmlTags(action.action_content)}</Text>
-                <View className="mt-2 self-start rounded-full px-2.5 py-0.5"
+                <View className="mt-2 self-start rounded-full px-2.5 py-1"
                   style={{ backgroundColor: action.is_complete ? '#EDE9FE' : '#FEF3C7' }}>
-                  <Text className="text-xs font-semibold"
+                  <Text textBreakStrategy="simple" className="text-xs font-semibold"
                     style={{ color: action.is_complete ? '#5B21B6' : '#92400E' }}>
                     {action.is_complete ? t('fir.list.filterFinished') : t('fir.list.filterPending')}
                   </Text>

@@ -52,8 +52,8 @@ function VersionCard({
           <View className="flex-row items-center gap-2">
             <Text className="text-sm font-semibold text-foreground">Version {version.version_number}</Text>
             {isLatest && (
-              <View className="px-2 py-0.5 rounded-full" style={{ backgroundColor: `${'#1E3A5F'}15` }}>
-                <Text className="text-xs font-medium" style={{ color: '#1E3A5F' }}>Current</Text>
+              <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${'#1E3A5F'}15` }}>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: '#1E3A5F' }}>Current</Text>
               </View>
             )}
           </View>

@@ -216,7 +216,7 @@ export const SopExplainTab = forwardRef<SopExplainTabHandle, Props>(function Sop
           <Text className="flex-1 text-lg font-bold text-foreground" style={{ lineHeight: 28 }}>{title}</Text>
           {sourceLabel ? (
             <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${C.primary}1A` }}>
-              <Text className="text-xs font-semibold" style={{ color: C.primary }}>{sourceLabel}</Text>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: C.primary }}>{sourceLabel}</Text>
             </View>
           ) : null}
         </View>
@@ -231,8 +231,8 @@ export const SopExplainTab = forwardRef<SopExplainTabHandle, Props>(function Sop
               {mem.map((m, i) => (
                 <React.Fragment key={`${i}-${m}`}>
                   {i > 0 && <ArrowRight size={14} color={C.mutedForeground} />}
-                  <View className="rounded-full px-3 py-1" style={{ backgroundColor: `${C.primary}1F` }}>
-                    <Text className="text-sm font-bold" style={{ color: C.primary }}>{m}</Text>
+                  <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${C.primary}1F` }}>
+                    <Text textBreakStrategy="simple" className="text-sm font-bold" style={{ color: C.primary }}>{m}</Text>
                   </View>
                 </React.Fragment>
               ))}
@@ -327,7 +327,7 @@ export const SopExplainTab = forwardRef<SopExplainTabHandle, Props>(function Sop
                 <View className="flex-1 gap-0.5">
                   <Text className="text-[15px] font-bold text-foreground" style={{ lineHeight: 22 }}>{p.t}</Text>
                   <View className="flex-row items-center gap-2 flex-wrap">
-                    <View className="rounded-full px-2 py-0.5 bg-muted"><Text className="text-[11px] text-muted-foreground">⏲ {p.time}</Text></View>
+                    <View className="rounded-full bg-muted px-2.5 py-1"><Text textBreakStrategy="simple" className="text-[11px] text-muted-foreground">⏲ {p.time}</Text></View>
                     <Text className="text-[11px] font-semibold" style={{ color: prog.done === prog.total && prog.total > 0 ? GREEN : C.mutedForeground }}>
                       {prog.done}/{prog.total} पूरे
                     </Text>

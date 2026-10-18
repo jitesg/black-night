@@ -61,8 +61,8 @@ function PendingRow({ item, firId }: { item: FIRKaryvahi; firId: string }) {
         </Text>
         <View className="flex-row items-center gap-2 flex-wrap">
           {/* Status chip */}
-          <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: STATUS_BG[status] ?? '#F3F4F6' }}>
-            <Text className="text-xs font-medium" style={{ color: STATUS_COLOR[status] ?? '#6B7280' }}>
+          <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: STATUS_BG[status] ?? '#F3F4F6' }}>
+            <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: STATUS_COLOR[status] ?? '#6B7280' }}>
               {t(`fir.karyvahi.status.${status}`, status)}
             </Text>
           </View>

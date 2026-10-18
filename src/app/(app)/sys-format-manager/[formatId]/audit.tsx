@@ -109,9 +109,9 @@ export default function SysFormatAuditScreen() {
                 {/* Content */}
                 <View className="flex-1 pb-4">
                   <View className="flex-row items-center gap-2 flex-wrap">
-                    <View className="px-2 py-0.5 rounded-full"
+                    <View className="rounded-full px-2.5 py-1"
                       style={{ backgroundColor: `${meta.color}15` }}>
-                      <Text className="text-xs font-semibold" style={{ color: meta.color }}>
+                      <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: meta.color }}>
                         {meta.label}
                       </Text>
                     </View>

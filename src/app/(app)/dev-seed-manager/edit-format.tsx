@@ -73,8 +73,8 @@ function KeyRow({
         </Text>
         <View className="flex-row items-center gap-2">
           {Boolean(keyDef.is_required) && (
-            <View className="rounded-full px-2 py-0.5 bg-destructive/10">
-              <Text className="text-xs text-destructive font-medium">Req</Text>
+            <View className="rounded-full bg-destructive/10 px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs text-destructive font-medium">Req</Text>
             </View>
           )}
           <Pressable onPress={onDelete} className="p-1 active:opacity-60">
@@ -119,10 +119,10 @@ function KeyRow({
                 <Pressable
                   key={ft}
                   onPress={() => onUpdate('field_type', ft)}
-                  className="mx-0.5 rounded-full px-3 py-1.5 active:opacity-70"
+                  className="mx-0.5 rounded-full active:opacity-70 px-3 py-1.5"
                   style={{ backgroundColor: keyDef.field_type === ft ? '#1E3A5F' : '#F3F4F6' }}
                 >
-                  <Text className="text-xs font-medium" style={{ color: keyDef.field_type === ft ? '#fff' : '#374151' }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: keyDef.field_type === ft ? '#fff' : '#374151' }}>
                     {FIELD_TYPE_LABELS[ft]}
                   </Text>
                 </Pressable>
@@ -278,10 +278,10 @@ export default function EditFormatScreen() {
               <Pressable
                 key={ct.value}
                 onPress={() => setContentType(ct.value)}
-                className="mx-0.5 rounded-full px-3 py-2 active:opacity-70"
+                className="mx-0.5 rounded-full active:opacity-70 px-3 py-1.5"
                 style={{ backgroundColor: contentType === ct.value ? '#1E3A5F' : '#F3F4F6' }}
               >
-                <Text className="text-xs font-medium" style={{ color: contentType === ct.value ? '#fff' : '#374151' }}>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: contentType === ct.value ? '#fff' : '#374151' }}>
                   {ct.label}
                 </Text>
               </Pressable>
@@ -297,10 +297,10 @@ export default function EditFormatScreen() {
               <Pressable
                 key={ft}
                 onPress={() => setFormatType(ft)}
-                className="mx-0.5 rounded-full px-3 py-2 active:opacity-70"
+                className="mx-0.5 rounded-full active:opacity-70 px-3 py-1.5"
                 style={{ backgroundColor: formatType === ft ? '#1E3A5F' : '#F3F4F6' }}
               >
-                <Text className="text-xs font-medium" style={{ color: formatType === ft ? '#fff' : '#374151' }}>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: formatType === ft ? '#fff' : '#374151' }}>
                   {ft}
                 </Text>
               </Pressable>
@@ -332,10 +332,10 @@ export default function EditFormatScreen() {
               <Pressable
                 key={`${idx}-${tag}`}
                 onPress={() => toggleTag(tag)}
-                className="rounded-full px-3 py-1.5 active:opacity-70"
+                className="rounded-full active:opacity-70 px-3 py-1.5"
                 style={{ backgroundColor: tags.includes(tag) ? '#1E3A5F' : '#F3F4F6' }}
               >
-                <Text className="text-xs font-medium" style={{ color: tags.includes(tag) ? '#fff' : '#374151' }}>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: tags.includes(tag) ? '#fff' : '#374151' }}>
                   {tag}
                 </Text>
               </Pressable>

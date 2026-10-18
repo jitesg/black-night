@@ -106,9 +106,9 @@ function ReminderPanel({
         {info.category}
       </Text>
       <View className="flex-row items-center gap-2">
-        <View className="rounded-full px-2 py-0.5"
+        <View className="rounded-full px-2.5 py-1"
           style={{ backgroundColor: info.isActive ? (doc.deadline_date < todayStr() ? '#FEE2E2' : '#DBEAFE') : '#DCFCE7' }}>
-          <Text className="text-xs font-semibold" style={{ color: textColor }}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: textColor }}>
             {statusLabelText}
           </Text>
         </View>
@@ -129,8 +129,8 @@ function ReportCard({ report }: { report: NyayalayReport }) {
         <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
           {t('nyayalay.report.attachedReport')}
         </Text>
-        <View className="rounded-full px-2 py-0.5 ml-auto" style={{ backgroundColor: '#D1FAE5' }}>
-          <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('nyayalay.report.savedBadge')}</Text>
+        <View className="rounded-full ml-auto px-2.5 py-1" style={{ backgroundColor: '#D1FAE5' }}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('nyayalay.report.savedBadge')}</Text>
         </View>
       </View>
       {report.format_title ? (
@@ -359,9 +359,9 @@ export default function NyayalayDocDetailScreen() {
       <>
         {/* Status bar */}
         <View className="flex-row items-center gap-3 mb-6">
-          <View className="rounded-full px-3 py-1"
+          <View className="rounded-full px-2.5 py-1"
             style={{ backgroundColor: isFinished ? '#D1FAE5' : isOverdue ? '#FEE2E2' : '#FEF3C7' }}>
-            <Text className="text-sm font-semibold"
+            <Text textBreakStrategy="simple" className="text-sm font-semibold"
               style={{ color: isFinished ? '#065F46' : isOverdue ? '#991B1B' : '#92400E' }}>
               {statusLabel}
             </Text>
@@ -421,7 +421,7 @@ export default function NyayalayDocDetailScreen() {
           </View>
           <View className="rounded-full px-2.5 py-1"
             style={{ backgroundColor: isFinished ? '#D1FAE5' : isOverdue ? '#FEE2E2' : '#FEF3C7' }}>
-            <Text className="text-xs font-semibold"
+            <Text textBreakStrategy="simple" className="text-xs font-semibold"
               style={{ color: isFinished ? '#065F46' : isOverdue ? '#991B1B' : '#92400E' }}>
               {statusLabel}
             </Text>

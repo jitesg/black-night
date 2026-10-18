@@ -132,10 +132,10 @@ function FilterChip({
   return (
     <Pressable
       onPress={onPress}
-      className="mr-2 mb-2 rounded-full px-3 py-1.5 active:opacity-70 border"
+      className="mr-2 mb-2 rounded-full active:opacity-70 border px-3 py-1.5"
       style={{ backgroundColor: chipBg, borderColor: chipBorder }}
     >
-      <Text className="text-xs font-medium" style={{ color: chipText }}>{label}</Text>
+      <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: chipText }}>{label}</Text>
     </Pressable>
   );
 }
@@ -187,14 +187,14 @@ const DocCard = memo(function DocCard({
         <View className="flex-1">
           {/* Type badge */}
           <View className="flex-row items-center gap-2 mb-2">
-            <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: typeBadgeBg }}>
-              <Text className="text-xs font-semibold" style={{ color: typeBadgeText }}>
+            <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: typeBadgeBg }}>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: typeBadgeText }}>
                 {t(DOC_TYPE_I18N_KEYS[doc.doc_type])}
               </Text>
             </View>
             {doc.sub_type ? (
-              <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: palette.muted }}>
-                <Text className="text-xs" style={{ color: palette.mutedForeground }}>{doc.sub_type}</Text>
+              <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: palette.muted }}>
+                <Text textBreakStrategy="simple" className="text-xs" style={{ color: palette.mutedForeground }}>{doc.sub_type}</Text>
               </View>
             ) : null}
           </View>
@@ -223,8 +223,8 @@ const DocCard = memo(function DocCard({
 
           {/* Footer row */}
           <View className="flex-row items-center gap-3 mt-2">
-            <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: statusBg }}>
-              <Text className="text-xs font-semibold" style={{ color: statusColor }}>{statusLabel}</Text>
+            <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: statusBg }}>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: statusColor }}>{statusLabel}</Text>
             </View>
             <Text className="text-xs font-medium" style={{ color: dayColor }}>{dayLabel}</Text>
             <Text className="text-xs text-muted-foreground ml-auto">{doc.deadline_date}</Text>

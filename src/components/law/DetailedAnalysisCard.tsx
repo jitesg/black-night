@@ -102,10 +102,10 @@ export function DetailedAnalysisCard({ entry, isHi = true }: DetailedAnalysisCar
             {isHi ? 'विस्तृत विश्लेषण' : 'Detailed Analysis'}
           </Text>
           <View
-            className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20"
+            className="rounded-full bg-primary/10 border border-primary/20 px-2.5 py-1"
             style={{ borderCurve: 'continuous' }}
           >
-            <Text className="text-[10px] font-bold text-primary">
+            <Text textBreakStrategy="simple" className="text-[10px] font-bold text-primary">
               {isHi ? 'सहायक व्याख्या — आधिकारिक नहीं' : 'Advisory Guide — Non-official'}
             </Text>
           </View>
@@ -437,14 +437,14 @@ export function DetailedAnalysisCard({ entry, isHi = true }: DetailedAnalysisCar
                           {isHi ? `उदाहरण #${idx + 1}` : `Example #${idx + 1}`}
                         </Text>
                         <View
-                          className="px-2 py-0.5 rounded-full border"
+                          className="rounded-full border px-2.5 py-1"
                           style={{
                             backgroundColor: isOfficial ? `${C.primary}15` : `${C.muted}80`,
                             borderColor: isOfficial ? `${C.primary}30` : `${C.border}`,
                             borderCurve: 'continuous',
                           }}
                         >
-                          <Text
+                          <Text textBreakStrategy="simple"
                             className="text-[10px] font-bold"
                             style={{ color: isOfficial ? C.primary : C.mutedForeground }}
                           >
@@ -530,13 +530,13 @@ function AccordionSection({
           </Text>
           {badge && (
             <View
-              className="px-2 py-0.5 rounded-full"
+              className="rounded-full px-2.5 py-1"
               style={{
                 backgroundColor: `${badgeColor || C.primary}15`,
                 borderCurve: 'continuous',
               }}
             >
-              <Text className="text-[10px] font-bold" style={{ color: badgeColor || C.primary }}>
+              <Text textBreakStrategy="simple" className="text-[10px] font-bold" style={{ color: badgeColor || C.primary }}>
                 {badge}
               </Text>
             </View>

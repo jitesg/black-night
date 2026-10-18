@@ -63,8 +63,8 @@ function ClusterCard({ cluster }: { cluster: LinkedFIRCluster }) {
       {/* FIR numbers */}
       <View className="flex-row flex-wrap gap-1 mb-2">
         {cluster.firNumbers.map((fn, i) => (
-          <View key={i} className="px-2 py-0.5 bg-muted rounded-full">
-            <Text className="text-xs text-foreground">{fn}</Text>
+          <View key={i} className="bg-muted rounded-full px-2.5 py-1">
+            <Text textBreakStrategy="simple" className="text-xs text-foreground">{fn}</Text>
           </View>
         ))}
       </View>
@@ -125,9 +125,9 @@ export function MultiFIRLinkerPanel({ report }: Props) {
         {/* Category stats */}
         <View className="flex-row flex-wrap gap-2">
           {LINK_TYPES.filter((t) => (statMap[t] ?? 0) > 0).map((t) => (
-            <View key={t} className="flex-row items-center gap-1 px-2 py-1 bg-muted rounded-full">
-              <Text className="text-xs">{linkIcon(t)}</Text>
-              <Text className="text-xs text-foreground">{statMap[t]}</Text>
+            <View key={t} className="flex-row items-center gap-1 bg-muted rounded-full px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs">{linkIcon(t)}</Text>
+              <Text textBreakStrategy="simple" className="text-xs text-foreground">{statMap[t]}</Text>
             </View>
           ))}
         </View>

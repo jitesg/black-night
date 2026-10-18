@@ -232,13 +232,13 @@ export default function PPFillFormatScreen() {
                 {autoFilledKeyNames.map((k) => (
                   <View
                     key={k}
-                    className="flex-row items-center gap-1.5 rounded-full px-3 py-1.5 bg-secondary"
+                    className="flex-row items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5"
                   >
                     <CheckCircle2 size={11} color="#059669" />
-                    <Text className="text-xs text-foreground font-medium">
+                    <Text textBreakStrategy="simple" className="text-xs text-foreground font-medium">
                       {GLOBAL_KEY_LABELS[k] ?? k}:
                     </Text>
-                    <Text className="text-xs text-muted-foreground" numberOfLines={1}>
+                    <Text textBreakStrategy="simple" className="text-xs text-muted-foreground" numberOfLines={1}>
                       {autoValues[k]}
                     </Text>
                   </View>

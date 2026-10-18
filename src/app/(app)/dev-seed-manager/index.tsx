@@ -202,18 +202,18 @@ function ItemRow({ item, onEdit, onDelete, onPreview }: {
       {/* Badge row */}
       <View className="flex-row items-center gap-1.5 flex-wrap">
         {/* Content-type badge */}
-        <View className="rounded-full px-2 py-0.5 flex-row items-center gap-1" style={{ backgroundColor: `${ctColor}15` }}>
+        <View className="rounded-full flex-row items-center gap-1 px-2.5 py-1" style={{ backgroundColor: `${ctColor}15` }}>
           <Tag size={9} color={ctColor} />
-          <Text className="text-xs font-semibold" style={{ color: ctColor }}>{ctLabel}</Text>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: ctColor }}>{ctLabel}</Text>
         </View>
         {/* System badge */}
-        <View className="rounded-full px-2 py-0.5 flex-row items-center gap-1" style={{ backgroundColor: '#05966910' }}>
+        <View className="rounded-full flex-row items-center gap-1 px-2.5 py-1" style={{ backgroundColor: '#05966910' }}>
           <Shield size={9} color="#059669" />
-          <Text className="text-xs font-semibold" style={{ color: '#059669' }}>System</Text>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#059669' }}>System</Text>
         </View>
         {/* Version badge */}
-        <View className="rounded-full px-2 py-0.5 bg-secondary">
-          <Text className="text-xs font-medium text-muted-foreground">v{item.seed_version}</Text>
+        <View className="rounded-full bg-secondary px-2.5 py-1">
+          <Text textBreakStrategy="simple" className="text-xs font-medium text-muted-foreground">v{item.seed_version}</Text>
         </View>
         {/* Last updated */}
         <Text className="text-xs text-muted-foreground ml-auto">{item.last_updated}</Text>
@@ -422,10 +422,10 @@ export default function DevSeedManagerScreen() {
                   {Object.entries(mergedCounts).map(([catName, cnt]) => (
                     <View
                       key={catName}
-                      className="flex-row items-center gap-1 bg-secondary px-2 py-0.5 rounded-full"
+                      className="flex-row items-center gap-1 bg-secondary rounded-full px-2.5 py-1"
                     >
-                      <Text className="text-[10px] text-muted-foreground">{catName}:</Text>
-                      <Text className="text-[10px] font-bold text-foreground">{cnt}</Text>
+                      <Text textBreakStrategy="simple" className="text-[10px] text-muted-foreground">{catName}:</Text>
+                      <Text textBreakStrategy="simple" className="text-[10px] font-bold text-foreground">{cnt}</Text>
                     </View>
                   ))}
                 </View>
@@ -531,10 +531,10 @@ export default function DevSeedManagerScreen() {
             <Pressable
               key={f}
               onPress={() => setFilter(f)}
-              className="rounded-full px-3 py-1.5 active:opacity-70"
+              className="rounded-full active:opacity-70 px-3 py-1.5"
               style={{ backgroundColor: filter === f ? '#1E3A5F' : '#F3F4F6' }}
             >
-              <Text
+              <Text textBreakStrategy="simple"
                 className="text-xs font-medium"
                 style={{ color: filter === f ? '#fff' : '#374151' }}
               >
@@ -552,11 +552,11 @@ export default function DevSeedManagerScreen() {
             <Pressable
               key={s}
               onPress={() => setSort(s)}
-              className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+              className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
               style={{ backgroundColor: sort === s ? '#374151' : '#F3F4F6' }}
             >
               {sort === s && <ArrowUpDown size={9} color="#fff" />}
-              <Text
+              <Text textBreakStrategy="simple"
                 className="text-xs font-medium"
                 style={{ color: sort === s ? '#fff' : '#374151' }}
               >

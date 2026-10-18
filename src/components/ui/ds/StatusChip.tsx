@@ -6,7 +6,7 @@ import { memo } from 'react';
 import { Text, View, type ViewStyle } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import { T } from '@/lib/typography';
+import { PILL } from './Pill';
 
 export type StatusChipVariant = 'success' | 'warning' | 'error' | 'info' | 'neutral' | 'active';
 
@@ -56,10 +56,10 @@ export const StatusChip = memo(function StatusChip({
         {
           flexDirection: 'row',
           alignItems: 'center',
-          gap: 4,
-          paddingHorizontal: 8,
-          paddingVertical: 3,
-          borderRadius: 100,
+          gap: PILL.sm.gap,
+          height: PILL.sm.height,
+          paddingHorizontal: PILL.sm.paddingHorizontal,
+          borderRadius: PILL.radius,
           backgroundColor: cfg.bg,
           alignSelf: 'flex-start',
         },
@@ -67,7 +67,7 @@ export const StatusChip = memo(function StatusChip({
       ]}
     >
       {icon}
-      <Text style={{ ...T.caption1, color: cfg.text, fontWeight: '600' }}>
+      <Text {...PILL.textProps} style={{ fontSize: PILL.sm.fontSize, lineHeight: PILL.sm.lineHeight, color: cfg.text, fontWeight: '600', includeFontPadding: false }}>
         {label}
       </Text>
     </View>

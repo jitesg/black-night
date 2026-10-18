@@ -273,9 +273,9 @@ export default function AddKaryvahiChecklistScreen() {
                         <Text className="text-sm font-semibold text-foreground/80 leading-5">
                           {item.name}
                         </Text>
-                        <View className="flex-row items-center gap-1 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full">
+                        <View className="flex-row items-center gap-1 bg-emerald-500/10 border border-emerald-500/25 rounded-full px-2.5 py-1">
                           <CheckCircle2 size={11} color="#059669" />
-                          <Text className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                          <Text textBreakStrategy="simple" className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
                             {t('fir.karyvahi.alreadyAdded', 'पहले से जुड़ा हुआ')}
                           </Text>
                         </View>

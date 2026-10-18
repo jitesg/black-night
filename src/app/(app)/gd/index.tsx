@@ -124,16 +124,16 @@ const GdCard = memo(function GdCard({
         <View className="flex-1 gap-1" style={{ minWidth: 0 }}>
           <View className="flex-row items-center gap-2">
             <View
-              className="self-start rounded-full px-2.5 py-0.5"
+              className="self-start rounded-full px-2.5 py-1"
               style={{ backgroundColor: `${typeColor}15` }}
             >
-              <Text className="text-xs font-semibold" style={{ color: typeColor }}>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: typeColor }}>
                 {GD_TYPE_KEYS[entry.gd_type] ? t('gd.type.' + GD_TYPE_KEYS[entry.gd_type]) : entry.gd_type}
               </Text>
             </View>
             {entry.ta_da_flag === 1 && (
-              <View className="rounded-full px-2 py-0.5 bg-amber-50 border border-amber-200">
-                <Text className="text-xs font-medium text-amber-700">TA/DA</Text>
+              <View className="rounded-full bg-amber-50 border border-amber-200 px-2.5 py-1 dark:bg-amber-500/15 dark:border-amber-500/30">
+                <Text textBreakStrategy="simple" className="text-xs font-medium text-amber-700 dark:text-amber-300">TA/DA</Text>
               </View>
             )}
           </View>
@@ -421,13 +421,13 @@ export default function GdScreen() {
               <Pressable
                 key={f.value}
                 onPress={() => handleFilter(f.value)}
-                className="mr-2 rounded-full px-3 py-1.5 border active:opacity-70"
+                className="mr-2 rounded-full border active:opacity-70 px-3 py-1.5"
                 style={{
                   backgroundColor: activeFilter === f.value ? GD_COLOR : chipInactiveBg,
                   borderColor: activeFilter === f.value ? GD_COLOR : chipBorder,
                 }}
               >
-                <Text className="text-xs font-semibold" style={{ color: activeFilter === f.value ? '#fff' : chipInactiveText }}>
+                <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: activeFilter === f.value ? '#fff' : chipInactiveText }}>
                   {t(f.labelKey)}
                 </Text>
               </Pressable>

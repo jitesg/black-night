@@ -106,8 +106,8 @@ export function FindingCard({ finding }: Props) {
           {finding.modulesAnalysed.length > 0 && (
             <View className="flex-row flex-wrap gap-1">
               {finding.modulesAnalysed.map((m) => (
-                <View key={m} className="px-2 py-0.5 bg-white/70 rounded-full border border-border/40">
-                  <Text className="text-xs text-muted-foreground">{m}</Text>
+                <View key={m} className="bg-white/70 rounded-full border border-border/40 px-2.5 py-1">
+                  <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{m}</Text>
                 </View>
               ))}
             </View>

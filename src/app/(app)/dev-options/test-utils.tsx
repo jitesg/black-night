@@ -77,8 +77,8 @@ export default function TestUtilsScreen() {
         showBack
         variant="navy"
         rightActions={
-          <Pressable onPress={runAll} className="px-3 py-1 rounded-full active:opacity-70" style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}>
-            <Text className="text-xs font-bold text-white">Run All</Text>
+          <Pressable onPress={runAll} className="rounded-full active:opacity-70 px-2.5 py-1" style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}>
+            <Text textBreakStrategy="simple" className="text-xs font-bold text-white">Run All</Text>
           </Pressable>
         }
       />
@@ -109,8 +109,8 @@ export default function TestUtilsScreen() {
                   ? <CheckCircle size={18} color={GREEN} />
                   : <XCircle    size={18} color={RED} />
               ) : (
-                <Pressable onPress={() => runOne(label)} className="px-3 py-1.5 rounded-full active:opacity-70" style={{ backgroundColor: '#1E3A5F' }}>
-                  <Text className="text-xs font-bold text-white">Run</Text>
+                <Pressable onPress={() => runOne(label)} className="rounded-full active:opacity-70 px-3 py-1.5" style={{ backgroundColor: '#1E3A5F' }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-bold text-white">Run</Text>
                 </Pressable>
               )}
             </Pressable>

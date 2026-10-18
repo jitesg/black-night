@@ -148,8 +148,8 @@ function FormatRow({ format, onPress }: { format: FormatWithMeta; onPress: () =>
         {format.tags.length > 0 && (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-0.5">
             {format.tags.slice(0, 5).map((tag, idx) => (
-              <View key={`${idx}-${tag}`} className="mx-0.5 bg-secondary rounded-full px-2 py-0.5">
-                <Text className="text-xs text-muted-foreground">{tag}</Text>
+              <View key={`${idx}-${tag}`} className="mx-0.5 bg-secondary rounded-full px-2.5 py-1">
+                <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{tag}</Text>
               </View>
             ))}
           </ScrollView>

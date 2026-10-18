@@ -51,8 +51,8 @@ const getHealthConfig = (isDark: boolean): Record<HealthStatus, { bg: string; te
 
 function SeverityChip({ label, color }: { label: string; color: string }) {
   return (
-    <View className="px-2 py-0.5 rounded-full" style={{ backgroundColor: color + '22' }}>
-      <Text className="text-xs font-semibold" style={{ color }}>{label}</Text>
+    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: color + '22' }}>
+      <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color }}>{label}</Text>
     </View>
   );
 }
@@ -331,10 +331,10 @@ function EvidencePanel({ report }: { report: InvestigationIntelligenceReport }) 
             return (
               <View
                 key={n.id}
-                className="px-3 py-1.5 rounded-full"
+                className="rounded-full px-3 py-1.5"
                 style={{ backgroundColor: nodeBg }}
               >
-                <Text
+                <Text textBreakStrategy="simple"
                   className="text-xs font-medium"
                   style={{ color: nodeColor }}
                 >
@@ -410,8 +410,8 @@ function ContradictionsPanel({ report }: { report: InvestigationIntelligenceRepo
             )}
             <View className="flex-row flex-wrap gap-1 mt-2">
               {item.modulesInvolved.map((m) => (
-                <View key={m} className="px-2 py-0.5 bg-muted rounded-full">
-                  <Text className="text-xs text-muted-foreground">{m}</Text>
+                <View key={m} className="bg-muted rounded-full px-2.5 py-1">
+                  <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{m}</Text>
                 </View>
               ))}
             </View>

@@ -96,8 +96,8 @@ export default function MigrationScreen() {
         showBack
         variant="navy"
         rightActions={
-          <Pressable onPress={runAll} className="px-3 py-1 rounded-full active:opacity-70" style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}>
-            <Text className="text-xs font-bold text-white">Run All</Text>
+          <Pressable onPress={runAll} className="rounded-full active:opacity-70 px-2.5 py-1" style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}>
+            <Text textBreakStrategy="simple" className="text-xs font-bold text-white">Run All</Text>
           </Pressable>
         }
       />

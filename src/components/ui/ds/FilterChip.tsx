@@ -7,7 +7,7 @@ import { Pressable, Text, View, type ViewStyle } from 'react-native';
 import { X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import { T } from '@/lib/typography';
+import { PILL } from './Pill';
 
 export interface FilterChipProps {
   label: string;
@@ -46,10 +46,10 @@ export const FilterChip = memo(function FilterChip({
         {
           flexDirection: 'row',
           alignItems: 'center',
-          gap: 6,
-          height: 32,
-          paddingHorizontal: 12,
-          borderRadius: 16,
+          gap: PILL.md.gap,
+          height: PILL.md.height,
+          paddingHorizontal: PILL.md.paddingHorizontal,
+          borderRadius: PILL.radius,
           borderWidth: 1,
           backgroundColor: selected ? activeColor : 'transparent',
           borderColor: selected ? activeColor : c.border,
@@ -64,12 +64,14 @@ export const FilterChip = memo(function FilterChip({
         </View>
       ) : null}
       <Text
+        {...PILL.textProps}
         style={{
-          ...T.footnote,
+          fontSize: PILL.md.fontSize,
+          lineHeight: PILL.md.lineHeight,
+          includeFontPadding: false,
           fontWeight: '500',
           color: selected ? activeTextColor : c.foreground,
         }}
-        numberOfLines={1}
       >
         {label}
       </Text>

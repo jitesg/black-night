@@ -269,15 +269,15 @@ function StepsB1B2Block({ block, query }: { block: SopBlock; query: string }) {
                 <View className="flex-1 gap-1">
                   <View className="flex-row flex-wrap items-center gap-1.5">
                     {isMust ? (
-                      <View className="bg-emerald-600/15 border border-emerald-600/30 px-2 py-0.5 rounded-full">
-                        <Text className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                      <View className="bg-emerald-600/15 border border-emerald-600/30 rounded-full px-2.5 py-1">
+                        <Text textBreakStrategy="simple" className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
                           ✱ ज़रूरी
                         </Text>
                       </View>
                     ) : null}
                     {isDont ? (
-                      <View className="bg-destructive/20 border border-destructive/40 px-2 py-0.5 rounded-full">
-                        <Text className="text-[11px] font-bold text-destructive">
+                      <View className="bg-destructive/20 border border-destructive/40 rounded-full px-2.5 py-1">
+                        <Text textBreakStrategy="simple" className="text-[11px] font-bold text-destructive">
                           ✗ न करें / सावधानी
                         </Text>
                       </View>

@@ -116,8 +116,8 @@ function StatusBadge({ status }: { status: string }) {
   const { t } = useTranslation();
   const isPending = status === 'Pending';
   return (
-    <View className="rounded-full px-3 py-1" style={{ backgroundColor: isPending ? '#FEF3C7' : '#D1FAE5' }}>
-      <Text className="text-xs font-semibold" style={{ color: isPending ? '#92400E' : '#065F46' }}>
+    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: isPending ? '#FEF3C7' : '#D1FAE5' }}>
+      <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: isPending ? '#92400E' : '#065F46' }}>
         {isPending ? t('fir.statusPending') : t('fir.statusFinished')}
       </Text>
     </View>
@@ -137,8 +137,8 @@ function AccusedRow({ accused }: { accused: FIRAccused }) {
       {accused.address ? <Text className="text-xs text-muted-foreground">{accused.address}</Text> : null}
       {accused.mobile ? <Text className="text-xs text-muted-foreground">📞 {accused.mobile}</Text> : null}
       <View className="flex-row items-center gap-2 mt-1">
-        <View className="rounded-full px-2 py-0.5 bg-card border border-border">
-          <Text className="text-xs text-muted-foreground">{BAIL_LABELS[accused.bail_status] ?? accused.bail_status}</Text>
+        <View className="rounded-full bg-card border border-border px-2.5 py-1">
+          <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{BAIL_LABELS[accused.bail_status] ?? accused.bail_status}</Text>
         </View>
         {accused.next_remand_date ? (
           <Text className="text-xs text-amber-600">⏰ {t('fir.nextRemandPrefix')}: {accused.next_remand_date}</Text>
@@ -448,8 +448,8 @@ export default function FIRDetailsTab() {
                 className="flex-row items-center gap-1 active:opacity-60"
               >
                 {karyvahiStats.pendingMandatory > 0 && (
-                  <View className="rounded-full bg-red-100 px-2 py-0.5">
-                    <Text className="text-xs font-semibold text-red-600">
+                  <View className="rounded-full bg-red-100 px-2.5 py-1 dark:bg-red-500/15">
+                    <Text textBreakStrategy="simple" className="text-xs font-semibold text-red-600 dark:text-red-300">
                       {t('fir.pendingCount', { count: karyvahiStats.pendingMandatory })}
                     </Text>
                   </View>
@@ -585,8 +585,8 @@ export default function FIRDetailsTab() {
               <CheckSquare size={18} color="#0F766E" />
               <Text className="text-base font-bold text-foreground">SOP चेकलिस्ट</Text>
               {caseChecklists.length > 0 && (
-                <View className="bg-primary/10 px-2 py-0.5 rounded-full">
-                  <Text className="text-xs font-bold text-primary">{caseChecklists.length}</Text>
+                <View className="bg-primary/10 rounded-full px-2.5 py-1">
+                  <Text textBreakStrategy="simple" className="text-xs font-bold text-primary">{caseChecklists.length}</Text>
                 </View>
               )}
             </View>

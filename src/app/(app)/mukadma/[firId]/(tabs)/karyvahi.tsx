@@ -412,14 +412,14 @@ function KaryvahiCard({
 
   const badge = count > 0 ? (
     <View
-      className="rounded-full px-2 py-0.5 items-center justify-center"
+      className="rounded-full items-center justify-center px-2.5 py-1"
       style={{
         backgroundColor: multipleExec ? sem.CONDITIONAL.bg : sem.COMPLETED_STATUS.bg,
         borderWidth: 1,
         borderColor: multipleExec ? sem.CONDITIONAL.border : sem.COMPLETED_STATUS.border,
       }}
     >
-      <Text
+      <Text textBreakStrategy="simple"
         className="text-xs font-bold"
         style={{ color: multipleExec ? sem.CONDITIONAL.fg : sem.COMPLETED_STATUS.fg }}
       >
@@ -868,14 +868,14 @@ function DiaryView({
               title={item.name}
               badgeSlot={
                 <View
-                  className="rounded-full px-2 py-0.5"
+                  className="rounded-full px-2.5 py-1"
                   style={{
                     backgroundColor: priColor.bg,
                     borderWidth: 1,
                     borderColor: priColor.border,
                   }}
                 >
-                  <Text className="text-[10px] font-semibold" style={{ color: priColor.fg }}>
+                  <Text textBreakStrategy="simple" className="text-[10px] font-semibold" style={{ color: priColor.fg }}>
                     {priCfg.label}
                   </Text>
                 </View>
@@ -958,14 +958,14 @@ function DiaryView({
                       )}
                       {priCfg && priColor && (
                         <View
-                          className="rounded-full px-2 py-0.5"
+                          className="rounded-full px-2.5 py-1"
                           style={{
                             backgroundColor: priColor.bg,
                             borderWidth: 1,
                             borderColor: priColor.border,
                           }}
                         >
-                          <Text className="text-[10px] font-semibold" style={{ color: priColor.fg }}>
+                          <Text textBreakStrategy="simple" className="text-[10px] font-semibold" style={{ color: priColor.fg }}>
                             {priCfg.label}
                           </Text>
                         </View>
@@ -1326,10 +1326,10 @@ export default function KaryvahiTab() {
                   <Pressable
                     key={f.value}
                     onPress={() => setFilterMode(f.value)}
-                    className="rounded-full px-3 py-1.5 min-h-[32px] items-center justify-center active:opacity-70"
+                    className="rounded-full min-h-[32px] items-center justify-center active:opacity-70 px-3 py-1.5"
                     style={{ backgroundColor: isSelected ? c.primary : c.secondary }}
                   >
-                    <Text
+                    <Text textBreakStrategy="simple"
                       style={{
                         fontSize: 11,
                         fontWeight: '600',

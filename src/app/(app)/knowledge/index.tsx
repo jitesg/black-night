@@ -106,10 +106,10 @@ function CategoryRow({ cat, count }: { cat: KnowledgeCategory; count?: number | 
         </Text>
       </View>
       <View
-        className="rounded-full px-2.5 py-0.5"
+        className="rounded-full px-2.5 py-1"
         style={{ backgroundColor: `${cat.color}15` }}
       >
-        <Text className="text-xs font-semibold" style={{ color: cat.color }}>
+        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: cat.color }}>
           {count ?? (isLaw ? '1059+' : 0)}
         </Text>
       </View>
@@ -134,10 +134,10 @@ function SearchResultRow({
     >
       <View className="flex-row items-center gap-2">
         <View
-          className="rounded-full px-2 py-0.5"
+          className="rounded-full px-2.5 py-1"
           style={{ backgroundColor: `${cat?.color ?? C.mutedForeground}15` }}
         >
-          <Text className="text-xs font-semibold" style={{ color: cat?.color ?? C.mutedForeground }}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: cat?.color ?? C.mutedForeground }}>
             {item.category}
           </Text>
         </View>

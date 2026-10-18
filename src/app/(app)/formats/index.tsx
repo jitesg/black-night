@@ -27,6 +27,7 @@ import {
 import { getPublishedFormats, searchPublishedFormats } from '@/lib/db/sysFormatRepo';
 import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
 import { SourceBadge } from '@/components/common/SourceBadge';
+import { Pill } from '@/components/ui/ds/Pill';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
@@ -128,14 +129,7 @@ const FormatCard = memo(function FormatCard({
             numberOfLines={2}
             style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, flexShrink: 1 }}
           />
-          <View
-            className="self-start rounded-full px-2 py-0.5"
-            style={{ backgroundColor: `${typeColor}15` }}
-          >
-            <Text className="text-xs font-medium" style={{ color: typeColor }}>
-              {getFormatTypeLabel(format.format_type, t)}
-            </Text>
-          </View>
+          <Pill label={getFormatTypeLabel(format.format_type, t)} color={typeColor} />
         </View>
         {/* Eye preview — 44dp touch target via padding + hitSlop */}
         <Pressable
@@ -166,12 +160,9 @@ const FormatCard = memo(function FormatCard({
       </View>
       {/* Tags */}
       {format.tags.length > 0 && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
           {format.tags.slice(0, 6).map((tag, idx) => (
-            <View key={`${idx}-${tag}`} className="mx-1 bg-secondary rounded-full px-2.5 py-1">
-              {/* text-secondary-foreground resolves to #111827 (light) / #F1F5F9 (dark) — WCAG AA ✓ */}
-              <Text className="text-xs text-secondary-foreground">{tag}</Text>
-            </View>
+            <Pill key={`${idx}-${tag}`} label={tag} />
           ))}
         </ScrollView>
       )}
@@ -482,7 +473,7 @@ export default function FormatsScreen() {
                 <Pressable
                   key={f}
                   onPress={() => handleFilter(f)}
-                  className="mx-1 flex-row items-center rounded-full px-3 py-1.5 active:opacity-70"
+                  className="mx-1 flex-row items-center rounded-full active:opacity-70 px-3 py-1.5"
                   style={{
                     backgroundColor: isActive ? INDIGO : chipInactiveBg,
                     borderWidth: 1,
@@ -490,7 +481,7 @@ export default function FormatsScreen() {
                     gap: 5,
                   }}
                 >
-                  <Text
+                  <Text textBreakStrategy="simple"
                     className="text-xs font-semibold"
                     style={{ color: isActive ? '#fff' : chipInactiveText }}
                   >
@@ -506,7 +497,7 @@ export default function FormatsScreen() {
                         paddingHorizontal: 4,
                       }}
                     >
-                      <Text
+                      <Text textBreakStrategy="simple"
                         className="font-semibold"
                         style={{ fontSize: 10, color: isActive ? '#fff' : INDIGO, lineHeight: 14 }}
                       >
@@ -526,7 +517,7 @@ export default function FormatsScreen() {
             <Pressable
               key={sf}
               onPress={() => handleSourceFilter(sf)}
-              className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+              className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
               style={{
                 backgroundColor: sourceFilter === sf ? INDIGO : chipInactiveBg,
                 borderWidth: 1,
@@ -536,7 +527,7 @@ export default function FormatsScreen() {
               {sf !== 'All' && (sf === 'System'
                 ? <Shield size={11} color={sourceFilter === sf ? '#fff' : chipInactiveText} />
                 : <User size={11} color={sourceFilter === sf ? '#fff' : chipInactiveText} />)}
-              <Text
+              <Text textBreakStrategy="simple"
                 className="text-xs font-semibold"
                 style={{ color: sourceFilter === sf ? '#fff' : chipInactiveText }}
               >
@@ -550,7 +541,7 @@ export default function FormatsScreen() {
             accessibilityRole="button"
             accessibilityState={{ selected: activeFilter === 'Favorites' }}
             accessibilityLabel={t('format.filter.favorites')}
-            className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+            className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
             style={{
               backgroundColor: activeFilter === 'Favorites' ? '#D97706' : chipInactiveBg,
               borderWidth: 1,
@@ -558,7 +549,7 @@ export default function FormatsScreen() {
             }}
           >
             <Star size={11} color={activeFilter === 'Favorites' ? '#fff' : '#D97706'} fill={activeFilter === 'Favorites' ? '#fff' : '#D97706'} />
-            <Text className="text-xs font-semibold" style={{ color: activeFilter === 'Favorites' ? '#fff' : chipInactiveText }}>
+            <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: activeFilter === 'Favorites' ? '#fff' : chipInactiveText }}>
               {t('format.filter.favorites')}{filterCounts['Favorites'] ? ` (${filterCounts['Favorites']})` : ''}
             </Text>
           </Pressable>

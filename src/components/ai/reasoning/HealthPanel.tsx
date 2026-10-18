@@ -116,33 +116,33 @@ export function HealthPanel({ report }: Props) {
         {/* Quick stat pills */}
         <View className="flex-row gap-2 mt-3 flex-wrap">
           {report.completedItems.length > 0 && (
-            <View className="flex-row items-center gap-1 px-2.5 py-1 bg-emerald-50 rounded-full">
+            <View className="flex-row items-center gap-1 bg-emerald-50 rounded-full px-2.5 py-1 dark:bg-emerald-500/15">
               <CheckCircle size={10} className="text-emerald-600" />
-              <Text className="text-xs text-emerald-700 font-medium">{report.completedItems.length} done</Text>
+              <Text textBreakStrategy="simple" className="text-xs text-emerald-700 font-medium dark:text-emerald-300">{report.completedItems.length} done</Text>
             </View>
           )}
           {report.pendingItems.length > 0 && (
-            <View className="flex-row items-center gap-1 px-2.5 py-1 bg-amber-50 rounded-full">
+            <View className="flex-row items-center gap-1 bg-amber-50 rounded-full px-2.5 py-1 dark:bg-amber-500/15">
               <Clock size={10} className="text-amber-600" />
-              <Text className="text-xs text-amber-700 font-medium">{report.pendingItems.length} pending</Text>
+              <Text textBreakStrategy="simple" className="text-xs text-amber-700 font-medium dark:text-amber-300">{report.pendingItems.length} pending</Text>
             </View>
           )}
           {report.criticalItems.length > 0 && (
-            <View className="flex-row items-center gap-1 px-2.5 py-1 bg-red-50 rounded-full">
+            <View className="flex-row items-center gap-1 bg-red-50 rounded-full px-2.5 py-1 dark:bg-red-500/15">
               <XCircle size={10} className="text-destructive" />
-              <Text className="text-xs text-destructive font-medium">{report.criticalItems.length} critical</Text>
+              <Text textBreakStrategy="simple" className="text-xs text-destructive font-medium">{report.criticalItems.length} critical</Text>
             </View>
           )}
           {report.missingItems.length > 0 && (
-            <View className="flex-row items-center gap-1 px-2.5 py-1 bg-slate-50 rounded-full">
+            <View className="flex-row items-center gap-1 bg-slate-50 rounded-full px-2.5 py-1 dark:bg-slate-500/15">
               <AlertTriangle size={10} className="text-slate-600" />
-              <Text className="text-xs text-slate-700 font-medium">{report.missingItems.length} missing</Text>
+              <Text textBreakStrategy="simple" className="text-xs text-slate-700 font-medium dark:text-slate-300">{report.missingItems.length} missing</Text>
             </View>
           )}
           {report.deadlineItems.length > 0 && (
-            <View className="flex-row items-center gap-1 px-2.5 py-1 bg-violet-50 rounded-full">
+            <View className="flex-row items-center gap-1 bg-violet-50 rounded-full px-2.5 py-1 dark:bg-violet-500/15">
               <Calendar size={10} className="text-violet-600" />
-              <Text className="text-xs text-violet-700 font-medium">{report.deadlineItems.length} deadlines</Text>
+              <Text textBreakStrategy="simple" className="text-xs text-violet-700 font-medium dark:text-violet-300">{report.deadlineItems.length} deadlines</Text>
             </View>
           )}
         </View>

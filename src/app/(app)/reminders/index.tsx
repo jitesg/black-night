@@ -158,9 +158,9 @@ export default function RemindersScreen() {
               {item.title}
             </Text>
             {item.repeat_mode !== 'once' && (
-              <View className="flex-row items-center gap-1 bg-primary/10 px-2 py-0.5 rounded-full">
+              <View className="flex-row items-center gap-1 bg-primary/10 rounded-full px-2.5 py-1">
                 <RefreshCw size={10} color={c.primary} />
-                <Text className="text-[10px] font-medium text-primary">
+                <Text textBreakStrategy="simple" className="text-[10px] font-medium text-primary">
                   {t(REPEAT_LABEL_KEY[item.repeat_mode] ?? 'reminders.repeat.once')}
                 </Text>
               </View>

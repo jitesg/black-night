@@ -97,8 +97,8 @@ function UserKeyRow({
           numberOfLines={1}>
           {keyDef.label || keyDef.key_name || t('sysFormat.editor.newFieldLabel')}
         </Text>
-        <View className="px-1.5 py-0.5 rounded-full bg-muted">
-          <Text className="text-xs text-muted-foreground">
+        <View className="rounded-full bg-muted px-2.5 py-1">
+          <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">
             {FIELD_TYPE_LABELS[keyDef.field_type] ?? keyDef.field_type}
           </Text>
         </View>
@@ -139,13 +139,13 @@ function UserKeyRow({
                 <Pressable
                   key={ft}
                   onPress={() => onChange({ field_type: ft })}
-                  className="px-2.5 py-1 rounded-full active:opacity-70"
+                  className="rounded-full active:opacity-70 px-2.5 py-1"
                   style={{
                     backgroundColor: keyDef.field_type === ft ? '#1E3A5F' : '#F3F4F6',
                     borderWidth: 1, borderColor: keyDef.field_type === ft ? '#1E3A5F' : 'transparent',
                   }}
                 >
-                  <Text className="text-xs font-medium"
+                  <Text textBreakStrategy="simple" className="text-xs font-medium"
                     style={{ color: keyDef.field_type === ft ? '#fff' : '#374151' }}>
                     {FIELD_TYPE_LABELS[ft]}
                   </Text>
@@ -365,21 +365,21 @@ export default function SysFormatEditorScreen() {
         showBack
         actions={
           saved ? (
-            <View className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/20">
+            <View className="flex-row items-center gap-1.5 rounded-full bg-green-500/20 px-3 py-1.5">
               <CheckCircle2 size={13} color="#4ADE80" />
-              <Text className="text-xs font-semibold text-green-400">{t('sysFormat.editor.savedBadge')}</Text>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold text-green-400">{t('sysFormat.editor.savedBadge')}</Text>
             </View>
           ) : (
             <Pressable
               onPress={handleSave}
               disabled={saving}
-              className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full active:opacity-60"
+              className="flex-row items-center gap-1.5 rounded-full active:opacity-60 px-3 py-1.5"
               style={{ backgroundColor: saving ? 'rgba(0,0,0,0.06)' : '#F59E0B' }}
             >
               {saving
                 ? <ActivityIndicator size="small" color="#fff" />
                 : <Save size={13} color="#fff" />}
-              <Text className="text-xs font-semibold text-white">
+              <Text textBreakStrategy="simple" className="text-xs font-semibold text-white">
                 {saving ? t('sysFormat.editor.saving') : t('sysFormat.editor.save')}
               </Text>
             </Pressable>
@@ -424,13 +424,13 @@ export default function SysFormatEditorScreen() {
                 <Pressable
                   key={ft}
                   onPress={() => setFormatType(ft)}
-                  className="rounded-full px-3 py-1.5 active:opacity-70"
+                  className="rounded-full active:opacity-70 px-3 py-1.5"
                   style={{
                     backgroundColor: formatType === ft ? '#1E3A5F' : '#F3F4F6',
                     borderWidth: 1, borderColor: formatType === ft ? '#1E3A5F' : 'transparent',
                   }}
                 >
-                  <Text className="text-xs font-medium"
+                  <Text textBreakStrategy="simple" className="text-xs font-medium"
                     style={{ color: formatType === ft ? '#fff' : '#374151' }}>{ft}</Text>
                 </Pressable>
               ))}
@@ -445,13 +445,13 @@ export default function SysFormatEditorScreen() {
                 <Pressable
                   key={cat}
                   onPress={() => setSysCategory(sysCategory === cat ? '' : cat)}
-                  className="rounded-full px-3 py-1.5 active:opacity-70"
+                  className="rounded-full active:opacity-70 px-3 py-1.5"
                   style={{
                     backgroundColor: sysCategory === cat ? '#F59E0B' : '#F3F4F6',
                     borderWidth: 1, borderColor: sysCategory === cat ? '#F59E0B' : 'transparent',
                   }}
                 >
-                  <Text className="text-xs font-medium"
+                  <Text textBreakStrategy="simple" className="text-xs font-medium"
                     style={{ color: sysCategory === cat ? '#fff' : '#374151' }}>{cat}</Text>
                 </Pressable>
               ))}
@@ -486,13 +486,13 @@ export default function SysFormatEditorScreen() {
                     <Pressable
                       key={s}
                       onPress={() => setStatus(s)}
-                      className="rounded-full px-3 py-1.5 active:opacity-70"
+                      className="rounded-full active:opacity-70 px-3 py-1.5"
                       style={{
                         backgroundColor: status === s ? color : '#F3F4F6',
                         borderWidth: 1, borderColor: status === s ? color : 'transparent',
                       }}
                     >
-                      <Text className="text-xs font-medium capitalize"
+                      <Text textBreakStrategy="simple" className="text-xs font-medium capitalize"
                         style={{ color: status === s ? '#fff' : '#374151' }}>{s}</Text>
                     </Pressable>
                   );
@@ -534,11 +534,11 @@ export default function SysFormatEditorScreen() {
                     <Pressable
                       key={k}
                       onPress={() => addDetectedKey(k)}
-                      className="flex-row items-center gap-1 px-2.5 py-1.5 rounded-full active:opacity-70"
+                      className="flex-row items-center gap-1 rounded-full active:opacity-70 px-3 py-1.5"
                       style={{ backgroundColor: `${'#1E3A5F'}12`, borderWidth: 1, borderColor: `${'#1E3A5F'}25` }}
                     >
                       <Plus size={11} color='#1E3A5F' />
-                      <Text className="text-xs font-medium" style={{ color: '#1E3A5F' }}>{k}</Text>
+                      <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: '#1E3A5F' }}>{k}</Text>
                     </Pressable>
                   ))}
                 </View>
@@ -557,11 +557,11 @@ export default function SysFormatEditorScreen() {
               </View>
               <Pressable
                 onPress={addUserKey}
-                className="flex-row items-center gap-1 px-2.5 py-1.5 rounded-full active:opacity-70"
+                className="flex-row items-center gap-1 rounded-full active:opacity-70 px-3 py-1.5"
                 style={{ backgroundColor: `${'#1E3A5F'}12` }}
               >
                 <Plus size={11} color='#1E3A5F' />
-                <Text className="text-xs font-medium" style={{ color: '#1E3A5F' }}>{t('sysFormat.editor.addField')}</Text>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: '#1E3A5F' }}>{t('sysFormat.editor.addField')}</Text>
               </Pressable>
             </View>
 
@@ -590,10 +590,10 @@ export default function SysFormatEditorScreen() {
                   <Pressable
                     key={p.key_name}
                     onPress={() => addPresetKey(p)}
-                    className="flex-row items-center gap-1 px-2.5 py-1.5 rounded-full bg-muted active:opacity-70"
+                    className="flex-row items-center gap-1 rounded-full bg-muted active:opacity-70 px-3 py-1.5"
                   >
                     <BookOpen size={11} color="#6B7280" />
-                    <Text className="text-xs text-muted-foreground">{p.label}</Text>
+                    <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{p.label}</Text>
                   </Pressable>
                 ))}
               </View>
@@ -613,10 +613,10 @@ export default function SysFormatEditorScreen() {
                   <Pressable
                     key={`${idx}-${t}`}
                     onPress={() => removeTag(t)}
-                    className="flex-row items-center gap-1 px-2.5 py-1.5 rounded-full active:opacity-70"
+                    className="flex-row items-center gap-1 rounded-full active:opacity-70 px-3 py-1.5"
                     style={{ backgroundColor: `${'#1E3A5F'}12`, borderWidth: 1, borderColor: `${'#1E3A5F'}25` }}
                   >
-                    <Text className="text-xs font-medium" style={{ color: '#1E3A5F' }}>{t}</Text>
+                    <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: '#1E3A5F' }}>{t}</Text>
                     <X size={10} color='#1E3A5F' />
                   </Pressable>
                 ))}
@@ -628,9 +628,9 @@ export default function SysFormatEditorScreen() {
                 <Pressable
                   key={`${idx}-${t}`}
                   onPress={() => addTag(t)}
-                  className="px-2.5 py-1.5 rounded-full bg-muted active:opacity-70"
+                  className="rounded-full bg-muted active:opacity-70 px-3 py-1.5"
                 >
-                  <Text className="text-xs text-muted-foreground">{t}</Text>
+                  <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{t}</Text>
                 </Pressable>
               ))}
             </View>

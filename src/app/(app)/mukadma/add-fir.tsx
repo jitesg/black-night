@@ -224,11 +224,11 @@ function FlatCrimeTypeSelect({
               <Pressable
                 key={id}
                 onPress={() => onToggle(id)}
-                className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+                className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
                 style={{ backgroundColor: '#EEF2FF', borderWidth: 1, borderColor: '#C7D2FE' }}
               >
-                <Text className="text-xs font-medium" style={{ color: '#6366F1' }}>{meta.name_hi}</Text>
-                <Text className="text-xs font-bold ml-0.5" style={{ color: '#6366F1' }}>×</Text>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: '#6366F1' }}>{meta.name_hi}</Text>
+                <Text textBreakStrategy="simple" className="text-xs font-bold ml-0.5" style={{ color: '#6366F1' }}>×</Text>
               </Pressable>
             );
           })}
@@ -385,13 +385,13 @@ function AccusedCard({
             <Pressable
               key={opt.value}
               onPress={() => onChange(accused.id, 'bailStatus', opt.value)}
-              className="rounded-full px-3 py-1.5 border active:opacity-70"
+              className="rounded-full border active:opacity-70 px-3 py-1.5"
               style={{
                 borderColor: accused.bailStatus === opt.value ? '#6366F1' : '#E5E7EB',
                 backgroundColor: accused.bailStatus === opt.value ? '#EEF2FF' : '#fff',
               }}
             >
-              <Text className="text-xs font-medium" style={{ color: accused.bailStatus === opt.value ? '#6366F1' : '#6B7280' }}>
+              <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: accused.bailStatus === opt.value ? '#6366F1' : '#6B7280' }}>
                 {opt.label}
               </Text>
             </Pressable>

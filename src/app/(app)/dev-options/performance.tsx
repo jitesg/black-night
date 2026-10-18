@@ -107,8 +107,8 @@ export default function PerformanceScreen() {
         showBack
         variant="navy"
         rightActions={
-          <Pressable onPress={toggleRunning} className="px-3 py-1 rounded-full active:opacity-70" style={{ backgroundColor: running ? '#059669' : '#DC2626' }}>
-            <Text className="text-xs font-bold text-white">{running ? '● LIVE' : '■ PAUSED'}</Text>
+          <Pressable onPress={toggleRunning} className="rounded-full active:opacity-70 px-2.5 py-1" style={{ backgroundColor: running ? '#059669' : '#DC2626' }}>
+            <Text textBreakStrategy="simple" className="text-xs font-bold text-white">{running ? '● LIVE' : '■ PAUSED'}</Text>
           </Pressable>
         }
       />

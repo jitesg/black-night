@@ -145,8 +145,8 @@ export default function SysFormatVersionsScreen() {
                         {item.title}
                       </Text>
                       {isCurrent && (
-                        <View className="px-1.5 py-0.5 rounded-full bg-green-100">
-                          <Text className="text-xs text-green-700 font-medium">Current</Text>
+                        <View className="rounded-full bg-green-100 px-2.5 py-1 dark:bg-green-500/15">
+                          <Text textBreakStrategy="simple" className="text-xs text-green-700 font-medium dark:text-green-300">Current</Text>
                         </View>
                       )}
                     </View>
@@ -177,8 +177,8 @@ export default function SysFormatVersionsScreen() {
                         </Text>
                         <View className="flex-row flex-wrap gap-1.5">
                           {keys.map((k) => (
-                            <View key={k.key_name} className="px-2 py-1 bg-muted rounded-full">
-                              <Text className="text-xs text-muted-foreground">{k.label || k.key_name}</Text>
+                            <View key={k.key_name} className="bg-muted rounded-full px-2.5 py-1">
+                              <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{k.label || k.key_name}</Text>
                             </View>
                           ))}
                         </View>
@@ -191,8 +191,8 @@ export default function SysFormatVersionsScreen() {
                         </Text>
                         <View className="flex-row flex-wrap gap-1.5">
                           {tags.map((t, idx) => (
-                            <View key={`${idx}-${t}`} className="px-2 py-1 bg-muted rounded-full">
-                              <Text className="text-xs text-muted-foreground">{t}</Text>
+                            <View key={`${idx}-${t}`} className="bg-muted rounded-full px-2.5 py-1">
+                              <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{t}</Text>
                             </View>
                           ))}
                         </View>

@@ -104,12 +104,12 @@ export function FardCheckSheet({ visible, onClose, result, onChangeType }: FardC
               {onChangeType ? (
                 <Pressable
                   onPress={onChangeType}
-                  className="flex-row items-center gap-1 px-2.5 py-1.5 rounded-full bg-secondary active:opacity-70"
+                  className="flex-row items-center gap-1 rounded-full bg-secondary active:opacity-70 px-3 py-1.5"
                   accessibilityRole="button"
                   accessibilityLabel={t('fard.changeType', 'प्रकार बदलें')}
                 >
                   <RefreshCw size={11} className="text-muted-foreground" />
-                  <Text className="text-xs font-semibold text-foreground">
+                  <Text textBreakStrategy="simple" className="text-xs font-semibold text-foreground">
                     {t('fard.changeType', 'प्रकार बदलें')}
                   </Text>
                 </Pressable>
@@ -236,10 +236,10 @@ export function FardCheckSheet({ visible, onClose, result, onChangeType }: FardC
                     {found.map((f, idx) => (
                       <View
                         key={`found-${idx}`}
-                        className="flex-row items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20"
+                        className="flex-row items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1"
                       >
                         <CheckCircle2 size={12} color="#10B981" />
-                        <Text className="text-xs text-emerald-700 dark:text-emerald-300 font-medium">
+                        <Text textBreakStrategy="simple" className="text-xs text-emerald-700 dark:text-emerald-300 font-medium">
                           {f.label}
                         </Text>
                       </View>

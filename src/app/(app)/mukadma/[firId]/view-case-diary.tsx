@@ -255,8 +255,8 @@ export default function ViewCaseDiaryScreen() {
               </View>
               <View className="flex-row flex-wrap gap-2 pl-5">
                 {places.map((p) => (
-                  <View key={p} className="bg-secondary rounded-full px-3 py-1">
-                    <Text className="text-xs text-foreground">{p}</Text>
+                  <View key={p} className="bg-secondary rounded-full px-2.5 py-1">
+                    <Text textBreakStrategy="simple" className="text-xs text-foreground">{p}</Text>
                   </View>
                 ))}
               </View>

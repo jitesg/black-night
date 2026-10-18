@@ -171,8 +171,8 @@ function SettingRow({ item, isLast }: { item: SettingItem; isLast: boolean }) {
         <View className="flex-row items-center gap-2">
           <Text className="text-sm font-semibold text-foreground">{t(item.titleKey)}</Text>
           {item.badgeKey ? (
-            <View className="px-1.5 py-0.5 rounded-full bg-muted">
-              <Text className="text-xs font-semibold text-muted-foreground">{t(item.badgeKey)}</Text>
+            <View className="rounded-full bg-muted px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs font-semibold text-muted-foreground">{t(item.badgeKey)}</Text>
             </View>
           ) : null}
         </View>

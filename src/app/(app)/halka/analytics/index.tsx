@@ -162,8 +162,8 @@ function ItemRow({ item, Icon, color, onPress, onEdit, onDelete }: {
       </View>
 
       {item.badge ? (
-        <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: `${item.badgeColor ?? color}18` }}>
-          <Text className="text-xs font-medium capitalize" style={{ color: item.badgeColor ?? color }} numberOfLines={1}>
+        <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${item.badgeColor ?? color}18` }}>
+          <Text textBreakStrategy="simple" className="text-xs font-medium capitalize" style={{ color: item.badgeColor ?? color }} numberOfLines={1}>
             {item.badge}
           </Text>
         </View>

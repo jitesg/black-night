@@ -101,10 +101,10 @@ export function VisualDecisionCard({ recommendation: rec, index, auditEntryId, c
                 {cfg.label}
               </Text>
               <View
-                className="px-1.5 py-0.5 rounded-full"
+                className="rounded-full px-2.5 py-1"
                 style={{ backgroundColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.6)' }}
               >
-                <Text className="text-xs font-medium" style={{ color: cfg.text }}>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: cfg.text }}>
                   {PRIORITY_LABELS[rec.priority]}
                 </Text>
               </View>
@@ -201,10 +201,10 @@ export function VisualDecisionCard({ recommendation: rec, index, auditEntryId, c
                 {rec.dependencies.map((dep) => (
                   <View
                     key={dep}
-                    className="px-2 py-0.5 rounded-full"
+                    className="rounded-full px-2.5 py-1"
                     style={{ backgroundColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.7)' }}
                   >
-                    <Text className="text-xs text-muted-foreground">{dep}</Text>
+                    <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{dep}</Text>
                   </View>
                 ))}
               </View>

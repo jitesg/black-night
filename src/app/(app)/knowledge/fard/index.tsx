@@ -146,9 +146,9 @@ export default function FardListScreen() {
               {query ? (
                 <Pressable
                   onPress={handleClear}
-                  className="mt-2 px-4 py-1.5 rounded-full bg-primary/10 active:opacity-70"
+                  className="mt-2 rounded-full bg-primary/10 active:opacity-70 px-3 py-1.5"
                 >
-                  <Text className="text-xs font-semibold text-primary">
+                  <Text textBreakStrategy="simple" className="text-xs font-semibold text-primary">
                     {t('common.clear', 'साफ़ करें')}
                   </Text>
                 </Pressable>

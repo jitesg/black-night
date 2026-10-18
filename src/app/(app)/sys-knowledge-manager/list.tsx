@@ -113,8 +113,8 @@ function ArticleCard({
         </Pressable>
       </View>
       <View className="flex-row items-center gap-2 flex-wrap">
-        <View className="px-2 py-0.5 rounded-full" style={{ backgroundColor: `${statusColor}18` }}>
-          <Text className="text-xs font-medium" style={{ color: statusColor }}>{article.status}</Text>
+        <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${statusColor}18` }}>
+          <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: statusColor }}>{article.status}</Text>
         </View>
         <Text className="text-xs text-muted-foreground">{article.category}</Text>
         {!!article.subcategory && <Text className="text-xs text-muted-foreground">· {article.subcategory}</Text>}
@@ -270,9 +270,9 @@ export default function SysKnowledgeList() {
             <View className="flex-row flex-wrap gap-2 px-5 mb-4">
               {statusOptions.map(s => (
                 <Pressable key={s} onPress={() => { setStatus(s); setFilterModal(false); load(); }}
-                  className="px-3 py-1.5 rounded-full border active:opacity-70"
+                  className="rounded-full border active:opacity-70 px-3 py-1.5"
                   style={{ borderColor: statusFilter === s ? '#1E3A5F' : '#E5E7EB', backgroundColor: statusFilter === s ? '#1E3A5F' : 'transparent' }}>
-                  <Text className="text-xs capitalize" style={{ color: statusFilter === s ? '#fff' : MUTED }}>{s}</Text>
+                  <Text textBreakStrategy="simple" className="text-xs capitalize" style={{ color: statusFilter === s ? '#fff' : MUTED }}>{s}</Text>
                 </Pressable>
               ))}
             </View>
@@ -281,9 +281,9 @@ export default function SysKnowledgeList() {
             <View className="flex-row flex-wrap gap-2 px-5 pb-4">
               {allCategories.map(c => (
                 <Pressable key={c} onPress={() => { setCategory(c); setFilterModal(false); load(); }}
-                  className="px-3 py-1.5 rounded-full border active:opacity-70"
+                  className="rounded-full border active:opacity-70 px-3 py-1.5"
                   style={{ borderColor: categoryFilter === c ? '#1E3A5F' : '#E5E7EB', backgroundColor: categoryFilter === c ? '#1E3A5F' : 'transparent' }}>
-                  <Text className="text-xs capitalize" style={{ color: categoryFilter === c ? '#fff' : MUTED }}>
+                  <Text textBreakStrategy="simple" className="text-xs capitalize" style={{ color: categoryFilter === c ? '#fff' : MUTED }}>
                     {c === 'all' ? 'All' : c}
                   </Text>
                 </Pressable>

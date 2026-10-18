@@ -223,8 +223,8 @@ export default function NyayalaySelectFormatScreen() {
                 <Pressable
                   key={f.value}
                   onPress={() => handleChip(f.value)}
-                  className="flex-row items-center gap-1.5 rounded-full px-3 py-1.5 active:opacity-70"
-                  style={{ backgroundColor: active ? MODULE_COLOR : '#F3F4F6' }}
+                  className="bg-secondary flex-row items-center gap-1.5 rounded-full active:opacity-70 px-3 py-1.5"
+                  style={active ? { backgroundColor: MODULE_COLOR } : undefined}
                 >
                   {Icon && (
                     <Icon
@@ -233,9 +233,9 @@ export default function NyayalaySelectFormatScreen() {
                       fill={f.value === 'Favorites' && active ? '#fff' : 'none'}
                     />
                   )}
-                  <Text
-                    className="text-xs font-medium"
-                    style={{ color: active ? '#fff' : '#374151' }}
+                  <Text textBreakStrategy="simple"
+                    className="text-secondary-foreground text-xs font-medium"
+                    style={active ? { color: '#fff' } : undefined}
                   >
                     {t(f.labelKey)}
                   </Text>
@@ -314,8 +314,8 @@ export default function NyayalaySelectFormatScreen() {
                 {item.tags.length > 0 && (
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {item.tags.map((t) => (
-                      <View key={t} className="mr-1 bg-secondary rounded-full px-2 py-0.5">
-                        <Text className="text-xs text-muted-foreground">{t}</Text>
+                      <View key={t} className="mr-1 bg-secondary rounded-full px-2.5 py-1">
+                        <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{t}</Text>
                       </View>
                     ))}
                   </ScrollView>

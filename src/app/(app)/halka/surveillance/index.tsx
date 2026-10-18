@@ -54,8 +54,8 @@ function TargetCard({ target }: { target: SurveillanceTarget }) {
 
       {/* Activity badge */}
       <View className="justify-center">
-        <View className="rounded-full px-2 py-1" style={{ backgroundColor: '#FEE2E2' }}>
-          <Text style={{ fontSize: 10, fontWeight: '600', color: '#B91C1C' }} numberOfLines={2}>
+        <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#FEE2E2' }}>
+          <Text textBreakStrategy="simple" style={{ fontSize: 10, fontWeight: '600', color: '#B91C1C' }} numberOfLines={2}>
             {target.criminal_activity}
           </Text>
         </View>
@@ -171,10 +171,10 @@ export default function SurveillanceListScreen() {
                   <Pressable
                     key={act}
                     onPress={() => handleActivityFilter(act)}
-                    className="rounded-full px-2.5 py-1 active:opacity-70"
+                    className="rounded-full active:opacity-70 px-2.5 py-1"
                     style={{ backgroundColor: active ? '#E11D48' : '#F3F4F6' }}
                   >
-                    <Text style={{ fontSize: 11, fontWeight: '600', color: active ? '#fff' : '#6B7280' }}>
+                    <Text textBreakStrategy="simple" style={{ fontSize: 11, fontWeight: '600', color: active ? '#fff' : '#6B7280' }}>
                       {act}
                     </Text>
                   </Pressable>

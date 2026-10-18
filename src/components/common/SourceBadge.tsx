@@ -41,11 +41,11 @@ export function SourceBadge({ source, size = 'sm' }: Props) {
 
   return (
     <View
-      className="flex-row items-center gap-0.5 rounded-full px-1.5 py-0.5 self-start"
+      className="flex-row items-center gap-0.5 rounded-full self-start px-2.5 py-1"
       style={{ backgroundColor: bgColor }}
     >
       <Icon size={iconSize} color={color} />
-      <Text className={`${textClass} font-semibold`} style={{ color }}>
+      <Text textBreakStrategy="simple" className={`${textClass} font-semibold`} style={{ color }}>
         {label}
       </Text>
     </View>

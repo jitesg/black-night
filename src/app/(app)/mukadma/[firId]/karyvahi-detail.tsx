@@ -86,8 +86,8 @@ function ExecutionRow({ exec, idx }: { exec: KaryvahiExecution; idx: number }) {
         <Text className="text-xs text-muted-foreground">{dt}</Text>
       </View>
       {exec.template_used ? (
-        <View className="bg-purple-50 rounded-full px-2 py-0.5">
-          <Text className="text-xs" style={{ color: '#7C3AED' }}>{exec.template_used}</Text>
+        <View className="bg-purple-50 rounded-full px-2.5 py-1 dark:bg-purple-500/15">
+          <Text textBreakStrategy="simple" className="text-xs" style={{ color: '#7C3AED' }}>{exec.template_used}</Text>
         </View>
       ) : null}
     </View>
@@ -279,8 +279,8 @@ function EvidenceSection({ karyvahiId, firId }: EvidenceSectionProps) {
             {t('fir.karyvahiDetail.evidence.title')}
           </Text>
           {items.length > 0 && (
-            <View className="bg-secondary rounded-full px-2 py-0.5">
-              <Text className="text-xs font-semibold text-muted-foreground">{items.length}</Text>
+            <View className="bg-secondary rounded-full px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs font-semibold text-muted-foreground">{items.length}</Text>
             </View>
           )}
         </View>
@@ -467,10 +467,10 @@ export default function KaryvahiDetailScreen() {
             </View>
             {execCount > 0 && (
               <View
-                className="rounded-full px-2.5 py-1 items-center justify-center"
+                className="rounded-full items-center justify-center px-2.5 py-1"
                 style={{ backgroundColor: execCount > 1 ? '#FEF3C7' : '#DCFCE7' }}
               >
-                <Text
+                <Text textBreakStrategy="simple"
                   className="text-sm font-bold"
                   style={{ color: execCount > 1 ? '#92400E' : '#15803D' }}
                 >

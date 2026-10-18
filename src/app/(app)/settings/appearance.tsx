@@ -81,8 +81,8 @@ export default function AppearanceScreen() {
               <Text className="text-base font-semibold text-muted-foreground">{t(f.labelKey)}</Text>
               <Text className="text-xs text-muted-foreground/60 mt-0.5">{t(f.descKey)}</Text>
             </View>
-            <View className="px-2.5 py-1 rounded-full bg-muted">
-              <Text className="text-xs font-semibold text-muted-foreground">{t('settings.appearance.comingSoon')}</Text>
+            <View className="rounded-full bg-muted px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs font-semibold text-muted-foreground">{t('settings.appearance.comingSoon')}</Text>
             </View>
           </View>
         ))}

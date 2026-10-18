@@ -143,10 +143,10 @@ export default function EditKnowledgeScreen() {
               <Pressable
                 key={ct.value}
                 onPress={() => setContentType(ct.value)}
-                className="mx-0.5 rounded-full px-3 py-2 active:opacity-70"
+                className="mx-0.5 rounded-full active:opacity-70 px-3 py-1.5"
                 style={{ backgroundColor: contentType === ct.value ? '#1E3A5F' : '#F3F4F6' }}
               >
-                <Text className="text-xs font-medium" style={{ color: contentType === ct.value ? '#fff' : '#374151' }}>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: contentType === ct.value ? '#fff' : '#374151' }}>
                   {ct.label}
                 </Text>
               </Pressable>
@@ -162,10 +162,10 @@ export default function EditKnowledgeScreen() {
               <Pressable
                 key={cat.id}
                 onPress={() => { setCategory(cat.id); setSubcategory(cat.subcategories[0]); }}
-                className="mx-0.5 rounded-full px-3 py-2 active:opacity-70"
+                className="mx-0.5 rounded-full active:opacity-70 px-3 py-1.5"
                 style={{ backgroundColor: category === cat.id ? '#1E3A5F' : '#F3F4F6' }}
               >
-                <Text className="text-xs font-medium" style={{ color: category === cat.id ? '#fff' : '#374151' }}>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: category === cat.id ? '#fff' : '#374151' }}>
                   {cat.label}
                 </Text>
               </Pressable>
@@ -181,10 +181,10 @@ export default function EditKnowledgeScreen() {
               <Pressable
                 key={sub}
                 onPress={() => setSubcategory(sub)}
-                className="mx-0.5 rounded-full px-3 py-2 active:opacity-70"
+                className="mx-0.5 rounded-full active:opacity-70 px-3 py-1.5"
                 style={{ backgroundColor: subcategory === sub ? '#374151' : '#F3F4F6' }}
               >
-                <Text className="text-xs font-medium" style={{ color: subcategory === sub ? '#fff' : '#374151' }}>
+                <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: subcategory === sub ? '#fff' : '#374151' }}>
                   {sub}
                 </Text>
               </Pressable>

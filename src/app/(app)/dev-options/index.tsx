@@ -113,10 +113,10 @@ function ActionButton({
 function StatusBadge({ label, ok }: { label: string; ok: boolean }) {
   return (
     <View
-      className="px-2 py-0.5 rounded-full"
+      className="rounded-full px-2.5 py-1"
       style={{ backgroundColor: ok ? '#D1FAE5' : '#FEE2E2' }}
     >
-      <Text className="text-xs font-bold" style={{ color: ok ? GREEN : RED }}>{label}</Text>
+      <Text textBreakStrategy="simple" className="text-xs font-bold" style={{ color: ok ? GREEN : RED }}>{label}</Text>
     </View>
   );
 }
@@ -481,8 +481,8 @@ export default function DevOptionsIndex() {
                   </View>
                   <Text className="text-sm font-medium text-foreground">{role}</Text>
                 </View>
-                <View className="px-2 py-0.5 rounded-full bg-secondary">
-                  <Text className="text-xs text-muted-foreground">Test</Text>
+                <View className="rounded-full bg-secondary px-2.5 py-1">
+                  <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">Test</Text>
                 </View>
               </Pressable>
             ))}

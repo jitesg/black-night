@@ -115,7 +115,7 @@ function PlacesField({ places, onChange }: { places: string[]; onChange: (p: str
               className="flex-row items-center gap-1 bg-secondary rounded-full px-3 py-1.5"
             >
               <MapPin size={11} color="#6B7280" />
-              <Text className="text-xs text-foreground">{p}</Text>
+              <Text textBreakStrategy="simple" className="text-xs text-foreground">{p}</Text>
               <Pressable onPress={() => onChange(places.filter((x) => x !== p))} className="ml-0.5 active:opacity-60">
                 <X size={11} color="#9CA3AF" />
               </Pressable>
@@ -365,8 +365,8 @@ export default function AddCaseDiaryScreen() {
               {t('fir.addCaseDiary.sectionBasicInfo')}
             </Text>
             {diaryNumber !== null && (
-              <View className="bg-secondary rounded-full px-3 py-1">
-                <Text className="text-xs font-bold text-foreground">
+              <View className="bg-secondary rounded-full px-2.5 py-1">
+                <Text textBreakStrategy="simple" className="text-xs font-bold text-foreground">
                   {t('fir.addCaseDiary.diaryNoLabel', { n: String(diaryNumber).padStart(2, '0') })}
                 </Text>
               </View>

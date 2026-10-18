@@ -60,8 +60,8 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 function Badge({ label, color }: { label: string; color: string }) {
   return (
-    <View className="rounded-full px-2.5 py-1 mr-1 mb-1" style={{ backgroundColor: `${color}15` }}>
-      <Text className="text-xs font-medium" style={{ color }}>{label}</Text>
+    <View className="rounded-full mr-1 mb-1 px-2.5 py-1" style={{ backgroundColor: `${color}15` }}>
+      <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color }}>{label}</Text>
     </View>
   );
 }
@@ -116,9 +116,9 @@ function FormatPreview({ item }: { item: SeedFormat }) {
           <SectionLabel>Tags</SectionLabel>
           <View className="flex-row flex-wrap">
             {item.tags.map((tag, idx) => (
-              <View key={`${idx}-${tag}`} className="flex-row items-center gap-1 rounded-full px-2.5 py-1 bg-secondary mr-1.5 mb-1.5">
+              <View key={`${idx}-${tag}`} className="flex-row items-center gap-1 rounded-full bg-secondary mr-1.5 mb-1.5 px-2.5 py-1">
                 <Tag size={10} color="#9CA3AF" />
-                <Text className="text-xs text-muted-foreground">{tag}</Text>
+                <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{tag}</Text>
               </View>
             ))}
           </View>
@@ -281,9 +281,9 @@ function KnowledgePreview({ item }: { item: SeedKnowledge }) {
           <SectionLabel>Tags</SectionLabel>
           <View className="flex-row flex-wrap">
             {tagList.map((tag, idx) => (
-              <View key={`${idx}-${tag}`} className="flex-row items-center gap-1 rounded-full px-2.5 py-1 bg-secondary mr-1.5 mb-1.5">
+              <View key={`${idx}-${tag}`} className="flex-row items-center gap-1 rounded-full bg-secondary mr-1.5 mb-1.5 px-2.5 py-1">
                 <Tag size={10} color="#9CA3AF" />
-                <Text className="text-xs text-muted-foreground">{tag}</Text>
+                <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{tag}</Text>
               </View>
             ))}
           </View>

@@ -109,10 +109,10 @@ function GuideCard({
           </Text>
           {item.crime_type ? (
             <View
-              className="self-start rounded-full px-2.5 py-0.5 mt-1.5"
+              className="self-start rounded-full mt-1.5 px-2.5 py-1"
               style={{ backgroundColor: `${COLOR}15` }}
             >
-              <Text className="text-xs font-medium" style={{ color: COLOR }}>
+              <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: COLOR }}>
                 {t('knowledge.guide.crimeType.' + item.crime_type, { defaultValue: item.crime_type })}
               </Text>
             </View>
@@ -147,8 +147,8 @@ function GuideCard({
       {tagList.length > 0 && (
         <View className="flex-row flex-wrap gap-1.5">
           {tagList.map((tag, idx) => (
-            <View key={`${idx}-${tag}`} className="bg-secondary rounded-full px-2.5 py-0.5">
-              <Text className="text-xs text-muted-foreground">{tag}</Text>
+            <View key={`${idx}-${tag}`} className="bg-secondary rounded-full px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{tag}</Text>
             </View>
           ))}
         </View>
@@ -288,10 +288,10 @@ export default function GuideListScreen() {
               <Pressable
                 key={ct}
                 onPress={() => handleFilterSelect(ct)}
-                className="mx-1 rounded-full px-3 py-1.5 active:opacity-70"
+                className="mx-1 rounded-full active:opacity-70 px-3 py-1.5"
                 style={{ backgroundColor: activeCrimeType === ct ? COLOR : C.muted }}
               >
-                <Text
+                <Text textBreakStrategy="simple"
                   className="text-xs font-medium"
                   style={{ color: activeCrimeType === ct ? '#fff' : C.foreground }}
                 >

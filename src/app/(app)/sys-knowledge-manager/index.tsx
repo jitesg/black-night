@@ -191,10 +191,10 @@ export default function SysKnowledgeDashboard() {
                         <Text className="text-xs text-muted-foreground mt-0.5">{a.category} · {formatDate(a.updated_at)}</Text>
                       </View>
                       <View
-                        className="px-2 py-0.5 rounded-full"
+                        className="rounded-full px-2.5 py-1"
                         style={{ backgroundColor: a.status === 'published' ? '#D1FAE5' : a.status === 'archived' ? '#F3F4F6' : '#FEF3C7' }}
                       >
-                        <Text className="text-xs font-medium" style={{ color: a.status === 'published' ? GREEN : a.status === 'archived' ? MUTED : '#F59E0B' }}>
+                        <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: a.status === 'published' ? GREEN : a.status === 'archived' ? MUTED : '#F59E0B' }}>
                           {a.status}
                         </Text>
                       </View>

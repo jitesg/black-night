@@ -87,8 +87,8 @@ function SystemKeyRow({ keyDef, index }: { keyDef: KeyDef; index: number }) {
         </Text>
         <Text className="text-xs text-muted-foreground">{t('format.addFormat.systemKeyNote')}</Text>
       </View>
-      <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: SUCCESS_BG }}>
-        <Text className="text-xs font-semibold" style={{ color: SUCCESS }}>{t('format.addFormat.systemKeyBadge')}</Text>
+      <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: SUCCESS_BG }}>
+        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: SUCCESS }}>{t('format.addFormat.systemKeyBadge')}</Text>
       </View>
     </View>
   );
@@ -129,8 +129,8 @@ function KeyRow({
         </Text>
         <View className="flex-row items-center gap-2">
           {keyDef.is_required ? (
-            <View className="rounded-full px-2 py-0.5 bg-destructive/10">
-              <Text className="text-xs text-destructive font-medium">{t('format.addFormat.requiredBadge')}</Text>
+            <View className="rounded-full bg-destructive/10 px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs text-destructive font-medium">{t('format.addFormat.requiredBadge')}</Text>
             </View>
           ) : null}
           <Pressable onPress={onDelete} className="p-1 active:opacity-60">
@@ -163,10 +163,10 @@ function KeyRow({
                 <Pressable
                   key={ft}
                   onPress={() => onUpdate('field_type', ft)}
-                  className="mx-0.5 rounded-full px-3 py-1.5 active:opacity-70"
+                  className="mx-0.5 rounded-full active:opacity-70 px-3 py-1.5"
                   style={{ backgroundColor: keyDef.field_type === ft ? INDIGO : FIELD_BG }}
                 >
-                  <Text
+                  <Text textBreakStrategy="simple"
                     className="text-xs font-medium"
                     style={{ color: keyDef.field_type === ft ? '#fff' : FIELD_TEXT }}
                   >
@@ -232,7 +232,7 @@ function PredefinedKeyPickerRow({
       ) : (
         <View className="flex-row items-center gap-1 rounded-full px-2.5 py-1" style={{ backgroundColor: INDIGO_BG }}>
           <Plus size={11} color={INDIGO} />
-          <Text className="text-xs font-semibold" style={{ color: INDIGO }}>{t('format.addFormat.insertBtn')}</Text>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: INDIGO }}>{t('format.addFormat.insertBtn')}</Text>
         </View>
       )}
     </Pressable>
@@ -729,10 +729,10 @@ export default function AddFormatScreen() {
                 <Pressable
                   key={`${idx}-${tag}`}
                   onPress={() => toggleTag(tag)}
-                  className="rounded-full px-3 py-1.5 active:opacity-70"
+                  className="rounded-full active:opacity-70 px-3 py-1.5"
                   style={{ backgroundColor: tags.includes(tag) ? INDIGO : FIELD_BG }}
                 >
-                  <Text
+                  <Text textBreakStrategy="simple"
                     className="text-xs font-medium"
                     style={{ color: tags.includes(tag) ? '#fff' : FIELD_TEXT }}
                   >

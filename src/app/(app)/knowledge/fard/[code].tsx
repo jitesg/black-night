@@ -134,8 +134,8 @@ export default function FardDetailScreen() {
                 <Text className="text-sm font-bold text-foreground">
                   {t('fard.sections.essentials', 'ज़रूरी बातें')}
                 </Text>
-                <View className="ml-auto bg-muted rounded-full px-2 py-0.5">
-                  <Text className="text-[11px] font-semibold text-muted-foreground">
+                <View className="ml-auto bg-muted rounded-full px-2.5 py-1">
+                  <Text textBreakStrategy="simple" className="text-[11px] font-semibold text-muted-foreground">
                     {entry.essentials.length}
                   </Text>
                 </View>

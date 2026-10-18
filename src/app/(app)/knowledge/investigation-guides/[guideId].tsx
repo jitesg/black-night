@@ -164,16 +164,16 @@ export default function GuideDetailScreen() {
         <View className="flex-row flex-wrap gap-2">
           {entry.crime_type ? (
             <View
-              className="rounded-full px-3 py-1"
+              className="rounded-full px-2.5 py-1"
               style={{ backgroundColor: `${COLOR}15` }}
             >
-              <Text className="text-xs font-semibold" style={{ color: COLOR }}>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: COLOR }}>
                 {t('knowledge.guide.crimeType.' + entry.crime_type, { defaultValue: entry.crime_type })}
               </Text>
             </View>
           ) : null}
-          <View className="rounded-full px-3 py-1 bg-secondary">
-            <Text className="text-xs font-medium text-muted-foreground">
+          <View className="rounded-full bg-secondary px-2.5 py-1">
+            <Text textBreakStrategy="simple" className="text-xs font-medium text-muted-foreground">
               {entry.subcategory}
             </Text>
           </View>
@@ -196,8 +196,8 @@ export default function GuideDetailScreen() {
         {tagList.length > 0 && (
           <View className="flex-row flex-wrap gap-2">
             {tagList.map((tag, idx) => (
-              <View key={`${idx}-${tag}`} className="bg-secondary rounded-full px-3 py-1">
-                <Text className="text-xs text-muted-foreground">{tag}</Text>
+              <View key={`${idx}-${tag}`} className="bg-secondary rounded-full px-2.5 py-1">
+                <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{tag}</Text>
               </View>
             ))}
           </View>

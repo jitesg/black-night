@@ -135,8 +135,8 @@ export default function LawLibraryIndexScreen() {
                 <View className="gap-2">
                   {index === 0 && (
                     <View className="flex-row items-center gap-2 mb-0.5">
-                      <View className="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30">
-                        <Text className="text-xs font-bold text-amber-700 dark:text-amber-400">
+                      <View className="rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-1">
+                        <Text textBreakStrategy="simple" className="text-xs font-bold text-amber-700 dark:text-amber-400">
                           नई धारा
                         </Text>
                       </View>
@@ -290,10 +290,10 @@ export default function LawLibraryIndexScreen() {
                             {id}
                           </Text>
                           <View
-                            className="rounded-full px-2 py-0.5"
+                            className="rounded-full px-2.5 py-1"
                             style={{ backgroundColor: bg }}
                           >
-                            <Text className="text-xs font-semibold" style={{ color }}>
+                            <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color }}>
                               {meta.shortHi}
                             </Text>
                           </View>
@@ -317,10 +317,10 @@ export default function LawLibraryIndexScreen() {
 
                   <View className="flex-row items-center justify-between pt-1">
                     <View
-                      className="rounded-full px-3 py-1"
+                      className="rounded-full px-2.5 py-1"
                       style={{ backgroundColor: bg }}
                     >
-                      <Text className="text-xs font-bold" style={{ color }}>
+                      <Text textBreakStrategy="simple" className="text-xs font-bold" style={{ color }}>
                         {t('knowledge.law.actSections', { count: meta.total, defaultValue: `${meta.total} धाराएं` })}
                       </Text>
                     </View>

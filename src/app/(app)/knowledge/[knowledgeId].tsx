@@ -735,8 +735,8 @@ function KnowledgeActionBar({
     <View className="flex-row items-center justify-between">
       <View className="flex-row items-center gap-2">
         <SourceBadge source={entry.source} />
-        <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: `${color}15` }}>
-          <Text className="text-xs font-semibold" style={{ color }}>{entry.category}</Text>
+        <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${color}15` }}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color }}>{entry.category}</Text>
         </View>
       </View>
       <View className="flex-row items-center gap-1.5">
@@ -993,24 +993,24 @@ function SopHeaderMetadataCard({
       </View>
 
       <View className="flex-row flex-wrap items-center gap-1.5 pt-0.5">
-        <View className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
-          <Text className="text-xs font-bold text-primary">{srcBadge}</Text>
+        <View className="rounded-full bg-primary/10 border border-primary/20 px-2.5 py-1">
+          <Text textBreakStrategy="simple" className="text-xs font-bold text-primary">{srcBadge}</Text>
         </View>
         {stepCount ? (
-          <View className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-            <Text className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+          <View className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1">
+            <Text textBreakStrategy="simple" className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
               {stepCount} चेकलिस्ट बिंदु
             </Text>
           </View>
         ) : null}
         {sopStruct.pages ? (
-          <View className="px-2 py-0.5 rounded-full bg-muted/60 border border-border">
-            <Text className="text-xs text-muted-foreground">पृष्ठ {sopStruct.pages}</Text>
+          <View className="rounded-full bg-muted/60 border border-border px-2.5 py-1">
+            <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">पृष्ठ {sopStruct.pages}</Text>
           </View>
         ) : null}
         {sopStruct.crime ? (
-          <View className="px-2 py-0.5 rounded-full bg-secondary border border-border">
-            <Text className="text-xs text-secondary-foreground font-medium">{sopStruct.crime}</Text>
+          <View className="rounded-full bg-secondary border border-border px-2.5 py-1">
+            <Text textBreakStrategy="simple" className="text-xs text-secondary-foreground font-medium">{sopStruct.crime}</Text>
           </View>
         ) : null}
       </View>
@@ -1396,8 +1396,8 @@ export function SopDetail({
         onScroll={effectiveTab === 'samjhe' ? (e) => explainRef.current?.onParentScroll(e.nativeEvent.contentOffset.y) : undefined}
       >
         {!explain && (
-          <View className="self-start rounded-full px-3 py-1" style={{ backgroundColor: '#D9770618' }}>
-            <Text className="text-xs font-semibold" style={{ color: '#B45309' }}>📚 समझाने वाला संस्करण जल्द आ रहा है</Text>
+          <View className="self-start rounded-full px-2.5 py-1" style={{ backgroundColor: '#D9770618' }}>
+            <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#B45309' }}>📚 समझाने वाला संस्करण जल्द आ रहा है</Text>
           </View>
         )}
         <KnowledgeActionBar
@@ -1473,8 +1473,8 @@ export function SopDetail({
             </View>
             <View className="flex-row flex-wrap gap-2">
               {tagList.map((tag, idx) => (
-                <View key={`${idx}-${tag}`} className="rounded-full px-3 py-1" style={{ backgroundColor: `${color}15` }}>
-                  <Text className="text-xs font-medium" style={{ color }}>{tag}</Text>
+                <View key={`${idx}-${tag}`} className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${color}15` }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color }}>{tag}</Text>
                 </View>
               ))}
             </View>
@@ -1748,8 +1748,8 @@ export function CircularDetail({ entry }: { entry: KnowledgeEntry }) {
         >
           {circularChip ? (
             <View className="flex-row items-center">
-              <View className="rounded-full px-3 py-1 bg-blue-500/15 border border-blue-500/30">
-                <Text className="text-xs font-bold text-blue-700 dark:text-blue-300">
+              <View className="rounded-full bg-blue-500/15 border border-blue-500/30 px-2.5 py-1">
+                <Text textBreakStrategy="simple" className="text-xs font-bold text-blue-700 dark:text-blue-300">
                   {circularChip}
                 </Text>
               </View>
@@ -1792,8 +1792,8 @@ export function CircularDetail({ entry }: { entry: KnowledgeEntry }) {
             </View>
             <View className="flex-row flex-wrap gap-2">
               {tagList.map((tag, idx) => (
-                <View key={`${idx}-${tag}`} className="rounded-full px-3 py-1" style={{ backgroundColor: `${color}15` }}>
-                  <Text className="text-xs font-medium" style={{ color }}>{tag}</Text>
+                <View key={`${idx}-${tag}`} className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${color}15` }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color }}>{tag}</Text>
                 </View>
               ))}
             </View>
@@ -2079,8 +2079,8 @@ export function LawDetail({ entry }: { entry: KnowledgeEntry }) {
             </View>
             <View className="flex-row flex-wrap gap-2">
               {tagList.map((tag, idx) => (
-                <View key={`${idx}-${tag}`} className="rounded-full px-3 py-1" style={{ backgroundColor: `${color}15` }}>
-                  <Text className="text-xs font-medium" style={{ color }}>{tag}</Text>
+                <View key={`${idx}-${tag}`} className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${color}15` }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color }}>{tag}</Text>
                 </View>
               ))}
             </View>
@@ -2363,8 +2363,8 @@ export function DefaultDetail({ entry }: { entry: KnowledgeEntry }) {
             </View>
             <View className="flex-row flex-wrap gap-2">
               {tagList.map((tag, idx) => (
-                <View key={`${idx}-${tag}`} className="rounded-full px-3 py-1" style={{ backgroundColor: `${color}15` }}>
-                  <Text className="text-xs font-medium" style={{ color }}>{tag}</Text>
+                <View key={`${idx}-${tag}`} className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${color}15` }}>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color }}>{tag}</Text>
                 </View>
               ))}
             </View>

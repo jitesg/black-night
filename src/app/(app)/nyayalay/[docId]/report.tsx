@@ -323,12 +323,12 @@ export default function NyayalayReportScreen() {
                 </View>
                 {/* Status badge */}
                 <View
-                  className="px-2 py-0.5 rounded-full"
+                  className="rounded-full px-2.5 py-1"
                   style={{
                     backgroundColor: doc.status === 'Finished' ? '#D1FAE5' : '#FEF9C3',
                   }}
                 >
-                  <Text
+                  <Text textBreakStrategy="simple"
                     className="text-[10px] font-semibold"
                     style={{ color: doc.status === 'Finished' ? '#065F46' : '#92400E' }}
                   >
@@ -378,10 +378,10 @@ export default function NyayalayReportScreen() {
                 {allAccused.length > 1 && (
                   <View className="flex-row items-center gap-1 pb-1">
                     <View
-                      className="px-2 py-0.5 rounded-full"
+                      className="rounded-full px-2.5 py-1"
                       style={{ backgroundColor: `${MODULE_COLOR}12` }}
                     >
-                      <Text
+                      <Text textBreakStrategy="simple"
                         className="text-[10px] font-semibold"
                         style={{ color: MODULE_COLOR }}
                       >

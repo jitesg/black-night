@@ -75,18 +75,18 @@ export function DependencyGraphView({ graph }: Props) {
     <View>
       {/* Summary */}
       <View className="flex-row gap-2 mb-3 flex-wrap">
-        <View className="flex-row items-center gap-1 px-2.5 py-1 bg-emerald-50 rounded-full">
+        <View className="flex-row items-center gap-1 bg-emerald-50 rounded-full px-2.5 py-1 dark:bg-emerald-500/15">
           <CheckCircle size={10} className="text-emerald-600" />
-          <Text className="text-xs text-emerald-700">{completedNodes.length} completed</Text>
+          <Text textBreakStrategy="simple" className="text-xs text-emerald-700 dark:text-emerald-300">{completedNodes.length} completed</Text>
         </View>
-        <View className="flex-row items-center gap-1 px-2.5 py-1 bg-amber-50 rounded-full">
+        <View className="flex-row items-center gap-1 bg-amber-50 rounded-full px-2.5 py-1 dark:bg-amber-500/15">
           <Clock size={10} className="text-amber-600" />
-          <Text className="text-xs text-amber-700">{pendingNodes.length} pending</Text>
+          <Text textBreakStrategy="simple" className="text-xs text-amber-700 dark:text-amber-300">{pendingNodes.length} pending</Text>
         </View>
         {blockedNodes.length > 0 && (
-          <View className="flex-row items-center gap-1 px-2.5 py-1 bg-red-50 rounded-full">
+          <View className="flex-row items-center gap-1 bg-red-50 rounded-full px-2.5 py-1 dark:bg-red-500/15">
             <Lock size={10} className="text-destructive" />
-            <Text className="text-xs text-destructive">{blockedNodes.length} blocked</Text>
+            <Text textBreakStrategy="simple" className="text-xs text-destructive">{blockedNodes.length} blocked</Text>
           </View>
         )}
       </View>

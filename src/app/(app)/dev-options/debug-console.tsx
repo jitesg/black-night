@@ -97,13 +97,13 @@ function Chip({
   return (
     <Pressable
       onPress={onPress}
-      className="px-2.5 py-1 rounded-full border active:opacity-70"
+      className="rounded-full border active:opacity-70 px-2.5 py-1"
       style={{
         borderColor: active ? color : '#E5E7EB',
         backgroundColor: active ? `${color}18` : '#F9FAFB',
       }}
     >
-      <Text className="text-xs font-semibold" style={{ color: active ? color : MUTED }}>
+      <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: active ? color : MUTED }}>
         {label}
       </Text>
     </Pressable>

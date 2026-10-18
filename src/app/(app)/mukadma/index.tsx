@@ -47,10 +47,10 @@ function StatusBadge({ status, scheme }: { status: string; scheme: 'light' | 'da
   const key = status === 'Finished' ? 'Finished' : 'Pending';
   return (
     <View
-      className="rounded-full px-2.5 py-0.5"
+      className="rounded-full px-2.5 py-1"
       style={{ backgroundColor: STATUS_BG[scheme][key] }}
     >
-      <Text
+      <Text textBreakStrategy="simple"
         className="text-xs font-semibold"
         style={{ color: STATUS_TEXT[scheme][key] }}
       >

@@ -94,11 +94,11 @@ export function CaseLawCard({ cases, isHi = true }: CaseLawCardProps) {
           </Text>
           {allVerified && (
             <View
-              className="flex-row items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20"
+              className="flex-row items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1"
               style={{ borderCurve: 'continuous' }}
             >
               <ShieldCheck size={11} color="#059669" />
-              <Text className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <Text textBreakStrategy="simple" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                 {isHi ? 'सत्यापित स्रोत' : 'Verified Source'}
               </Text>
             </View>
@@ -130,21 +130,21 @@ export function CaseLawCard({ cases, isHi = true }: CaseLawCardProps) {
                     </Text>
                     {isUnverified ? (
                       <View
-                        className="flex-row items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 shrink-0 mt-0.5"
+                        className="flex-row items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 shrink-0 mt-0.5 px-2.5 py-1"
                         style={{ borderCurve: 'continuous' }}
                       >
                         <AlertTriangle size={10} color="#D97706" />
-                        <Text className="text-[10px] font-bold text-amber-700 dark:text-amber-400">
+                        <Text textBreakStrategy="simple" className="text-[10px] font-bold text-amber-700 dark:text-amber-400">
                           {isHi ? 'पूर्ण सत्यापित नहीं' : 'Unverified'}
                         </Text>
                       </View>
                     ) : (
                       <View
-                        className="flex-row items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 shrink-0 mt-0.5"
+                        className="flex-row items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 shrink-0 mt-0.5 px-2.5 py-1"
                         style={{ borderCurve: 'continuous' }}
                       >
                         <ShieldCheck size={10} color="#059669" />
-                        <Text className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                        <Text textBreakStrategy="simple" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                           {isHi ? 'सत्यापित स्रोत' : 'Verified Source'}
                         </Text>
                       </View>

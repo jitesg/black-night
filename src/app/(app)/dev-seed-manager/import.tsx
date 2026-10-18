@@ -195,8 +195,8 @@ function DiffPreview({
               className="flex-row items-center gap-3 bg-card border border-border rounded-xl px-3 py-2.5"
               style={{ borderCurve: 'continuous' }}
             >
-              <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: s.bg }}>
-                <Text className="text-xs font-bold" style={{ color: s.color }}>{s.label}</Text>
+              <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: s.bg }}>
+                <Text textBreakStrategy="simple" className="text-xs font-bold" style={{ color: s.color }}>{s.label}</Text>
               </View>
               <View className="flex-1" style={{ minWidth: 0 }}>
                 <Text className="text-sm font-medium text-foreground" numberOfLines={1}>{row.title}</Text>

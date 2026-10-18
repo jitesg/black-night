@@ -66,8 +66,8 @@ function AuditCard({ item }: { item: SysKnowledgeAudit }) {
           <Text className="text-xs text-muted-foreground">{formatDate(item.created_at)}</Text>
           <Text className="text-xs text-muted-foreground">· by {item.created_by}</Text>
           {item.version_number !== null && (
-            <View className="px-1.5 py-0.5 rounded-full bg-muted">
-              <Text className="text-xs text-muted-foreground">v{item.version_number}</Text>
+            <View className="rounded-full bg-muted px-2.5 py-1">
+              <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">v{item.version_number}</Text>
             </View>
           )}
         </View>

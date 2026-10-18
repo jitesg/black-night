@@ -117,8 +117,8 @@ function SubTypePicker({
             {crimeType}
           </Text>
           {selectedSubs.length > 0 && (
-            <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: COLOR }}>
-              <Text className="text-white font-bold" style={{ fontSize: 10 }}>{selectedSubs.length}</Text>
+            <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: COLOR }}>
+              <Text textBreakStrategy="simple" className="text-white font-bold" style={{ fontSize: 10 }}>{selectedSubs.length}</Text>
             </View>
           )}
         </View>
@@ -175,11 +175,11 @@ function SubTypePicker({
                 <Pressable
                   key={sub}
                   onPress={() => onToggleSub(crimeType, sub)}
-                  className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+                  className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
                   style={{ backgroundColor: `${COLOR}15`, borderWidth: 1, borderColor: `${COLOR}40` }}
                 >
-                  <Text className="text-xs font-medium" style={{ color: COLOR }}>{sub}</Text>
-                  <Text className="text-xs font-bold ml-0.5" style={{ color: COLOR }}>×</Text>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: COLOR }}>{sub}</Text>
+                  <Text textBreakStrategy="simple" className="text-xs font-bold ml-0.5" style={{ color: COLOR }}>×</Text>
                 </Pressable>
               ))}
             </View>
@@ -250,11 +250,11 @@ function NestedSubTypeSelect({
             <Pressable
               key={ct}
               onPress={() => onToggleCrimeType(ct)}
-              className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+              className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
               style={{ backgroundColor: `${COLOR}15`, borderWidth: 1, borderColor: `${COLOR}40` }}
             >
-              <Text className="text-xs font-medium" style={{ color: COLOR }}>{ct}</Text>
-              <Text className="text-xs font-bold ml-0.5" style={{ color: COLOR }}>×</Text>
+              <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: COLOR }}>{ct}</Text>
+              <Text textBreakStrategy="simple" className="text-xs font-bold ml-0.5" style={{ color: COLOR }}>×</Text>
             </Pressable>
           ))}
         </View>

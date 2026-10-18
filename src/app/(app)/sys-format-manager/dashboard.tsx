@@ -181,9 +181,9 @@ export default function SysFormatDashboard() {
                           {f.format_type} · v{f.version} · {formatDate(f.updated_at)}
                         </Text>
                       </View>
-                      <View className="px-2 py-1 rounded-full"
+                      <View className="rounded-full px-2.5 py-1"
                         style={{ backgroundColor: `${statusColor}15` }}>
-                        <Text className="text-xs font-semibold capitalize"
+                        <Text textBreakStrategy="simple" className="text-xs font-semibold capitalize"
                           style={{ color: statusColor }}>{status}</Text>
                       </View>
                     </Pressable>

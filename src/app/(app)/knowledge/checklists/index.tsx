@@ -100,18 +100,18 @@ function ItemCard({
                 grouped[ct].map((sub) => (
                   <View
                     key={sub}
-                    className="rounded-full px-2.5 py-0.5"
+                    className="rounded-full px-2.5 py-1"
                     style={{ backgroundColor: `${COLOR}15` }}
                   >
-                    <Text className="text-xs font-medium" style={{ color: COLOR }}>{sub}</Text>
+                    <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: COLOR }}>{sub}</Text>
                   </View>
                 ))
               ) : (
                 <View
-                  className="rounded-full px-2.5 py-0.5"
+                  className="rounded-full px-2.5 py-1"
                   style={{ backgroundColor: `${COLOR}10` }}
                 >
-                  <Text className="text-xs text-muted-foreground">{t('knowledge.checklist.anySubType')}</Text>
+                  <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{t('knowledge.checklist.anySubType')}</Text>
                 </View>
               )}
             </View>
@@ -240,7 +240,7 @@ export default function ChecklistsIndexScreen() {
             <Pressable
               key={sf}
               onPress={() => handleSourceFilter(sf)}
-              className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+              className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
               style={{
                 backgroundColor: sourceFilter === sf ? COLOR : `${COLOR}15`,
                 borderCurve: 'continuous',
@@ -249,7 +249,7 @@ export default function ChecklistsIndexScreen() {
               {sf !== 'All' && (sf === 'System'
                 ? <Shield size={11} color={sourceFilter === sf ? '#fff' : COLOR} />
                 : <User size={11} color={sourceFilter === sf ? '#fff' : COLOR} />)}
-              <Text className="text-xs font-semibold" style={{ color: sourceFilter === sf ? '#fff' : COLOR }}>
+              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: sourceFilter === sf ? '#fff' : COLOR }}>
                 {sf === 'System' ? t('knowledge.checklist.filterSystem') : sf === 'User' ? t('knowledge.checklist.filterUser') : t('knowledge.checklist.filterAll')}
               </Text>
             </Pressable>

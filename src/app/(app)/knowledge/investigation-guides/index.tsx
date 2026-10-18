@@ -107,10 +107,10 @@ function SectionCard({
       </View>
       <View className="items-end gap-1">
         <View
-          className="rounded-full px-2.5 py-0.5"
+          className="rounded-full px-2.5 py-1"
           style={{ backgroundColor: `${COLOR}15` }}
         >
-          <Text className="text-xs font-semibold" style={{ color: COLOR }}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: COLOR }}>
             {count}
           </Text>
         </View>

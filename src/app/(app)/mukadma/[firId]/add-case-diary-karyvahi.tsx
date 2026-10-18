@@ -504,8 +504,8 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
                           {k.name}
                         </Text>
                         {(k.execution_count ?? 0) > 0 && (
-                          <View className="bg-green-50 rounded-full px-1.5 py-0.5 ml-2">
-                            <Text className="text-xs" style={{ color: '#15803D' }}>×{k.execution_count}</Text>
+                          <View className="bg-green-50 rounded-full ml-2 px-2.5 py-1 dark:bg-green-500/15">
+                            <Text textBreakStrategy="simple" className="text-xs" style={{ color: '#15803D' }}>×{k.execution_count}</Text>
                           </View>
                         )}
                       </View>

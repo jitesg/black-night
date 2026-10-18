@@ -417,7 +417,7 @@ export default function AddProceedingScreen() {
               {formatTitle && (
                 <View className="flex-row items-center gap-1.5 bg-secondary rounded-full px-2.5 py-1">
                   <LayoutTemplate size={10} color={MODULE_COLOR} />
-                  <Text className="text-xs text-muted-foreground" numberOfLines={1} style={{ maxWidth: 120 }}>
+                  <Text textBreakStrategy="simple" className="text-xs text-muted-foreground" numberOfLines={1} style={{ maxWidth: 120 }}>
                     {formatTitle}
                   </Text>
                 </View>

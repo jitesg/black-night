@@ -72,10 +72,10 @@ function ResultItem({ item, query, highlight, typoTolerant }: { item: SearchResu
         ) : null}
       </View>
       <View
-        className="rounded-full px-2 py-0.5"
+        className="rounded-full px-2.5 py-1"
         style={{ backgroundColor: `${cfg.color}15` }}
       >
-        <Text className="text-xs font-medium" style={{ color: cfg.color }}>
+        <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: cfg.color }}>
           {t(cfg.labelKey)}
         </Text>
       </View>
@@ -263,10 +263,10 @@ export default function SearchScreen() {
               <Pressable
                 key={type}
                 onPress={() => { setQuery(label); runSearch(label); Keyboard.dismiss(); }}
-                className="flex-row items-center gap-1.5 rounded-full px-3 py-1.5 border border-border bg-card active:opacity-70"
+                className="flex-row items-center gap-1.5 rounded-full border border-border bg-card active:opacity-70 px-3 py-1.5"
               >
                 <Icon size={12} color={cfg.color} />
-                <Text className="text-xs text-foreground">{label}</Text>
+                <Text textBreakStrategy="simple" className="text-xs text-foreground">{label}</Text>
               </Pressable>
             );
           })}
@@ -336,9 +336,9 @@ export default function SearchScreen() {
                 <Pressable
                   key={`smart-${s.id}`}
                   onPress={() => { setQuery(s.title); runSearch(s.title); }}
-                  className="flex-row items-center gap-1.5 rounded-full px-3 py-1.5 border border-border bg-card active:opacity-70"
+                  className="flex-row items-center gap-1.5 rounded-full border border-border bg-card active:opacity-70 px-3 py-1.5"
                 >
-                  <Text className="text-xs font-medium" style={{ color: cfg.color }}>{s.title}</Text>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: cfg.color }}>{s.title}</Text>
                 </Pressable>
               );
             })}
@@ -359,9 +359,9 @@ export default function SearchScreen() {
                 <Pressable
                   key={`pred-${s.id}`}
                   onPress={() => { setQuery(s.title); runSearch(s.title); }}
-                  className="flex-row items-center gap-1.5 rounded-full px-3 py-1.5 border border-border bg-card active:opacity-70"
+                  className="flex-row items-center gap-1.5 rounded-full border border-border bg-card active:opacity-70 px-3 py-1.5"
                 >
-                  <Text className="text-xs font-medium" style={{ color: cfg.color }}>{s.title}</Text>
+                  <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: cfg.color }}>{s.title}</Text>
                 </Pressable>
               );
             })}

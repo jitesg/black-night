@@ -184,22 +184,22 @@ export default function GdDetailScreen() {
         {/* Meta row */}
         <View className="flex-row flex-wrap gap-2">
           <View
-            className="rounded-full px-3 py-1"
+            className="rounded-full px-2.5 py-1"
             style={{ backgroundColor: `${typeColor}15` }}
           >
-            <Text className="text-xs font-semibold" style={{ color: typeColor }}>
+            <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: typeColor }}>
               {GD_TYPE_KEYS[entry.gd_type] ? t('gd.type.' + GD_TYPE_KEYS[entry.gd_type]) : entry.gd_type}
             </Text>
           </View>
           {entry.ta_da_flag === 1 && (
-            <View className="rounded-full px-3 py-1 bg-amber-50 border border-amber-200">
-              <Text className="text-xs font-medium text-amber-700">TA/DA</Text>
+            <View className="rounded-full bg-amber-50 border border-amber-200 px-2.5 py-1 dark:bg-amber-500/15 dark:border-amber-500/30">
+              <Text textBreakStrategy="simple" className="text-xs font-medium text-amber-700 dark:text-amber-300">TA/DA</Text>
             </View>
           )}
           {entry.format_id && (
-            <View className="rounded-full px-3 py-1 flex-row items-center gap-1" style={{ backgroundColor: '#0891B210' }}>
+            <View className="rounded-full flex-row items-center gap-1 px-2.5 py-1" style={{ backgroundColor: '#0891B210' }}>
               <LayoutTemplate size={10} color="#0891B2" />
-              <Text className="text-xs font-medium text-[#0891B2]">{t('gd.detail.fromTemplate')}</Text>
+              <Text textBreakStrategy="simple" className="text-xs font-medium text-[#0891B2]">{t('gd.detail.fromTemplate')}</Text>
             </View>
           )}
         </View>

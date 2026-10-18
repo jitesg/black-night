@@ -92,9 +92,9 @@ export function DecisionCardView({ card }: Props) {
             <Text className={`text-xs font-semibold ${c.badgeText}`}>{meta.label}</Text>
           </View>
           {card.isBlocking && (
-            <View className="flex-row items-center gap-1 px-2 py-0.5 rounded-full bg-destructive/10">
+            <View className="flex-row items-center gap-1 rounded-full bg-destructive/10 px-2.5 py-1">
               <Lock size={10} className="text-destructive" />
-              <Text className="text-xs font-medium text-destructive">Blocking</Text>
+              <Text textBreakStrategy="simple" className="text-xs font-medium text-destructive">Blocking</Text>
             </View>
           )}
         </View>
@@ -156,8 +156,8 @@ export function DecisionCardView({ card }: Props) {
               <Text className="text-xs font-semibold text-foreground">Rules Triggered</Text>
               <View className="flex-row flex-wrap gap-1">
                 {card.explanation.triggeredRules.map((r) => (
-                  <View key={r} className="px-2 py-0.5 bg-white/60 rounded-full border border-border/30">
-                    <Text className="text-xs text-muted-foreground">{r}</Text>
+                  <View key={r} className="bg-white/60 rounded-full border border-border/30 px-2.5 py-1">
+                    <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{r}</Text>
                   </View>
                 ))}
               </View>
@@ -176,8 +176,8 @@ export function DecisionCardView({ card }: Props) {
           {card.explanation.modulesAnalysed.length > 0 && (
             <View className="flex-row flex-wrap gap-1">
               {card.explanation.modulesAnalysed.map((m) => (
-                <View key={m} className="px-2 py-0.5 bg-white/50 rounded-full border border-border/20">
-                  <Text className="text-xs text-muted-foreground">{m}</Text>
+                <View key={m} className="bg-white/50 rounded-full border border-border/20 px-2.5 py-1">
+                  <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{m}</Text>
                 </View>
               ))}
             </View>

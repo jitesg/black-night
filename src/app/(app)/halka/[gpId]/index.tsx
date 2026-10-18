@@ -73,8 +73,8 @@ function HSItem({ person, gpId, onDelete }: { person: Person; gpId: string; onDe
         <View className="flex-1 gap-0.5">
           <Text className="text-sm font-semibold text-foreground">{person.name}</Text>
           {person.category ? (
-            <View className="self-start rounded-full px-2 py-0.5" style={{ backgroundColor: '#B91C1C18' }}>
-              <Text className="text-xs font-medium" style={{ color: '#B91C1C' }}>HS# {person.category}</Text>
+            <View className="self-start rounded-full px-2.5 py-1" style={{ backgroundColor: '#B91C1C18' }}>
+              <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: '#B91C1C' }}>HS# {person.category}</Text>
             </View>
           ) : null}
           {person.designation ? <Text className="text-xs text-muted-foreground">{person.designation}</Text> : null}
@@ -98,8 +98,8 @@ function HSItem({ person, gpId, onDelete }: { person: Person; gpId: string; onDe
 
 function Badge({ label, color }: { label: string; color: string }) {
   return (
-    <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: `${color}20` }}>
-      <Text className="text-xs font-medium" style={{ color }}>{label}</Text>
+    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${color}20` }}>
+      <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color }}>{label}</Text>
     </View>
   );
 }
