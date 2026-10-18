@@ -121,18 +121,12 @@ const FormatCard = memo(function FormatCard({
     >
       {/* Top row */}
       <View className="flex-row items-start gap-3">
-        <View
-          className="w-10 h-10 rounded-xl items-center justify-center mt-0.5"
-          style={{ backgroundColor: `${typeColor}15` }}
-        >
-          <LayoutTemplate size={18} color={typeColor} />
-        </View>
         <View className="flex-1 gap-0.5" style={{ minWidth: 0 }}>
           <HighlightText
             text={format.title}
             query={query}
             numberOfLines={2}
-            style={{ fontSize: 16, fontWeight: '600', lineHeight: 22, flexShrink: 1 }}
+            style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, flexShrink: 1 }}
           />
           <View
             className="self-start rounded-full px-2 py-0.5"

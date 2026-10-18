@@ -6,7 +6,7 @@ import {
   BackHandler, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View,
 } from 'react-native';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { Zap, AlertCircle, LayoutTemplate, Settings2, CheckCircle2, Pencil, Printer } from 'lucide-react-native';
+import { Zap, AlertCircle, Settings2, CheckCircle2, Pencil, Printer } from 'lucide-react-native';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
@@ -411,9 +411,16 @@ export default function FillScreen() {
         subtitle={getFormatTypeLabel(format.format_type, t)}
         onBack={handleBackPress}
         rightActions={
-          <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: `${typeColor}15` }}>
-            <LayoutTemplate size={17} color={typeColor} />
-          </View>
+          <Pressable
+            onPress={handlePrintBlank}
+            accessibilityRole="button"
+            accessibilityLabel={t('format.fill.printBlank')}
+            hitSlop={6}
+            className="w-10 h-10 rounded-xl items-center justify-center active:opacity-70"
+            style={{ backgroundColor: `${typeColor}15` }}
+          >
+            <Printer size={18} color={typeColor} />
+          </Pressable>
         }
       />
       <KeyboardAvoidingView
@@ -584,22 +591,6 @@ export default function FillScreen() {
             </Text>
           </Pressable>
 
-          {/* ── Print Blank Form button — secondary outline CTA ─── */}
-          <Pressable
-            onPress={handlePrintBlank}
-            className="active:opacity-80"
-            style={{
-              borderRadius: 12, paddingVertical: 14, marginTop: 10,
-              borderWidth: 1, borderColor: C.border,
-              backgroundColor: 'transparent',
-              flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-            }}
-          >
-            <Printer size={18} color={C.foreground} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: C.foreground }}>
-              {t('format.fill.printBlank')}
-            </Text>
-          </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
