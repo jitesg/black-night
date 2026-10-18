@@ -8,7 +8,7 @@ import { router, useFocusEffect, useLocalSearchParams, type RelativePathString }
 import { FileWarning, LayoutTemplate, ChevronRight } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
 import { type FormatWithMeta } from '@/lib/db/predefinedFormatRepo';
-import { getPublishedFormatsByType, searchPublishedFormatsByTypes } from '@/lib/db/sysFormatRepo';
+import { getPublishedFormatsByTag, getPublishedFormatsByType, mergeFormatsFirst, filterFormatsByQuery } from '@/lib/db/sysFormatRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 const MODULE_COLOR = '#7C3AED';
@@ -17,7 +17,7 @@ export default function PPSelectFormatScreen() {
   const { mode, ppId } = useLocalSearchParams<{ mode?: string; ppId?: string }>();
   const isReportMode = mode === 'report';
 
-  const formatType = isReportMode ? 'Prarthna Patra' : 'BNSS Karyavahi';
+  const formatType = isReportMode ? 'Prarthna Patra' : 'Prarthna Patra / BNSS Karyavahi';
 
   const [formats, setFormats] = useState<FormatWithMeta[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,16 +35,20 @@ export default function PPSelectFormatScreen() {
   const load = useCallback(async (q = '') => {
     setLoading(true);
     try {
-      const results = q.trim()
-        ? await searchPublishedFormatsByTypes(q, [formatType])
-        : await getPublishedFormatsByType(formatType);
-      setFormats(results);
+      // All 'Prarthna Patra' formats (type or tag) first. For actions, BNSS
+      // Karyavahi formats follow, since action notices use that type.
+      const lists = [
+        await getPublishedFormatsByType('Prarthna Patra'),
+        await getPublishedFormatsByTag('Prarthna Patra'),
+        ...(isReportMode ? [] : [await getPublishedFormatsByType('BNSS Karyavahi')]),
+      ];
+      setFormats(filterFormatsByQuery(mergeFormatsFirst(...lists), q));
     } catch (e) {
       logger.warn('[PPSelectFormat] load error:', e);
     } finally {
       setLoading(false);
     }
-  }, [formatType]);
+  }, [isReportMode]);
 
   // Re-load on every focus using ref — avoids re-registering on every keystroke
   useFocusEffect(useCallback(() => {

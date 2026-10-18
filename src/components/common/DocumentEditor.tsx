@@ -30,6 +30,7 @@ import React, {
 } from 'react';
 import {
   ActivityIndicator,
+  Keyboard,
   KeyboardAvoidingView,
   Modal,
   Pressable,
@@ -864,7 +865,13 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
               {renderMicButton()}
               {settings.aiDraftAssistance && renderExpandButton()}
               <Pressable
-                onPress={() => setShowPhraseModal(true)}
+                onPress={() => {
+                  // Close the editor's keyboard first; otherwise the phrase
+                  // sheet opens underneath it.
+                  editorRef.current?.blurContentEditor?.();
+                  Keyboard.dismiss();
+                  setTimeout(() => setShowPhraseModal(true), 120);
+                }}
                 style={{
                   alignItems: 'center', justifyContent: 'center',
                   borderRadius: 8, width: 40, height: 40,

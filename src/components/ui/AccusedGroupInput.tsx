@@ -179,7 +179,7 @@ interface FieldRowProps {
 const FieldRow = memo(({ C, label, required, error, children }: FieldRowProps) => (
   <View style={{ gap: 4 }}>
     <Text style={{ fontSize: 12, color: C.label, fontWeight: '500' }}>
-      {label}
+      {required && typeof label === 'string' ? label.replace(/\s*\*+\s*$/, '') : label}
       {required && <Text style={{ color: C.accent }}> *</Text>}
     </Text>
     {children}

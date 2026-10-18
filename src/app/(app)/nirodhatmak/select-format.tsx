@@ -27,7 +27,7 @@ import { SearchBar } from '@/components/SearchBar';
 import {
   type FormatWithMeta,
 } from '@/lib/db/predefinedFormatRepo';
-import { getPublishedFormatsByType, searchPublishedFormatsByTypes } from '@/lib/db/sysFormatRepo';
+import { getPublishedFormatsByType, mergeFormatsFirst, filterFormatsByQuery } from '@/lib/db/sysFormatRepo';
 import { nirodhatmakFormatBridge } from '@/lib/nirodhatmakFormatBridge';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 
@@ -42,7 +42,9 @@ export default function NkSelectFormatScreen() {
 
   const [formats, setFormats] = useState<FormatWithMeta[]>([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState(initialTypeQuery || '');
+  // Start with an empty search so every BNSS Karyavahi format is listed; the
+  // proceeding type only decides which formats are suggested first.
+  const [query, setQuery] = useState('');
 
   // Keep a ref so useFocusEffect can read latest query without re-registering
   const queryRef = useRef(query);
@@ -66,16 +68,21 @@ export default function NkSelectFormatScreen() {
   const load = useCallback(async (q = '') => {
     setLoading(true);
     try {
-      const results = q.trim()
-        ? await searchPublishedFormatsByTypes(q, [NK_FORMAT_TYPE])
-        : await getPublishedFormatsByType(NK_FORMAT_TYPE);
-      setFormats(results);
+      const all = await getPublishedFormatsByType(NK_FORMAT_TYPE);
+      const hint = (initialTypeQuery ?? '').trim().toLowerCase();
+      const suggested = hint
+        ? all.filter((f) =>
+            f.title.toLowerCase().includes(hint) ||
+            hint.includes(f.title.toLowerCase()) ||
+            (f.tags ?? []).some((tg) => tg.toLowerCase().includes(hint) || hint.includes(tg.toLowerCase())))
+        : [];
+      setFormats(filterFormatsByQuery(mergeFormatsFirst(suggested, all), q));
     } catch (e) {
       logger.warn('[NkSelectFormat] load error:', e);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [initialTypeQuery]);
 
   // Re-load on every focus using the ref so this hook never re-registers on
   // every keystroke (fixes broken debounce / double API call bug).

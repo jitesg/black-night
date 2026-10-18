@@ -388,7 +388,8 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
       {/* Label */}
       {label ? (
         <Text style={{ ...T.caption1, color: hasError ? C.error : C.label, fontWeight: T.weight.medium } as TextStyle}>
-          {label}
+          {/* Labels from formats may already end in '*'; show only one */}
+          {required && typeof label === 'string' ? label.replace(/\s*\*+\s*$/, '') : label}
           {required ? <Text style={{ color: C.error }}> *</Text> : null}
         </Text>
       ) : null}
@@ -528,7 +529,7 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
       <View ref={ref}>
         <Input
           type={inputType}
-          label={required ? `${displayLabel} *` : displayLabel}
+          label={displayLabel} // <Input> adds the red * for required fields
           placeholder={keyDef.default_value ?? `Enter ${displayLabel}`}
           value={value}
           onChangeText={(v) => onChange(keyDef.key_name, v)}
@@ -580,7 +581,8 @@ const FormatKeyDateInput = forwardRef<View, FormatKeyDateInputProps>(
       <View ref={ref} style={{ gap: T.space.xs }}>
         {/* Label */}
         <Text style={{ ...T.caption1, color: error ? C.error : C.label, fontWeight: T.weight.medium } as TextStyle}>
-          {required ? `${displayLabel} *` : displayLabel}
+          {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+          {required ? <Text style={{ color: C.error }}> *</Text> : null}
         </Text>
 
         {/* Tappable trigger row — visually matches the Input component */}

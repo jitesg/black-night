@@ -473,7 +473,7 @@ export default function FillScreen() {
                     key={k}
                     style={{
                       flexDirection: 'row', alignItems: 'center', gap: 6,
-                      borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5,
+                      borderRadius: 20, paddingHorizontal: 10, paddingVertical: 6,
                       backgroundColor: C.secondary,
                       borderWidth: 0.5, borderColor: C.border,
                     }}
@@ -490,7 +490,14 @@ export default function FillScreen() {
                           fontSize: 12,
                           color: C.foreground,
                           minWidth: 60,
-                          padding: 0,
+                          // Hindi needs vertical room: zero padding clipped the
+                          // lower part of letters (e.g. बछरावा, रायबरेली) on Android.
+                          paddingHorizontal: 0,
+                          paddingTop: 2,
+                          paddingBottom: 3,
+                          minHeight: 26,
+                          textAlignVertical: 'center',
+                          includeFontPadding: true,
                           borderBottomWidth: 1,
                           borderBottomColor: C.border,
                         },

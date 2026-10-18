@@ -710,3 +710,26 @@ export async function searchPublishedFormatsByTypes(
     return (a.title ?? '').localeCompare(b.title ?? '');
   });
 }
+
+/**
+ * Merges format lists: items of the earlier lists come first (best match),
+ * duplicates (same id) are dropped. Used by "प्रारूप से जोड़ें" pickers to show
+ * every format of the module's type with the most relevant ones on top.
+ */
+export function mergeFormatsFirst(...lists: FormatWithMeta[][]): FormatWithMeta[] {
+  const seen = new Set<string>();
+  const out: FormatWithMeta[] = [];
+  for (const list of lists) {
+    for (const f of list) {
+      if (!seen.has(f.id)) { seen.add(f.id); out.push(f); }
+    }
+  }
+  return out;
+}
+
+/** Client-side text filter on title + vivran (Hindi-safe, case-insensitive). */
+export function filterFormatsByQuery(list: FormatWithMeta[], q: string): FormatWithMeta[] {
+  const ql = q.trim().toLowerCase();
+  if (!ql) return list;
+  return list.filter((f) => f.title.toLowerCase().includes(ql) || (f.vivran ?? '').toLowerCase().includes(ql));
+}

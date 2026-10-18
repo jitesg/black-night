@@ -38,6 +38,8 @@ import {
 } from '@/lib/db/predefinedFormatRepo';
 import {
   getPublishedFormatsByTag,
+  mergeFormatsFirst,
+  filterFormatsByQuery,
   getPublishedFormatsByType,
   getPublishedFormatsByTypes,
   searchPublishedFormatsByTypes,
@@ -118,30 +120,25 @@ export default function NyayalaySelectFormatScreen() {
         // two types are properly isolated at the DB level — not all Nyayalay templates.
         // A search query is applied client-side on the already-enriched tag result set
         // (getPublishedFormatsByTag returns enriched rows, so client filter is cheap).
-        const rawBase = await getPublishedFormatsByTag(tag!);
-        const base = q.trim()
-          ? rawBase.filter((f) => {
-              const ql = q.trim().toLowerCase();
-              return (
-                f.title.toLowerCase().includes(ql) ||
-                (f.vivran ?? '').toLowerCase().includes(ql)
-              );
-            })
-          : rawBase;
+        // Formats tagged for this document type first, then every other
+        // 'Nyayalay' type format, so nothing usable is hidden.
+        const rawBase = mergeFormatsFirst(
+          await getPublishedFormatsByTag(tag!),
+          await getPublishedFormatsByType('Nyayalay' as FormatType),
+        );
+        const base = filterFormatsByQuery(rawBase, q);
         logger.debug(
           `[NyayalaySelectFormat] loaded ${base.length} rows for tag="${tag}" — query="${q}" chip="${activeChip}"`
         );
         setAllTagFormats(base);
         setDisplayed(applyChipFilter(base, activeChip));
       } else if (isFormatType) {
-        let results = await getPublishedFormatsByType(formatType as FormatType);
-        if (q.trim()) {
-          const lower = q.trim().toLowerCase();
-          results = results.filter((f) =>
-            f.title.toLowerCase().includes(lower) || f.vivran?.toLowerCase().includes(lower)
-          );
-        }
-        setFormats(results);
+        // Exact type first (e.g. वादी सूचना), then all 'Nyayalay' formats
+        const results = mergeFormatsFirst(
+          await getPublishedFormatsByType(formatType as FormatType),
+          await getPublishedFormatsByType('Nyayalay' as FormatType),
+        );
+        setFormats(filterFormatsByQuery(results, q));
       } else if (isAnya) {
         const results = q.trim()
           ? await searchPublishedFormatsByTypes(q, ANYA_TYPES)
@@ -149,8 +146,11 @@ export default function NyayalaySelectFormatScreen() {
         setFormats(results);
       } else {
         // Fallback: tag-based raw query (legacy path, no chip UI)
-        const results = tag ? await getPublishedFormatsByTag(tag) : [];
-        setFormats(results);
+        const results = mergeFormatsFirst(
+          tag ? await getPublishedFormatsByTag(tag) : [],
+          await getPublishedFormatsByType('Nyayalay' as FormatType),
+        );
+        setFormats(filterFormatsByQuery(results, q));
       }
     } catch (e) {
       logger.warn('[NyayalaySelectFormat] load error:', e);

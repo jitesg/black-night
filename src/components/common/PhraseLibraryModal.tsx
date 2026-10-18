@@ -178,7 +178,9 @@ export function PhraseLibraryModal({
     >
       <View className="flex-1 justify-end bg-black/60">
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          // 'padding' on Android too: this Modal is its own window, so the
+          // sheet must lift itself above the keyboard (it hid behind it).
+          behavior="padding"
           className="flex-col max-h-[88%] bg-card border-t border-border rounded-t-3xl overflow-hidden"
           style={{ borderCurve: 'continuous' }}
         >
