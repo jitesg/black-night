@@ -5,7 +5,7 @@
 import '@/lib/debugLogStore';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, type AppStateStatus, View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Stack, router, useRouter, useSegments, type RelativePathString } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { PortalHost } from '@rn-primitives/portal';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -30,7 +30,8 @@ import { seedDefaultPhrasesIfEmpty } from '@/lib/db/phraseLibraryRepo';
 import { AppLogger } from '@/lib/appLogger';
 import { clearDevSession } from '@/lib/devOptionsAuth';
 import { clearSession } from '@/lib/sysFormatAuth';
-import { requestReminderPermissions, setupReminderCategories, registerSnoozeHandler } from '@/lib/reminderNotifications';
+import { requestReminderPermissions, setupReminderCategories, registerReminderResponseHandler } from '@/lib/reminderNotifications';
+import { completeReminderById, resyncReminderNotifications } from '@/lib/reminderService';
 import { syncAppNotifications } from '@/lib/appNotificationSync';
 import { AIProviderManager } from '@/ai/level5/AIProviderManager';
 import { LearningEngine } from '@/ai/level5/LearningEngine';
@@ -218,7 +219,13 @@ function AppNavigator({
   const { themeReady, settings } = useSettingsStore();
 
   useEffect(() => {
-    const unregister = registerSnoozeHandler(settings.reminderSnooze);
+    const unregister = registerReminderResponseHandler({
+      snoozeMinutes: settings.reminderSnooze,
+      onDone: (id) => completeReminderById(id),
+      onOpen: () => {
+        try { router.push('/(app)/reminders' as RelativePathString); } catch {}
+      },
+    });
     return unregister;
   }, [settings.reminderSnooze]);
 
@@ -290,9 +297,24 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    requestReminderPermissions();
-    setupReminderCategories();
+    (async () => {
+      try {
+        await requestReminderPermissions();
+        await setupReminderCategories();
+      } catch (e) {
+        if (__DEV__) console.warn('[Reminders] setup failed:', e);
+      }
+    })();
   }, []);
+
+  // Once the DB is ready, re-schedule pending reminders (new sound channels,
+  // after restore/reboot).
+  useEffect(() => {
+    if (!dbReady) return;
+    resyncReminderNotifications().catch((e) => {
+      if (__DEV__) console.warn('[Reminders] resync failed:', e);
+    });
+  }, [dbReady]);
 
   useEffect(() => {
     LearningEngine.loadPatterns();

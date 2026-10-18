@@ -54,7 +54,7 @@ export interface SettingsState {
 
   // Reminders
   reminderTime: string;        // "HH:MM" 24h
-  reminderSound: 'default' | 'bell' | 'chime' | 'silent';
+  reminderSound: 'default' | 'bell' | 'chime' | 'alarm' | 'silent';
   reminderSnooze: 5 | 10 | 15 | 30;
   reminderRepeat: 'once' | 'daily' | 'weekly';
 

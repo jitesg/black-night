@@ -33,7 +33,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - NativeWind dark vars must be under `.dark:root` in `src/global.css`.
 - Edge-to-edge: `KeyboardInsetView` pads the root for the keyboard.
 - docx export: use `Packer.toBase64String` (no Node Buffer on device).
-- expo-notifications needs typed triggers + the 'default' Android channel.
+- expo-notifications needs typed triggers. Reminder sound = Android CHANNEL (immutable): one channel per sound (`reminder_v2_*`, `app_alerts_v2`) in `src/lib/reminderNotifications.ts`; bundled sounds in `assets/sounds`; exact-alarm permissions in app.json; reminders re-scheduled on app start (`reminderService.resyncReminderNotifications`).
 - Picked files/photos: copy with `persistPickedFile` (cache can be cleared); open
   with `openFile` (ACTION_VIEW intent).
 - Dialog buttons: `AlertDialogAction/Cancel` wrap labels in the themed Text.

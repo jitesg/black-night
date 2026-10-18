@@ -62,12 +62,14 @@ export async function getUpcomingReminders(): Promise<Reminder[]> {
  */
 export async function getPastReminders(): Promise<Reminder[]> {
   const db = await getDatabase();
-  const now = nowTimestamp();
+  // due_at is stored in milliseconds (older rows may be seconds)
+  const nowMs = Date.now();
   const rows = await db.getAllAsync<Record<string, unknown>>(
     `SELECT * FROM reminders
-     WHERE deleted_at IS NULL AND (is_completed = 1 OR due_at < ?)
+     WHERE deleted_at IS NULL AND (is_completed = 1 OR
+       (CASE WHEN due_at < 10000000000 THEN due_at * 1000 ELSE due_at END) < ?)
      ORDER BY due_at DESC`,
-    [now]
+    [nowMs]
   );
   return rows.map(rowToReminder);
 }
@@ -171,5 +173,35 @@ export async function deleteReminder(id: string): Promise<void> {
   await db.runAsync(
     `UPDATE reminders SET deleted_at = ?, updated_at = ? WHERE id = ?`,
     [now, id]
+  );
+}
+
+/**
+ * All active (not deleted) reminders, soonest first. Screens group them
+ * (overdue / today / upcoming / done) in JS — due_at is stored in ms.
+ */
+export async function getAllReminders(): Promise<Reminder[]> {
+  const db = await getDatabase();
+  const rows = await db.getAllAsync<Record<string, unknown>>(
+    `SELECT * FROM reminders WHERE deleted_at IS NULL ORDER BY due_at ASC`
+  );
+  return rows.map(rowToReminder);
+}
+
+/** Undo a soft delete. */
+export async function restoreReminder(id: string): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync(
+    `UPDATE reminders SET deleted_at = NULL, updated_at = ? WHERE id = ?`,
+    [nowTimestamp(), id]
+  );
+}
+
+/** Mark a reminder as not completed again. */
+export async function markNotCompleted(id: string): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync(
+    `UPDATE reminders SET is_completed = 0, updated_at = ? WHERE id = ?`,
+    [nowTimestamp(), id]
   );
 }

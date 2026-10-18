@@ -4,7 +4,8 @@
 import { useState } from 'react';
 import { View, Text, Pressable, ScrollView, Modal } from 'react-native';
 import { useRouter, type RelativePathString } from 'expo-router';
-import { Clock, Music, RefreshCw, ChevronDown, ChevronRight, Check, Bell } from 'lucide-react-native';
+import { Clock, Music, RefreshCw, ChevronDown, ChevronRight, Check, Bell, Volume2, BatteryCharging } from 'lucide-react-native';
+import { sendTestReminder, openAppNotificationSettings } from '@/lib/reminderNotifications';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
@@ -83,13 +84,14 @@ export const SOUND_OPTION_KEYS: { value: SoundVal; labelKey: string }[] = [
   { value: 'default', labelKey: 'settings.reminders.soundDefault' },
   { value: 'bell', labelKey: 'settings.reminders.soundBell' },
   { value: 'chime', labelKey: 'settings.reminders.soundChime' },
+  { value: 'alarm', labelKey: 'settings.reminders.soundAlarm' },
   { value: 'silent', labelKey: 'settings.reminders.soundSilent' },
 ];
 export const SNOOZE_OPTION_KEYS: { value: SnoozeVal; labelKey: string }[] = [
-  { value: 5, labelKey: 'settings.reminders.snooze5' },
-  { value: 10, labelKey: 'settings.reminders.snooze10' },
-  { value: 15, labelKey: 'settings.reminders.snooze15' },
-  { value: 30, labelKey: 'settings.reminders.snooze30' },
+  { value: 5, labelKey: 'settings.reminders.snooze5Min' },
+  { value: 10, labelKey: 'settings.reminders.snooze10Min' },
+  { value: 15, labelKey: 'settings.reminders.snooze15Min' },
+  { value: 30, labelKey: 'settings.reminders.snooze30Min' },
 ];
 export const REPEAT_OPTION_KEYS: { value: RepeatVal; labelKey: string }[] = [
   { value: 'once', labelKey: 'settings.reminders.repeatOnce' },
@@ -109,6 +111,7 @@ export default function RemindersScreen() {
   const { settings, update } = useSettingsStore();
   const router = useRouter();
   const { t } = useTranslation();
+  const [testMsg, setTestMsg] = useState<string | null>(null);
 
   const soundOptions = SOUND_OPTION_KEYS.map((o) => ({ value: o.value, label: t(o.labelKey) }));
   const snoozeOptions = SNOOZE_OPTION_KEYS.map((o) => ({ value: o.value, label: t(o.labelKey) }));
@@ -174,6 +177,19 @@ export default function RemindersScreen() {
             options={soundOptions}
             onSelect={(v) => update('reminderSound', v as SoundVal)}
           />
+          <Pressable
+            onPress={async () => {
+              const ok = await sendTestReminder(settings.reminderSound, 5);
+              setTestMsg(ok ? t('reminders.testSent') : t('reminders.permDesc'));
+            }}
+            className="px-4 py-3.5 flex-row items-center gap-3 active:opacity-70"
+          >
+            <Volume2 size={16} color="#2563EB" />
+            <View className="flex-1">
+              <Text className="text-sm font-semibold" style={{ color: '#2563EB' }}>{t('settings.reminders.testSound')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{testMsg ?? t('settings.reminders.testSoundDesc')}</Text>
+            </View>
+          </Pressable>
 
           {/* Snooze */}
           <View className="px-4 py-4 flex-row items-center gap-3 border-t border-border">
@@ -209,6 +225,19 @@ export default function RemindersScreen() {
             onSelect={(v) => update('reminderRepeat', v as RepeatVal)}
           />
         </View>
+
+        {/* Battery tip — some phones delay alarms of apps in battery saver */}
+        <Pressable
+          onPress={openAppNotificationSettings}
+          className="mt-6 mb-4 bg-card border border-border rounded-2xl p-4 flex-row gap-3 active:opacity-70"
+          style={{ borderCurve: 'continuous' }}
+        >
+          <BatteryCharging size={18} color="#F59E0B" />
+          <View className="flex-1">
+            <Text className="text-xs text-muted-foreground leading-5">{t('reminders.batteryTip')}</Text>
+            <Text className="text-xs font-semibold mt-1.5" style={{ color: '#2563EB' }}>{t('reminders.openSettings')}</Text>
+          </View>
+        </Pressable>
       </ScrollView>
     </View>
   );

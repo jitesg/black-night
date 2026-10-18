@@ -20,7 +20,13 @@
       "versionCode": 1,
       "package": "com.miaoda.appd2z6dwnk2jnl",
       "backgroundColor": "#111827",
-      "softwareKeyboardLayoutMode": "resize"
+      "softwareKeyboardLayoutMode": "resize",
+      "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.USE_EXACT_ALARM",
+        "android.permission.VIBRATE",
+        "android.permission.RECEIVE_BOOT_COMPLETED"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -63,7 +69,11 @@
         {
           "icon": "./assets/adaptive-icon.png",
           "color": "#1E3A5F",
-          "defaultChannel": "default"
+          "defaultChannel": "app_alerts_v2",
+          "sounds": [
+            "./assets/sounds/bell.wav",
+            "./assets/sounds/chime.wav"
+          ]
         }
       ],
       "@react-native-async-storage/expo-with-async-storage",
