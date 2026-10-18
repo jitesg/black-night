@@ -380,7 +380,9 @@ export default function FormatsScreen() {
           ? { ...f, is_favorite: format.is_favorite ? 0 : 1 }
           : f
       );
-    setFormats(updater);
+    // In the पसंदीदा view, an un-starred format leaves the list right away
+    const removing = activeFilterRef.current === 'Favorites' && format.is_favorite;
+    setFormats((list) => removing ? list.filter((f) => f.id !== format.id) : updater(list));
     setAllFormats(updater);
   }, []);
 
@@ -542,6 +544,24 @@ export default function FormatsScreen() {
               </Text>
             </Pressable>
           ))}
+          {/* Always-visible favourites chip (same as the पसंदीदा filter) */}
+          <Pressable
+            onPress={() => handleFilter('Favorites')}
+            accessibilityRole="button"
+            accessibilityState={{ selected: activeFilter === 'Favorites' }}
+            accessibilityLabel={t('format.filter.favorites')}
+            className="flex-row items-center gap-1 rounded-full px-3 py-1 active:opacity-70"
+            style={{
+              backgroundColor: activeFilter === 'Favorites' ? '#D97706' : chipInactiveBg,
+              borderWidth: 1,
+              borderColor: activeFilter === 'Favorites' ? '#D97706' : chipInactiveBorder,
+            }}
+          >
+            <Star size={11} color={activeFilter === 'Favorites' ? '#fff' : '#D97706'} fill={activeFilter === 'Favorites' ? '#fff' : '#D97706'} />
+            <Text className="text-xs font-semibold" style={{ color: activeFilter === 'Favorites' ? '#fff' : chipInactiveText }}>
+              {t('format.filter.favorites')}{filterCounts['Favorites'] ? ` (${filterCounts['Favorites']})` : ''}
+            </Text>
+          </Pressable>
         </View>
       </View>
 
