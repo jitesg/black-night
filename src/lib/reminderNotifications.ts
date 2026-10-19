@@ -247,6 +247,16 @@ export async function dismissPresentedFor(reminderId: string): Promise<void> {
   } catch {}
 }
 
+/** ids of queued notifications that belong to one reminder. */
+export async function getQueuedIdsFor(reminderId: string): Promise<string[]> {
+  try {
+    const all = await Notifications.getAllScheduledNotificationsAsync();
+    return all.filter((n) => n.content.data?.reminderId === reminderId).map((n) => n.identifier);
+  } catch {
+    return [];
+  }
+}
+
 /** ids of every notification the system has queued for this app. */
 export async function getScheduledIds(): Promise<Set<string>> {
   try {

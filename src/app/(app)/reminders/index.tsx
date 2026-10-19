@@ -4,7 +4,7 @@
  * cards (छूटे, आज, कल, अगले 7 दिन, बाद में) · undo bar · add button.
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AppState, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, AppState, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
 import { useFocusEffect, useRouter, type RelativePathString } from 'expo-router';
 import { AlarmClock, BellOff, Plus, Search, ShieldCheck, Undo2, X } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
@@ -184,9 +184,12 @@ export default function RemindersScreen() {
       showUndo({ message: t('reminders.deleted'), undo: () => restoreRemovedReminder(r.id) });
     } catch (e) {
       console.error('[Reminders] delete failed:', e);
+      // Tell the user instead of failing silently.
+      Alert.alert(t('reminders.deleteFailed'), String((e as Error)?.message ?? e));
     }
     loadData();
   }, [loadData, t]);
+
 
   const handleSnooze = useCallback(async (r: Reminder, m: number | 'tomorrow') => {
     const snapshot = { ...r };
@@ -207,6 +210,15 @@ export default function RemindersScreen() {
     }
     loadData();
   }, [loadData, t]);
+
+  const handleMenu = useCallback((r: Reminder) => {
+    Alert.alert(r.title, undefined, [
+      { text: r.is_completed ? t('reminders.undo') : t('reminders.tabDone'), onPress: () => handleToggleDone(r) },
+      ...(r.is_completed ? [] : [{ text: t('reminders.snooze') + ' 1h', onPress: () => handleSnooze(r, 60) }]),
+      { text: t('common.delete'), style: 'destructive' as const, onPress: () => handleDelete(r) },
+      { text: t('common.cancel'), style: 'cancel' as const },
+    ]);
+  }, [handleDelete, handleSnooze, handleToggleDone, t]);
 
   const handleUndo = async () => {
     if (!undo) return;
@@ -416,6 +428,7 @@ export default function RemindersScreen() {
                 onDelete={handleDelete}
                 onSnooze={handleSnooze}
                 onOpenCase={openCase}
+                onMenu={handleMenu}
               />
             ))}
           </View>

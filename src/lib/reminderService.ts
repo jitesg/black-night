@@ -10,7 +10,7 @@ import * as repo from '@/lib/db/reminderRepo';
 import type { Reminder, ReminderInput } from '@/lib/db/reminderRepo';
 import { getPersistedSettings } from '@/hooks/useSettingsStore';
 import {
-  cancelNotifications, dismissPresentedFor, getScheduledIds, scheduleAlert, type AlertContent,
+  cancelNotifications, dismissPresentedFor, getQueuedIdsFor, getScheduledIds, scheduleAlert, type AlertContent,
 } from '@/lib/reminderNotifications';
 import {
   displayTime, nextOccurrenceAfter, occurrenceAfterDone, planAlerts, type PlanInput,
@@ -179,10 +179,17 @@ export async function snoozeReminderUntil(id: string, at: number): Promise<void>
 }
 
 export async function removeReminder(r: Reminder): Promise<void> {
-  await cancelNotifications(parseIds(r.notification_id));
-  await dismissPresentedFor(r.id);
+  // Delete in the database FIRST so the reminder disappears even if the
+  // notification calls below fail or hang.
   await repo.deleteReminder(r.id);
-  await repo.updateReminder(r.id, { notification_id: null });
+  const gone = await repo.getReminderById(r.id);
+  if (gone) throw new Error('reminder still present after delete');
+  // Cancel by stored ids, plus anything still queued for this reminder.
+  const ids = new Set(parseIds(r.notification_id));
+  for (const id of await getQueuedIdsFor(r.id)) ids.add(id);
+  await cancelNotifications([...ids]).catch(() => {});
+  await dismissPresentedFor(r.id).catch(() => {});
+  await repo.updateReminder(r.id, { notification_id: null }).catch(() => {});
 }
 
 export async function restoreRemovedReminder(id: string): Promise<void> {

@@ -3,7 +3,7 @@
  * Params: id (edit) · title, firId, firLabel, category (prefill from other screens)
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -210,9 +210,13 @@ export default function ReminderEditorScreen() {
 
   const handleDelete = async () => {
     if (!editId) return;
-    const r = await reminderRepo.getReminderById(editId);
-    if (r) await removeReminder(r);
-    router.back();
+    try {
+      const r = await reminderRepo.getReminderById(editId);
+      if (r) await removeReminder(r);
+      router.back();
+    } catch (e) {
+      Alert.alert(t('reminders.deleteFailed'), String((e as Error)?.message ?? e));
+    }
   };
 
   const row = { flexDirection: 'row' as const, flexWrap: 'wrap' as const, gap: 8 };

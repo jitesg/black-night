@@ -29,6 +29,8 @@ export interface ReminderCardProps {
   onDelete: (r: Reminder) => void;
   onSnooze: (r: Reminder, minutes: number | 'tomorrow') => void;
   onOpenCase: (r: Reminder) => void;
+  /** Long-press menu (done / snooze / delete). */
+  onMenu: (r: Reminder) => void;
 }
 
 function ActionButton({ color, icon, label, onPress }: { color: string; icon: React.ReactNode; label: string; onPress: () => void }) {
@@ -46,7 +48,7 @@ function ActionButton({ color, icon, label, onPress }: { color: string; icon: Re
 }
 
 export const ReminderCard = memo(function ReminderCard({
-  reminder: r, at, state, showDay, onPress, onToggleDone, onDelete, onSnooze, onOpenCase,
+  reminder: r, at, state, showDay, onPress, onToggleDone, onDelete, onSnooze, onOpenCase, onMenu,
 }: ReminderCardProps) {
   const { t, i18n } = useTranslation();
   const { colorScheme } = useColorScheme();
@@ -79,7 +81,7 @@ export const ReminderCard = memo(function ReminderCard({
     );
     const style = { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 4, height: 22, paddingHorizontal: 8, borderRadius: 999, backgroundColor: bg };
     return onPressChip ? (
-      <Pressable onPress={onPressChip} hitSlop={4} style={style} className="active:opacity-70">{body}</Pressable>
+      <Pressable onPress={onPressChip} hitSlop={4} style={({ pressed }) => [style, { opacity: pressed ? 0.6 : 1 }]}>{body}</Pressable>
     ) : (
       <View style={style}>{body}</View>
     );
@@ -121,8 +123,9 @@ export const ReminderCard = memo(function ReminderCard({
           </View>
         )}
       >
-        <Pressable
-          onPress={() => onPress(r)}
+        {/* Card. Buttons are siblings (not nested) so every tap reaches the
+            right button on Android. */}
+        <View
           style={{
             backgroundColor: c.card,
             borderWidth: 1,
@@ -130,9 +133,9 @@ export const ReminderCard = memo(function ReminderCard({
             borderRadius: 18,
             paddingVertical: 12,
             paddingLeft: 12,
-            paddingRight: 12,
+            paddingRight: 6,
             flexDirection: 'row',
-            gap: 12,
+            gap: 10,
             opacity: isDone ? 0.7 : 1,
           }}
         >
@@ -154,46 +157,46 @@ export const ReminderCard = memo(function ReminderCard({
 
           {/* Body */}
           <View style={{ flex: 1, minWidth: 0 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6 }}>
+            <Pressable onPress={() => onPress(r)} onLongPress={() => onMenu(r)} delayLongPress={350}>
               <Text
                 numberOfLines={2}
                 textBreakStrategy="simple"
                 style={{
-                  flex: 1, color: isDone ? c.mutedForeground : c.foreground, fontSize: 15.5, lineHeight: 21, fontWeight: '600',
+                  color: isDone ? c.mutedForeground : c.foreground, fontSize: 15.5, lineHeight: 21, fontWeight: '600',
                   textDecorationLine: isDone ? 'line-through' : 'none',
                 }}
               >
                 {r.title}
               </Text>
-              <View style={{ width: 26, height: 26, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: tint(cat.color, isDark) }}>
-                <CatIcon size={14} color={cat.color} />
-              </View>
-            </View>
 
-            {r.note ? (
-              <Text numberOfLines={2} textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 13, lineHeight: 18, marginTop: 2 }}>
-                {r.note}
-              </Text>
-            ) : null}
-
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginTop: 8 }}>
-              {chip(
-                tint(accent, isDark),
-                accent,
-                isOverdue ? <AlertTriangle size={11} color={accent} /> : snoozed ? <AlarmClock size={11} color={accent} /> : <Clock size={11} color={accent} />,
-                `${showDay ? `${dayLabel(at, t, i18n.language)}, ` : ''}${fmtTime(at)}${isDone ? '' : ` · ${relative(at, t)}`}`,
-              )}
-              {r.repeat_mode !== 'once'
-                ? chip(c.secondary, c.secondaryForeground, <RefreshCw size={10} color={c.secondaryForeground} />, repeatSummary(r, dueMs(r), t))
-                : null}
-              {r.fir_label
-                ? chip(tint('#7C3AED', isDark), isDark ? '#C4B5FD' : '#6D28D9', <FolderOpen size={11} color={isDark ? '#C4B5FD' : '#6D28D9'} />, r.fir_label, () => onOpenCase(r))
-                : null}
-              {r.sound === 'silent' ? <BellOff size={13} color={c.mutedForeground} /> : null}
-              {r.nag_min > 0 && !isDone ? (
-                <Text style={{ color: c.mutedForeground, fontSize: 11 }}>🔁 {r.nag_min}′</Text>
+              {r.note ? (
+                <Text numberOfLines={2} textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 13, lineHeight: 18, marginTop: 2 }}>
+                  {r.note}
+                </Text>
               ) : null}
-            </View>
+
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginTop: 8 }}>
+                {chip(
+                  tint(accent, isDark),
+                  accent,
+                  isOverdue ? <AlertTriangle size={11} color={accent} /> : snoozed ? <AlarmClock size={11} color={accent} /> : <Clock size={11} color={accent} />,
+                  `${showDay ? `${dayLabel(at, t, i18n.language)}, ` : ''}${fmtTime(at)}${isDone ? '' : ` · ${relative(at, t)}`}`,
+                )}
+                {r.repeat_mode !== 'once'
+                  ? chip(c.secondary, c.secondaryForeground, <RefreshCw size={10} color={c.secondaryForeground} />, repeatSummary(r, dueMs(r), t))
+                  : null}
+                {r.sound === 'silent' ? <BellOff size={13} color={c.mutedForeground} /> : null}
+                {r.nag_min > 0 && !isDone ? (
+                  <Text style={{ color: c.mutedForeground, fontSize: 11 }}>🔁 {r.nag_min}′</Text>
+                ) : null}
+              </View>
+            </Pressable>
+
+            {r.fir_label ? (
+              <View style={{ flexDirection: 'row', marginTop: 6 }}>
+                {chip(tint('#7C3AED', isDark), isDark ? '#C4B5FD' : '#6D28D9', <FolderOpen size={11} color={isDark ? '#C4B5FD' : '#6D28D9'} />, r.fir_label, () => onOpenCase(r))}
+              </View>
+            ) : null}
 
             {isOverdue ? (
               <View style={{ flexDirection: 'row', gap: 6, marginTop: 10 }}>
@@ -201,8 +204,7 @@ export const ReminderCard = memo(function ReminderCard({
                   <Pressable
                     key={String(m)}
                     onPress={() => onSnooze(r, m)}
-                    className="active:opacity-70"
-                    style={{ height: 30, paddingHorizontal: 12, borderRadius: 999, borderWidth: 1, borderColor: c.border, justifyContent: 'center' }}
+                    style={({ pressed }) => ({ height: 30, paddingHorizontal: 12, borderRadius: 999, borderWidth: 1, borderColor: c.border, justifyContent: 'center', opacity: pressed ? 0.6 : 1 })}
                   >
                     <Text style={{ color: c.foreground, fontSize: 12.5, fontWeight: '600' }}>
                       {m === 10 ? t('reminders.s10') : m === 60 ? t('reminders.s60') : t('reminders.sTomorrow')}
@@ -212,7 +214,26 @@ export const ReminderCard = memo(function ReminderCard({
               </View>
             ) : null}
           </View>
-        </Pressable>
+
+          {/* Right: type icon + delete */}
+          <View style={{ alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+            <View style={{ width: 28, height: 28, borderRadius: 9, alignItems: 'center', justifyContent: 'center', backgroundColor: tint(cat.color, isDark) }}>
+              <CatIcon size={15} color={cat.color} />
+            </View>
+            <Pressable
+              onPress={() => onDelete(r)}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.delete')}
+              style={({ pressed }) => ({
+                width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center',
+                backgroundColor: pressed ? tint(c.destructive, isDark, true) : 'transparent',
+              })}
+            >
+              <Trash2 size={18} color={c.destructive} />
+            </Pressable>
+          </View>
+        </View>
       </ReanimatedSwipeable>
     </View>
   );

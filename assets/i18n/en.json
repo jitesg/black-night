@@ -2949,7 +2949,8 @@
     "privacyDesc": "Notification shows only 'Reminder' — useful for case details",
     "defaultEarly": "Default early alert",
     "defaultNag": "Default repeat-until-done",
-    "titleRequired": "Write what to remind"
+    "titleRequired": "Write what to remind",
+    "deleteFailed": "Could not delete"
   },
   "appLock": {
     "enterPin": "Enter PIN",
