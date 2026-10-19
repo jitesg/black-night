@@ -129,7 +129,6 @@ const FormatCard = memo(function FormatCard({
             numberOfLines={2}
             style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, flexShrink: 1 }}
           />
-          <Pill label={getFormatTypeLabel(format.format_type, t)} color={typeColor} />
         </View>
         {/* Eye preview — 44dp touch target via padding + hitSlop */}
         <Pressable
@@ -168,13 +167,14 @@ const FormatCard = memo(function FormatCard({
       )}
       {/* Footer — date + source badge; user cards add edit/delete actions */}
       <View className="flex-row items-center justify-start gap-2">
-        <View className="flex-row items-center gap-1.5">
+        <View className="flex-row flex-wrap items-center gap-1.5" style={{ flex: 1, minWidth: 0 }}>
           <Clock size={11} color={palette.mutedForeground} />
           {/* muted-foreground: #6B7280 light / #94A3B8 dark — both ≥4.5:1 on their card bg ✓ */}
           <Text className="text-xs text-muted-foreground">
             {format.last_used_at ? t('format.list.usedDate', { date: formatDate(format.last_used_at) }) : t('format.list.addedDate', { date: formatDate(format.created_at) })}
           </Text>
           <SourceBadge source={format.source} size="xs" />
+          <Pill label={getFormatTypeLabel(format.format_type, t)} color={typeColor} />
         </View>
         {/* User templates only: Edit + Delete — 44dp touch targets */}
         {!isSystem && (
