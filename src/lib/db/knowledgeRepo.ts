@@ -22,6 +22,7 @@ import circularsSeed7Data from '../../../assets/seed/circulars_seed_7.json';
 import circularsSeed8Data from '../../../assets/seed/circulars_seed_8.json';
 import sopSeed1Data from '../../../assets/seed/sop_seed_1.json';
 import sopSeed2Data from '../../../assets/seed/sop_seed_2.json';
+import { REG_SEED_ROWS } from '@/lib/regulations/regSeedFiles';
 
 // ─── Types ────────────────────────────────────────────────────────────────
 export interface KnowledgeEntry {
@@ -247,6 +248,10 @@ function getBundledKnowledgeMap(): Map<string, KnowledgeEntry> {
     }
     for (const raw of RAW_SOP_2_SEED) {
       map.set(raw.id, normalizeBundledEntry(raw, 'sop'));
+    }
+    // UP Police Regulations (reg_seed_*.json)
+    for (const raw of REG_SEED_ROWS) {
+      map.set(raw.id, normalizeBundledEntry(raw as SeedKnowledgeRaw, 'regulation'));
     }
   } catch (err) {
     logger.warn('[knowledgeRepo] Error initializing bundled knowledge map:', err);
@@ -754,4 +759,15 @@ export async function deleteDevKnowledge(id: string): Promise<void> {
     `UPDATE knowledge_entries SET deleted_at=?, updated_at=? WHERE id=?`,
     [now, now, id]
   );
+}
+
+/**
+ * UP Police Regulations rows (content_type 'regulation'), DB ∪ bundled seed,
+ * without hidden / deleted rows. Light shape for lists and search.
+ */
+export async function getRegulationRows(): Promise<{ id: string; title: string; tags: string; subcategory: string }[]> {
+  const rows = await getMergedKnowledgeList('Law');
+  return rows
+    .filter((r) => r.content_type === 'regulation' || r.id.startsWith('sys-reg-'))
+    .map((r) => ({ id: r.id, title: r.title, tags: r.tags ?? '', subcategory: r.subcategory ?? '' }));
 }

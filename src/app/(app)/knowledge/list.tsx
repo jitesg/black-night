@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import {
@@ -8,7 +8,7 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  Edit2, Filter, Plus, Trash2, Copy, Shield, User,
+  Edit2, Filter, Plus, Trash2, Copy, Shield, User, BookOpen, ChevronRight,
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { SearchBar } from '@/components/SearchBar';
@@ -33,6 +33,7 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { getRegProgress } from '@/lib/regulations/regIndex';
 
 export const KNOWLEDGE_DIAG_BUILD = 'L18D';
 
@@ -220,6 +221,28 @@ function RecordCard({
 }
 
 // ─── List Screen ──────────────────────────────────────────────────────────
+// ─── UP Police Regulations entry card (top of the Law list) ─────────────────
+function RegulationsEntryCard() {
+  const prog = getRegProgress();
+  return (
+    <Pressable
+      onPress={() => router.push('/(app)/knowledge/regulations' as never)}
+      className="flex-row items-center gap-3 p-4 rounded-2xl border border-indigo-500/30 bg-indigo-500/10 active:opacity-70"
+      style={{ borderCurve: 'continuous', minHeight: 64 }}
+      accessibilityRole="button"
+    >
+      <View className="w-11 h-11 rounded-xl items-center justify-center bg-indigo-500/15">
+        <BookOpen size={22} color="#4F46E5" />
+      </View>
+      <View className="flex-1" style={{ minWidth: 0 }}>
+        <Text className="text-[15px] font-bold text-foreground">UP Police Regulations ({prog.total} पैरा)</Text>
+        <Text className="text-xs text-muted-foreground mt-0.5">भाग I–IV · हिंदी तैयार: {prog.done} / {prog.total}</Text>
+      </View>
+      <ChevronRight size={18} color="#4F46E5" />
+    </Pressable>
+  );
+}
+
 export default function KnowledgeListScreen() {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
@@ -235,10 +258,21 @@ export default function KnowledgeListScreen() {
     'UP पुलिस विवेचना हस्त-पुस्तिका (DGP O.P. Singh)',
     'FSL/तकनीकी सेवाएँ — Crime Scene SOP',
   ];
-  const subcategories = isSopCategory ? SOP_SUBCATEGORIES : (cat?.subcategories ?? []);
+  const baseSubcategories = isSopCategory ? SOP_SUBCATEGORIES : (cat?.subcategories ?? []);
+  const isLawCategory = category === 'Law';
 
   const [allEntries, setAllEntries] = useState<KnowledgeEntry[]>([]);
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
+  // Law: also offer subcategories that exist in the data (e.g. UP Police
+  // Regulations chapters), after the fixed act list.
+  const subcategories = useMemo(() => {
+    if (!isLawCategory) return baseSubcategories;
+    const extra = Array.from(new Set(allEntries.map((e) => e.subcategory).filter(Boolean)))
+      .filter((sub) => !baseSubcategories.includes(sub))
+      .sort((a, b) => a.localeCompare(b));
+    return [...baseSubcategories, ...extra];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLawCategory, allEntries, category]);
   const [query, setQuery] = useState('');
   const [activeSubcat, setActiveSubcat] = useState('All');
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>('All');
@@ -547,6 +581,7 @@ export default function KnowledgeListScreen() {
           contentInsetAdjustmentBehavior="automatic"
           refreshing={false}
           onRefresh={() => loadData()}
+          ListHeaderComponent={isLawCategory ? <RegulationsEntryCard /> : null}
           renderItem={({ item }) => (
             <RecordCard
               item={item}

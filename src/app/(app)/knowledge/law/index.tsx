@@ -9,6 +9,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { THEME } from '@/lib/theme';
 import { ACTS, searchLaw, type ActId, type LawSearchResult } from '@/lib/law/lawLibrary';
 import { hasSimple } from '@/lib/law/simpleExplain';
+import { getRegProgress } from '@/lib/regulations/regIndex';
 
 export default function LawLibraryIndexScreen() {
   const { t, i18n } = useTranslation();
@@ -61,6 +62,7 @@ export default function LawLibraryIndexScreen() {
   ];
 
   const isSearchActive = query.trim().length > 0;
+  const regProg = getRegProgress();
 
   return (
     <View className="flex-1 bg-background">
@@ -332,6 +334,27 @@ export default function LawLibraryIndexScreen() {
               );
             })}
           </View>
+
+          {/* UP Police Regulations (Task L35) */}
+          <Pressable
+            onPress={() => router.push('/(app)/knowledge/regulations' as never)}
+            className="bg-card border border-border rounded-2xl p-5 gap-2 active:opacity-70 mt-1"
+            style={{ borderCurve: 'continuous', minHeight: 44 }}
+            accessibilityRole="button"
+          >
+            <View className="flex-row items-center gap-3">
+              <View className="w-12 h-12 rounded-xl items-center justify-center bg-indigo-500/10">
+                <BookOpen size={24} color="#4F46E5" />
+              </View>
+              <View className="flex-1" style={{ minWidth: 0 }}>
+                <Text className="text-[15px] font-bold text-foreground">UP Police Regulations ({regProg.total} पैरा)</Text>
+                <Text className="text-xs text-muted-foreground mt-0.5">
+                  पुलिस रेगुलेशन्स · हिंदी तैयार: {regProg.done} / {regProg.total}
+                </Text>
+              </View>
+              <ChevronRight size={20} color={C.mutedForeground} />
+            </View>
+          </Pressable>
 
           {/* 4th Card: अन्य अधिनियम / मेरे नोट (opens existing list?category=Law) */}
           <Pressable

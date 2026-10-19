@@ -56,12 +56,14 @@ import {
   isSopLookupQuery,
   lookupSop,
 } from './sopLookup';
+import { isExplicitRegQuery, isRegTopicQuery, lookupRegulations } from './regLookup';
 
 // ── Intent detection ─────────────────────────────────────────────────────────
 
 export type Intent =
   | 'CIRCULAR_LOOKUP'
   | 'SOP_LOOKUP'
+  | 'REG_LOOKUP'
   | 'OLD_TO_NEW'
   | 'NEW_TO_OLD'
   | 'fard-advice'
@@ -170,7 +172,12 @@ export function detectNewToOldFromQuery(query: string): { act: ActId; n: number 
 }
 
 export function detectIntent(message: string): Intent {
-  // 0. Check for DGP Circular lookup
+  // 0. UP Police Regulations — explicit ("पैरा 97", "UPPR", "regulation") (Task L35)
+  if (isExplicitRegQuery(message)) {
+    return 'REG_LOOKUP';
+  }
+
+  // 0a. Check for DGP Circular lookup
   if (isCircularLookupQuery(message)) {
     return 'CIRCULAR_LOOKUP';
   }
@@ -178,6 +185,11 @@ export function detectIntent(message: string): Intent {
   // 0b. Check for SOP lookup (Task L29)
   if (isSopLookupQuery(message)) {
     return 'SOP_LOOKUP';
+  }
+
+  // 0c. Regulation topics (मालखाना, पंचायतनामा, बदमाश रजिस्टर …)
+  if (isRegTopicQuery(message)) {
+    return 'REG_LOOKUP';
   }
 
   // Check for NEW_TO_OLD intent (e.g. "BNS 103 ka purana number", "BNSS 173 pehle kya thi")
@@ -413,6 +425,15 @@ export async function buildOfflineResponse(
     // ── SOP Lookup (Task L29) ────────────────────────────────────────────────
     case 'SOP_LOOKUP': {
       const result = await lookupSop(message);
+      return {
+        content: result.content,
+        suggestedActions: result.suggestedActions,
+      };
+    }
+
+    // ── UP Police Regulations (Task L35) ────────────────────────────────────
+    case 'REG_LOOKUP': {
+      const result = await lookupRegulations(message);
       return {
         content: result.content,
         suggestedActions: result.suggestedActions,

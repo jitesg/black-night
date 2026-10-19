@@ -19,6 +19,7 @@ import { NextActionEngine } from './NextActionEngine';
 import { ReasoningEngine } from './reasoning/ReasoningEngine';
 import { InvestigationIntelligenceEngine } from './intelligence/InvestigationIntelligenceEngine';
 import { AIProviderManager } from './level5/AIProviderManager';
+import { buildRegContext } from './regLookup';
 import i18n from '@/lib/i18n';
 import type { ReasoningReport } from './reasoning/ReasoningTypes';
 import type { InvestigationIntelligenceReport } from './intelligence/IntelligenceTypes';
@@ -509,7 +510,12 @@ export class AICopilotService {
       let cloudAnswerUsed = false;
       if (AIProviderManager.hasOnlineProvider() && this.aiPreferences.reportGeneration) {
         try {
-          const contextSummary = this.aiPreferences.restrictCaseData ? '' : buildConciseContextSummary(ctx, toolResults, message);
+          // Regulations (L35): send the matching paragraphs + answer rules;
+          // regulation text is not case data, so it is sent even when case
+          // data is restricted.
+          const contextSummary = intent === 'REG_LOOKUP'
+            ? buildRegContext(message)
+            : this.aiPreferences.restrictCaseData ? '' : buildConciseContextSummary(ctx, toolResults, message);
           const cloudResponse = await AIProviderManager.execute({
             prompt: message,
             context: contextSummary,
@@ -520,6 +526,11 @@ export class AICopilotService {
           if (cloudResponse.content && !cloudResponse.usedFallback) {
             finalContent = cloudResponse.content;
             cloudAnswerUsed = true;
+            if (intent === 'REG_LOOKUP') {
+              // Keep the "open paragraph" links from the offline answer.
+              const links = offlineResult.content.match(/\[[^\]]*पैरा[^\]]*\]\(sys-reg-[a-z0-9-]+\)/g) ?? [];
+              if (links.length) finalContent += `\n\n${links.slice(0, 3).join('  ')}`;
+            }
           }
         } catch {
           // Silently keep the offline result already computed above.

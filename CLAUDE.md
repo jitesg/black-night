@@ -48,3 +48,13 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `sop_explain_<n>.json` files to the list in `src/ai/sopExplain.ts`.
 - Tasks done: L29, L30A (structured viewer), L30B (checklist), L32 (समझें tab).
   Photos (`sop_images` table, "part 3") not supplied yet — the फोटो tab stays hidden.
+
+## UP Police Regulations (L35)
+- Sidecar `assets/reg/reg_index.json` (509 paras, chapters) and seeds
+  `assets/seed/reg_seed_<n>.json` (owner's files, byte-for-byte). New seed files are
+  picked up automatically (`require.context` in `src/lib/regulations/regSeedFiles.ts`).
+- Pure helpers + tests: `src/lib/regulations/regCore.ts`,
+  `node --experimental-strip-types --test scripts/test_regulations.ts`.
+- Hub `knowledge/regulations.tsx`; reader `components/knowledge/RegulationViewer.tsx`
+  (content_type 'regulation', own error boundary → LawDetail fallback);
+  Copilot `src/ai/regLookup.ts` (REG_LOOKUP).

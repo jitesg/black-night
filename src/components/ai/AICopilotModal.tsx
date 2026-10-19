@@ -104,9 +104,11 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   activeFirId?: string;
+  /** Sent automatically once when the modal opens (e.g. "पैरा 97 …"). */
+  initialQuery?: string;
 }
 
-export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
+export function AICopilotModal({ visible, onClose, activeFirId, initialQuery }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
@@ -232,7 +234,7 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
         });
         if (!cancelled) {
           setMessages([welcome]);
-          setSuggestedActions(['Draft Case Diary', 'Pending Tasks', 'View Analytics']);
+          setSuggestedActions(['Draft Case Diary', 'Pending Tasks', 'View Analytics', 'पैरा खोजें', 'रेगुलेशन में पूछें']);
         }
       }
     })();
@@ -559,6 +561,21 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
     [service, isProcessing, syncMessages]
   );
 
+  // ── Initial question (opened from a screen with context) ────────────────────
+  const initialSentRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!visible) {
+      initialSentRef.current = null;
+      return;
+    }
+    if (!service || !initialQuery || initialSentRef.current === initialQuery || isProcessing) return;
+    const id = setTimeout(() => {
+      initialSentRef.current = initialQuery;
+      handleSend(initialQuery);
+    }, 400);
+    return () => clearTimeout(id);
+  }, [visible, service, initialQuery, isProcessing, handleSend]);
+
   // ── Quick action ──────────────────────────────────────────────────────────────
   const handleQuickAction = useCallback(
     async (actionId: QuickActionId) => {
@@ -630,6 +647,19 @@ export function AICopilotModal({ visible, onClose, activeFirId }: Props) {
   // ── Suggested follow-up ───────────────────────────────────────────────────────
   const handleSuggestedAction = useCallback(
     (action: string) => {
+      // UP Police Regulations (L35): "पैरा खोजें" opens the hub,
+      // "पैरा 97 खोलें" opens that paragraph.
+      if (action.trim() === 'पैरा खोजें') {
+        onClose();
+        setTimeout(() => { router.push('/(app)/knowledge/regulations' as any); }, 150);
+        return;
+      }
+      const paraOpen = action.trim().match(/^पैरा\s*([0-9]{1,3}(?:-[A-Za-z])?)\s*खोलें$/);
+      if (paraOpen) {
+        onClose();
+        setTimeout(() => { router.push(`/(app)/knowledge/sys-reg-up-${paraOpen[1].toLowerCase()}` as any); }, 150);
+        return;
+      }
       // "समझें खोलें" → SOP explainer tab (L32)
       if (action.includes('समझें खोलें')) {
         const m = action.match(/sys-sop-[a-z0-9-]+/i) || action.match(/sop-[a-z0-9-]+/i);

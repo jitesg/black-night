@@ -19,6 +19,9 @@ import sopSeed1Data from '../../../assets/seed/sop_seed_1.json';
 import sopSeed2Data from '../../../assets/seed/sop_seed_2.json';
 import formatsSeedData from '../../../assets/seed/formats_seed.json';
 import knowledgeSeedData from '../../../assets/seed/knowledge_seed.json';
+import { REG_SEED_FILES } from '@/lib/regulations/regSeedFiles';
+import { getRegIndex, getRegIndexError } from '@/lib/regulations/regIndex';
+import { CIRCULAR_SEED_FILES } from '@/lib/db/seedManager';
 import {
   FORMATS_FILE_TOKEN,
   KNOWLEDGE_FILE_TOKEN,
@@ -177,6 +180,13 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
       computedHash: SOP_2_FILE_TOKEN,
       settingKey: 'seed_file:sop_seed_2.json',
     },
+    // UP Police Regulations: every reg_seed_<n>.json (Task L35)
+    ...REG_SEED_FILES.map((f) => ({
+      fileName: f.fileName,
+      bundledCount: f.rows.length,
+      computedHash: CIRCULAR_SEED_FILES.find((x) => x.fileName === f.fileName)?.fileToken ?? '',
+      settingKey: `seed_file:${f.fileName}`,
+    })),
   ];
 
   const inMemoryStatuses = getPerSeedFileStatus();
@@ -226,6 +236,27 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
   log('');
 
   // ── 3) Timestamps & Ordering ──────────────────────────────────────────────
+  // ── 2b) UP Police Regulations (Task L35) ──────────────────────────────────
+  log('--- 2b) UP POLICE REGULATIONS ---');
+  try {
+    const idx = getRegIndex();
+    log(`Sidecar reg_index.json: ${idx ? `${Object.keys(idx.paras).length} paras, ${idx.chapters.length} chapters` : `NOT LOADED (${getRegIndexError() ?? 'unknown'})`}`);
+    const regRows = await dbGetAllAsync<{ id: string }>(
+      `SELECT id FROM knowledge_entries WHERE deleted_at IS NULL AND (content_type = 'regulation' OR id LIKE 'sys-reg-%')`
+    ).catch(() => [] as { id: string }[]);
+    const withDone = regRows.filter((r) => idx?.paras[r.id]?.done).length;
+    const missing = regRows.filter((r) => !idx?.paras[r.id]).map((r) => r.id);
+    log(`Regulation rows in DB: ${regRows.length}`);
+    log(`  with sidecar done=true: ${withDone}`);
+    log(`  sidecar entry missing: ${missing.length}${missing.length ? ` (${missing.slice(0, 10).join(', ')}${missing.length > 10 ? ' …' : ''})` : ''}`);
+    for (const f of REG_SEED_FILES) {
+      log(`  seed file ${f.fileName}: ${f.error ? `ERROR ${f.error}` : `${f.rows.length} rows bundled`}`);
+    }
+  } catch (e: any) {
+    log(`Regulations diagnostics error: ${e?.message || String(e)}`);
+  }
+  log('');
+
   log('--- 3) TIMESTAMPS & ORDERING ---');
   const ts = getSeedTimestamps();
   log(`App Start Time: ${ts.appStart ? new Date(ts.appStart).toISOString() + ` (${ts.appStart})` : 'NOT_SET'}`);

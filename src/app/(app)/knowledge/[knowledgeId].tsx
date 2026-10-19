@@ -31,6 +31,7 @@ import {
   updateSimpleExplanation, type KnowledgeEntry,
 } from '@/lib/db/knowledgeRepo';
 import { getKnowledgeNote, saveKnowledgeNote } from '@/lib/db/knowledgeNotesRepo';
+import { RegulationErrorBoundary, RegulationViewer } from '@/components/knowledge/RegulationViewer';
 import {
   getDisplayShortTitle,
   getCircularNumberChip,
@@ -2530,6 +2531,17 @@ export default function KnowledgeDetailScreen() {
   const isSop = entry.content_type === 'sop' || entry.category === 'SOP';
   const isCircular = entry.content_type === 'circular' || entry.category === 'Circular';
   const isLaw = entry.content_type === 'law' || entry.category === 'Law';
+  const isRegulation = entry.content_type === 'regulation' || entry.id.startsWith('sys-reg-');
+
+  if (isRegulation) {
+    // UP Police Regulations (L35): 4-tab reader; if it ever crashes, the
+    // boundary falls back to the plain law viewer.
+    return (
+      <RegulationErrorBoundary key={entry.id} fallback={<LawDetail entry={entry} />}>
+        <RegulationViewer entry={entry} />
+      </RegulationErrorBoundary>
+    );
+  }
 
   if (isSop) {
     return (
