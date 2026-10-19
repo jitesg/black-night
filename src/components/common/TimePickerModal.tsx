@@ -1,9 +1,12 @@
 /**
- * TimePickerModal — tap-to-pick time (hour grid, 5-minute grid, AM/PM).
- * value / onConfirm use 24-hour "HH:MM".
+ * TimePickerModal — wheel-style time picker: slide hour and minute up/down,
+ * tap AM/PM. value / onConfirm use 24-hour "HH:MM".
  */
-import React, { useEffect, useState } from 'react';
-import { Modal, Pressable, Text, View } from 'react-native';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Modal, Pressable, ScrollView, Text, View,
+  type NativeScrollEvent, type NativeSyntheticEvent,
+} from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 
@@ -16,8 +19,12 @@ interface Props {
   onClose: () => void;
 }
 
-const HOURS = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5);
+const ITEM_H = 48;
+const VISIBLE = 5; // odd: the middle row is the selected one
+const PAD = Math.floor(VISIBLE / 2);
+
+const HOURS = Array.from({ length: 12 }, (_, i) => i + 1); // 1..12
+const MINUTES = Array.from({ length: 60 }, (_, i) => i);  // 0..59
 
 function parse(v: string): { h12: number; m: number; pm: boolean } {
   const match = /^(\d{1,2}):(\d{2})$/.exec(v || '');
@@ -31,98 +38,187 @@ export function formatTime12(v: string): string {
   return `${h12}:${String(m).padStart(2, '0')} ${pm ? 'PM' : 'AM'}`;
 }
 
+interface WheelProps {
+  items: number[];
+  index: number;
+  onChange: (index: number) => void;
+  format: (n: number) => string;
+  color: string;
+  mutedColor: string;
+  width: number;
+}
+
+/** One scrolling column that snaps to rows. */
+const Wheel = memo(function Wheel({ items, index, onChange, format, color, mutedColor, width }: WheelProps) {
+  const ref = useRef<ScrollView>(null);
+  const [live, setLive] = useState(index);
+  const settled = useRef(index);
+
+  // Jump to the given index when the modal opens / value changes from outside.
+  useEffect(() => {
+    settled.current = index;
+    setLive(index);
+    const id = setTimeout(() => ref.current?.scrollTo({ y: index * ITEM_H, animated: false }), 0);
+    return () => clearTimeout(id);
+  }, [index]);
+
+  const idxFrom = (y: number) => Math.max(0, Math.min(items.length - 1, Math.round(y / ITEM_H)));
+
+  const onScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const i = idxFrom(e.nativeEvent.contentOffset.y);
+    setLive((prev) => (prev === i ? prev : i));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
+
+  const settle = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const i = idxFrom(e.nativeEvent.contentOffset.y);
+    if (i !== settled.current) {
+      settled.current = i;
+      onChange(i);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length, onChange]);
+
+  return (
+    <View style={{ width, height: ITEM_H * VISIBLE }}>
+      <ScrollView
+        ref={ref}
+        showsVerticalScrollIndicator={false}
+        snapToInterval={ITEM_H}
+        decelerationRate="fast"
+        nestedScrollEnabled
+        scrollEventThrottle={16}
+        onScroll={onScroll}
+        onMomentumScrollEnd={settle}
+        onScrollEndDrag={settle}
+        contentOffset={{ x: 0, y: index * ITEM_H }}
+        contentContainerStyle={{ paddingVertical: PAD * ITEM_H }}
+      >
+        {items.map((n, i) => {
+          const dist = Math.abs(i - live);
+          return (
+            <Pressable
+              key={n}
+              onPress={() => ref.current?.scrollTo({ y: i * ITEM_H, animated: true })}
+              style={{ height: ITEM_H, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Text
+                style={{
+                  color: dist === 0 ? color : mutedColor,
+                  fontSize: dist === 0 ? 30 : dist === 1 ? 22 : 18,
+                  fontWeight: dist === 0 ? '800' : '500',
+                  opacity: dist === 0 ? 1 : dist === 1 ? 0.7 : 0.4,
+                  fontVariant: ['tabular-nums'],
+                }}
+              >
+                {format(n)}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+});
+
 export function TimePickerModal({ visible, value, title = 'समय चुनें', accentColor = '#2563EB', onConfirm, onClose }: Props) {
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme ?? 'light'];
   const [sel, setSel] = useState(() => parse(value));
+  const [start, setStart] = useState(() => parse(value));
 
   useEffect(() => {
-    if (visible) setSel(parse(value));
+    if (visible) {
+      const p = parse(value);
+      setSel(p);
+      setStart(p);
+    }
   }, [visible, value]);
+
+  const onHour = useCallback((i: number) => setSel((s) => ({ ...s, h12: HOURS[i] })), []);
+  const onMinute = useCallback((i: number) => setSel((s) => ({ ...s, m: MINUTES[i] })), []);
+  const pad2 = useCallback((n: number) => String(n).padStart(2, '0'), []);
+  const plain = useCallback((n: number) => String(n), []);
 
   const confirm = () => {
     const h24 = (sel.h12 % 12) + (sel.pm ? 12 : 0);
     onConfirm(`${String(h24).padStart(2, '0')}:${String(sel.m).padStart(2, '0')}`);
   };
 
-  const cell = (active: boolean) => ({
-    width: '23%' as const,
-    height: 40,
-    borderRadius: 12,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    backgroundColor: active ? accentColor : c.secondary,
-  });
-
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable
-        style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' }}
-        onPress={onClose}
-      >
-        <Pressable
-          onPress={() => {}}
-          style={{ backgroundColor: c.card, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 18, paddingBottom: 34 }}
-        >
+      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+        <Pressable style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.45)' }} onPress={onClose} />
+        <View style={{ backgroundColor: c.card, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 18, paddingBottom: 34 }}>
           <Text style={{ color: c.foreground, fontSize: 16, fontWeight: '700', textAlign: 'center' }}>{title}</Text>
+          <Text style={{ color: accentColor, fontSize: 15, fontWeight: '700', textAlign: 'center', marginTop: 4 }}>
+            {sel.h12}:{String(sel.m).padStart(2, '0')} {sel.pm ? 'PM' : 'AM'}
+          </Text>
 
-          {/* Big preview + AM/PM */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 14, marginTop: 12, marginBottom: 14 }}>
-            <Text style={{ color: c.foreground, fontSize: 40, fontWeight: '700', fontVariant: ['tabular-nums'] }}>
-              {sel.h12}:{String(sel.m).padStart(2, '0')}
-            </Text>
-            <View style={{ flexDirection: 'row', backgroundColor: c.secondary, borderRadius: 999, padding: 3 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 12 }}>
+            {/* Selection band behind the middle row */}
+            <View
+              pointerEvents="none"
+              style={{
+                position: 'absolute', left: 8, right: 8, top: PAD * ITEM_H, height: ITEM_H,
+                borderRadius: 14, backgroundColor: `${accentColor}1A`, borderWidth: 1, borderColor: `${accentColor}55`,
+              }}
+            />
+            <Wheel
+              items={HOURS}
+              index={HOURS.indexOf(start.h12)}
+              onChange={onHour}
+              format={plain}
+              color={c.foreground}
+              mutedColor={c.mutedForeground}
+              width={84}
+            />
+            <Text style={{ color: c.foreground, fontSize: 30, fontWeight: '800', marginHorizontal: 4, marginTop: -4 }}>:</Text>
+            <Wheel
+              items={MINUTES}
+              index={start.m}
+              onChange={onMinute}
+              format={pad2}
+              color={c.foreground}
+              mutedColor={c.mutedForeground}
+              width={84}
+            />
+            {/* AM / PM */}
+            <View style={{ marginLeft: 14, gap: 8 }}>
               {(['AM', 'PM'] as const).map((p) => {
                 const active = (p === 'PM') === sel.pm;
                 return (
                   <Pressable
                     key={p}
                     onPress={() => setSel((s) => ({ ...s, pm: p === 'PM' }))}
-                    style={{ paddingHorizontal: 14, height: 32, borderRadius: 999, justifyContent: 'center', backgroundColor: active ? accentColor : 'transparent' }}
+                    style={{
+                      width: 58, height: 42, borderRadius: 12, alignItems: 'center', justifyContent: 'center',
+                      backgroundColor: active ? accentColor : c.secondary,
+                    }}
                   >
-                    <Text style={{ color: active ? '#fff' : c.secondaryForeground, fontWeight: '700', fontSize: 13 }}>{p}</Text>
+                    <Text style={{ color: active ? '#fff' : c.secondaryForeground, fontWeight: '700', fontSize: 15 }}>{p}</Text>
                   </Pressable>
                 );
               })}
             </View>
           </View>
 
-          <Text style={{ color: c.mutedForeground, fontSize: 12, fontWeight: '600', marginBottom: 6 }}>घंटा</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 8 }}>
-            {HOURS.map((h) => (
-              <Pressable key={h} onPress={() => setSel((s) => ({ ...s, h12: h }))} style={cell(sel.h12 === h)}>
-                <Text style={{ color: sel.h12 === h ? '#fff' : c.foreground, fontWeight: '600', fontSize: 15 }}>{h}</Text>
-              </Pressable>
-            ))}
-          </View>
-
-          <Text style={{ color: c.mutedForeground, fontSize: 12, fontWeight: '600', marginTop: 14, marginBottom: 6 }}>मिनट</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 8 }}>
-            {MINUTES.map((m) => (
-              <Pressable key={m} onPress={() => setSel((s) => ({ ...s, m }))} style={cell(sel.m === m)}>
-                <Text style={{ color: sel.m === m ? '#fff' : c.foreground, fontWeight: '600', fontSize: 15 }}>
-                  :{String(m).padStart(2, '0')}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-
           <View style={{ flexDirection: 'row', gap: 10, marginTop: 18 }}>
             <Pressable
               onPress={onClose}
-              style={{ flex: 1, height: 46, borderRadius: 12, borderWidth: 1, borderColor: c.border, alignItems: 'center', justifyContent: 'center' }}
+              style={{ flex: 1, height: 48, borderRadius: 12, borderWidth: 1, borderColor: c.border, alignItems: 'center', justifyContent: 'center' }}
             >
               <Text style={{ color: c.foreground, fontWeight: '600' }}>रद्द करें</Text>
             </Pressable>
             <Pressable
               onPress={confirm}
-              style={{ flex: 1, height: 46, borderRadius: 12, backgroundColor: accentColor, alignItems: 'center', justifyContent: 'center' }}
+              style={{ flex: 1, height: 48, borderRadius: 12, backgroundColor: accentColor, alignItems: 'center', justifyContent: 'center' }}
             >
               <Text style={{ color: '#fff', fontWeight: '700' }}>ठीक है</Text>
             </Pressable>
           </View>
-        </Pressable>
-      </Pressable>
+        </View>
+      </View>
     </Modal>
   );
 }
