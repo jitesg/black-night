@@ -1174,6 +1174,18 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   // are not deletable from the detail screen.
   await _ensureColumn(database, 'fir_karyvahi', 'source', "TEXT DEFAULT 'system'");
 
+  // ── Reminders v3: category, priority, case link, custom repeat, early
+  // alert, repeat-until-done (nag), snooze, completion time.
+  await _ensureColumn(database, 'reminders', 'category',     "TEXT DEFAULT 'general'");
+  await _ensureColumn(database, 'reminders', 'priority',     "TEXT DEFAULT 'normal'");
+  await _ensureColumn(database, 'reminders', 'fir_id',       "TEXT DEFAULT ''");
+  await _ensureColumn(database, 'reminders', 'fir_label',    "TEXT DEFAULT ''");
+  await _ensureColumn(database, 'reminders', 'repeat_days',  "TEXT DEFAULT ''");
+  await _ensureColumn(database, 'reminders', 'early_min',    'INTEGER DEFAULT 0');
+  await _ensureColumn(database, 'reminders', 'nag_min',      'INTEGER DEFAULT 0');
+  await _ensureColumn(database, 'reminders', 'snooze_until', 'INTEGER DEFAULT 0');
+  await _ensureColumn(database, 'reminders', 'completed_at', 'INTEGER');
+
   // ── v304: मुकदमा सारांश — Case Summary field on FIR ─────────────────────────
   // Optional long-form narrative summary stored directly on the fir record.
   // NULL / '' means "not set"; no default value needed (nullable TEXT).

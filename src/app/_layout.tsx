@@ -30,8 +30,11 @@ import { seedDefaultPhrasesIfEmpty } from '@/lib/db/phraseLibraryRepo';
 import { AppLogger } from '@/lib/appLogger';
 import { clearDevSession } from '@/lib/devOptionsAuth';
 import { clearSession } from '@/lib/sysFormatAuth';
-import { requestReminderPermissions, setupReminderCategories, registerReminderResponseHandler } from '@/lib/reminderNotifications';
-import { completeReminderById, resyncReminderNotifications } from '@/lib/reminderService';
+import * as Notifications from 'expo-notifications';
+import { requestReminderPermissions, setupReminderCategories } from '@/lib/reminderNotifications';
+import { resyncReminderNotifications } from '@/lib/reminderService';
+import { handleReminderResponse, toResponseLike } from '@/lib/reminderActions';
+import { registerReminderBackgroundTask } from '@/lib/reminderBackgroundTask';
 import { syncAppNotifications } from '@/lib/appNotificationSync';
 import { AIProviderManager } from '@/ai/level5/AIProviderManager';
 import { LearningEngine } from '@/ai/level5/LearningEngine';
@@ -218,16 +221,43 @@ function AppNavigator({
 }) {
   const { themeReady, settings } = useSettingsStore();
 
+  const ready = themeReady && dbReady;
+  const openRemindersRef = useRef(false);
+  const [openTick, setOpenTick] = useState(0);
+
+  // Reminder notification taps: action buttons (snooze / done) are handled
+  // here while the app is open; tapping the notification opens Reminders.
   useEffect(() => {
-    const unregister = registerReminderResponseHandler({
-      snoozeMinutes: settings.reminderSnooze,
-      onDone: (id) => completeReminderById(id),
-      onOpen: () => {
-        try { router.push('/(app)/reminders' as RelativePathString); } catch {}
-      },
+    const openReminders = () => {
+      openRemindersRef.current = true;
+      setOpenTick((n) => n + 1);
+    };
+    const sub = Notifications.addNotificationResponseReceivedListener((response) => {
+      const r = toResponseLike(response);
+      if (!r.reminderId) return;
+      if (r.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) openReminders();
+      else handleReminderResponse(r);
     });
-    return unregister;
-  }, [settings.reminderSnooze]);
+    // App was closed and opened by tapping a reminder.
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (!response) return;
+      const r = toResponseLike(response);
+      if (r.reminderId && r.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) {
+        openReminders();
+        Notifications.clearLastNotificationResponseAsync?.().catch(() => {});
+      }
+    }).catch(() => {});
+    return () => sub.remove();
+  }, []);
+
+  useEffect(() => {
+    if (!ready || !openRemindersRef.current) return;
+    openRemindersRef.current = false;
+    const id = setTimeout(() => {
+      try { router.push('/(app)/reminders' as RelativePathString); } catch {}
+    }, 300);
+    return () => clearTimeout(id);
+  }, [ready, openTick]);
 
   if (!themeReady || !dbReady) {
     return <LoadingSpinner navTheme={navTheme} isDark={isDark} />;
@@ -282,6 +312,7 @@ export default function RootLayout() {
   const [isBackground, setIsBackground] = useState(false);
   const appStateRef        = useRef<AppStateStatus>(AppState.currentState);
   const backgroundAtRef    = useRef<number | null>(null);
+  const lastReminderResyncRef = useRef(0);
 
   useEffect(() => {
     AIProviderManager.registerProvider({
@@ -301,6 +332,7 @@ export default function RootLayout() {
       try {
         await requestReminderPermissions();
         await setupReminderCategories();
+        await registerReminderBackgroundTask();
       } catch (e) {
         if (__DEV__) console.warn('[Reminders] setup failed:', e);
       }
@@ -354,6 +386,11 @@ export default function RootLayout() {
         (async () => {
           try {
             await syncAppNotifications();
+            // Top up repeat-until-done alerts (at most every 10 minutes).
+            if (Date.now() - lastReminderResyncRef.current > 10 * 60000) {
+              lastReminderResyncRef.current = Date.now();
+              await resyncReminderNotifications();
+            }
           } catch (e) {
             if (__DEV__) console.warn('[AppNotificationSync] Active transition sync failed:', e);
           }

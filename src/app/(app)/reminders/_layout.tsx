@@ -5,6 +5,7 @@ export default function RemindersLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="add" />
+      <Stack.Screen name="health" />
     </Stack>
   );
 }

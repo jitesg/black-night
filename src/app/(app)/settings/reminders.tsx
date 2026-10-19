@@ -2,10 +2,11 @@
  * Reminders Settings Screen
  */
 import { useState } from 'react';
-import { View, Text, Pressable, ScrollView, Modal } from 'react-native';
+import { View, Text, Pressable, ScrollView, Modal, Switch } from 'react-native';
 import { useRouter, type RelativePathString } from 'expo-router';
-import { Clock, Music, RefreshCw, ChevronDown, ChevronRight, Check, Bell, Volume2, BatteryCharging } from 'lucide-react-native';
-import { sendTestReminder, openAppNotificationSettings } from '@/lib/reminderNotifications';
+import { Clock, Music, RefreshCw, ChevronDown, ChevronRight, Check, Bell, Volume2, BatteryCharging, ShieldCheck, EyeOff, Timer, Repeat } from 'lucide-react-native';
+import { resyncReminderNotifications } from '@/lib/reminderService';
+import { sendTestReminder, openBatterySettings } from '@/lib/reminderNotifications';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
@@ -97,6 +98,7 @@ export const REPEAT_OPTION_KEYS: { value: RepeatVal; labelKey: string }[] = [
   { value: 'once', labelKey: 'settings.reminders.repeatOnce' },
   { value: 'daily', labelKey: 'settings.reminders.repeatDaily' },
   { value: 'weekly', labelKey: 'settings.reminders.repeatWeekly' },
+  { value: 'monthly', labelKey: 'settings.reminders.repeatMonthly' },
 ];
 const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
   const h = Math.floor(i / 2).toString().padStart(2, '0');
@@ -135,6 +137,19 @@ export default function RemindersScreen() {
               <View className="flex-1">
                 <Text className="text-sm font-semibold text-foreground">{t('settings.reminders.myReminders')}</Text>
                 <Text className="text-xs text-muted-foreground mt-0.5">{t('settings.reminders.myRemindersDesc')}</Text>
+              </View>
+              <ChevronRight size={18} color="#6B7280" />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/(app)/reminders/health' as RelativePathString)}
+              className="px-4 py-4 flex-row items-center gap-3 border-t border-border active:opacity-70"
+            >
+              <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: '#16A34A15' }}>
+                <ShieldCheck size={18} color="#16A34A" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-sm font-semibold text-foreground">{t('reminders.health')}</Text>
+                <Text className="text-xs text-muted-foreground mt-0.5">{t('reminders.healthDesc')}</Text>
               </View>
               <ChevronRight size={18} color="#6B7280" />
             </Pressable>
@@ -224,11 +239,62 @@ export default function RemindersScreen() {
             options={repeatOptions}
             onSelect={(v) => update('reminderRepeat', v as RepeatVal)}
           />
+
+          {/* Early alert */}
+          <View className="px-4 py-4 flex-row items-center gap-3 border-t border-border">
+            <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: '#0891B215' }}>
+              <Timer size={16} color="#0891B2" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-sm font-semibold text-foreground">{t('reminders.defaultEarly')}</Text>
+            </View>
+          </View>
+          <OptionPicker
+            label={t('reminders.early')}
+            value={settings.reminderEarly ?? 0}
+            options={[0, 5, 15, 30, 60, 1440].map((n) => ({ value: n, label: t(n === 0 ? 'reminders.earlyOff' : `reminders.early${n}`) }))}
+            onSelect={(v) => update('reminderEarly', v)}
+          />
+
+          {/* Repeat until done */}
+          <View className="px-4 py-4 flex-row items-center gap-3 border-t border-border">
+            <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: '#DC262615' }}>
+              <Repeat size={16} color="#DC2626" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-sm font-semibold text-foreground">{t('reminders.defaultNag')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('reminders.nagHint')}</Text>
+            </View>
+          </View>
+          <OptionPicker
+            label={t('reminders.nag')}
+            value={settings.reminderNag ?? 0}
+            options={[0, 5, 10, 15, 30].map((n) => ({ value: n, label: n === 0 ? t('reminders.nagOff') : t('reminders.nagEvery', { n }) }))}
+            onSelect={(v) => update('reminderNag', v)}
+          />
+
+          {/* Lock-screen privacy */}
+          <View className="px-4 py-4 flex-row items-center gap-3 border-t border-border">
+            <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: '#47556915' }}>
+              <EyeOff size={16} color="#475569" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-sm font-semibold text-foreground">{t('reminders.privacy')}</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">{t('reminders.privacyDesc')}</Text>
+            </View>
+            <Switch
+              value={!!settings.reminderPrivate}
+              onValueChange={(v) => {
+                update('reminderPrivate', v);
+                resyncReminderNotifications({ hide: v }).catch(() => {});
+              }}
+            />
+          </View>
         </View>
 
         {/* Battery tip — some phones delay alarms of apps in battery saver */}
         <Pressable
-          onPress={openAppNotificationSettings}
+          onPress={openBatterySettings}
           className="mt-6 mb-4 bg-card border border-border rounded-2xl p-4 flex-row gap-3 active:opacity-70"
           style={{ borderCurve: 'continuous' }}
         >

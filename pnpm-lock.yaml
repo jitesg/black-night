@@ -214,6 +214,9 @@ importers:
       expo-system-ui:
         specifier: ~55.0.9
         version: 55.0.19(expo@55.0.6)(react-native-web@0.21.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))
+      expo-task-manager:
+        specifier: ~55.0.20
+        version: 55.0.20(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))
       expo-web-browser:
         specifier: ~55.0.18
         version: 55.0.18(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))
@@ -4035,6 +4038,12 @@ packages:
       react-native-web:
         optional: true
 
+  expo-task-manager@55.0.20:
+    resolution: {integrity: sha512-yxiERbkqibZYDArQ1QKbezKn7YkCxLyaDeiIO8DcyOqopBvUmXDkF3b7FtesW+YnAlg3g223geV8YiW1I4Suew==}
+    peerDependencies:
+      expo: '*'
+      react-native: '*'
+
   expo-web-browser@55.0.18:
     resolution: {integrity: sha512-7b6N47OZ/TEArHAoSeq86pWzZvqdITlf9Zd+e520bKUXVRd1WxkyskZekJbcwusBpyhSqgWRupITZeF+adlddQ==}
     peerDependencies:
@@ -6185,6 +6194,9 @@ packages:
   unicode-property-aliases-ecmascript@2.2.0:
     resolution: {integrity: sha512-hpbDzxUY9BFwX+UeBnxv3Sh1q7HFxj48DTmXchNgRa46lO8uj3/1iEn3MiNUYTg1g9ctIqXCCERn8gYZhHC5lQ==}
     engines: {node: '>=4'}
+
+  unimodules-app-loader@55.0.5:
+    resolution: {integrity: sha512-2eLjtaAVQTK3EeiUAgRbfEnX78f6cMtw5Js8Ri4OcEdkrozsmvG3Wu8YVfr6kfhea17FHZkKZmO1m4dL/Ky2Bg==}
 
   unpipe@1.0.0:
     resolution: {integrity: sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=}
@@ -10855,6 +10867,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  expo-task-manager@55.0.20(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0)):
+    dependencies:
+      expo: 55.0.6(patch_hash=d2507f55976f6c5da8f35d26906f4bd46415e042570afc3bd7c543c86abc5a61)(@babel/core@7.29.7)(@expo/dom-webview@55.0.6)(@expo/metro-runtime@55.0.11)(expo-router@55.0.5)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+      react-native: 0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0)
+      unimodules-app-loader: 55.0.5
+
   expo-web-browser@55.0.18(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0)):
     dependencies:
       expo: 55.0.6(patch_hash=d2507f55976f6c5da8f35d26906f4bd46415e042570afc3bd7c543c86abc5a61)(@babel/core@7.29.7)(@expo/dom-webview@55.0.6)(@expo/metro-runtime@55.0.11)(expo-router@55.0.5)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
@@ -13285,6 +13303,8 @@ snapshots:
   unicode-match-property-value-ecmascript@2.2.1: {}
 
   unicode-property-aliases-ecmascript@2.2.0: {}
+
+  unimodules-app-loader@55.0.5: {}
 
   unpipe@1.0.0: {}
 

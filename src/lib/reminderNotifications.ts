@@ -1,5 +1,14 @@
+/**
+ * reminderNotifications.ts — thin layer over expo-notifications:
+ * Android channels (one per sound), categories (action buttons), scheduling
+ * one planned alert, cancelling, permission + system-settings helpers.
+ * Reminder rules live in reminderPlanner.ts, DB sync in reminderService.ts.
+ */
 import * as Notifications from 'expo-notifications';
+import * as IntentLauncher from 'expo-intent-launcher';
+import Constants from 'expo-constants';
 import { Linking, Platform } from 'react-native';
+import type { PlannedTrigger } from '@/lib/reminderPlanner';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -14,65 +23,48 @@ Notifications.setNotificationHandler({
 export type ReminderSound = 'default' | 'bell' | 'chime' | 'alarm' | 'silent';
 
 /**
- * Android plays sound/vibration from the notification CHANNEL, not from the
- * notification itself, and a channel's sound can never change after it is
- * created. So every reminder sound gets its own channel (v2 ids — the old
- * 'default' channel may exist on phones with the wrong settings).
- *
- * - default: phone's notification sound (follows notification volume)
- * - bell / chime: bundled sounds (assets/sounds, copied by the
- *   expo-notifications plugin)
- * - alarm: phone's sound on the ALARM stream — rings at alarm volume, also
- *   when the ringer is on silent/vibrate
- * - silent: banner only
+ * Android plays sound/vibration from the notification CHANNEL, and a
+ * channel's sound can never change after it is created — so every sound
+ * has its own channel.
+ *  default — phone's notification sound
+ *  bell / chime — bundled sounds (assets/sounds, copied by the plugin)
+ *  alarm — phone's sound on the ALARM stream (rings at alarm volume, also
+ *          when the ringer is on silent/vibrate)
+ *  silent — banner only
  */
+const VIBRATE = [0, 400, 250, 400];
 const CHANNELS: Record<ReminderSound, Notifications.NotificationChannelInput & { id: string }> = {
   default: {
-    id: 'reminder_v2_default',
-    name: 'रिमाइंडर (फ़ोन की ध्वनि)',
-    importance: Notifications.AndroidImportance.MAX,
-    sound: 'default',
-    vibrationPattern: [0, 400, 250, 400],
-    enableVibrate: true,
+    id: 'reminder_v2_default', name: 'रिमाइंडर (फ़ोन की ध्वनि)',
+    importance: Notifications.AndroidImportance.MAX, sound: 'default',
+    vibrationPattern: VIBRATE, enableVibrate: true,
     lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
   },
   bell: {
-    id: 'reminder_v2_bell',
-    name: 'रिमाइंडर (घंटी)',
-    importance: Notifications.AndroidImportance.MAX,
-    sound: 'bell.wav',
-    vibrationPattern: [0, 400, 250, 400],
-    enableVibrate: true,
+    id: 'reminder_v2_bell', name: 'रिमाइंडर (घंटी)',
+    importance: Notifications.AndroidImportance.MAX, sound: 'bell.wav',
+    vibrationPattern: VIBRATE, enableVibrate: true,
     lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
   },
   chime: {
-    id: 'reminder_v2_chime',
-    name: 'रिमाइंडर (चाइम)',
-    importance: Notifications.AndroidImportance.MAX,
-    sound: 'chime.wav',
-    vibrationPattern: [0, 400, 250, 400],
-    enableVibrate: true,
+    id: 'reminder_v2_chime', name: 'रिमाइंडर (चाइम)',
+    importance: Notifications.AndroidImportance.MAX, sound: 'chime.wav',
+    vibrationPattern: VIBRATE, enableVibrate: true,
     lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
   },
   alarm: {
-    id: 'reminder_v2_alarm',
-    name: 'रिमाइंडर (तेज़ अलार्म)',
-    importance: Notifications.AndroidImportance.MAX,
-    sound: 'default',
+    id: 'reminder_v2_alarm', name: 'रिमाइंडर (तेज़ अलार्म)',
+    importance: Notifications.AndroidImportance.MAX, sound: 'default',
     audioAttributes: {
       usage: Notifications.AndroidAudioUsage.ALARM,
       contentType: Notifications.AndroidAudioContentType.SONIFICATION,
     },
-    vibrationPattern: [0, 600, 300, 600, 300, 600],
-    enableVibrate: true,
+    vibrationPattern: [0, 600, 300, 600, 300, 600], enableVibrate: true,
     lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
   },
   silent: {
-    id: 'reminder_v2_silent',
-    name: 'रिमाइंडर (बिना ध्वनि)',
-    importance: Notifications.AndroidImportance.HIGH,
-    sound: null,
-    enableVibrate: false,
+    id: 'reminder_v2_silent', name: 'रिमाइंडर (बिना ध्वनि)',
+    importance: Notifications.AndroidImportance.HIGH, sound: null, enableVibrate: false,
     lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
   },
 };
@@ -85,7 +77,9 @@ const ALERTS_CHANNEL: Notifications.NotificationChannelInput & { id: string } = 
   importance: Notifications.AndroidImportance.HIGH,
 };
 
-function normalizeSound(sound: string | null | undefined): ReminderSound {
+export const REMINDER_CATEGORY = 'reminder';
+
+export function normalizeSound(sound: string | null | undefined): ReminderSound {
   return sound && sound in CHANNELS ? (sound as ReminderSound) : 'default';
 }
 
@@ -93,9 +87,16 @@ export function channelIdForSound(sound: string | null | undefined): string {
   return CHANNELS[normalizeSound(sound)].id;
 }
 
+function contentSound(s: ReminderSound): string | boolean {
+  if (s === 'silent') return false;
+  if (s === 'bell') return 'bell.wav';
+  if (s === 'chime') return 'chime.wav';
+  return 'default';
+}
+
 let channelsReady: Promise<void> | null = null;
 
-function ensureAndroidChannels(): Promise<void> {
+export function ensureAndroidChannels(): Promise<void> {
   if (Platform.OS !== 'android') return Promise.resolve();
   if (!channelsReady) {
     channelsReady = (async () => {
@@ -112,14 +113,29 @@ function ensureAndroidChannels(): Promise<void> {
   return channelsReady;
 }
 
-export async function requestReminderPermissions(): Promise<boolean> {
-  try {
-    await ensureAndroidChannels();
-  } catch {
-    // keep going — permission request still matters
+let categoriesReady: Promise<void> | null = null;
+
+export function setupReminderCategories(): Promise<void> {
+  if (!categoriesReady) {
+    categoriesReady = Notifications.setNotificationCategoryAsync(REMINDER_CATEGORY, [
+      { identifier: 'snooze', buttonTitle: 'स्नूज़', options: { opensAppToForeground: false } },
+      { identifier: 'done', buttonTitle: 'पूरा हुआ ✓', options: { opensAppToForeground: false } },
+    ]).then(() => undefined).catch((e) => {
+      categoriesReady = null;
+      throw e;
+    });
   }
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === 'granted';
+  return categoriesReady;
+}
+
+export async function requestReminderPermissions(): Promise<boolean> {
+  try { await ensureAndroidChannels(); } catch {}
+  try {
+    const { status } = await Notifications.requestPermissionsAsync();
+    return status === 'granted';
+  } catch {
+    return false;
+  }
 }
 
 export async function hasNotificationPermission(): Promise<boolean> {
@@ -131,69 +147,114 @@ export async function hasNotificationPermission(): Promise<boolean> {
   }
 }
 
-/** Opens this app's system settings (notifications / battery). */
-export function openAppNotificationSettings(): void {
+// ─── System settings shortcuts (Android) ────────────────────────────────────
+
+function appPackage(): string {
+  return Constants.expoConfig?.android?.package ?? 'com.miaoda.appd2z6dwnk2jnl';
+}
+
+async function tryIntent(action: string, params?: IntentLauncher.IntentLauncherParams): Promise<boolean> {
+  if (Platform.OS !== 'android') return false;
+  try {
+    await IntentLauncher.startActivityAsync(action, params);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** This app's notification settings page. */
+export async function openAppNotificationSettings(): Promise<void> {
+  const ok = await tryIntent('android.settings.APP_NOTIFICATION_SETTINGS', {
+    extra: { 'android.provider.extra.APP_PACKAGE': appPackage() },
+  });
+  if (!ok) Linking.openSettings().catch(() => {});
+}
+
+/** "Alarms & reminders" special access (Android 12+). */
+export async function openExactAlarmSettings(): Promise<void> {
+  const ok = await tryIntent('android.settings.REQUEST_SCHEDULE_EXACT_ALARM', { data: `package:${appPackage()}` });
+  if (!ok) Linking.openSettings().catch(() => {});
+}
+
+/** Battery optimisation list (choose "Don't optimise" / "Unrestricted"). */
+export async function openBatterySettings(): Promise<void> {
+  const ok = await tryIntent('android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS');
+  if (!ok) Linking.openSettings().catch(() => {});
+}
+
+/** App info page. */
+export function openAppInfo(): void {
   Linking.openSettings().catch(() => {});
 }
 
-function dateTrigger(date: Date, channelId: string): Notifications.NotificationTriggerInput {
-  return { type: Notifications.SchedulableTriggerInputTypes.DATE, date, channelId };
+// ─── Scheduling ─────────────────────────────────────────────────────────────
+
+function toExpoTrigger(t: PlannedTrigger, channelId: string): Notifications.NotificationTriggerInput {
+  const T = Notifications.SchedulableTriggerInputTypes;
+  switch (t.type) {
+    case 'date':
+      return { type: T.DATE, date: new Date(t.at), channelId };
+    case 'daily':
+      return { type: T.DAILY, hour: t.hour, minute: t.minute, channelId };
+    case 'weekly':
+      return { type: T.WEEKLY, weekday: t.weekday, hour: t.hour, minute: t.minute, channelId };
+    case 'monthly':
+      return { type: T.MONTHLY, day: t.day, hour: t.hour, minute: t.minute, channelId };
+  }
 }
 
-export async function setupReminderCategories(): Promise<void> {
-  await Notifications.setNotificationCategoryAsync('reminder', [
-    { identifier: 'snooze', buttonTitle: 'स्नूज़', options: { opensAppToForeground: false } },
-    { identifier: 'done', buttonTitle: 'पूरा हुआ ✓', options: { opensAppToForeground: false } },
-  ]);
+export interface AlertContent {
+  reminderId: string;
+  title: string;
+  body: string;
+  sound: string;
+  kind: 'main' | 'early' | 'nag' | 'snooze';
 }
 
-function toMs(t: number): number {
-  return t < 10000000000 ? t * 1000 : t;
-}
-
-export async function scheduleReminderNotification(
-  id: string,
-  title: string,
-  note: string,
-  dueAt: number,
-  repeatMode: 'once' | 'daily' | 'weekly',
-  sound: string,
-): Promise<string> {
+export async function scheduleAlert(c: AlertContent, trigger: PlannedTrigger): Promise<string> {
   await ensureAndroidChannels();
-  const channelId = channelIdForSound(sound);
-  const d = new Date(toMs(dueAt));
-  const trigger: Notifications.NotificationTriggerInput = repeatMode === 'daily'
-    ? {
-        type: Notifications.SchedulableTriggerInputTypes.DAILY,
-        hour: d.getHours(), minute: d.getMinutes(), channelId,
-      }
-    : repeatMode === 'weekly'
-      ? {
-          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
-          weekday: d.getDay() + 1, hour: d.getHours(), minute: d.getMinutes(), channelId,
-        }
-      : dateTrigger(d, channelId);
-
-  const s = normalizeSound(sound);
+  const s = normalizeSound(c.sound);
   return Notifications.scheduleNotificationAsync({
     content: {
-      title: `⏰ ${title}`,
-      body: note || title,
-      sound: s === 'silent' ? false : s === 'bell' ? 'bell.wav' : s === 'chime' ? 'chime.wav' : 'default',
+      title: c.title,
+      body: c.body,
+      sound: contentSound(s),
       priority: Notifications.AndroidNotificationPriority.MAX,
-      vibrate: s === 'silent' ? undefined : [0, 400, 250, 400],
-      categoryIdentifier: 'reminder',
-      data: { reminderId: id, sound: s, kind: 'reminder' },
+      vibrate: s === 'silent' ? undefined : VIBRATE,
+      categoryIdentifier: REMINDER_CATEGORY,
+      data: { reminderId: c.reminderId, kind: c.kind, sound: s },
     },
-    trigger,
+    trigger: toExpoTrigger(trigger, channelIdForSound(s)),
   });
 }
 
-export async function cancelReminderNotification(notificationId: string | null | undefined): Promise<void> {
-  if (!notificationId) return;
+export async function cancelNotifications(ids: string[]): Promise<void> {
+  for (const id of ids) {
+    try { await Notifications.cancelScheduledNotificationAsync(id); } catch {}
+  }
+}
+
+/** Removes this reminder's notifications already showing in the tray. */
+export async function dismissPresentedFor(reminderId: string): Promise<void> {
   try {
-    await Notifications.cancelScheduledNotificationAsync(notificationId);
+    const shown = await Notifications.getPresentedNotificationsAsync();
+    for (const n of shown) {
+      if (n.request.content.data?.reminderId === reminderId) {
+        await Notifications.dismissNotificationAsync(n.request.identifier).catch(() => {});
+      }
+    }
   } catch {}
+}
+
+/** ids of every notification the system has queued for this app. */
+export async function getScheduledIds(): Promise<Set<string>> {
+  try {
+    const all = await Notifications.getAllScheduledNotificationsAsync();
+    return new Set(all.map((n) => n.identifier));
+  } catch {
+    return new Set();
+  }
 }
 
 /** Fires a sample reminder after `seconds` so the user can hear the sound. */
@@ -205,7 +266,7 @@ export async function sendTestReminder(sound: string, seconds = 5): Promise<bool
     content: {
       title: '⏰ टेस्ट रिमाइंडर',
       body: 'रिमाइंडर की ध्वनि ऐसी सुनाई देगी।',
-      sound: s === 'silent' ? false : s === 'bell' ? 'bell.wav' : s === 'chime' ? 'chime.wav' : 'default',
+      sound: contentSound(s),
       priority: Notifications.AndroidNotificationPriority.MAX,
       data: { kind: 'test' },
     },
@@ -228,61 +289,12 @@ export async function scheduleLocalNotification(
   data?: Record<string, unknown>,
 ): Promise<string> {
   try { await ensureAndroidChannels(); } catch {}
-  const trigger = triggerDate
-    ? dateTrigger(triggerDate, ALERTS_CHANNEL.id)
+  const trigger: Notifications.NotificationTriggerInput = triggerDate
+    ? { type: Notifications.SchedulableTriggerInputTypes.DATE, date: triggerDate, channelId: ALERTS_CHANNEL.id }
     : Platform.OS === 'android' ? { channelId: ALERTS_CHANNEL.id } : null;
 
   return Notifications.scheduleNotificationAsync({
-    content: {
-      title,
-      body,
-      sound: 'default',
-      data,
-    },
+    content: { title, body, sound: 'default', data },
     trigger,
   });
-}
-
-export interface ReminderResponseHandlers {
-  snoozeMinutes: number;
-  /** Called after "पूरा हुआ" is tapped on a reminder notification. */
-  onDone: (reminderId: string) => Promise<void> | void;
-  /** Called when the notification body itself is tapped. */
-  onOpen: (reminderId: string) => void;
-}
-
-// Handles the action buttons and taps on fired reminder notifications.
-export function registerReminderResponseHandler(h: ReminderResponseHandlers): () => void {
-  const sub = Notifications.addNotificationResponseReceivedListener(async (response: Notifications.NotificationResponse) => {
-    const content = response.notification.request.content;
-    const reminderId = content.data?.reminderId as string | undefined;
-    if (!reminderId) return;
-    const notifId = response.notification.request.identifier;
-    try {
-      if (response.actionIdentifier === 'snooze') {
-        await Notifications.dismissNotificationAsync(notifId).catch(() => {});
-        const sound = normalizeSound(content.data?.sound as string | undefined);
-        await ensureAndroidChannels();
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: content.title ?? undefined,
-            body: content.body ?? undefined,
-            data: content.data,
-            categoryIdentifier: 'reminder',
-            sound: sound === 'silent' ? false : sound === 'bell' ? 'bell.wav' : sound === 'chime' ? 'chime.wav' : 'default',
-            priority: Notifications.AndroidNotificationPriority.MAX,
-          },
-          trigger: dateTrigger(new Date(Date.now() + h.snoozeMinutes * 60 * 1000), channelIdForSound(sound)),
-        });
-      } else if (response.actionIdentifier === 'done') {
-        await Notifications.dismissNotificationAsync(notifId).catch(() => {});
-        await h.onDone(reminderId);
-      } else if (response.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) {
-        h.onOpen(reminderId);
-      }
-    } catch (e) {
-      console.warn('[reminders] notification action failed:', e);
-    }
-  });
-  return () => sub.remove();
 }

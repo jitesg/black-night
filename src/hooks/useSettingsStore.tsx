@@ -56,7 +56,10 @@ export interface SettingsState {
   reminderTime: string;        // "HH:MM" 24h
   reminderSound: 'default' | 'bell' | 'chime' | 'alarm' | 'silent';
   reminderSnooze: 5 | 10 | 15 | 30;
-  reminderRepeat: 'once' | 'daily' | 'weekly';
+  reminderRepeat: 'once' | 'daily' | 'weekly' | 'monthly';
+  reminderEarly: number;       // minutes before (0 = off)
+  reminderNag: number;         // repeat-until-done interval in minutes (0 = off)
+  reminderPrivate: boolean;    // hide reminder text on the lock screen
 
   // Search preferences
   searchHistory: boolean;
@@ -97,6 +100,9 @@ const DEFAULTS: SettingsState = {
   reminderSound: 'default',
   reminderSnooze: 10,
   reminderRepeat: 'once',
+  reminderEarly: 0,
+  reminderNag: 0,
+  reminderPrivate: false,
   searchHistory: true,
   smartSuggestions: true,
   autocomplete: true,
