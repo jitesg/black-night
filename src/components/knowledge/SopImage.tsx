@@ -59,6 +59,25 @@ export function SopImage({ id, cap, sens, className }: SopImageProps) {
   }, [id]);
 
   if (!id && !cap) return null;
+  // Photos (sop_images) are not bundled yet: show nothing while loading and,
+  // when the photo is missing, only its caption (no empty placeholder box).
+  if (loading) return null;
+  if (!imageData) {
+    if (!cap) return null;
+    return (
+      <View className={`my-1.5 flex-row items-start gap-1.5 ${className || ''}`}>
+        <Text textBreakStrategy="simple" className="flex-1 text-xs text-muted-foreground leading-relaxed">
+          📷 {cap}
+        </Text>
+        {sens ? (
+          <View className="flex-row items-center gap-1 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+            <AlertTriangle size={11} color="#D97706" />
+            <Text textBreakStrategy="simple" className="text-[10px] text-amber-700 dark:text-amber-300 font-medium">संवेदनशील</Text>
+          </View>
+        ) : null}
+      </View>
+    );
+  }
 
   return (
     <View className={`my-2 w-full rounded-xl overflow-hidden border border-border bg-muted/20 ${className || ''}`}>
