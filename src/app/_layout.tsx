@@ -4,7 +4,8 @@
 // This is a side-effect-only import; the module overrides console.* globally.
 import '@/lib/debugLogStore';
 import { useEffect, useRef, useState } from 'react';
-import { AppState, type AppStateStatus, View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { AppState, type AppStateStatus, View, StyleSheet, Platform } from 'react-native';
+import { CopLoader } from '@/components/common/CopLoader';
 import { Stack, router, useRouter, useSegments, type RelativePathString } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { PortalHost } from '@rn-primitives/portal';
@@ -139,9 +140,12 @@ function LoadingSpinner({
   return (
     <SafeAreaProvider style={{ flex: 1 }}>
       <StatusBar style={isDark ? 'light' : 'dark'} backgroundColor={navTheme.colors.background} translucent={false} />
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: navTheme.colors.background }}>
-        <ActivityIndicator size="large" color={navTheme.colors.primary} />
-      </View>
+      <CopLoader
+        background={navTheme.colors.background}
+        textColor={navTheme.colors.text}
+        mutedColor={isDark ? '#94A3B8' : '#64748B'}
+        accent={navTheme.colors.primary}
+      />
     </SafeAreaProvider>
   );
 }
