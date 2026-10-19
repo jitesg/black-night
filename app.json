@@ -26,6 +26,9 @@
         "android.permission.USE_EXACT_ALARM",
         "android.permission.VIBRATE",
         "android.permission.RECEIVE_BOOT_COMPLETED"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -89,14 +92,7 @@
           "faceIDPermission": "Allow InvestSuite to use Face ID for authentication."
         }
       ],
-      "./plugins/withHighRefreshRate",
-      [
-        "expo-audio",
-        {
-          "microphonePermission": "Allow InvestSuite to access your microphone.",
-          "recordAudioAndroid": true
-        }
-      ]
+      "./plugins/withHighRefreshRate"
     ],
     "router": {
       "root": "src"

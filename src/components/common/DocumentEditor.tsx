@@ -49,15 +49,7 @@ import {
   actions,
 } from 'react-native-pell-rich-editor';
 import WebView from 'react-native-webview';
-import { ArrowLeft, BookMarked, Eye, FileText, Maximize2, Mic, Sparkles, Square, X } from 'lucide-react-native';
-import {
-  useAudioRecorder,
-  AudioModule,
-  RecordingPresets,
-  setAudioModeAsync,
-  useAudioRecorderState,
-} from 'expo-audio';
-import * as FileSystem from 'expo-file-system';
+import { ArrowLeft, BookMarked, Eye, FileText, Maximize2, Sparkles, X } from 'lucide-react-native';
 import { markdownToHtml, needsMigration } from '@/lib/markdownToHtml';
 import { T } from '@/lib/typography';
 import { logger } from '@/lib/logger';
@@ -499,31 +491,10 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
   // Tracks the previous `visible` value to detect open transitions.
   const prevVisibleRef = useRef(false);
 
-  // ── Audio recording & voice transcription state ───────────────────────────
-  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
-  const recorderState = useAudioRecorderState(audioRecorder);
-  const [transcribing, setTranscribing] = useState(false);
-  const [micError, setMicError] = useState('');
-
   // ── AI Expand state ───────────────────────────────────────────────────────
   const [expanding, setExpanding] = useState(false);
   const [expandPreview, setExpandPreview] = useState<{ original: string; expanded: string } | null>(null);
   const [expandError, setExpandError] = useState('');
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const status = await AudioModule.requestRecordingPermissionsAsync();
-        if (!status.granted) {
-          setMicError('Microphone permission needed');
-          return;
-        }
-        await setAudioModeAsync({ playsInSilentMode: true, allowsRecording: true });
-      } catch (err) {
-        if (__DEV__) console.warn('[DocEditor] Mic permission setup warning:', err);
-      }
-    })();
-  }, []);
 
   // Derive initial HTML once (migration happens here if needed)
   const initialHtml = useMemo(() => prepareHtml(value), []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -637,7 +608,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
   }, [visible, value]);
   const handleWebSave = () => { onChange(webValue); onClose(); };
 
-  // ── Cursor insertion helper (shared between Phrase Library and Voice Dictation) ──
+  // ── Cursor insertion helper (used by the Phrase Library) ──
   const insertTextAtCursor = useCallback((textToInsert: string) => {
     if (isWeb) {
       const sel = webSelectionRef.current;
@@ -663,83 +634,6 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
       incrementUsage(phraseId).catch(() => {});
     }
   }, [insertTextAtCursor]);
-
-  // ── Voice Dictation handler ──────────────────────────────────────────────
-  const handleToggleRecord = async () => {
-    setMicError('');
-    try {
-      if (recorderState.isRecording) {
-        await audioRecorder.stop();
-        setTranscribing(true);
-        try {
-          const uri = audioRecorder.uri;
-          if (!uri) {
-            setMicError(t('editor.recordingFileUnavailable'));
-            return;
-          }
-          const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
-          const mimeType = process.env.EXPO_OS === 'web' ? 'audio/webm' : 'audio/m4a';
-          const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
-          const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-          const res = await fetch(`${SUPABASE_URL}/functions/v1/voice-transcribe`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({ audioBase64: base64, mimeType }),
-          });
-          const json = await res.json();
-          if (json.error) {
-            setMicError(json.error);
-            return;
-          }
-          if (json.text) {
-            insertTextAtCursor(json.text);
-          }
-        } catch {
-          setMicError(t('editor.transcriptionFailed'));
-        } finally {
-          setTranscribing(false);
-        }
-      } else {
-        await audioRecorder.prepareToRecordAsync();
-        audioRecorder.record();
-      }
-    } catch (e) {
-      if (__DEV__) console.warn('[DocEditor] Mic toggle error:', e);
-      setMicError(t('editor.micError'));
-    }
-  };
-
-  const renderMicButton = () => (
-    <Pressable
-      onPress={handleToggleRecord}
-      disabled={transcribing}
-      style={{
-        flexDirection: 'row', alignItems: 'center', gap: 4,
-        borderRadius: 8, paddingHorizontal: 8, paddingVertical: 8,
-        minHeight: 40,
-        backgroundColor: recorderState.isRecording ? `${colors.destructive}20` : colors.muted,
-      }}
-      accessibilityLabel={recorderState.isRecording ? t('editor.stopRecording') : t('editor.voiceDictation')}
-    >
-      {transcribing ? (
-        <ActivityIndicator size={12} color={colors.primary} />
-      ) : recorderState.isRecording ? (
-        <Square size={13} color={colors.destructive} fill={colors.destructive} />
-      ) : (
-        <Mic size={13} color={colors.mutedForeground} />
-      )}
-      <Text style={{
-        fontSize: 11,
-        color: recorderState.isRecording ? colors.destructive : colors.mutedForeground,
-        fontWeight: '600',
-      }}>
-        {recorderState.isRecording ? t('editor.stop') : t('editor.voice')}
-      </Text>
-    </Pressable>
-  );
 
   // ── AI Expand handler & button ───────────────────────────────────────────
   const handleAiExpand = async () => {
@@ -862,7 +756,6 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                 paddingRight: 10, // keep the last button clear of the pinned Save
               }}
             >
-              {renderMicButton()}
               {settings.aiDraftAssistance && renderExpandButton()}
               <Pressable
                 onPress={() => {
@@ -913,48 +806,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
             </Pressable>
           </View>
 
-          {/* ── Status indicators & mic error ── */}
-          {recorderState.isRecording && (
-            <View style={{
-              flexDirection: 'row', alignItems: 'center', gap: 6,
-              paddingHorizontal: T.space.md, paddingVertical: 6,
-              backgroundColor: `${colors.destructive}15`, borderBottomWidth: 1, borderBottomColor: `${colors.destructive}30`,
-            }}>
-              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.destructive }} />
-              <Text style={{ ...T.caption1, color: colors.destructive, fontWeight: T.weight.semibold }}>
-                {t('editor.recordingNotice')}
-              </Text>
-            </View>
-          )}
-
-          {transcribing && (
-            <View style={{
-              flexDirection: 'row', alignItems: 'center', gap: 8,
-              paddingHorizontal: T.space.md, paddingVertical: 6,
-              backgroundColor: `${colors.primary}15`, borderBottomWidth: 1, borderBottomColor: `${colors.primary}30`,
-            }}>
-              <ActivityIndicator size={12} color={colors.primary} />
-              <Text style={{ ...T.caption1, color: colors.primary, fontWeight: T.weight.semibold }}>
-                {t('editor.transcribingAudio')}
-              </Text>
-            </View>
-          )}
-
-          {!!micError && (
-            <View style={{
-              flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-              paddingHorizontal: T.space.md, paddingVertical: 6,
-              backgroundColor: `${colors.destructive}15`, borderBottomWidth: 1, borderBottomColor: `${colors.destructive}30`,
-            }}>
-              <Text style={{ flex: 1, ...T.caption1, color: colors.destructive, fontWeight: T.weight.medium }} numberOfLines={2}>
-                {micError}
-              </Text>
-              <Pressable onPress={() => setMicError('')} style={{ padding: 4 }} accessibilityLabel={t('editor.dismissError')}>
-                <X size={14} color={colors.destructive} />
-              </Pressable>
-            </View>
-          )}
-
+          {/* ── Status indicators ── */}
           {expanding && (
             <View style={{
               flexDirection: 'row', alignItems: 'center', gap: 8,
