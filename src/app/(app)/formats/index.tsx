@@ -26,7 +26,6 @@ import {
 } from '@/lib/db/predefinedFormatRepo';
 import { getPublishedFormats, searchPublishedFormats } from '@/lib/db/sysFormatRepo';
 import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
-import { SourceBadge } from '@/components/common/SourceBadge';
 import { Pill } from '@/components/ui/ds/Pill';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
@@ -112,6 +111,7 @@ const FormatCard = memo(function FormatCard({
   const isSystem = format.source === 'system';
   const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
+  const isDark = colorScheme === 'dark';
   const palette = colorScheme === 'dark' ? THEME.dark : THEME.light;
 
   return (
@@ -167,14 +167,22 @@ const FormatCard = memo(function FormatCard({
       )}
       {/* Footer — date + source badge; user cards add edit/delete actions */}
       <View className="flex-row items-center justify-start gap-2">
-        <View className="flex-row flex-wrap items-center gap-1.5" style={{ flex: 1, minWidth: 0 }}>
+        <View className="flex-row items-center gap-1.5" style={{ flex: 1, minWidth: 0 }}>
           <Clock size={11} color={palette.mutedForeground} />
           {/* muted-foreground: #6B7280 light / #94A3B8 dark — both ≥4.5:1 on their card bg ✓ */}
           <Text className="text-xs text-muted-foreground">
             {format.last_used_at ? t('format.list.usedDate', { date: formatDate(format.last_used_at) }) : t('format.list.addedDate', { date: formatDate(format.created_at) })}
           </Text>
-          <SourceBadge source={format.source} size="xs" />
-          <Pill label={getFormatTypeLabel(format.format_type, t)} color={typeColor} />
+          {/* System/User + type: same compact pill look, only the colour differs */}
+          <Pill
+            size="xs"
+            label={isSystem ? t('header.system') : t('header.user')}
+            color={isSystem ? (isDark ? '#93C5FD' : '#1D4ED8') : (isDark ? '#6EE7B7' : '#059669')}
+            icon={isSystem
+              ? <Shield size={10} color={isDark ? '#93C5FD' : '#1D4ED8'} />
+              : <User size={10} color={isDark ? '#6EE7B7' : '#059669'} />}
+          />
+          <Pill size="xs" label={getFormatTypeLabel(format.format_type, t)} color={typeColor} style={{ flexShrink: 1 }} />
         </View>
         {/* User templates only: Edit + Delete — 44dp touch targets */}
         {!isSystem && (
