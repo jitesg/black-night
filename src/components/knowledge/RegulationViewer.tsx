@@ -495,7 +495,9 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
   const paraNo = para?.no ?? sections.title.match(/(?:पैरा|धारा)\s*([\w-]+)/)?.[1] ?? '';
   const title = para?.t ?? sections.title.replace(/^(?:POCSO\s*)?(?:पैरा|धारा)\s*[\w-]+\s*[—-]\s*/, '');
   const isOverview = women && paraNo === '0';
-  const unitLabel = act === 'uppr'
+  // BNS संदर्भ rows (sys-ref-bns-*) are not regulation paragraphs: show their own title.
+  const isRef = !entry.id.startsWith('sys-reg-');
+  const unitLabel = isRef ? 'BNS संदर्भ' : act === 'uppr'
     ? `${meta.unit} ${paraNo}`
     : isOverview ? `${meta.prefix} — एक नज़र में` : `${meta.prefix} ${sectionLabel(act, paraNo)}`;
 
@@ -613,7 +615,9 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
     }
   }, [entry.title, sections, meta.sensitive]);
 
-  const copilotQuery = isPocso
+  const copilotQuery = isRef
+    ? `${title || entry.title} — सरल भाषा में समझाइए`
+    : isPocso
     ? `POCSO धारा ${paraNo} क्या कहती है? (${title})`
     : isOverview ? `${meta.prefix} (${meta.hindi}) एक नज़र में समझाइए`
     : women ? `${meta.prefix} धारा ${paraNo} क्या कहती है? (${title})`
@@ -654,7 +658,7 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
     <View className="flex-1 bg-background">
       <AppHeader
         title={unitLabel}
-        subtitle={women ? meta.hindi : meta.name}
+        subtitle={isRef ? (entry.subcategory || 'Delhi Police हैंडबुक') : women ? meta.hindi : meta.name}
         showBack
         actions={<HeaderIconBtn icon={Share2} label="शेयर" onPress={onShare} />}
       />

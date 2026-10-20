@@ -12,6 +12,7 @@ export default function KnowledgeLayout() {
       <Stack.Screen name="fard" />
       <Stack.Screen name="law" />
       <Stack.Screen name="regulations" />
+      <Stack.Screen name="bns-ref" />
     </Stack>
   );
 }

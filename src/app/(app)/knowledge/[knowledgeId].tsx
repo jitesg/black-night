@@ -2531,7 +2531,9 @@ export default function KnowledgeDetailScreen() {
   const isSop = entry.content_type === 'sop' || entry.category === 'SOP';
   const isCircular = entry.content_type === 'circular' || entry.category === 'Circular';
   const isLaw = entry.content_type === 'law' || entry.category === 'Law';
-  const isRegulation = entry.content_type === 'regulation' || entry.id.startsWith('sys-reg-');
+  // BNS संदर्भ rows (content_type 'bns_ref') use the same 4-tab reader.
+  const isRegulation = entry.content_type === 'regulation' || entry.id.startsWith('sys-reg-')
+    || entry.content_type === 'bns_ref' || entry.id.startsWith('sys-ref-bns-');
 
   if (isRegulation) {
     // UP Police Regulations (L35): 4-tab reader; if it ever crashes, the

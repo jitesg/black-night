@@ -22,6 +22,9 @@ import knowledgeSeedData from '../../../assets/seed/knowledge_seed.json';
 import { REG_SEED_FILES } from '@/lib/regulations/regSeedFiles';
 import { getRegIndex, getRegIndexError, getRegProgress } from '@/lib/regulations/regIndex';
 import { ACT_META, WOMEN_ACTS, actOfId, isWomenAct } from '@/lib/regulations/regCore';
+import { BNS_REF_SEED_FILE } from '@/lib/bnsRef/bnsRefSeed';
+import { getBnsCompare, getBnsCompareError } from '@/lib/bnsRef/bnsCompare';
+import { getLawMapData } from '@/lib/law/lawMapping';
 import { CIRCULAR_SEED_FILES } from '@/lib/db/seedManager';
 import {
   FORMATS_FILE_TOKEN,
@@ -182,7 +185,7 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
       settingKey: 'seed_file:sop_seed_2.json',
     },
     // UP Police Regulations: every reg_seed_<n>.json (Task L35)
-    ...REG_SEED_FILES.map((f) => ({
+    ...[...REG_SEED_FILES, BNS_REF_SEED_FILE].map((f) => ({
       fileName: f.fileName,
       bundledCount: f.rows.length,
       computedHash: CIRCULAR_SEED_FILES.find((x) => x.fileName === f.fileName)?.fileToken ?? '',
@@ -267,6 +270,24 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
     }
   } catch (e: any) {
     log(`Regulations diagnostics error: ${e?.message || String(e)}`);
+  }
+  log('');
+
+  // ── 2c) BNS संदर्भ (Delhi Police BNS Handbook) ───────────────────────────
+  log('--- 2c) BNS संदर्भ ---');
+  try {
+    const cmp = getBnsCompare();
+    log(`bns_compare rows loaded: ${cmp ? cmp.rows.length : `NOT LOADED (${getBnsCompareError() ?? 'unknown'})`} (expected 595)`);
+    log(`bns_compare text keys: ${cmp ? Object.keys(cmp.text).length : 0} (expected 144)`);
+    const refRows = await dbGetAllAsync<{ id: string }>(
+      `SELECT id FROM knowledge_entries WHERE deleted_at IS NULL AND content_type = 'bns_ref'`
+    ).catch(() => [] as { id: string }[]);
+    log(`bns_ref knowledge rows: ${refRows.length} (expected 10; bundled ${BNS_REF_SEED_FILE.rows.length}${BNS_REF_SEED_FILE.error ? `, ERROR ${BNS_REF_SEED_FILE.error}` : ''})`);
+    const m = getLawMapData()?.rev?.IPC?.['309'];
+    const ok = Array.isArray(m) && m.some(([a, n]) => a === 'BNS' && n === '226');
+    log(`law_map IPC 309 → [BNS 226] present: ${ok} (expected true)`);
+  } catch (e: any) {
+    log(`BNS संदर्भ diagnostics error: ${e?.message || String(e)}`);
   }
   log('');
 

@@ -68,3 +68,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Act metadata in `ACT_META`/`WOMEN_ACTS` (regCore). Law library has one "महिला कानून" card →
   `regulations?act=women` (5 Act cards) → `?act=pwdva` etc. Examples tab: numbered cards,
   'वास्तविक निर्णय' / 'काल्पनिक उदाहरण' badges + filter. Sensitive like POCSO (`isSensitiveId`).
+
+## BNS संदर्भ (Delhi Police BNS Handbook)
+- `assets/ref/bns_compare.json` (595 rows, 144 BNS text keys; in memory via `src/lib/bnsRef/bnsCompare.ts`,
+  not SQLite), `assets/seed/bns_ref_seed.json` (10 rows, content_type 'bns_ref', seeded via
+  `bnsRefSeed.ts` in the same pipeline; opened in RegulationViewer), `assets/law/law_map.json` = v2
+  (adds IPC 309 → BNS 226). Pure finder + tests: `bnsCore.ts`, `scripts/test_bns_ref.ts`.
+- Screen `knowledge/bns-ref.tsx` (card in Law library); Law list chip "BNS संदर्भ";
+  Copilot appends handbook rows for "IPC n"/"BNS n" (not for REG_LOOKUP) and sends them as context.
+- Handbook cog/bail flags are unverified vs the BNSS First Schedule (see owner's discrepancy report).

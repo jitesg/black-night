@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
@@ -7,7 +7,7 @@ import {
   ActivityIndicator, FlatList, Pressable,
   ScrollView, Text, View,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { BookOpen, ChevronRight } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
@@ -251,6 +251,21 @@ export default function KnowledgeHomeScreen() {
       setSearching(false);
     }
   }, [query, settings.typoTolerance]);
+
+  // Opened with ?q=… (e.g. "BNS 103" from BNS संदर्भ): run that search once.
+  const { q: initialQ } = useLocalSearchParams<{ q?: string }>();
+  useEffect(() => {
+    const q0 = typeof initialQ === 'string' ? initialQ.trim() : '';
+    if (!q0) return;
+    setQuery(q0);
+    setSearching(true);
+    searchKnowledgeAll(q0, settings.typoTolerance ? { typoTolerance: true } : undefined)
+      .then(setSearchResults)
+      .catch(() => {})
+      .finally(() => setSearching(false));
+    // only when the param changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQ]);
 
   const showSearch = query.trim().length > 0;
 

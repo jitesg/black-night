@@ -172,6 +172,7 @@ import circularsSeed8Data from '../../../assets/seed/circulars_seed_8.json';
 import sopSeed1Data from '../../../assets/seed/sop_seed_1.json';
 import sopSeed2Data from '../../../assets/seed/sop_seed_2.json';
 import { REG_SEED_FILES } from '@/lib/regulations/regSeedFiles';
+import { BNS_REF_SEED_FILE } from '@/lib/bnsRef/bnsRefSeed';
 
 const FORMATS_SEED = formatsSeedData as { formats: SeedFormat[] };
 // Filter out legacy system Law / Laws & Sections entries from bundled knowledge seed
@@ -347,7 +348,8 @@ export const CIRCULAR_SEED_FILES: CircularSeedFileDef[] = [
     fileToken: _computeCircularFileToken('sop_seed_2.json', SOP_2_ENTRIES),
   },
   // UP Police Regulations (Task L35): every assets/seed/reg_seed_<n>.json.
-  ...REG_SEED_FILES.map((f): CircularSeedFileDef => {
+  // UP Police Regulations (reg_seed_*), POCSO, women Acts and BNS संदर्भ (bns_ref_seed.json).
+  ...[...REG_SEED_FILES, BNS_REF_SEED_FILE].map((f): CircularSeedFileDef => {
     const entries = f.rows.map((r) => ({
       ...r,
       subcategory: r.subcategory ?? '',
@@ -856,6 +858,7 @@ async function _retireOldSystemLawSeed(): Promise<void> {
        WHERE source = 'system'
          AND category IN ('Law', 'Laws & Sections')
          AND id NOT LIKE 'sys-reg-%'
+         AND id NOT LIKE 'sys-ref-%'
          AND deleted_at IS NULL`
     );
 
@@ -866,6 +869,7 @@ async function _retireOldSystemLawSeed(): Promise<void> {
          WHERE source = 'system'
            AND category IN ('Law', 'Laws & Sections')
            AND id NOT LIKE 'sys-reg-%'
+           AND id NOT LIKE 'sys-ref-%'
            AND deleted_at IS NULL`,
         [now, now]
       );

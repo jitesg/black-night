@@ -222,6 +222,9 @@ function RecordCard({
 }
 
 // ─── List Screen ──────────────────────────────────────────────────────────
+const BNS_REF_CHIP = 'BNS संदर्भ';
+const onlyRefIfChip = (data: KnowledgeEntry[], sub: string) =>
+  sub === BNS_REF_CHIP ? data.filter((e) => e.content_type === 'bns_ref') : data;
 // ─── UP Police Regulations entry card (top of the Law list) ─────────────────
 function RegulationsEntryCard() {
   const cards = [
@@ -277,10 +280,12 @@ export default function KnowledgeListScreen() {
   // Regulations chapters), after the fixed act list.
   const subcategories = useMemo(() => {
     if (!isLawCategory) return baseSubcategories;
+    // "BNS संदर्भ" chip = all content_type 'bns_ref' rows (both handbook subcategories).
+    const hasRef = allEntries.some((e) => e.content_type === 'bns_ref');
     const extra = Array.from(new Set(allEntries.map((e) => e.subcategory).filter(Boolean)))
       .filter((sub) => !baseSubcategories.includes(sub))
       .sort((a, b) => a.localeCompare(b));
-    return [...baseSubcategories, ...extra];
+    return [...baseSubcategories, ...(hasRef ? [BNS_REF_CHIP] : []), ...extra];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLawCategory, allEntries, category]);
   const [query, setQuery] = useState('');
@@ -332,7 +337,7 @@ export default function KnowledgeListScreen() {
           searchKnowledge(
             targetCategory,
             resolvedQ,
-            resolvedSub === 'All' ? undefined : resolvedSub,
+            resolvedSub === 'All' || resolvedSub === BNS_REF_CHIP ? undefined : resolvedSub,
             undefined,
             settings.typoTolerance ? { typoTolerance: true } : undefined,
           ),
@@ -349,7 +354,8 @@ export default function KnowledgeListScreen() {
           });
         }
         setAllEntries(res);
-        setEntries(applySourceFilter(res, resolvedSf, loadedNotes));
+        const shown = onlyRefIfChip(res, resolvedSub);
+        setEntries(applySourceFilter(shown, resolvedSf, loadedNotes));
 
         // Requirement 5: tiny dev diagnostic log line (logger.debug only)
         // printing per category: count source value vs list result length
@@ -396,7 +402,7 @@ export default function KnowledgeListScreen() {
             const freshNotes = await getAllKnowledgeNotesMap();
             if (isMounted) {
               setNotesMap(freshNotes);
-              setEntries(applySourceFilter(allEntriesRef.current, sourceFilterRef.current, freshNotes));
+              setEntries(applySourceFilter(onlyRefIfChip(allEntriesRef.current, activeSubcatRef.current), sourceFilterRef.current, freshNotes));
             }
           } catch {
             // ignore
@@ -452,7 +458,7 @@ export default function KnowledgeListScreen() {
 
   const handleSourceFilter = (sf: SourceFilter) => {
     setSourceFilter(sf);
-    setEntries(applySourceFilter(allEntries, sf, notesMapRef.current));
+    setEntries(applySourceFilter(onlyRefIfChip(allEntries, activeSubcatRef.current), sf, notesMapRef.current));
   };
 
   const handleDeleteConfirm = async () => {
@@ -508,7 +514,9 @@ export default function KnowledgeListScreen() {
         {(isSopCategory || showFilter) && (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1 py-0.5">
             {['All', ...subcategories].map((sub) => {
-              const count = sub === 'All' ? allEntries.length : allEntries.filter((e) => e.subcategory === sub).length;
+              const count = sub === 'All' ? allEntries.length
+                : sub === BNS_REF_CHIP ? allEntries.filter((e) => e.content_type === 'bns_ref').length
+                : allEntries.filter((e) => e.subcategory === sub).length;
               const isSelected = activeSubcat === sub;
               const displayLabel = sub === 'All' ? (isSopCategory ? 'सभी' : t('knowledge.list.filterAll')) : sub;
 

@@ -93,7 +93,7 @@ export default function LawLibraryIndexScreen() {
     <View className="flex-1 bg-background">
       <AppHeader
         title={t('knowledge.law.title', 'विधि पुस्तकालय')}
-        subtitle="BNS · BNSS · BSA · UPPR · POCSO · महिला कानून"
+        subtitle="BNS · BNSS · BSA · UPPR · POCSO · महिला कानून · BNS संदर्भ"
         showBack
       />
 
@@ -413,6 +413,30 @@ export default function LawLibraryIndexScreen() {
               );
             })}
           </View>
+
+          {/* BNS संदर्भ — IPC ↔ BNS finder (Delhi Police BNS Handbook) */}
+          <Pressable
+            onPress={() => router.push('/(app)/knowledge/bns-ref' as never)}
+            className="bg-card border border-border rounded-2xl p-5 gap-2 active:opacity-70"
+            style={{ borderCurve: 'continuous', minHeight: 44 }}
+            accessibilityRole="button"
+          >
+            <View className="flex-row items-center gap-3">
+              <View className="w-12 h-12 rounded-xl items-center justify-center" style={{ backgroundColor: '#0E749015' }}>
+                <Scale size={24} color="#0E7490" />
+              </View>
+              <View className="flex-1" style={{ minWidth: 0 }}>
+                <View className="flex-row items-center gap-2">
+                  <Text className="text-[17px] font-bold text-foreground">BNS संदर्भ</Text>
+                  <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#0E749015' }}>
+                    <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#0E7490' }}>IPC ↔ BNS खोज</Text>
+                  </View>
+                </View>
+                <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>Delhi Police Academy BNS Handbook · 595 पंक्तियाँ</Text>
+              </View>
+              <ChevronRight size={20} color={C.mutedForeground} />
+            </View>
+          </Pressable>
 
           {/* 4th Card: अन्य अधिनियम / मेरे नोट (opens existing list?category=Law) */}
           <Pressable

@@ -23,6 +23,7 @@ import circularsSeed8Data from '../../../assets/seed/circulars_seed_8.json';
 import sopSeed1Data from '../../../assets/seed/sop_seed_1.json';
 import sopSeed2Data from '../../../assets/seed/sop_seed_2.json';
 import { REG_SEED_ROWS } from '@/lib/regulations/regSeedFiles';
+import { BNS_REF_SEED_FILE } from '@/lib/bnsRef/bnsRefSeed';
 
 // ─── Types ────────────────────────────────────────────────────────────────
 export interface KnowledgeEntry {
@@ -252,6 +253,10 @@ function getBundledKnowledgeMap(): Map<string, KnowledgeEntry> {
     // UP Police Regulations (reg_seed_*.json)
     for (const raw of REG_SEED_ROWS) {
       map.set(raw.id, normalizeBundledEntry(raw as SeedKnowledgeRaw, 'regulation'));
+    }
+    // BNS संदर्भ (bns_ref_seed.json)
+    for (const raw of BNS_REF_SEED_FILE.rows) {
+      map.set(raw.id, normalizeBundledEntry(raw as SeedKnowledgeRaw, 'bns_ref'));
     }
   } catch (err) {
     logger.warn('[knowledgeRepo] Error initializing bundled knowledge map:', err);
