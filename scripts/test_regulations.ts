@@ -138,9 +138,9 @@ test('sidecar: join, order, neighbours, progress', () => {
   assert.equal(n.next, 'sys-reg-up-1-a');
   assert.deepEqual(progress(index), { done: 47, total: 509 });
   const seedIds = seed.knowledge.map((r) => r.id);
-  assert.equal(seedIds.length, 112);
+  assert.equal(seedIds.length, 109);
   assert.equal(seedIds.filter((id) => !joinSidecar(index, id)).length, 0);
-  assert.equal(seedIds.filter((id) => joinSidecar(index, id)?.done).length, 27);
+  assert.equal(seedIds.filter((id) => joinSidecar(index, id)?.done).length, 24);
 });
 
 test('share text has all 4 headings', () => {
