@@ -62,13 +62,31 @@ export default function LawLibraryIndexScreen() {
   ];
 
   const isSearchActive = query.trim().length > 0;
-  const regProg = getRegProgress();
+  const regProg = getRegProgress('uppr');
+  const pocsoProg = getRegProgress('pocso');
+  const regCards: {
+    act: 'uppr' | 'pocso'; icon: typeof Scale; color: string; short: string; badge: string;
+    citation: string; nameHi: string; nameEn: string; count: string; done: number;
+  }[] = [
+    {
+      act: 'uppr', icon: BookOpen, color: '#4F46E5', short: 'UPPR', badge: 'पुलिस रेगुलेशन्स',
+      citation: 'भाग I–IV · पुलिस रेगुलेशन्स, उत्तर प्रदेश',
+      nameHi: 'उत्तर प्रदेश पुलिस रेगुलेशन्स', nameEn: 'UP Police Regulations',
+      count: `${regProg.total} पैरा`, done: regProg.done,
+    },
+    {
+      act: 'pocso', icon: Shield, color: '#BE185D', short: 'POCSO', badge: 'बाल यौन अपराध',
+      citation: 'Act No. 32 of 2012 · अध्याय I–IX',
+      nameHi: 'लैंगिक अपराधों से बालकों का संरक्षण अधिनियम, 2012', nameEn: 'Protection of Children from Sexual Offences Act, 2012',
+      count: `${pocsoProg.total} धाराएँ`, done: pocsoProg.done,
+    },
+  ];
 
   return (
     <View className="flex-1 bg-background">
       <AppHeader
         title={t('knowledge.law.title', 'विधि पुस्तकालय')}
-        subtitle={t('knowledge.law.subtitle', 'BNS · BNSS · BSA (2023)')}
+        subtitle="BNS · BNSS · BSA · UPPR · POCSO"
         showBack
       />
 
@@ -335,26 +353,59 @@ export default function LawLibraryIndexScreen() {
             })}
           </View>
 
-          {/* UP Police Regulations (Task L35) */}
-          <Pressable
-            onPress={() => router.push('/(app)/knowledge/regulations' as never)}
-            className="bg-card border border-border rounded-2xl p-5 gap-2 active:opacity-70 mt-1"
-            style={{ borderCurve: 'continuous', minHeight: 44 }}
-            accessibilityRole="button"
-          >
-            <View className="flex-row items-center gap-3">
-              <View className="w-12 h-12 rounded-xl items-center justify-center bg-indigo-500/10">
-                <BookOpen size={24} color="#4F46E5" />
-              </View>
-              <View className="flex-1" style={{ minWidth: 0 }}>
-                <Text className="text-[15px] font-bold text-foreground">UP Police Regulations ({regProg.total} पैरा)</Text>
-                <Text className="text-xs text-muted-foreground mt-0.5">
-                  पुलिस रेगुलेशन्स · हिंदी तैयार: {regProg.done} / {regProg.total}
-                </Text>
-              </View>
-              <ChevronRight size={20} color={C.mutedForeground} />
-            </View>
-          </Pressable>
+          {/* UP Police Regulations + POCSO Act — same card style as BNS/BNSS/BSA */}
+          <View className="gap-3">
+            {regCards.map((rc) => {
+              const Icon = rc.icon;
+              return (
+                <Pressable
+                  key={rc.act}
+                  onPress={() => router.push(`/(app)/knowledge/regulations?act=${rc.act}` as never)}
+                  className="bg-card border border-border rounded-2xl p-5 gap-3 active:opacity-70"
+                  style={{ borderCurve: 'continuous', minHeight: 44 }}
+                  accessibilityRole="button"
+                >
+                  <View className="flex-row items-start justify-between">
+                    <View className="flex-row items-center gap-3 flex-1" style={{ minWidth: 0 }}>
+                      <View className="w-12 h-12 rounded-xl items-center justify-center" style={{ backgroundColor: `${rc.color}15` }}>
+                        <Icon size={24} color={rc.color} />
+                      </View>
+                      <View className="flex-1" style={{ minWidth: 0 }}>
+                        <View className="flex-row items-center gap-2">
+                          <Text className="text-[17px] font-bold text-foreground">{rc.short}</Text>
+                          <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${rc.color}15` }}>
+                            <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: rc.color }}>
+                              {rc.badge}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
+                          {rc.citation}
+                        </Text>
+                      </View>
+                    </View>
+                    <ChevronRight size={20} color={C.mutedForeground} />
+                  </View>
+
+                  <View className="gap-1 pt-1 border-t border-border/50">
+                    <Text className="text-sm font-semibold text-foreground">{rc.nameHi}</Text>
+                    <Text className="text-xs text-muted-foreground">{rc.nameEn}</Text>
+                  </View>
+
+                  <View className="flex-row items-center justify-between pt-1">
+                    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${rc.color}15` }}>
+                      <Text textBreakStrategy="simple" className="text-xs font-bold" style={{ color: rc.color }}>
+                        {rc.count} · हिंदी तैयार {rc.done}
+                      </Text>
+                    </View>
+                    <Text className="text-xs font-semibold" style={{ color: rc.color }}>
+                      {t('knowledge.law.jumpBtn', 'देखें')} →
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
 
           {/* 4th Card: अन्य अधिनियम / मेरे नोट (opens existing list?category=Law) */}
           <Pressable

@@ -235,7 +235,7 @@ export async function lookupRegulations(query: string): Promise<RegLookupResult>
         '- **पैरा 97 क्या कहता है** — पैरा नंबर से',
         '- **मालखाना के नियम** / **पंचायतनामा** — विषय से',
         '- **POCSO धारा 19** / **POCSO में बयान कैसे लें** — POCSO से',
-        '\nपूरी सूची: ज्ञान → विधि पुस्तकालय → UP Police Regulations (ऊपर POCSO का switch)।',
+        '\nपूरी सूची: ज्ञान → विधि पुस्तकालय → "UP Police Regulations" या "POCSO" card।',
       ].join('\n'),
       suggestedActions: ['पैरा 97 क्या कहता है', 'POCSO धारा 19', 'मालखाना रेगुलेशन'],
       matchedIds: [],

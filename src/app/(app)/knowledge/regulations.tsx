@@ -1,6 +1,6 @@
 /**
- * Regulations hub (Tasks L35 / L36).
- * Switch: UP Police Regulations | POCSO Act 2012.
+ * Regulations hub (Tasks L35 / L36). One screen per Act, opened from its
+ * card in the Law library (?act=uppr | ?act=pocso).
  *  - UP Regulations: भाग (I–IV) → अध्याय → पैरा
  *  - POCSO: अध्याय (I–IX) → धारा, warning card, quick cards
  * Search by number / title / tags, "सिर्फ़ हिंदी तैयार" filter and
@@ -98,7 +98,8 @@ export default function RegulationsHubScreen() {
   const c = THEME[colorScheme ?? 'light'];
   const params = useLocalSearchParams<{ act?: string }>();
 
-  const [act, setAct] = useState<RegAct>(params.act === 'pocso' ? 'pocso' : 'uppr');
+  // Which Act this screen lists (opened from its own card in the Law library).
+  const act: RegAct = params.act === 'pocso' ? 'pocso' : 'uppr';
   const [rows, setRows] = useState<Map<string, { title: string; tags: string }>>(new Map());
   const [query, setQuery] = useState('');
   const [onlyReady, setOnlyReady] = useState(false);
@@ -221,11 +222,7 @@ export default function RegulationsHubScreen() {
     );
   }, [c, isDark, toggle, meta.unit, act]);
 
-  const switchAct = (a: RegAct) => {
-    setAct(a);
-    setQuery('');
-    setQuick(null);
-  };
+
 
   const pocsoHeader = act === 'pocso' && !query.trim() ? (
     <View style={{ marginBottom: 12, gap: 10 }}>
@@ -280,25 +277,6 @@ export default function RegulationsHubScreen() {
         showBack
       />
       <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, gap: 10, borderBottomWidth: 1, borderBottomColor: c.border }}>
-        {/* Act switch */}
-        <View style={{ flexDirection: 'row', backgroundColor: c.secondary, borderRadius: 14, padding: 4 }} accessibilityRole="tablist">
-          {(['uppr', 'pocso'] as const).map((a) => {
-            const active = act === a;
-            return (
-              <Pressable
-                key={a}
-                onPress={() => switchAct(a)}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: active }}
-                style={{ flex: 1, minHeight: 44, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: active ? c.card : 'transparent' }}
-              >
-                <Text textBreakStrategy="simple" numberOfLines={1} style={{ color: active ? c.foreground : c.mutedForeground, fontWeight: active ? '800' : '600', fontSize: 13.5 }}>
-                  {ACT_META[a].name}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
         <SearchBar
           value={query}
           onChangeText={setQuery}

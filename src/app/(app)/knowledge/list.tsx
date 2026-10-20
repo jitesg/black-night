@@ -223,23 +223,31 @@ function RecordCard({
 // ─── List Screen ──────────────────────────────────────────────────────────
 // ─── UP Police Regulations entry card (top of the Law list) ─────────────────
 function RegulationsEntryCard() {
-  const prog = getRegProgress();
+  const cards = [
+    { act: 'uppr', title: 'UP Police Regulations', prog: getRegProgress('uppr'), unit: 'पैरा', color: '#4F46E5' },
+    { act: 'pocso', title: 'POCSO Act 2012', prog: getRegProgress('pocso'), unit: 'धाराएँ', color: '#BE185D' },
+  ];
   return (
-    <Pressable
-      onPress={() => router.push('/(app)/knowledge/regulations' as never)}
-      className="flex-row items-center gap-3 p-4 rounded-2xl border border-indigo-500/30 bg-indigo-500/10 active:opacity-70"
-      style={{ borderCurve: 'continuous', minHeight: 64 }}
-      accessibilityRole="button"
-    >
-      <View className="w-11 h-11 rounded-xl items-center justify-center bg-indigo-500/15">
-        <BookOpen size={22} color="#4F46E5" />
-      </View>
-      <View className="flex-1" style={{ minWidth: 0 }}>
-        <Text className="text-[15px] font-bold text-foreground">UP Police Regulations ({prog.total} पैरा)</Text>
-        <Text className="text-xs text-muted-foreground mt-0.5">भाग I–IV · हिंदी तैयार: {prog.done} / {prog.total}</Text>
-      </View>
-      <ChevronRight size={18} color="#4F46E5" />
-    </Pressable>
+    <View className="gap-3">
+      {cards.map((cd) => (
+        <Pressable
+          key={cd.act}
+          onPress={() => router.push(`/(app)/knowledge/regulations?act=${cd.act}` as never)}
+          className="flex-row items-center gap-3 p-4 rounded-2xl border active:opacity-70"
+          style={{ borderCurve: 'continuous', minHeight: 64, borderColor: `${cd.color}40`, backgroundColor: `${cd.color}12` }}
+          accessibilityRole="button"
+        >
+          <View className="w-11 h-11 rounded-xl items-center justify-center" style={{ backgroundColor: `${cd.color}20` }}>
+            <BookOpen size={22} color={cd.color} />
+          </View>
+          <View className="flex-1" style={{ minWidth: 0 }}>
+            <Text className="text-[15px] font-bold text-foreground">{cd.title} ({cd.prog.total} {cd.unit})</Text>
+            <Text className="text-xs text-muted-foreground mt-0.5">हिंदी तैयार: {cd.prog.done} / {cd.prog.total}</Text>
+          </View>
+          <ChevronRight size={18} color={cd.color} />
+        </Pressable>
+      ))}
+    </View>
   );
 }
 

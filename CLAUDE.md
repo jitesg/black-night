@@ -55,7 +55,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   picked up automatically (`require.context` in `src/lib/regulations/regSeedFiles.ts`).
 - Pure helpers + tests: `src/lib/regulations/regCore.ts`,
   `node --experimental-strip-types --test scripts/test_regulations.ts`.
-- Hub `knowledge/regulations.tsx`; reader `components/knowledge/RegulationViewer.tsx`
+- Hub `knowledge/regulations.tsx?act=uppr|pocso` (one screen per Act, opened from its own card in the Law library like BNS/BNSS/BSA); reader `components/knowledge/RegulationViewer.tsx`
   (content_type 'regulation', own error boundary → LawDetail fallback);
   Copilot `src/ai/regLookup.ts` (REG_LOOKUP).
 - L36 POCSO Act 2012: `assets/seed/pocso_seed.json` + `assets/reg/pocso_index.json` (byte-for-byte),
