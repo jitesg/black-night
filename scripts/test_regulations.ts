@@ -136,7 +136,7 @@ test('sidecar: join, order, neighbours, progress', () => {
   const n = neighbours(index, 'sys-reg-up-1');
   assert.equal(n.prev, null);
   assert.equal(n.next, 'sys-reg-up-1-a');
-  assert.deepEqual(progress(index), { done: 47, total: 509 });
+  assert.deepEqual(progress(index), { done: 87, total: 509 }); // L38: 87 paras with Hindi
   const seedIds = seed.knowledge.map((r) => r.id);
   assert.equal(seedIds.length, 109);
   assert.equal(seedIds.filter((id) => !joinSidecar(index, id)).length, 0);
@@ -200,7 +200,7 @@ test('POCSO: sidecar merge + seed rows + search', async () => {
   const merged = mergeIndexes(index, pocso);
   assert.equal(Object.keys(merged.paras).length, 509 + 47);
   assert.deepEqual(progress(merged, 'pocso'), { done: 47, total: 47 });
-  assert.deepEqual(progress(merged, 'uppr'), { done: 47, total: 509 });
+  assert.deepEqual(progress(merged, 'uppr'), { done: 87, total: 509 });
   assert.equal(joinSidecar(merged, 'sys-reg-pocso-6')?.part, 'POCSO');
   assert.equal(joinSidecar(merged, 'sys-reg-up-97')?.no, '97');
   const pseed = JSON.parse(readFileSync(new URL('../assets/seed/pocso_seed.json', import.meta.url), 'utf8')).knowledge as { id: string; description: string }[];
@@ -319,4 +319,28 @@ test('women: seed rows parse, numbered examples present, search', () => {
   assert.equal(searchParas(dv, 'संरक्षण अधिकारी')[0].id.startsWith('sys-reg-pwdva-'), true);
   assert.equal(searchParas(items.filter((i) => actOfId(i.id) === 'posh'), 'ICC')[0].id, 'sys-reg-posh-4');
   assert.ok(searchParas(items.filter((i) => actOfId(i.id) === 'itpa'), 'brothel').length >= 2);
+});
+
+// ── L38: UP Regulations batch 2 (reg_seed_2, reg_seed_3) ───────────────────
+
+test('L38: reg_seed_2/3 rows join the sidecar and parse', () => {
+  const s2 = readJson<typeof seed>('../assets/seed/reg_seed_2.json').knowledge;
+  const s3 = readJson<typeof seed>('../assets/seed/reg_seed_3.json').knowledge;
+  assert.equal(s2.length, 47);
+  assert.equal(s3.length, 109);
+  const all = [...seed.knowledge, ...s2, ...s3];
+  assert.equal(new Set(all.map((r) => r.id)).size, 265);
+  assert.equal(s2.filter((r) => joinSidecar(index, r.id)?.done).length, 47);
+  assert.equal(s3.filter((r) => joinSidecar(index, r.id)?.done).length, 16);
+  assert.equal(all.filter((r) => joinSidecar(index, r.id)?.done).length, 87);
+  for (const r of [...s2, ...s3]) {
+    assert.ok(joinSidecar(index, r.id), `sidecar ${r.id}`);
+    assert.equal(r.content_type, 'regulation', r.id);
+    const sec = parseRegSections(r.description);
+    assert.ok(sec.original.heading.startsWith('1.'), r.id);
+    assert.ok(sec.related.heading.startsWith('4.'), r.id);
+  }
+  // Para 152: numbered examples, at least one real case
+  const ex = parseExamples(parseRegSections(s2.find((r) => r.id === 'sys-reg-up-152')!.description).examples.body);
+  assert.ok(ex.length >= 2);
 });

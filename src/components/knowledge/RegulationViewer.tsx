@@ -273,8 +273,9 @@ const ExamplesTab = memo(function ExamplesTab({ c, isDark, section, overview }: 
   c: Theme; isDark: boolean; section: RegSection; overview: boolean;
 }) {
   const examples = useMemo(() => parseExamples(section.body), [section.body]);
-  // Numbered L37 lists get badges + the filter; older UPPR/POCSO cards stay as they were.
-  const badges = useMemo(() => examples.some((e) => e.num !== undefined), [examples]);
+  // Numbered lists (L37) or lists with "[वास्तविक मामला]" tags (L38 UPPR) get badges + the filter;
+  // older untagged cards stay as they were.
+  const badges = useMemo(() => examples.some((e) => e.num !== undefined || e.real), [examples]);
   const [filter, setFilter] = useState<ExFilter>('all');
   // Lazy render: first cards at once, the rest right after the first frame.
   const [shown, setShown] = useState(EX_FIRST_BATCH);

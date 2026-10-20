@@ -50,8 +50,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Photos (`sop_images` table, "part 3") not supplied yet — the फोटो tab stays hidden.
 
 ## UP Police Regulations (L35)
-- Sidecar `assets/reg/reg_index.json` (509 paras, chapters) and seeds
-  `assets/seed/reg_seed_<n>.json` (owner's files, byte-for-byte). New seed files are
+- Sidecar `assets/reg/reg_index.json` (509 paras, 87 done after L38) and seeds
+  `assets/seed/reg_seed_<n>.json` (owner's files, byte-for-byte; 1–3 = 109+47+109 rows). New seed files are
   picked up automatically (`require.context` in `src/lib/regulations/regSeedFiles.ts`).
 - Pure helpers + tests: `src/lib/regulations/regCore.ts`,
   `node --experimental-strip-types --test scripts/test_regulations.ts`.
