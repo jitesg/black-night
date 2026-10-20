@@ -405,7 +405,7 @@ const RelatedTab = memo(function RelatedTab({ c, isDark, section, para, targets,
               })}
               accessibilityLabel={label}
             >
-              <Scale size={13} color={c.primary} />
+              <View style={{ flexShrink: 0 }}><Scale size={13} color={c.primary} /></View>
               {/* Long labels (e.g. "Legal Services Authorities Act …") wrap instead of running off screen */}
               <Text textBreakStrategy="simple" numberOfLines={3} style={{ flexShrink: 1, color: c.primary, fontWeight: '700', fontSize: 13 }}>{label}</Text>
               {lw.u ? (

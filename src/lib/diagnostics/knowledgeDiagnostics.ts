@@ -258,7 +258,7 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
     for (const a of WOMEN_ACTS) {
       const rows = womenRows.filter((r) => actOfId(r.id) === a);
       const prog = getRegProgress(a);
-      log(`    ${a}: rows ${rows.length} (expected ${ACT_META[a].expected ?? '?'}${a === 'pwdva' || a === 'posh' ? '' : ' after L37B'}), sidecar done ${prog.done}/${prog.total}${prog.done === prog.total ? '' : ' ⚠ not all done'}`);
+      log(`    ${a}: rows ${rows.length} (expected ${ACT_META[a].expected ?? '?'}), sidecar done ${prog.done}/${prog.total}${prog.done === prog.total ? '' : ' ⚠ not all done'}`);
     }
     log(`  with sidecar done=true: ${withDone}`);
     log(`  sidecar entry missing: ${missing.length}${missing.length ? ` (${missing.slice(0, 10).join(', ')}${missing.length > 10 ? ' …' : ''})` : ''}`);

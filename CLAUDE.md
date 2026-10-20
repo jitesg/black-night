@@ -63,8 +63,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   POCSO order by `compareSectionNo` (42 < 42A < 43). Sensitive: list/search show title only, share
   adds 'गोपनीय' prefix, never log description text.
 - L37A महिला संरक्षण कानून: `assets/reg/women_index.json` (124 rows, 5 Acts) + seeds
-  `assets/seed/women_seed_<act>.json` (pwdva 38, posh 31 now; itpa/dowry/irwa = L37B, just drop
-  the files — glob picks them up). Ids `sys-reg-<act>-<no>`, '0' = 'अधिनियम एक नज़र में'.
+  `assets/seed/women_seed_<act>.json` (pwdva 38, posh 31, itpa 30, dowry 14, irwa 11 — L37B done;
+  new files are picked up by the glob). Ids `sys-reg-<act>-<no>`, '0' = 'अधिनियम एक नज़र में'.
   Act metadata in `ACT_META`/`WOMEN_ACTS` (regCore). Law library has one "महिला कानून" card →
   `regulations?act=women` (5 Act cards) → `?act=pwdva` etc. Examples tab: numbered cards,
   'वास्तविक निर्णय' / 'काल्पनिक उदाहरण' badges + filter. Sensitive like POCSO (`isSensitiveId`).

@@ -291,9 +291,10 @@ test('women: numbered example parser with real-case badge', () => {
 });
 
 test('women: seed rows parse, numbered examples present, search', () => {
-  for (const f of ['women_seed_pwdva', 'women_seed_posh']) {
+  const expected: Record<string, number> = { pwdva: 38, posh: 31, itpa: 30, dowry: 14, irwa: 11 };
+  for (const f of Object.keys(expected).map((a) => `women_seed_${a}`)) {
     const rows = readJson<typeof seed>(`../assets/seed/${f}.json`).knowledge;
-    assert.equal(rows.length, f.endsWith('pwdva') ? 38 : 31);
+    assert.equal(rows.length, expected[f.replace('women_seed_', '')], f);
     for (const r of rows) {
       assert.equal(r.content_type, 'regulation', r.id);
       assert.equal(r.category, 'Law', r.id);
