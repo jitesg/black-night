@@ -3,7 +3,8 @@
  *
  * Design:
  *   • Bottom-sheet modal with smooth slide-up + fade-in animation
- *   • Uses react-native-ui-datepicker (already installed, pure-JS, web-safe)
+ *   • Own lightweight month calendar (plain JS dates, no Intl / timezone code —
+ *     the old react-native-ui-datepicker crashed on Android Hermes)
  *   • Calendar and action buttons use the app's primary color (#1E3A5F)
  *   • Works on iOS, Android, and Web identically (no native module)
  *
@@ -21,13 +22,12 @@
  * — each screen renders its own field so it can match its existing form layout.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Animated, Modal, Pressable, Text, TouchableWithoutFeedback, View,
+  Animated, Modal, Pressable, ScrollView, Text, TouchableWithoutFeedback, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DateTimePicker from 'react-native-ui-datepicker';
-import { X } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { useTranslation } from 'react-i18next';
@@ -77,7 +77,7 @@ export function DatePickerModal({
   onConfirm,
   onClose,
 }: DatePickerModalProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { colorScheme } = useColorScheme();
   const colors = THEME[colorScheme ?? 'light'];
   // Pending selection — only committed when user taps Confirm
@@ -181,26 +181,12 @@ export function DatePickerModal({
                 </View>
 
                 {/* Calendar */}
-                <DateTimePicker
-                  mode="single"
-                  date={dateStrToObj(pending)}
-                  styles={{
-                    selected: { backgroundColor: accentColor, borderRadius: 8 },
-                    selected_label: { color: '#fff', fontWeight: '700' },
-                    today: { borderWidth: 1.5, borderColor: accentColor, borderRadius: 8 },
-                    today_label: { color: accentColor, fontWeight: '600' },
-                    month_selector_label: { color: accentColor, fontWeight: '700' },
-                    year_selector_label: { color: accentColor, fontWeight: '700' },
-                  }}
-                  onChange={(params) => {
-                    const raw = params.date;
-                    if (!raw) return;
-                    const d =
-                      raw instanceof Date ? raw
-                      : typeof raw === 'string' || typeof raw === 'number' ? new Date(raw)
-                      : (raw as { toDate(): Date }).toDate();
-                    setPending(dateObjToStr(d));
-                  }}
+                <MonthCalendar
+                  value={pending}
+                  accent={accentColor}
+                  hindi={i18n.language?.startsWith('hi') ?? false}
+                  colors={colors}
+                  onSelect={setPending}
                 />
 
                 {/* Action buttons */}
@@ -236,5 +222,142 @@ export function DatePickerModal({
         </TouchableWithoutFeedback>
       </Animated.View>
     </Modal>
+  );
+}
+
+// ── MonthCalendar — tiny pure-JS calendar grid ───────────────────────────────
+
+const MONTHS_HI = ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'];
+const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAYS_HI = ['र', 'सो', 'मं', 'बु', 'गु', 'शु', 'श'];
+const DAYS_EN = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+type CalColors = { foreground: string; mutedForeground: string; muted: string; border: string };
+
+function MonthCalendar({
+  value, accent, hindi, colors, onSelect,
+}: {
+  value: string;
+  accent: string;
+  hindi: boolean;
+  colors: CalColors;
+  onSelect: (dateStr: string) => void;
+}) {
+  const selected = dateStrToObj(value);
+  const [view, setView] = useState({ y: selected.getFullYear(), m: selected.getMonth() });
+  const [pickYear, setPickYear] = useState(false);
+
+  // Jump to the selected month whenever the value changes from outside
+  useEffect(() => {
+    const d = dateStrToObj(value);
+    setView({ y: d.getFullYear(), m: d.getMonth() });
+  }, [value]);
+
+  const todayStr = dateObjToStr(new Date());
+  const cells = useMemo(() => {
+    const first = new Date(view.y, view.m, 1).getDay();
+    const count = new Date(view.y, view.m + 1, 0).getDate();
+    const out: (number | null)[] = Array(first).fill(null);
+    for (let d = 1; d <= count; d++) out.push(d);
+    while (out.length % 7) out.push(null);
+    return out;
+  }, [view]);
+
+  const shift = (delta: number) => {
+    const d = new Date(view.y, view.m + delta, 1);
+    setView({ y: d.getFullYear(), m: d.getMonth() });
+  };
+
+  const months = hindi ? MONTHS_HI : MONTHS_EN;
+  const days = hindi ? DAYS_HI : DAYS_EN;
+  const thisYear = new Date().getFullYear();
+  const years: number[] = [];
+  for (let y = thisYear + 5; y >= thisYear - 60; y--) years.push(y);
+
+  const navBtn = { padding: 8, borderRadius: 10, backgroundColor: colors.muted } as const;
+
+  return (
+    <View>
+      {/* Month header */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 8 }}>
+        <Pressable onPress={() => shift(-1)} style={navBtn} accessibilityLabel="Previous month" hitSlop={6}>
+          <ChevronLeft size={18} color={colors.foreground} />
+        </Pressable>
+        <Pressable onPress={() => setPickYear((v) => !v)} hitSlop={6} accessibilityLabel="Choose year">
+          <Text style={{ fontSize: 16, fontWeight: '700', color: accent }}>
+            {months[view.m]} {view.y}
+          </Text>
+        </Pressable>
+        <Pressable onPress={() => shift(1)} style={navBtn} accessibilityLabel="Next month" hitSlop={6}>
+          <ChevronRight size={18} color={colors.foreground} />
+        </Pressable>
+      </View>
+
+      {pickYear ? (
+        <ScrollView style={{ height: 280 }} contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          {years.map((y) => {
+            const on = y === view.y;
+            return (
+              <Pressable
+                key={y}
+                onPress={() => { setView({ y, m: view.m }); setPickYear(false); }}
+                style={{ width: '25%', paddingVertical: 10, alignItems: 'center' }}
+              >
+                <Text style={{
+                  paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, overflow: 'hidden',
+                  fontSize: 15, fontWeight: on ? '700' : '500',
+                  color: on ? '#fff' : colors.foreground,
+                  backgroundColor: on ? accent : 'transparent',
+                }}>
+                  {y}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      ) : (
+        <View style={{ height: 280 }}>
+          {/* Weekday labels */}
+          <View style={{ flexDirection: 'row' }}>
+            {days.map((d, i) => (
+              <Text key={i} style={{ flex: 1, textAlign: 'center', fontSize: 12, fontWeight: '600', color: colors.mutedForeground, paddingVertical: 6 }}>
+                {d}
+              </Text>
+            ))}
+          </View>
+          {/* Day grid */}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            {cells.map((d, i) => {
+              if (d === null) return <View key={i} style={{ width: `${100 / 7}%`, height: 40 }} />;
+              const str = dateObjToStr(new Date(view.y, view.m, d));
+              const isSel = str === value;
+              const isToday = str === todayStr;
+              return (
+                <Pressable
+                  key={i}
+                  onPress={() => onSelect(str)}
+                  style={{ width: `${100 / 7}%`, height: 40, alignItems: 'center', justifyContent: 'center' }}
+                  accessibilityLabel={str}
+                >
+                  <View style={{
+                    width: 36, height: 36, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: isSel ? accent : 'transparent',
+                    borderWidth: isToday && !isSel ? 1.5 : 0, borderColor: accent,
+                  }}>
+                    <Text style={{
+                      fontSize: 14,
+                      fontWeight: isSel ? '700' : isToday ? '600' : '400',
+                      color: isSel ? '#fff' : isToday ? accent : colors.foreground,
+                    }}>
+                      {d}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      )}
+    </View>
   );
 }
