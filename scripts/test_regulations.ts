@@ -160,3 +160,65 @@ test('related labels from section 4 (para 97)', async () => {
   assert.match(circ[0], /^डीजी परिपत्र संख्या-21\/2013/);
   assert.equal(relatedLabels(s.related.body, /^SOP/).length, 0);
 });
+
+// ── L36: POCSO ──────────────────────────────────────────────────────────────
+
+test('POCSO: section sort order … 42, 42A, 43', async () => {
+  const { compareSectionNo, orderedIds, mergeIndexes } = await import('../src/lib/regulations/regCore.ts');
+  const nos = ['43', '42A', '2', '42', '10', '1'];
+  assert.deepEqual([...nos].sort(compareSectionNo), ['1', '2', '10', '42', '42A', '43']);
+  const pocso = JSON.parse(readFileSync(new URL('../assets/reg/pocso_index.json', import.meta.url), 'utf8'));
+  const merged = mergeIndexes(index, pocso);
+  const ids = orderedIds(merged, 'pocso');
+  assert.equal(ids.length, 47);
+  const i42 = ids.indexOf('sys-reg-pocso-42');
+  assert.equal(ids[i42 + 1], 'sys-reg-pocso-42a');
+  assert.equal(ids[i42 + 2], 'sys-reg-pocso-43');
+  assert.equal(ids[0], 'sys-reg-pocso-1');
+});
+
+test('POCSO: id-prefix routing (act, labels, ids, neighbours stay in the Act)', async () => {
+  const { actOfId, ACT_META, paraIdFromNo, neighbours, mergeIndexes } = await import('../src/lib/regulations/regCore.ts');
+  assert.equal(actOfId('sys-reg-pocso-6'), 'pocso');
+  assert.equal(actOfId('sys-reg-up-97'), 'uppr');
+  assert.equal(ACT_META.pocso.unit, 'धारा');
+  assert.equal(ACT_META.uppr.unit, 'पैरा');
+  assert.equal(paraIdFromNo('42A', 'pocso'), 'sys-reg-pocso-42a');
+  assert.equal(paraIdFromNo(extractParaNo('धारा 42A')!, 'pocso'), 'sys-reg-pocso-42a');
+  assert.equal(paraIdFromNo('104-A'), 'sys-reg-up-104-a');
+  const pocso = JSON.parse(readFileSync(new URL('../assets/reg/pocso_index.json', import.meta.url), 'utf8'));
+  const merged = mergeIndexes(index, pocso);
+  assert.deepEqual(neighbours(merged, 'sys-reg-pocso-1'), { prev: null, next: 'sys-reg-pocso-2' });
+  assert.equal(neighbours(merged, 'sys-reg-pocso-46').next, null);
+  assert.equal(neighbours(merged, 'sys-reg-up-1').prev, null);
+  assert.ok(neighbours(merged, 'sys-reg-up-1').next?.startsWith('sys-reg-up-'));
+});
+
+test('POCSO: sidecar merge + seed rows + search', async () => {
+  const { mergeIndexes, progress, joinSidecar, searchParas, parseSimpleItems } = await import('../src/lib/regulations/regCore.ts');
+  const pocso = JSON.parse(readFileSync(new URL('../assets/reg/pocso_index.json', import.meta.url), 'utf8'));
+  const merged = mergeIndexes(index, pocso);
+  assert.equal(Object.keys(merged.paras).length, 509 + 47);
+  assert.deepEqual(progress(merged, 'pocso'), { done: 47, total: 47 });
+  assert.deepEqual(progress(merged, 'uppr'), { done: 47, total: 509 });
+  assert.equal(joinSidecar(merged, 'sys-reg-pocso-6')?.part, 'POCSO');
+  assert.equal(joinSidecar(merged, 'sys-reg-up-97')?.no, '97');
+  const pseed = JSON.parse(readFileSync(new URL('../assets/seed/pocso_seed.json', import.meta.url), 'utf8')).knowledge as { id: string; description: string }[];
+  assert.equal(pseed.length, 47);
+  assert.equal(pseed.filter((r) => joinSidecar(merged, r.id)?.done).length, 47);
+  // 2019 update callouts are parsed (label kept) for sections 4, 5, 6, 9, 14, 15
+  for (const n of ['4', '5', '6', '9', '14', '15']) {
+    const r = pseed.find((x) => x.id === `sys-reg-pocso-${n}`)!;
+    const items = parseSimpleItems(parseRegSections(r.description).simple.body);
+    const up = items.filter((x) => x.kind === 'update');
+    assert.ok(up.length >= 1, `section ${n} has an update`);
+    assert.ok(up.some((x) => x.kind === 'update' && /2019/.test(x.label ?? '')), `section ${n} 2019 label`);
+  }
+  const pitems = Object.entries(pocso.paras).map(([id, p]: [string, any]) => ({ id, no: p.no, title: p.t, en: p.en }));
+  assert.equal(searchParas(pitems, '42A')[0].id, 'sys-reg-pocso-42a');
+  assert.equal(searchParas(pitems, 'धारा 19')[0].id, 'sys-reg-pocso-19');
+  assert.equal(searchParas(pitems, '6')[0].id, 'sys-reg-pocso-6');
+  assert.ok(searchParas(pitems, 'reporting').some((x) => x.id === 'sys-reg-pocso-19'));
+  assert.ok(searchParas(pitems, 'पोर्नोग्राफी').some((x) => x.id === 'sys-reg-pocso-13'));
+  assert.ok(searchParas(pitems, 'special court').some((x) => x.id === 'sys-reg-pocso-28'));
+});

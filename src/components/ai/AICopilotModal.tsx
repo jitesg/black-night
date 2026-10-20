@@ -654,10 +654,13 @@ export function AICopilotModal({ visible, onClose, activeFirId, initialQuery }: 
         setTimeout(() => { router.push('/(app)/knowledge/regulations' as any); }, 150);
         return;
       }
-      const paraOpen = action.trim().match(/^पैरा\s*([0-9]{1,3}(?:-[A-Za-z])?)\s*खोलें$/);
+      const paraOpen = action.trim().match(/^(POCSO\s*)?(पैरा|धारा)\s*([0-9]{1,3}(?:-?[A-Za-z])?)\s*खोलें$/i);
       if (paraOpen) {
+        const isPocso = !!paraOpen[1] || paraOpen[2] === 'धारा';
+        const no = paraOpen[3].toLowerCase();
+        const id = isPocso ? `sys-reg-pocso-${no.replace('-', '')}` : `sys-reg-up-${no}`;
         onClose();
-        setTimeout(() => { router.push(`/(app)/knowledge/sys-reg-up-${paraOpen[1].toLowerCase()}` as any); }, 150);
+        setTimeout(() => { router.push(`/(app)/knowledge/${id}` as any); }, 150);
         return;
       }
       // "समझें खोलें" → SOP explainer tab (L32)

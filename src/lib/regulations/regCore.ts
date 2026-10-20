@@ -124,7 +124,7 @@ export function parseRegSections(description: string | null | undefined): RegSec
 
 export type SimpleItem =
   | { kind: 'bullet'; text: string }
-  | { kind: 'update'; text: string }
+  | { kind: 'update'; text: string; label?: string }
   | { kind: 'tip'; text: string }
   | { kind: 'text'; text: string };
 
@@ -134,7 +134,11 @@ export function parseSimpleItems(body: string): SimpleItem[] {
     const line = raw.trim();
     if (!line) continue;
     if (line.startsWith('- ')) items.push({ kind: 'bullet', text: line.slice(2).trim() });
-    else if (/^⚠\s*अद्यतन\s*[:：]/.test(line)) items.push({ kind: 'update', text: line.replace(/^⚠\s*अद्यतन\s*[:：]\s*/, '') });
+    else if (/^⚠\s*अद्यतन/.test(line)) {
+      // "⚠ अद्यतन: …" or "⚠ अद्यतन (2019 संशोधन): …"
+      const m = /^⚠\s*अद्यतन\s*(\([^)]*\))?\s*[:：]?\s*/.exec(line)!;
+      items.push({ kind: 'update', text: line.slice(m[0].length), label: m[1] ? `अद्यतन ${m[1]}` : undefined });
+    }
     else if (/^टिप\s*[:：]/.test(line)) items.push({ kind: 'tip', text: line.replace(/^टिप\s*[:：]\s*/, '') });
     else if (items.length > 0) items[items.length - 1].text += ` ${line}`; // wrapped line
     else items.push({ kind: 'text', text: line });
@@ -200,13 +204,55 @@ export function normalizeParaNo(input: string): string | null {
  */
 export function extractParaNo(query: string): string | null {
   const q = toAsciiDigits(query.trim());
-  const withWord = /(?:पैरा|पैराग्राफ|para(?:graph)?|reg(?:ulation)?|रेगुलेशन|uppr|नियम)\.?\s*(?:no\.?|नं\.?|संख्या)?\s*(\d{1,3}(?:\s*-?\s*[a-zA-Z](?![a-zA-Z]))?)/i.exec(q);
+  const withWord = /(?:पैरा|पैराग्राफ|para(?:graph)?|reg(?:ulation)?|रेगुलेशन|uppr|नियम|धारा|dhara|section|sec)\.?\s*(?:no\.?|नं\.?|संख्या)?\s*(\d{1,3}(?:\s*-?\s*[a-zA-Z](?![a-zA-Z]))?)/i.exec(q);
   if (withWord) return normalizeParaNo(withWord[1]);
   return normalizeParaNo(q);
 }
 
-export function paraIdFromNo(no: string): string {
-  return `sys-reg-up-${no.toLowerCase()}`;
+/** Row id for a para / section number ("104-A" → sys-reg-up-104-a, POCSO "42A" → sys-reg-pocso-42a). */
+export function paraIdFromNo(no: string, act: RegAct = 'uppr'): string {
+  return act === 'pocso'
+    ? `sys-reg-pocso-${canonNo(no).toLowerCase()}`
+    : `sys-reg-up-${no.toLowerCase()}`;
+}
+
+/** "42-A" / "42 a" / "42A" → "42A" (for comparing numbers across styles). */
+export function canonNo(no: string): string {
+  return no.toUpperCase().replace(/[\s-]/g, '');
+}
+
+// ─── Acts (UP Police Regulations, POCSO Act …) ──────────────────────────────
+
+export type RegAct = 'uppr' | 'pocso';
+
+export function actOfId(id: string): RegAct {
+  return id.startsWith('sys-reg-pocso-') ? 'pocso' : 'uppr';
+}
+
+export const ACT_META: Record<RegAct, { unit: string; prefix: string; name: string; idPrefix: string }> = {
+  uppr: { unit: 'पैरा', prefix: 'UPPR', name: 'UP Police Regulations', idPrefix: 'sys-reg-up-' },
+  pocso: { unit: 'धारा', prefix: 'POCSO', name: 'POCSO Act 2012', idPrefix: 'sys-reg-pocso-' },
+};
+
+/** Section order: 1, 2, …, 42, 42A, 43 (letters after the plain number). */
+export function compareSectionNo(a: string, b: string): number {
+  const pa = /^(\d+)\s*-?\s*([A-Za-z]*)$/.exec(a.trim());
+  const pb = /^(\d+)\s*-?\s*([A-Za-z]*)$/.exec(b.trim());
+  if (!pa || !pb) return a.localeCompare(b);
+  const d = Number(pa[1]) - Number(pb[1]);
+  if (d !== 0) return d;
+  return pa[2].toUpperCase().localeCompare(pb[2].toUpperCase());
+}
+
+/** Merges several sidecars into one map keyed by row id. */
+export function mergeIndexes(...parts: (RegIndexData | null | undefined)[]): RegIndexData {
+  const out: RegIndexData = { paras: {}, chapters: [] };
+  for (const p of parts) {
+    if (!p) continue;
+    Object.assign(out.paras, p.paras);
+    out.chapters.push(...p.chapters);
+  }
+  return out;
 }
 
 // ─── Sidecar join / order ───────────────────────────────────────────────────
@@ -217,20 +263,31 @@ export function joinSidecar(index: RegIndexData | null, rowId: string): RegPara 
   return index.paras[rowId] ?? null;
 }
 
-/** Row ids in sidecar order (the order of the original book). */
-export function orderedIds(index: RegIndexData | null): string[] {
-  return index ? Object.keys(index.paras) : [];
+/**
+ * Row ids of one Act in reading order. UP Regulations keep the book order of
+ * the sidecar; POCSO is sorted by section number (… 42, 42A, 43 …).
+ * Without `act`, all ids in sidecar order.
+ */
+export function orderedIds(index: RegIndexData | null, act?: RegAct): string[] {
+  if (!index) return [];
+  const ids = Object.keys(index.paras);
+  if (!act) return ids;
+  const mine = ids.filter((id) => actOfId(id) === act);
+  return act === 'pocso'
+    ? mine.sort((x, y) => compareSectionNo(index.paras[x].no, index.paras[y].no))
+    : mine;
 }
 
+/** Previous / next row inside the same Act. */
 export function neighbours(index: RegIndexData | null, rowId: string): { prev: string | null; next: string | null } {
-  const ids = orderedIds(index);
+  const ids = orderedIds(index, actOfId(rowId));
   const i = ids.indexOf(rowId);
   if (i < 0) return { prev: null, next: null };
   return { prev: i > 0 ? ids[i - 1] : null, next: i < ids.length - 1 ? ids[i + 1] : null };
 }
 
-export function progress(index: RegIndexData | null): { done: number; total: number } {
-  const all = index ? Object.values(index.paras) : [];
+export function progress(index: RegIndexData | null, act?: RegAct): { done: number; total: number } {
+  const all = orderedIds(index, act).map((id) => index!.paras[id]);
   return { done: all.filter((p) => p.done).length, total: all.length };
 }
 
@@ -252,18 +309,40 @@ function norm(s: string): string {
  * Ranks paragraphs for a query. A para-number query puts the exact para
  * first, then other paras starting with that number (e.g. 104, 104-A).
  */
+// Hindi words people type → words used in English/Hindi headings.
+const QUERY_SYNONYMS: [RegExp, string][] = [
+  [/पोर्नोग्राफी|पोर्न|अश्लील/i, 'pornographic अश्लील'],
+  [/रिपोर्टिंग|रिपोर्ट/i, 'reporting रिपोर्टिंग'],
+  [/बयान/i, 'statement बयान'],
+  [/मेडिकल|चिकित्सा/i, 'medical मेडिकल'],
+  [/विशेष\s*न्यायालय|स्पेशल\s*कोर्ट/i, 'special court विशेष न्यायालय'],
+  [/सज़ा|सजा/i, 'punishment सजा'],
+  [/मीडिया/i, 'media मीडिया'],
+];
+
+/** Adds heading words for common Hindi query words. */
+export function expandQuery(query: string): string {
+  let q = query;
+  for (const [re, add] of QUERY_SYNONYMS) if (re.test(query)) q += ` ${add}`;
+  return q;
+}
+
 export function searchParas(items: RegSearchItem[], query: string, limit = 50, minScore = 1): RegSearchItem[] {
   const q = norm(query);
   if (!q) return items.slice(0, limit);
   const paraNo = extractParaNo(query);
   const scored: { item: RegSearchItem; score: number }[] = [];
-  const tokens = q.split(' ').filter((t) => t.length > 1 && !/^(पैरा|para|reg|regulation|uppr|का|की|के|में|है|क्या)$/.test(t));
+  const tokens = norm(expandQuery(query)).split(' ').filter((t) => t.length > 1 && !/^(पैरा|para|reg|regulation|uppr|धारा|section|pocso|पॉक्सो|का|की|के|में|है|क्या)$/.test(t));
   for (const item of items) {
     let score = 0;
     if (paraNo) {
-      if (item.no.toUpperCase() === paraNo) score += 1000;
-      else if (item.no.toUpperCase().startsWith(`${paraNo.split('-')[0]}-`) && !paraNo.includes('-')) score += 400;
-      else if (item.no.split('-')[0] === paraNo.split('-')[0]) score += 300;
+      const want = canonNo(paraNo);
+      const have = canonNo(item.no);
+      const wantBase = want.replace(/[A-Z]+$/, '');
+      const haveBase = have.replace(/[A-Z]+$/, '');
+      if (have === want) score += 1000;
+      else if (haveBase === wantBase && want === wantBase) score += 400; // "104" → also 104-A
+      else if (haveBase === wantBase) score += 300;
     }
     const hay = norm(`${item.title} ${item.en ?? ''} ${item.tags ?? ''}`);
     if (hay.includes(q)) score += 120;

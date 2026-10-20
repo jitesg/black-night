@@ -176,8 +176,8 @@ function RecordCard({
         </View>
       </View>
 
-      {/* Description */}
-      {item.description ? (
+      {/* Description (POCSO rows: title only — sensitive content) */}
+      {item.description && !item.id.startsWith('sys-reg-pocso-') ? (
         highlight
           ? <HighlightText text={getEntryPreviewText(stripHtmlTags(item.description))} query={query} style={{ fontSize: 12, lineHeight: 16, color: 'inherit' }} numberOfLines={2} typoTolerant={typoTolerant} />
           : <Text style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2}>{getEntryPreviewText(stripHtmlTags(item.description))}</Text>

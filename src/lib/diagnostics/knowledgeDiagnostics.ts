@@ -246,7 +246,11 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
     ).catch(() => [] as { id: string }[]);
     const withDone = regRows.filter((r) => idx?.paras[r.id]?.done).length;
     const missing = regRows.filter((r) => !idx?.paras[r.id]).map((r) => r.id);
-    log(`Regulation rows in DB: ${regRows.length}`);
+    const pocsoRows = regRows.filter((r) => r.id.startsWith('sys-reg-pocso-'));
+    const upprRows = regRows.filter((r) => !r.id.startsWith('sys-reg-pocso-'));
+    log(`Regulation rows in DB: ${regRows.length} (UP Regulations ${upprRows.length}, POCSO ${pocsoRows.length})`);
+    log(`  UP Regulations with done=true: ${upprRows.filter((r) => idx?.paras[r.id]?.done).length}`);
+    log(`  POCSO rows loaded: ${pocsoRows.length} (expected 47), done=true: ${pocsoRows.filter((r) => idx?.paras[r.id]?.done).length} (expected 47)`);
     log(`  with sidecar done=true: ${withDone}`);
     log(`  sidecar entry missing: ${missing.length}${missing.length ? ` (${missing.slice(0, 10).join(', ')}${missing.length > 10 ? ' …' : ''})` : ''}`);
     for (const f of REG_SEED_FILES) {

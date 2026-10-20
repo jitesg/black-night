@@ -58,3 +58,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Hub `knowledge/regulations.tsx`; reader `components/knowledge/RegulationViewer.tsx`
   (content_type 'regulation', own error boundary → LawDetail fallback);
   Copilot `src/ai/regLookup.ts` (REG_LOOKUP).
+- L36 POCSO Act 2012: `assets/seed/pocso_seed.json` + `assets/reg/pocso_index.json` (byte-for-byte),
+  same viewer/hub/REG_LOOKUP. Act from id prefix (`sys-reg-pocso-` → 'धारा', `actOfId` in regCore);
+  POCSO order by `compareSectionNo` (42 < 42A < 43). Sensitive: list/search show title only, share
+  adds 'गोपनीय' prefix, never log description text.

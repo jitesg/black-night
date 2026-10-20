@@ -32,7 +32,7 @@ import { getSection, parseSectionRef } from '@/lib/law/lawLibrary';
 import { getRegNeighbours, getRegPara } from '@/lib/regulations/regIndex';
 import {
   parseExamples, parseRegSections, parseSimpleItems, relatedLabels, sectionsToPlainText,
-  type RegPara, type RegSection, type RegSections,
+  ACT_META, actOfId, type RegPara, type RegSection, type RegSections,
 } from '@/lib/regulations/regCore';
 
 type Theme = (typeof THEME)['light'];
@@ -79,8 +79,8 @@ function ComingSoon({ c }: { c: Theme }) {
   );
 }
 
-function NotesCard({ c, note, status, onChange, onBlur }: {
-  c: Theme; note: string; status: 'idle' | 'saving' | 'saved'; onChange: (t: string) => void; onBlur: () => void;
+function NotesCard({ c, note, status, onChange, onBlur, unit }: {
+  c: Theme; unit: string; note: string; status: 'idle' | 'saving' | 'saved'; onChange: (t: string) => void; onBlur: () => void;
 }) {
   return (
     <View style={{ backgroundColor: c.card, borderWidth: 1, borderColor: c.border, borderRadius: 16, padding: 14, gap: 8, marginTop: 16 }}>
@@ -99,7 +99,7 @@ function NotesCard({ c, note, status, onChange, onBlur }: {
         value={note}
         onChangeText={onChange}
         onBlur={onBlur}
-        placeholder="इस पैरा पर अपना नोट लिखें…"
+        placeholder={`इस ${unit} पर अपना नोट लिखें…`}
         placeholderTextColor={c.mutedForeground}
         multiline
         textAlignVertical="top"
@@ -151,8 +151,23 @@ const OriginalTab = memo(function OriginalTab({ c, section, fontSize, onFont }: 
 
 // ─── Tab 2: simple Hindi ────────────────────────────────────────────────────
 
-const SimpleTab = memo(function SimpleTab({ c, isDark, section }: { c: Theme; isDark: boolean; section: RegSection }) {
-  const items = useMemo(() => parseSimpleItems(section.body), [section.body]);
+const SimpleTab = memo(function SimpleTab({ c, isDark, section, updatesFirst }: {
+  c: Theme; isDark: boolean; section: RegSection; updatesFirst: boolean;
+}) {
+  // POCSO: the 2019 amendment callouts must be the first thing seen.
+  const items = useMemo(() => {
+    const all = parseSimpleItems(section.body);
+    return updatesFirst
+      ? [...all.filter((x) => x.kind === 'update'), ...all.filter((x) => x.kind !== 'update')]
+      : all;
+  }, [section.body, updatesFirst]);
+  // Bullet numbers count bullets only (callouts are not numbered).
+  const bulletNo = useMemo(() => {
+    const m = new Map<number, number>();
+    let n = 0;
+    items.forEach((it, i) => { if (it.kind === 'bullet') m.set(i, ++n); });
+    return m;
+  }, [items]);
   if (section.pending) return <ComingSoon c={c} />;
   return (
     <View style={{ gap: 10 }}>
@@ -162,7 +177,7 @@ const SimpleTab = memo(function SimpleTab({ c, isDark, section }: { c: Theme; is
             <View key={i} style={{ flexDirection: 'row', gap: 10, padding: 14, borderRadius: 16, backgroundColor: isDark ? '#78350F55' : '#FEF3C7', borderWidth: 1, borderColor: isDark ? '#F59E0B66' : '#FCD34D' }}>
               <AlertTriangle size={18} color={isDark ? '#FCD34D' : AMBER} />
               <View style={{ flex: 1 }}>
-                <Text style={{ color: isDark ? '#FCD34D' : '#92400E', fontWeight: '800', fontSize: 13, marginBottom: 2 }}>अद्यतन</Text>
+                <Text style={{ color: isDark ? '#FCD34D' : '#92400E', fontWeight: '800', fontSize: 13, marginBottom: 2 }}>{it.label ?? 'अद्यतन'}</Text>
                 <Text textBreakStrategy="simple" style={{ color: isDark ? '#FDE68A' : '#78350F', fontSize: 14.5, lineHeight: 22 }}>{it.text}</Text>
               </View>
             </View>
@@ -183,7 +198,7 @@ const SimpleTab = memo(function SimpleTab({ c, isDark, section }: { c: Theme; is
           <View key={i} style={{ flexDirection: 'row', gap: 10, padding: 14, borderRadius: 16, backgroundColor: c.card, borderWidth: 1, borderColor: c.border }}>
             {it.kind === 'bullet' ? (
               <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: `${c.primary}1F`, alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>
-                <Text style={{ color: c.primary, fontSize: 11, fontWeight: '800' }}>{i + 1}</Text>
+                <Text style={{ color: c.primary, fontSize: 11, fontWeight: '800' }}>{bulletNo.get(i)}</Text>
               </View>
             ) : null}
             <Text textBreakStrategy="simple" style={{ flex: 1, color: c.foreground, fontSize: 15, lineHeight: 23 }}>{it.text}</Text>
@@ -367,8 +382,12 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
   const [targets, setTargets] = useState<Record<string, LinkTarget>>({});
   const [copilotOpen, setCopilotOpen] = useState(false);
 
-  const paraNo = para?.no ?? sections.title.match(/पैरा\s*([\w-]+)/)?.[1] ?? '';
-  const title = para?.t ?? sections.title.replace(/^पैरा\s*[\w-]+\s*[—-]\s*/, '');
+  const act = actOfId(entry.id);
+  const meta = ACT_META[act];
+  const isPocso = act === 'pocso';
+  const paraNo = para?.no ?? sections.title.match(/(?:पैरा|धारा)\s*([\w-]+)/)?.[1] ?? '';
+  const title = para?.t ?? sections.title.replace(/^(?:POCSO\s*)?(?:पैरा|धारा)\s*[\w-]+\s*[—-]\s*/, '');
+  const unitLabel = isPocso ? `POCSO ${meta.unit} ${paraNo}` : `${meta.unit} ${paraNo}`;
 
   // Font size (persisted)
   useEffect(() => {
@@ -475,13 +494,18 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
 
   const onShare = useCallback(async () => {
     try {
-      await Share.share({ title: entry.title, message: `${sectionsToPlainText(entry.title, sections)}\n\n— via InvestSuite` });
+      // POCSO deals with child abuse: mark shared text confidential.
+      const body = sectionsToPlainText(entry.title, sections);
+      const message = isPocso ? `गोपनीय — केवल विधिक/विभागीय उपयोग हेतु\n\n${body}` : body;
+      await Share.share({ title: entry.title, message: `${message}\n\n— via InvestSuite` });
     } catch (e) {
       logger.error('[RegulationViewer] share failed:', e);
     }
-  }, [entry.title, sections]);
+  }, [entry.title, sections, isPocso]);
 
-  const copilotQuery = `UPPR पैरा ${paraNo} क्या कहता है? (${title})`;
+  const copilotQuery = isPocso
+    ? `POCSO धारा ${paraNo} क्या कहती है? (${title})`
+    : `UPPR पैरा ${paraNo} क्या कहता है? (${title})`;
 
   const renderPage = useCallback(({ item }: { item: TabKey }) => (
     <ScrollView
@@ -491,20 +515,20 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
       keyboardShouldPersistTaps="handled"
     >
       {item === 'original' ? <OriginalTab c={c} section={sections.original} fontSize={fontSize} onFont={changeFont} /> : null}
-      {item === 'simple' ? <SimpleTab c={c} isDark={isDark} section={sections.simple} /> : null}
+      {item === 'simple' ? <SimpleTab c={c} isDark={isDark} section={sections.simple} updatesFirst={isPocso} /> : null}
       {item === 'examples' ? <ExamplesTab c={c} section={sections.examples} /> : null}
       {item === 'related' ? (
         <RelatedTab c={c} isDark={isDark} section={sections.related} para={para} targets={targets} onLaw={onLaw} onOpen={onOpen} />
       ) : null}
-      <NotesCard c={c} note={note} status={noteStatus} onChange={onNote} onBlur={onNoteBlur} />
+      <NotesCard c={c} unit={meta.unit} note={note} status={noteStatus} onChange={onNote} onBlur={onNoteBlur} />
     </ScrollView>
-  ), [width, c, isDark, sections, fontSize, changeFont, para, targets, onLaw, onOpen, note, noteStatus, onNote, onNoteBlur]);
+  ), [width, c, isDark, isPocso, meta.unit, sections, fontSize, changeFont, para, targets, onLaw, onOpen, note, noteStatus, onNote, onNoteBlur]);
 
   const navBtn = (id: string | null, dir: 'prev' | 'next') => (
     <Pressable
       disabled={!id}
       onPress={() => goPara(id)}
-      accessibilityLabel={dir === 'prev' ? 'पिछला पैरा' : 'अगला पैरा'}
+      accessibilityLabel={dir === 'prev' ? `पिछला ${meta.unit}` : `अगला ${meta.unit}`}
       style={({ pressed }) => ({
         width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center',
         backgroundColor: c.secondary, opacity: !id ? 0.35 : pressed ? 0.7 : 1,
@@ -517,8 +541,8 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title={`पैरा ${paraNo}`}
-        subtitle="UP Police Regulations"
+        title={unitLabel}
+        subtitle={meta.name}
         showBack
         actions={<HeaderIconBtn icon={Share2} label="शेयर" onPress={onShare} />}
       />
@@ -529,7 +553,7 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text numberOfLines={2} textBreakStrategy="simple" style={{ color: c.foreground, fontWeight: '800', fontSize: 15, lineHeight: 21 }}>{title}</Text>
           <Text numberOfLines={1} textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 11.5, marginTop: 2 }}>
-            {para ? `भाग ${para.part} · अध्याय ${para.ch} — ${para.chT}` : sections.breadcrumb}
+            {para ? `${isPocso ? '' : `भाग ${para.part} · `}अध्याय ${para.ch} — ${para.chT}` : sections.breadcrumb}
             {para && !para.done ? '  ·  केवल मूल पाठ' : ''}
           </Text>
         </View>
