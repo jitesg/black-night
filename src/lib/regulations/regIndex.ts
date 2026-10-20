@@ -3,7 +3,7 @@
  * Loaded once on first use and kept in memory.
  */
 import {
-  joinSidecar, mergeIndexes, neighbours, orderedIds, progress,
+  ACT_META, WOMEN_ACTS, joinSidecar, mergeIndexes, neighbours, orderedIds, progress,
   type RegAct, type RegChapter, type RegIndexData, type RegPara,
 } from './regCore';
 
@@ -18,7 +18,7 @@ function check(data: RegIndexData | null | undefined, name: string): RegIndexDat
 }
 
 /**
- * All sidecars (UP Police Regulations + POCSO Act) merged into one map
+ * All sidecars (UP Police Regulations + POCSO Act + women-protection Acts) merged into one map
  * keyed by row id — row ids never collide. A broken file is skipped.
  */
 export function getRegIndex(): RegIndexData | null {
@@ -32,6 +32,11 @@ export function getRegIndex(): RegIndexData | null {
   }
   try {
     parts.push(check(require('../../../assets/reg/pocso_index.json') as RegIndexData, 'pocso_index.json'));
+  } catch (e) {
+    errors.push(e instanceof Error ? e.message : String(e));
+  }
+  try {
+    parts.push(check(require('../../../assets/reg/women_index.json') as RegIndexData, 'women_index.json'));
   } catch (e) {
     errors.push(e instanceof Error ? e.message : String(e));
   }
@@ -62,11 +67,21 @@ export function getRegOrder(act?: RegAct): string[] {
 
 export function getRegChapters(act: RegAct = 'uppr'): RegChapter[] {
   const all = getRegIndex()?.chapters ?? [];
-  return all.filter((c) => (act === 'pocso' ? c.part === 'POCSO' : c.part !== 'POCSO'));
+  if (act === 'pocso') return all.filter((c) => c.part === 'POCSO');
+  if (act === 'uppr') return all.filter((c) => c.part !== 'POCSO' && c.part !== 'WOMEN');
+  return all.filter((c) => c.part === 'WOMEN' && c.ch === ACT_META[act].ch);
 }
 
 export function getRegProgress(act: RegAct = 'uppr'): { done: number; total: number } {
   return progress(getRegIndex(), act);
+}
+
+/** Combined progress of the five women-protection Acts. */
+export function getWomenProgress(): { done: number; total: number } {
+  return WOMEN_ACTS.reduce((acc, a) => {
+    const p = getRegProgress(a);
+    return { done: acc.done + p.done, total: acc.total + p.total };
+  }, { done: 0, total: 0 });
 }
 
 export function isRegulationId(id: string | null | undefined): boolean {

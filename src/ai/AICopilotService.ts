@@ -528,7 +528,7 @@ export class AICopilotService {
             cloudAnswerUsed = true;
             if (intent === 'REG_LOOKUP') {
               // Keep the "open paragraph" links from the offline answer.
-              const links = offlineResult.content.match(/\[[^\]]*पैरा[^\]]*\]\(sys-reg-[a-z0-9-]+\)/g) ?? [];
+              const links = offlineResult.content.match(/\[[^\]]*(?:पैरा|धारा|एक नज़र)[^\]]*\]\(sys-reg-[a-z0-9-]+\)/g) ?? [];
               if (links.length) finalContent += `\n\n${links.slice(0, 3).join('  ')}`;
             }
           }

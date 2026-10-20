@@ -26,6 +26,7 @@ import {
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { isSensitiveId } from '@/lib/regulations/regCore';
 
 const K_COLOR = '#0F766E';
 const ACCENT = '#1E3A5F';
@@ -149,7 +150,7 @@ function SearchResultRow({
         ? <HighlightText text={item.title} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20 }} numberOfLines={1} typoTolerant={typoTolerant} />
         : <Text style={{ fontSize: 14, fontWeight: '600', lineHeight: 20 }} numberOfLines={1}>{item.title}</Text>
       }
-      {item.description && !item.id.startsWith('sys-reg-pocso-') ? (
+      {item.description && !isSensitiveId(item.id) ? (
         highlight
           ? <HighlightText text={getEntryPreviewText(stripHtmlTags(item.description))} query={query} style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2} typoTolerant={typoTolerant} />
           : <Text style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2}>{getEntryPreviewText(stripHtmlTags(item.description))}</Text>

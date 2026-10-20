@@ -1,5 +1,6 @@
 /**
- * RegulationViewer — reader for one UP Police Regulations paragraph (L35).
+ * RegulationViewer — reader for one UP Police Regulations paragraph (L35),
+ * POCSO section (L36) or women-protection Act section (L37).
  *
  * Sticky header (पैरा N, title, breadcrumb, prev/next) · 4 sticky tabs
  * (मूल पाठ | सरल हिंदी | उदाहरण | संबंधित), swipe or tap · notes · share ·
@@ -32,7 +33,8 @@ import { getSection, parseSectionRef } from '@/lib/law/lawLibrary';
 import { getRegNeighbours, getRegPara } from '@/lib/regulations/regIndex';
 import {
   parseExamples, parseRegSections, parseSimpleItems, relatedLabels, sectionsToPlainText,
-  ACT_META, actOfId, type RegPara, type RegSection, type RegSections,
+  ACT_META, CONFIDENTIAL_PREFIX, actOfId, isWomenAct, sectionLabel,
+  type RegExample, type RegPara, type RegSection, type RegSections,
 } from '@/lib/regulations/regCore';
 
 type Theme = (typeof THEME)['light'];
@@ -211,25 +213,127 @@ const SimpleTab = memo(function SimpleTab({ c, isDark, section, updatesFirst }: 
 
 // ─── Tab 3: examples ────────────────────────────────────────────────────────
 
-const ExamplesTab = memo(function ExamplesTab({ c, section }: { c: Theme; section: RegSection }) {
+type ExFilter = 'all' | 'real' | 'scenario';
+const EX_FILTERS: { key: ExFilter; label: string }[] = [
+  { key: 'all', label: 'सभी' },
+  { key: 'real', label: 'वास्तविक मामले' },
+  { key: 'scenario', label: 'परिदृश्य' },
+];
+const REAL_BLUE = '#2563EB';
+
+const ExampleCard = memo(function ExampleCard({ c, isDark, ex, index, badges }: {
+  c: Theme; isDark: boolean; ex: RegExample; index: number; badges: boolean;
+}) {
+  return (
+    <View style={{ borderRadius: 18, backgroundColor: c.card, borderWidth: 1, borderColor: ex.real && badges ? `${REAL_BLUE}55` : c.border, overflow: 'hidden' }}>
+      <View style={{ paddingHorizontal: 14, paddingVertical: 10, backgroundColor: ex.real && badges ? `${REAL_BLUE}${isDark ? '26' : '12'}` : `${c.primary}14`, gap: 6 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          {badges && ex.num !== undefined ? (
+            <View style={{ minWidth: 24, height: 24, borderRadius: 12, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center', backgroundColor: ex.real ? REAL_BLUE : c.secondary }}>
+              <Text style={{ color: ex.real ? '#fff' : c.secondaryForeground, fontSize: 12, fontWeight: '800' }}>{ex.num}</Text>
+            </View>
+          ) : (
+            <Text style={{ fontSize: 16 }}>📖</Text>
+          )}
+          <Text textBreakStrategy="simple" style={{ flex: 1, color: c.foreground, fontWeight: '800', fontSize: 14.5 }}>
+            {ex.label || `उदाहरण ${index + 1}`}
+          </Text>
+        </View>
+        {badges ? (
+          <View style={{ flexDirection: 'row' }}>
+            {ex.real ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, height: 22, paddingHorizontal: 8, borderRadius: 999, backgroundColor: REAL_BLUE }}>
+                <Gavel size={11} color="#fff" />
+                <Text textBreakStrategy="simple" style={{ color: '#fff', fontSize: 11.5, fontWeight: '700' }}>वास्तविक निर्णय</Text>
+              </View>
+            ) : (
+              <View style={{ height: 22, paddingHorizontal: 8, borderRadius: 999, justifyContent: 'center', backgroundColor: c.secondary }}>
+                <Text textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 11.5, fontWeight: '700' }}>काल्पनिक उदाहरण</Text>
+              </View>
+            )}
+          </View>
+        ) : null}
+      </View>
+      <Text textBreakStrategy="simple" style={{ color: c.foreground, fontSize: 14.5, lineHeight: 23, padding: 14, paddingBottom: ex.real && badges ? 8 : 14 }}>{ex.scenario}</Text>
+      {ex.real && badges ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginHorizontal: 14, marginBottom: 12 }}>
+          <AlertTriangle size={11} color={isDark ? '#FCD34D' : AMBER} />
+          <Text textBreakStrategy="simple" style={{ flex: 1, color: isDark ? '#FDE68A' : '#92400E', fontSize: 11.5 }}>
+            न्यायालय में उपयोग से पहले मूल निर्णय से मिलान करें
+          </Text>
+        </View>
+      ) : null}
+    </View>
+  );
+});
+
+const EX_FIRST_BATCH = 6;
+
+const ExamplesTab = memo(function ExamplesTab({ c, isDark, section, overview }: {
+  c: Theme; isDark: boolean; section: RegSection; overview: boolean;
+}) {
   const examples = useMemo(() => parseExamples(section.body), [section.body]);
+  // Numbered L37 lists get badges + the filter; older UPPR/POCSO cards stay as they were.
+  const badges = useMemo(() => examples.some((e) => e.num !== undefined), [examples]);
+  const [filter, setFilter] = useState<ExFilter>('all');
+  // Lazy render: first cards at once, the rest right after the first frame.
+  const [shown, setShown] = useState(EX_FIRST_BATCH);
+  useEffect(() => {
+    if (examples.length <= EX_FIRST_BATCH) return;
+    const id = setTimeout(() => setShown(examples.length), 60);
+    return () => clearTimeout(id);
+  }, [examples.length]);
+  const visible = useMemo(
+    () => examples
+      .map((ex, i) => ({ ex, i }))
+      .filter(({ ex }) => filter === 'all' || (filter === 'real' ? ex.real : !ex.real)),
+    [examples, filter],
+  );
   if (section.pending) return <ComingSoon c={c} />;
   if (examples.length === 0) {
     return <Text style={{ color: c.mutedForeground, fontSize: 13 }}>{section.body || 'इस पैरा के लिए उदाहरण नहीं दिए गए हैं।'}</Text>;
   }
+  // "इस धारा में उदाहरण की आवश्यकता नहीं …" — a plain note, no card.
+  if (badges === false && examples.length === 1 && !examples[0].label) {
+    return <Text textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 14, lineHeight: 21 }}>{examples[0].scenario}</Text>;
+  }
+  const realCount = examples.filter((e) => e.real).length;
   return (
     <View style={{ gap: 12 }}>
-      {examples.map((ex, i) => (
-        <View key={i} style={{ borderRadius: 18, backgroundColor: c.card, borderWidth: 1, borderColor: c.border, overflow: 'hidden' }}>
-          <View style={{ paddingHorizontal: 14, paddingVertical: 10, backgroundColor: `${c.primary}14`, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Text style={{ fontSize: 16 }}>📖</Text>
-            <Text textBreakStrategy="simple" style={{ flex: 1, color: c.foreground, fontWeight: '800', fontSize: 14.5 }}>
-              {ex.label || `उदाहरण ${i + 1}`}
-            </Text>
-          </View>
-          <Text textBreakStrategy="simple" style={{ color: c.foreground, fontSize: 14.5, lineHeight: 23, padding: 14 }}>{ex.scenario}</Text>
+      {overview ? (
+        <View style={{ padding: 14, borderRadius: 16, backgroundColor: '#9333EA14', borderWidth: 1, borderColor: '#9333EA40' }}>
+          <Text style={{ color: '#9333EA', fontWeight: '800', fontSize: 15 }}>एक नज़र में</Text>
+          <Text textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 12.5, marginTop: 2 }}>
+            पूरे अधिनियम को समझाने वाले {examples.length} उदाहरण · {realCount} वास्तविक निर्णय
+          </Text>
         </View>
+      ) : null}
+      {badges && realCount > 0 ? (
+        <View style={{ flexDirection: 'row', gap: 6, padding: 4, borderRadius: 14, backgroundColor: c.secondary }}>
+          {EX_FILTERS.map((f) => {
+            const active = filter === f.key;
+            return (
+              <Pressable
+                key={f.key}
+                onPress={() => setFilter(f.key)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                style={{ flex: 1, minHeight: 38, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: active ? c.card : 'transparent' }}
+              >
+                <Text textBreakStrategy="simple" numberOfLines={1} style={{ color: active ? c.foreground : c.mutedForeground, fontWeight: active ? '800' : '600', fontSize: 13 }}>
+                  {f.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      ) : null}
+      {visible.slice(0, shown).map(({ ex, i }) => (
+        <ExampleCard key={i} c={c} isDark={isDark} ex={ex} index={i} badges={badges} />
       ))}
+      {visible.length === 0 ? (
+        <Text style={{ color: c.mutedForeground, fontSize: 13, textAlign: 'center', marginTop: 8 }}>इस फ़िल्टर में कोई उदाहरण नहीं</Text>
+      ) : null}
     </View>
   );
 });
@@ -296,13 +400,14 @@ const RelatedTab = memo(function RelatedTab({ c, isDark, section, para, targets,
               onPress={() => onLaw(lw.new[0] || lw.old)}
               onLongPress={lw.u ? () => Alert.alert('सत्यापित करें', 'यह संदर्भ मूल स्रोत से मिलाकर ही प्रयोग करें।') : undefined}
               style={({ pressed }) => ({
-                minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, borderRadius: 999,
-                backgroundColor: `${c.primary}1A`, borderWidth: 1, borderColor: `${c.primary}40`, opacity: pressed ? 0.7 : 1,
+                minHeight: 44, maxWidth: '100%', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6,
+                borderRadius: 22, backgroundColor: `${c.primary}1A`, borderWidth: 1, borderColor: `${c.primary}40`, opacity: pressed ? 0.7 : 1,
               })}
               accessibilityLabel={label}
             >
               <Scale size={13} color={c.primary} />
-              <Text style={{ color: c.primary, fontWeight: '700', fontSize: 13 }}>{label}</Text>
+              {/* Long labels (e.g. "Legal Services Authorities Act …") wrap instead of running off screen */}
+              <Text textBreakStrategy="simple" numberOfLines={3} style={{ flexShrink: 1, color: c.primary, fontWeight: '700', fontSize: 13 }}>{label}</Text>
               {lw.u ? (
                 <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: AMBER, alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={{ color: '#fff', fontSize: 11, fontWeight: '800' }}>?</Text>
@@ -385,9 +490,13 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
   const act = actOfId(entry.id);
   const meta = ACT_META[act];
   const isPocso = act === 'pocso';
+  const women = isWomenAct(act);
   const paraNo = para?.no ?? sections.title.match(/(?:पैरा|धारा)\s*([\w-]+)/)?.[1] ?? '';
   const title = para?.t ?? sections.title.replace(/^(?:POCSO\s*)?(?:पैरा|धारा)\s*[\w-]+\s*[—-]\s*/, '');
-  const unitLabel = isPocso ? `POCSO ${meta.unit} ${paraNo}` : `${meta.unit} ${paraNo}`;
+  const isOverview = women && paraNo === '0';
+  const unitLabel = act === 'uppr'
+    ? `${meta.unit} ${paraNo}`
+    : isOverview ? `${meta.prefix} — एक नज़र में` : `${meta.prefix} ${sectionLabel(act, paraNo)}`;
 
   // Font size (persisted)
   useEffect(() => {
@@ -494,17 +603,19 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
 
   const onShare = useCallback(async () => {
     try {
-      // POCSO deals with child abuse: mark shared text confidential.
+      // POCSO / women Acts (abuse, harassment, trafficking): mark shared text confidential.
       const body = sectionsToPlainText(entry.title, sections);
-      const message = isPocso ? `गोपनीय — केवल विधिक/विभागीय उपयोग हेतु\n\n${body}` : body;
+      const message = meta.sensitive ? `${CONFIDENTIAL_PREFIX}\n\n${body}` : body;
       await Share.share({ title: entry.title, message: `${message}\n\n— via InvestSuite` });
     } catch (e) {
       logger.error('[RegulationViewer] share failed:', e);
     }
-  }, [entry.title, sections, isPocso]);
+  }, [entry.title, sections, meta.sensitive]);
 
   const copilotQuery = isPocso
     ? `POCSO धारा ${paraNo} क्या कहती है? (${title})`
+    : isOverview ? `${meta.prefix} (${meta.hindi}) एक नज़र में समझाइए`
+    : women ? `${meta.prefix} धारा ${paraNo} क्या कहती है? (${title})`
     : `UPPR पैरा ${paraNo} क्या कहता है? (${title})`;
 
   const renderPage = useCallback(({ item }: { item: TabKey }) => (
@@ -515,14 +626,14 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
       keyboardShouldPersistTaps="handled"
     >
       {item === 'original' ? <OriginalTab c={c} section={sections.original} fontSize={fontSize} onFont={changeFont} /> : null}
-      {item === 'simple' ? <SimpleTab c={c} isDark={isDark} section={sections.simple} updatesFirst={isPocso} /> : null}
-      {item === 'examples' ? <ExamplesTab c={c} section={sections.examples} /> : null}
+      {item === 'simple' ? <SimpleTab c={c} isDark={isDark} section={sections.simple} updatesFirst={act !== 'uppr'} /> : null}
+      {item === 'examples' ? <ExamplesTab c={c} isDark={isDark} section={sections.examples} overview={isOverview} /> : null}
       {item === 'related' ? (
         <RelatedTab c={c} isDark={isDark} section={sections.related} para={para} targets={targets} onLaw={onLaw} onOpen={onOpen} />
       ) : null}
       <NotesCard c={c} unit={meta.unit} note={note} status={noteStatus} onChange={onNote} onBlur={onNoteBlur} />
     </ScrollView>
-  ), [width, c, isDark, isPocso, meta.unit, sections, fontSize, changeFont, para, targets, onLaw, onOpen, note, noteStatus, onNote, onNoteBlur]);
+  ), [width, c, isDark, act, isOverview, meta.unit, sections, fontSize, changeFont, para, targets, onLaw, onOpen, note, noteStatus, onNote, onNoteBlur]);
 
   const navBtn = (id: string | null, dir: 'prev' | 'next') => (
     <Pressable
@@ -542,7 +653,7 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
     <View className="flex-1 bg-background">
       <AppHeader
         title={unitLabel}
-        subtitle={meta.name}
+        subtitle={women ? meta.hindi : meta.name}
         showBack
         actions={<HeaderIconBtn icon={Share2} label="शेयर" onPress={onShare} />}
       />
@@ -553,7 +664,10 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text numberOfLines={2} textBreakStrategy="simple" style={{ color: c.foreground, fontWeight: '800', fontSize: 15, lineHeight: 21 }}>{title}</Text>
           <Text numberOfLines={1} textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 11.5, marginTop: 2 }}>
-            {para ? `${isPocso ? '' : `भाग ${para.part} · `}अध्याय ${para.ch} — ${para.chT}` : sections.breadcrumb}
+            {para
+              ? women ? para.chT
+              : `${isPocso ? '' : `भाग ${para.part} · `}अध्याय ${para.ch} — ${para.chT}`
+              : sections.breadcrumb}
             {para && !para.done ? '  ·  केवल मूल पाठ' : ''}
           </Text>
         </View>

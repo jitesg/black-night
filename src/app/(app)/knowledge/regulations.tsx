@@ -1,15 +1,16 @@
 /**
- * Regulations hub (Tasks L35 / L36). One screen per Act, opened from its
- * card in the Law library (?act=uppr | ?act=pocso).
+ * Regulations hub (Tasks L35 / L36 / L37). One screen per Act, opened from its
+ * card in the Law library (?act=uppr | pocso | women | pwdva | posh | itpa | dowry | irwa).
  *  - UP Regulations: भाग (I–IV) → अध्याय → पैरा
  *  - POCSO: अध्याय (I–IX) → धारा, warning card, quick cards
+ *  - women: 5 Act cards → Act screen ('अधिनियम एक नज़र में' pinned, then धाराएँ)
  * Search by number / title / tags, "सिर्फ़ हिंदी तैयार" filter and
  * Hindi-ready progress from the sidecar.
  */
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { AlertTriangle, ChevronDown, ChevronRight, CheckCircle2, BookOpen, X } from 'lucide-react-native';
+import { AlertTriangle, ChevronDown, ChevronRight, CheckCircle2, BookOpen, Eye, X } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useColorScheme } from 'nativewind';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
@@ -18,7 +19,8 @@ import { THEME } from '@/lib/theme';
 import { getRegulationRows } from '@/lib/db/knowledgeRepo';
 import { getRegChapters, getRegIndex, getRegOrder, getRegProgress } from '@/lib/regulations/regIndex';
 import {
-  ACT_META, canonNo, searchParas, type RegAct, type RegPara, type RegSearchItem,
+  ACT_META, WOMEN_ACTS, canonNo, isWomenAct, parseAct, searchParas, sectionLabel,
+  type RegAct, type RegPara, type RegSearchItem,
 } from '@/lib/regulations/regCore';
 
 type Theme = (typeof THEME)['light'];
@@ -54,24 +56,28 @@ function shortTitle(rowTitle: string | undefined, fallback: string): string {
   return rowTitle.replace(/^(UPPR\s*पैरा|POCSO\s*धारा)\s*[\w-]+\s*[—-]\s*/i, '').trim() || fallback;
 }
 
-const ParaRow = memo(function ParaRow({ item, c, unit }: { item: ParaItem; c: Theme; unit: string }) {
+const ParaRow = memo(function ParaRow({ item, c, act }: { item: ParaItem; c: Theme; act: RegAct }) {
   const done = item.para.done;
+  const label = sectionLabel(act, item.no);
+  const overview = item.no === '0' && act !== 'uppr';
   return (
     <Pressable
       disabled={!item.available}
       onPress={() => router.push(`/(app)/knowledge/${item.id}` as never)}
       style={({ pressed }) => ({
         minHeight: 56, paddingVertical: 10, paddingHorizontal: 14, marginBottom: 6,
-        borderRadius: 14, backgroundColor: c.card, borderWidth: 1, borderColor: c.border,
+        borderRadius: 14, backgroundColor: overview ? '#9333EA14' : c.card, borderWidth: 1,
+        borderColor: overview ? '#9333EA55' : c.border,
         flexDirection: 'row', alignItems: 'center', gap: 10,
         opacity: !item.available ? 0.5 : pressed ? 0.7 : 1,
       })}
       accessibilityRole="button"
-      accessibilityLabel={`${unit} ${item.no} ${item.title}`}
+      accessibilityLabel={`${label} ${item.title}`}
     >
+      {overview ? <Eye size={18} color="#9333EA" /> : null}
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text numberOfLines={2} textBreakStrategy="simple" style={{ color: c.foreground, fontSize: 14.5, lineHeight: 20 }}>
-          <Text style={{ fontWeight: '800' }}>{unit} {item.no}</Text>
+          <Text style={{ fontWeight: '800', color: overview ? '#9333EA' : c.foreground }}>{label}</Text>
           <Text style={{ color: c.mutedForeground }}> · </Text>
           {item.title}
         </Text>
@@ -93,13 +99,83 @@ const ParaRow = memo(function ParaRow({ item, c, unit }: { item: ParaItem; c: Th
 });
 
 export default function RegulationsHubScreen() {
+  const params = useLocalSearchParams<{ act?: string }>();
+  // Which Act this screen lists (opened from its own card in the Law library).
+  if (params.act === 'women') return <WomenActsScreen />;
+  return <ActScreen act={parseAct(params.act)} />;
+}
+
+// ─── महिला संरक्षण कानून: 5 Act cards ─────────────────────────────────────────
+
+const WOMEN_COLOR = '#9333EA';
+
+function WomenActsScreen() {
+  const { colorScheme } = useColorScheme();
+  const c = THEME[colorScheme ?? 'light'];
+  const [available, setAvailable] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    let alive = true;
+    getRegulationRows()
+      .then((list) => { if (alive) setAvailable(new Set(list.map((r) => r.id))); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
+
+  const cards = WOMEN_ACTS.map((a) => {
+    const ids = getRegOrder(a);
+    return { act: a, meta: ACT_META[a], prog: getRegProgress(a), inApp: ids.filter((id) => available.has(id)).length };
+  });
+  const total = cards.reduce((n, x) => n + x.prog.total, 0);
+
+  return (
+    <View className="flex-1 bg-background">
+      <AppHeader title="महिला संरक्षण कानून" subtitle={`5 अधिनियम · ${total} धाराएँ`} showBack />
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 120 }}>
+        {cards.map(({ act, meta, prog, inApp }) => (
+          <Pressable
+            key={act}
+            onPress={() => router.push(`/(app)/knowledge/regulations?act=${act}` as never)}
+            className="bg-card border border-border rounded-2xl p-4 gap-2 active:opacity-70"
+            style={{ borderCurve: 'continuous', minHeight: 64 }}
+            accessibilityRole="button"
+            accessibilityLabel={meta.hindi}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <View style={{ width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: `${WOMEN_COLOR}15` }}>
+                <BookOpen size={22} color={WOMEN_COLOR} />
+              </View>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text textBreakStrategy="simple" style={{ color: c.foreground, fontSize: 15.5, fontWeight: '800' }}>{meta.hindi}</Text>
+                <Text numberOfLines={2} style={{ color: c.mutedForeground, fontSize: 12, marginTop: 2 }}>{meta.name}</Text>
+              </View>
+              <ChevronRight size={20} color={c.mutedForeground} />
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <View style={{ height: 24, paddingHorizontal: 10, borderRadius: 999, justifyContent: 'center', backgroundColor: `${WOMEN_COLOR}15` }}>
+                <Text textBreakStrategy="simple" style={{ color: WOMEN_COLOR, fontSize: 12, fontWeight: '700' }}>{prog.total} धाराएँ</Text>
+              </View>
+              <View style={{ height: 24, paddingHorizontal: 10, borderRadius: 999, justifyContent: 'center', backgroundColor: '#16A34A1F' }}>
+                <Text textBreakStrategy="simple" style={{ color: '#16A34A', fontSize: 12, fontWeight: '700' }}>हिंदी तैयार {prog.done}/{prog.total}</Text>
+              </View>
+              {inApp === 0 ? (
+                <Text style={{ color: c.mutedForeground, fontSize: 12, fontWeight: '600' }}>पाठ जल्द उपलब्ध</Text>
+              ) : null}
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
+// ─── One Act ─────────────────────────────────────────────────────────────────
+
+function ActScreen({ act }: { act: RegAct }) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const c = THEME[colorScheme ?? 'light'];
-  const params = useLocalSearchParams<{ act?: string }>();
-
-  // Which Act this screen lists (opened from its own card in the Law library).
-  const act: RegAct = params.act === 'pocso' ? 'pocso' : 'uppr';
+  const women = isWomenAct(act);
   const [rows, setRows] = useState<Map<string, { title: string; tags: string }>>(new Map());
   const [query, setQuery] = useState('');
   const [onlyReady, setOnlyReady] = useState(false);
@@ -143,10 +219,11 @@ export default function RegulationsHubScreen() {
       const row = rows.get(id);
       return {
         id, no: p.no, para: p, available: !!row,
-        title: shortTitle(row?.title, p.t), en: p.en, tags: row?.tags ?? '',
+        // Women Acts: the sidecar title is already clean ("Protection Officers की नियुक्ति").
+        title: women ? p.t : shortTitle(row?.title, p.t), en: p.en, tags: row?.tags ?? '',
       };
     });
-  }, [index, rows, act]);
+  }, [index, rows, act, women]);
 
   const filtered = useMemo(() => (onlyReady ? allItems.filter((x) => x.para.done) : allItems), [allItems, onlyReady]);
 
@@ -159,6 +236,8 @@ export default function RegulationsHubScreen() {
       const wanted = new Set(POCSO_QUICK.find((x) => x.key === quick)?.nos.map(canonNo) ?? []);
       return filtered.filter((x) => wanted.has(canonNo(x.no))).map((item) => ({ kind: 'para' as const, key: item.id, item }));
     }
+    // Women Acts: flat list in section order (overview row '0' comes first).
+    if (women) return filtered.map((item) => ({ kind: 'para' as const, key: item.id, item }));
     const out: ListRow[] = [];
     const chapters = getRegChapters(act);
     const pushChapters = (items: ParaItem[], part: string) => {
@@ -183,7 +262,7 @@ export default function RegulationsHubScreen() {
       if (partOpen) pushChapters(inPart, part);
     }
     return out;
-  }, [filtered, query, openParts, openChapters, act, quick]);
+  }, [filtered, query, openParts, openChapters, act, quick, women]);
 
   const toggle = useCallback((set: React.Dispatch<React.SetStateAction<Set<string>>>, key: string) => {
     set((prev) => {
@@ -195,7 +274,7 @@ export default function RegulationsHubScreen() {
   }, []);
 
   const renderItem = useCallback(({ item: row }: { item: ListRow }) => {
-    if (row.kind === 'para') return <ParaRow item={row.item} c={c} unit={meta.unit} />;
+    if (row.kind === 'para') return <ParaRow item={row.item} c={c} act={act} />;
     const isPart = row.kind === 'part';
     const Icon = row.open ? ChevronDown : ChevronRight;
     const indented = !isPart && act === 'uppr';
@@ -220,7 +299,7 @@ export default function RegulationsHubScreen() {
         </Text>
       </Pressable>
     );
-  }, [c, isDark, toggle, meta.unit, act]);
+  }, [c, isDark, toggle, act]);
 
 
 
@@ -272,15 +351,19 @@ export default function RegulationsHubScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title={meta.name}
-        subtitle={`${prog.total} ${act === 'pocso' ? 'धाराएँ' : 'पैरा'} · हिंदी तैयार: ${prog.done} / ${prog.total}`}
+        title={women ? meta.hindi : meta.name}
+        subtitle={`${prog.total} ${act === 'uppr' ? 'पैरा' : 'धाराएँ'} · हिंदी तैयार: ${prog.done} / ${prog.total}`}
         showBack
       />
       <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, gap: 10, borderBottomWidth: 1, borderBottomColor: c.border }}>
         <SearchBar
           value={query}
           onChangeText={setQuery}
-          placeholder={act === 'pocso' ? 'धारा नंबर या शब्द (6, धारा 19, 42A, रिपोर्टिंग…)' : 'पैरा नंबर या शब्द (97, पैरा 154, मालखाना…)'}
+          placeholder={
+            act === 'pocso' ? 'धारा नंबर या शब्द (6, धारा 19, 42A, रिपोर्टिंग…)'
+            : women ? 'धारा नंबर या शब्द (12, धारा 31, 8B, शेल्टर, ICC…)'
+            : 'पैरा नंबर या शब्द (97, पैरा 154, मालखाना…)'
+          }
           variant="light"
           returnKeyType="search"
         />
@@ -300,7 +383,7 @@ export default function RegulationsHubScreen() {
             </Text>
           </Pressable>
           <Text style={{ flex: 1, textAlign: 'right', color: c.mutedForeground, fontSize: 12 }}>
-            {allItems.filter((x) => x.available).length} {act === 'pocso' ? 'धाराएँ' : 'पैरा'} ऐप में उपलब्ध
+            {allItems.filter((x) => x.available).length} {act === 'uppr' ? 'पैरा' : 'धाराएँ'} ऐप में उपलब्ध
           </Text>
         </View>
       </View>

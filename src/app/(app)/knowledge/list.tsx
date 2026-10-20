@@ -33,7 +33,8 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import { getRegProgress } from '@/lib/regulations/regIndex';
+import { getRegProgress, getWomenProgress } from '@/lib/regulations/regIndex';
+import { isSensitiveId } from '@/lib/regulations/regCore';
 
 export const KNOWLEDGE_DIAG_BUILD = 'L18D';
 
@@ -176,8 +177,8 @@ function RecordCard({
         </View>
       </View>
 
-      {/* Description (POCSO rows: title only — sensitive content) */}
-      {item.description && !item.id.startsWith('sys-reg-pocso-') ? (
+      {/* Description (POCSO / women-Act rows: title only — sensitive content) */}
+      {item.description && !isSensitiveId(item.id) ? (
         highlight
           ? <HighlightText text={getEntryPreviewText(stripHtmlTags(item.description))} query={query} style={{ fontSize: 12, lineHeight: 16, color: 'inherit' }} numberOfLines={2} typoTolerant={typoTolerant} />
           : <Text style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2}>{getEntryPreviewText(stripHtmlTags(item.description))}</Text>
@@ -226,6 +227,7 @@ function RegulationsEntryCard() {
   const cards = [
     { act: 'uppr', title: 'UP Police Regulations', prog: getRegProgress('uppr'), unit: 'पैरा', color: '#4F46E5' },
     { act: 'pocso', title: 'POCSO Act 2012', prog: getRegProgress('pocso'), unit: 'धाराएँ', color: '#BE185D' },
+    { act: 'women', title: 'महिला संरक्षण कानून', prog: getWomenProgress(), unit: 'धाराएँ', color: '#9333EA' },
   ];
   return (
     <View className="gap-3">

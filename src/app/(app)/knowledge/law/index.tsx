@@ -3,13 +3,13 @@ import { View, Text, Pressable, FlatList, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
-import { BookOpen, Scale, Shield, FileCheck2, ChevronRight, Bookmark } from 'lucide-react-native';
+import { BookOpen, Scale, Shield, FileCheck2, ChevronRight, Bookmark, HeartHandshake } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { THEME } from '@/lib/theme';
 import { ACTS, searchLaw, type ActId, type LawSearchResult } from '@/lib/law/lawLibrary';
 import { hasSimple } from '@/lib/law/simpleExplain';
-import { getRegProgress } from '@/lib/regulations/regIndex';
+import { getRegProgress, getWomenProgress } from '@/lib/regulations/regIndex';
 
 export default function LawLibraryIndexScreen() {
   const { t, i18n } = useTranslation();
@@ -64,8 +64,9 @@ export default function LawLibraryIndexScreen() {
   const isSearchActive = query.trim().length > 0;
   const regProg = getRegProgress('uppr');
   const pocsoProg = getRegProgress('pocso');
+  const womenProg = getWomenProgress();
   const regCards: {
-    act: 'uppr' | 'pocso'; icon: typeof Scale; color: string; short: string; badge: string;
+    act: 'uppr' | 'pocso' | 'women'; icon: typeof Scale; color: string; short: string; badge: string;
     citation: string; nameHi: string; nameEn: string; count: string; done: number;
   }[] = [
     {
@@ -80,13 +81,19 @@ export default function LawLibraryIndexScreen() {
       nameHi: 'लैंगिक अपराधों से बालकों का संरक्षण अधिनियम, 2012', nameEn: 'Protection of Children from Sexual Offences Act, 2012',
       count: `${pocsoProg.total} धाराएँ`, done: pocsoProg.done,
     },
+    {
+      act: 'women', icon: HeartHandshake, color: '#9333EA', short: 'महिला कानून', badge: '5 अधिनियम',
+      citation: 'DV Act · POSH · ITPA · दहेज प्रतिषेध · IRWA',
+      nameHi: 'महिला संरक्षण कानून', nameEn: 'Women-protection Acts',
+      count: `${womenProg.total} धाराएँ`, done: womenProg.done,
+    },
   ];
 
   return (
     <View className="flex-1 bg-background">
       <AppHeader
         title={t('knowledge.law.title', 'विधि पुस्तकालय')}
-        subtitle="BNS · BNSS · BSA · UPPR · POCSO"
+        subtitle="BNS · BNSS · BSA · UPPR · POCSO · महिला कानून"
         showBack
       />
 
@@ -353,7 +360,7 @@ export default function LawLibraryIndexScreen() {
             })}
           </View>
 
-          {/* UP Police Regulations + POCSO Act — same card style as BNS/BNSS/BSA */}
+          {/* UP Police Regulations, POCSO Act, women Acts — same card style as BNS/BNSS/BSA */}
           <View className="gap-3">
             {regCards.map((rc) => {
               const Icon = rc.icon;

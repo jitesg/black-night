@@ -20,7 +20,8 @@ import sopSeed2Data from '../../../assets/seed/sop_seed_2.json';
 import formatsSeedData from '../../../assets/seed/formats_seed.json';
 import knowledgeSeedData from '../../../assets/seed/knowledge_seed.json';
 import { REG_SEED_FILES } from '@/lib/regulations/regSeedFiles';
-import { getRegIndex, getRegIndexError } from '@/lib/regulations/regIndex';
+import { getRegIndex, getRegIndexError, getRegProgress } from '@/lib/regulations/regIndex';
+import { ACT_META, WOMEN_ACTS, actOfId, isWomenAct } from '@/lib/regulations/regCore';
 import { CIRCULAR_SEED_FILES } from '@/lib/db/seedManager';
 import {
   FORMATS_FILE_TOKEN,
@@ -240,17 +241,25 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
   log('--- 2b) UP POLICE REGULATIONS ---');
   try {
     const idx = getRegIndex();
-    log(`Sidecar reg_index.json: ${idx ? `${Object.keys(idx.paras).length} paras, ${idx.chapters.length} chapters` : `NOT LOADED (${getRegIndexError() ?? 'unknown'})`}`);
+    log(`Sidecars (reg + pocso + women): ${idx ? `${Object.keys(idx.paras).length} paras, ${idx.chapters.length} chapters` : `NOT LOADED (${getRegIndexError() ?? 'unknown'})`}`);
     const regRows = await dbGetAllAsync<{ id: string }>(
       `SELECT id FROM knowledge_entries WHERE deleted_at IS NULL AND (content_type = 'regulation' OR id LIKE 'sys-reg-%')`
     ).catch(() => [] as { id: string }[]);
     const withDone = regRows.filter((r) => idx?.paras[r.id]?.done).length;
     const missing = regRows.filter((r) => !idx?.paras[r.id]).map((r) => r.id);
-    const pocsoRows = regRows.filter((r) => r.id.startsWith('sys-reg-pocso-'));
-    const upprRows = regRows.filter((r) => !r.id.startsWith('sys-reg-pocso-'));
-    log(`Regulation rows in DB: ${regRows.length} (UP Regulations ${upprRows.length}, POCSO ${pocsoRows.length})`);
+    const pocsoRows = regRows.filter((r) => actOfId(r.id) === 'pocso');
+    const upprRows = regRows.filter((r) => actOfId(r.id) === 'uppr');
+    const womenRows = regRows.filter((r) => isWomenAct(actOfId(r.id)));
+    log(`Regulation rows in DB: ${regRows.length} (UP Regulations ${upprRows.length}, POCSO ${pocsoRows.length}, women Acts ${womenRows.length})`);
     log(`  UP Regulations with done=true: ${upprRows.filter((r) => idx?.paras[r.id]?.done).length}`);
     log(`  POCSO rows loaded: ${pocsoRows.length} (expected 47), done=true: ${pocsoRows.filter((r) => idx?.paras[r.id]?.done).length} (expected 47)`);
+    // Women-protection Acts (L37): rows per Act + sidecar done counts.
+    log(`  महिला संरक्षण कानून (women_index.json):`);
+    for (const a of WOMEN_ACTS) {
+      const rows = womenRows.filter((r) => actOfId(r.id) === a);
+      const prog = getRegProgress(a);
+      log(`    ${a}: rows ${rows.length} (expected ${ACT_META[a].expected ?? '?'}${a === 'pwdva' || a === 'posh' ? '' : ' after L37B'}), sidecar done ${prog.done}/${prog.total}${prog.done === prog.total ? '' : ' ⚠ not all done'}`);
+    }
     log(`  with sidecar done=true: ${withDone}`);
     log(`  sidecar entry missing: ${missing.length}${missing.length ? ` (${missing.slice(0, 10).join(', ')}${missing.length > 10 ? ' …' : ''})` : ''}`);
     for (const f of REG_SEED_FILES) {

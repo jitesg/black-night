@@ -654,6 +654,15 @@ export function AICopilotModal({ visible, onClose, activeFirId, initialQuery }: 
         setTimeout(() => { router.push('/(app)/knowledge/regulations' as any); }, 150);
         return;
       }
+      // Women Acts (L37): "DV Act धारा 12 खोलें", "POSH Act एक नज़र में खोलें".
+      const actOpen = action.trim().match(/^(DV Act|POSH Act|ITPA|IRWA|दहेज प्रतिषेध अधिनियम)\s*(?:धारा\s*([0-9]{1,3}[A-Za-z]?)|एक नज़र में)\s*खोलें$/i);
+      if (actOpen) {
+        const prefix: Record<string, string> = { 'dv act': 'pwdva', 'posh act': 'posh', itpa: 'itpa', irwa: 'irwa', 'दहेज प्रतिषेध अधिनियम': 'dowry' };
+        const id = `sys-reg-${prefix[actOpen[1].toLowerCase()]}-${(actOpen[2] ?? '0').toLowerCase()}`;
+        onClose();
+        setTimeout(() => { router.push(`/(app)/knowledge/${id}` as any); }, 150);
+        return;
+      }
       const paraOpen = action.trim().match(/^(POCSO\s*)?(पैरा|धारा)\s*([0-9]{1,3}(?:-?[A-Za-z])?)\s*खोलें$/i);
       if (paraOpen) {
         const isPocso = !!paraOpen[1] || paraOpen[2] === 'धारा';

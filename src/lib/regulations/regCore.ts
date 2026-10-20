@@ -148,17 +148,38 @@ export function parseSimpleItems(body: string): SimpleItem[] {
 
 // ─── Section 3: examples ────────────────────────────────────────────────────
 
-export interface RegExample { label: string; scenario: string }
+export interface RegExample {
+  label: string;
+  scenario: string;
+  /** Number from a numbered list ("1. …"), when present. */
+  num?: number;
+  /** "[वास्तविक मामला]" — a real decided case (else an illustrative scenario). */
+  real: boolean;
+}
 
+const REAL_CASE_TAG = /\[\s*वास्तविक\s*मामला\s*\]\s*/;
+
+/**
+ * Example blocks are separated by blank lines. First line ending with ":" is
+ * the label. L37 rows are numbered ("1. [वास्तविक मामला] label:"); the number
+ * and the real-case tag are taken off the label.
+ */
 export function parseExamples(body: string): RegExample[] {
   const blocks = body.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
   return blocks.map((b) => {
     const [first, ...rest] = b.split('\n');
-    const f = first.trim();
+    let f = first.trim();
+    let num: number | undefined;
+    const nm = /^(\d{1,3})\s*[.)]\s+/.exec(f);
+    if (nm) { num = Number(nm[1]); f = f.slice(nm[0].length); }
+    const real = REAL_CASE_TAG.test(f);
+    f = f.replace(REAL_CASE_TAG, '').trim();
     if (rest.length > 0 && /[:：]$/.test(f)) {
-      return { label: f.replace(/[:：]$/, '').trim(), scenario: rest.join('\n').trim() };
+      return { label: f.replace(/[:：]$/, '').trim(), scenario: rest.join('\n').trim(), num, real };
     }
-    return { label: '', scenario: b };
+    // No label line: keep the whole block as the scenario (minus number/tag).
+    const scenario = nm || real ? [f, ...rest].join('\n').trim() : b;
+    return { label: '', scenario, num, real };
   });
 }
 
@@ -211,9 +232,9 @@ export function extractParaNo(query: string): string | null {
 
 /** Row id for a para / section number ("104-A" → sys-reg-up-104-a, POCSO "42A" → sys-reg-pocso-42a). */
 export function paraIdFromNo(no: string, act: RegAct = 'uppr'): string {
-  return act === 'pocso'
-    ? `sys-reg-pocso-${canonNo(no).toLowerCase()}`
-    : `sys-reg-up-${no.toLowerCase()}`;
+  return act === 'uppr'
+    ? `sys-reg-up-${no.toLowerCase()}`
+    : `${ACT_META[act].idPrefix}${canonNo(no).toLowerCase()}`;
 }
 
 /** "42-A" / "42 a" / "42A" → "42A" (for comparing numbers across styles). */
@@ -221,18 +242,69 @@ export function canonNo(no: string): string {
   return no.toUpperCase().replace(/[\s-]/g, '');
 }
 
-// ─── Acts (UP Police Regulations, POCSO Act …) ──────────────────────────────
+// ─── Acts (UP Police Regulations, POCSO Act, women-protection Acts …) ────────
 
-export type RegAct = 'uppr' | 'pocso';
+export type RegAct = 'uppr' | 'pocso' | 'pwdva' | 'posh' | 'itpa' | 'dowry' | 'irwa';
 
-export function actOfId(id: string): RegAct {
-  return id.startsWith('sys-reg-pocso-') ? 'pocso' : 'uppr';
+/** The five "महिला संरक्षण कानून" Acts (L37), in display order. */
+export const WOMEN_ACTS: RegAct[] = ['pwdva', 'posh', 'itpa', 'dowry', 'irwa'];
+
+export function isWomenAct(act: RegAct): boolean {
+  return WOMEN_ACTS.includes(act);
 }
 
-export const ACT_META: Record<RegAct, { unit: string; prefix: string; name: string; idPrefix: string }> = {
-  uppr: { unit: 'पैरा', prefix: 'UPPR', name: 'UP Police Regulations', idPrefix: 'sys-reg-up-' },
-  pocso: { unit: 'धारा', prefix: 'POCSO', name: 'POCSO Act 2012', idPrefix: 'sys-reg-pocso-' },
+export interface ActMeta {
+  /** "पैरा" (UPPR) or "धारा" (Acts). */
+  unit: string;
+  /** Short cite prefix: "UPPR पैरा 12", "DV Act धारा 12". */
+  prefix: string;
+  name: string;
+  /** Hindi Act name (cards / headers). */
+  hindi: string;
+  year?: string;
+  idPrefix: string;
+  /** Sidecar chapter `ch` for this Act (women Acts: one chapter per Act). */
+  ch?: string;
+  /** Sensitive subject: title-only previews, confidential share prefix. */
+  sensitive: boolean;
+  /** Rows expected once all data runs are in (diagnostics). */
+  expected?: number;
+}
+
+export const ACT_META: Record<RegAct, ActMeta> = {
+  uppr: { unit: 'पैरा', prefix: 'UPPR', name: 'UP Police Regulations', hindi: 'यूपी पुलिस रेगुलेशन', idPrefix: 'sys-reg-up-', sensitive: false },
+  pocso: { unit: 'धारा', prefix: 'POCSO', name: 'POCSO Act 2012', hindi: 'पॉक्सो अधिनियम 2012', year: '2012', idPrefix: 'sys-reg-pocso-', sensitive: true },
+  pwdva: { unit: 'धारा', prefix: 'DV Act', name: 'Protection of Women from Domestic Violence Act, 2005', hindi: 'घरेलू हिंसा अधिनियम 2005', year: '2005', idPrefix: 'sys-reg-pwdva-', ch: 'DV Act 2005', sensitive: true, expected: 38 },
+  posh: { unit: 'धारा', prefix: 'POSH Act', name: 'Sexual Harassment of Women at Workplace Act, 2013', hindi: 'कार्यस्थल यौन उत्पीड़न अधिनियम 2013', year: '2013', idPrefix: 'sys-reg-posh-', ch: 'POSH Act 2013', sensitive: true, expected: 31 },
+  itpa: { unit: 'धारा', prefix: 'ITPA', name: 'Immoral Traffic (Prevention) Act, 1956', hindi: 'अनैतिक व्यापार (निवारण) अधिनियम 1956', year: '1956', idPrefix: 'sys-reg-itpa-', ch: 'ITPA 1956', sensitive: true, expected: 30 },
+  dowry: { unit: 'धारा', prefix: 'दहेज प्रतिषेध अधिनियम', name: 'Dowry Prohibition Act, 1961', hindi: 'दहेज प्रतिषेध अधिनियम 1961', year: '1961', idPrefix: 'sys-reg-dowry-', ch: 'Dowry Prohibition Act 1961', sensitive: true, expected: 14 },
+  irwa: { unit: 'धारा', prefix: 'IRWA', name: 'Indecent Representation of Women (Prohibition) Act, 1986', hindi: 'स्त्री अशिष्ट रूपण (प्रतिषेध) अधिनियम 1986', year: '1986', idPrefix: 'sys-reg-irwa-', ch: 'IRWA 1986', sensitive: true, expected: 11 },
 };
+
+const ACT_ORDER: RegAct[] = ['pocso', 'pwdva', 'posh', 'itpa', 'dowry', 'irwa'];
+
+export function actOfId(id: string): RegAct {
+  for (const a of ACT_ORDER) if (id.startsWith(ACT_META[a].idPrefix)) return a;
+  return 'uppr';
+}
+
+/** Parses an "act" route param; unknown values fall back to UPPR. */
+export function parseAct(v: unknown): RegAct {
+  return typeof v === 'string' && v in ACT_META ? (v as RegAct) : 'uppr';
+}
+
+/** Rows of a sensitive Act (POCSO, women Acts): title only in lists/previews. */
+export function isSensitiveId(id: string | null | undefined): boolean {
+  return !!id && id.startsWith('sys-reg-') && ACT_META[actOfId(id)].sensitive;
+}
+
+export const CONFIDENTIAL_PREFIX = 'गोपनीय — केवल विधिक/विभागीय उपयोग हेतु';
+
+/** "धारा 12", "पैरा 97", and "अधिनियम एक नज़र में" for a women-Act overview row (no 0). */
+export function sectionLabel(act: RegAct, no: string): string {
+  if (no === '0' && act !== 'uppr') return 'अधिनियम एक नज़र में';
+  return `${ACT_META[act].unit} ${no}`;
+}
 
 /** Section order: 1, 2, …, 42, 42A, 43 (letters after the plain number). */
 export function compareSectionNo(a: string, b: string): number {
@@ -265,7 +337,7 @@ export function joinSidecar(index: RegIndexData | null, rowId: string): RegPara 
 
 /**
  * Row ids of one Act in reading order. UP Regulations keep the book order of
- * the sidecar; POCSO is sorted by section number (… 42, 42A, 43 …).
+ * the sidecar; Acts (POCSO, women Acts) are sorted by section number (… 42, 42A, 43 …).
  * Without `act`, all ids in sidecar order.
  */
 export function orderedIds(index: RegIndexData | null, act?: RegAct): string[] {
@@ -273,9 +345,10 @@ export function orderedIds(index: RegIndexData | null, act?: RegAct): string[] {
   const ids = Object.keys(index.paras);
   if (!act) return ids;
   const mine = ids.filter((id) => actOfId(id) === act);
-  return act === 'pocso'
-    ? mine.sort((x, y) => compareSectionNo(index.paras[x].no, index.paras[y].no))
-    : mine;
+  // UPPR keeps the book order; Acts sort by section (0 overview first, 4 < 4A < 5).
+  return act === 'uppr'
+    ? mine
+    : mine.sort((x, y) => compareSectionNo(index.paras[x].no, index.paras[y].no));
 }
 
 /** Previous / next row inside the same Act. */
@@ -318,6 +391,14 @@ const QUERY_SYNONYMS: [RegExp, string][] = [
   [/विशेष\s*न्यायालय|स्पेशल\s*कोर्ट/i, 'special court विशेष न्यायालय'],
   [/सज़ा|सजा/i, 'punishment सजा'],
   [/मीडिया/i, 'media मीडिया'],
+  // Women-protection Acts (L37)
+  [/शेल्टर|आश्रय/i, 'shelter'],
+  [/संरक्षण\s*अधिकारी|प्रोटेक्शन\s*ऑफिसर/i, 'protection officer'],
+  [/\bicc\b|आंतरिक\s*(शिकायत\s*)?समिति/i, 'internal complaints committee icc'],
+  [/\blcc\b|स्थानीय\s*समिति/i, 'local committee'],
+  [/brothel|कोठा|वेश्यालय/i, 'brothel कोठा'],
+  [/दहेज\s*मृत्यु|dowry\s*death/i, '304b'],
+  [/भरण[-\s]*पोषण|maintenance/i, 'maintenance monetary'],
 ];
 
 /** Adds heading words for common Hindi query words. */
@@ -332,7 +413,7 @@ export function searchParas(items: RegSearchItem[], query: string, limit = 50, m
   if (!q) return items.slice(0, limit);
   const paraNo = extractParaNo(query);
   const scored: { item: RegSearchItem; score: number }[] = [];
-  const tokens = norm(expandQuery(query)).split(' ').filter((t) => t.length > 1 && !/^(पैरा|para|reg|regulation|uppr|धारा|section|pocso|पॉक्सो|का|की|के|में|है|क्या)$/.test(t));
+  const tokens = norm(expandQuery(query)).split(' ').filter((t) => t.length > 1 && !/^(पैरा|para|reg|regulation|uppr|धारा|section|pocso|पॉक्सो|act|अधिनियम|का|की|के|में|है|क्या)$/.test(t));
   for (const item of items) {
     let score = 0;
     if (paraNo) {
@@ -347,9 +428,9 @@ export function searchParas(items: RegSearchItem[], query: string, limit = 50, m
     const hay = norm(`${item.title} ${item.en ?? ''} ${item.tags ?? ''}`);
     if (hay.includes(q)) score += 120;
     for (const t of tokens) {
-      // Latin words must match whole words ("fir" ≠ "firing").
+      // Latin words must match whole words ("fir" ≠ "firing"); a plural "s" is fine ("officer" = "officers").
       const hit = /^[a-z0-9-]+$/.test(t)
-        ? new RegExp(`(^|[^a-z0-9])${t.replace(/[-]/g, '\\-')}([^a-z0-9]|$)`).test(hay)
+        ? new RegExp(`(^|[^a-z0-9])${t.replace(/[-]/g, '\\-')}s?([^a-z0-9]|$)`).test(hay)
         : hay.includes(t);
       if (hit) score += 20;
     }

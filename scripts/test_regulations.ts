@@ -222,3 +222,100 @@ test('POCSO: sidecar merge + seed rows + search', async () => {
   assert.ok(searchParas(pitems, 'पोर्नोग्राफी').some((x) => x.id === 'sys-reg-pocso-13'));
   assert.ok(searchParas(pitems, 'special court').some((x) => x.id === 'sys-reg-pocso-28'));
 });
+
+// ── L37A: women-protection Acts ─────────────────────────────────────────────
+
+import {
+  compareSectionNo, mergeIndexes, actOfId, sectionLabel, isSensitiveId, WOMEN_ACTS,
+} from '../src/lib/regulations/regCore.ts';
+
+const readJson = <T,>(rel: string): T => JSON.parse(readFileSync(new URL(rel, import.meta.url), 'utf8')) as T;
+const womenIndex = readJson<RegIndexData>('../assets/reg/women_index.json');
+const pocsoIndex = readJson<RegIndexData>('../assets/reg/pocso_index.json');
+
+test('women: section sort order', () => {
+  const sortNos = (a: string[]) => [...a].sort(compareSectionNo);
+  assert.deepEqual(sortNos(['9', '8B', '4A', '5', '8', '4', '8A']), ['4', '4A', '5', '8', '8A', '8B', '9']);
+  assert.deepEqual(sortNos(['3', '2A', '2']), ['2', '2A', '3']);
+  assert.deepEqual(sortNos(['11', '10A', '9']), ['9', '10A', '11']);
+  assert.deepEqual(sortNos(['1', '0', '12']), ['0', '1', '12']);
+});
+
+test('women: sidecar triple-merge keeps every row and orders each Act', () => {
+  const all = mergeIndexes(index, pocsoIndex, womenIndex);
+  const n = (d: RegIndexData) => Object.keys(d.paras).length;
+  assert.equal(n(all), n(index) + n(pocsoIndex) + n(womenIndex));
+  assert.equal(n(womenIndex), 124);
+  const counts = Object.fromEntries(WOMEN_ACTS.map((a) => [a, orderedIds(all, a).length]));
+  assert.deepEqual(counts, { pwdva: 38, posh: 31, itpa: 30, dowry: 14, irwa: 11 });
+  const itpa = orderedIds(all, 'itpa').map((id) => all.paras[id].no);
+  assert.equal(itpa[0], '0');
+  assert.ok(itpa.indexOf('2A') === itpa.indexOf('2') + 1);
+  assert.ok(itpa.indexOf('10A') === itpa.indexOf('9') + 1);
+  const dowry = orderedIds(all, 'dowry').map((id) => all.paras[id].no);
+  assert.deepEqual(dowry.slice(dowry.indexOf('8'), dowry.indexOf('8') + 4), ['8', '8A', '8B', '9']);
+  // Prev/next stay inside the Act
+  assert.equal(neighbours(all, 'sys-reg-pwdva-0').prev, null);
+  assert.equal(neighbours(all, 'sys-reg-pwdva-37').next, null);
+  assert.equal(neighbours(all, 'sys-reg-posh-0').next, 'sys-reg-posh-1');
+  assert.equal(progress(all, 'pwdva').done, 38);
+  // Existing Acts unchanged
+  assert.equal(orderedIds(all, 'uppr').length, n(index));
+  assert.equal(orderedIds(all, 'pocso').length, n(pocsoIndex));
+});
+
+test('women: ids, labels, sensitivity', () => {
+  assert.equal(actOfId('sys-reg-pwdva-12'), 'pwdva');
+  assert.equal(actOfId('sys-reg-dowry-8b'), 'dowry');
+  assert.equal(actOfId('sys-reg-up-97'), 'uppr');
+  assert.equal(paraIdFromNo('8B', 'dowry'), 'sys-reg-dowry-8b');
+  assert.equal(paraIdFromNo('12', 'pwdva'), 'sys-reg-pwdva-12');
+  assert.equal(sectionLabel('pwdva', '0'), 'अधिनियम एक नज़र में');
+  assert.equal(sectionLabel('posh', '4'), 'धारा 4');
+  assert.equal(sectionLabel('uppr', '97'), 'पैरा 97');
+  assert.ok(isSensitiveId('sys-reg-posh-4'));
+  assert.ok(isSensitiveId('sys-reg-pocso-4'));
+  assert.ok(!isSensitiveId('sys-reg-up-97'));
+});
+
+test('women: numbered example parser with real-case badge', () => {
+  const ex = parseExamples('1. [वास्तविक मामला] समय-सीमा का तर्क:\nKamatchi … (SC 2022)\n\n2. PO द्वारा आवेदन:\nPO ने Form II भरा।\n\n10. [वास्तविक मामला] 482 से चुनौती:\nSuman Mishra …');
+  assert.equal(ex.length, 3);
+  assert.deepEqual([ex[0].num, ex[0].real, ex[0].label], [1, true, 'समय-सीमा का तर्क']);
+  assert.deepEqual([ex[1].num, ex[1].real, ex[1].label], [2, false, 'PO द्वारा आवेदन']);
+  assert.equal(ex[1].scenario, 'PO ने Form II भरा।');
+  assert.deepEqual([ex[2].num, ex[2].real], [10, true]);
+  // Old unnumbered style unchanged
+  const old = parseExamples('रात में सूचना:\nकुछ हुआ');
+  assert.deepEqual([old[0].label, old[0].num, old[0].real], ['रात में सूचना', undefined, false]);
+});
+
+test('women: seed rows parse, numbered examples present, search', () => {
+  for (const f of ['women_seed_pwdva', 'women_seed_posh']) {
+    const rows = readJson<typeof seed>(`../assets/seed/${f}.json`).knowledge;
+    assert.equal(rows.length, f.endsWith('pwdva') ? 38 : 31);
+    for (const r of rows) {
+      assert.equal(r.content_type, 'regulation', r.id);
+      assert.equal(r.category, 'Law', r.id);
+      assert.ok(womenIndex.paras[r.id], `sidecar ${r.id}`);
+      const s = parseRegSections(r.description);
+      assert.equal(s.examples.pending, false, r.id);
+      const ex = parseExamples(s.examples.body);
+      // Admin sections carry a one-line "no example needed" note instead.
+      const noteOnly = ex.length === 1 && ex[0].num === undefined && /उदाहरण की आवश्यकता नहीं/.test(ex[0].scenario);
+      assert.ok(noteOnly || (ex.length >= 1 && ex.every((e) => e.num !== undefined)), r.id);
+    }
+    const ov = parseExamples(parseRegSections(rows[0].description).examples.body);
+    assert.ok(ov.length >= 10, `${f} overview examples`);
+    assert.ok(ov.some((e) => e.real) && ov.some((e) => !e.real));
+  }
+  const items: RegSearchItem[] = Object.entries(womenIndex.paras).map(([id, p]) => ({ id, no: p.no, title: p.t, en: p.en }));
+  const dv = items.filter((i) => actOfId(i.id) === 'pwdva');
+  assert.equal(searchParas(dv, 'धारा 31')[0].id, 'sys-reg-pwdva-31');
+  assert.equal(searchParas(dv, '12')[0].id, 'sys-reg-pwdva-12');
+  assert.equal(searchParas(items.filter((i) => actOfId(i.id) === 'dowry'), '8B')[0].id, 'sys-reg-dowry-8b');
+  assert.equal(searchParas(dv, 'शेल्टर')[0].id, 'sys-reg-pwdva-6');
+  assert.equal(searchParas(dv, 'संरक्षण अधिकारी')[0].id.startsWith('sys-reg-pwdva-'), true);
+  assert.equal(searchParas(items.filter((i) => actOfId(i.id) === 'posh'), 'ICC')[0].id, 'sys-reg-posh-4');
+  assert.ok(searchParas(items.filter((i) => actOfId(i.id) === 'itpa'), 'brothel').length >= 2);
+});
