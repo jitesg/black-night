@@ -1,7 +1,7 @@
 /// <reference types="expo/types/metro-require" />
 /**
  * regSeedFiles.ts — every assets/seed/reg_seed_<n>.json, pocso_seed*.json and
- * women_seed_<act>.json, found at build time.
+ * women_seed_<act>.json and cases_seed_<n>.json, found at build time.
  *
  * Metro's require.context bundles all files matching the pattern, so later
  * data runs (L36+) only need to drop reg_seed_2.json, reg_seed_3.json … into
@@ -33,7 +33,7 @@ export interface RegSeedFile {
   error?: string;
 }
 
-// reg_seed_1, reg_seed_2 … first, then pocso_seed*, then women_seed_* (by Act).
+// reg_seed_1, reg_seed_2 … first, then pocso_seed*, women_seed_* (by Act), cases_seed_<n>.
 const WOMEN_FILE_ORDER = ['pwdva', 'posh', 'itpa', 'dowry', 'irwa'];
 function fileNumber(name: string): number {
   const m = /reg_seed_(\d+)\.json$/.exec(name);
@@ -45,13 +45,15 @@ function fileNumber(name: string): number {
     const i = WOMEN_FILE_ORDER.indexOf(w[1]);
     return 20000 + (i < 0 ? 99 : i);
   }
+  const c = /cases_seed_(\d+)\.json$/.exec(name);
+  if (c) return 30000 + Number(c[1]);
   return 0;
 }
 
 function loadRegSeedFiles(): RegSeedFile[] {
   let ctx: { keys(): string[]; (id: string): unknown };
   try {
-    ctx = require.context('../../../assets/seed', false, /^\.\/(reg_seed_\d+|pocso_seed(_\d+)?|women_seed_[a-z0-9_]+)\.json$/);
+    ctx = require.context('../../../assets/seed', false, /^\.\/(reg_seed_\d+|pocso_seed(_\d+)?|women_seed_[a-z0-9_]+|cases_seed_\d+)\.json$/);
   } catch (e) {
     console.warn('[regSeedFiles] require.context unavailable:', e);
     return [];

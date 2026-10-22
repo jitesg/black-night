@@ -273,6 +273,23 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
   }
   log('');
 
+  // ── 2d) न्यायिक निर्णय (पुलिस) — case notes (L39) ──────────────────────
+  log('--- 2d) न्यायिक निर्णय (पुलिस) ---');
+  try {
+    const caseRows = await dbGetAllAsync<{ id: string }>(
+      `SELECT id FROM knowledge_entries WHERE deleted_at IS NULL AND (content_type = 'case_note' OR id LIKE 'sys-case-%')`
+    ).catch(() => [] as { id: string }[]);
+    const cidx = getRegIndex();
+    const cparas = Object.keys(cidx?.paras ?? {}).filter((id) => id.startsWith('sys-case-')).length;
+    const cch = (cidx?.chapters ?? []).filter((c) => c.part === 'CASE').length;
+    log(`case_note rows: ${caseRows.length} (expected 41 now, 61 after cases_seed_3)`);
+    log(`cases_index paras: ${cparas} (expected 61), chapters: ${cch} (expected 18)`);
+    log(`  rows without a sidecar entry: ${caseRows.filter((r) => !cidx?.paras[r.id]).length}`);
+  } catch (e: any) {
+    log(`Case notes diagnostics error: ${e?.message || String(e)}`);
+  }
+  log('');
+
   // ── 2c) BNS संदर्भ (Delhi Police BNS Handbook) ───────────────────────────
   log('--- 2c) BNS संदर्भ ---');
   try {

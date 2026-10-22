@@ -770,6 +770,14 @@ export async function deleteDevKnowledge(id: string): Promise<void> {
  * UP Police Regulations rows (content_type 'regulation'), DB ∪ bundled seed,
  * without hidden / deleted rows. Light shape for lists and search.
  */
+/** Police case notes (L39, content_type 'case_note'), merged with user edits/hidden ids like other Law rows. */
+export async function getCaseNoteRows(): Promise<{ id: string; title: string; tags: string; subcategory: string; description: string }[]> {
+  const rows = await getMergedKnowledgeList('Law');
+  return rows
+    .filter((r) => r.content_type === 'case_note' || r.id.startsWith('sys-case-'))
+    .map((r) => ({ id: r.id, title: r.title, tags: r.tags ?? '', subcategory: r.subcategory ?? '', description: r.description ?? '' }));
+}
+
 export async function getRegulationRows(): Promise<{ id: string; title: string; tags: string; subcategory: string }[]> {
   const rows = await getMergedKnowledgeList('Law');
   return rows

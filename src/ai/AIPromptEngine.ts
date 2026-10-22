@@ -57,6 +57,7 @@ import {
   lookupSop,
 } from './sopLookup';
 import { isExplicitRegQuery, isRegTopicQuery, lookupRegulations } from './regLookup';
+import { isCaseQuery, lookupCases } from './caseLookup';
 
 // ── Intent detection ─────────────────────────────────────────────────────────
 
@@ -64,6 +65,7 @@ export type Intent =
   | 'CIRCULAR_LOOKUP'
   | 'SOP_LOOKUP'
   | 'REG_LOOKUP'
+  | 'CASE_LOOKUP'
   | 'OLD_TO_NEW'
   | 'NEW_TO_OLD'
   | 'fard-advice'
@@ -175,6 +177,11 @@ export function detectIntent(message: string): Intent {
   // 0. UP Police Regulations — explicit ("पैरा 97", "UPPR", "regulation") (Task L35)
   if (isExplicitRegQuery(message)) {
     return 'REG_LOOKUP';
+  }
+
+  // 0-b. Police rulings (L39): a case name ("Joginder Kumar", "D.K. Basu") or "कौन सा फ़ैसला …"
+  if (isCaseQuery(message)) {
+    return 'CASE_LOOKUP';
   }
 
   // 0a. Check for DGP Circular lookup
@@ -434,6 +441,15 @@ export async function buildOfflineResponse(
     // ── UP Police Regulations (Task L35) ────────────────────────────────────
     case 'REG_LOOKUP': {
       const result = await lookupRegulations(message);
+      return {
+        content: result.content,
+        suggestedActions: result.suggestedActions,
+      };
+    }
+
+    // ── Police rulings / case notes (L39) ───────────────────────────────────
+    case 'CASE_LOOKUP': {
+      const result = await lookupCases(message);
       return {
         content: result.content,
         suggestedActions: result.suggestedActions,

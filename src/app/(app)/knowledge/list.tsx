@@ -223,8 +223,11 @@ function RecordCard({
 
 // ─── List Screen ──────────────────────────────────────────────────────────
 const BNS_REF_CHIP = 'BNS संदर्भ';
+const CASE_CHIP = 'न्यायिक निर्णय';
+// Law chips that filter by content_type instead of subcategory.
+const TYPE_CHIPS: Record<string, string> = { [BNS_REF_CHIP]: 'bns_ref', [CASE_CHIP]: 'case_note' };
 const onlyRefIfChip = (data: KnowledgeEntry[], sub: string) =>
-  sub === BNS_REF_CHIP ? data.filter((e) => e.content_type === 'bns_ref') : data;
+  TYPE_CHIPS[sub] ? data.filter((e) => e.content_type === TYPE_CHIPS[sub]) : data;
 // ─── UP Police Regulations entry card (top of the Law list) ─────────────────
 function RegulationsEntryCard() {
   const cards = [
@@ -281,11 +284,11 @@ export default function KnowledgeListScreen() {
   const subcategories = useMemo(() => {
     if (!isLawCategory) return baseSubcategories;
     // "BNS संदर्भ" chip = all content_type 'bns_ref' rows (both handbook subcategories).
-    const hasRef = allEntries.some((e) => e.content_type === 'bns_ref');
+    const typeChips = Object.keys(TYPE_CHIPS).filter((k) => allEntries.some((e) => e.content_type === TYPE_CHIPS[k]));
     const extra = Array.from(new Set(allEntries.map((e) => e.subcategory).filter(Boolean)))
       .filter((sub) => !baseSubcategories.includes(sub))
       .sort((a, b) => a.localeCompare(b));
-    return [...baseSubcategories, ...(hasRef ? [BNS_REF_CHIP] : []), ...extra];
+    return [...baseSubcategories, ...typeChips, ...extra];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLawCategory, allEntries, category]);
   const [query, setQuery] = useState('');
@@ -337,7 +340,7 @@ export default function KnowledgeListScreen() {
           searchKnowledge(
             targetCategory,
             resolvedQ,
-            resolvedSub === 'All' || resolvedSub === BNS_REF_CHIP ? undefined : resolvedSub,
+            resolvedSub === 'All' || TYPE_CHIPS[resolvedSub] ? undefined : resolvedSub,
             undefined,
             settings.typoTolerance ? { typoTolerance: true } : undefined,
           ),
@@ -515,7 +518,7 @@ export default function KnowledgeListScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1 py-0.5">
             {['All', ...subcategories].map((sub) => {
               const count = sub === 'All' ? allEntries.length
-                : sub === BNS_REF_CHIP ? allEntries.filter((e) => e.content_type === 'bns_ref').length
+                : TYPE_CHIPS[sub] ? allEntries.filter((e) => e.content_type === TYPE_CHIPS[sub]).length
                 : allEntries.filter((e) => e.subcategory === sub).length;
               const isSelected = activeSubcat === sub;
               const displayLabel = sub === 'All' ? (isSopCategory ? 'सभी' : t('knowledge.list.filterAll')) : sub;

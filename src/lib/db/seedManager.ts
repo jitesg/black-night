@@ -859,6 +859,7 @@ async function _retireOldSystemLawSeed(): Promise<void> {
          AND category IN ('Law', 'Laws & Sections')
          AND id NOT LIKE 'sys-reg-%'
          AND id NOT LIKE 'sys-ref-%'
+         AND id NOT LIKE 'sys-case-%'
          AND deleted_at IS NULL`
     );
 
@@ -870,6 +871,7 @@ async function _retireOldSystemLawSeed(): Promise<void> {
            AND category IN ('Law', 'Laws & Sections')
            AND id NOT LIKE 'sys-reg-%'
            AND id NOT LIKE 'sys-ref-%'
+           AND id NOT LIKE 'sys-case-%'
            AND deleted_at IS NULL`,
         [now, now]
       );

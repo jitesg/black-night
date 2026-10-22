@@ -18,7 +18,8 @@ function check(data: RegIndexData | null | undefined, name: string): RegIndexDat
 }
 
 /**
- * All sidecars (UP Police Regulations + POCSO Act + women-protection Acts) merged into one map
+ * All sidecars (UP Police Regulations + POCSO Act + women-protection Acts +
+ * police case notes) merged into one map
  * keyed by row id — row ids never collide. A broken file is skipped.
  */
 export function getRegIndex(): RegIndexData | null {
@@ -37,6 +38,11 @@ export function getRegIndex(): RegIndexData | null {
   }
   try {
     parts.push(check(require('../../../assets/reg/women_index.json') as RegIndexData, 'women_index.json'));
+  } catch (e) {
+    errors.push(e instanceof Error ? e.message : String(e));
+  }
+  try {
+    parts.push(check(require('../../../assets/reg/cases_index.json') as RegIndexData, 'cases_index.json'));
   } catch (e) {
     errors.push(e instanceof Error ? e.message : String(e));
   }
@@ -68,7 +74,8 @@ export function getRegOrder(act?: RegAct): string[] {
 export function getRegChapters(act: RegAct = 'uppr'): RegChapter[] {
   const all = getRegIndex()?.chapters ?? [];
   if (act === 'pocso') return all.filter((c) => c.part === 'POCSO');
-  if (act === 'uppr') return all.filter((c) => c.part !== 'POCSO' && c.part !== 'WOMEN');
+  if (act === 'case') return all.filter((c) => c.part === 'CASE');
+  if (act === 'uppr') return all.filter((c) => c.part !== 'POCSO' && c.part !== 'WOMEN' && c.part !== 'CASE');
   return all.filter((c) => c.part === 'WOMEN' && c.ch === ACT_META[act].ch);
 }
 

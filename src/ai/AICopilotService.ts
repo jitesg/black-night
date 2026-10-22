@@ -20,6 +20,7 @@ import { ReasoningEngine } from './reasoning/ReasoningEngine';
 import { InvestigationIntelligenceEngine } from './intelligence/InvestigationIntelligenceEngine';
 import { AIProviderManager } from './level5/AIProviderManager';
 import { buildRegContext } from './regLookup';
+import { buildCaseContext } from './caseLookup';
 import { bnsCopilotMatches } from '@/lib/bnsRef/bnsCompare';
 import { copilotContext, copilotOffline } from '@/lib/bnsRef/bnsCore';
 import i18n from '@/lib/i18n';
@@ -508,7 +509,7 @@ export class AICopilotService {
       let finalContent = offlineResult.content;
       // BNS_COMPARE: "IPC 302" / "BNS 103" / "धारा 103 BNS" → Delhi Police handbook rows
       // (in memory). Added on top of the normal answer; REG_LOOKUP answers are left alone.
-      const bnsHits = intent === 'REG_LOOKUP' ? [] : bnsCopilotMatches(message);
+      const bnsHits = intent === 'REG_LOOKUP' || intent === 'CASE_LOOKUP' ? [] : bnsCopilotMatches(message);
       if (bnsHits.length) finalContent += `\n${copilotOffline(bnsHits)}`;
       const draft = offlineResult.draft;
       const suggestedActions = offlineResult.suggestedActions;
@@ -521,6 +522,8 @@ export class AICopilotService {
           // data is restricted.
           const baseContext = intent === 'REG_LOOKUP'
             ? buildRegContext(message)
+            : intent === 'CASE_LOOKUP'
+            ? buildCaseContext(message)
             : this.aiPreferences.restrictCaseData ? '' : buildConciseContextSummary(ctx, toolResults, message);
           // Handbook rows are law text, not case data: always sent when present.
           const contextSummary = bnsHits.length ? `${baseContext}\n\n${copilotContext(bnsHits)}`.trim() : baseContext;
@@ -534,6 +537,12 @@ export class AICopilotService {
           if (cloudResponse.content && !cloudResponse.usedFallback) {
             finalContent = cloudResponse.content;
             cloudAnswerUsed = true;
+            if (intent === 'CASE_LOOKUP') {
+              // Keep the "open note" links and the citation reminder from the offline answer.
+              const links = offlineResult.content.match(/\[[^\]]+\]\(sys-case-[a-z0-9-]+\)/g) ?? [];
+              if (links.length) finalContent += `\n\n${links.slice(0, 3).join('  ')}`;
+              if (!finalContent.includes('सिटेशन मूल निर्णय से मिलाएँ')) finalContent += '\n\n⚠️ सिटेशन मूल निर्णय से मिलाएँ।';
+            }
             if (intent === 'REG_LOOKUP') {
               // Keep the "open paragraph" links from the offline answer.
               const links = offlineResult.content.match(/\[[^\]]*(?:पैरा|धारा|एक नज़र)[^\]]*\]\(sys-reg-[a-z0-9-]+\)/g) ?? [];

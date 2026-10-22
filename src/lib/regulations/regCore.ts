@@ -18,6 +18,8 @@ export interface RegPara {
   t: string;
   en: string;
   done: boolean;
+  /** Case notes (L39): fact-checked against the source. */
+  verified?: boolean;
   law?: RegLaw[];
   sop?: string[];
   circ?: string[];
@@ -124,9 +126,15 @@ export function parseRegSections(description: string | null | undefined): RegSec
 
 export type SimpleItem =
   | { kind: 'bullet'; text: string }
+  | { kind: 'do'; text: string }      // "✔ …" (green)
+  | { kind: 'dont'; text: string }    // "✘ …" (red)
+  | { kind: 'heading'; text: string } // "मामला:", "न्यायालय ने क्या कहा:" …
   | { kind: 'update'; text: string; label?: string }
   | { kind: 'tip'; text: string }
   | { kind: 'text'; text: string };
+
+// Case-note sub-headings (L39): a whole line such as "पुलिस के लिए — क्या करें:".
+const SUB_HEADING = /^(मामला|न्यायालय ने क्या कहा|पुलिस के लिए\s*[—-]\s*क्या करें|क्या न करें)\s*[:：]\s*$/;
 
 export function parseSimpleItems(body: string): SimpleItem[] {
   const items: SimpleItem[] = [];
@@ -134,6 +142,9 @@ export function parseSimpleItems(body: string): SimpleItem[] {
     const line = raw.trim();
     if (!line) continue;
     if (line.startsWith('- ')) items.push({ kind: 'bullet', text: line.slice(2).trim() });
+    else if (/^[✔✓]/.test(line)) items.push({ kind: 'do', text: line.replace(/^[✔✓]\uFE0F?\s*/, '') });
+    else if (/^[✘✗]/.test(line)) items.push({ kind: 'dont', text: line.replace(/^[✘✗]\uFE0F?\s*/, '') });
+    else if (SUB_HEADING.test(line)) items.push({ kind: 'heading', text: line.replace(/\s*[:：]\s*$/, '') });
     else if (/^⚠\s*अद्यतन/.test(line)) {
       // "⚠ अद्यतन: …" or "⚠ अद्यतन (2019 संशोधन): …"
       const m = /^⚠\s*अद्यतन\s*(\([^)]*\))?\s*[:：]?\s*/.exec(line)!;
@@ -244,7 +255,7 @@ export function canonNo(no: string): string {
 
 // ─── Acts (UP Police Regulations, POCSO Act, women-protection Acts …) ────────
 
-export type RegAct = 'uppr' | 'pocso' | 'pwdva' | 'posh' | 'itpa' | 'dowry' | 'irwa';
+export type RegAct = 'uppr' | 'pocso' | 'pwdva' | 'posh' | 'itpa' | 'dowry' | 'irwa' | 'case';
 
 /** The five "महिला संरक्षण कानून" Acts (L37), in display order. */
 export const WOMEN_ACTS: RegAct[] = ['pwdva', 'posh', 'itpa', 'dowry', 'irwa'];
@@ -278,10 +289,12 @@ export const ACT_META: Record<RegAct, ActMeta> = {
   posh: { unit: 'धारा', prefix: 'POSH Act', name: 'Sexual Harassment of Women at Workplace Act, 2013', hindi: 'कार्यस्थल यौन उत्पीड़न अधिनियम 2013', year: '2013', idPrefix: 'sys-reg-posh-', ch: 'POSH Act 2013', sensitive: true, expected: 31 },
   itpa: { unit: 'धारा', prefix: 'ITPA', name: 'Immoral Traffic (Prevention) Act, 1956', hindi: 'अनैतिक व्यापार (निवारण) अधिनियम 1956', year: '1956', idPrefix: 'sys-reg-itpa-', ch: 'ITPA 1956', sensitive: true, expected: 30 },
   dowry: { unit: 'धारा', prefix: 'दहेज प्रतिषेध अधिनियम', name: 'Dowry Prohibition Act, 1961', hindi: 'दहेज प्रतिषेध अधिनियम 1961', year: '1961', idPrefix: 'sys-reg-dowry-', ch: 'Dowry Prohibition Act 1961', sensitive: true, expected: 14 },
+  // Police case notes (न्यायिक निर्णय): rows sys-case-<slug>, sidecar part 'CASE'.
+  case: { unit: 'निर्णय', prefix: 'न्यायिक निर्णय', name: 'न्यायिक निर्णय (पुलिस)', hindi: 'न्यायिक निर्णय (पुलिस)', idPrefix: 'sys-case-', sensitive: false },
   irwa: { unit: 'धारा', prefix: 'IRWA', name: 'Indecent Representation of Women (Prohibition) Act, 1986', hindi: 'स्त्री अशिष्ट रूपण (प्रतिषेध) अधिनियम 1986', year: '1986', idPrefix: 'sys-reg-irwa-', ch: 'IRWA 1986', sensitive: true, expected: 11 },
 };
 
-const ACT_ORDER: RegAct[] = ['pocso', 'pwdva', 'posh', 'itpa', 'dowry', 'irwa'];
+const ACT_ORDER: RegAct[] = ['pocso', 'pwdva', 'posh', 'itpa', 'dowry', 'irwa', 'case'];
 
 export function actOfId(id: string): RegAct {
   for (const a of ACT_ORDER) if (id.startsWith(ACT_META[a].idPrefix)) return a;
@@ -302,6 +315,7 @@ export const CONFIDENTIAL_PREFIX = 'गोपनीय — केवल वि�
 
 /** "धारा 12", "पैरा 97", and "अधिनियम एक नज़र में" for a women-Act overview row (no 0). */
 export function sectionLabel(act: RegAct, no: string): string {
+  if (act === 'case') return 'न्यायिक निर्णय';
   if (no === '0' && act !== 'uppr') return 'अधिनियम एक नज़र में';
   return `${ACT_META[act].unit} ${no}`;
 }
@@ -346,7 +360,7 @@ export function orderedIds(index: RegIndexData | null, act?: RegAct): string[] {
   if (!act) return ids;
   const mine = ids.filter((id) => actOfId(id) === act);
   // UPPR keeps the book order; Acts sort by section (0 overview first, 4 < 4A < 5).
-  return act === 'uppr'
+  return act === 'uppr' || act === 'case'
     ? mine
     : mine.sort((x, y) => compareSectionNo(index.paras[x].no, index.paras[y].no));
 }

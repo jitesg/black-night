@@ -2533,7 +2533,8 @@ export default function KnowledgeDetailScreen() {
   const isLaw = entry.content_type === 'law' || entry.category === 'Law';
   // BNS संदर्भ rows (content_type 'bns_ref') use the same 4-tab reader.
   const isRegulation = entry.content_type === 'regulation' || entry.id.startsWith('sys-reg-')
-    || entry.content_type === 'bns_ref' || entry.id.startsWith('sys-ref-bns-');
+    || entry.content_type === 'bns_ref' || entry.id.startsWith('sys-ref-bns-')
+    || entry.content_type === 'case_note' || entry.id.startsWith('sys-case-');
 
   if (isRegulation) {
     // UP Police Regulations (L35): 4-tab reader; if it ever crashes, the

@@ -167,7 +167,8 @@ const SimpleTab = memo(function SimpleTab({ c, isDark, section, updatesFirst }: 
   const bulletNo = useMemo(() => {
     const m = new Map<number, number>();
     let n = 0;
-    items.forEach((it, i) => { if (it.kind === 'bullet') m.set(i, ++n); });
+    // Restart at each sub-heading ("मामला:", "न्यायालय ने क्या कहा:" …).
+    items.forEach((it, i) => { if (it.kind === 'heading') n = 0; else if (it.kind === 'bullet') m.set(i, ++n); });
     return m;
   }, [items]);
   if (section.pending) return <ComingSoon c={c} />;
@@ -182,6 +183,23 @@ const SimpleTab = memo(function SimpleTab({ c, isDark, section, updatesFirst }: 
                 <Text style={{ color: isDark ? '#FCD34D' : '#92400E', fontWeight: '800', fontSize: 13, marginBottom: 2 }}>{it.label ?? 'अद्यतन'}</Text>
                 <Text textBreakStrategy="simple" style={{ color: isDark ? '#FDE68A' : '#78350F', fontSize: 14.5, lineHeight: 22 }}>{it.text}</Text>
               </View>
+            </View>
+          );
+        }
+        if (it.kind === 'heading') {
+          return (
+            <Text key={i} textBreakStrategy="simple" style={{ color: c.foreground, fontWeight: '800', fontSize: 15.5, marginTop: i ? 8 : 0 }}>
+              {it.text}
+            </Text>
+          );
+        }
+        if (it.kind === 'do' || it.kind === 'dont') {
+          const ok = it.kind === 'do';
+          const fg = ok ? (isDark ? '#86EFAC' : '#15803D') : (isDark ? '#FCA5A5' : '#B91C1C');
+          return (
+            <View key={i} style={{ flexDirection: 'row', gap: 10, padding: 12, borderRadius: 14, backgroundColor: ok ? (isDark ? '#14532D55' : '#F0FDF4') : (isDark ? '#7F1D1D55' : '#FEF2F2'), borderWidth: 1, borderColor: ok ? (isDark ? '#22C55E55' : '#BBF7D0') : (isDark ? '#EF444455' : '#FECACA') }}>
+              <Text style={{ color: fg, fontSize: 16, fontWeight: '800', lineHeight: 22 }}>{ok ? '✔' : '✘'}</Text>
+              <Text textBreakStrategy="simple" style={{ flex: 1, color: isDark ? '#F1F5F9' : '#0F172A', fontSize: 14.5, lineHeight: 22 }}>{it.text}</Text>
             </View>
           );
         }
@@ -343,8 +361,8 @@ const ExamplesTab = memo(function ExamplesTab({ c, isDark, section, overview }: 
 
 interface LinkTarget { id: string; title: string | null }
 
-const RelatedTab = memo(function RelatedTab({ c, isDark, section, para, targets, onLaw, onOpen }: {
-  c: Theme; isDark: boolean; section: RegSection; para: RegPara | null;
+const RelatedTab = memo(function RelatedTab({ c, isDark, section, para, targets, onLaw, onOpen, casesHeading = 'न्यायिक निर्णय' }: {
+  c: Theme; isDark: boolean; section: RegSection; para: RegPara | null; casesHeading?: string;
   targets: Record<string, LinkTarget>;
   onLaw: (text: string) => void; onOpen: (id: string) => void;
 }) {
@@ -437,7 +455,7 @@ const RelatedTab = memo(function RelatedTab({ c, isDark, section, para, targets,
       {circs.length ? heading('परिपत्र') : null}
       {circs.map((id, i) => linkChip(id, '#2563EB', FileText, circLabels[i]))}
 
-      {cases.length ? heading('न्यायिक निर्णय') : null}
+      {cases.length ? heading(casesHeading) : null}
       {cases.map((cs, i) => (
         <View key={i} style={{ padding: 14, borderRadius: 16, backgroundColor: c.card, borderWidth: 1, borderColor: c.border, marginBottom: 10, gap: 6 }}>
           <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
@@ -495,9 +513,12 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
   const paraNo = para?.no ?? sections.title.match(/(?:पैरा|धारा)\s*([\w-]+)/)?.[1] ?? '';
   const title = para?.t ?? sections.title.replace(/^(?:POCSO\s*)?(?:पैरा|धारा)\s*[\w-]+\s*[—-]\s*/, '');
   const isOverview = women && paraNo === '0';
+  // Police case notes (sys-case-*, L39): "# headline" + "(Case — citation)" from the text.
+  const isCase = entry.id.startsWith('sys-case-') || entry.content_type === 'case_note';
   // BNS संदर्भ rows (sys-ref-bns-*) are not regulation paragraphs: show their own title.
-  const isRef = !entry.id.startsWith('sys-reg-');
-  const unitLabel = isRef ? 'BNS संदर्भ' : act === 'uppr'
+  const isRef = !entry.id.startsWith('sys-reg-') && !isCase;
+  const caseTitle = sections.title || para?.t || entry.title;
+  const unitLabel = isCase ? 'न्यायिक निर्णय' : isRef ? 'BNS संदर्भ' : act === 'uppr'
     ? `${meta.unit} ${paraNo}`
     : isOverview ? `${meta.prefix} — एक नज़र में` : `${meta.prefix} ${sectionLabel(act, paraNo)}`;
 
@@ -615,7 +636,9 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
     }
   }, [entry.title, sections, meta.sensitive]);
 
-  const copilotQuery = isRef
+  const copilotQuery = isCase
+    ? `${sections.breadcrumb.split(' — ')[0] || caseTitle} — इस फ़ैसले से पुलिस को क्या करना/नहीं करना चाहिए?`
+    : isRef
     ? `${title || entry.title} — सरल भाषा में समझाइए`
     : isPocso
     ? `POCSO धारा ${paraNo} क्या कहती है? (${title})`
@@ -631,14 +654,14 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
       keyboardShouldPersistTaps="handled"
     >
       {item === 'original' ? <OriginalTab c={c} section={sections.original} fontSize={fontSize} onFont={changeFont} /> : null}
-      {item === 'simple' ? <SimpleTab c={c} isDark={isDark} section={sections.simple} updatesFirst={act !== 'uppr'} /> : null}
+      {item === 'simple' ? <SimpleTab c={c} isDark={isDark} section={sections.simple} updatesFirst={act !== 'uppr' && !isCase} /> : null}
       {item === 'examples' ? <ExamplesTab c={c} isDark={isDark} section={sections.examples} overview={isOverview} /> : null}
       {item === 'related' ? (
-        <RelatedTab c={c} isDark={isDark} section={sections.related} para={para} targets={targets} onLaw={onLaw} onOpen={onOpen} />
+        <RelatedTab c={c} isDark={isDark} section={sections.related} para={para} targets={targets} onLaw={onLaw} onOpen={onOpen} casesHeading={isCase ? 'बाद के निर्णय' : undefined} />
       ) : null}
       <NotesCard c={c} unit={meta.unit} note={note} status={noteStatus} onChange={onNote} onBlur={onNoteBlur} />
     </ScrollView>
-  ), [width, c, isDark, act, isOverview, meta.unit, sections, fontSize, changeFont, para, targets, onLaw, onOpen, note, noteStatus, onNote, onNoteBlur]);
+  ), [width, c, isDark, act, isCase, isOverview, meta.unit, sections, fontSize, changeFont, para, targets, onLaw, onOpen, note, noteStatus, onNote, onNoteBlur]);
 
   const navBtn = (id: string | null, dir: 'prev' | 'next') => (
     <Pressable
@@ -658,7 +681,7 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
     <View className="flex-1 bg-background">
       <AppHeader
         title={unitLabel}
-        subtitle={isRef ? (entry.subcategory || 'Delhi Police हैंडबुक') : women ? meta.hindi : meta.name}
+        subtitle={isCase ? (para?.chT || entry.subcategory || meta.name) : isRef ? (entry.subcategory || 'Delhi Police हैंडबुक') : women ? meta.hindi : meta.name}
         showBack
         actions={<HeaderIconBtn icon={Share2} label="शेयर" onPress={onShare} />}
       />
@@ -667,9 +690,10 @@ export function RegulationViewer({ entry }: { entry: KnowledgeEntry }) {
       <View style={{ paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row', alignItems: 'center', gap: 10, borderBottomWidth: 1, borderBottomColor: c.border, backgroundColor: c.background }}>
         {navBtn(nav.prev, 'prev')}
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text numberOfLines={2} textBreakStrategy="simple" style={{ color: c.foreground, fontWeight: '800', fontSize: 15, lineHeight: 21 }}>{title}</Text>
-          <Text numberOfLines={1} textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 11.5, marginTop: 2 }}>
-            {para
+          <Text numberOfLines={isCase ? 3 : 2} textBreakStrategy="simple" style={{ color: c.foreground, fontWeight: '800', fontSize: 15, lineHeight: 21 }}>{isCase ? caseTitle : title}</Text>
+          <Text numberOfLines={isCase ? 2 : 1} textBreakStrategy="simple" style={{ color: c.mutedForeground, fontSize: 11.5, marginTop: 2 }}>
+            {isCase ? (sections.breadcrumb || para?.en || '')
+              : para
               ? women ? para.chT
               : `${isPocso ? '' : `भाग ${para.part} · `}अध्याय ${para.ch} — ${para.chT}`
               : sections.breadcrumb}

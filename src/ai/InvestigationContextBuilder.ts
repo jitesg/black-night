@@ -260,6 +260,7 @@ export class InvestigationContextBuilder {
       'general',
       'analytics',
       'REG_LOOKUP',
+      'CASE_LOOKUP',
     ]);
     if (exemptIntents.has(intent)) return '';
 
