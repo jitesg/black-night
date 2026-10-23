@@ -79,8 +79,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Handbook cog/bail flags are unverified vs the BNSS First Schedule (see owner's discrepancy report).
 
 ## न्यायिक निर्णय (पुलिस) — case notes (L39)
-- Seeds `assets/seed/cases_seed_<n>.json` (glob in `regSeedFiles.ts`; 1–2 = 41 rows, `cases_seed_3.json`
-  next = 61) + sidecar `assets/reg/cases_index.json` (61 paras, 18 chapters, part 'CASE', merged in
+- Seeds `assets/seed/cases_seed_<n>.json` (glob in `regSeedFiles.ts`; 1–3 = 21+20+20 = 61 rows) + sidecar `assets/reg/cases_index.json` (61 paras, 18 chapters, part 'CASE', merged in
   `regIndex.ts`). Rows `sys-case-<slug>`, content_type 'case_note', act 'case' in regCore.
 - Hub `knowledge/cases.tsx` (Law library card), pure helpers + tests `src/lib/cases/caseCore.ts`,
   `scripts/test_cases.ts`. Viewer: tab 2 parses ✔ / ✘ / sub-headings (`parseSimpleItems`), sticky

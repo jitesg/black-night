@@ -282,7 +282,7 @@ export async function runKnowledgeDiagnostics(): Promise<string> {
     const cidx = getRegIndex();
     const cparas = Object.keys(cidx?.paras ?? {}).filter((id) => id.startsWith('sys-case-')).length;
     const cch = (cidx?.chapters ?? []).filter((c) => c.part === 'CASE').length;
-    log(`case_note rows: ${caseRows.length} (expected 41 now, 61 after cases_seed_3)`);
+    log(`case_note rows: ${caseRows.length} (expected 61)`);
     log(`cases_index paras: ${cparas} (expected 61), chapters: ${cch} (expected 18)`);
     log(`  rows without a sidecar entry: ${caseRows.filter((r) => !cidx?.paras[r.id]).length}`);
   } catch (e: any) {
