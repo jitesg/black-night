@@ -12,13 +12,14 @@ import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
-  Plus, Filter, ChevronDown, Pencil, Trash2, FileText, Sparkles,
+  Plus, Filter, ChevronDown, Pencil, Trash2, FileText, Sparkles, NotebookPen,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
 import { matchesQuery, fuzzyMatch } from '@/lib/searchUtils';
 import { HighlightText } from '@/components/HighlightText';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { getAllFIRs, deleteFIR, type FIR } from '@/lib/db/firRepo';
+import { cdGapDays, CD_ALERT_AFTER_DAYS, CD_MAX_GAP_DAYS } from '@/lib/caseDiaryGap';
 import { SORT_OPTIONS, type SortOption } from '@/lib/mukadmaConstants';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useListBottomPadding } from '@/hooks/useListBottomPadding';
@@ -56,6 +57,28 @@ function StatusBadge({ status, scheme }: { status: string; scheme: 'light' | 'da
       >
         {status}
       </Text>
+    </View>
+  );
+}
+
+// "केस डायरी लंबित" badge: amber from day 7, red after the 15-day limit.
+const CD_BADGE = {
+  light: { warn: { bg: '#FEF3C7', fg: '#92400E' }, over: { bg: '#FEE2E2', fg: '#B91C1C' } },
+  dark:  { warn: { bg: '#451A03', fg: '#FCD34D' }, over: { bg: '#450A0A', fg: '#FCA5A5' } },
+} as const;
+
+function CdGapBadge({ fir, scheme }: { fir: FIR; scheme: 'light' | 'dark' }) {
+  if (fir.status === 'Finished') return null;
+  const days = cdGapDays(fir);
+  if (days == null || days < CD_ALERT_AFTER_DAYS) return null;
+  const c = CD_BADGE[scheme][days > CD_MAX_GAP_DAYS ? 'over' : 'warn'];
+  const label = fir.last_diary_date
+    ? `केस डायरी लंबित · ${days} दिन`
+    : `कोई केस डायरी नहीं · ${days} दिन`;
+  return (
+    <View className="self-start flex-row items-center rounded-full px-2.5 py-1 mt-2" style={{ backgroundColor: c.bg, gap: 4 }}>
+      <NotebookPen size={12} color={c.fg} />
+      <Text textBreakStrategy="simple" style={{ fontSize: 12, fontWeight: '700', color: c.fg }}>{label}</Text>
     </View>
   );
 }
@@ -137,6 +160,7 @@ const FIRCard = memo(function FIRCard({
       <Text className="text-xs text-muted-foreground mt-0.5">
         {t('fir.list.registeredLabel', { date: registrationDate })}
       </Text>
+      <CdGapBadge fir={fir} scheme={scheme} />
 
       {/* Action row: 36×36dp + hitSlop 4 = 44dp minimum touch target */}
       <View className="flex-row gap-3 mt-3 pt-3 border-t border-border">

@@ -446,6 +446,8 @@
       "dailySummaryDesc": "Morning digest of pending items and activity",
       "investigations": "Investigation Alerts",
       "investigationsDesc": "Updates on active investigation cases",
+      "caseDiaryGap": "Case diary pending alert",
+      "caseDiaryGapDesc": "Daily 9 AM reminder when the last case diary is more than 7 days old (keep the gap under 15 days)",
       "disclaimer": "Notifications require device permission. If notifications are not appearing, enable them in your device Settings → InvestSuite → Notifications."
     },
     "search": {

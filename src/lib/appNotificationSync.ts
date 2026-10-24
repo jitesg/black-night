@@ -13,6 +13,7 @@ import { getPersistedSettings } from '@/hooks/useSettingsStore';
 import { hasBeenNotified, markNotified } from '@/lib/db/notificationLogRepo';
 import { scheduleLocalNotification } from '@/lib/reminderNotifications';
 import { getUpcomingReminders } from '@/lib/db/reminderRepo';
+import { syncCaseDiaryAlerts } from '@/lib/caseDiaryGapService';
 
 /**
  * Formats a local date to YYYY-MM-DD string without UTC offset skew.
@@ -285,6 +286,11 @@ export async function syncAppNotifications(): Promise<void> {
         await markNotified('global', todayStr, 'daily_summary');
       }
     }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // e) notifCaseDiaryGap — केस डायरी लंबित (7+ days since the last diary)
+    // ──────────────────────────────────────────────────────────────────────────
+    await syncCaseDiaryAlerts();
   } catch (error) {
     if (__DEV__) {
       console.warn('[syncAppNotifications] Sync error:', error);

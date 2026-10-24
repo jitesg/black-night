@@ -43,6 +43,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Report print layout (fixed A4): `src/lib/printLayout.ts` — `renderTextForPrint` (letters → one sheet per
   सेवा में letter; other text → `doc-plain` sheet: note/title/paras/signature), `LETTER_FIT_SCRIPT` shrinks
   each sheet to fit 297mm (min 10pt, owner's choice; longer text flows to a 2nd page); margins 0.5 inch (12.7mm) all sides; used by formats/fill and DocumentEditor print preview. Tests `scripts/test_print_layout.ts`.
+- केस डायरी लंबित alert: rules `src/lib/caseDiaryGap.ts` (day 7 after the last diary / FIR date, 9 AM daily,
+  15-day warning; tests `scripts/test_case_diary_gap.ts`), scheduler `caseDiaryGapService.ts` (cancel + reschedule
+  `kind: cd_gap`; run from syncAppNotifications and after case diary / FIR changes via lazy import in the repos),
+  tap → `/(app)/mukadma/<firId>/case-diary` (root `_layout.tsx`), setting `notifCaseDiaryGap`, badge in mukadma list.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

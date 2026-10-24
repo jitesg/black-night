@@ -76,6 +76,11 @@ export async function getCaseDiaryById(id: string): Promise<CaseDiary | null> {
   );
 }
 
+/** Case diary changed → move the "केस डायरी लंबित" alerts (lazy import keeps notifications out of the repo). */
+function resyncCdAlerts(): void {
+  import('@/lib/caseDiaryGapService').then((m) => m.resyncCaseDiaryAlertsSoon()).catch(() => {});
+}
+
 export async function createCaseDiary(input: CaseDiaryInput): Promise<CaseDiary> {
   const db = await getDatabase();
   const id = generateUUID();
@@ -86,6 +91,7 @@ export async function createCaseDiary(input: CaseDiaryInput): Promise<CaseDiary>
     [id, input.fir_id, input.preparation_date, input.start_time ?? null, input.end_time ?? null,
      input.places_visited ?? null, now, now]
   );
+  resyncCdAlerts();
   return { id, ...input, created_at: now, updated_at: now };
 }
 
@@ -101,6 +107,7 @@ export async function updateCaseDiary(id: string, input: Partial<CaseDiaryInput>
     `UPDATE case_diaries SET ${sets}, updated_at = ? WHERE id = ?`,
     [...vals, now, id]
   );
+  if (entries.some(([k]) => k === 'preparation_date')) resyncCdAlerts();
 }
 
 export async function deleteCaseDiary(id: string): Promise<void> {
@@ -109,6 +116,7 @@ export async function deleteCaseDiary(id: string): Promise<void> {
   await db.runAsync('UPDATE case_diary_karyvahi SET deleted_at = ? WHERE diary_id = ? AND deleted_at IS NULL', [now, id]);
   await db.runAsync('UPDATE case_diary_entries SET deleted_at = ? WHERE case_diary_id = ? AND deleted_at IS NULL', [now, id]);
   await db.runAsync('UPDATE case_diaries SET deleted_at = ? WHERE id = ?', [now, id]);
+  resyncCdAlerts();
 }
 
 /** Duplicate a diary: create a new diary with same header fields, copy all karyvahi entries */

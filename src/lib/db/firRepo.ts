@@ -22,18 +22,25 @@ export interface FIR {
   mukadma_saransh?: string;
   unknown_accused_count: number;
   status: 'Pending' | 'Finished';
+  /** Latest case diary date — only filled by the list queries (getAllFIRs / searchFIRs). */
+  last_diary_date?: string | null;
   created_at: number;
   updated_at: number;
   deleted_at?: number;
   version: number;
 }
 
-export type FIRInput = Omit<FIR, 'id' | 'created_at' | 'updated_at' | 'deleted_at' | 'version' | 'status'>;
+export type FIRInput = Omit<FIR, 'id' | 'created_at' | 'updated_at' | 'deleted_at' | 'version' | 'status' | 'last_diary_date'>;
+
+/** FIR added / changed / deleted → move the "केस डायरी लंबित" alerts (lazy import). */
+function resyncCdAlerts(): void {
+  import('@/lib/caseDiaryGapService').then((m) => m.resyncCaseDiaryAlertsSoon()).catch(() => {});
+}
 
 export async function getAllFIRs(): Promise<FIR[]> {
   const db = await getDatabase();
   return db.getAllAsync<FIR>(
-    'SELECT * FROM firs WHERE deleted_at IS NULL ORDER BY created_at DESC'
+    'SELECT *, (SELECT MAX(d.preparation_date) FROM case_diaries d WHERE d.fir_id = firs.id AND d.deleted_at IS NULL) AS last_diary_date FROM firs WHERE deleted_at IS NULL ORDER BY created_at DESC'
   );
 }
 
@@ -42,14 +49,16 @@ export async function searchFIRs(query: string, statusFilter?: string): Promise<
   const q = `%${query.trim().toLowerCase()}%`;
   if (statusFilter && statusFilter !== 'All') {
     return db.getAllAsync<FIR>(
-      `SELECT * FROM firs WHERE deleted_at IS NULL AND status = ?
+      `SELECT *, (SELECT MAX(d.preparation_date) FROM case_diaries d WHERE d.fir_id = firs.id AND d.deleted_at IS NULL) AS last_diary_date
+       FROM firs WHERE deleted_at IS NULL AND status = ?
        AND (LOWER(fir_number) LIKE ? OR LOWER(complainant_name) LIKE ? OR LOWER(crime_type) LIKE ? OR LOWER(section) LIKE ?)
        ORDER BY created_at DESC`,
       [statusFilter, q, q, q, q]
     );
   }
   return db.getAllAsync<FIR>(
-    `SELECT * FROM firs WHERE deleted_at IS NULL
+    `SELECT *, (SELECT MAX(d.preparation_date) FROM case_diaries d WHERE d.fir_id = firs.id AND d.deleted_at IS NULL) AS last_diary_date
+       FROM firs WHERE deleted_at IS NULL
      AND (LOWER(fir_number) LIKE ? OR LOWER(complainant_name) LIKE ? OR LOWER(crime_type) LIKE ? OR LOWER(section) LIKE ?)
      ORDER BY created_at DESC`,
     [q, q, q, q]
@@ -88,6 +97,7 @@ export async function createFIR(input: FIRInput): Promise<FIR> {
       now, now,
     ]
   );
+  resyncCdAlerts();
   return { id, ...input, status: 'Pending', created_at: now, updated_at: now, version: 1 };
 }
 
@@ -108,7 +118,7 @@ export async function updateFIR(id: string, input: Partial<FIRInput & { status: 
   await db.runAsync(
     `UPDATE firs SET ${sets}, updated_at = ?, version = version + 1 WHERE id = ?`,
     [...vals, now, id]
-  );
+  );  resyncCdAlerts();
 }
 
 export async function updateFIRStatus(firId: string): Promise<void> {
@@ -124,6 +134,7 @@ export async function updateFIRStatus(firId: string): Promise<void> {
   const status = (total?.cnt ?? 0) > 0 && (pending?.cnt ?? 0) === 0 ? 'Finished' : 'Pending';
   const now = nowTimestamp();
   await db.runAsync('UPDATE firs SET status = ?, updated_at = ? WHERE id = ?', [status, now, firId]);
+  resyncCdAlerts();
 }
 
 export async function deleteFIR(id: string): Promise<void> {
@@ -200,4 +211,5 @@ export async function deleteFIR(id: string): Promise<void> {
   } catch (e) {
     logger.warn('[PROBE] deleteFIR after-cascade snapshot failed:', e);
   }
+  resyncCdAlerts();
 }

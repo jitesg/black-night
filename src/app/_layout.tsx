@@ -37,6 +37,7 @@ import { resyncReminderNotifications } from '@/lib/reminderService';
 import { handleReminderResponse, toResponseLike } from '@/lib/reminderActions';
 import { registerReminderBackgroundTask } from '@/lib/reminderBackgroundTask';
 import { syncAppNotifications } from '@/lib/appNotificationSync';
+import { CD_GAP_KIND } from '@/lib/caseDiaryGapService';
 import { AIProviderManager } from '@/ai/level5/AIProviderManager';
 import { LearningEngine } from '@/ai/level5/LearningEngine';
 import { NAV_THEME } from '@/lib/theme';
@@ -226,39 +227,51 @@ function AppNavigator({
   const { themeReady, settings } = useSettingsStore();
 
   const ready = themeReady && dbReady;
-  const openRemindersRef = useRef(false);
+  // Route to open once the app is ready (notification tap).
+  const pendingRouteRef = useRef<string | null>(null);
   const [openTick, setOpenTick] = useState(0);
 
-  // Reminder notification taps: action buttons (snooze / done) are handled
-  // here while the app is open; tapping the notification opens Reminders.
+  // Notification taps: reminder action buttons (snooze / done) are handled here
+  // while the app is open; tapping a reminder opens Reminders, tapping a
+  // "केस डायरी लंबित" alert opens that FIR's case diary tab.
   useEffect(() => {
-    const openReminders = () => {
-      openRemindersRef.current = true;
+    const open = (route: string) => {
+      pendingRouteRef.current = route;
       setOpenTick((n) => n + 1);
     };
+    const cdRoute = (response: Notifications.NotificationResponse): string | null => {
+      const data = response.notification.request.content.data as Record<string, unknown> | undefined;
+      return data?.kind === CD_GAP_KIND && typeof data.firId === 'string'
+        ? `/(app)/mukadma/${data.firId}/case-diary`
+        : null;
+    };
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {
+      const cd = cdRoute(response);
+      if (cd) { open(cd); return; }
       const r = toResponseLike(response);
       if (!r.reminderId) return;
-      if (r.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) openReminders();
+      if (r.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) open('/(app)/reminders');
       else handleReminderResponse(r);
     });
-    // App was closed and opened by tapping a reminder.
+    // App was closed and opened by tapping a notification.
     Notifications.getLastNotificationResponseAsync().then((response) => {
       if (!response) return;
+      const cd = cdRoute(response);
       const r = toResponseLike(response);
-      if (r.reminderId && r.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) {
-        openReminders();
-        Notifications.clearLastNotificationResponseAsync?.().catch(() => {});
-      }
+      if (cd) open(cd);
+      else if (r.reminderId && r.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) open('/(app)/reminders');
+      else return;
+      Notifications.clearLastNotificationResponseAsync?.().catch(() => {});
     }).catch(() => {});
     return () => sub.remove();
   }, []);
 
   useEffect(() => {
-    if (!ready || !openRemindersRef.current) return;
-    openRemindersRef.current = false;
+    const route = pendingRouteRef.current;
+    if (!ready || !route) return;
+    pendingRouteRef.current = null;
     const id = setTimeout(() => {
-      try { router.push('/(app)/reminders' as RelativePathString); } catch {}
+      try { router.push(route as RelativePathString); } catch {}
     }, 300);
     return () => clearTimeout(id);
   }, [ready, openTick]);
