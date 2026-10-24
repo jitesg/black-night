@@ -27,11 +27,12 @@ import {
 } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import {
-  ChevronRight, Clock, Eye, FileWarning,
-  LayoutTemplate, Star, User,
+  Clock, FileWarning,
+  Star, User,
 } from 'lucide-react-native';
 import { BottomSheet } from '@/components/ui/ds/BottomSheet';
 import { SearchBar } from '@/components/SearchBar';
+import { FormatCard } from '@/components/formats/FormatCard';
 import {
   type FormatType,
   type FormatWithMeta,
@@ -284,76 +285,12 @@ export default function NyayalaySelectFormatScreen() {
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           renderItem={({ item }) => (
-            <Pressable
-              onPress={() =>
-                router.push(
-                  `/(app)/nyayalay/fill-format?formatId=${item.id}&docId=${docId}` as never
-                )
-              }
-              className="bg-card border border-border rounded-2xl p-4 flex-row items-center gap-3 active:opacity-70"
-              style={{ borderCurve: 'continuous' }}
-            >
-              {/* Icon — star when favourite */}
-              <View
-                className="w-10 h-10 rounded-xl items-center justify-center"
-                style={{ backgroundColor: `${MODULE_COLOR}12` }}
-              >
-                {item.is_favorite === 1
-                  ? <Star size={18} color={MODULE_COLOR} fill={MODULE_COLOR} />
-                  : <LayoutTemplate size={18} color={MODULE_COLOR} />
-                }
-              </View>
-
-              {/* Title + tags + last-used */}
-              <View className="flex-1 gap-1" style={{ minWidth: 0 }}>
-                <Text className="text-base font-semibold text-foreground" numberOfLines={1}>
-                  {item.title}
-                </Text>
-
-                {/* Tag pills */}
-                {item.tags.length > 0 && (
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {item.tags.map((t) => (
-                      <View key={t} className="mr-1 bg-secondary rounded-full px-2.5 py-1">
-                        <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{t}</Text>
-                      </View>
-                    ))}
-                  </ScrollView>
-                )}
-
-                {/* Last used timestamp */}
-                {item.last_used_at ? (
-                  <View className="flex-row items-center gap-1">
-                    <Clock size={10} color="#9CA3AF" />
-                    <Text className="text-xs text-muted-foreground">
-                      {t('formatPicker.usedOn', {
-                        date: new Date(item.last_used_at * 1000).toLocaleDateString('en-IN', {
-                          day: '2-digit', month: 'short', year: 'numeric',
-                        }),
-                      })}
-                    </Text>
-                  </View>
-                ) : (
-                  // Format type hint for non-tag modes
-                  !isTagMode && (
-                    <Text className="text-xs text-muted-foreground">{item.format_type}</Text>
-                  )
-                )}
-              </View>
-
-              {/* Eye: preview template content — tag mode only */}
-              {isTagMode && (
-                <Pressable
-                  onPress={(e) => { e.stopPropagation(); setPreviewFormat(item); }}
-                  className="p-2 active:opacity-60 mr-1"
-                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-                >
-                  <Eye size={16} color="#9CA3AF" />
-                </Pressable>
-              )}
-
-              <ChevronRight size={16} color="#9CA3AF" />
-            </Pressable>
+            <FormatCard
+              format={item}
+              query={query}
+              onPress={() => router.push(`/(app)/nyayalay/fill-format?formatId=${item.id}&docId=${docId}` as never)}
+              onPreview={isTagMode ? () => setPreviewFormat(item) : undefined}
+            />
           )}
           ListEmptyComponent={
             <View className="items-center justify-center py-24 gap-4 px-6">

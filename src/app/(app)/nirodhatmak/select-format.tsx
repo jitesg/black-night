@@ -16,14 +16,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, FlatList, Pressable, ScrollView,
-  Text, View,
+  ActivityIndicator, FlatList, Text, View,
 } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import {
-  FileWarning, LayoutTemplate, ChevronRight,
-} from 'lucide-react-native';
+import { FileWarning } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
+import { FormatCard } from '@/components/formats/FormatCard';
 import {
   type FormatWithMeta,
 } from '@/lib/db/predefinedFormatRepo';
@@ -129,9 +127,7 @@ export default function NkSelectFormatScreen() {
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           renderItem={({ item }) => (
-            <FormatRow
-              format={item}
-              onPress={() =>
+            <FormatCard format={item} query={query} onPress={() =>
                 router.push(
                   `/(app)/formats/fill?formatId=${item.id}&callingModule=NK` as never
                 )
@@ -161,38 +157,5 @@ export default function NkSelectFormatScreen() {
         />
       )}
     </View>
-  );
-}
-
-// ─── Row component ────────────────────────────────────────────────────────
-function FormatRow({ format, onPress }: { format: FormatWithMeta; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      className="bg-card border border-border rounded-2xl p-4 flex-row items-center gap-3 active:opacity-70"
-      style={{ borderCurve: 'continuous' }}
-    >
-      <View
-        className="w-10 h-10 rounded-xl items-center justify-center"
-        style={{ backgroundColor: `${MODULE_COLOR}12` }}
-      >
-        <LayoutTemplate size={18} color={MODULE_COLOR} />
-      </View>
-      <View className="flex-1 gap-1" style={{ minWidth: 0 }}>
-        <Text className="text-base font-semibold text-foreground shrink">
-          {format.title}
-        </Text>
-        {format.tags.length > 0 && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-0.5">
-            {format.tags.slice(0, 5).map((tag, idx) => (
-              <View key={`${idx}-${tag}`} className="mx-0.5 bg-secondary rounded-full px-2.5 py-1">
-                <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{tag}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        )}
-      </View>
-      <ChevronRight size={18} color="#9CA3AF" />
-    </Pressable>
   );
 }

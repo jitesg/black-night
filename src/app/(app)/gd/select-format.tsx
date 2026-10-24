@@ -21,11 +21,12 @@ import {
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import {
-  ChevronRight, Eye, FileWarning,
-  LayoutTemplate, Star, Clock, User,
+  FileWarning,
+  Star, Clock, User,
 } from 'lucide-react-native';
 import { BottomSheet } from '@/components/ui/ds/BottomSheet';
 import { SearchBar } from '@/components/SearchBar';
+import { FormatCard } from '@/components/formats/FormatCard';
 import {
   type FormatWithMeta,
 } from '@/lib/db/predefinedFormatRepo';
@@ -215,64 +216,12 @@ export default function GdSelectFormatScreen() {
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           renderItem={({ item }) => (
-            <Pressable
-              onPress={() =>
-                router.push(
-                  `/(app)/formats/fill?formatId=${item.id}&callingModule=GD` as never
-                )
-              }
-              className="bg-card border border-border rounded-2xl p-4 flex-row items-center gap-3 active:opacity-70"
-              style={{ borderCurve: 'continuous' }}
-            >
-              <View
-                className="w-10 h-10 rounded-xl items-center justify-center"
-                style={{ backgroundColor: `${GD_COLOR}15` }}
-              >
-                {item.is_favorite === 1
-                  ? <Star size={18} color={GD_COLOR} fill={GD_COLOR} />
-                  : <LayoutTemplate size={18} color={GD_COLOR} />
-                }
-              </View>
-
-              <View className="flex-1 gap-1" style={{ minWidth: 0 }}>
-                <Text className="text-base font-semibold text-foreground shrink">
-                  {item.title}
-                </Text>
-                {item.tags.length > 0 && (
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {item.tags.map((t) => (
-                      <View key={t} className="mr-1 bg-secondary rounded-full px-2.5 py-1">
-                        <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{t}</Text>
-                      </View>
-                    ))}
-                  </ScrollView>
-                )}
-                {item.last_used_at ? (
-                  <View className="flex-row items-center gap-1">
-                    <Clock size={10} color="#9CA3AF" />
-                    <Text className="text-xs text-muted-foreground">
-                      {t('formatPicker.usedOn', {
-                        date: new Date(item.last_used_at * 1000).toLocaleDateString('en-IN', {
-                          day: '2-digit', month: 'short', year: 'numeric',
-                        }),
-                      })}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-
-              {/* Eye: preview template content without navigating */}
-              <Pressable
-                onPress={(e) => { e.stopPropagation(); setPreviewFormat(item); }}
-                className="p-2 active:opacity-60 mr-1"
-                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-                accessibilityLabel={t('formatPicker.previewTitle')}
-              >
-                <Eye size={16} color="#9CA3AF" />
-              </Pressable>
-
-              <ChevronRight size={16} color="#9CA3AF" />
-            </Pressable>
+            <FormatCard
+              format={item}
+              query={query}
+              onPress={() => router.push(`/(app)/formats/fill?formatId=${item.id}&callingModule=GD` as never)}
+              onPreview={() => setPreviewFormat(item)}
+            />
           )}
           ListEmptyComponent={
             <View className="items-center justify-center py-24 gap-4 px-6">
