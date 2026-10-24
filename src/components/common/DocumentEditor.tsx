@@ -54,7 +54,10 @@ import { markdownToHtml, needsMigration } from '@/lib/markdownToHtml';
 import { T } from '@/lib/typography';
 import { logger } from '@/lib/logger';
 import type { DocumentModel } from '@/lib/formatParsingEngine';
-import type { LayoutProfile } from '@/lib/db/predefinedFormatRepo';
+import { DEFAULT_LAYOUT_PROFILE, type LayoutProfile } from '@/lib/db/predefinedFormatRepo';
+import { LETTER_FIT_SCRIPT, LETTER_SHEET_CSS, renderLetterHtml, renderTextForPrint } from '@/lib/printLayout';
+import { fixFormat } from '@/lib/formatFixingEngine';
+import { htmlToPlainText } from '@/lib/stringUtils';
 import { PhraseLibraryModal } from './PhraseLibraryModal';
 import { incrementUsage } from '@/lib/db/phraseLibraryRepo';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
@@ -112,64 +115,8 @@ function prepareHtml(value: string): string {
  * Called once per sub-letter; wrap multiple results in .doc-letter divs.
  */
 export function renderDocumentModel(model: DocumentModel, _profile: LayoutProfile): string {
-  const esc = (s: string) =>
-    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-  const parts: string[] = ['<div class="doc-letter">'];
-
-  // Header — right-aligned, bold, underlined
-  if (model.header) {
-    parts.push(`<div class="doc-header">${esc(model.header)}</div>`);
-  }
-
-  // सेवा में block
-  if (model.sewaMein.length) {
-    const lines = model.sewaMein.map((l) => `<p>${esc(l)}</p>`).join('\n');
-    parts.push(`<div class="doc-sewa-mein">${lines}</div>`);
-  }
-
-  // Salutation
-  if (model.salutation) {
-    parts.push(`<div class="doc-salutation">${esc(model.salutation)}</div>`);
-  }
-
-  // Body paragraphs — each gets text-indent + justify from CSS
-  if (model.body.length) {
-    const paras = model.body.map((p) => `<p>${esc(p)}</p>`).join('\n');
-    parts.push(`<div class="doc-body">${paras}</div>`);
-  }
-
-  // Closing line
-  if (model.closing) {
-    parts.push(`<div class="doc-closing">${esc(model.closing)}</div>`);
-  }
-
-  // Witness line
-  if (model.witnessLine) {
-    parts.push(`<div class="doc-witness">${esc(model.witnessLine)}</div>`);
-  }
-
-  // Attachments
-  if (model.attachments.length) {
-    const items = model.attachments
-      .map((a, i) => `<li>${esc(a.replace(/^\d+\.\s*/, ''))}</li>`)
-      .join('\n');
-    parts.push(`<div class="doc-attachments">
-      <span class="doc-attachments-title">संलग्नक -</span>
-      <ol>${items}</ol>
-    </div>`);
-  }
-
-  // Signature
-  if (model.signature) {
-    parts.push(`<div class="doc-signature">
-      <div class="sig-name">${esc(model.signature.name)}</div>
-      ${model.signature.designation ? `<div class="sig-designation">${esc(model.signature.designation)}</div>` : ''}
-    </div>`);
-  }
-
-  parts.push('</div>');
-  return parts.join('\n');
+  // Fixed print layout (one A4 sheet per letter) — see src/lib/printLayout.ts
+  return renderLetterHtml(model);
 }
 
 // ─── Print Preview HTML wrapper ───────────────────────────────────────────────
@@ -185,11 +132,13 @@ export function renderDocumentModel(model: DocumentModel, _profile: LayoutProfil
  *   • All existing WYSIWYG editor styles preserved unchanged.
  */
 export function buildPrintHtml(bodyHtml: string, title: string): string {
+  // Structured letters (renderDocumentModel) → one fixed A4 sheet per letter + auto-fit.
+  const letters = bodyHtml.includes('class="doc-letter');
   return `<!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="${letters ? 'width=840' : 'width=device-width,initial-scale=1'}">
 <title>${title}</title>
 <style>
   @page {
@@ -202,7 +151,7 @@ export function buildPrintHtml(bodyHtml: string, title: string): string {
 
   /* ── CSS variables — overridden by formatFixingEngine ───── */
   :root {
-    --doc-font-family: 'Kokila', 'Noto Sans Devanagari', 'Times New Roman', Times, serif;
+    --doc-font-family: 'Kokila', 'Mangal', 'Noto Serif Devanagari', 'Noto Sans Devanagari', 'Times New Roman', Times, serif;
     --doc-font-size: 17pt;
     --doc-line-height: 1.15;
     --doc-alignment: justify;
@@ -344,9 +293,10 @@ export function buildPrintHtml(bodyHtml: string, title: string): string {
     .no-print { display: none; }
     .doc-letter + .doc-letter { page-break-before: always; }
   }
+  ${letters ? LETTER_SHEET_CSS : ''}
 </style>
 </head>
-<body>
+<body${letters ? ' class="letters"' : ''}>
   <div class="page">
     ${bodyHtml || '<p style="color:#999;font-style:italic">No content yet.</p>'}
     <div class="footer no-print">
@@ -358,6 +308,7 @@ export function buildPrintHtml(bodyHtml: string, title: string): string {
     document.getElementById('ts').textContent =
       new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
   </script>
+  ${letters ? `<script>${LETTER_FIT_SCRIPT}</script>` : ''}
 </body>
 </html>`;
 }
@@ -372,7 +323,12 @@ interface PrintPreviewProps {
 
 function PrintPreviewModal({ visible, onClose, value, title }: PrintPreviewProps) {
   const { t } = useTranslation();
-  const html = useMemo(() => buildPrintHtml(prepareHtml(value), title), [value, title]);
+  const html = useMemo(() => {
+    // Every report prints in the fixed A4 layout (letters: one sheet each).
+    const plain = htmlToPlainText(prepareHtml(value));
+    if (!plain.trim()) return buildPrintHtml('', title);
+    return fixFormat(buildPrintHtml(renderTextForPrint(plain), title), DEFAULT_LAYOUT_PROFILE, title).html;
+  }, [value, title]);
   const isWeb = process.env.EXPO_OS === 'web';
   const { colorScheme } = useColorScheme();
   const colors = THEME[colorScheme ?? 'light'];

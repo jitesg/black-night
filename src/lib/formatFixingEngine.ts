@@ -92,6 +92,12 @@ export function fixFormat(
   let fontSize   = profile.fontSizeNormal;
   let lineHeight = profile.lineSpacingNormal;
 
+  // Fixed letter layout (one A4 sheet per letter): each sheet fits itself in the
+  // page via LETTER_FIT_SCRIPT, so only the base font variables are set here.
+  if (html.includes('class="letters"')) {
+    return { html: _injectFontVars(html, fontSize, lineHeight), pageCount: (html.match(/class="doc-letter[ "]/g) ?? []).length || 1, finalFontSize: fontSize };
+  }
+
   if (!isWeb) {
     // Native: inject normal font vars and return immediately
     const fixedHtml = _injectFontVars(html, fontSize, lineHeight);

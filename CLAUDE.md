@@ -40,6 +40,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Dialog buttons: `AlertDialogAction/Cancel` wrap labels in the themed Text.
 - `plugins/withHighRefreshRate.js` requests the max display refresh rate.
 - Release builds silence console.log/info/debug (`src/lib/debugLogStore.ts`).
+- Report print layout (fixed A4): `src/lib/printLayout.ts` — `renderTextForPrint` (letters → one sheet per
+  सेवा में letter; other text → `doc-plain` sheet: note/title/paras/signature), `LETTER_FIT_SCRIPT` shrinks
+  each sheet to fit 297mm; used by formats/fill and DocumentEditor print preview. Tests `scripts/test_print_layout.ts`.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

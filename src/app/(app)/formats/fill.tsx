@@ -20,8 +20,9 @@ import {
 import { generateReport } from '@/lib/templateEngine';
 import { htmlToPlainText } from '@/lib/stringUtils';
 import { splitIntoSubLetters, parseIntoDocumentModel, renderModelsForEditor } from '@/lib/formatParsingEngine';
-import { renderDocumentModel, buildPrintHtml } from '@/components/common/DocumentEditor';
+import { buildPrintHtml } from '@/components/common/DocumentEditor';
 import { fixFormat } from '@/lib/formatFixingEngine';
+import { renderTextForPrint } from '@/lib/printLayout';
 import {
   resolveGlobalKeys, filterDynamicKeys,
   GLOBAL_KEY_LABELS,
@@ -255,10 +256,8 @@ export default function FillScreen() {
       const profile = format.layout_profile ?? DEFAULT_LAYOUT_PROFILE;
       const subLetters = splitIntoSubLetters(resolvedText);
       const models = subLetters.map(parseIntoDocumentModel);
-      const PAGE_BREAK = '<div style="page-break-after:always"></div>';
-      const combinedHtml = models
-        .map((m) => renderDocumentModel(m, profile))
-        .join(PAGE_BREAK);
+      // Fixed print layout: one A4 sheet per letter (फर्द / GD text: one sheet).
+      const combinedHtml = renderTextForPrint(resolvedText);
       const fullHtml = buildPrintHtml(combinedHtml, format.title);
       const { html: fixedHtml } = fixFormat(fullHtml, profile, format.title);
 
@@ -342,8 +341,7 @@ export default function FillScreen() {
     const profile = format.layout_profile ?? DEFAULT_LAYOUT_PROFILE;
     const subLetters = splitIntoSubLetters(blankedText);
     const models = subLetters.map(parseIntoDocumentModel);
-    const PAGE_BREAK = '';
-    const combinedHtml = models.map((m) => renderDocumentModel(m, profile)).join(PAGE_BREAK);
+    const combinedHtml = renderTextForPrint(blankedText);
     const fullHtml = buildPrintHtml(combinedHtml, format.title);
     const { html: fixedHtml } = fixFormat(fullHtml, profile, format.title);
     const editorHtml = renderModelsForEditor(models);
