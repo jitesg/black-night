@@ -408,6 +408,13 @@ export default function AddProceedingScreen() {
             )}
           </View>
 
+          {/* ── Add From Format Button (above the editor) ──────────────────────── */}
+          <AddFromFormatCard
+            title={t('nirodhatmak.form.addFromFormat')}
+            onPress={handleAddFromFormat}
+            color={MODULE_COLOR}
+          />
+
           {/* ── Editor ────────────────────────────────────────── */}
           <View className="gap-1.5">
             <View className="flex-row items-center justify-between">
@@ -432,13 +439,6 @@ export default function AddProceedingScreen() {
             />
             <FardCheckButton text={editorContent} title={formatTitle || proceedingType} className="mt-1" />
           </View>
-
-          {/* ── Add From Format Button ─────────────────────────── */}
-          <AddFromFormatCard
-            title={t('nirodhatmak.form.addFromFormat')}
-            onPress={handleAddFromFormat}
-            color={MODULE_COLOR}
-          />
 
           {/* ── Error ─────────────────────────────────────────── */}
           {error ? (
