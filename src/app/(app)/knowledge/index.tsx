@@ -4,7 +4,7 @@ import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import { getEntryPreviewText } from '@/lib/knowledge/knowledgeDisplay';
 import {
-  ActivityIndicator, FlatList, Pressable,
+  ActivityIndicator, BackHandler, FlatList, Pressable,
   ScrollView, Text, View,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -172,6 +172,15 @@ export default function KnowledgeHomeScreen() {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<KnowledgeEntry[]>([]);
   const [searching, setSearching] = useState(false);
+
+  // Back → Dashboard: module root screens always return to home, never exit app.
+  useFocusEffect(useCallback(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.replace('/(app)/home' as never);
+      return true;
+    });
+    return () => sub.remove();
+  }, []));
 
   useFocusEffect(
     useCallback(() => {

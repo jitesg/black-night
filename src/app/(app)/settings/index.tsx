@@ -4,7 +4,7 @@
  */
 import { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, Pressable, ScrollView,
+  BackHandler, View, Text, Pressable, ScrollView,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -192,6 +192,15 @@ export default function SettingsScreen() {
 
   // Reset search on focus (e.g. navigating back from sub-screen)
   useFocusEffect(useCallback(() => { setQuery(''); }, []));
+
+  // Back → Dashboard: module root screens always return to home, never exit app.
+  useFocusEffect(useCallback(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.replace('/(app)/home' as never);
+      return true;
+    });
+    return () => sub.remove();
+  }, []));
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
