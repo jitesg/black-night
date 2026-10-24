@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useRef, useState, memo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
-import { stripHtmlTags } from '@/lib/stringUtils';
 import {
   ActivityIndicator, BackHandler, FlatList, Pressable, ScrollView,
   Text, View,
@@ -27,6 +26,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useListBottomPadding } from '@/hooks/useListBottomPadding';
 import { THEME } from '@/lib/theme';
+import { extractKaryvahiFacts } from '@/lib/nirodhatmak/extractKaryvahi';
 
 const MODULE_COLOR = '#DC2626';
 
@@ -35,9 +35,6 @@ const CHIP_INACTIVE_BG   = { light: '#F1F5F9', dark: '#334155' } as const;
 const CHIP_INACTIVE_TEXT = { light: '#475569', dark: '#CBD5E1' } as const;
 const CHIP_BORDER        = { light: '#CBD5E1', dark: '#475569' } as const;
 
-// Status chip tokens — theme-aware (Active = green, Inactive = muted)
-const STATUS_BG   = { light: { Active: '#D1FAE5', other: '#F1F5F9' }, dark: { Active: '#052E16', other: '#1E293B' } } as const;
-const STATUS_TEXT = { light: { Active: '#15803D', other: '#6B7280' }, dark: { Active: '#6EE7B7', other: '#94A3B8' } } as const;
 
 function fmtTs(ts: number): string {
   return new Date(ts * 1000).toLocaleDateString('en-IN', {
@@ -53,25 +50,12 @@ function fmtProceedingDate(str: string | undefined): string {
   return `${d} ${months[parseInt(m, 10) - 1]} ${y}`;
 }
 
-const TYPE_CHIP_COLORS: Record<string, string> = {
-  'बीट सूचना':    '#2D52B8',
-  'मुकदमा':       '#7C3AED',
-  'प्रार्थनापत्र': '#059669',
-  'जमीनी विवाद':  '#D97706',
-  'अन्य':         '#6B7280',
-};
-
 const NIRODHATMAK_TYPE_KEYS: Record<string, string> = {
   'बीट सूचना':    'beatInfo',
   'मुकदमा':       'case',
   'प्रार्थनापत्र': 'petition',
   'जमीनी विवाद':  'landDispute',
   'अन्य':         'other',
-};
-
-const NIRODHATMAK_STATUS_KEYS: Record<string, string> = {
-  'Active': 'active',
-  'Closed': 'closed',
 };
 
 // ─── Action Menu ──────────────────────────────────────────────────────────
@@ -126,6 +110,9 @@ function ActionMenu({
 }
 
 // ─── Record Card ──────────────────────────────────────────────────────────
+// Testimonial-style card: date on top, village (highlighted) as the headline,
+// dispute as a marker-highlighted line, sections applied as chips.
+// Village / dispute / sections are read from the editor text (fallbacks: saved fields).
 const KaryvahiCard = memo(function KaryvahiCard({
   item,
   query,
@@ -141,83 +128,94 @@ const KaryvahiCard = memo(function KaryvahiCard({
 }) {
   const { t } = useTranslation();
   const palette = THEME[scheme];
-  const typeColor = TYPE_CHIP_COLORS[item.proceeding_type] ?? '#6B7280';
+  const isDark = scheme === 'dark';
   const dateStr = item.proceeding_date
     ? fmtProceedingDate(item.proceeding_date)
     : fmtTs(item.created_at);
-  const rawDesc = stripHtmlTags(item.editor_content || item.report_text || '');
-  const shortDesc = rawDesc.replace(/\s+/g, ' ').trim().slice(0, 100);
+  const facts = useMemo(
+    () => extractKaryvahiFacts(item.editor_content || item.report_text || ''),
+    [item.editor_content, item.report_text],
+  );
+  const village = facts.village || item.village_name || '';
+  const dispute = facts.dispute;
+  const typeLabel = NIRODHATMAK_TYPE_KEYS[item.proceeding_type]
+    ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type])
+    : (item.proceeding_type || t('nirodhatmak.type.other'));
+  const sections = facts.sections.length ? facts.sections : [typeLabel];
 
-  const statusKey = item.status === 'Active' ? 'Active' : 'other';
-  const statusBg   = STATUS_BG[scheme][statusKey];
-  const statusText = STATUS_TEXT[scheme][statusKey];
+  // Highlight colours (village = module red, dispute = amber marker, sections = indigo)
+  const villageBg = isDark ? '#7F1D1D66' : '#FEE2E2';
+  const villageFg = isDark ? '#FCA5A5' : '#B91C1C';
+  const disputeBg = isDark ? '#78350F66' : '#FEF3C7';
+  const disputeFg = isDark ? '#FDE68A' : '#92400E';
+  const secBg = isDark ? '#312E8166' : '#EEF2FF';
+  const secFg = isDark ? '#A5B4FC' : '#4338CA';
 
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
       delayLongPress={350}
-      className="bg-card border border-border rounded-2xl p-4 gap-3 active:opacity-80"
-      style={{ borderCurve: 'continuous' }}
+      className="rounded-2xl active:opacity-80"
+      style={{
+        borderCurve: 'continuous', padding: 16, gap: 12, backgroundColor: palette.card,
+        borderWidth: 1, borderColor: isDark ? palette.border : '#E5E7EB',
+        shadowColor: '#4F46E5', shadowOpacity: isDark ? 0 : 0.06, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
+        elevation: isDark ? 0 : 1,
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={[village, dispute, dateStr].filter(Boolean).join(', ')}
     >
-      {/* Top row: icon + info + type chip */}
-      <View className="flex-row items-start gap-3">
+      {/* Header: icon + village (highlighted) + date */}
+      <View className="flex-row items-center gap-3">
         <View
-          className="w-10 h-10 rounded-xl items-center justify-center mt-0.5"
-          style={{ backgroundColor: `${typeColor}12` }}
+          className="items-center justify-center"
+          style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: villageBg }}
         >
-          <FileWarning size={18} color={typeColor} />
+          <MapPin size={18} color={villageFg} />
         </View>
-
-        <View className="flex-1 gap-0.5" style={{ minWidth: 0 }}>
-          {/* Village */}
-          {item.village_name ? (
-            <View className="flex-row items-center gap-1">
-              <MapPin size={11} color={palette.mutedForeground} />
-              <HighlightText text={item.village_name} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1} />
+        <View className="flex-1" style={{ minWidth: 0, gap: 3 }}>
+          {village ? (
+            <View style={{ alignSelf: 'flex-start', maxWidth: '100%', backgroundColor: villageBg, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 1 }}>
+              <HighlightText
+                text={village}
+                query={query}
+                style={{ fontSize: 15, fontWeight: '700', lineHeight: 22, color: villageFg }}
+                numberOfLines={1}
+              />
             </View>
           ) : (
-            <HighlightText text={item.format_title || t('nirodhatmak.card.defaultTitle')} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1} />
+            <Text style={{ fontSize: 15, fontWeight: '700', lineHeight: 22, color: palette.mutedForeground }} numberOfLines={1}>
+              {t('nirodhatmak.card.defaultTitle')}
+            </Text>
           )}
-          {/* Date + Status */}
-          <View className="flex-row items-center gap-2 flex-wrap">
-            <View className="flex-row items-center gap-1">
-              <Calendar size={10} color={palette.mutedForeground} />
-              <Text className="text-xs text-muted-foreground">{dateStr}</Text>
-            </View>
-            {item.status ? (
-              <View
-                className="rounded-full px-2.5 py-1"
-                style={{ backgroundColor: statusBg }}
-              >
-                <Text textBreakStrategy="simple"
-                  className="text-xs font-medium"
-                  style={{ color: statusText }}
-                >
-                  {NIRODHATMAK_STATUS_KEYS[item.status] ? t('nirodhatmak.status.' + NIRODHATMAK_STATUS_KEYS[item.status]) : item.status}
-                </Text>
-              </View>
-            ) : null}
+          <View className="flex-row items-center gap-1">
+            <Calendar size={11} color={palette.mutedForeground} />
+            <Text style={{ fontSize: 12, color: palette.mutedForeground }}>{dateStr}</Text>
           </View>
-        </View>
-
-        {/* Type chip */}
-        <View
-          className="rounded-full mt-0.5 px-2.5 py-1"
-          style={{ backgroundColor: `${typeColor}12` }}
-        >
-          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: typeColor }} numberOfLines={1}>
-            {NIRODHATMAK_TYPE_KEYS[item.proceeding_type] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type]) : (item.proceeding_type || t('nirodhatmak.type.other'))}
-          </Text>
         </View>
       </View>
 
-      {/* Short description */}
-      {shortDesc.length > 0 && (
-        <Text className="text-sm text-muted-foreground leading-5" numberOfLines={2}>
-          {shortDesc}{rawDesc.length > 100 ? '…' : ''}
-        </Text>
-      )}
+      {/* Sections applied */}
+      <View className="flex-row flex-wrap" style={{ gap: 6 }}>
+        {sections.map((sec) => (
+          <View key={sec} style={{ height: 24, paddingHorizontal: 10, borderRadius: 999, justifyContent: 'center', backgroundColor: secBg }}>
+            <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 12, fontWeight: '700', color: secFg }}>{sec}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* Dispute — marker highlight */}
+      {dispute ? (
+        <View className="flex-row items-start" style={{ gap: 8 }}>
+          <Text style={{ fontSize: 22, lineHeight: 22, color: disputeFg, fontWeight: '800' }}>“</Text>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text textBreakStrategy="simple" numberOfLines={2} style={{ fontSize: 14, lineHeight: 22, color: palette.cardForeground }}>
+              <Text style={{ backgroundColor: disputeBg, color: disputeFg, fontWeight: '700' }}> {dispute} </Text>
+            </Text>
+          </View>
+        </View>
+      ) : null}
     </Pressable>
   );
 });
