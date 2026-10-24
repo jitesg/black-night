@@ -134,13 +134,15 @@ export const LETTER_FIT_SCRIPT = `
     var root = getComputedStyle(document.documentElement);
     var base = parseFloat(root.getPropertyValue('--doc-font-size')) || 17;
     try {
-      if (!(document.fonts && document.fonts.check && document.fonts.check('12pt Kokila'))) base = Math.min(base, 14.5);
-    } catch (e) { base = Math.min(base, 14.5); }
+      if (!(document.fonts && document.fonts.check && document.fonts.check('12pt Kokila'))) base = Math.min(base, 15);
+    } catch (e) { base = Math.min(base, 15); }
+    var MIN = 14; // smallest print size (pt, like Word's 14)
+    base = Math.max(base, MIN);
     var sheets = document.querySelectorAll('.doc-letter');
     for (var i = 0; i < sheets.length; i++) {
       var el = sheets[i], fs = base, n = 0;
       el.style.fontSize = fs + 'pt';
-      while (el.scrollHeight > H && fs > 10 && n < 40) { fs -= 0.5; n++; el.style.fontSize = fs + 'pt'; }
+      while (el.scrollHeight > H && fs > MIN && n < 40) { fs -= 0.5; n++; el.style.fontSize = fs + 'pt'; }
     }
   }
   if (document.readyState === 'complete') fit(); else window.addEventListener('load', fit);
@@ -155,10 +157,9 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-letter {
     width: 210mm; min-height: 297mm; margin: 0 auto 16px; background: #fff;
     box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-    padding: var(--doc-margin-top) var(--doc-margin-right) var(--doc-margin-bottom) var(--doc-margin-left);
+    padding: 12.7mm; /* 0.5 inch on every side */
     font-size: var(--doc-font-size); line-height: var(--doc-line-height);
   }
-  .letters .doc-letter + .doc-letter { padding-top: var(--doc-margin-top); }
   .letters .doc-header { text-align: right; font-weight: bold; text-decoration: underline; margin-bottom: 0.6em; }
   .letters .doc-sewa-mein { margin: 0.4em 0 0.4em 0; }
   .letters .doc-sewa-mein p { margin: 0; }
@@ -178,8 +179,11 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-foot td.att { width: 55%; }
   .letters .doc-foot td.att-title { font-weight: bold; }
   .letters .doc-foot td.sig { width: 45%; text-align: center; }
+  @page { size: A4; margin: 12.7mm; }
   @media print {
     body.letters { background: #fff; padding: 0; }
+    /* small top padding: Devanagari matras of the first line must not spill onto the previous page */
+    .letters .doc-letter { padding: 0.35em 0 0 !important; min-height: 0 !important; width: auto !important; }
     .letters .doc-letter { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
     .letters .doc-letter:last-child { break-after: auto; page-break-after: auto; }
   }
