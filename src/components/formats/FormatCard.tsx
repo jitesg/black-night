@@ -13,14 +13,22 @@ import { Pill } from '@/components/ui/ds/Pill';
 import type { FormatWithMeta } from '@/lib/db/predefinedFormatRepo';
 
 const INDIGO = '#6366F1';
-export const FORMAT_TYPE_COLORS: Record<string, string> = {
-  'GD':              INDIGO,
-  'Case Diary':      '#7C3AED',
-  'Nyayalay':        '#D97706',
-  'Prarthna Patra':  '#059669',
-  'BNSS Karyavahi':  '#DC2626',
-  'Any':             '#6B7280',
+// One colour per format type (7 types), light + dark shade so the pill reads on both themes.
+// Kept apart from the System (blue) and User (green) pills in the same footer.
+export const FORMAT_TYPE_COLORS: Record<string, { light: string; dark: string }> = {
+  'GD':              { light: '#4F46E5', dark: '#A5B4FC' }, // indigo
+  'Case Diary':      { light: '#9333EA', dark: '#D8B4FE' }, // purple
+  'Narrative':       { light: '#0F766E', dark: '#5EEAD4' }, // teal
+  'Nyayalay':        { light: '#B45309', dark: '#FCD34D' }, // amber
+  'Prarthna Patra':  { light: '#BE185D', dark: '#F9A8D4' }, // pink
+  'BNSS Karyavahi':  { light: '#DC2626', dark: '#FCA5A5' }, // red
+  'Any':             { light: '#475569', dark: '#CBD5E1' }, // slate
 };
+
+export function formatTypeColor(type: string, isDark: boolean): string {
+  const c = FORMAT_TYPE_COLORS[type] ?? FORMAT_TYPE_COLORS.Any;
+  return isDark ? c.dark : c.light;
+}
 
 function formatDate(ts?: number): string {
   if (!ts) return '';
@@ -54,7 +62,6 @@ export const FormatCard = memo(function FormatCard({
   onEdit?: () => void;
   onDelete?: () => void;
 }) {
-  const typeColor = FORMAT_TYPE_COLORS[format.format_type] ?? '#6B7280';
   const isSystem = format.source === 'system';
   const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
@@ -130,7 +137,7 @@ export const FormatCard = memo(function FormatCard({
               ? <Shield size={10} color={isDark ? '#93C5FD' : '#1D4ED8'} />
               : <User size={10} color={isDark ? '#6EE7B7' : '#059669'} />}
           />
-          <Pill size="xs" label={getFormatTypeLabel(format.format_type, t)} color={typeColor} style={{ flexShrink: 1 }} />
+          <Pill size="xs" label={getFormatTypeLabel(format.format_type, t)} color={formatTypeColor(format.format_type, isDark)} style={{ flexShrink: 1 }} />
         </View>
         {/* User templates only: Edit + Delete — 44dp touch targets */}
         {!isSystem && onEdit && onDelete && (
