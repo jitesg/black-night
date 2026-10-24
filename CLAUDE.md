@@ -42,7 +42,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Release builds silence console.log/info/debug (`src/lib/debugLogStore.ts`).
 - Report print layout (fixed A4): `src/lib/printLayout.ts` — `renderTextForPrint` (letters → one sheet per
   सेवा में letter; other text → `doc-plain` sheet: note/title/paras/signature), `LETTER_FIT_SCRIPT` shrinks
-  each sheet to fit 297mm (min 14pt, owner's choice; longer text flows to a 2nd page); margins 0.5 inch (12.7mm) all sides; used by formats/fill and DocumentEditor print preview. Tests `scripts/test_print_layout.ts`.
+  each sheet to fit 297mm (min 10pt, owner's choice; longer text flows to a 2nd page); margins 0.5 inch (12.7mm) all sides; used by formats/fill and DocumentEditor print preview. Tests `scripts/test_print_layout.ts`.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

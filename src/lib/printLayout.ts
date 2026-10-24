@@ -136,7 +136,7 @@ export const LETTER_FIT_SCRIPT = `
     try {
       if (!(document.fonts && document.fonts.check && document.fonts.check('12pt Kokila'))) base = Math.min(base, 15);
     } catch (e) { base = Math.min(base, 15); }
-    var MIN = 14; // smallest print size (pt, like Word's 14)
+    var MIN = 10; // smallest print size (pt, like Word's 10)
     base = Math.max(base, MIN);
     var sheets = document.querySelectorAll('.doc-letter');
     for (var i = 0; i < sheets.length; i++) {
