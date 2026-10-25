@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1F2937"
       },
       "predictiveBackGestureEnabled": false,
       "versionCode": 1,
@@ -74,8 +74,8 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/adaptive-icon.png",
-          "color": "#1E3A5F",
+          "icon": "./assets/notification-icon.png",
+          "color": "#B08D57",
           "defaultChannel": "app_alerts_v2",
           "sounds": [
             "./assets/sounds/bell.wav",
