@@ -425,6 +425,7 @@ export default function NyayalayScreen() {
       <View className="px-4 pt-3 pb-2 gap-2 bg-background border-b border-border">
         <SearchBar
           value={query}
+          noResults={!loading && !!query.trim() && filtered.length === 0}
           onChangeText={handleSearch}
           onSubmitEditing={handleSubmitSearch}
           placeholder={t('nyayalay.searchPlaceholder')}

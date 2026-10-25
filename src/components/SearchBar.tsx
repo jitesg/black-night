@@ -18,6 +18,8 @@
  *     (Settings → Search → history)
  *   • Settings → Search → instant search off: the search runs only when the
  *     keyboard's search key is pressed
+ *   • Suggestions while typing (names, मु0अ0सं0, गाँव … of this screen) and, when the
+ *     screen passes noResults, "क्या आपका मतलब …?" (Settings → Search → suggestions)
  *
  * TODO: The internal TextInput could be migrated to <Input type="search" />
  * once the universal Input supports: ref-forwarding into an Animated.View
@@ -44,6 +46,7 @@ import { usePathname } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useRecentSearches } from '@/hooks/useSearchHistory';
+import { didYouMeanFor, scopeForPath, suggestFor } from '@/lib/db/searchSuggestRepo';
 import { useColorScheme } from 'nativewind';
 import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
@@ -104,6 +107,8 @@ export interface SearchBarProps {
   onExpandedChange?: (expanded: boolean) => void;
   /** Recent-search list key; defaults to the screen's route path. */
   historyKey?: string;
+  /** The screen found nothing for the current text → offer a spelling fix. */
+  noResults?: boolean;
 }
 
 // Stable base TextInput style — the color is overridden per-render via the
@@ -135,6 +140,7 @@ export const SearchBar = memo(function SearchBar({
   collapsible = false,
   onExpandedChange,
   historyKey,
+  noResults = false,
 }: SearchBarProps) {
   const C = useSearchTokens();
   const { t } = useTranslation();
@@ -173,6 +179,28 @@ export const SearchBar = memo(function SearchBar({
     onChangeText(q);
     addRecent(q);
   }, [onChangeText, addRecent]);
+
+  // Suggestions while typing + spelling fix when nothing was found.
+  const scope = useMemo(() => scopeForPath(historyKey ?? pathname), [historyKey, pathname]);
+  const suggestOn = settings.smartSuggestions !== false && !!scope;
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  useEffect(() => {
+    if (!suggestOn || !showRecent || !shown.trim()) { setSuggestions([]); return; }
+    let alive = true;
+    const id = setTimeout(() => {
+      suggestFor(scope, shown, 8).then((list) => { if (alive) setSuggestions(list); }).catch(() => {});
+    }, 200);
+    return () => { alive = false; clearTimeout(id); };
+  }, [suggestOn, scope, shown, showRecent]);
+  const [fix, setFix] = useState<string | null>(null);
+  useEffect(() => {
+    if (!suggestOn || !noResults || !value.trim()) { setFix(null); return; }
+    let alive = true;
+    const id = setTimeout(() => {
+      didYouMeanFor(scope, value).then((f) => { if (alive) setFix(f); }).catch(() => {});
+    }, 300);
+    return () => { alive = false; clearTimeout(id); };
+  }, [suggestOn, scope, value, noResults]);
   const inputRef = useRef<TextInput>(null);
   // `focused` (Reanimated shared value) drives the animated container style on
   // the UI thread. `isFocused` (React state) derives the JS-thread icon color.
@@ -284,6 +312,39 @@ export const SearchBar = memo(function SearchBar({
     </View>
   ) : null;
 
+  const suggestRow = showRecent && shown.trim() && suggestions.length > 0 ? (
+    <View style={{ marginTop: 8, gap: 6 }}>
+      <Text style={{ fontSize: 11.5, fontWeight: '700', color: C.iconMuted, paddingHorizontal: 4 }}>{t('search.suggestions', 'सुझाव')}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" contentContainerStyle={{ gap: 6 }}>
+        {suggestions.map((q) => (
+          <Pressable
+            key={q}
+            onPress={() => pickRecent(q)}
+            accessibilityRole="button"
+            accessibilityLabel={q}
+            style={{
+              flexDirection: 'row', alignItems: 'center', gap: 5, height: 32, borderRadius: 16, borderWidth: 1,
+              borderColor: C.border, backgroundColor: C.surfaceMuted, paddingHorizontal: 10,
+            }}
+          >
+            <Search size={12} color={C.iconMuted} />
+            <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 12.5, color: C.foreground, maxWidth: 200 }}>{q}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  ) : null;
+
+  const fixRow = fix && noResults && value.trim() ? (
+    <Pressable onPress={() => pickRecent(fix)} accessibilityRole="button" style={{ marginTop: 8, paddingHorizontal: 4 }}>
+      <Text textBreakStrategy="simple" style={{ fontSize: 13, color: C.iconMuted }}>
+        {t('search.didYouMean', 'क्या आपका मतलब')}{' '}
+        <Text style={{ fontWeight: '800', color: C.focusBorder, textDecorationLine: 'underline' }}>{fix}</Text>
+        {' '}{t('search.didYouMeanEnd', 'था?')}
+      </Text>
+    </Pressable>
+  ) : null;
+
   if (!collapsible) {
     return (
       <View style={containerStyle}>
@@ -336,6 +397,8 @@ export const SearchBar = memo(function SearchBar({
         {trailing}
       </Animated.View>
       {recentRow}
+      {suggestRow}
+      {fixRow}
       </View>
     );
   }
@@ -417,6 +480,8 @@ export const SearchBar = memo(function SearchBar({
         </Animated.View>
       )}
       {isExpanded ? recentRow : null}
+      {isExpanded ? suggestRow : null}
+      {isExpanded ? fixRow : null}
     </Animated.View>
   );
 });

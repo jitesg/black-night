@@ -285,6 +285,7 @@ export default function KnowledgeHomeScreen() {
       <View className="px-4 pt-3 pb-2 border-b border-border bg-background">
         <SearchBar
           value={query}
+          noResults={!searching && !!query.trim() && searchResults.length === 0}
           onChangeText={handleSearch}
           onSubmitEditing={handleSearchSubmit}
           placeholder={t('knowledge.searchPlaceholder')}

@@ -62,6 +62,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   प्रार्थना पत्र, knowledge, halka, formats) use it; tests `scripts/test_search_utils.ts`. SearchBar: per-screen recent
   searches (`useRecentSearches`, key = route), instantSearch off → search on keyboard submit. Settings typoTolerance →
   `setSearchOptions` (store), highlightMatches → HighlightText. Home search: module chips, 5 per module + "सब देखें".
+  Phase 2 (C E G H): Hinglish — English words (3+ letters) match Hindi by `soundKey` (consonant sound key; no SQL
+  filter for them); suggestions while typing + "क्या आपका मतलब …?" (`src/lib/searchSuggest.ts` pure,
+  `src/lib/db/searchSuggestRepo.ts` pool per route via `scopeForPath`; SearchBar prop `noResults`; setting
+  smartSuggestions); FIR search includes accused + case diary text (`searchFirIdsByLinkedText` for the list),
+  न्यायालय reports, प्रार्थना पत्र आख्या + कार्यवाही.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

@@ -577,10 +577,13 @@ export interface PPSearchOpts {
   typoTolerance?: boolean;
 }
 
+// Report (आख्या) and action (कार्यवाही) text of a petition.
+const PP_LINKED_TEXT_EXPR = "(COALESCE((SELECT GROUP_CONCAT(r.report_content, ' ') FROM prarthna_patra_reports r WHERE r.prarthna_patra_id = p.id AND r.deleted_at IS NULL), '') || ' ' || COALESCE((SELECT GROUP_CONCAT(a.action_content, ' ') FROM pp_actions a WHERE a.prarthna_patra_id = p.id AND a.deleted_at IS NULL), ''))";
 const PP_SEARCH_EXPRS = [
   'p.registration_number', 'p.petition_type', 'p.matter', 'p.date_of_receipt', 'p.investigator_name',
   "(SELECT GROUP_CONCAT(c.name || ' ' || c.mobile || ' ' || c.alternate_mobile || ' ' || c.village, ' ') FROM prarthna_patra_complainants c WHERE c.prarthna_patra_id = p.id AND c.deleted_at IS NULL)",
   "(SELECT GROUP_CONCAT(x.name, ' ') FROM prarthna_patra_accused x WHERE x.prarthna_patra_id = p.id AND x.deleted_at IS NULL)",
+  PP_LINKED_TEXT_EXPR,
 ];
 
 export async function searchPrarthnaPatra(
@@ -593,11 +596,12 @@ export async function searchPrarthnaPatra(
   // its complainants / accused; the exact check runs on the assembled rows below.
   const typo = opts?.typoTolerance ?? isTypoTolerant();
   const words = typo || !trimmed ? { sql: '1=1', params: [] as string[] } : sqlWordFilter(PP_SEARCH_EXPRS, trimmed);
-  const matched = await db.getAllAsync<{ id: string }>(
-    `SELECT p.id FROM prarthna_patra p WHERE p.deleted_at IS NULL AND ${words.sql}`,
+  const matched = await db.getAllAsync<{ id: string; _linked: string | null }>(
+    `SELECT p.id, ${PP_LINKED_TEXT_EXPR} AS _linked FROM prarthna_patra p WHERE p.deleted_at IS NULL AND ${words.sql}`,
     words.params,
   );
   const ids = new Set<string>(matched.map((r) => r.id));
+  const linkedText = new Map(matched.map((r) => [r.id, (r._linked ?? '').replace(/<[^>]+>/g, ' ')]));
   if (ids.size === 0) return [];
 
   // Bug 6 fix — replace N+1 per-id SELECTs with three bulk IN() queries.
@@ -649,6 +653,7 @@ export async function searchPrarthnaPatra(
       pp.registration_number, pp.petition_type, pp.matter, pp.date_of_receipt, pp.investigator_name,
       ...pp.complainants.map((c) => `${c.name} ${c.mobile} ${c.alternate_mobile} ${c.village}`),
       ...pp.accused.map((x) => x.name),
+      linkedText.get(pp.id),
     ], typo));
   }
 

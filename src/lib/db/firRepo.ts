@@ -45,22 +45,56 @@ export async function getAllFIRs(): Promise<FIR[]> {
   );
 }
 
-const FIR_SEARCH_COLS = ['fir_number', 'complainant_name', 'crime_type', 'section', 'complainant_address', 'complainant_mobile', 'ghatnasthal'] as const;
+const FIR_SEARCH_COLS = ['fir_number', 'complainant_name', 'crime_type', 'section', 'complainant_address', 'complainant_mobile', 'ghatnasthal', 'nakal_chick', 'nakal_rapat'] as const;
+// Text that lives in other tables: accused (name, address, mobile) and case diary entries.
+const FIR_ACCUSED_EXPR = "(SELECT GROUP_CONCAT(COALESCE(a.name, '') || ' ' || COALESCE(a.address, '') || ' ' || COALESCE(a.mobile, ''), ' ') FROM fir_accused a WHERE a.fir_id = firs.id AND a.deleted_at IS NULL)";
+const FIR_DIARY_EXPR = "(SELECT GROUP_CONCAT(COALESCE(e.vivran, '') || ' ' || COALESCE(e.narrative_text, ''), ' ') FROM case_diary_entries e JOIN case_diaries d ON d.id = e.case_diary_id WHERE d.fir_id = firs.id AND e.deleted_at IS NULL AND d.deleted_at IS NULL)";
+const FIR_DIARY_KV_EXPR = "(SELECT GROUP_CONCAT(COALESCE(k.vivran, ''), ' ') FROM case_diary_karyvahi k JOIN case_diaries d ON d.id = k.diary_id WHERE d.fir_id = firs.id AND k.deleted_at IS NULL AND d.deleted_at IS NULL)";
+const FIR_TEXT_EXPRS = [FIR_ACCUSED_EXPR, FIR_DIARY_EXPR, FIR_DIARY_KV_EXPR];
 
-/** Word-by-word, Hindi-aware search (see searchUtils); typo tolerance from Settings. */
+type FirSearchRow = FIR & { _acc: string | null; _cd: string | null; _cdk: string | null };
+function firSearchFields(f: FirSearchRow): (string | null | undefined)[] {
+  const r = f as unknown as Record<string, string | null>;
+  return [...FIR_SEARCH_COLS.map((c) => r[c]), f._acc, stripTags(f._cd), stripTags(f._cdk)];
+}
+function stripTags(html: string | null): string {
+  return html ? html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ') : '';
+}
+
+/**
+ * Word-by-word, Hindi-aware search (see searchUtils) over the FIR, its accused and
+ * its case diaries; typo tolerance from Settings.
+ */
 export async function searchFIRs(query: string, statusFilter?: string): Promise<FIR[]> {
   const db = await getDatabase();
   const typo = isTypoTolerant();
   // With typo tolerance the SQL pre-filter would drop near-misses, so filter in JS only.
-  const words = typo ? { sql: '1=1', params: [] as string[] } : sqlWordFilter([...FIR_SEARCH_COLS], query);
+  const words = typo ? { sql: '1=1', params: [] as string[] } : sqlWordFilter([...FIR_SEARCH_COLS, ...FIR_TEXT_EXPRS], query);
   const status = statusFilter && statusFilter !== 'All';
-  const rows = await db.getAllAsync<FIR>(
-    `SELECT *, (SELECT MAX(d.preparation_date) FROM case_diaries d WHERE d.fir_id = firs.id AND d.deleted_at IS NULL) AS last_diary_date
+  const rows = await db.getAllAsync<FirSearchRow>(
+    `SELECT *, (SELECT MAX(d.preparation_date) FROM case_diaries d WHERE d.fir_id = firs.id AND d.deleted_at IS NULL) AS last_diary_date,
+            ${FIR_ACCUSED_EXPR} AS _acc, ${FIR_DIARY_EXPR} AS _cd, ${FIR_DIARY_KV_EXPR} AS _cdk
        FROM firs WHERE deleted_at IS NULL ${status ? 'AND status = ?' : ''} AND ${words.sql}
       ORDER BY created_at DESC`,
     [...(status ? [statusFilter as string] : []), ...words.params],
   );
-  return rows.filter((f) => smartMatch(query, FIR_SEARCH_COLS.map((c) => (f as unknown as Record<string, string | null>)[c]), typo));
+  return rows
+    .filter((f) => smartMatch(query, firSearchFields(f), typo))
+    .map(({ _acc: _a, _cd: _c, _cdk: _k, ...f }) => f as FIR);
+}
+
+/** Ids of FIRs whose accused or case diary text matches (the FIR list adds these). */
+export async function searchFirIdsByLinkedText(query: string): Promise<Set<string>> {
+  if (!query.trim()) return new Set();
+  const db = await getDatabase();
+  const typo = isTypoTolerant();
+  const words = typo ? { sql: '1=1', params: [] as string[] } : sqlWordFilter(FIR_TEXT_EXPRS, query);
+  const rows = await db.getAllAsync<{ id: string; _acc: string | null; _cd: string | null; _cdk: string | null }>(
+    `SELECT id, ${FIR_ACCUSED_EXPR} AS _acc, ${FIR_DIARY_EXPR} AS _cd, ${FIR_DIARY_KV_EXPR} AS _cdk
+       FROM firs WHERE deleted_at IS NULL AND ${words.sql}`,
+    words.params,
+  );
+  return new Set(rows.filter((r) => smartMatch(query, [r._acc, stripTags(r._cd), stripTags(r._cdk)], typo)).map((r) => r.id));
 }
 
 export async function getFIRById(id: string): Promise<FIR | null> {

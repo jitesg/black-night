@@ -455,6 +455,7 @@ export default function HomeScreen() {
       }}>
         <SearchBar
           value={searchQuery}
+          noResults={!searchLoading && !!searchQuery.trim() && searchResults.length === 0}
           onChangeText={handleSearchChange}
           placeholder={t('home.searchPlaceholder')}
           variant="light"

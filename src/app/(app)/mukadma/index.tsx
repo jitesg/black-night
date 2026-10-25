@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, memo } from 'react';
+import { useState, useCallback, useEffect, useRef, memo } from 'react';
 import { logger } from '@/lib/logger';
 import {
   BackHandler, View, Text, FlatList, Pressable, ActivityIndicator, useWindowDimensions,
@@ -18,7 +18,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { matchesQuery, fuzzyMatch } from '@/lib/searchUtils';
 import { HighlightText } from '@/components/HighlightText';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { getAllFIRs, deleteFIR, type FIR } from '@/lib/db/firRepo';
+import { getAllFIRs, deleteFIR, searchFirIdsByLinkedText, type FIR } from '@/lib/db/firRepo';
 import { cdGapDays, CD_ALERT_AFTER_DAYS, CD_MAX_GAP_DAYS } from '@/lib/caseDiaryGap';
 import { SORT_OPTIONS, type SortOption } from '@/lib/mukadmaConstants';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
@@ -263,6 +263,17 @@ export default function MukadmaHomeScreen() {
     return () => sub.remove();
   }, []));
 
+  // Search inside accused names and case diary text too (debounced DB lookup).
+  const [linkedIds, setLinkedIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (!query.trim()) { setLinkedIds(new Set()); return; }
+    let alive = true;
+    const id = setTimeout(() => {
+      searchFirIdsByLinkedText(query).then((ids) => { if (alive) setLinkedIds(ids); }).catch(() => {});
+    }, 300);
+    return () => { alive = false; clearTimeout(id); };
+  }, [query, firs]);
+
   const filtered = firs
     .filter((f) => {
       const matchStatus = statusFilter === 'All' || f.status === statusFilter;
@@ -280,7 +291,8 @@ export default function MukadmaHomeScreen() {
           f.ghatnasthal ?? '', f.nakal_chick ?? '', f.nakal_rapat ?? '',
         ].join(' '))
       );
-      return matchStatus && matchSearch;
+      // Also FIRs whose accused / case diary text matches (loaded below).
+      return matchStatus && (matchSearch || linkedIds.has(f.id));
     })
     .sort((a, b) => {
       if (sort === 'oldest') return a.created_at - b.created_at;
@@ -339,6 +351,7 @@ export default function MukadmaHomeScreen() {
         <View className="flex-row flex-wrap items-center" style={{ gap: chipSize.gap }}>
           <SearchBar
             value={query}
+            noResults={!loading && !!query.trim() && filtered.length === 0}
             onChangeText={setQuery}
             placeholder={t('fir.list.searchPlaceholder')}
             variant="light"

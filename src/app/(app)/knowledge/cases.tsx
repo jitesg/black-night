@@ -176,6 +176,7 @@ export default function CasesHubScreen() {
         <Text textBreakStrategy="simple" style={{ fontSize: 11.5, color: c.mutedForeground }}>{CASES_SOURCE_NOTE}</Text>
         <SearchBar
           value={input}
+          noResults={!!query.trim() && filtered.length === 0}
           onChangeText={setInput}
           placeholder="केस का नाम, सिटेशन या शब्द (Basu, गिरफ़्तारी, BNSS 35…)"
           variant="light"

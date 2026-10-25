@@ -390,6 +390,7 @@ export default function GdScreen() {
         <View className="flex-row gap-2">
           <SearchBar
             value={query}
+            noResults={!loading && !!query.trim() && entries.length === 0}
             onChangeText={handleSearch}
             onSubmitEditing={handleSearchSubmit}
             placeholder={t('gd.list.searchPlaceholder')}

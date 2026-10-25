@@ -1,6 +1,6 @@
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 import { recordFirstKnowledgeCountQueryTime } from './seedManager';
-import { isTypoTolerant, matchNormalized, searchNormalize } from '@/lib/searchUtils';
+import { isTypoTolerant, matchNormalized, searchNormalize, soundHayOf } from '@/lib/searchUtils';
 import { getCanonicalCategory, getCategoryVariants } from '@/lib/knowledgeConstants';
 import { logger } from '@/lib/logger';
 import { getAllKnowledgeNotesMap } from './knowledgeNotesRepo';
@@ -489,14 +489,21 @@ export interface KnowledgeSearchOpts {
 
 // Normalised search text per entry, cached by id + updated_at + note (long law texts
 // are not re-normalised on every keystroke). Word-by-word, Hindi-aware matching.
-const _hayCache = new Map<string, { key: string; hay: string }>();
-function knowledgeHay(r: KnowledgeEntry, note: string): string {
+const _hayCache = new Map<string, { key: string; hay: string; sound?: string }>();
+function knowledgeEntryCache(r: KnowledgeEntry, note: string): { key: string; hay: string; sound?: string } {
   const key = `${r.updated_at ?? ''}|${note.length}|${note.slice(0, 32)}`;
   const hit = _hayCache.get(r.id);
-  if (hit && hit.key === key) return hit.hay;
-  const hay = searchNormalize(`${r.title} ${r.tags} ${r.description ?? ''} ${r.crime_type ?? ''} ${note}`);
-  _hayCache.set(r.id, { key, hay });
-  return hay;
+  if (hit && hit.key === key) return hit;
+  const entry: { key: string; hay: string; sound?: string } = {
+    key, hay: searchNormalize(`${r.title} ${r.tags} ${r.description ?? ''} ${r.crime_type ?? ''} ${note}`),
+  };
+  _hayCache.set(r.id, entry);
+  return entry;
+}
+/** Word-by-word / Hinglish match of one entry (normalised text and sound keys cached). */
+function knowledgeMatches(query: string, r: KnowledgeEntry, note: string, typo: boolean): boolean {
+  const c = knowledgeEntryCache(r, note);
+  return matchNormalized(query, c.hay, typo, () => (c.sound ??= soundHayOf(c.hay)));
 }
 
 export async function searchKnowledge(
@@ -524,7 +531,7 @@ export async function searchKnowledge(
 
     if (trimmed) {
       const typo = opts?.typoTolerance ?? isTypoTolerant();
-      filtered = filtered.filter((r) => matchNormalized(trimmed, knowledgeHay(r, notesMap.get(r.id) ?? ''), typo));
+      filtered = filtered.filter((r) => knowledgeMatches(trimmed, r, notesMap.get(r.id) ?? '', typo));
     }
 
     return filtered;
@@ -547,7 +554,7 @@ export async function searchKnowledgeAll(
     let filtered = items;
     if (trimmed) {
       const typo = opts?.typoTolerance ?? isTypoTolerant();
-      filtered = filtered.filter((r) => matchNormalized(trimmed, knowledgeHay(r, notesMap.get(r.id) ?? ''), typo));
+      filtered = filtered.filter((r) => knowledgeMatches(trimmed, r, notesMap.get(r.id) ?? '', typo));
     }
 
     filtered.sort((a, b) => (b.updated_at || 0) - (a.updated_at || 0));

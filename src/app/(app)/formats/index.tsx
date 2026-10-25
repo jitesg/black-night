@@ -279,6 +279,7 @@ export default function FormatsScreen() {
         <View className="flex-row gap-2 items-center">
           <SearchBar
             value={query}
+            noResults={!loading && !!query.trim() && formats.length === 0}
             onChangeText={handleSearch}
             placeholder={t('format.list.searchPlaceholder')}
             variant="navy"

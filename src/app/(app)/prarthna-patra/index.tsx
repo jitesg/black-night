@@ -585,6 +585,7 @@ export default function PrarthnaPatraScreen() {
             {/* ── Search ── */}
             <SearchBar
               value={query}
+              noResults={!loading && !!query.trim() && filtered.length === 0}
               onChangeText={setQuery}
               onSubmitEditing={handleSearchSubmit}
               placeholder={t('prarthnaPatra.list.searchPlaceholder')}

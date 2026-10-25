@@ -47,6 +47,55 @@ export function queryTokens(q: string): string[] {
   return searchNormalize(q).split(' ').filter(Boolean);
 }
 
+// ─── Hinglish: English typing finds Hindi text (approximate) ────────────────
+// Both scripts become a consonant "sound key" (vowels dropped, aspirates and
+// look-alike sounds merged): राम / ram / raam → "rm", सिंह / singh → "snh",
+// शर्मा / sharma → "srm", यादव / yadav → "ydv". Used only for query words typed
+// in English letters (3+ letters) when the plain match fails.
+const DEV_KEY: Record<string, string> = {
+  'क': 'k', 'ख': 'k', 'ग': 'g', 'घ': 'g', 'ङ': 'n', 'च': 'c', 'छ': 'c', 'ज': 'j', 'झ': 'j', 'ञ': 'n',
+  'ट': 't', 'ठ': 't', 'ड': 'd', 'ढ': 'd', 'ण': 'n', 'त': 't', 'थ': 't', 'द': 'd', 'ध': 'd', 'न': 'n',
+  'प': 'p', 'फ': 'f', 'ब': 'b', 'भ': 'b', 'म': 'm', 'य': 'y', 'र': 'r', 'ल': 'l', 'व': 'v',
+  'श': 's', 'ष': 's', 'स': 's', 'ह': 'h', 'ं': 'n', 'ः': 'h', 'ॐ': 'om',
+};
+
+/** Devanagari (normalised) → sound key; Latin letters pass through the Latin rules. */
+export function soundKey(word: string): string {
+  let out = '';
+  for (const ch of word) {
+    if (DEV_KEY[ch]) out += DEV_KEY[ch];
+    else if (/[a-z]/.test(ch)) out += ch;
+    // vowels, matras, virama, digits, signs: dropped
+  }
+  // Latin side (and mixed): digraphs and look-alike letters
+  out = out
+    .replace(/ksh/g, 'ks').replace(/x/g, 'ks').replace(/ngh/g, 'nh')
+    .replace(/sh/g, 's').replace(/ch/g, 'c').replace(/ph/g, 'f')
+    .replace(/([kgjtdpb])h/g, '$1')
+    .replace(/ng(?=[^aeiou]|$)/g, 'n')
+    .replace(/w/g, 'v').replace(/z/g, 'j').replace(/q/g, 'k').replace(/c(?=[eiy])/g, 's')
+    .replace(/[aeiou]/g, '')
+    .replace(/(.)\1+/g, '$1');
+  return out;
+}
+
+const LATIN_WORD = /^[a-z][a-z]{2,}$/;
+
+const DEVANAGARI = /[ऀ-ॿ]/;
+
+/** Sound keys of the Hindi words of a normalised text, ' ' separated (cacheable). */
+export function soundHayOf(normalizedHay: string): string {
+  return ' ' + normalizedHay.split(' ').filter((w) => DEVANAGARI.test(w)).map(soundKey).filter(Boolean).join(' ');
+}
+
+/** Does an English-letter query word sound like the start of some Hindi word in the text? */
+function soundMatch(token: string, normalizedHay: string, soundHay?: string): boolean {
+  if (!LATIN_WORD.test(token)) return false;
+  const tk = soundKey(token);
+  if (tk.length < 2) return false;
+  return (soundHay ?? soundHayOf(normalizedHay)).includes(' ' + tk);
+}
+
 /**
  * Word-by-word match: true when EVERY word of the query appears somewhere in
  * the given fields (any order, any field). "राम सिंह" finds "राम प्रसाद सिंह".
@@ -56,7 +105,7 @@ export function matchesQuery(query: string, ...fields: (string | null | undefine
   const tokens = queryTokens(query);
   if (!tokens.length) return true;
   const hay = fields.map(searchNormalize).join(' \u0001 ');
-  return tokens.every((t) => hay.includes(t));
+  return tokens.every((t) => hay.includes(t) || soundMatch(t, hay));
 }
 
 // Global search options, set from the Settings store (typo tolerance applies everywhere).
@@ -82,10 +131,10 @@ export function smartMatch(query: string, fields: (string | null | undefined)[],
  * Same as smartMatch, for a haystack that is already searchNormalize()d
  * (lets big lists cache their normalised text instead of re-normalising per keystroke).
  */
-export function matchNormalized(query: string, normalizedHay: string, typo: boolean = _typoTolerance): boolean {
+export function matchNormalized(query: string, normalizedHay: string, typo: boolean = _typoTolerance, soundHay?: () => string): boolean {
   const tokens = queryTokens(query);
   if (!tokens.length) return true;
-  if (tokens.every((t) => normalizedHay.includes(t))) return true;
+  if (tokens.every((t) => normalizedHay.includes(t) || soundMatch(t, normalizedHay, soundHay?.()))) return true;
   if (!typo) return false;
   const words = normalizedHay.split(' ');
   return tokens.every((t) => normalizedHay.includes(t) || (t.length >= 4 && words.some((w) => levenshtein(t, w) <= 1)));
@@ -117,7 +166,11 @@ export function sqlWordFilter(exprs: string[], query: string): { sql: string; pa
   const tokens = queryTokens(query);
   if (!tokens.length || !exprs.length) return { sql: '1=1', params: [] };
   const params: string[] = [];
-  const parts = tokens.map((t) => {
+  // English-letter words may match Hindi text by sound (Hinglish), which LIKE
+  // cannot see — leave them to the JS check.
+  const sqlTokens = tokens.filter((t) => !LATIN_WORD.test(t));
+  if (!sqlTokens.length) return { sql: '1=1', params: [] };
+  const parts = sqlTokens.map((t) => {
     const pat = likeSkeleton(t);
     params.push(...exprs.map(() => pat));
     return `(${exprs.map((e) => `LOWER(COALESCE(${e}, '')) LIKE ? ESCAPE '\\'`).join(' OR ')})`;
@@ -164,12 +217,29 @@ export function buildHighlightSegments(text: string, query: string): HighlightSe
     cursor = m.index + m[0].length;
   }
   if (cursor < text.length) segments.push({ text: text.slice(cursor), highlighted: false });
+  // Hinglish: also mark Hindi words that sound like an English query word.
+  const latin = tokens.filter((t) => LATIN_WORD.test(t) && soundKey(t).length >= 2).map(soundKey);
+  if (latin.length) {
+    const out: HighlightSegment[] = [];
+    for (const seg of segments) {
+      if (seg.highlighted) { out.push(seg); continue; }
+      for (const part of seg.text.split(/(\s+)/)) {
+        if (!part) continue;
+        const w = searchNormalize(part);
+        const hit = !!w && /[\u0900-\u097F]/.test(w) && latin.some((k) => soundKey(w).startsWith(k));
+        const last = out[out.length - 1];
+        if (last && last.highlighted === hit) last.text += part;
+        else out.push({ text: part, highlighted: hit });
+      }
+    }
+    return out.length ? out : [{ text, highlighted: false }];
+  }
   return segments.length ? segments : [{ text, highlighted: false }];
 }
 
 // ─── Levenshtein distance (iterative, memory-optimised two-row) ───────────
 
-function levenshtein(a: string, b: string): number {
+export function levenshtein(a: string, b: string): number {
   if (a === b) return 0;
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;

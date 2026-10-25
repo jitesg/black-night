@@ -488,6 +488,7 @@ export default function KnowledgeListScreen() {
         <View className="flex-row gap-2">
           <SearchBar
             value={query}
+            noResults={!loading && !!query.trim() && entries.length === 0}
             onChangeText={handleSearch}
             onSubmitEditing={handleSearchSubmit}
             placeholder={t('knowledge.list.searchPlaceholder')}

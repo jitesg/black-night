@@ -541,9 +541,10 @@ export interface NyayalaySearchOpts {
 }
 
 const NYL_PERSONS_EXPR = "(SELECT GROUP_CONCAT(np.name, ' ') FROM nyayalay_persons np WHERE np.doc_id = nd.id AND np.deleted_at IS NULL)";
+const NYL_REPORT_EXPR = "(SELECT GROUP_CONCAT(r.report_content, ' ') FROM nyayalay_reports r WHERE r.doc_id = nd.id AND r.deleted_at IS NULL)";
 const NYL_SEARCH_COLS = [
   'nd.court_name', 'nd.vad_sankhya', 'nd.apradh_sankhya', 'nd.fir_number', 'nd.doc_type',
-  'nd.document_title', 'nd.matter', 'nd.registration_number', 'nd.applicable_sections', NYL_PERSONS_EXPR,
+  'nd.document_title', 'nd.matter', 'nd.registration_number', 'nd.applicable_sections', NYL_PERSONS_EXPR, NYL_REPORT_EXPR,
 ];
 
 /** Word-by-word, Hindi-aware search (searchUtils); person names included. */
@@ -556,8 +557,8 @@ export async function searchNyayalayDocuments(
   const typo = opts?.typoTolerance ?? isTypoTolerant();
   // With typo tolerance the SQL pre-filter would drop near-misses, so filter in JS only.
   const words = typo ? { sql: '1=1', params: [] as string[] } : sqlWordFilter(NYL_SEARCH_COLS, trimmed);
-  const docs = await db.getAllAsync<NyayalayDocument & { _persons: string | null }>(
-    `SELECT nd.*, ${NYL_PERSONS_EXPR} AS _persons FROM nyayalay_documents nd
+  const docs = await db.getAllAsync<NyayalayDocument & { _persons: string | null; _report: string | null }>(
+    `SELECT nd.*, ${NYL_PERSONS_EXPR} AS _persons, ${NYL_REPORT_EXPR} AS _report FROM nyayalay_documents nd
      WHERE nd.deleted_at IS NULL AND ${words.sql}
      ORDER BY nd.created_at DESC`,
     words.params,
@@ -566,6 +567,7 @@ export async function searchNyayalayDocuments(
     .filter((d) => !trimmed || smartMatch(trimmed, [
       d.court_name, d.vad_sankhya, d.apradh_sankhya, d.fir_number, d.doc_type,
       d.document_title, d.matter, d.registration_number, d.applicable_sections, d._persons,
+      (d._report ?? '').replace(/<[^>]+>/g, ' '),
     ], typo))
-    .map(({ _persons: _p, ...d }) => d as NyayalayDocument);
+    .map(({ _persons: _p, _report: _r, ...d }) => d as NyayalayDocument);
 }

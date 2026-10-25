@@ -354,6 +354,7 @@ export default function NirodhatmakHomeScreen() {
         <View className="flex-row gap-2">
           <SearchBar
             value={query}
+            noResults={!loading && !!query.trim() && records.length === 0}
             onChangeText={handleSearch}
             placeholder={t('nirodhatmak.list.searchPlaceholder')}
             variant="light"
