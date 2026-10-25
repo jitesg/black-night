@@ -30,6 +30,8 @@ export interface PetitionRow { id: string; registration_number: string; petition
 export interface ReminderRow { id: string; title: string; due_at: number; fir_label?: string | null }
 
 export const DUE_SOON_DAYS = 3;
+/** High Court work is shown (and notified) from 5 days before the deadline. */
+export const HC_DUE_SOON_DAYS = 5;
 
 const COURT_LABEL: Record<string, string> = {
   NBW: 'NBW',
@@ -71,12 +73,12 @@ export function dueLabel(days: number): string {
 
 function deadlineCard(
   kind: 'court' | 'petition', id: string, label: string, task: string, reg: string,
-  deadline: string, route: string, now: Date,
+  deadline: string, route: string, now: Date, horizon: number = DUE_SOON_DAYS,
 ): NoticeCard | null {
   const d = parseLocalDate(deadline);
   if (!d) return null;
   const days = daysBetween(now, d);
-  if (days > DUE_SOON_DAYS) return null;
+  if (days > horizon) return null;
   const over = days < 0;
   const body = over
     ? `${task} की अंतिम तिथि ${fmtDate(d)} ${-days} दिन पहले निकल चुकी है।`
@@ -113,7 +115,7 @@ export function buildNoticeCards(input: {
 
   for (const d of input.courtDocs ?? []) {
     const c = deadlineCard('court', d.id, courtLabel(d), COURT_TASK[d.doc_type] ?? 'आख्या', d.registration_number,
-      d.deadline_date, `/(app)/nyayalay/${d.id}`, now);
+      d.deadline_date, `/(app)/nyayalay/${d.id}`, now, d.doc_type === 'High_Court_Documents' ? HC_DUE_SOON_DAYS : DUE_SOON_DAYS);
     if (c) out.push(c);
   }
 

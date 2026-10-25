@@ -297,6 +297,8 @@ export async function scheduleLocalNotification(
   body: string,
   triggerDate: Date | null,
   data?: Record<string, unknown>,
+  /** App-icon badge number to show when this notification arrives. */
+  badge?: number,
 ): Promise<string> {
   try { await ensureAndroidChannels(); } catch {}
   const trigger: Notifications.NotificationTriggerInput = triggerDate
@@ -304,7 +306,7 @@ export async function scheduleLocalNotification(
     : Platform.OS === 'android' ? { channelId: ALERTS_CHANNEL.id } : null;
 
   return Notifications.scheduleNotificationAsync({
-    content: { title, body, sound: 'default', data },
+    content: { title, body, sound: 'default', data, ...(badge != null ? { badge } : {}) },
     trigger,
   });
 }

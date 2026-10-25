@@ -50,6 +50,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Home bell → `(app)/notifications.tsx` (सूचनाएँ): live cards from `src/lib/noticeCards.ts` (pure; केस डायरी लंबित,
   न्यायालय/प्रार्थना पत्र overdue or due in 3 days, reminders due today/missed; tests `scripts/test_notice_cards.ts`),
   data via `src/lib/db/noticeRepo.ts`; bell badge = `noticeBadgeCount`.
+- न्यायालय / प्रार्थना पत्र phone alerts: plan `src/lib/deadlineAlerts.ts` (9 AM, 2/1/0 days before, High Court 5/3/1/0,
+  then daily while overdue; text = the सूचनाएँ card at that time; tests `scripts/test_deadline_alerts.ts`),
+  scheduler `deadlineAlertService.ts` (`kind: deadline`, data.route; settings notifCourtAlerts / notifDeadlines;
+  resync from the repos' writes). Replaced the old English one-time court/petition alerts.
+- App-icon badge `src/lib/appBadge.ts` (same count as the bell; scheduled alerts carry the projected count).
+  Android `setBadgeCountAsync(0)` clears the whole tray — only called when nothing is showing.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

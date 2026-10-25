@@ -13,6 +13,7 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Pill } from '@/components/ui/ds/Pill';
 import { THEME } from '@/lib/theme';
 import { loadNoticeCards } from '@/lib/db/noticeRepo';
+import { refreshAppBadge } from '@/lib/appBadge';
 import type { NoticeCard, NoticeKind, NoticeLevel } from '@/lib/noticeCards';
 
 const KIND_META: Record<NoticeKind, { label: string; icon: typeof Bell; light: string; dark: string }> = {
@@ -77,6 +78,7 @@ export default function NotificationsScreen() {
 
   const load = useCallback(async () => {
     try { setCards(await loadNoticeCards()); } catch { /* keep the last list */ }
+    refreshAppBadge().catch(() => {});
     setLoading(false);
     setRefreshing(false);
   }, []);

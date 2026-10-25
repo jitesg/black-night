@@ -194,6 +194,11 @@ interface CreateNyayalayInput {
   }[];
 }
 
+/** Deadline / status changed → move the न्यायालय / प्रार्थना पत्र phone alerts (lazy import). */
+function resyncDeadlineAlerts(): void {
+  import('@/lib/deadlineAlertService').then((m) => m.resyncDeadlineAlertsSoon()).catch(() => {});
+}
+
 export async function createNyayalayDocument(input: CreateNyayalayInput): Promise<string> {
   const db = await getDatabase();
   const id = generateUUID();
@@ -231,6 +236,7 @@ export async function createNyayalayDocument(input: CreateNyayalayInput): Promis
     );
   }
 
+  resyncDeadlineAlerts();
   return id;
 }
 
@@ -330,6 +336,7 @@ export async function updateNyayalayDocument(
        p.name, p.father_name, p.mobile, p.address, p.remarks, now, now]
     );
   }
+  resyncDeadlineAlerts();
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────────
@@ -355,6 +362,7 @@ export async function deleteNyayalayDocument(id: string): Promise<void> {
     `UPDATE nyayalay_reports SET deleted_at=? WHERE doc_id=? AND deleted_at IS NULL`,
     [now, id]
   );
+  resyncDeadlineAlerts();
 }
 
 // ── ANALYTICS ────────────────────────────────────────────────────────────
@@ -468,6 +476,7 @@ export async function markNyayalayFinished(docId: string): Promise<void> {
      WHERE id=? AND deleted_at IS NULL`,
     [nowTimestamp(), docId]
   );
+  resyncDeadlineAlerts();
 }
 
 // ── Checklist Update (High Court Documents) ───────────────────────────────

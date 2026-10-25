@@ -14,6 +14,8 @@ import { hasBeenNotified, markNotified } from '@/lib/db/notificationLogRepo';
 import { scheduleLocalNotification } from '@/lib/reminderNotifications';
 import { getUpcomingReminders } from '@/lib/db/reminderRepo';
 import { syncCaseDiaryAlerts } from '@/lib/caseDiaryGapService';
+import { syncDeadlineAlerts } from '@/lib/deadlineAlertService';
+import { refreshAppBadge } from '@/lib/appBadge';
 
 /**
  * Formats a local date to YYYY-MM-DD string without UTC offset skew.
@@ -27,8 +29,7 @@ function formatLocalDate(d: Date): string {
 
 /**
  * Synchronizes and schedules all enabled local notification categories:
- *  - notifCourtAlerts (hearings tomorrow at 9am / hearings today)
- *  - notifDeadlines (petition deadlines tomorrow at 9am / today, plus overdue court docs & petitions)
+ *  - notifCourtAlerts / notifDeadlines (न्यायालय / प्रार्थना पत्र deadlines — deadlineAlertService)
  *  - notifInvestigations (digest of karyvahi tasks pending 3+ days on pending FIRs)
  *  - notifDailySummary (once-per-day morning digest at 9am or immediate)
  */
@@ -45,155 +46,13 @@ export async function syncAppNotifications(): Promise<void> {
 
     const now = new Date();
     const todayStr = formatLocalDate(now);
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const tomorrowStr = formatLocalDate(tomorrow);
-    const tomorrow9AM = new Date(
-      tomorrow.getFullYear(),
-      tomorrow.getMonth(),
-      tomorrow.getDate(),
-      9,
-      0,
-      0,
-      0,
-    );
 
     // ──────────────────────────────────────────────────────────────────────────
-    // a) notifCourtAlerts
+    // a + b) notifCourtAlerts / notifDeadlines — न्यायालय & प्रार्थना पत्र deadlines
+    // (Hindi, per type; 2/1/0 days before — High Court 5/3/1/0 — then daily while overdue).
+    // Replaces the old one-time English alerts. See deadlineAlerts.ts.
     // ──────────────────────────────────────────────────────────────────────────
-    if (settings.notifCourtAlerts) {
-      const courtDocs = await db.getAllAsync<{
-        id: string;
-        registration_number: string;
-        doc_type: string;
-        deadline_date: string;
-      }>(
-        `SELECT id, registration_number, doc_type, deadline_date
-         FROM nyayalay_documents
-         WHERE deleted_at IS NULL AND status = 'Pending'`,
-      );
-
-      for (const doc of courtDocs) {
-        if (!doc.deadline_date) continue;
-
-        if (doc.deadline_date === tomorrowStr) {
-          const already = await hasBeenNotified('nyayalay', doc.id, 'day_before');
-          if (!already) {
-            await scheduleLocalNotification(
-              'Court hearing tomorrow',
-              `${doc.doc_type} (${doc.registration_number})`,
-              tomorrow9AM,
-              { refType: 'nyayalay', refId: doc.id, kind: 'day_before' },
-            );
-            await markNotified('nyayalay', doc.id, 'day_before');
-          }
-        } else if (doc.deadline_date === todayStr) {
-          const already = await hasBeenNotified('nyayalay', doc.id, 'same_day');
-          if (!already) {
-            await scheduleLocalNotification(
-              'Court hearing today',
-              `${doc.doc_type} (${doc.registration_number})`,
-              null,
-              { refType: 'nyayalay', refId: doc.id, kind: 'same_day' },
-            );
-            await markNotified('nyayalay', doc.id, 'same_day');
-          }
-        }
-      }
-    }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    // b) notifDeadlines (petitions tomorrow/today + overdue for court & petitions)
-    // ──────────────────────────────────────────────────────────────────────────
-    if (settings.notifDeadlines) {
-      const petitions = await db.getAllAsync<{
-        id: string;
-        registration_number: string;
-        petition_type: string;
-        deadline_date: string;
-      }>(
-        `SELECT id, registration_number, petition_type, deadline_date
-         FROM prarthna_patra
-         WHERE deleted_at IS NULL AND status = 'Pending'`,
-      );
-
-      for (const p of petitions) {
-        if (!p.deadline_date) continue;
-
-        if (p.deadline_date === tomorrowStr) {
-          const already = await hasBeenNotified('prarthna_patra', p.id, 'day_before');
-          if (!already) {
-            await scheduleLocalNotification(
-              'Petition deadline tomorrow',
-              `${p.petition_type} (${p.registration_number})`,
-              tomorrow9AM,
-              { refType: 'prarthna_patra', refId: p.id, kind: 'day_before' },
-            );
-            await markNotified('prarthna_patra', p.id, 'day_before');
-          }
-        } else if (p.deadline_date === todayStr) {
-          const already = await hasBeenNotified('prarthna_patra', p.id, 'same_day');
-          if (!already) {
-            await scheduleLocalNotification(
-              'Petition deadline today',
-              `${p.petition_type} (${p.registration_number})`,
-              null,
-              { refType: 'prarthna_patra', refId: p.id, kind: 'same_day' },
-            );
-            await markNotified('prarthna_patra', p.id, 'same_day');
-          }
-        }
-      }
-
-      // Overdue check for nyayalay_documents (deadline_date strictly before today & status still 'Pending')
-      const overdueDocs = await db.getAllAsync<{
-        id: string;
-        registration_number: string;
-        doc_type: string;
-        deadline_date: string;
-      }>(
-        `SELECT id, registration_number, doc_type, deadline_date
-         FROM nyayalay_documents
-         WHERE deleted_at IS NULL AND status = 'Pending' AND deadline_date < ?`,
-        [todayStr],
-      );
-      for (const doc of overdueDocs) {
-        const already = await hasBeenNotified('nyayalay', doc.id, 'overdue_once');
-        if (!already) {
-          await scheduleLocalNotification(
-            'Court document overdue',
-            '1 court document is now overdue',
-            null,
-            { refType: 'nyayalay', refId: doc.id, kind: 'overdue_once' },
-          );
-          await markNotified('nyayalay', doc.id, 'overdue_once');
-        }
-      }
-
-      // Overdue check for prarthna_patra (deadline_date strictly before today & status still 'Pending')
-      const overduePetitions = await db.getAllAsync<{
-        id: string;
-        registration_number: string;
-        petition_type: string;
-        deadline_date: string;
-      }>(
-        `SELECT id, registration_number, petition_type, deadline_date
-         FROM prarthna_patra
-         WHERE deleted_at IS NULL AND status = 'Pending' AND deadline_date < ?`,
-        [todayStr],
-      );
-      for (const p of overduePetitions) {
-        const already = await hasBeenNotified('prarthna_patra', p.id, 'overdue_once');
-        if (!already) {
-          await scheduleLocalNotification(
-            'Petition overdue',
-            '1 petition is now overdue',
-            null,
-            { refType: 'prarthna_patra', refId: p.id, kind: 'overdue_once' },
-          );
-          await markNotified('prarthna_patra', p.id, 'overdue_once');
-        }
-      }
-    }
+    await syncDeadlineAlerts();
 
     // ──────────────────────────────────────────────────────────────────────────
     // c) notifInvestigations (digest of tasks pending 3+ days on pending FIRs)
@@ -291,6 +150,9 @@ export async function syncAppNotifications(): Promise<void> {
     // e) notifCaseDiaryGap — केस डायरी लंबित (7+ days since the last diary)
     // ──────────────────────────────────────────────────────────────────────────
     await syncCaseDiaryAlerts();
+
+    // App-icon badge = सूचनाएँ that need action (same number as the home bell).
+    await refreshAppBadge();
   } catch (error) {
     if (__DEV__) {
       console.warn('[syncAppNotifications] Sync error:', error);

@@ -191,6 +191,11 @@ export interface PPAction {
 
 // ── Registration Number ────────────────────────────────────────────────────
 
+/** Deadline / status changed → move the न्यायालय / प्रार्थना पत्र phone alerts (lazy import). */
+function resyncDeadlineAlerts(): void {
+  import('@/lib/deadlineAlertService').then((m) => m.resyncDeadlineAlertsSoon()).catch(() => {});
+}
+
 /**
  * Bug 4 fix — Atomic registration number generation.
  *
@@ -271,6 +276,7 @@ export async function createPrarthnaPatraAtomic(
 
   const created = await getPPById(id);
   if (!created) throw new Error('[PP] Failed to load created PrarthnaPatra');
+  resyncDeadlineAlerts();
   return created;
 }
 
@@ -348,6 +354,7 @@ export async function updatePrarthnaPatra(
 
   // Bug 2 fix — same differential update for accused.
   await _diffUpdateAccused(db, id, input.accused, now);
+  resyncDeadlineAlerts();
 }
 
 export async function deletePrarthnaPatra(id: string): Promise<void> {
@@ -357,6 +364,7 @@ export async function deletePrarthnaPatra(id: string): Promise<void> {
     'UPDATE prarthna_patra SET deleted_at=?, updated_at=?, sync_status=? WHERE id=?',
     [now, now, 'pending', id]
   );
+  resyncDeadlineAlerts();
 }
 
 export async function getPPById(id: string): Promise<PrarthnaPatra | null> {
@@ -462,6 +470,7 @@ export async function saveAction(input: SaveActionInput): Promise<void> {
      WHERE id=?`,
     [newStatus, now, input.prarthna_patra_id]
   );
+  resyncDeadlineAlerts();
 }
 
 export async function getLatestAction(ppId: string): Promise<PPAction | null> {
@@ -513,6 +522,7 @@ export async function saveReport(
      WHERE id=?`,
     [reportPreparationDate, now, ppId]
   );
+  resyncDeadlineAlerts();
 }
 
 // ── Analytics ──────────────────────────────────────────────────────────────
