@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, BackHandler, FlatList, Pressable, ScrollView,
+  ActivityIndicator, BackHandler, FlatList, Platform, Pressable, ScrollView,
   Text, View,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
@@ -36,19 +36,7 @@ const CHIP_INACTIVE_TEXT = { light: '#475569', dark: '#CBD5E1' } as const;
 const CHIP_BORDER        = { light: '#CBD5E1', dark: '#475569' } as const;
 
 
-function fmtTs(ts: number): string {
-  return new Date(ts * 1000).toLocaleDateString('en-IN', {
-    day: '2-digit', month: 'short', year: 'numeric',
-  });
-}
 
-function fmtProceedingDate(str: string | undefined): string {
-  if (!str) return '';
-  const [y, m, d] = str.split('-');
-  if (!y || !m || !d) return str;
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${d} ${months[parseInt(m, 10) - 1]} ${y}`;
-}
 
 const NIRODHATMAK_TYPE_KEYS: Record<string, string> = {
   'बीट सूचना':    'beatInfo',
@@ -110,9 +98,34 @@ function ActionMenu({
 }
 
 // ─── Record Card ──────────────────────────────────────────────────────────
-// Testimonial-style card: date on top, village (highlighted) as the headline,
-// dispute as a marker-highlighted line, sections applied as chips.
+// Village headline (pin + "गाँव का नाम" label), dispute line in a serif Hindi face
+// with an opening quote, then a footer: date (left) and the section badge (right).
 // Village / dispute / sections are read from the editor text (fallbacks: saved fields).
+const CARD_COLORS = {
+  dark: {
+    bg: '#111827', border: '#1E293B', pinBg: '#7F1D1D', pin: '#FCA5A5', muted: '#94A3B8',
+    village: '#4ADE80', dispute: '#F87171', divider: 'rgba(31,41,55,0.5)', badgeBg: '#1E3A8A', badgeFg: '#DBEAFE',
+  },
+  light: {
+    bg: '#FFFFFF', border: '#E5E7EB', pinBg: '#FEE2E2', pin: '#B91C1C', muted: '#64748B',
+    village: '#15803D', dispute: '#DC2626', divider: '#E5E7EB', badgeBg: '#1E3A8A', badgeFg: '#FFFFFF',
+  },
+} as const;
+// "Kokila" is not on phones; Android's serif face carries Noto Serif Devanagari.
+const SERIF_HINDI = Platform.select({ android: 'serif', ios: 'Kohinoor Devanagari', default: 'Kokila, "Noto Serif Devanagari", serif' });
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function cardDate(item: NirodhatmakKaryvahi): string {
+  const raw = item.proceeding_date ?? '';
+  let d: Date | null = null;
+  let m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(raw);
+  if (m) d = new Date(+m[1], +m[2] - 1, +m[3]);
+  else if ((m = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})/.exec(raw))) d = new Date(+m[3], +m[2] - 1, +m[1]);
+  else if (item.created_at) d = new Date(item.created_at < 10000000000 ? item.created_at * 1000 : item.created_at);
+  if (!d || isNaN(d.getTime())) return raw;
+  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
 const KaryvahiCard = memo(function KaryvahiCard({
   item,
   query,
@@ -127,11 +140,9 @@ const KaryvahiCard = memo(function KaryvahiCard({
   onLongPress: () => void;
 }) {
   const { t } = useTranslation();
-  const palette = THEME[scheme];
+  const c = CARD_COLORS[scheme];
   const isDark = scheme === 'dark';
-  const dateStr = item.proceeding_date
-    ? fmtProceedingDate(item.proceeding_date)
-    : fmtTs(item.created_at);
+  const dateStr = cardDate(item);
   const facts = useMemo(
     () => extractKaryvahiFacts(item.editor_content || item.report_text || ''),
     [item.editor_content, item.report_text],
@@ -143,79 +154,71 @@ const KaryvahiCard = memo(function KaryvahiCard({
     : (item.proceeding_type || t('nirodhatmak.type.other'));
   const sections = facts.sections.length ? facts.sections : [typeLabel];
 
-  // Highlight colours (village = module red, dispute = amber marker, sections = indigo)
-  const villageBg = isDark ? '#7F1D1D66' : '#FEE2E2';
-  const villageFg = isDark ? '#FCA5A5' : '#B91C1C';
-  const disputeBg = isDark ? '#78350F66' : '#FEF3C7';
-  const disputeFg = isDark ? '#FDE68A' : '#92400E';
-  const secBg = isDark ? '#312E8166' : '#EEF2FF';
-  const secFg = isDark ? '#A5B4FC' : '#4338CA';
-
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
       delayLongPress={350}
-      className="rounded-2xl active:opacity-80"
+      className="active:opacity-80"
       style={{
-        borderCurve: 'continuous', padding: 16, gap: 12, backgroundColor: palette.card,
-        borderWidth: 1, borderColor: isDark ? palette.border : '#E5E7EB',
-        shadowColor: '#4F46E5', shadowOpacity: isDark ? 0 : 0.06, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
-        elevation: isDark ? 0 : 1,
+        borderCurve: 'continuous', borderRadius: 16, padding: 20, backgroundColor: c.bg,
+        borderWidth: 1, borderColor: c.border,
+        shadowColor: '#000', shadowOpacity: isDark ? 0.35 : 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 6 },
+        elevation: 4,
       }}
       accessibilityRole="button"
-      accessibilityLabel={[village, dispute, dateStr].filter(Boolean).join(', ')}
+      accessibilityLabel={[village, dispute, dateStr, sections.join(', ')].filter(Boolean).join(', ')}
     >
-      {/* Header: icon + village (highlighted) + date */}
-      <View className="flex-row items-center gap-3">
-        <View
-          className="items-center justify-center"
-          style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: villageBg }}
-        >
-          <MapPin size={18} color={villageFg} />
+      {/* 1. Village: pin circle aligned with the label's top edge */}
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
+        <View style={{ width: 20, height: 20, borderRadius: 10, marginTop: 1, backgroundColor: c.pinBg, alignItems: 'center', justifyContent: 'center' }}>
+          <MapPin size={11} color={c.pin} strokeWidth={2.5} />
         </View>
-        <View className="flex-1" style={{ minWidth: 0, gap: 3 }}>
+        <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+          <Text style={{ fontSize: 11, lineHeight: 14, color: c.muted, letterSpacing: 0.2 }}>गाँव का नाम</Text>
           {village ? (
-            <View style={{ alignSelf: 'flex-start', maxWidth: '100%', backgroundColor: villageBg, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 1 }}>
-              <HighlightText
-                text={village}
-                query={query}
-                style={{ fontSize: 15, fontWeight: '700', lineHeight: 22, color: villageFg }}
-                numberOfLines={1}
-              />
-            </View>
+            <HighlightText
+              text={village}
+              query={query}
+              style={{ fontSize: 16, lineHeight: 24, fontWeight: '700', color: c.village }}
+              numberOfLines={2}
+            />
           ) : (
-            <Text style={{ fontSize: 15, fontWeight: '700', lineHeight: 22, color: palette.mutedForeground }} numberOfLines={1}>
+            <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: '700', color: c.muted }} numberOfLines={1}>
               {t('nirodhatmak.card.defaultTitle')}
             </Text>
           )}
-          <View className="flex-row items-center gap-1">
-            <Calendar size={11} color={palette.mutedForeground} />
-            <Text style={{ fontSize: 12, color: palette.mutedForeground }}>{dateStr}</Text>
-          </View>
         </View>
       </View>
 
-      {/* Sections applied */}
-      <View className="flex-row flex-wrap" style={{ gap: 6 }}>
-        {sections.map((sec) => (
-          <View key={sec} style={{ height: 24, paddingHorizontal: 10, borderRadius: 999, justifyContent: 'center', backgroundColor: secBg }}>
-            <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 12, fontWeight: '700', color: secFg }}>{sec}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Dispute — marker highlight */}
+      {/* 2. Dispute — serif Hindi, coral, opening quote */}
       {dispute ? (
-        <View className="flex-row items-start" style={{ gap: 8 }}>
-          <Text style={{ fontSize: 22, lineHeight: 22, color: disputeFg, fontWeight: '800' }}>“</Text>
-          <View style={{ flex: 1, minWidth: 0 }}>
-            <Text textBreakStrategy="simple" numberOfLines={2} style={{ fontSize: 14, lineHeight: 22, color: palette.cardForeground }}>
-              <Text style={{ backgroundColor: disputeBg, color: disputeFg, fontWeight: '700' }}> {dispute} </Text>
-            </Text>
-          </View>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingLeft: 32 }}>
+          <Text style={{ fontFamily: SERIF_HINDI, fontSize: 22, lineHeight: 24, color: c.dispute, fontWeight: '700' }}>“</Text>
+          <Text textBreakStrategy="simple" numberOfLines={2} style={{ flex: 1, fontFamily: SERIF_HINDI, fontSize: 16, lineHeight: 24, color: c.dispute }}>
+            {dispute}
+          </Text>
         </View>
       ) : null}
+
+      {/* 3. Footer: date + section badge */}
+      <View style={{
+        flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+        marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: c.divider,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Calendar size={13} color={c.muted} />
+          <Text style={{ fontSize: 12.5, color: c.muted }}>{dateStr}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1 }}>
+          <View style={{ backgroundColor: c.badgeBg, borderRadius: 4, paddingVertical: 4, paddingHorizontal: 10, flexShrink: 1 }}>
+            <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 11.5, fontWeight: '700', color: c.badgeFg }}>{sections[0]}</Text>
+          </View>
+          {sections.length > 1 ? (
+            <Text style={{ fontSize: 11.5, fontWeight: '700', color: c.muted }}>+{sections.length - 1}</Text>
+          ) : null}
+        </View>
+      </View>
     </Pressable>
   );
 });
