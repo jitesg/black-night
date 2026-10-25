@@ -47,6 +47,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   15-day warning; tests `scripts/test_case_diary_gap.ts`), scheduler `caseDiaryGapService.ts` (cancel + reschedule
   `kind: cd_gap`; run from syncAppNotifications and after case diary / FIR changes via lazy import in the repos),
   tap → `/(app)/mukadma/<firId>/case-diary` (root `_layout.tsx`), setting `notifCaseDiaryGap`, badge in mukadma list.
+- Home bell → `(app)/notifications.tsx` (सूचनाएँ): live cards from `src/lib/noticeCards.ts` (pure; केस डायरी लंबित,
+  न्यायालय/प्रार्थना पत्र overdue or due in 3 days, reminders due today/missed; tests `scripts/test_notice_cards.ts`),
+  data via `src/lib/db/noticeRepo.ts`; bell badge = `noticeBadgeCount`.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

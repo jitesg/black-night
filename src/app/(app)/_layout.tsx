@@ -32,6 +32,7 @@ export default function AppLayout() {
           <Stack.Screen name="workspace-setup" />
           <Stack.Screen name="settings" />
           <Stack.Screen name="reminders" />
+          <Stack.Screen name="notifications" />
           <Stack.Screen name="halka" />
           <Stack.Screen name="map" />
           <Stack.Screen name="mukadma" />

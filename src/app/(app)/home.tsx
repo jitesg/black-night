@@ -27,6 +27,8 @@ import {
 } from '@/lib/db/dashboardRepo';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import { DashboardHeader } from '@/components/common/DashboardHeader';
+import { loadNoticeCards } from '@/lib/db/noticeRepo';
+import { noticeBadgeCount } from '@/lib/noticeCards';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
@@ -298,6 +300,13 @@ export default function HomeScreen() {
   const [searchResults, setSearchResults] = useState<UniversalSearchItem[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Bell badge = सूचनाएँ that need action (overdue / due soon / केस डायरी लंबित).
+  const [noticeCount, setNoticeCount] = useState(0);
+  useFocusEffect(useCallback(() => {
+    let alive = true;
+    loadNoticeCards().then((c) => { if (alive) setNoticeCount(noticeBadgeCount(c)); }).catch(() => {});
+    return () => { alive = false; };
+  }, []));
   const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastBackPressTime = useRef(0);
 
@@ -381,8 +390,8 @@ export default function HomeScreen() {
         <StatusBar style={statusBarStyle} backgroundColor={C.surface} />
         <DashboardHeader
           onMenuPress={() => setDrawerOpen(true)}
-          onBellPress={() => router.push('/(app)/reminders' as never)}
-          unreadCount={0}
+          onBellPress={() => router.push('/(app)/notifications' as never)}
+          unreadCount={noticeCount}
         />
         <View style={{
           paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8,
@@ -408,8 +417,8 @@ export default function HomeScreen() {
       {/* ── Dashboard Header ────────────────────────────────────── */}
       <DashboardHeader
         onMenuPress={() => setDrawerOpen(true)}
-        onBellPress={() => router.push('/(app)/reminders' as never)}
-        unreadCount={reminders.filter(r => r.daysLeft <= 0).length}
+        onBellPress={() => router.push('/(app)/notifications' as never)}
+        unreadCount={noticeCount}
       />
 
       {/* ── Universal Search bar ────────────────────────────────── */}
