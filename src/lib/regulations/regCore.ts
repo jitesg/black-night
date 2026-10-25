@@ -389,7 +389,9 @@ export interface RegSearchItem {
 }
 
 function norm(s: string): string {
-  return toAsciiDigits(s).toLowerCase().replace(/[‐-―]/g, '-').replace(/\s+/g, ' ').trim();
+  // Hindi spelling variants: nukta dropped, ँ → ं (same rules as searchUtils.searchNormalize)
+  return toAsciiDigits(s.normalize('NFD').replace(/\u093C/g, '').replace(/\u0901/g, '\u0902'))
+    .toLowerCase().replace(/[‐-―]/g, '-').replace(/\s+/g, ' ').trim();
 }
 
 /**

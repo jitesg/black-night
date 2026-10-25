@@ -108,6 +108,14 @@ export function matchesQuery(query: string, ...fields: (string | null | undefine
   return tokens.every((t) => hay.includes(t) || soundMatch(t, hay));
 }
 
+/** matchesQuery without the Hinglish sound match (exact words only). */
+export function matchesQueryStrict(query: string, ...fields: (string | null | undefined)[]): boolean {
+  const tokens = queryTokens(query);
+  if (!tokens.length) return true;
+  const hay = fields.map(searchNormalize).join(' \u0001 ');
+  return tokens.every((t) => hay.includes(t));
+}
+
 // Global search options, set from the Settings store (typo tolerance applies everywhere).
 let _typoTolerance = false;
 export function setSearchOptions(opts: { typoTolerance?: boolean }): void {

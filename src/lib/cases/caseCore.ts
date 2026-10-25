@@ -73,7 +73,8 @@ export function buildCaseItems(index: RegIndexData | null, rows: CaseRowLite[]):
 export interface CaseFilter { query?: string; court?: 'all' | Court; topic?: string | null; verifiedOnly?: boolean }
 
 function norm(s: string): string {
-  return s.normalize('NFC').toLowerCase().replace(/[.\s]+/g, ' ').trim();
+  // Hindi spelling variants: nukta dropped, ँ → ं (same rules as searchUtils.searchNormalize)
+  return s.normalize('NFD').replace(/\u093C/g, '').replace(/\u0901/g, '\u0902').toLowerCase().replace(/[.\s]+/g, ' ').trim();
 }
 
 /** Search (name, citation, tags, Hindi/English words, CrPC/BNSS tokens) + court/topic/verified filters. */

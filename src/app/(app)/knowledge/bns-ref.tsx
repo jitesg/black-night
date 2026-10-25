@@ -5,7 +5,7 @@
  */
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { BookOpen, Bot, ChevronDown, ChevronRight, FileText, Search, X } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
@@ -172,9 +172,13 @@ export default function BnsRefScreen() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const c = THEME[colorScheme ?? 'light'];
-  const [input, setInput] = useState('');
-  const [query, setQuery] = useState('');
-  const [mode, setMode] = useState<BnsMode>('ipc');
+  // Opened from a search result: ?mode=bns|ipc|title&q=103
+  const params = useLocalSearchParams<{ q?: string; mode?: string }>();
+  const initialQ = typeof params.q === 'string' ? params.q : '';
+  const initialMode: BnsMode = params.mode === 'bns' || params.mode === 'title' ? params.mode : 'ipc';
+  const [input, setInput] = useState(initialQ);
+  const [query, setQuery] = useState(initialQ);
+  const [mode, setMode] = useState<BnsMode>(initialMode);
   const [selected, setSelected] = useState<BnsRow | null>(null);
   const [askQ, setAskQ] = useState<string | null>(null);
 

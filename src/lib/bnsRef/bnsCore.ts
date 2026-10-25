@@ -120,13 +120,16 @@ export function findBns(rows: BnsRow[], query: string, mode: BnsMode, limit = 50
   const q = query.trim();
   if (!q || !Array.isArray(rows)) return [];
   if (mode === 'title') {
-    const words = q.toLowerCase().split(/\s+/).filter((w) => w.length > 1);
+    // Hindi spelling variants folded (nukta, ँ/ं) like searchUtils.searchNormalize.
+    const fold = (x: string) => x.normalize('NFD').replace(/\u093C/g, '').replace(/\u0901/g, '\u0902').toLowerCase();
+    const words = fold(q).split(/\s+/).filter((w) => w.length > 1);
     if (!words.length) return [];
     const scored: { r: BnsRow; s: number }[] = [];
     for (const r of rows) {
-      const hay = `${r.h ?? ''} ${r.p ?? ''}`.toLowerCase();
+      const head = fold(String(r.h ?? ''));
+      const hay = `${head} ${fold(String(r.p ?? ''))}`;
       let s = 0;
-      for (const w of words) if (hay.includes(w)) s += String(r.h ?? '').toLowerCase().includes(w) ? 2 : 1;
+      for (const w of words) if (hay.includes(w)) s += head.includes(w) ? 2 : 1;
       if (s > 0) scored.push({ r, s });
     }
     return scored.sort((a, b) => b.s - a.s).slice(0, limit).map((x) => x.r);

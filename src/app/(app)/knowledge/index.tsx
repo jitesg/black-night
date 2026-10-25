@@ -15,7 +15,7 @@ import { AppDrawer } from '@/components/common/AppDrawer';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import {
-  getKnowledgeAnalytics, searchKnowledgeAll,
+  getKnowledgeAnalytics,
   type KnowledgeAnalytics, type KnowledgeEntry,
 } from '@/lib/db/knowledgeRepo';
 import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
@@ -27,6 +27,7 @@ import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { isSensitiveId } from '@/lib/regulations/regCore';
+import { KNOWLEDGE_HIT_COLOR, searchAllKnowledge, type KnowledgeHit } from '@/lib/knowledgeSearchAll';
 
 const K_COLOR = '#0F766E';
 const ACCENT = '#1E3A5F';
@@ -160,6 +161,28 @@ function SearchResultRow({
   );
 }
 
+// ─── Other knowledge hits (sections, फर्द, चेकलिस्ट, BNS संदर्भ) ───────────────
+function HitRow({ hit, query }: { hit: KnowledgeHit; query: string }) {
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const color = KNOWLEDGE_HIT_COLOR[hit.kind];
+  return (
+    <Pressable
+      onPress={() => router.push(hit.route as never)}
+      className="bg-card border border-border rounded-2xl px-4 py-3 gap-1 active:opacity-70"
+      style={{ borderCurve: 'continuous' }}
+    >
+      <View className="flex-row items-center gap-2">
+        <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${color}${colorScheme === 'dark' ? '33' : '15'}` }}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: colorScheme === 'dark' ? C.foreground : color }}>{hit.badge}</Text>
+        </View>
+      </View>
+      <HighlightText text={hit.title} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20 }} numberOfLines={2} />
+      {hit.subtitle ? <HighlightText text={hit.subtitle} query={query} style={{ fontSize: 12, lineHeight: 16 }} numberOfLines={2} /> : null}
+    </Pressable>
+  );
+}
+
 // ─── Main Screen ──────────────────────────────────────────────────────────
 export default function KnowledgeHomeScreen() {
   const { t } = useTranslation();
@@ -170,7 +193,8 @@ export default function KnowledgeHomeScreen() {
   const [analytics, setAnalytics] = useState<KnowledgeAnalytics>({});
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<KnowledgeEntry[]>([]);
+  // One search over the whole module (entries, BNS/BNSS/BSA sections, फर्द, चेकलिस्ट, BNS संदर्भ).
+  const [searchResults, setSearchResults] = useState<KnowledgeHit[]>([]);
   const [searching, setSearching] = useState(false);
 
   // Back → Dashboard: module root screens always return to home, never exit app.
@@ -235,10 +259,7 @@ export default function KnowledgeHomeScreen() {
     searchTimer.current = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await searchKnowledgeAll(
-          text,
-          settings.typoTolerance ? { typoTolerance: true } : undefined,
-        );
+        const res = await searchAllKnowledge(text, { typoTolerance: settings.typoTolerance });
         setSearchResults(res);
       } finally {
         setSearching(false);
@@ -251,10 +272,7 @@ export default function KnowledgeHomeScreen() {
     if (searchTimer.current) clearTimeout(searchTimer.current);
     setSearching(true);
     try {
-      const res = await searchKnowledgeAll(
-        query,
-        settings.typoTolerance ? { typoTolerance: true } : undefined,
-      );
+      const res = await searchAllKnowledge(query, { typoTolerance: settings.typoTolerance });
       setSearchResults(res);
     } finally {
       setSearching(false);
@@ -268,7 +286,7 @@ export default function KnowledgeHomeScreen() {
     if (!q0) return;
     setQuery(q0);
     setSearching(true);
-    searchKnowledgeAll(q0, settings.typoTolerance ? { typoTolerance: true } : undefined)
+    searchAllKnowledge(q0, { typoTolerance: settings.typoTolerance })
       .then(setSearchResults)
       .catch(() => {})
       .finally(() => setSearching(false));
@@ -309,7 +327,9 @@ export default function KnowledgeHomeScreen() {
               {searching ? t('knowledge.searching') : t('knowledge.resultCount', { count: searchResults.length })}
             </Text>
           }
-          renderItem={({ item }) => <SearchResultRow item={item} query={query} highlight={settings.highlightMatches} typoTolerant={settings.typoTolerance} />}
+          renderItem={({ item }) => item.entry
+            ? <SearchResultRow item={item.entry} query={query} highlight={settings.highlightMatches} typoTolerant={settings.typoTolerance} />
+            : <HitRow hit={item} query={query} />}
           ListEmptyComponent={
             !searching ? (
               <View className="items-center py-20 gap-2">

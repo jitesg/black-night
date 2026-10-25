@@ -67,6 +67,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `src/lib/db/searchSuggestRepo.ts` pool per route via `scopeForPath`; SearchBar prop `noResults`; setting
   smartSuggestions); FIR search includes accused + case diary text (`searchFirIdsByLinkedText` for the list),
   न्यायालय reports, प्रार्थना पत्र आख्या + कार्यवाही.
+- Knowledge search = `src/lib/knowledgeSearchAll.ts` (`searchAllKnowledge`): knowledge entries + BNS/BNSS/BSA sections
+  (`searchLaw`, section-like queries first) + फर्द + checklists + BNS संदर्भ rows; used by knowledge index and home.
+  Law: `parseBareSectionNumber` ("धारा 103", "u/s 35(3)", १०३); Act screen filter understands it. bns-ref takes ?mode=&q=.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

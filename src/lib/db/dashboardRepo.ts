@@ -32,11 +32,10 @@ import { searchFIRs } from './firRepo';
 import { searchGdEntries } from './gdRepo';
 import { searchNyayalayDocuments } from './nyayalayRepo';
 import { searchPrarthnaPatra } from './prarthnaPatraRepo';
-import { searchKnowledgeAll } from './knowledgeRepo';
 import { searchNirodhatmakKaryvahi } from './nirodhatmakRepo';
 import { globalSearch } from './searchRepo';
-import { matchesQuery } from '@/lib/searchUtils';
 import { parseBareSectionNumber, parseSectionRef, searchLaw } from '@/lib/law/lawLibrary';
+import { searchAllKnowledge, type KnowledgeHit } from '@/lib/knowledgeSearchAll';
 
 // ── Local date helper (timezone-safe) ──────────────────────────────────────
 function localDateString(): string {
@@ -511,7 +510,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
     searchGdEntries(query, 'All').catch(() => []),
     searchNyayalayDocuments(query).catch(() => []),
     searchPrarthnaPatra(query).catch(() => []),
-    searchKnowledgeAll(query).catch(() => []),
+    searchAllKnowledge(query).catch(() => [] as KnowledgeHit[]),
     searchNirodhatmakKaryvahi(query).catch(() => []),
     globalSearch(query).catch(() => []),
   ]);
@@ -558,15 +557,14 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       color: MODULE_COLORS['Prarthna Patra'],
     })
   );
-  // Entries whose title has all the words come first, then words in the title only partly.
-  const titleRank = (title: string) => (matchesQuery(query, title) ? 0 : 1);
-  [...knowledge].sort((a, b) => titleRank(a.title) - titleRank(b.title)).slice(0, SEARCH_MAX_PER_MODULE).forEach((k) =>
+  // Whole knowledge module (entries, फर्द, चेकलिस्ट, BNS संदर्भ); sections are in the Law group.
+  knowledge.filter((k) => k.kind !== 'law').slice(0, SEARCH_MAX_PER_MODULE).forEach((k) =>
     results.push({
       id: k.id,
       module: 'Knowledge',
       title: k.title,
-      subtitle: `${k.category} · ${k.subcategory}`,
-      route: `/(app)/knowledge/${k.id}`,
+      subtitle: [k.badge, k.subtitle].filter(Boolean).join(' · '),
+      route: k.route,
       color: MODULE_COLORS.Knowledge,
     })
   );

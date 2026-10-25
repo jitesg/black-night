@@ -1,6 +1,7 @@
 import { FARD_FILES } from './registry';
 import { parseFardLines } from './parse';
 import type { FardEntry } from './types';
+import { smartMatch } from '@/lib/searchUtils';
 
 let cachedEntries: FardEntry[] | null = null;
 
@@ -34,15 +35,8 @@ export function getFardEntry(code: string): FardEntry | undefined {
  * Devanagari-safe, case-insensitive.
  */
 export function searchFard(q: string): FardEntry[] {
-  const query = (q || '').trim().toLowerCase();
   const entries = getFardEntries();
-  if (!query) return entries;
-
-  return entries.filter((e) => {
-    const nameMatch = e.name.toLowerCase().includes(query);
-    const purposeMatch = e.purpose.toLowerCase().includes(query);
-    const keywordMatch = e.keywords.some((k) => k.toLowerCase().includes(query));
-    const legalMatch = e.legal.toLowerCase().includes(query);
-    return nameMatch || purposeMatch || keywordMatch || legalMatch;
-  });
+  if (!(q || '').trim()) return entries;
+  // Word-by-word, Hindi-aware (searchUtils): every word in name / purpose / keywords / legal / code.
+  return entries.filter((e) => smartMatch(q, [e.name, e.purpose, e.keywords.join(' '), e.legal, e.code]));
 }
