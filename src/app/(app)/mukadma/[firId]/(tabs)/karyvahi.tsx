@@ -320,7 +320,7 @@ function ReasonModal({
           <AlertDialogHeader>
             <AlertDialogTitle>Reason Required</AlertDialogTitle>
             <AlertDialogDescription>
-              Please provide a reason for marking this action as "{statusLabel}".
+              Please provide a reason for marking this action as &quot;{statusLabel}&quot;.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <TextInput
