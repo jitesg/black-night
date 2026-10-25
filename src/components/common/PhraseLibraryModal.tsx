@@ -181,8 +181,10 @@ export function PhraseLibraryModal({
           // 'padding' on Android too: this Modal is its own window, so the
           // sheet must lift itself above the keyboard (it hid behind it).
           behavior="padding"
-          className="flex-col max-h-[88%] bg-card border-t border-border rounded-t-3xl overflow-hidden"
-          style={{ borderCurve: 'continuous' }}
+          className="flex-col bg-card border-t border-border rounded-t-3xl overflow-hidden"
+          // Fixed height: with only a max-height the phrase list (flex-1) got no
+          // space and the sheet showed just the header, search and chips.
+          style={{ borderCurve: 'continuous', height: '92%' }}
         >
           {/* Header */}
           <View className="flex-row items-center justify-between px-5 py-4 border-b border-border">

@@ -401,9 +401,6 @@ const RICH_EDITOR_STYLE = {
 function FullScreenModal({ visible, onClose, value, onChange, title, placeholder }: FullScreenProps) {
   const { t } = useTranslation();
   const { settings } = useSettingsStore();
-  // ── [DEBUG] render trace ─────────────────────────────────────────────────
-  logger.warn('[DocEditor] RENDER visible=' + visible + ' value.length=' +
-    (value?.length ?? 0) + ' valuePreview="' + (value?.slice(0, 50) ?? '') + '"');
 
   const isWeb = process.env.EXPO_OS === 'web';
   const [showPreview, setShowPreview] = useState(false);
@@ -464,10 +461,6 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
     // Capture sequence at start — bail if a newer editor change lands before
     // we reach setContentHTML (stale-effect guard).
     const seqAtStart = changeSeqRef.current;
-    // [DEBUG] log before early-return so we can see every invocation
-    logger.warn('[DocEditor] SYNC EFFECT fired — prepared.length=' + prepared.length +
-      ' lastEmitted.length=' + lastEmittedRef.current.length +
-      ' visible=' + visible + ' editorRef.current=' + (editorRef.current ? 'EXISTS' : 'NULL'));
     // Guard against echoing editor's own content back: compare against the last
     // string the editor itself emitted, not editorHtmlRef (which may have been
     // mutated by a later in-flight bridge event before this comparison runs).
@@ -533,8 +526,6 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
 
   // ── onChange handler ─────────────────────────────────────────────────────
   const handleChange = useCallback((html: string) => {
-    logger.warn('[DocEditor] onChange fired — settingExternalRef=' +
-      settingExternalRef.current + ' html.length=' + html.length);
     if (settingExternalRef.current) return; // programmatic set — ignore echo
 
     // Guard against WebView bridge echo: if HTML hasn't actually changed from
@@ -828,8 +819,6 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
           ) : (
             // ── Native: pell-rich-editor ──────────────────────────────────
             <>
-              {/* [DEBUG] confirm native branch is actually reached */}
-              {logger.warn('[DocEditor] About to render native RichEditor branch, isWeb=' + isWeb) as unknown as null}
               <RichToolbar
                 editor={editorRef}
                 actions={TOOLBAR_ACTIONS}
@@ -837,14 +826,8 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                 iconTint={MUTED}
                 style={styles.toolbar}
               />
-              {/* [DEBUG] log initialContentHTML length each render */}
-              {logger.warn('[DocEditor] RichEditor rendering with initialContentHTML.length=' + initialHtml.length) as unknown as null}
               <RichEditor
-                ref={(instance) => {
-                  logger.warn('[DocEditor] RichEditor callback ref fired, instance=' +
-                    (instance ? 'EXISTS' : 'NULL'));
-                  (editorRef as React.MutableRefObject<RichEditor | null>).current = instance;
-                }}
+                ref={editorRef}
                 initialContentHTML={initialHtml}
                 placeholder={placeholder}
                 onChange={handleChange}
@@ -854,6 +837,12 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                 }}
                 style={styles.richEditor}
                 editorStyle={RICH_EDITOR_STYLE}
+                // Fill the screen and scroll inside the editor. The default container
+                // grew to the text height on every keystroke: long text could not be
+                // scrolled and the re-layout made the screen flicker.
+                useContainer={false}
+                scrollEnabled
+                nestedScrollEnabled
               />
             </>
           )}
@@ -1200,7 +1189,6 @@ const styles = StyleSheet.create({
   },
   richEditor: {
     flex: 1,
-    minHeight: 400,
     paddingHorizontal: 4,
     backgroundColor: 'transparent',
   },
