@@ -28,6 +28,8 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { isSensitiveId } from '@/lib/regulations/regCore';
 import { KNOWLEDGE_HIT_COLOR, searchAllKnowledge, type KnowledgeHit } from '@/lib/knowledgeSearchAll';
+import { buildCaseItems } from '@/lib/cases/caseCore';
+import { getRegIndex } from '@/lib/regulations/regIndex';
 
 const K_COLOR = '#0F766E';
 const ACCENT = '#1E3A5F';
@@ -182,6 +184,9 @@ function HitRow({ hit, query }: { hit: KnowledgeHit; query: string }) {
     </Pressable>
   );
 }
+
+// Court Judgment also holds the police case notes (न्यायिक निर्णय hub).
+const CASE_NOTES_TOTAL = buildCaseItems(getRegIndex(), []).length;
 
 // ─── Main Screen ──────────────────────────────────────────────────────────
 export default function KnowledgeHomeScreen() {
@@ -367,7 +372,7 @@ export default function KnowledgeHomeScreen() {
                   // For Law: include 358 (BNS) + 531 (BNSS) + 170 (BSA) official sections + user notes
                   const displayCount = isLaw
                     ? 358 + 531 + 170 + (analytics['Law'] ?? 0)
-                    : (analytics[categoryId] ?? 0);
+                    : (analytics[categoryId] ?? 0) + (categoryId === 'Court Judgment' ? CASE_NOTES_TOTAL : 0);
                   return (
                     <AnalyticsCard
                       key={categoryId}
@@ -424,7 +429,7 @@ export default function KnowledgeHomeScreen() {
             </Text>
             {KNOWLEDGE_CATEGORIES.map((cat) => {
               const isLaw = cat.id === 'Law';
-              const displayCount = isLaw ? '1059+' : (analytics[cat.id] ?? 0);
+              const displayCount = isLaw ? '1059+' : (analytics[cat.id] ?? 0) + (cat.id === 'Court Judgment' ? CASE_NOTES_TOTAL : 0);
               return (
                 <CategoryRow key={cat.id} cat={cat} count={displayCount} />
               );

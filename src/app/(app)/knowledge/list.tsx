@@ -8,7 +8,7 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  Edit2, Filter, Plus, Trash2, Copy, Shield, User, BookOpen, ChevronRight,
+  Edit2, Filter, Plus, Trash2, Copy, Shield, User, BookOpen, ChevronRight, Gavel,
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { SearchBar } from '@/components/SearchBar';
@@ -35,6 +35,8 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { getRegProgress, getWomenProgress } from '@/lib/regulations/regIndex';
 import { isSensitiveId } from '@/lib/regulations/regCore';
+import { buildCaseItems } from '@/lib/cases/caseCore';
+import { getRegIndex } from '@/lib/regulations/regIndex';
 
 export const KNOWLEDGE_DIAG_BUILD = 'L18D';
 
@@ -256,6 +258,29 @@ function RegulationsEntryCard() {
         </Pressable>
       ))}
     </View>
+  );
+}
+
+/** Court Judgment category: the police case-notes hub (न्यायिक निर्णय) on top. */
+function CasesEntryCard() {
+  const total = buildCaseItems(getRegIndex(), []).length;
+  const color = '#7C3AED';
+  return (
+    <Pressable
+      onPress={() => router.push('/(app)/knowledge/cases' as never)}
+      className="flex-row items-center gap-3 p-4 rounded-2xl border active:opacity-70"
+      style={{ borderCurve: 'continuous', minHeight: 64, borderColor: `${color}40`, backgroundColor: `${color}12` }}
+      accessibilityRole="button"
+    >
+      <View className="w-11 h-11 rounded-xl items-center justify-center" style={{ backgroundColor: `${color}20` }}>
+        <Gavel size={22} color={color} />
+      </View>
+      <View className="flex-1" style={{ minWidth: 0 }}>
+        <Text className="text-[15px] font-bold text-foreground">न्यायिक निर्णय — पुलिस ({total} निर्णय)</Text>
+        <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>SC/HC के फ़ैसले · गिरफ़्तारी, FIR, तलाशी, रिमांड…</Text>
+      </View>
+      <ChevronRight size={18} color={color} />
+    </Pressable>
   );
 }
 
@@ -603,7 +628,7 @@ export default function KnowledgeListScreen() {
           contentInsetAdjustmentBehavior="automatic"
           refreshing={false}
           onRefresh={() => loadData()}
-          ListHeaderComponent={isLawCategory ? <RegulationsEntryCard /> : null}
+          ListHeaderComponent={isLawCategory ? <RegulationsEntryCard /> : category === 'Court Judgment' ? <CasesEntryCard /> : null}
           renderItem={({ item }) => (
             <RecordCard
               item={item}

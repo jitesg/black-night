@@ -111,7 +111,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 ## न्यायिक निर्णय (पुलिस) — case notes (L39)
 - Seeds `assets/seed/cases_seed_<n>.json` (glob in `regSeedFiles.ts`; 1–3 = 21+20+20 = 61 rows) + sidecar `assets/reg/cases_index.json` (61 paras, 18 chapters, part 'CASE', merged in
   `regIndex.ts`). Rows `sys-case-<slug>`, content_type 'case_note', act 'case' in regCore.
-- Hub `knowledge/cases.tsx` (Law library card), pure helpers + tests `src/lib/cases/caseCore.ts`,
+- Hub `knowledge/cases.tsx` (card on top of the Court Judgment category list; moved out of the Law library), pure helpers + tests `src/lib/cases/caseCore.ts`,
   `scripts/test_cases.ts`. Viewer: tab 2 parses ✔ / ✘ / sub-headings (`parseSimpleItems`), sticky
   header shows "# headline" + "(Case — citation)"; related cases chip heading "बाद के निर्णय".
 - Copilot CASE_LOOKUP `src/ai/caseLookup.ts` (full party name, alias list, or a name word next to a

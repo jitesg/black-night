@@ -3,7 +3,7 @@ import { View, Text, Pressable, FlatList, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
-import { BookOpen, Scale, Shield, FileCheck2, ChevronRight, Bookmark, HeartHandshake, Gavel } from 'lucide-react-native';
+import { BookOpen, Scale, Shield, FileCheck2, ChevronRight, Bookmark, HeartHandshake } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { THEME } from '@/lib/theme';
@@ -413,30 +413,6 @@ export default function LawLibraryIndexScreen() {
               );
             })}
           </View>
-
-          {/* न्यायिक निर्णय (पुलिस) — case notes hub (L39) */}
-          <Pressable
-            onPress={() => router.push('/(app)/knowledge/cases' as never)}
-            className="bg-card border border-border rounded-2xl p-5 gap-2 active:opacity-70"
-            style={{ borderCurve: 'continuous', minHeight: 44 }}
-            accessibilityRole="button"
-          >
-            <View className="flex-row items-center gap-3">
-              <View className="w-12 h-12 rounded-xl items-center justify-center" style={{ backgroundColor: '#7C3AED15' }}>
-                <Gavel size={24} color="#7C3AED" />
-              </View>
-              <View className="flex-1" style={{ minWidth: 0 }}>
-                <View className="flex-row items-center gap-2">
-                  <Text className="text-[17px] font-bold text-foreground">न्यायिक निर्णय</Text>
-                  <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#7C3AED15' }}>
-                    <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#7C3AED' }}>पुलिस</Text>
-                  </View>
-                </View>
-                <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>SC/HC के फ़ैसले · गिरफ़्तारी, FIR, तलाशी, रिमांड…</Text>
-              </View>
-              <ChevronRight size={20} color={C.mutedForeground} />
-            </View>
-          </Pressable>
 
           {/* BNS संदर्भ — IPC ↔ BNS finder (Delhi Police BNS Handbook) */}
           <Pressable
