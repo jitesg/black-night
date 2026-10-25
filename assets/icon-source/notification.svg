@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 <mask id="m"><rect width="512" height="512" fill="#fff"/>
-<circle cx="256" cy="108" r="16" fill="#000"/>
-<path d="M256 160l15 30 33 5-24 23 6 33-30-16-30 16 6-33-24-23 33-5z" fill="#000"/>
-<path d="M256 248l15 30 33 5-24 23 6 33-30-16-30 16 6-33-24-23 33-5z" fill="#000"/>
-<rect x="150" y="346" width="212" height="12" fill="#000"/></mask>
-<path d="M166 64h180v320l-90 60-90-60z" fill="#fff" mask="url(#m)"/>
+<circle cx="256" cy="206" r="40" fill="#000"/><rect x="100" y="262" width="312" height="12" fill="#000"/><rect x="100" y="306" width="312" height="10" fill="#000"/></mask>
+<g mask="url(#m)" fill="#fff">
+<path d="M70 196 C140 120 372 120 442 196 L404 262 H108 Z"/>
+<rect x="104" y="262" width="304" height="44"/>
+<path d="M108 316 C170 386 342 386 404 316 Z"/>
+</g>
 </svg>
