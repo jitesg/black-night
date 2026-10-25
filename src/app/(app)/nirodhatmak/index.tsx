@@ -147,7 +147,9 @@ const KaryvahiCard = memo(function KaryvahiCard({
     () => extractKaryvahiFacts(item.editor_content || item.report_text || ''),
     [item.editor_content, item.report_text],
   );
-  const village = facts.village || item.village_name || '';
+  const rawVillage = (facts.village || item.village_name || '').trim();
+  // Shown as "ग्राम <नाम>" (the text extractor drops the word ग्राम).
+  const village = rawVillage && !/^ग्राम/.test(rawVillage) ? `ग्राम ${rawVillage}` : rawVillage;
   const dispute = facts.dispute;
   const typeLabel = NIRODHATMAK_TYPE_KEYS[item.proceeding_type]
     ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type])
