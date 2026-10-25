@@ -1,4 +1,5 @@
 import { getDatabase, generateUUID, nowTimestamp } from './database';
+import { isTypoTolerant, smartMatch, sqlWordFilter } from '@/lib/searchUtils';
 
 // ─── Constants ────────────────────────────────────────────────────────────
 export type NirodhatmakType =
@@ -80,6 +81,8 @@ export async function getNirodhatmakById(id: string): Promise<NirodhatmakKaryvah
  * Search + filter with combined text and type filter.
  * Searches: village_name, proceeding_type, editor_content, format_title, report_text.
  */
+const NK_SEARCH_COLS = ['village_name', 'proceeding_type', 'editor_content', 'format_title', 'report_text'] as const;
+
 export async function searchNirodhatmakKaryvahi(
   query: string,
   typeFilter?: NirodhatmakType | null
@@ -88,14 +91,12 @@ export async function searchNirodhatmakKaryvahi(
   const conditions: string[] = ['deleted_at IS NULL'];
   const params: (string | number)[] = [];
 
-  if (query.trim()) {
-    const q = `%${query.trim().toLowerCase()}%`;
-    conditions.push(
-      `(lower(village_name) LIKE ? OR lower(proceeding_type) LIKE ?
-         OR lower(editor_content) LIKE ? OR lower(format_title) LIKE ?
-         OR lower(report_text) LIKE ?)`
-    );
-    params.push(q, q, q, q, q);
+  // Word-by-word, Hindi-aware (searchUtils); typo tolerance → JS filter only.
+  const typo = isTypoTolerant();
+  if (query.trim() && !typo) {
+    const words = sqlWordFilter([...NK_SEARCH_COLS], query);
+    conditions.push(words.sql);
+    params.push(...words.params);
   }
 
   if (typeFilter) {
@@ -104,10 +105,12 @@ export async function searchNirodhatmakKaryvahi(
   }
 
   const where = conditions.join(' AND ');
-  return db.getAllAsync<NirodhatmakKaryvahi>(
+  const rows = await db.getAllAsync<NirodhatmakKaryvahi>(
     `SELECT * FROM nirodhatmak_karyvahi WHERE ${where} ORDER BY proceeding_date DESC, created_at DESC`,
     params
   );
+  if (!query.trim()) return rows;
+  return rows.filter((r) => smartMatch(query, NK_SEARCH_COLS.map((c) => (r as unknown as Record<string, string | null>)[c]), typo));
 }
 
 export async function createNirodhatmakKaryvahi(

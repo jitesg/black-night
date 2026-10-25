@@ -1,5 +1,5 @@
 import { getDatabase } from './database';
-import { fuzzyMatch, scoredFuzzyMatch } from '@/lib/searchUtils';
+import { isTypoTolerant, matchesQuery, scoredFuzzyMatch, sqlWordFilter } from '@/lib/searchUtils';
 
 export interface SearchResult {
   id: string;
@@ -22,41 +22,44 @@ export async function globalSearch(
   if (!query.trim()) return [];
   const db = await getDatabase();
   const trimmed = query.trim();
-  // When typoTolerance is on, widen the LIKE to a 2-char prefix so fuzzy
-  // candidates are included; post-filter below with fuzzyMatch.
-  const q = opts?.typoTolerance
-    ? `%${trimmed.slice(0, 2).toLowerCase()}%`
-    : `%${trimmed.toLowerCase()}%`;
+  // Word-by-word, Hindi-aware (searchUtils). Typo tolerance: widen to the first
+  // 2 letters and rank with scoredFuzzyMatch below; otherwise a loose word pre-filter
+  // and an exact word check in JS.
+  const typo = opts?.typoTolerance ?? isTypoTolerant();
+  const wf = (col: string) => typo
+    ? { sql: `LOWER(${col}) LIKE ?`, params: [`%${trimmed.slice(0, 2).toLowerCase()}%`] }
+    : sqlWordFilter([col], trimmed);
+  const [wGp, wH, wP, wRp, wSi, wLs] = ['name', 'h.name', 'p.name', 'rp.name', 'si.name', 'ls.shop_name'].map(wf);
 
   // All 6 entity types fetched concurrently — no sequential blocking
   const [gps, hamlets, persons, places, insts, shops] = await Promise.all([
     db.getAllAsync<{ id: string; name: string; tehsil: string; updated_at: number }>(
-      'SELECT id, name, tehsil, updated_at FROM gram_panchayats WHERE LOWER(name) LIKE ? AND deleted_at IS NULL LIMIT 10', [q]
+      'SELECT id, name, tehsil, updated_at FROM gram_panchayats WHERE ' + wGp.sql + ' AND deleted_at IS NULL LIMIT 60', wGp.params
     ),
     db.getAllAsync<{ id: string; name: string; gp_id: string; gp_name: string; updated_at: number }>(
       `SELECT h.id, h.name, h.gp_id, g.name as gp_name, h.updated_at FROM hamlets h
        JOIN gram_panchayats g ON g.id = h.gp_id
-       WHERE LOWER(h.name) LIKE ? AND h.deleted_at IS NULL LIMIT 10`, [q]
+       WHERE ${wH.sql} AND h.deleted_at IS NULL LIMIT 60`, wH.params
     ),
     db.getAllAsync<{ id: string; name: string; person_type: string; gp_id: string; gp_name: string; updated_at: number }>(
       `SELECT p.id, p.name, p.person_type, p.gp_id, g.name as gp_name, p.updated_at FROM persons p
        JOIN gram_panchayats g ON g.id = p.gp_id
-       WHERE LOWER(p.name) LIKE ? AND p.deleted_at IS NULL LIMIT 10`, [q]
+       WHERE ${wP.sql} AND p.deleted_at IS NULL LIMIT 60`, wP.params
     ),
     db.getAllAsync<{ id: string; name: string; category: string; gp_id: string; gp_name: string; updated_at: number }>(
       `SELECT rp.id, rp.name, rp.category, rp.gp_id, g.name as gp_name, rp.updated_at FROM religious_places rp
        JOIN gram_panchayats g ON g.id = rp.gp_id
-       WHERE LOWER(rp.name) LIKE ? AND rp.deleted_at IS NULL LIMIT 10`, [q]
+       WHERE ${wRp.sql} AND rp.deleted_at IS NULL LIMIT 60`, wRp.params
     ),
     db.getAllAsync<{ id: string; name: string; category: string; gp_id: string; gp_name: string; updated_at: number }>(
       `SELECT si.id, si.name, si.category, si.gp_id, g.name as gp_name, si.updated_at FROM social_institutions si
        JOIN gram_panchayats g ON g.id = si.gp_id
-       WHERE LOWER(si.name) LIKE ? AND si.deleted_at IS NULL LIMIT 10`, [q]
+       WHERE ${wSi.sql} AND si.deleted_at IS NULL LIMIT 60`, wSi.params
     ),
     db.getAllAsync<{ id: string; shop_name: string; shop_type: string; gp_id: string; gp_name: string; updated_at: number }>(
       `SELECT ls.id, ls.shop_name, ls.shop_type, ls.gp_id, g.name as gp_name, ls.updated_at FROM liquor_shops ls
        JOIN gram_panchayats g ON g.id = ls.gp_id
-       WHERE LOWER(ls.shop_name) LIKE ? AND ls.deleted_at IS NULL LIMIT 10`, [q]
+       WHERE ${wLs.sql} AND ls.deleted_at IS NULL LIMIT 60`, wLs.params
     ),
   ]);
 
@@ -69,7 +72,7 @@ export async function globalSearch(
   shops.forEach((r) => results.push({ id: r.id, type: 'liquor_shop', title: r.shop_name, subtitle: `${r.shop_type} · ${r.gp_name}`, gp_id: r.gp_id, gp_name: r.gp_name, updated_at: r.updated_at }));
 
   // Post-filter and rank with scoredFuzzyMatch when typoTolerance is on.
-  if (opts?.typoTolerance) {
+  if (typo) {
     return results
       .map((r) => ({ item: r, match: scoredFuzzyMatch(trimmed, `${r.title} ${r.subtitle ?? ''}`) }))
       .filter(({ match }) => match.matched)
@@ -77,7 +80,14 @@ export async function globalSearch(
       .map(({ item }) => item);
   }
 
-  return results;
+  // Exact word check on the name, at most 10 per type (as before).
+  const perType = new Map<string, number>();
+  return results.filter((r) => {
+    if (!matchesQuery(trimmed, r.title)) return false;
+    const n = (perType.get(r.type) ?? 0) + 1;
+    perType.set(r.type, n);
+    return n <= 10;
+  });
 }
 
 /**

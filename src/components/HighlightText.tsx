@@ -4,6 +4,7 @@ import type { StyleProp, TextStyle } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { buildFuzzyHighlightSegments } from '@/lib/searchUtils';
 import { THEME } from '@/lib/theme';
+import { useSettingsStore } from '@/hooks/useSettingsStore';
 
 interface HighlightTextProps {
   text: string;
@@ -20,8 +21,12 @@ export const HighlightText = memo(function HighlightText({
   style,
   highlightStyle,
   numberOfLines,
-  typoTolerant = false,
+  typoTolerant,
 }: HighlightTextProps) {
+  // Settings → Search: highlight on/off and typo tolerance apply everywhere.
+  const { settings } = useSettingsStore();
+  const typo = typoTolerant ?? settings.typoTolerance;
+  const highlightOn = settings.highlightMatches !== false;
   // Mirror the active palette so highlight colours flip with the theme.
   const { colorScheme } = useColorScheme();
   const palette = colorScheme === 'dark' ? THEME.dark : THEME.light;
@@ -39,8 +44,8 @@ export const HighlightText = memo(function HighlightText({
 
   // Segment computation is expensive for long strings — memoize on text + query + typoTolerant.
   const segments = useMemo(
-    () => buildFuzzyHighlightSegments(text, query, typoTolerant),
-    [text, query, typoTolerant]
+    () => buildFuzzyHighlightSegments(text, highlightOn ? query : '', typo),
+    [text, query, typo, highlightOn]
   );
 
   // Fast path: no match → render plain text; avoids creating any <Text> children.

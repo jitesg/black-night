@@ -20,6 +20,7 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
+import { matchesQuery } from '@/lib/searchUtils';
 
 const COLOR = '#0891B2';
 
@@ -149,15 +150,8 @@ export default function ChecklistsIndexScreen() {
     if (sf === 'System') result = result.filter((i) => i.source === 'system');
     else if (sf === 'User') result = result.filter((i) => i.source !== 'system');
     if (q.trim()) {
-      const lq = q.toLowerCase();
-      result = result.filter(
-        (i) =>
-          i.task_name.toLowerCase().includes(lq) ||
-          i.brief_description.toLowerCase().includes(lq) ||
-          i.pairs.some((p) =>
-            p.crimeType.toLowerCase().includes(lq) || p.subType.toLowerCase().includes(lq)
-          )
-      );
+      result = result.filter((i) => matchesQuery(q, i.task_name, i.brief_description,
+        i.pairs.map((p) => `${p.crimeType} ${p.subType}`).join(' ')));
     }
     return result;
   };

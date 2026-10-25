@@ -11,6 +11,7 @@ import {
   ACTS, getSections, type ActId, type SectionItem,
 } from '@/lib/law/lawLibrary';
 import { hasSimple } from '@/lib/law/simpleExplain';
+import { matchesQuery } from '@/lib/searchUtils';
 
 export default function LawActSectionsScreen() {
   const params = useLocalSearchParams<{ act: string }>();
@@ -40,8 +41,7 @@ export default function LawActSectionsScreen() {
 
     return allSections.filter((s) => {
       const matchN = String(s.n).includes(q);
-      const matchTitle = s.title.toLowerCase().includes(q);
-      return matchN || matchTitle;
+      return matchN || matchesQuery(q, s.title);
     });
   }, [allSections, filterText]);
 

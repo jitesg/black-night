@@ -56,6 +56,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   resync from the repos' writes). Replaced the old English one-time court/petition alerts.
 - App-icon badge `src/lib/appBadge.ts` (same count as the bell; scheduled alerts carry the projected count).
   Android `setBadgeCountAsync(0)` clears the whole tray — only called when nothing is showing.
+- Search (owner's A B D F I): `src/lib/searchUtils.ts` — `searchNormalize` (NFD, nukta dropped, ँ→ं, Devanagari
+  digits, punctuation), `matchesQuery`/`smartMatch` = every word anywhere (any order), `sqlWordFilter` = loose LIKE
+  pre-filter (then refine in JS on the same fields), `buildHighlightSegments` per word. Repos (FIR, GD, नि0, न्यायालय,
+  प्रार्थना पत्र, knowledge, halka, formats) use it; tests `scripts/test_search_utils.ts`. SearchBar: per-screen recent
+  searches (`useRecentSearches`, key = route), instantSearch off → search on keyboard submit. Settings typoTolerance →
+  `setSearchOptions` (store), highlightMatches → HighlightText. Home search: module chips, 5 per module + "सब देखें".
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

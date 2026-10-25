@@ -24,6 +24,7 @@ import {
   getNextKaryvahiSortOrder,
   COMMON_INVESTIGATION_CHECKLIST,
 } from '@/lib/db/firKaryvahiRepo';
+import { matchesQuery } from '@/lib/searchUtils';
 
 export default function AddKaryvahiChecklistScreen() {
   const { firId } = useLocalSearchParams<{ firId: string }>();
@@ -88,11 +89,7 @@ export default function AddKaryvahiChecklistScreen() {
   const filteredItems = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return COMMON_INVESTIGATION_CHECKLIST;
-    return COMMON_INVESTIGATION_CHECKLIST.filter(
-      (item) =>
-        item.name.toLowerCase().includes(q) ||
-        item.precautions.toLowerCase().includes(q)
-    );
+    return COMMON_INVESTIGATION_CHECKLIST.filter((item) => matchesQuery(q, item.name, item.precautions));
   }, [query]);
 
   // ── Batch select / deselect available items ─────────────────────────────────

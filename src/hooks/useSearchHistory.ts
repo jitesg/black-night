@@ -58,3 +58,52 @@ export function useSearchHistory() {
 
   return { history, addToHistory, clearHistory, removeFromHistory };
 }
+
+// ─── Per-screen recent searches (SearchBar) ──────────────────────────────────
+const RECENT_PREFIX = 'investsuite:recent_search:';
+const RECENT_MAX = 8;
+const recentCache = new Map<string, string[]>();
+
+/**
+ * Recent searches for one screen (scope = route path). Shown by SearchBar when the
+ * box is focused and empty. Respects settings.searchHistory (off → nothing saved/shown).
+ */
+export function useRecentSearches(scope: string) {
+  const { settings } = useSettingsStore();
+  const key = RECENT_PREFIX + scope;
+  const [items, setItems] = useState<string[]>(() => recentCache.get(key) ?? []);
+
+  useEffect(() => {
+    let alive = true;
+    AsyncStorage.getItem(key).then((raw) => {
+      if (!alive || !raw) return;
+      try {
+        const list = JSON.parse(raw) as string[];
+        recentCache.set(key, list);
+        setItems(list);
+      } catch { /* ignore */ }
+    }).catch(() => {});
+    return () => { alive = false; };
+  }, [key]);
+
+  const save = useCallback((list: string[]) => {
+    recentCache.set(key, list);
+    setItems(list);
+    AsyncStorage.setItem(key, JSON.stringify(list)).catch(() => null);
+  }, [key]);
+
+  const add = useCallback((q: string) => {
+    if (!settings.searchHistory) return;
+    const t = q.trim().replace(/\s+/g, ' ');
+    if (t.length < 2) return;
+    const prev = recentCache.get(key) ?? [];
+    // Typing "रा" → "राम": keep only the longer one.
+    const rest = prev.filter((x) => x !== t && !t.startsWith(x));
+    save([t, ...rest].slice(0, RECENT_MAX));
+  }, [key, save, settings.searchHistory]);
+
+  const remove = useCallback((q: string) => save((recentCache.get(key) ?? []).filter((x) => x !== q)), [key, save]);
+  const clear = useCallback(() => save([]), [save]);
+
+  return { recent: settings.searchHistory ? items : [], add, remove, clear };
+}

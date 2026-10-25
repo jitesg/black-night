@@ -35,6 +35,7 @@ import { searchPrarthnaPatra } from './prarthnaPatraRepo';
 import { searchKnowledgeAll } from './knowledgeRepo';
 import { searchNirodhatmakKaryvahi } from './nirodhatmakRepo';
 import { globalSearch } from './searchRepo';
+import { matchesQuery } from '@/lib/searchUtils';
 
 // ── Local date helper (timezone-safe) ──────────────────────────────────────
 function localDateString(): string {
@@ -497,6 +498,9 @@ export interface UniversalSearchItem {
   color: string;
 }
 
+// Results kept per module (home search shows 5, "सब देखें" shows the rest).
+export const SEARCH_MAX_PER_MODULE = 50;
+
 export async function universalSearch(query: string): Promise<UniversalSearchItem[]> {
   if (!query.trim()) return [];
 
@@ -512,7 +516,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
 
   const results: UniversalSearchItem[] = [];
 
-  firs.slice(0, 5).forEach((f) =>
+  firs.slice(0, SEARCH_MAX_PER_MODULE).forEach((f) =>
     results.push({
       id: f.id,
       module: 'FIR',
@@ -522,7 +526,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       color: MODULE_COLORS.Mukadma,
     })
   );
-  gds.slice(0, 5).forEach((g) =>
+  gds.slice(0, SEARCH_MAX_PER_MODULE).forEach((g) =>
     results.push({
       id: g.id,
       module: 'GD',
@@ -532,7 +536,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       color: MODULE_COLORS.GD,
     })
   );
-  nylDocs.slice(0, 5).forEach((d) =>
+  nylDocs.slice(0, SEARCH_MAX_PER_MODULE).forEach((d) =>
     results.push({
       id: d.id,
       module: 'Nyayalay',
@@ -542,7 +546,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       color: MODULE_COLORS.Nyayalay,
     })
   );
-  ppResults.slice(0, 5).forEach((p) =>
+  ppResults.slice(0, SEARCH_MAX_PER_MODULE).forEach((p) =>
     results.push({
       id: p.id,
       module: 'Prarthna Patra',
@@ -552,7 +556,9 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       color: MODULE_COLORS['Prarthna Patra'],
     })
   );
-  knowledge.slice(0, 5).forEach((k) =>
+  // Entries whose title has all the words come first, then words in the title only partly.
+  const titleRank = (title: string) => (matchesQuery(query, title) ? 0 : 1);
+  [...knowledge].sort((a, b) => titleRank(a.title) - titleRank(b.title)).slice(0, SEARCH_MAX_PER_MODULE).forEach((k) =>
     results.push({
       id: k.id,
       module: 'Knowledge',
@@ -562,7 +568,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       color: MODULE_COLORS.Knowledge,
     })
   );
-  nirodhatmak.slice(0, 5).forEach((n) =>
+  nirodhatmak.slice(0, SEARCH_MAX_PER_MODULE).forEach((n) =>
     results.push({
       id: n.id,
       module: 'Nirodhatmak',
@@ -572,7 +578,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       color: MODULE_COLORS.Nirodhatmak,
     })
   );
-  halkaEntities.slice(0, 5).forEach((h) =>
+  halkaEntities.slice(0, SEARCH_MAX_PER_MODULE).forEach((h) =>
     results.push({
       id: h.id,
       module: 'Halka',

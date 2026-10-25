@@ -31,6 +31,7 @@ import { useFIRContext } from '@/context/FIRContext';
 import { THEME } from '@/lib/theme';
 import { matchDefaultKaryvahi } from '@/lib/karyvahiNames';
 import { getDefaultKnowledge } from '@/lib/defaultKaryvahiKnowledge';
+import { matchesQuery } from '@/lib/searchUtils';
 
 type FilterMode = 'all' | 'pending' | 'completed';
 type ActiveView = 'general' | 'diary';
@@ -1150,9 +1151,7 @@ export default function KaryvahiTab() {
     (item.execution_count ?? 0) > 0 ? 'COMPLETED' : ((item.status as KaryvahiStatus) ?? 'PENDING');
 
   const filtered = useMemo(() => items.filter((it) => {
-    const matchesSearch = query.trim() === '' ||
-      it.name.toLowerCase().includes(query.toLowerCase()) ||
-      (it.precautions ?? '').toLowerCase().includes(query.toLowerCase());
+    const matchesSearch = matchesQuery(query, it.name, it.precautions);
     const s = effectiveStatus(it);
     const matchesFilter =
       filterMode === 'all' ||

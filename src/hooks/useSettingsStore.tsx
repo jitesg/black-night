@@ -24,10 +24,11 @@
  *      No import changes required in any consumer.
  */
 import React, {
-  createContext, useCallback, useContext, useLayoutEffect, useRef, useState,
+  createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colorScheme } from 'nativewind';
+import { setSearchOptions } from '@/lib/searchUtils';
 
 const KEY = 'investsuite:settings_v1';
 
@@ -193,6 +194,11 @@ export function SettingsStoreProvider({ children }: { children: React.ReactNode 
     })();
     return () => { cancelled = true; };
   }, [themeReady]);
+
+  // Search settings that apply app-wide (searchUtils reads them outside React).
+  useEffect(() => {
+    setSearchOptions({ typoTolerance: settings.typoTolerance });
+  }, [settings.typoTolerance]);
 
   const update = useCallback(<K extends keyof SettingsState>(
     key: K,

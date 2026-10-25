@@ -1,4 +1,5 @@
 import { getDatabase, generateUUID, nowTimestamp } from './database';
+import { isTypoTolerant, smartMatch, sqlWordFilter } from '@/lib/searchUtils';
 import { logger } from '../logger';
 
 export interface FIR {
@@ -44,25 +45,22 @@ export async function getAllFIRs(): Promise<FIR[]> {
   );
 }
 
+const FIR_SEARCH_COLS = ['fir_number', 'complainant_name', 'crime_type', 'section', 'complainant_address', 'complainant_mobile', 'ghatnasthal'] as const;
+
+/** Word-by-word, Hindi-aware search (see searchUtils); typo tolerance from Settings. */
 export async function searchFIRs(query: string, statusFilter?: string): Promise<FIR[]> {
   const db = await getDatabase();
-  const q = `%${query.trim().toLowerCase()}%`;
-  if (statusFilter && statusFilter !== 'All') {
-    return db.getAllAsync<FIR>(
-      `SELECT *, (SELECT MAX(d.preparation_date) FROM case_diaries d WHERE d.fir_id = firs.id AND d.deleted_at IS NULL) AS last_diary_date
-       FROM firs WHERE deleted_at IS NULL AND status = ?
-       AND (LOWER(fir_number) LIKE ? OR LOWER(complainant_name) LIKE ? OR LOWER(crime_type) LIKE ? OR LOWER(section) LIKE ?)
-       ORDER BY created_at DESC`,
-      [statusFilter, q, q, q, q]
-    );
-  }
-  return db.getAllAsync<FIR>(
+  const typo = isTypoTolerant();
+  // With typo tolerance the SQL pre-filter would drop near-misses, so filter in JS only.
+  const words = typo ? { sql: '1=1', params: [] as string[] } : sqlWordFilter([...FIR_SEARCH_COLS], query);
+  const status = statusFilter && statusFilter !== 'All';
+  const rows = await db.getAllAsync<FIR>(
     `SELECT *, (SELECT MAX(d.preparation_date) FROM case_diaries d WHERE d.fir_id = firs.id AND d.deleted_at IS NULL) AS last_diary_date
-       FROM firs WHERE deleted_at IS NULL
-     AND (LOWER(fir_number) LIKE ? OR LOWER(complainant_name) LIKE ? OR LOWER(crime_type) LIKE ? OR LOWER(section) LIKE ?)
-     ORDER BY created_at DESC`,
-    [q, q, q, q]
+       FROM firs WHERE deleted_at IS NULL ${status ? 'AND status = ?' : ''} AND ${words.sql}
+      ORDER BY created_at DESC`,
+    [...(status ? [statusFilter as string] : []), ...words.params],
   );
+  return rows.filter((f) => smartMatch(query, FIR_SEARCH_COLS.map((c) => (f as unknown as Record<string, string | null>)[c]), typo));
 }
 
 export async function getFIRById(id: string): Promise<FIR | null> {

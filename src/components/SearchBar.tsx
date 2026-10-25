@@ -13,6 +13,11 @@
  *   • Optional trailing slot (filter/sort icon)
  *   • No platform focus rings — custom ring only
  *   • accessibilityRole="search" + accessibilityLabel
+ *   • Recent searches (per screen) shown under the box when it is focused and
+ *     empty — tap to search again, × to remove one, "सब मिटाएँ" to clear
+ *     (Settings → Search → history)
+ *   • Settings → Search → instant search off: the search runs only when the
+ *     keyboard's search key is pressed
  *
  * TODO: The internal TextInput could be migrated to <Input type="search" />
  * once the universal Input supports: ref-forwarding into an Animated.View
@@ -21,9 +26,9 @@
  * The current Input uses a fixed borderRadius: 12 rectangle and manages
  * focus state internally — incompatible with SearchBar's animated container.
  */
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Platform, Pressable, TextInput, View,
+  Platform, Pressable, ScrollView, Text, TextInput, View,
   type ReturnKeyTypeOptions, type TextStyle, type ViewStyle,
 } from 'react-native';
 import type { StyleProp } from 'react-native';
@@ -34,7 +39,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { Search, X } from 'lucide-react-native';
+import { History, Search, X } from 'lucide-react-native';
+import { usePathname } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { useSettingsStore } from '@/hooks/useSettingsStore';
+import { useRecentSearches } from '@/hooks/useSearchHistory';
 import { useColorScheme } from 'nativewind';
 import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
@@ -93,6 +102,8 @@ export interface SearchBarProps {
   trailing?: React.ReactNode;
   collapsible?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
+  /** Recent-search list key; defaults to the screen's route path. */
+  historyKey?: string;
 }
 
 // Stable base TextInput style — the color is overridden per-render via the
@@ -123,8 +134,45 @@ export const SearchBar = memo(function SearchBar({
   trailing,
   collapsible = false,
   onExpandedChange,
+  historyKey,
 }: SearchBarProps) {
   const C = useSearchTokens();
+  const { t } = useTranslation();
+  const pathname = usePathname();
+  const { settings } = useSettingsStore();
+  const instant = settings.instantSearch !== false;
+  const { recent, add: addRecent, remove: removeRecent, clear: clearRecent } = useRecentSearches(historyKey ?? pathname ?? 'global');
+
+  // Text in the box. Instant search: same as `value`. Otherwise it is a draft
+  // that reaches the screen only when the keyboard's search key is pressed.
+  const [draft, setDraft] = useState(value);
+  useEffect(() => { setDraft(value); }, [value]);
+  const shown = instant ? value : draft;
+  const handleChangeText = useCallback((text: string) => {
+    if (instant) onChangeText(text);
+    else setDraft(text);
+  }, [instant, onChangeText]);
+  const handleSubmit = useCallback(() => {
+    if (!instant) onChangeText(draft);
+    addRecent(instant ? value : draft);
+    onSubmitEditing?.();
+  }, [instant, draft, value, onChangeText, addRecent, onSubmitEditing]);
+  // Instant search: remember a search once typing pauses.
+  useEffect(() => {
+    if (!instant || value.trim().length < 2) return;
+    const id = setTimeout(() => addRecent(value), 1500);
+    return () => clearTimeout(id);
+  }, [instant, value, addRecent]);
+
+  // Recent list shows while focused; hiding waits a moment so a tap on a chip lands.
+  const [showRecent, setShowRecent] = useState(false);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (hideTimer.current) clearTimeout(hideTimer.current); }, []);
+  const pickRecent = useCallback((q: string) => {
+    setDraft(q);
+    onChangeText(q);
+    addRecent(q);
+  }, [onChangeText, addRecent]);
   const inputRef = useRef<TextInput>(null);
   // `focused` (Reanimated shared value) drives the animated container style on
   // the UI thread. `isFocused` (React state) derives the JS-thread icon color.
@@ -138,12 +186,15 @@ export const SearchBar = memo(function SearchBar({
   const isExpanded = collapsible ? expanded : true;
 
   const handleFocus = useCallback(() => {
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    setShowRecent(true);
     setIsFocused(true);
     focused.value = withSpring(1, { damping: 18, stiffness: 220 });
     onFocusProp?.();
   }, [focused, onFocusProp]);
 
   const handleBlur = useCallback(() => {
+    hideTimer.current = setTimeout(() => setShowRecent(false), 250);
     setIsFocused(false);
     focused.value = withSpring(0, { damping: 18, stiffness: 220 });
     onBlurProp?.();
@@ -154,11 +205,14 @@ export const SearchBar = memo(function SearchBar({
   }, [focused, onBlurProp, collapsible, value, onExpandedChange]);
 
   const handleClear = useCallback(() => {
+    setDraft('');
     onChangeText('');
     inputRef.current?.focus();
   }, [onChangeText]);
 
   const handleCollapse = useCallback(() => {
+    setDraft('');
+    setShowRecent(false);
     onChangeText('');
     // Reset the focus look right away; blur can arrive after the input has
     // unmounted, which left the focus border stuck on.
@@ -200,8 +254,39 @@ export const SearchBar = memo(function SearchBar({
     [C, inputStyle],
   );
 
+  const recentRow = showRecent && !shown && recent.length > 0 ? (
+    <View style={{ marginTop: 8, gap: 6 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 4 }}>
+        <Text style={{ fontSize: 11.5, fontWeight: '700', color: C.iconMuted }}>{t('search.recent', 'हाल की खोजें')}</Text>
+        <Pressable onPress={clearRecent} hitSlop={8} accessibilityRole="button">
+          <Text style={{ fontSize: 11.5, fontWeight: '700', color: C.focusBorder }}>{t('search.clearRecent', 'सब मिटाएँ')}</Text>
+        </Pressable>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" contentContainerStyle={{ gap: 6 }}>
+        {recent.map((q) => (
+          <View
+            key={q}
+            style={{
+              flexDirection: 'row', alignItems: 'center', height: 32, borderRadius: 16, borderWidth: 1,
+              borderColor: C.border, backgroundColor: C.surfaceMuted, paddingLeft: 10, paddingRight: 2,
+            }}
+          >
+            <Pressable onPress={() => pickRecent(q)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }} accessibilityRole="button" accessibilityLabel={q}>
+              <History size={12} color={C.iconMuted} />
+              <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 12.5, color: C.foreground, maxWidth: 170 }}>{q}</Text>
+            </Pressable>
+            <Pressable onPress={() => removeRecent(q)} hitSlop={6} style={{ padding: 6 }} accessibilityLabel={t('search.removeRecent', 'हटाएँ')}>
+              <X size={11} color={C.iconMuted} />
+            </Pressable>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  ) : null;
+
   if (!collapsible) {
     return (
+      <View style={containerStyle}>
       <Animated.View
         style={[
           {
@@ -213,15 +298,14 @@ export const SearchBar = memo(function SearchBar({
             height: CONTAINER_HEIGHT,
           },
           animatedContainer,
-          containerStyle,
         ]}
       >
         <Search size={16} color={iconColor} />
 
         <TextInput
           ref={inputRef}
-          value={value}
-          onChangeText={onChangeText}
+          value={shown}
+          onChangeText={handleChangeText}
           placeholder={placeholder}
           placeholderTextColor={C.iconMuted}
           style={mergedInputStyle}
@@ -232,13 +316,13 @@ export const SearchBar = memo(function SearchBar({
           autoCorrect={false}
           autoCapitalize="none"
           returnKeyType={returnKeyType}
-          onSubmitEditing={onSubmitEditing}
+          onSubmitEditing={handleSubmit}
           accessibilityLabel={accessibilityLabel ?? placeholder}
           accessibilityRole="search"
           clearButtonMode="never"
         />
 
-        {value.length > 0 && (
+        {shown.length > 0 && (
           <Pressable
             onPress={handleClear}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -251,6 +335,8 @@ export const SearchBar = memo(function SearchBar({
 
         {trailing}
       </Animated.View>
+      {recentRow}
+      </View>
     );
   }
 
@@ -300,8 +386,8 @@ export const SearchBar = memo(function SearchBar({
 
           <TextInput
             ref={inputRef}
-            value={value}
-            onChangeText={onChangeText}
+            value={shown}
+            onChangeText={handleChangeText}
             placeholder={placeholder}
             placeholderTextColor={C.iconMuted}
             style={mergedInputStyle}
@@ -312,7 +398,7 @@ export const SearchBar = memo(function SearchBar({
             autoCorrect={false}
             autoCapitalize="none"
             returnKeyType={returnKeyType}
-            onSubmitEditing={onSubmitEditing}
+            onSubmitEditing={handleSubmit}
             accessibilityLabel={accessibilityLabel ?? placeholder}
             accessibilityRole="search"
             clearButtonMode="never"
@@ -330,6 +416,7 @@ export const SearchBar = memo(function SearchBar({
           {trailing}
         </Animated.View>
       )}
+      {isExpanded ? recentRow : null}
     </Animated.View>
   );
 });

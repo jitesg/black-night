@@ -21,6 +21,7 @@ import {
 import { navigateToFIRTab } from '@/lib/firNavigation';
 import { ReminderCard } from '@/components/reminders/ReminderCard';
 import { OVERDUE_COLOR, dayLabel, fmtTime, sameDay } from '@/components/reminders/reminderUi';
+import { matchesQuery } from '@/lib/searchUtils';
 
 type Reminder = reminderRepo.Reminder;
 type Tab = 'today' | 'upcoming' | 'all' | 'done';
@@ -139,7 +140,7 @@ export default function RemindersScreen() {
   const sections = useMemo(() => {
     const q = query.trim().toLowerCase();
     const visible = rows.filter((x) => {
-      if (q && !`${x.r.title} ${x.r.note} ${x.r.fir_label}`.toLowerCase().includes(q)) return false;
+      if (q && !matchesQuery(q, x.r.title, x.r.note, x.r.fir_label)) return false;
       if (tab === 'today') return x.group === 'overdue' || x.group === 'today';
       if (tab === 'upcoming') return ['tomorrow', 'week', 'later'].includes(x.group);
       if (tab === 'done') return x.group === 'done';

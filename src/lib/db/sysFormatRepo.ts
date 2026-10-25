@@ -3,6 +3,7 @@
  * Owner-only operations: publish, archive, restore, version snapshots, audit log, stats.
  * Reuses the existing predefined_formats tables — no new format tables.
  */
+import { matchesQuery, smartMatch, sqlWordFilter } from '@/lib/searchUtils';
 import {
   getDatabase,
   dbRunAsync, dbGetFirstAsync, dbGetAllAsync,
@@ -169,10 +170,9 @@ export async function getSysFormats(opts?: {
     params.push(opts.category);
   }
   if (opts?.query) {
-    const q = `%${opts.query.toLowerCase()}%`;
-    sql += ` AND (LOWER(title) LIKE ? OR LOWER(vivran) LIKE ? OR LOWER(sys_category) LIKE ?
-              OR EXISTS (SELECT 1 FROM format_tags st WHERE st.format_id = id AND LOWER(st.tag) LIKE ?))`;
-    params.push(q, q, q, q);
+    const words = sqlWordFilter(['title', 'vivran', 'sys_category', "(SELECT GROUP_CONCAT(st.tag, ' ') FROM format_tags st WHERE st.format_id = predefined_formats.id)"], opts.query);
+    sql += ` AND ${words.sql}`;
+    params.push(...words.params);
   }
 
   const sortMap: Record<string, string> = {
@@ -595,6 +595,12 @@ export async function getPublishedFormatsByTag(tag: string): Promise<FormatWithM
   return enrichFormats(formats);
 }
 
+// Search over title, body, type and tags — word-by-word, Hindi-aware (searchUtils).
+const FORMAT_SEARCH_EXPRS = ['f.title', 'f.vivran', 'f.format_type', "(SELECT GROUP_CONCAT(st.tag, ' ') FROM format_tags st WHERE st.format_id = f.id)"];
+function formatMatches(f: FormatWithMeta, query: string): boolean {
+  return smartMatch(query, [f.title, f.vivran, f.format_type, (f.tags ?? []).join(' ')]);
+}
+
 export async function searchPublishedFormats(
   query: string,
   filter?: string,
@@ -620,10 +626,10 @@ export async function searchPublishedFormats(
   let useJsRanking = false;
 
   if (query.trim()) {
-    const q = `%${query.toLowerCase()}%`;
-    whereSql += ` AND (LOWER(f.title) LIKE ? OR LOWER(f.vivran) LIKE ? OR LOWER(f.format_type) LIKE ?
-               OR EXISTS (SELECT 1 FROM format_tags st WHERE st.format_id = f.id AND LOWER(st.tag) LIKE ?))`;
-    params = [...params, q, q, q, q];
+    // Word-by-word, Hindi-aware pre-filter; exact word check + ranking in JS below.
+    const words = sqlWordFilter(FORMAT_SEARCH_EXPRS, query);
+    whereSql += ` AND ${words.sql}`;
+    params = [...params, ...words.params];
     useJsRanking = true;
     // Final sort applied in JS — DB just needs stable secondary ordering by title.
     orderBy = 'f.title ASC';
@@ -661,13 +667,12 @@ export async function searchPublishedFormats(
   // Rank 1: query found in title  (shown first)
   // Rank 2: query found in a tag  (secondary)
   // Rank 3: query found in vivran / format_type (tertiary)
-  const ql = query.toLowerCase();
   const rank = (f: FormatWithMeta): number => {
-    if (f.title?.toLowerCase().includes(ql)) return 1;
-    if (f.tags?.some((t) => t.toLowerCase().includes(ql))) return 2;
+    if (matchesQuery(query, f.title)) return 1;
+    if (matchesQuery(query, f.title, (f.tags ?? []).join(' '))) return 2;
     return 3;
   };
-  return results.sort((a, b) => {
+  return results.filter((f) => formatMatches(f, query)).sort((a, b) => {
     const dr = rank(a) - rank(b);
     if (dr !== 0) return dr;
     return (a.title ?? '').localeCompare(b.title ?? '');
@@ -681,7 +686,7 @@ export async function searchPublishedFormatsByTypes(
   if (!types.length) return [];
   if (!query.trim()) return getPublishedFormatsByTypes(types);
 
-  const q = `%${query.toLowerCase()}%`;
+  const words = sqlWordFilter(FORMAT_SEARCH_EXPRS, query);
   const placeholders = types.map(() => '?').join(', ');
 
   // Flat query — no subquery, so the Web SQLite stub handles it correctly.
@@ -690,21 +695,19 @@ export async function searchPublishedFormatsByTypes(
     `SELECT f.* FROM predefined_formats f
      WHERE f.deleted_at IS NULL AND ${SQL_IS_PUBLISHED}
        AND f.format_type IN (${placeholders})
-       AND (LOWER(f.title) LIKE ? OR LOWER(f.vivran) LIKE ? OR LOWER(f.format_type) LIKE ?
-            OR EXISTS (SELECT 1 FROM format_tags st WHERE st.format_id = f.id AND LOWER(st.tag) LIKE ?))
+       AND ${words.sql}
      ORDER BY f.title ASC`,
-    [...types, q, q, q, q]
+    [...types, ...words.params]
   );
   const results = await enrichFormats(rawFormats);
 
   // JS-side relevance sort: title match > tag match > vivran match.
-  const ql = query.toLowerCase();
   const rank = (f: FormatWithMeta): number => {
-    if (f.title?.toLowerCase().includes(ql)) return 1;
-    if (f.tags?.some((t) => t.toLowerCase().includes(ql))) return 2;
+    if (matchesQuery(query, f.title)) return 1;
+    if (matchesQuery(query, f.title, (f.tags ?? []).join(' '))) return 2;
     return 3;
   };
-  return results.sort((a, b) => {
+  return results.filter((f) => formatMatches(f, query)).sort((a, b) => {
     const dr = rank(a) - rank(b);
     if (dr !== 0) return dr;
     return (a.title ?? '').localeCompare(b.title ?? '');
@@ -729,7 +732,6 @@ export function mergeFormatsFirst(...lists: FormatWithMeta[][]): FormatWithMeta[
 
 /** Client-side text filter on title + vivran (Hindi-safe, case-insensitive). */
 export function filterFormatsByQuery(list: FormatWithMeta[], q: string): FormatWithMeta[] {
-  const ql = q.trim().toLowerCase();
-  if (!ql) return list;
-  return list.filter((f) => f.title.toLowerCase().includes(ql) || (f.vivran ?? '').toLowerCase().includes(ql));
+  if (!q.trim()) return list;
+  return list.filter((f) => formatMatches(f, q));
 }

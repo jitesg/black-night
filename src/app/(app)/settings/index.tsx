@@ -18,6 +18,7 @@ import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import { SearchBar } from '@/components/SearchBar';
+import { matchesQuery } from '@/lib/searchUtils';
 
 
 // ── Setting Item Definition ───────────────────────────────────────────────
@@ -206,10 +207,7 @@ export default function SettingsScreen() {
     const q = query.toLowerCase().trim();
     if (!q) return null;
     return ALL_SETTINGS.filter(
-      (s) =>
-        t(s.titleKey).toLowerCase().includes(q) ||
-        t(s.descKey).toLowerCase().includes(q) ||
-        s.keywords.some((k) => k.includes(q)),
+      (s) => matchesQuery(q, t(s.titleKey), t(s.descKey), s.keywords.join(' ')),
     );
   }, [query, t]);
 

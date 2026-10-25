@@ -1,5 +1,5 @@
 import { getDatabase, generateUUID, nowTimestamp } from './database';
-import { fuzzyMatch } from '@/lib/searchUtils';
+import { isTypoTolerant, smartMatch, sqlWordFilter } from '@/lib/searchUtils';
 
 // ─── Types ────────────────────────────────────────────────────────────────
 export type GdType = 'रवानगी' | 'वापसी' | 'तस्करा' | 'अन्य';
@@ -144,17 +144,13 @@ export async function searchGdEntries(
   const params: (string | number)[] = [];
   const trimmed = query.trim();
 
-  // Text search
-  if (trimmed) {
-    // When typoTolerance is on, widen the LIKE to a 2-char prefix so fuzzy
-    // candidates are included; post-filter below with fuzzyMatch.
-    const q = opts?.typoTolerance
-      ? `%${trimmed.slice(0, 2).toLowerCase()}%`
-      : `%${trimmed.toLowerCase()}%`;
-    conditions.push(
-      `(LOWER(gd_type) LIKE ? OR LOWER(vivran_content) LIKE ? OR LOWER(preparation_date) LIKE ?)`
-    );
-    params.push(q, q, q);
+  // Text search: word-by-word, Hindi-aware (searchUtils). With typo tolerance
+  // the SQL pre-filter is skipped and the JS filter below decides.
+  const typo = opts?.typoTolerance ?? isTypoTolerant();
+  if (trimmed && !typo) {
+    const words = sqlWordFilter(['gd_type', 'vivran_content', 'preparation_date'], trimmed);
+    conditions.push(words.sql);
+    params.push(...words.params);
   }
 
   // Type filter
@@ -197,12 +193,6 @@ export async function searchGdEntries(
     params
   );
 
-  // Post-filter with fuzzyMatch when typoTolerance is on.
-  if (trimmed && opts?.typoTolerance) {
-    return rows.filter((r) =>
-      fuzzyMatch(trimmed, `${r.gd_type} ${r.vivran_content} ${r.preparation_date}`)
-    );
-  }
-
-  return rows;
+  if (!trimmed) return rows;
+  return rows.filter((r) => smartMatch(trimmed, [r.gd_type, r.vivran_content, r.preparation_date], typo));
 }

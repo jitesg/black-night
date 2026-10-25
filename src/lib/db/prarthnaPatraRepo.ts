@@ -21,7 +21,7 @@ async function _ensureAccusedColumns(db: Awaited<ReturnType<typeof getDatabase>>
     } catch { /* duplicate column — already present, ignore */ }
   }
 }
-import { fuzzyMatch } from '@/lib/searchUtils';
+import { isTypoTolerant, smartMatch, sqlWordFilter } from '@/lib/searchUtils';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -577,52 +577,27 @@ export interface PPSearchOpts {
   typoTolerance?: boolean;
 }
 
+const PP_SEARCH_EXPRS = [
+  'p.registration_number', 'p.petition_type', 'p.matter', 'p.date_of_receipt', 'p.investigator_name',
+  "(SELECT GROUP_CONCAT(c.name || ' ' || c.mobile || ' ' || c.alternate_mobile || ' ' || c.village, ' ') FROM prarthna_patra_complainants c WHERE c.prarthna_patra_id = p.id AND c.deleted_at IS NULL)",
+  "(SELECT GROUP_CONCAT(x.name, ' ') FROM prarthna_patra_accused x WHERE x.prarthna_patra_id = p.id AND x.deleted_at IS NULL)",
+];
+
 export async function searchPrarthnaPatra(
   query: string,
   opts?: PPSearchOpts,
 ): Promise<PPSearchResult[]> {
   const db = await getDatabase();
   const trimmed = query.trim();
-  // When typoTolerance is on, widen to a 2-char prefix; post-filter with fuzzyMatch.
-  const q = opts?.typoTolerance
-    ? `%${trimmed.slice(0, 2).toLowerCase()}%`
-    : `%${trimmed.toLowerCase()}%`;
-
-  // Get matching petition IDs via matter / registration / type
-  const directMatches = await db.getAllAsync<{ id: string }>(
-    `SELECT id FROM prarthna_patra
-     WHERE deleted_at IS NULL
-       AND (lower(registration_number) LIKE ?
-         OR lower(petition_type) LIKE ?
-         OR lower(matter) LIKE ?
-         OR lower(date_of_receipt) LIKE ?)`,
-    [q, q, q, q]
+  // Word-by-word, Hindi-aware SQL pre-filter (searchUtils) over the petition and
+  // its complainants / accused; the exact check runs on the assembled rows below.
+  const typo = opts?.typoTolerance ?? isTypoTolerant();
+  const words = typo || !trimmed ? { sql: '1=1', params: [] as string[] } : sqlWordFilter(PP_SEARCH_EXPRS, trimmed);
+  const matched = await db.getAllAsync<{ id: string }>(
+    `SELECT p.id FROM prarthna_patra p WHERE p.deleted_at IS NULL AND ${words.sql}`,
+    words.params,
   );
-
-  // Complainant matches
-  const complainantMatches = await db.getAllAsync<{ prarthna_patra_id: string }>(
-    `SELECT DISTINCT prarthna_patra_id FROM prarthna_patra_complainants
-     WHERE deleted_at IS NULL
-       AND (lower(name) LIKE ?
-         OR lower(mobile) LIKE ?
-         OR lower(village) LIKE ?
-         OR lower(alternate_mobile) LIKE ?)`,
-    [q, q, q, q]
-  );
-
-  // Accused matches
-  const accusedMatches = await db.getAllAsync<{ prarthna_patra_id: string }>(
-    `SELECT DISTINCT prarthna_patra_id FROM prarthna_patra_accused
-     WHERE deleted_at IS NULL AND lower(name) LIKE ?`,
-    [q]
-  );
-
-  const ids = new Set<string>([
-    ...directMatches.map((r) => r.id),
-    ...complainantMatches.map((r) => r.prarthna_patra_id),
-    ...accusedMatches.map((r) => r.prarthna_patra_id),
-  ]);
-
+  const ids = new Set<string>(matched.map((r) => r.id));
   if (ids.size === 0) return [];
 
   // Bug 6 fix — replace N+1 per-id SELECTs with three bulk IN() queries.
@@ -669,16 +644,12 @@ export async function searchPrarthnaPatra(
     accused:      accusedByPP.get(pp.id) ?? [],
   }));
 
-  // Post-filter with fuzzyMatch when typoTolerance is on.
-  if (trimmed && opts?.typoTolerance) {
-    results = results.filter((pp) => {
-      const haystack = [
-        pp.registration_number, pp.petition_type, pp.matter, pp.date_of_receipt,
-        ...pp.complainants.map((c) => `${c.name} ${c.mobile} ${c.village}`),
-        ...pp.accused.map((a) => a.name),
-      ].join(' ');
-      return fuzzyMatch(trimmed, haystack);
-    });
+  if (trimmed) {
+    results = results.filter((pp) => smartMatch(trimmed, [
+      pp.registration_number, pp.petition_type, pp.matter, pp.date_of_receipt, pp.investigator_name,
+      ...pp.complainants.map((c) => `${c.name} ${c.mobile} ${c.alternate_mobile} ${c.village}`),
+      ...pp.accused.map((x) => x.name),
+    ], typo));
   }
 
   // Sort by created_at desc — same order as before

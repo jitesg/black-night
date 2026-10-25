@@ -19,6 +19,7 @@ import { useFIRContext } from '@/context/FIRContext';
 import { Input } from '@/components/ui/input';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { Progress } from '@/components/ui/progress';
+import { matchesQuery } from '@/lib/searchUtils';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -216,12 +217,7 @@ export default function FIRDetailsTab() {
       const matchCrime = sopSelectedCrime === 'सभी' || s.crime === sopSelectedCrime;
       if (!matchCrime) return false;
       if (!sopSearchQuery.trim()) return true;
-      const q = sopSearchQuery.toLowerCase();
-      return (
-        s.title.toLowerCase().includes(q) ||
-        s.crime.toLowerCase().includes(q) ||
-        s.id.toLowerCase().includes(q)
-      );
+      return matchesQuery(sopSearchQuery, s.title, s.crime, s.id);
     });
   }, [allSops, sopSelectedCrime, sopSearchQuery]);
 

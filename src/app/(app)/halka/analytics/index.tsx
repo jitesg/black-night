@@ -27,6 +27,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { matchesQuery } from '@/lib/searchUtils';
 
 // ─── unified list item shape ───────────────────────────────────────────────
 interface ListItem {
@@ -270,13 +271,7 @@ export default function AnalyticsListScreen() {
 
   // ── filtered list ─────────────────────────────────────────────────────────
   const filtered = query.trim()
-    ? allItems.filter(
-        (i) =>
-          i.title.toLowerCase().includes(query.toLowerCase()) ||
-          i.subtitle.toLowerCase().includes(query.toLowerCase()) ||
-          (i.badge ?? '').toLowerCase().includes(query.toLowerCase()) ||
-          (i.extra ?? '').toLowerCase().includes(query.toLowerCase())
-      )
+    ? allItems.filter((i) => matchesQuery(query, i.title, i.subtitle, i.badge, i.extra))
     : allItems;
 
   // ── row tap → view/edit ───────────────────────────────────────────────────

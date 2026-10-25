@@ -21,7 +21,7 @@ import {
 } from 'lucide-react-native';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import {
-  loadDashboardData, universalSearch,
+  loadDashboardData, universalSearch, SEARCH_MAX_PER_MODULE,
   type DashboardData, type ReminderItem,
   type RecentActivity, type UniversalSearchItem,
 } from '@/lib/db/dashboardRepo';
@@ -33,6 +33,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
 import { SectionHeader, StatusChip, EmptyState, SkeletonList } from '@/components/ui/ds';
+import { Pill } from '@/components/ui/ds/Pill';
 
 // ── Semantic colour aliases — Trust Green palette ─────────────────────────────
 const C_FIXED = {
@@ -276,6 +277,13 @@ function ProductivityBar({ pct }: { pct: number }) {
 }
 
 // ── Main Dashboard ────────────────────────────────────────────────────────────
+// Home search: results shown per module before "सब देखें", and module names.
+const SEARCH_PREVIEW = 5;
+const SEARCH_MODULE_LABEL: Record<string, string> = {
+  FIR: 'मुकदमा', GD: 'GD', Nyayalay: 'न्यायालय', 'Prarthna Patra': 'प्रार्थना पत्र',
+  Knowledge: 'कानूनी ज्ञान', Nirodhatmak: 'निरोधात्मक', Halka: 'मेरा हल्का',
+};
+
 export default function HomeScreen() {
   // Theme-reactive surface tokens — must live inside the component so they
   // re-evaluate when the user switches theme in Appearance settings.
@@ -299,6 +307,9 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<UniversalSearchItem[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  // Home search: module filter chip and modules opened with "सब देखें".
+  const [searchModule, setSearchModule] = useState<string>('all');
+  const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   const [drawerOpen, setDrawerOpen] = useState(false);
   // Bell badge = सूचनाएँ that need action (overdue / due soon / केस डायरी लंबित).
   const [noticeCount, setNoticeCount] = useState(0);
@@ -351,7 +362,8 @@ export default function HomeScreen() {
   const handleSearchChange = useCallback((text: string) => {
     setSearchQuery(text);
     if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
-    if (!text.trim()) { setSearchResults([]); return; }
+    setExpandedModules(new Set());
+    if (!text.trim()) { setSearchResults([]); setSearchModule('all'); return; }
     searchTimerRef.current = setTimeout(async () => {
       setSearchLoading(true);
       try {
@@ -380,7 +392,21 @@ export default function HomeScreen() {
       bucket.push(item);
       map.set(item.module, bucket);
     }
-    return Array.from(map.entries()).map(([title, data]) => ({ title, data }));
+    const groups = Array.from(map.entries()).map(([module, items]) => ({ module, items }));
+    const visible = searchModule === 'all' ? groups : groups.filter((g) => g.module === searchModule);
+    return visible.map(({ module, items }) => {
+      const open = searchModule !== 'all' || expandedModules.has(module) || items.length <= SEARCH_PREVIEW;
+      return {
+        title: `${SEARCH_MODULE_LABEL[module] ?? module} (${items.length}${items.length >= SEARCH_MAX_PER_MODULE ? '+' : ''})`,
+        module, total: items.length, more: open ? 0 : items.length - SEARCH_PREVIEW,
+        data: open ? items : items.slice(0, SEARCH_PREVIEW),
+      };
+    });
+  }, [searchResults, searchModule, expandedModules]);
+  const searchModuleCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of searchResults) counts.set(item.module, (counts.get(item.module) ?? 0) + 1);
+    return Array.from(counts.entries());
   }, [searchResults]);
 
   // ── Loading skeleton ───────────────────────────────────────────────────────
@@ -451,6 +477,34 @@ export default function HomeScreen() {
             <SectionList
               removeClippedSubviews
               sections={searchSections}
+              keyboardShouldPersistTaps="handled"
+              ListHeaderComponent={
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 6, paddingTop: 10 }}>
+                  {[['all', searchResults.length] as [string, number], ...searchModuleCounts].map(([m, n]) => (
+                    <Pill
+                      key={m}
+                      size="sm"
+                      label={m === 'all' ? t('common.all', 'सभी') : (SEARCH_MODULE_LABEL[m] ?? m)}
+                      count={n}
+                      selected={searchModule === m}
+                      outline={searchModule !== m}
+                      tone="primary"
+                      onPress={() => setSearchModule(m)}
+                    />
+                  ))}
+                </ScrollView>
+              }
+              renderSectionFooter={({ section }) => section.more > 0 ? (
+                <Pressable
+                  onPress={() => setExpandedModules((prev) => new Set(prev).add(section.module))}
+                  style={{ paddingVertical: 8, alignItems: 'flex-start' }}
+                  accessibilityRole="button"
+                >
+                  <Text style={{ ...T.caption1, fontWeight: '700', color: C.action }}>
+                    {t('home.searchSeeAll', 'सब देखें')} (+{section.more}) →
+                  </Text>
+                </Pressable>
+              ) : null}
               keyExtractor={(item) => `${item.module}-${item.id}`}
               contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 40 }}
               showsVerticalScrollIndicator={false}

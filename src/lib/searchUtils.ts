@@ -1,61 +1,170 @@
 /**
  * Universal Smart Search Utilities
- * - Normalize queries: ignore case, collapse whitespace
+ * - Normalize queries: Hindi-aware (nukta, ँ/ं, Devanagari digits), case, whitespace
+ * - matchesQuery / smartMatch: word-by-word match (all words, any order)
+ * - sqlWordFilter: loose SQL LIKE pre-filter for the same rules
  * - matchesQuery: multi-field substring match
  * - fuzzyMatch: token-level Levenshtein distance for typo tolerance
  * - Highlight segments for HighlightText component
  */
 
-/** Normalize a search string: lowercase + collapse all whitespace to single space + trim */
+// ─── Hindi-aware normalisation ────────────────────────────────────────────
+// Same rules for the query and the text, so spelling variants match:
+//   • Unicode NFD, then the nukta (़) is dropped: ड़ (one or two code points) = ड
+//   • chandrabindu (ँ) → anusvara (ं): पाँच = पांच
+//   • Devanagari digits → 0-9: १२३ = 123, उ०नि० = उ0नि0
+//   • zero-width joiners and soft hyphens removed
+//   • punctuation (. , ; : ( ) । …) → space; '/' and '-' are kept (123/26)
+//   • lower-case, whitespace collapsed
+const DEV_DIGITS = '०१२३४५६७८९';
+
+export function searchNormalize(s: string | null | undefined): string {
+  if (!s) return '';
+  return String(s)
+    .normalize('NFD')
+    .replace(/़/g, '')
+    .replace(/ँ/g, 'ं')
+    .replace(/[०-९]/g, (d) => String(DEV_DIGITS.indexOf(d)))
+    .replace(/[​-‍­﻿]/g, '')
+    .replace(/[.,;:!?()[\]{}"'`|।॥]/g, ' ')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Normalize a search string (Hindi-aware, see searchNormalize). */
 export function normalizeQuery(q: string): string {
-  return q.replace(/\s+/g, ' ').trim().toLowerCase();
+  return searchNormalize(q);
 }
 
 /** Normalize a haystack field the same way */
 export function normalizeText(text: string | null | undefined): string {
-  if (!text) return '';
-  return text.replace(/\s+/g, ' ').trim().toLowerCase();
+  return searchNormalize(text);
+}
+
+/** Query → search words (normalised, empty words dropped). */
+export function queryTokens(q: string): string[] {
+  return searchNormalize(q).split(' ').filter(Boolean);
 }
 
 /**
- * Returns true if any of the provided fields contains the normalized query.
- * Handles null/undefined fields gracefully.
- * Ignores case, extra spaces, leading/trailing spaces.
+ * Word-by-word match: true when EVERY word of the query appears somewhere in
+ * the given fields (any order, any field). "राम सिंह" finds "राम प्रसाद सिंह".
+ * Hindi spelling variants are folded (searchNormalize). Null fields are ignored.
  */
 export function matchesQuery(query: string, ...fields: (string | null | undefined)[]): boolean {
-  const nq = normalizeQuery(query);
-  if (!nq) return true;
-  return fields.some((f) => normalizeText(f).includes(nq));
+  const tokens = queryTokens(query);
+  if (!tokens.length) return true;
+  const hay = fields.map(searchNormalize).join(' \u0001 ');
+  return tokens.every((t) => hay.includes(t));
+}
+
+// Global search options, set from the Settings store (typo tolerance applies everywhere).
+let _typoTolerance = false;
+export function setSearchOptions(opts: { typoTolerance?: boolean }): void {
+  if (opts.typoTolerance != null) _typoTolerance = opts.typoTolerance;
+}
+export function isTypoTolerant(): boolean { return _typoTolerance; }
+
+/**
+ * matchesQuery + typo tolerance: a word may also match a text word with one
+ * wrong letter (words of 4+ letters) when typo tolerance is on.
+ */
+export function smartMatch(query: string, fields: (string | null | undefined)[], typo: boolean = _typoTolerance): boolean {
+  if (matchesQuery(query, ...fields)) return true;
+  if (!typo) return false;
+  const tokens = queryTokens(query);
+  const words = fields.map(searchNormalize).join(' ').split(' ').filter(Boolean);
+  return tokens.every((t) => words.some((w) => w.includes(t) || (t.length >= 4 && levenshtein(t, w) <= 1)));
+}
+
+/**
+ * Same as smartMatch, for a haystack that is already searchNormalize()d
+ * (lets big lists cache their normalised text instead of re-normalising per keystroke).
+ */
+export function matchNormalized(query: string, normalizedHay: string, typo: boolean = _typoTolerance): boolean {
+  const tokens = queryTokens(query);
+  if (!tokens.length) return true;
+  if (tokens.every((t) => normalizedHay.includes(t))) return true;
+  if (!typo) return false;
+  const words = normalizedHay.split(' ');
+  return tokens.every((t) => normalizedHay.includes(t) || (t.length >= 4 && words.some((w) => levenshtein(t, w) <= 1)));
+}
+
+// ─── SQL pre-filter ───────────────────────────────────────────────────────
+// SQLite LIKE cannot fold Hindi spelling, so each word becomes a loose LIKE
+// pattern (letters that can carry a nukta → %, ं/ँ and digits → _); the caller
+// then keeps only real matches with matchesQuery / smartMatch on the same fields.
+const NUKTA_BASES = 'कखगजडढफयर';
+
+function likeSkeleton(token: string): string {
+  let out = '';
+  for (const ch of token) {
+    if (NUKTA_BASES.includes(ch)) out += '%';
+    else if (ch === 'ं') out += '_';
+    else if (/[0-9]/.test(ch)) out += '_';
+    else if (ch === '%' || ch === '_' || ch === '\\') out += `\\${ch}`;
+    else out += ch;
+  }
+  return `%${out}%`.replace(/%+/g, '%');
+}
+
+/**
+ * WHERE fragment requiring every query word to (loosely) appear in one of the
+ * SQL expressions. Returns { sql: '1=1', params: [] } for an empty query.
+ */
+export function sqlWordFilter(exprs: string[], query: string): { sql: string; params: string[] } {
+  const tokens = queryTokens(query);
+  if (!tokens.length || !exprs.length) return { sql: '1=1', params: [] };
+  const params: string[] = [];
+  const parts = tokens.map((t) => {
+    const pat = likeSkeleton(t);
+    params.push(...exprs.map(() => pat));
+    return `(${exprs.map((e) => `LOWER(COALESCE(${e}, '')) LIKE ? ESCAPE '\\'`).join(' OR ')})`;
+  });
+  return { sql: parts.join(' AND '), params };
 }
 
 export type HighlightSegment = { text: string; highlighted: boolean };
 
+// Regex that finds a normalised word inside the original text (any spelling variant).
+const PRECOMPOSED: Record<string, string> = {
+  'क': 'क़', 'ख': 'ख़', 'ग': 'ग़', 'ज': 'ज़', 'ड': 'ड़', 'ढ': 'ढ़', 'फ': 'फ़', 'य': 'य़',
+};
+function escapeRe(ch: string): string { return ch.replace(/[.*+?^${}()|[\]\\/-]/g, '\\$&'); }
+function tokenRegexSource(token: string): string {
+  let src = '';
+  for (const ch of token) {
+    if (/[0-9]/.test(ch)) src += `[${ch}${DEV_DIGITS[Number(ch)]}]`;
+    else if (ch === 'ं') src += '[ंँ]';
+    else if (PRECOMPOSED[ch]) src += `(?:${ch}़?|${PRECOMPOSED[ch]})`;
+    else if (/[क-ह]/.test(ch)) src += `${ch}़?`;
+    else src += escapeRe(ch);
+    src += '[​-‍]?';
+  }
+  return src;
+}
+
 /**
- * Split `text` into segments, marking which parts match the query.
- * Used by HighlightText to render coloured spans.
+ * Split `text` into segments, marking every place where a query word matches
+ * (word-by-word, Hindi spelling variants included). Used by HighlightText.
  */
 export function buildHighlightSegments(text: string, query: string): HighlightSegment[] {
-  const nq = normalizeQuery(query);
-  if (!nq || !text) return [{ text, highlighted: false }];
-
+  const tokens = queryTokens(query).sort((a, b) => b.length - a.length);
+  if (!tokens.length || !text) return [{ text, highlighted: false }];
+  let re: RegExp;
+  try { re = new RegExp(tokens.map(tokenRegexSource).join('|'), 'gi'); } catch { return [{ text, highlighted: false }]; }
   const segments: HighlightSegment[] = [];
-  const lower = text.toLowerCase();
   let cursor = 0;
-
-  while (cursor < text.length) {
-    const idx = lower.indexOf(nq, cursor);
-    if (idx === -1) {
-      segments.push({ text: text.slice(cursor), highlighted: false });
-      break;
-    }
-    if (idx > cursor) {
-      segments.push({ text: text.slice(cursor, idx), highlighted: false });
-    }
-    segments.push({ text: text.slice(idx, idx + nq.length), highlighted: true });
-    cursor = idx + nq.length;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (!m[0]) { re.lastIndex += 1; continue; }
+    if (m.index > cursor) segments.push({ text: text.slice(cursor, m.index), highlighted: false });
+    segments.push({ text: m[0], highlighted: true });
+    cursor = m.index + m[0].length;
   }
-
-  return segments;
+  if (cursor < text.length) segments.push({ text: text.slice(cursor), highlighted: false });
+  return segments.length ? segments : [{ text, highlighted: false }];
 }
 
 // ─── Levenshtein distance (iterative, memory-optimised two-row) ───────────

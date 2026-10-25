@@ -1,5 +1,5 @@
 import { getDatabase, generateUUID, nowTimestamp } from './database';
-import { fuzzyMatch } from '@/lib/searchUtils';
+import { isTypoTolerant, smartMatch, sqlWordFilter } from '@/lib/searchUtils';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -540,44 +540,32 @@ export interface NyayalaySearchOpts {
   typoTolerance?: boolean;
 }
 
+const NYL_PERSONS_EXPR = "(SELECT GROUP_CONCAT(np.name, ' ') FROM nyayalay_persons np WHERE np.doc_id = nd.id AND np.deleted_at IS NULL)";
+const NYL_SEARCH_COLS = [
+  'nd.court_name', 'nd.vad_sankhya', 'nd.apradh_sankhya', 'nd.fir_number', 'nd.doc_type',
+  'nd.document_title', 'nd.matter', 'nd.registration_number', 'nd.applicable_sections', NYL_PERSONS_EXPR,
+];
+
+/** Word-by-word, Hindi-aware search (searchUtils); person names included. */
 export async function searchNyayalayDocuments(
   query: string,
   opts?: NyayalaySearchOpts,
 ): Promise<NyayalayDocument[]> {
   const db = await getDatabase();
   const trimmed = query.trim();
-  // When typoTolerance is on, widen to a 2-char prefix; post-filter with fuzzyMatch.
-  const q = opts?.typoTolerance
-    ? `%${trimmed.slice(0, 2).toLowerCase()}%`
-    : `%${trimmed.toLowerCase()}%`;
-
-  const docs = await db.getAllAsync<NyayalayDocument>(
-    `SELECT DISTINCT nd.* FROM nyayalay_documents nd
-     LEFT JOIN nyayalay_persons np ON np.doc_id = nd.id AND np.deleted_at IS NULL
-     WHERE nd.deleted_at IS NULL AND (
-       LOWER(nd.court_name) LIKE ?
-       OR LOWER(nd.vad_sankhya) LIKE ?
-       OR LOWER(nd.apradh_sankhya) LIKE ?
-       OR LOWER(nd.fir_number) LIKE ?
-       OR LOWER(nd.doc_type) LIKE ?
-       OR LOWER(nd.document_title) LIKE ?
-       OR LOWER(nd.matter) LIKE ?
-       OR LOWER(nd.registration_number) LIKE ?
-       OR LOWER(np.name) LIKE ?
-     )
+  const typo = opts?.typoTolerance ?? isTypoTolerant();
+  // With typo tolerance the SQL pre-filter would drop near-misses, so filter in JS only.
+  const words = typo ? { sql: '1=1', params: [] as string[] } : sqlWordFilter(NYL_SEARCH_COLS, trimmed);
+  const docs = await db.getAllAsync<NyayalayDocument & { _persons: string | null }>(
+    `SELECT nd.*, ${NYL_PERSONS_EXPR} AS _persons FROM nyayalay_documents nd
+     WHERE nd.deleted_at IS NULL AND ${words.sql}
      ORDER BY nd.created_at DESC`,
-    [q, q, q, q, q, q, q, q, q]
+    words.params,
   );
-
-  // Post-filter with fuzzyMatch when typoTolerance is on.
-  if (trimmed && opts?.typoTolerance) {
-    return docs.filter((d) =>
-      fuzzyMatch(trimmed, [
-        d.court_name, d.vad_sankhya, d.apradh_sankhya, d.fir_number,
-        d.doc_type, d.document_title, d.matter, d.registration_number,
-      ].join(' '))
-    );
-  }
-
-  return docs;
+  return docs
+    .filter((d) => !trimmed || smartMatch(trimmed, [
+      d.court_name, d.vad_sankhya, d.apradh_sankhya, d.fir_number, d.doc_type,
+      d.document_title, d.matter, d.registration_number, d.applicable_sections, d._persons,
+    ], typo))
+    .map(({ _persons: _p, ...d }) => d as NyayalayDocument);
 }

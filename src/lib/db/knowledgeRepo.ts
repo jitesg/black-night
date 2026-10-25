@@ -1,6 +1,6 @@
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 import { recordFirstKnowledgeCountQueryTime } from './seedManager';
-import { fuzzyMatch } from '@/lib/searchUtils';
+import { isTypoTolerant, matchNormalized, searchNormalize } from '@/lib/searchUtils';
 import { getCanonicalCategory, getCategoryVariants } from '@/lib/knowledgeConstants';
 import { logger } from '@/lib/logger';
 import { getAllKnowledgeNotesMap } from './knowledgeNotesRepo';
@@ -487,6 +487,18 @@ export interface KnowledgeSearchOpts {
   typoTolerance?: boolean;
 }
 
+// Normalised search text per entry, cached by id + updated_at + note (long law texts
+// are not re-normalised on every keystroke). Word-by-word, Hindi-aware matching.
+const _hayCache = new Map<string, { key: string; hay: string }>();
+function knowledgeHay(r: KnowledgeEntry, note: string): string {
+  const key = `${r.updated_at ?? ''}|${note.length}|${note.slice(0, 32)}`;
+  const hit = _hayCache.get(r.id);
+  if (hit && hit.key === key) return hit.hay;
+  const hay = searchNormalize(`${r.title} ${r.tags} ${r.description ?? ''} ${r.crime_type ?? ''} ${note}`);
+  _hayCache.set(r.id, { key, hay });
+  return hay;
+}
+
 export async function searchKnowledge(
   category: string,
   query: string,
@@ -511,15 +523,8 @@ export async function searchKnowledge(
     }
 
     if (trimmed) {
-      filtered = filtered.filter((r) => {
-        const note = notesMap.get(r.id) ?? '';
-        const text = `${r.title} ${r.tags} ${r.description ?? ''} ${r.crime_type ?? ''} ${note}`.toLowerCase();
-        if (text.includes(trimmed)) return true;
-        if (opts?.typoTolerance) {
-          return fuzzyMatch(trimmed, text);
-        }
-        return false;
-      });
+      const typo = opts?.typoTolerance ?? isTypoTolerant();
+      filtered = filtered.filter((r) => matchNormalized(trimmed, knowledgeHay(r, notesMap.get(r.id) ?? ''), typo));
     }
 
     return filtered;
@@ -541,15 +546,8 @@ export async function searchKnowledgeAll(
 
     let filtered = items;
     if (trimmed) {
-      filtered = filtered.filter((r) => {
-        const note = notesMap.get(r.id) ?? '';
-        const text = `${r.title} ${r.tags} ${r.description ?? ''} ${r.crime_type ?? ''} ${note}`.toLowerCase();
-        if (text.includes(trimmed)) return true;
-        if (opts?.typoTolerance) {
-          return fuzzyMatch(trimmed, text);
-        }
-        return false;
-      });
+      const typo = opts?.typoTolerance ?? isTypoTolerant();
+      filtered = filtered.filter((r) => matchNormalized(trimmed, knowledgeHay(r, notesMap.get(r.id) ?? ''), typo));
     }
 
     filtered.sort((a, b) => (b.updated_at || 0) - (a.updated_at || 0));
