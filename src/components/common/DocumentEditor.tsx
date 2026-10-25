@@ -62,6 +62,7 @@ import { PhraseLibraryModal } from './PhraseLibraryModal';
 import { incrementUsage } from '@/lib/db/phraseLibraryRepo';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useTranslation } from 'react-i18next';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const NAVY   = '#1E3A5F';
@@ -335,7 +336,7 @@ function PrintPreviewModal({ visible, onClose, value, title }: PrintPreviewProps
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
-      <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <View style={{ paddingBottom: NAV_BAR_INSET, flex: 1, backgroundColor: colors.background }}>
         <View style={{
           paddingTop: 52, paddingBottom: T.space.md - 4, paddingHorizontal: T.space.md,
           flexDirection: 'row', alignItems: 'center', gap: T.space.sm + 2,
@@ -674,7 +675,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
         <KeyboardAvoidingView
           behavior={process.env.EXPO_OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={process.env.EXPO_OS === 'ios' ? HEADER_HEIGHT : 0}
-          style={{ flex: 1, backgroundColor: colors.card }}
+          style={{ flex: 1, backgroundColor: colors.card, paddingBottom: NAV_BAR_INSET }}
         >
           {/* ── Header ── */}
           <View style={{
@@ -873,7 +874,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
         transparent
         onRequestClose={() => setExpandPreview(null)}
       >
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' }}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end', paddingBottom: NAV_BAR_INSET }}>
           <KeyboardAvoidingView
             behavior={process.env.EXPO_OS === 'ios' ? 'padding' : undefined}
             style={{

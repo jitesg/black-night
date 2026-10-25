@@ -11,7 +11,6 @@ import { useCallback, useState } from 'react';
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   BookOpen, CheckCircle2, FileEdit, Archive, Plus, List,
   FolderOpen, Clock, BarChart3, LogOut, Download, Upload,
@@ -81,7 +80,6 @@ function formatDate(ts: number): string {
 }
 
 export default function SysKnowledgeDashboard() {
-  const insets = useSafeAreaInsets();
   const [stats, setStats]     = useState<SysKnowledgeStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -113,7 +111,7 @@ export default function SysKnowledgeDashboard() {
       ) : (
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 32, gap: 20, paddingTop: 20 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 20, paddingTop: 20 }}
         >
           {/* ── Stat cards ─────────────────────────────────────────────── */}
           <View className="flex-row gap-3">

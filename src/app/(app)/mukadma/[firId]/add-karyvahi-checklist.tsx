@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import { Check, CheckCircle2, Search, X, ListChecks } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
@@ -29,7 +28,6 @@ import { matchesQuery } from '@/lib/searchUtils';
 export default function AddKaryvahiChecklistScreen() {
   const { firId } = useLocalSearchParams<{ firId: string }>();
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme ?? 'light'];
 
@@ -233,7 +231,7 @@ export default function AddKaryvahiChecklistScreen() {
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: insets.bottom + 100 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 100 }}
           keyboardShouldPersistTaps="handled"
         >
           <View

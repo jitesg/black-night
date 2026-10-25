@@ -6,7 +6,6 @@
  */
 import React, { createContext, memo, useCallback, useContext, useRef, useState } from 'react';
 import { Animated, Pressable, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CheckCircle, AlertCircle, Info, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
@@ -68,7 +67,6 @@ export function Snackbar({ children }: SnackbarProps) {
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const insets = useSafeAreaInsets();
 
   const hide = useCallback(() => {
     Animated.parallel([
@@ -100,7 +98,7 @@ export function Snackbar({ children }: SnackbarProps) {
         <Animated.View
           style={{
             position: 'absolute', left: 16, right: 16,
-            bottom: insets.bottom + 16,
+            bottom: 16, // root view already sits above the navigation bar
             opacity, transform: [{ translateY }],
             zIndex: 9999,
           }}

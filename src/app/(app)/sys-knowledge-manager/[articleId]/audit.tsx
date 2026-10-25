@@ -111,7 +111,7 @@ export default function AuditTrailScreen() {
           keyExtractor={a => a.id}
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={{
-            paddingHorizontal: 16, paddingTop: 16, paddingBottom: insets.bottom + 32,
+            paddingHorizontal: 16, paddingTop: 16, paddingBottom: 32,
           }}
           ListEmptyComponent={
             <View className="items-center py-16 gap-3">

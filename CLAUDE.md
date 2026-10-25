@@ -31,7 +31,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 
 ## Android lessons already learned (don't regress)
 - NativeWind dark vars must be under `.dark:root` in `src/global.css`.
-- Edge-to-edge: `KeyboardInsetView` pads the root for the keyboard.
+- Edge-to-edge: `KeyboardInsetView` pads the root for the keyboard AND always by the bottom inset (screens stay above
+  the navigation bar) — screens must not add `insets.bottom` again. Modals are separate windows: their outermost view
+  pads by `NAV_BAR_INSET` (`src/lib/navBarInset.ts`).
 - docx export: use `Packer.toBase64String` (no Node Buffer on device).
 - expo-notifications needs typed triggers. Reminder sound = Android CHANNEL (immutable): one channel per sound (`reminder_v2_*`, `app_alerts_v2`); bundled sounds in `assets/sounds`; exact-alarm permissions in app.json.
 - Reminders module (v3): `reminderPlanner.ts` (pure rules: main/early/nag/snooze, test with `node --experimental-strip-types`), `reminderService.ts` (DB ↔ alarms, resync on app start/foreground), `reminderNotifications.ts` (channels, settings intents), `reminderActions.ts` + `reminderBackgroundTask.ts` (snooze/done buttons work with app closed; task defined in root `index.ts`, which is package.json `main`). Screens: `reminders/index|add|health`.

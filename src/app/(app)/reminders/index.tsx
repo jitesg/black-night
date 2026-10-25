@@ -9,7 +9,6 @@ import { useFocusEffect, useRouter, type RelativePathString } from 'expo-router'
 import { AlarmClock, BellOff, Plus, Search, ShieldCheck, Undo2, X } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { THEME } from '@/lib/theme';
 import * as reminderRepo from '@/lib/db/reminderRepo';
@@ -62,7 +61,6 @@ export default function RemindersScreen() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const c = THEME[colorScheme ?? 'light'];
-  const insets = useSafeAreaInsets();
 
   const [items, setItems] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -287,7 +285,7 @@ export default function RemindersScreen() {
 
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} tintColor={c.primary} />}
-        contentContainerStyle={{ padding: 16, paddingBottom: 120 + insets.bottom }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
         keyboardShouldPersistTaps="handled"
       >
         {!permOk ? (
@@ -443,7 +441,7 @@ export default function RemindersScreen() {
         accessibilityLabel={t('reminders.addReminder')}
         className="active:opacity-85"
         style={{
-          position: 'absolute', right: 20, bottom: Math.max(insets.bottom + 20, 32),
+          position: 'absolute', right: 20, bottom: 32,
           height: 56, paddingHorizontal: 20, borderRadius: 28, backgroundColor: c.primary,
           flexDirection: 'row', alignItems: 'center', gap: 8, elevation: 6,
           shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 8, shadowOffset: { width: 0, height: 3 },
@@ -457,7 +455,7 @@ export default function RemindersScreen() {
       {undo ? (
         <View
           style={{
-            position: 'absolute', left: 16, right: 16, bottom: Math.max(insets.bottom + 90, 100), borderRadius: 14,
+            position: 'absolute', left: 16, right: 16, bottom: 100, borderRadius: 14,
             backgroundColor: isDark ? '#F1F5F9' : '#1F2937', flexDirection: 'row', alignItems: 'center',
             paddingLeft: 16, paddingRight: 6, minHeight: 50, elevation: 8,
           }}

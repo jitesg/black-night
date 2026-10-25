@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { Progress } from '@/components/ui/progress';
 import { matchesQuery } from '@/lib/searchUtils';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -682,7 +683,7 @@ export default function FIRDetailsTab() {
         animationType="slide"
         onRequestClose={() => setSopPickerOpen(false)}
       >
-        <Pressable
+        <Pressable style={{ paddingBottom: NAV_BAR_INSET }}
           onPress={() => setSopPickerOpen(false)}
           className="flex-1 bg-black/50 justify-end"
         >

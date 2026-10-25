@@ -31,6 +31,7 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import { exportFormatsAsSeedJSON } from '@/lib/db/seedManager';
 import { HighlightText } from '@/components/HighlightText';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 type SortOption = 'title' | 'updated' | 'version' | 'status';
 type StatusFilter = 'all' | FormatStatus;
@@ -88,7 +89,7 @@ function ActionMenu({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable className="flex-1" style={{ backgroundColor: 'rgba(0,0,0,0.35)' }} onPress={onClose}>
+      <Pressable className="flex-1" style={{ paddingBottom: NAV_BAR_INSET, backgroundColor: 'rgba(0,0,0,0.35)' }} onPress={onClose}>
         <View
           className="absolute bottom-0 left-0 right-0 bg-card overflow-hidden"
           style={{ borderTopLeftRadius: 20, borderTopRightRadius: 20 }}

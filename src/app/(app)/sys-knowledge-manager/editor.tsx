@@ -286,7 +286,7 @@ export default function SysKnowledgeEditor() {
       >
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: insets.bottom + 40 }}
+          contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 40 }}
           keyboardShouldPersistTaps="handled"
         >
           {/* ── CONTENT tab ────────────────────────────────────────────── */}

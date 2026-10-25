@@ -20,6 +20,7 @@ import { type SopStep } from '@/ai/sopIndex';
 import { getChecklist, setStepDone } from '@/lib/db/sopChecklistRepo';
 import { getAllFIRs, type FIR } from '@/lib/db/firRepo';
 import { getDatabase } from '@/lib/db/database';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 const BLUE = '#2563EB';
 const RED = '#DC2626';
@@ -552,7 +553,7 @@ export const SopExplainTab = forwardRef<SopExplainTabHandle, Props>(function Sop
 
       {/* case picker */}
       <Modal visible={casePickerOpen} transparent animationType="fade" onRequestClose={() => setCasePickerOpen(false)}>
-        <Pressable className="flex-1 justify-end" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onPress={() => setCasePickerOpen(false)}>
+        <Pressable className="flex-1 justify-end" style={{ paddingBottom: NAV_BAR_INSET, backgroundColor: 'rgba(0,0,0,0.4)' }} onPress={() => setCasePickerOpen(false)}>
           <View className="bg-card rounded-t-3xl px-4 pt-4 pb-8" style={{ maxHeight: '70%' }}>
             <Text className="text-base font-bold text-foreground text-center mb-3">केस चुनें</Text>
             <ScrollView>

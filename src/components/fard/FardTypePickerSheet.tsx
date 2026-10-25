@@ -23,6 +23,7 @@ import {
 } from 'lucide-react-native';
 import { getFardEntries } from '@/knowledge/fard/fardKb';
 import type { FardEntry } from '@/knowledge/fard/types';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 export interface FardTypePickerSheetProps {
   visible: boolean;
@@ -51,7 +52,7 @@ export function FardTypePickerSheet({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-end bg-black/50">
+      <View style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 justify-end bg-black/50">
         {/* Backdrop */}
         <Pressable
           className="flex-1"

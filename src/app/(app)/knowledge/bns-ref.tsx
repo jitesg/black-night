@@ -18,6 +18,7 @@ import {
   BNS_SOURCE_NOTE, DEPENDS_LABEL, FLAG_LABEL, annexLabel, clean, flagsDepend, isRemoved, parseFlags, rowTitle,
   baseSec, secTokens, type BnsMode, type BnsRow,
 } from '@/lib/bnsRef/bnsCore';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 type Theme = (typeof THEME)['light'];
 const ACCENT = '#0E7490';
@@ -109,7 +110,7 @@ function DetailSheet({ row, c, isDark, onClose, onAsk }: {
   const btn = { flex: 1, minHeight: 46, borderRadius: 14, flexDirection: 'row' as const, alignItems: 'center' as const, justifyContent: 'center' as const, gap: 6, paddingHorizontal: 10 };
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
-      <Pressable style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)' }} onPress={onClose} />
+      <Pressable style={{ paddingBottom: NAV_BAR_INSET, flex: 1, backgroundColor: 'rgba(0,0,0,0.45)' }} onPress={onClose} />
       <View style={{ maxHeight: '86%', backgroundColor: c.background, borderTopLeftRadius: 24, borderTopRightRadius: 24, overflow: 'hidden' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16, paddingBottom: 8, gap: 10 }}>
           <Text textBreakStrategy="simple" style={{ flex: 1, fontSize: 17, fontWeight: '800', color: removed ? c.mutedForeground : ACCENT }}>{rowTitle(row)}</Text>

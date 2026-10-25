@@ -434,7 +434,7 @@ export default function FormatsScreen() {
           contentContainerStyle={{
             paddingHorizontal: 24,
             paddingTop: 16,
-            paddingBottom: Math.max(insets.bottom + 80, 32),
+            paddingBottom: 80,
             gap: 12,
           }}
           showsVerticalScrollIndicator={false}

@@ -5,7 +5,6 @@
 
 import React, { memo, useEffect, useState, useRef } from 'react';
 import { Pressable, Animated, Keyboard } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import { useSegments } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +18,6 @@ interface Props {
 
 export const FloatingAIButton = memo(function FloatingAIButton({ activeFirId }: Props) {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const segments = useSegments();
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
@@ -45,13 +43,14 @@ export const FloatingAIButton = memo(function FloatingAIButton({ activeFirId }: 
 
   // Add extra bottom padding / raise it on karyvahi, form, and law screens to prevent any overlap
   // On law detail screen: position it ABOVE the bar (bottom offset = barHeight (~64) + safe-area + 12, right 16)
+  // The root view already sits above the navigation bar (KeyboardInsetView).
   const bottomOffset = isLawDetailScreen
-    ? Math.max(insets.bottom, 0) + 64 + 12
+    ? 64 + 12
     : hasTabBar
-    ? Math.max(insets.bottom + 76, 88)
+    ? 88
     : isKaryvahiOrAddScreen
-    ? Math.max(insets.bottom + 92, 104)
-    : Math.max(insets.bottom + 20, 32);
+    ? 104
+    : 32;
 
   // Form screens (add/edit/fill) are full of inputs the button would sit on
   // top of, e.g. the FIR number field — keep it off those screens.

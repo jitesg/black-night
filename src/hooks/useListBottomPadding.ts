@@ -12,7 +12,6 @@
  * All four module list screens (GD, FIR, Nirodhatmak, Nyayalay) import from
  * here so the calculation lives in exactly one place.
  */
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /** Approximate rendered height of the bottom nav bar in dp. */
 const BOTTOM_NAV_HEIGHT = 80;
@@ -21,6 +20,7 @@ const BOTTOM_NAV_HEIGHT = 80;
 const MIN_PADDING = 32;
 
 export function useListBottomPadding(): number {
-  const { bottom } = useSafeAreaInsets();
-  return Math.max(bottom + BOTTOM_NAV_HEIGHT, MIN_PADDING);
+  // The root view already sits above the system navigation bar (KeyboardInsetView),
+  // so only the in-app gap is needed here.
+  return Math.max(BOTTOM_NAV_HEIGHT, MIN_PADDING);
 }

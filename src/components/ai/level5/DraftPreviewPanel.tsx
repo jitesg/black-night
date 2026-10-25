@@ -15,6 +15,7 @@ import {
   FileText, AlertCircle, CheckCircle, RefreshCw, Edit3,
 } from 'lucide-react-native';
 import type { GeneratedDraft, L5DraftType } from '../../../ai/level5/L5Types';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 // ── Draft type labels ─────────────────────────────────────────────────────────
 
@@ -65,7 +66,7 @@ export function DraftPreviewPanel({
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View className="flex-1 bg-background">
+      <View style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 bg-background">
         {/* Header */}
         <View className="flex-row items-center justify-between px-5 pt-5 pb-4 border-b border-border">
           <View>

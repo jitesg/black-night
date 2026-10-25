@@ -17,6 +17,7 @@ import {
 import type {
   AIAuditReport, AuditEntry, OfficerAction,
 } from '../../../ai/level5/L5Types';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -141,7 +142,7 @@ export function AuditLogPanel({ visible, onClose, onRefresh, report, isLoading }
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View className="flex-1 bg-background">
+      <View style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 bg-background">
         {/* Header */}
         <View className="flex-row items-center justify-between px-5 pt-5 pb-4 border-b border-border">
           <View>

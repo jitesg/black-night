@@ -14,6 +14,7 @@ import { Search, RefreshCw, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import type { NLQResult } from '../../../ai/level5/L5Types';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 // ── Suggestion chips ──────────────────────────────────────────────────────────
 
@@ -52,7 +53,7 @@ export function NLSearchPanel({ visible, onClose, onQuery, result, isLoading }: 
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View className="flex-1 bg-background">
+      <View style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 bg-background">
         {/* Header */}
         <View className="flex-row items-center justify-between px-5 pt-5 pb-4 border-b border-border">
           <Text className="text-lg font-semibold text-foreground">Natural Language Search</Text>
@@ -136,7 +137,7 @@ export function NLSearchPanel({ visible, onClose, onQuery, result, isLoading }: 
                       className="text-xs flex-1"
                       style={{ color: isDark ? '#FDE68A' : '#B45309' }}
                     >
-                      Auto-corrected: "{result.correctedQuery}"
+                      Auto-corrected: &quot;{result.correctedQuery}&quot;
                     </Text>
                   </View>
                 )}

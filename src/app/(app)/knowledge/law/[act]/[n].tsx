@@ -928,7 +928,7 @@ export default function LawSectionDetailScreen() {
           borderTopWidth: 1,
           borderTopColor: C.border,
           paddingTop: 10,
-          paddingBottom: Math.max(insets.bottom, 0) + 8,
+          paddingBottom: 8,
           paddingHorizontal: 16,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -2 },

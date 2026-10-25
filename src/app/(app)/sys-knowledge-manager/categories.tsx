@@ -117,7 +117,7 @@ export default function SysKnowledgeCategories() {
           showsVerticalScrollIndicator={false}
           removeClippedSubviews={true}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: insets.bottom + 32 }}
+          contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 32 }}
           data={[]}
           renderItem={() => null}
           ListHeaderComponent={
@@ -260,7 +260,7 @@ export default function SysKnowledgeCategories() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Category</AlertDialogTitle>
             <AlertDialogDescription>
-              "{deleteItem?.label}" will be deleted. Articles in this category will not be affected.
+              &quot;{deleteItem?.label}&quot; will be deleted. Articles in this category will not be affected.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

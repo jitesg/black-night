@@ -15,6 +15,7 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { extractFieldsFromImage, normalizeMimeType, type FieldSpec } from '@/lib/ocrService';
 import { useTranslation } from 'react-i18next';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 interface OcrScanModalProps {
   visible: boolean;
@@ -155,7 +156,7 @@ export function OcrScanModal({
       transparent
       onRequestClose={handleClose}
     >
-      <View className="flex-1 justify-end bg-black/60">
+      <View style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 justify-end bg-black/60">
         <View
           className="bg-card border-t border-border rounded-t-3xl max-h-[90%] overflow-hidden flex-col"
           style={{ borderCurve: 'continuous' }}

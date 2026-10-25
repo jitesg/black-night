@@ -145,7 +145,7 @@ export default function VersionHistoryScreen() {
           data={versions}
           keyExtractor={v => v.id}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: insets.bottom + 32 }}
+          contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 32 }}
           ListEmptyComponent={
             <View className="items-center py-16 gap-3">
               <GitBranch size={32} color={MUTED} />

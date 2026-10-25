@@ -32,6 +32,7 @@ import { THEME } from '@/lib/theme';
 import { matchDefaultKaryvahi } from '@/lib/karyvahiNames';
 import { getDefaultKnowledge } from '@/lib/defaultKaryvahiKnowledge';
 import { matchesQuery } from '@/lib/searchUtils';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 type FilterMode = 'all' | 'pending' | 'completed';
 type ActiveView = 'general' | 'diary';
@@ -238,7 +239,7 @@ function StatusDropdown({
         statusBarTranslucent
       >
         <Pressable
-          style={{ flex: 1 }}
+          style={{ paddingBottom: NAV_BAR_INSET, flex: 1 }}
           onPress={() => setOpen(false)}
         >
           <Pressable

@@ -13,6 +13,7 @@ import { nirodhatmakFormatBridge } from '@/lib/nirodhatmakFormatBridge';
 import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
 import { GeneratedReportView } from '@/components/common/GeneratedReportView';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 function safeDecode(v?: string) {
   if (!v) return '';
@@ -30,7 +31,7 @@ function PrintPreviewModal({
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
-      <View style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? '#0F172A' : '#e8e8e8' }}>
+      <View style={{ paddingBottom: NAV_BAR_INSET, flex: 1, backgroundColor: colorScheme === 'dark' ? '#0F172A' : '#e8e8e8' }}>
         {/* Header bar */}
         <View style={{
           paddingTop: 52, paddingBottom: 12, paddingHorizontal: 16,

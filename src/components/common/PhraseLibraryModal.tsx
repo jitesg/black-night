@@ -31,6 +31,7 @@ import {
   incrementUsage,
   seedDefaultPhrasesIfEmpty,
 } from '@/lib/db/phraseLibraryRepo';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 export interface PhraseLibraryModalProps {
   visible: boolean;
@@ -176,7 +177,7 @@ export function PhraseLibraryModal({
       transparent
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-end bg-black/60">
+      <View style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 justify-end bg-black/60">
         <KeyboardAvoidingView
           // 'padding' on Android too: this Modal is its own window, so the
           // sheet must lift itself above the keyboard (it hid behind it).

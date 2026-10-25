@@ -9,6 +9,7 @@ import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { hasAppLockPinSet, touchAppLockSession } from '@/lib/appLockAuth';
 import { router } from 'expo-router';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 export type TimeoutVal = SettingsState['autoLockTimeout'];
 export const TIMEOUT_OPTIONS: { value: TimeoutVal; labelKey: string }[] = [
@@ -174,7 +175,7 @@ export default function SecurityScreen() {
 
       {/* Timeout picker modal */}
       <Modal visible={timeoutOpen} transparent animationType="fade" onRequestClose={() => setTimeoutOpen(false)}>
-        <Pressable style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' }} onPress={() => setTimeoutOpen(false)}>
+        <Pressable style={{ paddingBottom: NAV_BAR_INSET, flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' }} onPress={() => setTimeoutOpen(false)}>
           <View className="bg-card rounded-t-3xl px-4 pt-4 pb-10">
             <Text className="text-base font-bold text-foreground mb-4 text-center">{t('settings.security.timeout')}</Text>
             {TIMEOUT_OPTIONS.map((opt) => (

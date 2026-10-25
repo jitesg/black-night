@@ -20,6 +20,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '../ui/alert-dialog';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 interface SopChecklistTabProps {
   sopId: string;
@@ -407,7 +408,7 @@ export function SopChecklistTab({
         animationType="fade"
         onRequestClose={() => setCasePickerOpen(false)}
       >
-        <Pressable
+        <Pressable style={{ paddingBottom: NAV_BAR_INSET }}
           onPress={() => setCasePickerOpen(false)}
           className="flex-1 bg-black/50 justify-center px-4"
         >
@@ -480,7 +481,7 @@ export function SopChecklistTab({
         animationType="fade"
         onRequestClose={() => setActiveStepForNote(null)}
       >
-        <Pressable
+        <Pressable style={{ paddingBottom: NAV_BAR_INSET }}
           onPress={() => setActiveStepForNote(null)}
           className="flex-1 bg-black/50 justify-center px-4"
         >

@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Plus, Search, X, Filter, ChevronDown, MoreVertical,
   Edit2, Copy, Archive, RotateCcw, Trash2, CheckCircle2,
@@ -32,6 +31,7 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 const GREEN   = '#059669';
 const RED     = '#DC2626';
@@ -72,7 +72,7 @@ function ActionMenu({
   ];
   return (
     <Modal transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable className="flex-1 bg-black/40" onPress={onClose}>
+      <Pressable style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 bg-black/40" onPress={onClose}>
         <View className="absolute bottom-0 left-0 right-0 bg-card rounded-t-3xl overflow-hidden" style={{ paddingBottom: 24 }}>
           <View className="h-1 w-12 rounded-full bg-border self-center mt-3 mb-4" />
           <Text className="text-base font-semibold text-foreground px-5 pb-3" numberOfLines={1}>{article.title}</Text>
@@ -127,7 +127,6 @@ function ArticleCard({
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function SysKnowledgeList() {
-  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ status?: string; category?: string; mode?: string }>();
 
   const [articles, setArticles]     = useState<SysKnowledgeArticle[]>([]);
@@ -305,7 +304,7 @@ export default function SysKnowledgeList() {
           data={articles}
           keyExtractor={a => a.id}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: insets.bottom + 32 }}
+          contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 32 }}
           ListEmptyComponent={
             <View className="items-center py-16 gap-3">
               <Text className="text-base font-semibold text-foreground">No articles found</Text>
@@ -341,7 +340,7 @@ export default function SysKnowledgeList() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Article</AlertDialogTitle>
             <AlertDialogDescription>
-              "{confirmDelete?.title}" will be permanently deleted. This cannot be undone.
+              &quot;{confirmDelete?.title}&quot; will be permanently deleted. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

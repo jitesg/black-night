@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { searchFIRs, type FIR } from '@/lib/db/firRepo';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 interface Props {
   visible: boolean;
@@ -39,7 +40,7 @@ export function FirPickerModal({ visible, onClose, onPick }: Props) {
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' }}>
+      <View style={{ paddingBottom: NAV_BAR_INSET, flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' }}>
         <View style={{ backgroundColor: c.card, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingTop: 16, maxHeight: '80%', minHeight: '55%' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginBottom: 12 }}>
             <Text style={{ flex: 1, color: c.foreground, fontSize: 17, fontWeight: '700' }}>{t('reminders.pickCase')}</Text>

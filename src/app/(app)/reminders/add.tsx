@@ -5,7 +5,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AlertTriangle, Bell, CalendarDays, Check, Clock, FolderOpen, Trash2, Volume2, X,
 } from 'lucide-react-native';
@@ -100,7 +99,6 @@ export default function ReminderEditorScreen() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const c = THEME[colorScheme ?? 'light'];
-  const insets = useSafeAreaInsets();
 
   const [init] = useState(() => defaultDue(settings.reminderTime));
   const [title, setTitle] = useState(params.title ? String(params.title) : '');
@@ -230,7 +228,7 @@ export default function ReminderEditorScreen() {
       />
 
       <ScrollView
-        contentContainerStyle={{ padding: 16, paddingBottom: 40 + insets.bottom }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >

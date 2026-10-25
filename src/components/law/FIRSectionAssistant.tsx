@@ -32,6 +32,7 @@ import {
   type RankedSuggestionsResult,
 } from '@/lib/law/detailedAnalysis';
 import { extractRefs, getSection, parseSectionRef, type ActId } from '@/lib/law/lawLibrary';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 interface FIRSectionAssistantProps {
   section: string;
@@ -186,6 +187,7 @@ export function FIRSectionAssistant({
       >
         <View
           style={{
+            paddingBottom: NAV_BAR_INSET,
             flex: 1,
             backgroundColor: 'rgba(0,0,0,0.5)',
             justifyContent: 'flex-end',
@@ -499,6 +501,7 @@ export function FIRSectionAssistant({
       >
         <View
           style={{
+            paddingBottom: NAV_BAR_INSET,
             flex: 1,
             backgroundColor: 'rgba(0,0,0,0.5)',
             justifyContent: 'flex-end',

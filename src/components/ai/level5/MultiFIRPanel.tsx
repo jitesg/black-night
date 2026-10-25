@@ -13,6 +13,7 @@ import {
   BarChart2, AlertTriangle, Users, FileText, RefreshCw,
 } from 'lucide-react-native';
 import type { MultiFIRIntelligenceReport, FIRSummaryItem, OfficerWorkloadItem, CrimeTrendItem } from '../../../ai/level5/L5Types';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 // ── FIR summary row ───────────────────────────────────────────────────────────
 
@@ -77,7 +78,7 @@ export function MultiFIRPanel({ visible, onClose, onRefresh, report, isLoading }
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View className="flex-1 bg-background">
+      <View style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 bg-background">
         {/* Header */}
         <View className="flex-row items-center justify-between px-5 pt-5 pb-4 border-b border-border">
           <View>

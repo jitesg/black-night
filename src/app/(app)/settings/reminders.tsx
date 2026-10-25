@@ -10,6 +10,7 @@ import { sendTestReminder, openBatterySettings } from '@/lib/reminderNotificatio
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 // Generic inline dropdown picker
 export function OptionPicker<T extends string | number>({
@@ -39,7 +40,7 @@ export function OptionPicker<T extends string | number>({
         </View>
       </Pressable>
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
-        <Pressable style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' }} onPress={() => setOpen(false)}>
+        <Pressable style={{ paddingBottom: NAV_BAR_INSET, flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' }} onPress={() => setOpen(false)}>
           <View className="bg-card rounded-t-3xl px-4 pt-4 pb-10">
             <Text className="text-base font-bold text-foreground mb-4 text-center">{label}</Text>
             {options.map((opt) => (

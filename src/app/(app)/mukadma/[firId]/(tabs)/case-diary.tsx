@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo, memo } from 'react';
 import { logger } from '@/lib/logger';
 import { View, Text, FlatList, Pressable, ActivityIndicator, Alert } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { T } from '@/lib/typography';
 import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -145,8 +144,7 @@ function DiaryCard({
 // ─── Main Tab Screen ──────────────────────────────────────────────────────────
 
 export default function CaseDiaryTab() {
-  const insets = useSafeAreaInsets();
-  const fabBottom = Math.max(insets.bottom + 16, 24);
+  const fabBottom = 24; // root view already sits above the navigation bar
   const params = useLocalSearchParams<{ firId: string }>();
   const { activeFirId } = useFIRContext();
   const { t } = useTranslation();

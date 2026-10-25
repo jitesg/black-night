@@ -28,6 +28,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 // ─── Production gate ──────────────────────────────────────────────────────────
 // `__DEV__` is false in production builds — the component renders nothing,
@@ -101,7 +102,7 @@ function ExportModal({
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View className="flex-1 bg-background">
+      <View style={{ paddingBottom: NAV_BAR_INSET }} className="flex-1 bg-background">
         <AppHeader
           title="Export Seed JSON"
           actions={

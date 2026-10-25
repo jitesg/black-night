@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 interface Props {
   visible: boolean;
@@ -147,7 +148,7 @@ export function TimePickerModal({ visible, value, title = 'समय चुन�
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <View style={{ paddingBottom: NAV_BAR_INSET, flex: 1, justifyContent: 'flex-end' }}>
         <Pressable style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.45)' }} onPress={onClose} />
         <View style={{ backgroundColor: c.card, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 18, paddingBottom: 34 }}>
           <Text style={{ color: c.foreground, fontSize: 16, fontWeight: '700', textAlign: 'center' }}>{title}</Text>
