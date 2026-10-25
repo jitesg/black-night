@@ -36,6 +36,7 @@ import { searchKnowledgeAll } from './knowledgeRepo';
 import { searchNirodhatmakKaryvahi } from './nirodhatmakRepo';
 import { globalSearch } from './searchRepo';
 import { matchesQuery } from '@/lib/searchUtils';
+import { parseBareSectionNumber, parseSectionRef, searchLaw } from '@/lib/law/lawLibrary';
 
 // ── Local date helper (timezone-safe) ──────────────────────────────────────
 function localDateString(): string {
@@ -179,6 +180,7 @@ const MODULE_COLORS: Record<string, string> = {
   Nirodhatmak: '#DC2626',
   Halka: '#2D52B8',
   Knowledge: '#0F766E',
+  Law: '#1D4ED8',
 };
 
 // ── Main loader ────────────────────────────────────────────────────────────
@@ -487,7 +489,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
 
 // ── Universal Search ───────────────────────────────────────────────────────
 
-export type UniversalSearchModule = 'FIR' | 'GD' | 'Nyayalay' | 'Prarthna Patra' | 'Knowledge' | 'Nirodhatmak' | 'Halka';
+export type UniversalSearchModule = 'Law' | 'FIR' | 'GD' | 'Nyayalay' | 'Prarthna Patra' | 'Knowledge' | 'Nirodhatmak' | 'Halka';
 
 export interface UniversalSearchItem {
   id: string;
@@ -589,5 +591,22 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
     })
   );
 
+
+  // BNS / BNSS / BSA sections (Law library). A section-like query ("BNS 103",
+  // "धारा 35", "IPC 302", "103") puts them first; otherwise they come last.
+  let lawItems: UniversalSearchItem[] = [];
+  try {
+    lawItems = searchLaw(query, { limit: 20 }).map((r) => ({
+      id: `${r.act}-${r.n}`,
+      module: 'Law' as const,
+      title: `${r.act} ${r.n} — ${r.title}`,
+      subtitle: r.snippet || '',
+      route: `/(app)/knowledge/law/${r.act}/${r.n}`,
+      color: MODULE_COLORS.Law,
+    }));
+  } catch { /* law data not available */ }
+  const sectionLike = !!(parseSectionRef(query) || parseBareSectionNumber(query) || /\b(ipc|crpc|iea)\b/i.test(query));
+  if (sectionLike) results.unshift(...lawItems);
+  else results.push(...lawItems);
   return results;
 }

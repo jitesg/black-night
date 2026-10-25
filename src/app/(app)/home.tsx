@@ -237,7 +237,7 @@ function SearchResultRow({ item, query, onPress }: { item: UniversalSearchItem; 
         alignItems: 'center', justifyContent: 'center',
       }}>
         <Text style={{ fontSize: 11, fontWeight: '700', color: item.color }}>
-          {item.module.slice(0, 2).toUpperCase()}
+          {item.module === 'Law' ? '§' : item.module.slice(0, 2).toUpperCase()}
         </Text>
       </View>
       <View style={{ flex: 1 }}>
@@ -280,7 +280,7 @@ function ProductivityBar({ pct }: { pct: number }) {
 // Home search: results shown per module before "सब देखें", and module names.
 const SEARCH_PREVIEW = 5;
 const SEARCH_MODULE_LABEL: Record<string, string> = {
-  FIR: 'मुकदमा', GD: 'GD', Nyayalay: 'न्यायालय', 'Prarthna Patra': 'प्रार्थना पत्र',
+  Law: 'धारा (BNS / BNSS / BSA)', FIR: 'मुकदमा', GD: 'GD', Nyayalay: 'न्यायालय', 'Prarthna Patra': 'प्रार्थना पत्र',
   Knowledge: 'कानूनी ज्ञान', Nirodhatmak: 'निरोधात्मक', Halka: 'मेरा हल्का',
 };
 

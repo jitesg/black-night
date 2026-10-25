@@ -213,9 +213,22 @@ export function getSection(act: ActId, n: number): SectionItem | null {
  * Examples:
  * "BNS 103(1)", "BNSS 35", "धारा 103 BNS", "bsa-63", "103 बीएनएस", "धारा 35 बीएनएसएस"
  */
+/**
+ * A section number without an Act: "103", "धारा 103", "दफा 103", "section 103",
+ * "sec. 103", "u/s 103(1)", "धारा १०३". Returns null for anything else.
+ */
+export function parseBareSectionNumber(str: string): number | null {
+  if (!str) return null;
+  const s = str.trim().toLowerCase().replace(/[०-९]/g, (d) => String('०१२३४५६७८९'.indexOf(d)));
+  const m = s.match(/^(?:धारा|दफा|दफ़ा|section|sec\.?|s\.|u\/s\.?)?\s*(\d{1,3})\s*(?:\(\s*[a-z0-9]+\s*\))*\s*$/i);
+  if (!m) return null;
+  const n = parseInt(m[1], 10);
+  return n > 0 ? n : null;
+}
+
 export function parseSectionRef(str: string): SectionRef | null {
   if (!str || typeof str !== 'string') return null;
-  const s = str.trim().toLowerCase();
+  const s = str.trim().toLowerCase().replace(/[०-९]/g, (d) => String('०१२३४५६७८९'.indexOf(d)));
 
   // Match act identifier (BNSS must precede BNS to avoid prefix collision)
   let act: ActId | null = null;
@@ -437,9 +450,9 @@ export function searchLaw(
     }
   }
 
-  // Check if query is purely numeric
-  const numOnly = parseInt(q, 10);
-  if (!ref && !isNaN(numOnly) && String(numOnly) === q) {
+  // Check if query is a bare section number: "103", "धारा 103", "section 103", "u/s 103(1)", "धारा १०३"
+  const numOnly = parseBareSectionNumber(q) ?? NaN;
+  if (!ref && !isNaN(numOnly)) {
     for (const a of targetActs) {
       const sec = getSection(a, numOnly);
       if (sec) {

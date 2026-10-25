@@ -8,9 +8,9 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { THEME } from '@/lib/theme';
 import {
-  ACTS, getSections, type ActId, type SectionItem,
+  ACTS, getSections, parseBareSectionNumber, parseSectionRef, type ActId, type SectionItem,
 } from '@/lib/law/lawLibrary';
-import { hasSimple } from '@/lib/law/simpleExplain';
+import { getSimple, hasSimple } from '@/lib/law/simpleExplain';
 import { matchesQuery } from '@/lib/searchUtils';
 
 export default function LawActSectionsScreen() {
@@ -30,20 +30,26 @@ export default function LawActSectionsScreen() {
   const allSections = useMemo(() => getSections(actId), [actId]);
 
   const filteredSections = useMemo(() => {
-    const q = filterText.trim().toLowerCase();
-    if (!q) return allSections;
+    const raw = filterText.trim();
+    if (!raw) return allSections;
 
-    // Check if query is number
-    const num = parseInt(q, 10);
-    if (!isNaN(num) && String(num) === q) {
-      return allSections.filter((s) => s.n === num || String(s.n).startsWith(q));
+    // A section number, with or without "धारा" / "section" / this Act's name:
+    // "103", "धारा 103", "BNS 103", "103(1)", "धारा १०३".
+    const ref = parseSectionRef(raw);
+    const num = ref && ref.act === actId ? ref.n : ref ? null : parseBareSectionNumber(raw);
+    if (num != null) {
+      const q = String(num);
+      const exact = allSections.filter((s) => s.n === num);
+      const rest = allSections.filter((s) => s.n !== num && String(s.n).startsWith(q));
+      return [...exact, ...rest];
     }
 
+    // Words: title (English) + सरल व्याख्या and keywords (Hindi), word-by-word.
     return allSections.filter((s) => {
-      const matchN = String(s.n).includes(q);
-      return matchN || matchesQuery(q, s.title);
+      const simple = getSimple(actId, s.n);
+      return matchesQuery(raw, s.title, simple?.s, (simple?.k ?? []).join(' '));
     });
-  }, [allSections, filterText]);
+  }, [allSections, filterText, actId]);
 
   const handleJump = useCallback(() => {
     const n = parseInt(jumpNumber.trim(), 10);

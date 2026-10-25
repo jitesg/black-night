@@ -17,6 +17,7 @@ export function scopeForPath(path: string | null | undefined): SuggestScope {
   if (p.startsWith('/nyayalay')) return 'nyayalay';
   if (p.startsWith('/prarthna-patra')) return 'pp';
   if (p.startsWith('/nirodhatmak')) return 'nk';
+  if (p.startsWith('/knowledge/law')) return null; // the Law library has its own section search
   if (p.startsWith('/knowledge')) return 'knowledge';
   if (p.startsWith('/gd')) return 'gd';
   if (p.startsWith('/halka')) return 'halka';
