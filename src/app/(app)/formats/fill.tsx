@@ -309,7 +309,7 @@ export default function FillScreen() {
       })();
 
       // ── Phase 1: Use memory bridge instead of URL params for large strings ──
-      formatPreviewBridge.set({ reportText: resolvedText, formatHtml: fixedHtml, formatEditorHtml: editorHtml });
+      formatPreviewBridge.set({ reportText: resolvedText, formatHtml: fixedHtml, formatEditorHtml: editorHtml, values: mergedValues });
       const callingParam = callingModule ? `&callingModule=${encodeURIComponent(callingModule)}` : '';
       router.push(
         `/(app)/formats/preview?formatId=${encodeURIComponent(format.id)}&formatTitle=${encodeURIComponent(format.title)}${callingParam}` as never

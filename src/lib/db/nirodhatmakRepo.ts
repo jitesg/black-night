@@ -48,6 +48,8 @@ export interface NirodhatmakKaryvahiInput {
   // optional legacy / format reference
   format_id?: string;
   format_title?: string;
+  /** Filled format key values as JSON (e.g. {"Matter": "…"}). */
+  values_json?: string;
 }
 
 export interface NirodhatmakKaryvahiUpdateInput {
@@ -59,6 +61,8 @@ export interface NirodhatmakKaryvahiUpdateInput {
   status?: string;
   format_id?: string;
   format_title?: string;
+  /** Omitted → the saved values stay as they are. */
+  values_json?: string;
 }
 
 // ─── CRUD ─────────────────────────────────────────────────────────────────
@@ -124,7 +128,7 @@ export async function createNirodhatmakKaryvahi(
        (id, proceeding_date, village_id, village_name, proceeding_type,
         editor_content, status, format_id, format_title, report_text,
         values_json, created_at, updated_at, version)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '', '{}', ?, ?, 1)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?, 1)`,
     [
       id,
       input.proceeding_date,
@@ -135,6 +139,7 @@ export async function createNirodhatmakKaryvahi(
       input.status ?? 'Active',
       input.format_id ?? '',
       input.format_title ?? '',
+      input.values_json ?? '{}',
       now,
       now,
     ]
@@ -167,6 +172,7 @@ export async function updateNirodhatmakKaryvahi(
     `UPDATE nirodhatmak_karyvahi
        SET proceeding_date=?, village_id=?, village_name=?, proceeding_type=?,
            editor_content=?, status=?, format_id=?, format_title=?,
+           values_json=COALESCE(?, values_json),
            updated_at=?, version=version+1
      WHERE id=? AND deleted_at IS NULL`,
     [
@@ -178,6 +184,7 @@ export async function updateNirodhatmakKaryvahi(
       input.status ?? 'Active',
       input.format_id ?? '',
       input.format_title ?? '',
+      input.values_json ?? null,
       now,
       id,
     ]

@@ -88,6 +88,7 @@ export default function PreviewScreen() {
   const [decodedHtml, setDecodedHtml]         = useState('');
   const [decodedEditorHtml, setDecodedEditorHtml] = useState('');
   const [showPreview, setShowPreview] = useState(false);
+  const [keyValues, setKeyValues] = useState<Record<string, string> | undefined>(undefined);
 
   // Retrieve payload from bridge on mount and clear it to free memory
   useEffect(() => {
@@ -95,6 +96,7 @@ export default function PreviewScreen() {
     setReportContent(payload.reportText);
     setDecodedHtml(payload.formatHtml);
     setDecodedEditorHtml(payload.formatEditorHtml);
+    setKeyValues(payload.values);
     formatPreviewBridge.clear();
   }, []);
 
@@ -110,7 +112,7 @@ export default function PreviewScreen() {
   };
 
   const handleSaveProceeding = () => {
-    nirodhatmakFormatBridge.set(reportContent, formatId);
+    nirodhatmakFormatBridge.set(reportContent, formatId, keyValues);
     const parent = navigation.getParent();
     if (parent) parent.goBack(); else router.back();
   };

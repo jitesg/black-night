@@ -136,6 +136,9 @@ export default function AddProceedingScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Filled values of the format inserted in this session (saved as values_json).
+  const valuesJsonRef = useRef<string | null>(null);
+
   // ── useFocusEffect: bridge consumption + Android hardware-back ─────────
   useFocusEffect(
     useCallback(() => {
@@ -170,6 +173,7 @@ export default function AddProceedingScreen() {
             } else {
               setEditorContent(pending.text);
             }
+            if (pending.values) valuesJsonRef.current = JSON.stringify(pending.values);
             if (pending.formatId) {
               setFormatId(pending.formatId);
               setFormatTitle(undefined); // formatTitle not carried by bridge; cleared on new format
@@ -247,6 +251,8 @@ export default function AddProceedingScreen() {
         status: 'Active',
         format_id: formatId,
         format_title: formatTitle,
+        // Filled format values (विवाद का कारण etc.) when a format was used in this session.
+        ...(valuesJsonRef.current ? { values_json: valuesJsonRef.current } : {}),
       };
 
       if (isEdit && editId) {

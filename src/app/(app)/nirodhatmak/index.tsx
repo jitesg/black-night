@@ -150,7 +150,15 @@ const KaryvahiCard = memo(function KaryvahiCard({
   const rawVillage = (facts.village || item.village_name || '').trim();
   // Shown as "ग्राम <नाम>" (the text extractor drops the word ग्राम).
   const village = rawVillage && !/^ग्राम/.test(rawVillage) ? `ग्राम ${rawVillage}` : rawVillage;
-  const dispute = facts.dispute;
+  // Dispute: the format's "विवाद का कारण" (Matter) value when it was saved; else read from the text.
+  const dispute = useMemo(() => {
+    try {
+      const v = JSON.parse(item.values_json || '{}') as Record<string, unknown>;
+      const key = Object.keys(v).find((k) => /^matter$|vivad|dispute|विवाद/i.test(k) && String(v[k] ?? '').trim());
+      if (key) return String(v[key]).trim();
+    } catch { /* old rows */ }
+    return facts.dispute;
+  }, [item.values_json, facts.dispute]);
   const typeLabel = NIRODHATMAK_TYPE_KEYS[item.proceeding_type]
     ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type])
     : (item.proceeding_type || t('nirodhatmak.type.other'));
@@ -196,8 +204,8 @@ const KaryvahiCard = memo(function KaryvahiCard({
       {/* 2. Dispute — serif Hindi, coral, opening quote */}
       {dispute ? (
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingLeft: 32 }}>
-          <Text style={{ fontFamily: SERIF_HINDI, fontSize: 22, lineHeight: 24, color: c.dispute, fontWeight: '700' }}>“</Text>
-          <Text textBreakStrategy="simple" numberOfLines={2} style={{ flex: 1, fontFamily: SERIF_HINDI, fontSize: 16, lineHeight: 24, color: c.dispute }}>
+          <Text style={{ fontFamily: SERIF_HINDI, fontSize: 20, lineHeight: 22, color: c.dispute, fontWeight: '700' }}>“</Text>
+          <Text textBreakStrategy="simple" style={{ flex: 1, fontFamily: SERIF_HINDI, fontSize: 14, lineHeight: 21, color: c.dispute }}>
             {dispute}
           </Text>
         </View>

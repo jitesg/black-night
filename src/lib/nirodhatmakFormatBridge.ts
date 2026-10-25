@@ -20,6 +20,8 @@
 interface PendingFormat {
   text: string;
   formatId?: string;
+  /** Filled key values of the format (e.g. Matter = विवाद का कारण). */
+  values?: Record<string, string>;
 }
 
 let _pending: PendingFormat | null = null;
@@ -51,8 +53,8 @@ export const nirodhatmakFormatBridge = {
    * Stage a generated report for delivery to add-proceeding.
    * Called only by formats/preview.tsx when callingModule=NK.
    */
-  set(text: string, formatId?: string): void {
-    _pending = { text, formatId };
+  set(text: string, formatId?: string, values?: Record<string, string>): void {
+    _pending = { text, formatId, values };
     _deliveryPending = true;
     if (__DEV__) {
       console.log('[NkBridge] set — chars:', text.length,

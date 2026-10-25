@@ -11,6 +11,8 @@ interface FormatPreviewPayload {
   reportText: string;
   formatHtml: string;
   formatEditorHtml: string;
+  /** Filled key values (e.g. Matter = विवाद का कारण) — kept with a निरोधात्मक कार्यवाही. */
+  values?: Record<string, string>;
 }
 
 const _empty: FormatPreviewPayload = {
