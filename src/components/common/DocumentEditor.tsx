@@ -395,9 +395,17 @@ const EDITOR_CSS = `
     line-height: 1.7;
     padding: 0 4px;
   `;
+// Scroll the page itself, not pell's inner overflow <div>: Android WebView painted
+// the inner-div scroll in late tiles, so lines below blinked blank while scrolling.
+const PAGE_SCROLL_CSS = `
+  html, body { height: auto !important; min-height: 100%; }
+  body { overflow-y: auto !important; }
+  .content, .pell { height: auto !important; min-height: 100%; }
+  .pell-content { height: auto !important; min-height: 100vh; overflow-y: visible !important; }
+`;
 const RICH_EDITOR_STYLE = {
-  light: { backgroundColor: '#FFFFFF', color: '#111827', placeholderColor: '#9CA3AF', caretColor: '#1E3A5F', contentCSSText: `${EDITOR_CSS} color: #111827;` },
-  dark: { backgroundColor: '#1E293B', color: '#F1F5F9', placeholderColor: '#64748B', caretColor: '#93C5FD', contentCSSText: `${EDITOR_CSS} color: #F1F5F9;` },
+  light: { backgroundColor: '#FFFFFF', color: '#111827', placeholderColor: '#9CA3AF', caretColor: '#1E3A5F', contentCSSText: `${EDITOR_CSS} color: #111827;`, cssText: PAGE_SCROLL_CSS },
+  dark: { backgroundColor: '#1E293B', color: '#F1F5F9', placeholderColor: '#64748B', caretColor: '#93C5FD', contentCSSText: `${EDITOR_CSS} color: #F1F5F9;`, cssText: PAGE_SCROLL_CSS },
 } as const;
 
 function FullScreenModal({ visible, onClose, value, onChange, title, placeholder }: FullScreenProps) {
@@ -837,7 +845,8 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                   logger.warn('[DocEditor] RichEditor onLoad fired');
                   handleEditorReady();
                 }}
-                style={styles.richEditor}
+                // Opaque background: a transparent Android WebView repaints poorly while scrolling.
+                style={colorScheme === 'dark' ? styles.richEditorDark : styles.richEditorLight}
                 editorStyle={RICH_EDITOR_STYLE[colorScheme === 'dark' ? 'dark' : 'light']}
                 // Fill the screen and scroll inside the editor. The default container
                 // grew to the text height on every keystroke: long text could not be
@@ -1189,10 +1198,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     height: 44,
   },
-  richEditor: {
+  richEditorLight: {
     flex: 1,
     paddingHorizontal: 4,
-    backgroundColor: 'transparent',
+    backgroundColor: RICH_EDITOR_STYLE.light.backgroundColor,
+  },
+  richEditorDark: {
+    flex: 1,
+    paddingHorizontal: 4,
+    backgroundColor: RICH_EDITOR_STYLE.dark.backgroundColor,
   },
 });
 
