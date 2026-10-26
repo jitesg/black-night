@@ -104,11 +104,11 @@ function ActionMenu({
 const CARD_COLORS = {
   dark: {
     bg: '#111827', border: '#1E293B', pinBg: '#7F1D1D', pin: '#FCA5A5', muted: '#94A3B8',
-    village: '#4ADE80', dispute: '#F87171', divider: 'rgba(31,41,55,0.5)', badgeBg: '#1E3A8A', badgeFg: '#DBEAFE',
+    village: '#4ADE80', type: '#FBBF24', dispute: '#F87171', divider: 'rgba(31,41,55,0.5)', badgeBg: '#1E3A8A', badgeFg: '#DBEAFE',
   },
   light: {
     bg: '#FFFFFF', border: '#E5E7EB', pinBg: '#FEE2E2', pin: '#B91C1C', muted: '#64748B',
-    village: '#15803D', dispute: '#DC2626', divider: '#E5E7EB', badgeBg: '#1E3A8A', badgeFg: '#FFFFFF',
+    village: '#15803D', type: '#B45309', dispute: '#DC2626', divider: '#E5E7EB', badgeBg: '#1E3A8A', badgeFg: '#FFFFFF',
   },
 } as const;
 // "Kokila" is not on phones; Android's serif face carries Noto Serif Devanagari.
@@ -177,7 +177,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
         elevation: 4,
       }}
       accessibilityRole="button"
-      accessibilityLabel={[village, dispute, dateStr, sections.join(', ')].filter(Boolean).join(', ')}
+      accessibilityLabel={[village, typeLabel, dispute, dateStr, sections.join(', ')].filter(Boolean).join(', ')}
     >
       {/* 1. Village: pin circle aligned with the label's top edge */}
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
@@ -198,6 +198,10 @@ const KaryvahiCard = memo(function KaryvahiCard({
               {t('nirodhatmak.card.defaultTitle')}
             </Text>
           )}
+          {/* कार्यवाही का प्रकार (e.g. बीट सूचना) */}
+          <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 12.5, lineHeight: 18, fontWeight: '600', color: c.type }}>
+            {typeLabel}
+          </Text>
         </View>
       </View>
 
