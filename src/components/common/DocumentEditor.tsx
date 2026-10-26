@@ -388,16 +388,17 @@ interface FullScreenProps {
   placeholder: string;
 }
 
-// Stable object: a new one each render made the editor re-apply its style.
-const RICH_EDITOR_STYLE = {
-  contentCSSText: `
+// Stable objects per theme: a new one each render made the editor re-apply its style.
+const EDITOR_CSS = `
     font-family: -apple-system, 'Helvetica Neue', sans-serif;
     font-size: 16px;
     line-height: 1.7;
-    color: #111827;
     padding: 0 4px;
-  `,
-};
+  `;
+const RICH_EDITOR_STYLE = {
+  light: { backgroundColor: '#FFFFFF', color: '#111827', placeholderColor: '#9CA3AF', caretColor: '#1E3A5F', contentCSSText: `${EDITOR_CSS} color: #111827;` },
+  dark: { backgroundColor: '#1E293B', color: '#F1F5F9', placeholderColor: '#64748B', caretColor: '#93C5FD', contentCSSText: `${EDITOR_CSS} color: #F1F5F9;` },
+} as const;
 
 function FullScreenModal({ visible, onClose, value, onChange, title, placeholder }: FullScreenProps) {
   const { t } = useTranslation();
@@ -837,7 +838,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
                   handleEditorReady();
                 }}
                 style={styles.richEditor}
-                editorStyle={RICH_EDITOR_STYLE}
+                editorStyle={RICH_EDITOR_STYLE[colorScheme === 'dark' ? 'dark' : 'light']}
                 // Fill the screen and scroll inside the editor. The default container
                 // grew to the text height on every keystroke: long text could not be
                 // scrolled and the re-layout made the screen flicker.

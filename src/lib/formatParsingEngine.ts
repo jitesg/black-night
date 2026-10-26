@@ -346,11 +346,13 @@ export function renderDocumentModelForEditor(model: DocumentModel): string {
 
   // Attachments — numbered list
   if (model.attachments.length) {
+    // Numbers written as text (1., 2., 3. for every letter): editor HTML lists
+    // could merge across letters and continue the count (13, 14, 15).
     const items = model.attachments
-      .map((a) => `<li>${esc(a.replace(/^\d+\.\s*/, ''))}</li>`)
+      .map((a, i) => `<div style="padding-left:1.5em;">${i + 1}. ${esc(a.replace(/^\d+\.\s*/, ''))}</div>`)
       .join('');
     parts.push(
-      `<div style="${S_LEFT}"><b>संलग्नक -</b><ol style="margin:0.25em 0 0 1.5em;">${items}</ol></div>`
+      `<div style="${S_LEFT}"><b>संलग्नक -</b>${items}</div>`
     );
   }
 

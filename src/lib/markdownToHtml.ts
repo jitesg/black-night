@@ -224,7 +224,8 @@ export function markdownToHtml(md: string): string {
     const numMatch = /^(\d+)\. (.*)/.exec(content);
     if (numMatch) {
       ensureList('ol');
-      htmlParts.push(`<li><p>${convertInline(numMatch[2])}</p></li>`);
+      // Keep the written number (a list must not continue another list's count).
+      htmlParts.push(`<li value="${numMatch[1]}"><p>${convertInline(numMatch[2])}</p></li>`);
       i++; continue;
     }
 
