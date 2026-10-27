@@ -26,7 +26,10 @@ export const FloatingAIButton = memo(function FloatingAIButton({ activeFirId }: 
 
   const segs = segments as readonly string[];
   const hasTabBar = segs.includes('mukadma') && segs.includes('(tabs)');
-  const isKaryvahiOrAddScreen = segs.some(
+  // The निरोधात्मक कार्यवाही list has no bottom bar, so it keeps the normal 32 offset.
+  const lastSeg = segs[segs.length - 1];
+  const isNirodhatmakList = segs.includes('nirodhatmak') && (lastSeg === 'nirodhatmak' || lastSeg === 'index');
+  const isKaryvahiOrAddScreen = !isNirodhatmakList && segs.some(
     (s) =>
       s.includes('karyvahi') ||
       s.includes('add-') ||
