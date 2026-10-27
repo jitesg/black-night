@@ -170,7 +170,8 @@ export const LETTER_FIT_SCRIPT = `
     for (var i = 0; i < sheets.length; i++) {
       var el = sheets[i], fs = base, n = 0;
       el.style.fontSize = fs + 'pt';
-      while (el.scrollHeight > H && fs > MIN && n < 40) { fs -= 0.5; n++; el.style.fontSize = fs + 'pt'; }
+      // Too tall for one A4 page, or a line (e.g. the signature) wider than the page → smaller font.
+      while ((el.scrollHeight > H || el.scrollWidth > el.clientWidth + 1) && fs > MIN && n < 40) { fs -= 0.5; n++; el.style.fontSize = fs + 'pt'; }
     }
   }
   if (document.readyState === 'complete') fit(); else window.addEventListener('load', fit);
@@ -209,9 +210,12 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-witness { margin-top: 0.4em; }
   .letters .doc-foot { width: 100%; border-collapse: collapse; margin-top: 0.8em; }
   .letters .doc-foot td { border: none; padding: 0 2pt; vertical-align: top; background: none; }
-  .letters .doc-foot td.att { width: 55%; }
+  /* Signature column: right-aligned, as wide as its longest line (grows with the
+     text; attachments take the rest). LETTER_FIT_SCRIPT shrinks the font if it
+     would not fit the page width. */
+  .letters .doc-foot td.att { width: auto; padding-right: 12pt; }
   .letters .doc-foot td.att-title { font-weight: bold; }
-  .letters .doc-foot td.sig { width: 45%; text-align: center; }
+  .letters .doc-foot td.sig { width: 1%; white-space: nowrap; text-align: right; }
   @page { size: A4; margin: 12.7mm; }
   @media print {
     body.letters { background: #fff; padding: 0; }

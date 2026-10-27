@@ -422,7 +422,7 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
     parts.push(div('attachments', 'text-align:left;margin-top:0.6em;', '<b>संलग्नक -</b>'));
     const rows = model.attachments.map((a, i) => {
       const { left, right } = splitMarkedAttachment(a);
-      return `<tr><td style="width:55%;vertical-align:top;">${i + 1}. ${esc(left)}</td><td style="width:45%;text-align:center;vertical-align:top;">${esc(right)}</td></tr>`;
+      return `<tr><td style="vertical-align:top;padding-right:12px;">${i + 1}. ${esc(left)}</td><td style="width:1%;white-space:nowrap;text-align:right;vertical-align:top;">${esc(right)}</td></tr>`;
     }).join('');
     parts.push(`<table data-fmt="${markName('attachments')}" style="width:100%;border-collapse:collapse;border:none;">${rows}</table>`);
   }
