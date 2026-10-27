@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { stripFormatMarkers } from '@/lib/formatMarkers';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import { logger } from '@/lib/logger';
 import {
@@ -495,7 +496,7 @@ export default function FormatsScreen() {
           contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 12, paddingBottom: 32 }}
         >
           <Text style={{ fontSize: 14, lineHeight: 24, color: '#374151' }}>
-            {stripHtmlTags(previewFormat?.vivran ?? '').replace(/\{\{.*?\}\}/g, '....')}
+            {stripFormatMarkers(stripHtmlTags(previewFormat?.vivran ?? '')).replace(/\{\{.*?\}\}/g, '....')}
           </Text>
         </ScrollView>
       </BottomSheet>

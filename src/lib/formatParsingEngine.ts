@@ -23,6 +23,8 @@
  *   patterns so each sub-letter is parsed independently.
  */
 
+import { hasFormatMarkers, markName, parseMarkedLetter, splitMarkedAttachment, splitMarkedLetters } from './formatMarkers';
+
 // ─── Public types ─────────────────────────────────────────────────────────
 
 export interface DocumentSignature {
@@ -39,6 +41,15 @@ export interface DocumentModel {
   witnessLine?: string;
   attachments: string[];    // numbered items under "संलग्नक"
   signature: DocumentSignature | null;
+  /** Parsed from layout marks ([[शीर्षक]] …, see formatMarkers.ts). */
+  marked?: boolean;
+  /** Marked formats only: [[विषय]] / [[पक्ष]] lines (else derived from sewaMein). */
+  subject?: string[];
+  parties?: string[];
+  /** Marked formats only: [[हस्ताक्षर]] lines. */
+  signatureLines?: string[];
+  /** Marked formats only: body in order — paragraphs and centred / right / split lines. */
+  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split'; text: string }[];
 }
 
 // ─── Anchor patterns ──────────────────────────────────────────────────────
@@ -71,6 +82,7 @@ const SIG_PAREN_RE   = /^\((.+)\)$/;
 const SUB_LETTER_HEADER_RE = /^(रिपोर्ट|न्यायालय|सेवा\s*में)/;
 
 export function splitIntoSubLetters(text: string): string[] {
+  if (hasFormatMarkers(text)) return splitMarkedLetters(text);
   const lines = text.split('\n');
   const letters: string[] = [];
   let buffer: string[] = [];
@@ -111,6 +123,7 @@ type Block = 'header' | 'sewaMein' | 'salutation' | 'body' | 'closing'
  * legacy artifact from manually-spaced templates (confirmed from .docx XML).
  */
 export function parseIntoDocumentModel(text: string): DocumentModel {
+  if (hasFormatMarkers(text)) return parseMarkedLetter(text);
   const model: DocumentModel = {
     header: '',
     sewaMein: [],
@@ -293,6 +306,7 @@ export function parseIntoDocumentModel(text: string): DocumentModel {
  * This function is intentionally output-only (no side effects).
  */
 export function renderDocumentModelForEditor(model: DocumentModel): string {
+  if (model.marked) return renderMarkedModelForEditor(model);
   const esc = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -370,6 +384,49 @@ export function renderDocumentModelForEditor(model: DocumentModel): string {
     }
   }
 
+  return parts.join('\n');
+}
+
+/**
+ * Editor HTML for a format with layout marks: same look as the print, and every
+ * block carries a hidden data-fmt="<mark name>" so the print can rebuild the
+ * layout after the text was edited (formatMarkers.editorHtmlToMarkedText).
+ * Attachments are a two-column table (item | signature part), like the print.
+ */
+function renderMarkedModelForEditor(model: DocumentModel): string {
+  const esc = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const div = (role: Parameters<typeof markName>[0], style: string, html: string) =>
+    `<div data-fmt="${markName(role)}" style="${style}">${html}</div>`;
+  const parts: string[] = [];
+  if (model.header) parts.push(div('header', 'text-align:right;', `<b><u>${esc(model.header)}</u></b>`));
+  model.sewaMein.forEach((l, i) => {
+    const label = i === 0 && /^सेवा\s*मे/.test(l.trim());
+    parts.push(div('sewa', label ? 'text-align:left;' : 'text-align:left;margin-left:1.5em;', esc(l)));
+  });
+  for (const l of model.subject ?? []) parts.push(div('subject', 'text-align:left;margin-left:1.5em;', esc(l)));
+  for (const l of model.parties ?? []) parts.push(div('party', 'text-align:left;', esc(l)));
+  if (model.salutation) parts.push(div('salutation', 'text-align:left;margin-top:0.6em;', esc(model.salutation)));
+  for (const b of model.bodyBlocks ?? []) {
+    if (b.kind === 'para') parts.push(div('body', 'text-align:justify;text-indent:1.5em;', esc(b.text)));
+    else if (b.kind === 'center') parts.push(div('center', 'text-align:center;', `<b>${esc(b.text)}</b>`));
+    else if (b.kind === 'right') parts.push(div('right', 'text-align:right;', esc(b.text)));
+    else {
+      const { left, right } = splitMarkedAttachment(b.text);
+      parts.push(`<table data-fmt="${markName('split')}" style="width:100%;border-collapse:collapse;border:none;"><tr><td style="text-align:left;vertical-align:top;">${esc(left)}</td><td style="text-align:right;vertical-align:top;">${esc(right)}</td></tr></table>`);
+    }
+  }
+  if (model.closing) parts.push(div('closing', 'text-align:right;margin-top:0.6em;', esc(model.closing)));
+  if (model.witnessLine) parts.push(div('witness', 'text-align:left;', esc(model.witnessLine)));
+  if (model.attachments.length) {
+    parts.push(div('attachments', 'text-align:left;margin-top:0.6em;', '<b>संलग्नक -</b>'));
+    const rows = model.attachments.map((a, i) => {
+      const { left, right } = splitMarkedAttachment(a);
+      return `<tr><td style="width:55%;vertical-align:top;">${i + 1}. ${esc(left)}</td><td style="width:45%;text-align:center;vertical-align:top;">${esc(right)}</td></tr>`;
+    }).join('');
+    parts.push(`<table data-fmt="${markName('attachments')}" style="width:100%;border-collapse:collapse;border:none;">${rows}</table>`);
+  }
+  for (const l of model.signatureLines ?? []) parts.push(div('signature', 'text-align:right;', esc(l)));
   return parts.join('\n');
 }
 

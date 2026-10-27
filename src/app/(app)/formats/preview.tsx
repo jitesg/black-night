@@ -14,6 +14,7 @@ import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
 import { GeneratedReportView } from '@/components/common/GeneratedReportView';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
+import { hasEditorMarks } from '@/lib/formatMarkers';
 
 function safeDecode(v?: string) {
   if (!v) return '';
@@ -112,7 +113,11 @@ export default function PreviewScreen() {
   };
 
   const handleSaveProceeding = () => {
-    nirodhatmakFormatBridge.set(reportContent, formatId, keyValues);
+    // A marked format (layout marks, see formatMarkers.ts) goes over as its editor
+    // HTML, so the karyvahi editor and its print keep the format's layout.
+    const unedited = !hasEditorMarks(reportContent) && !/<[a-z][\s\S]*?>/i.test(reportContent);
+    const text = unedited && hasEditorMarks(decodedEditorHtml) ? decodedEditorHtml : reportContent;
+    nirodhatmakFormatBridge.set(text, formatId, keyValues);
     const parent = navigation.getParent();
     if (parent) parent.goBack(); else router.back();
   };

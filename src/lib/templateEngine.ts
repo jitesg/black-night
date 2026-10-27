@@ -19,6 +19,7 @@
  * (e.g. "yes"/"no"), not by display label.  Nested plain-key references inside
  * the selected branch are resolved against `values` before output.
  */
+import { stripFormatMarkers } from './formatMarkers';
 
 // ─── Key detection ────────────────────────────────────────────────────────
 const KEY_REGEX = /\{\{([A-Za-z0-9_]+)\}\}/g;
@@ -693,7 +694,10 @@ export function generateReport(
   template: string,
   values: Record<string, string>,
   keyDefs?: KeyDefForRender[],
+  opts?: { keepMarkers?: boolean },
 ): string {
+  // Layout marks ([[शीर्षक]] …) are only for the print pipeline (formats/fill).
+  if (!opts?.keepMarkers) return stripFormatMarkers(generateReport(template, values, keyDefs, { keepMarkers: true }));
   let processed = template;
   if (keyDefs && keyDefs.length > 0) {
     processed = _applyFieldProjection(processed, values, keyDefs);        // Step 0

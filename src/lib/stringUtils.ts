@@ -30,6 +30,7 @@ export const htmlToPlainText = (input?: string | null): string => {
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|div|li|h[1-6]|tr|blockquote)>/gi, '\n')
     .replace(/<li[^>]*>/gi, '• ')
+    .replace(/<\/t[dh]>/gi, '\t')
     .replace(/<[^>]*>/g, '')
     .replace(/&nbsp;/g, ' ')
     .replace(/&#(\d+);/g, (_m, n) => String.fromCharCode(Number(n)))

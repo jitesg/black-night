@@ -13,6 +13,7 @@
  * Pure string functions (tested with node: scripts/test_print_layout.ts).
  */
 import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from './formatParsingEngine';
+import { hasFormatMarkers } from './formatMarkers';
 
 export const esc = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -23,6 +24,9 @@ export function splitAttachmentLine(line: string): { no: string; left: string; r
   const m = /^\s*(\d{1,2})\s*[.)]\s*/.exec(raw);
   const no = m ? m[1] : '';
   const rest = m ? raw.slice(m[0].length) : raw.trim();
+  // Marked formats: "item | signature part".
+  const bar = rest.indexOf('|');
+  if (bar >= 0) return { no: no || '1', left: rest.slice(0, bar).trim(), right: rest.slice(bar + 1).trim() };
   // A tab, or 3+ spaces, separates the attachment from the signature column.
   const parts = rest.split(/\t+|\s{3,}/).map((p) => p.trim()).filter(Boolean);
   if (parts.length <= 1) return { no, left: (parts[0] ?? '').trim(), right: '' };
@@ -76,7 +80,11 @@ export function renderLetterHtml(model: DocumentModel): string {
   const headerIsBody = !!model.header && !isHeading(model.header);
   if (model.header && !headerIsBody) out.push(`<div class="doc-header">${esc(model.header)}</div>`);
 
-  const { addressee, subject, parties } = splitSewaMein(model.sewaMein ?? []);
+  const auto = splitSewaMein(model.sewaMein ?? []);
+  // Marked formats say which lines are subject / parties; else they are guessed.
+  const addressee = model.marked ? (model.sewaMein ?? []) : auto.addressee;
+  const subject = model.marked ? (model.subject ?? []) : auto.subject;
+  const parties = model.marked ? (model.parties ?? []) : auto.parties;
   if (addressee.length) {
     const [first, ...rest] = addressee;
     const isSewa = /^सेवा\s*मे/.test(first.trim());
@@ -93,9 +101,27 @@ export function renderLetterHtml(model: DocumentModel): string {
   }
 
   if (model.salutation) out.push(`<div class="doc-salutation">${esc(model.salutation)}</div>`);
-  const body = [...(headerIsBody ? [model.header] : []), ...(model.body ?? [])];
-  if (body.length) {
-    out.push(`<div class="doc-body">${body.map((p) => `<p>${esc(p)}</p>`).join('')}</div>`);
+  if (model.marked) {
+    // Marked format: body in order, with centred / right / split lines.
+    const blocks = model.bodyBlocks ?? [];
+    if (blocks.length) {
+      out.push(`<div class="doc-body">${blocks.map((b) => {
+        if (b.kind === 'center') return `<p class="doc-center">${esc(b.text)}</p>`;
+        if (b.kind === 'right') return `<p class="doc-right">${esc(b.text)}</p>`;
+        if (b.kind === 'split') {
+          const at = b.text.indexOf('|');
+          const l = at < 0 ? b.text : b.text.slice(0, at).trim();
+          const r = at < 0 ? '' : b.text.slice(at + 1).trim();
+          return `<table class="doc-split"><tr><td>${esc(l)}</td><td>${esc(r)}</td></tr></table>`;
+        }
+        return `<p>${esc(b.text)}</p>`;
+      }).join('')}</div>`);
+    }
+  } else {
+    const body = [...(headerIsBody ? [model.header] : []), ...(model.body ?? [])];
+    if (body.length) {
+      out.push(`<div class="doc-body">${body.map((p) => `<p>${esc(p)}</p>`).join('')}</div>`);
+    }
   }
   const close = splitClosing(model.closing ?? '');
   if (close.closing) out.push(`<div class="doc-closing">${esc(close.closing)}</div>`);
@@ -104,6 +130,7 @@ export function renderLetterHtml(model: DocumentModel): string {
   // Bottom: attachments (left) | signature (right), row by row like the original.
   const rows = (model.attachments ?? []).map(splitAttachmentLine);
   const sigExtra: string[] = [...close.signature];
+  sigExtra.push(...(model.signatureLines ?? []));
   if (model.signature) {
     if (model.signature.name) sigExtra.push(model.signature.name);
     if (model.signature.designation) sigExtra.push(model.signature.designation);
@@ -113,7 +140,7 @@ export function renderLetterHtml(model: DocumentModel): string {
     if (rows.length) tr.push('<tr><td class="att att-title">संलग्नक -</td><td class="sig"></td></tr>');
     // Numbered 1, 2, 3 in every letter (owner's templates carry Word's running count: 4., 5., 6.).
     rows.forEach((r, i) => {
-      tr.push(`<tr><td class="att">${r.no ? `${i + 1}. ` : ''}${esc(r.left)}</td><td class="sig">${esc(r.right)}</td></tr>`);
+      tr.push(`<tr><td class="att">${r.no || model.marked ? `${i + 1}. ` : ''}${esc(r.left)}</td><td class="sig">${esc(r.right)}</td></tr>`);
     });
     for (const s of sigExtra) tr.push(`<tr><td class="att"></td><td class="sig">${esc(s)}</td></tr>`);
     out.push(`<table class="doc-foot">${tr.join('')}</table>`);
@@ -174,6 +201,11 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-salutation { margin: 0.8em 0 0.3em; }
   .letters .doc-body p { text-align: justify; text-indent: var(--doc-indent); margin: 0 0 0.3em; }
   .letters .doc-closing { text-align: right; margin-top: 0.6em; }
+  .letters .doc-body p.doc-center { text-align: center; text-indent: 0; font-weight: bold; margin: 0 0 0.2em; }
+  .letters .doc-body p.doc-right { text-align: right; text-indent: 0; margin: 0.6em 0 0.3em; }
+  .letters .doc-split { width: 100%; border-collapse: collapse; margin: 0.4em 0; }
+  .letters .doc-split td { border: none; padding: 0; background: none; vertical-align: top; }
+  .letters .doc-split td:last-child { text-align: right; }
   .letters .doc-witness { margin-top: 0.4em; }
   .letters .doc-foot { width: 100%; border-collapse: collapse; margin-top: 0.8em; }
   .letters .doc-foot td { border: none; padding: 0 2pt; vertical-align: top; background: none; }
@@ -241,6 +273,6 @@ export function renderPlainSheetHtml(text: string): string {
 /** Generated text → fixed print HTML fragment (one sheet per letter). */
 export function renderTextForPrint(text: string): string {
   const t = String(text ?? '');
-  if (looksLikeLetter(t)) return splitIntoSubLetters(t).map(parseIntoDocumentModel).map(renderLetterHtml).join('\n');
+  if (hasFormatMarkers(t) || looksLikeLetter(t)) return splitIntoSubLetters(t).map(parseIntoDocumentModel).map(renderLetterHtml).join('\n');
   return renderPlainSheetHtml(t);
 }

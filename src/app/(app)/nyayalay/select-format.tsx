@@ -16,6 +16,7 @@
  *   • Debounced search applied client-side on the tag-filtered result set
  *   • Eye icon → BottomSheet content preview
  */
+import { stripFormatMarkers } from '@/lib/formatMarkers';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import { T } from '@/lib/typography';
@@ -338,7 +339,7 @@ export default function NyayalaySelectFormatScreen() {
           >
             <Text className="text-sm text-foreground leading-6" selectable>
               {previewFormat?.vivran
-                ? stripHtmlTags(previewFormat.vivran).replace(/\{\{.*?\}\}|<<.*?>>|\[\[.*?\]\]/g, '…')
+                ? stripFormatMarkers(stripHtmlTags(previewFormat.vivran)).replace(/\{\{.*?\}\}|<<.*?>>|\[\[.*?\]\]/g, '…')
                 : ''}
             </Text>
           </ScrollView>

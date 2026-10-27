@@ -23,6 +23,7 @@ import { splitIntoSubLetters, parseIntoDocumentModel, renderModelsForEditor } fr
 import { buildPrintHtml } from '@/components/common/DocumentEditor';
 import { fixFormat } from '@/lib/formatFixingEngine';
 import { renderTextForPrint } from '@/lib/printLayout';
+import { stripFormatMarkers } from '@/lib/formatMarkers';
 import {
   resolveGlobalKeys, filterDynamicKeys,
   GLOBAL_KEY_LABELS,
@@ -249,15 +250,18 @@ export default function FillScreen() {
         ...values,
       };
       // User formats are saved as editor HTML — convert to plain text first.
-      const resolvedText = htmlToPlainText(generateReport(format.vivran, mergedValues, dynamicKeys));
+      // Layout marks ([[शीर्षक]] …) stay in for the print / editor layout; the
+      // report text itself (copy, share, save) is clean.
+      const markedText = htmlToPlainText(generateReport(format.vivran, mergedValues, dynamicKeys, { keepMarkers: true }));
+      const resolvedText = stripFormatMarkers(markedText);
       if (__DEV__) console.log('[Fill] resolvedText — chars:', resolvedText.length);
 
       // ── Parsing + rendering pipeline (Steps 2–4 from master-ai-builder-prompt) ──
       const profile = format.layout_profile ?? DEFAULT_LAYOUT_PROFILE;
-      const subLetters = splitIntoSubLetters(resolvedText);
+      const subLetters = splitIntoSubLetters(markedText);
       const models = subLetters.map(parseIntoDocumentModel);
       // Fixed print layout: one A4 sheet per letter (फर्द / GD text: one sheet).
-      const combinedHtml = renderTextForPrint(resolvedText);
+      const combinedHtml = renderTextForPrint(markedText);
       const fullHtml = buildPrintHtml(combinedHtml, format.title);
       const { html: fixedHtml } = fixFormat(fullHtml, profile, format.title);
 
@@ -337,11 +341,12 @@ export default function FillScreen() {
         blankValues[key.key_name] = '…………………………………';
       }
     }
-    const blankedText = htmlToPlainText(generateReport(format.vivran, blankValues, dynamicKeys));
+    const markedBlank = htmlToPlainText(generateReport(format.vivran, blankValues, dynamicKeys, { keepMarkers: true }));
+    const blankedText = stripFormatMarkers(markedBlank);
     const profile = format.layout_profile ?? DEFAULT_LAYOUT_PROFILE;
-    const subLetters = splitIntoSubLetters(blankedText);
+    const subLetters = splitIntoSubLetters(markedBlank);
     const models = subLetters.map(parseIntoDocumentModel);
-    const combinedHtml = renderTextForPrint(blankedText);
+    const combinedHtml = renderTextForPrint(markedBlank);
     const fullHtml = buildPrintHtml(combinedHtml, format.title);
     const { html: fixedHtml } = fixFormat(fullHtml, profile, format.title);
     const editorHtml = renderModelsForEditor(models);

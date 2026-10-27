@@ -10,6 +10,7 @@
  * (callingModule=GD), generates the report in formats/preview.tsx, and
  * "Insert into GD" populates add-gd.tsx via gdFormatBridge.
  */
+import { stripFormatMarkers } from '@/lib/formatMarkers';
 import { logger } from '@/lib/logger';
 import { useTranslation } from 'react-i18next';
 import { stripHtmlTags } from '@/lib/stringUtils';
@@ -263,7 +264,7 @@ export default function GdSelectFormatScreen() {
         >
           <Text className="text-sm text-foreground leading-6" selectable>
             {previewFormat?.vivran
-              ? stripHtmlTags(previewFormat.vivran).replace(/\{\{.*?\}\}|<<.*?>>|\[\[.*?\]\]/g, '....')
+              ? stripFormatMarkers(stripHtmlTags(previewFormat.vivran)).replace(/\{\{.*?\}\}|<<.*?>>|\[\[.*?\]\]/g, '....')
               : ''}
           </Text>
         </ScrollView>

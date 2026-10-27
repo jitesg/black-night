@@ -58,6 +58,7 @@ import { DEFAULT_LAYOUT_PROFILE, type LayoutProfile } from '@/lib/db/predefinedF
 import { LETTER_FIT_SCRIPT, LETTER_SHEET_CSS, renderLetterHtml, renderTextForPrint } from '@/lib/printLayout';
 import { fixFormat } from '@/lib/formatFixingEngine';
 import { htmlToPlainText } from '@/lib/stringUtils';
+import { editorHtmlToMarkedText, hasEditorMarks } from '@/lib/formatMarkers';
 import { PhraseLibraryModal } from './PhraseLibraryModal';
 import { incrementUsage } from '@/lib/db/phraseLibraryRepo';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
@@ -326,7 +327,9 @@ function PrintPreviewModal({ visible, onClose, value, title }: PrintPreviewProps
   const { t } = useTranslation();
   const html = useMemo(() => {
     // Every report prints in the fixed A4 layout (letters: one sheet each).
-    const plain = htmlToPlainText(prepareHtml(value));
+    const src = prepareHtml(value);
+    // Reports made from a marked format keep its layout (hidden data-fmt marks).
+    const plain = hasEditorMarks(src) ? editorHtmlToMarkedText(src) : htmlToPlainText(src);
     if (!plain.trim()) return buildPrintHtml('', title);
     return fixFormat(buildPrintHtml(renderTextForPrint(plain), title), DEFAULT_LAYOUT_PROFILE, title).html;
   }, [value, title]);

@@ -33,6 +33,7 @@ import {
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { nirodhatmakFormatBridge } from '@/lib/nirodhatmakFormatBridge';
+import { isHtml, markdownToHtml } from '@/lib/markdownToHtml';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
@@ -169,7 +170,13 @@ export default function AddProceedingScreen() {
             if (!isMountedRef.current) return;
 
             if (insertModeRef.current === 'append' && editorContentRef.current.trim().length > 0) {
-              setEditorContent(editorContentRef.current.trimEnd() + '\n\n' + pending.text);
+              const prev = editorContentRef.current.trimEnd();
+              // Editor HTML from a marked format: join as HTML (old plain text converted first).
+              if (isHtml(pending.text)) {
+                setEditorContent(`${isHtml(prev) ? prev : markdownToHtml(prev)}<div><br></div>${pending.text}`);
+              } else {
+                setEditorContent(prev + '\n\n' + pending.text);
+              }
             } else {
               setEditorContent(pending.text);
             }
