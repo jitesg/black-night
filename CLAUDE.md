@@ -77,7 +77,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   [[दोनों ओर]] ("left | right")`. Marked text skips the guessing parser (splitIntoSubLetters / parseIntoDocumentModel
   delegate). `generateReport` strips marks unless `{ keepMarkers: true }` (only formats/fill print + editor pipeline);
   editor HTML keeps them as `data-fmt` → `editorHtmlToMarkedText` in the DocumentEditor print; NK save passes the
-  marked editor HTML. Done: the 5 `sys-fmt-bnss126-*` formats (seed_version 7; originals in
+  marked editor HTML. Done: the 5 `sys-fmt-bnss126-*` formats (seed_version 7; beat + yaksh = 8 with the extra last sheet
+  "सिपाही के लिए बीट सूचना"; originals in
   `docs/format-backups/bnss126_before_marks.json`). Owner approves each batch with an A4 preview. Tests
   `scripts/test_format_markers.ts`.
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,

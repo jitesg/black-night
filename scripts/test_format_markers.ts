@@ -99,14 +99,16 @@ test('editor HTML keeps the layout after a round trip (and after an added line)'
   assert.equal((html2.match(/class="doc-letter"/g) ?? []).length, 2);
 });
 
-test('owner 126/135 formats: 6 sheets each, attachments 1-3, nothing lost', () => {
+test('owner 126/135 formats: 6 sheets each (7 with the सिपाही note), attachments 1-3, nothing lost', () => {
   const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
   const fmts = d.formats.filter((f: { id: string }) => f.id.startsWith('sys-fmt-bnss126'));
   assert.equal(fmts.length, 5);
   for (const f of fmts) {
     assert.equal(M.hasFormatMarkers(f.vivran), true, f.id);
     const html = P.renderTextForPrint(f.vivran);
-    assert.equal((html.match(/class="doc-letter"/g) ?? []).length, 6, f.id);
+    // बीट + यक्ष बीट end with the extra "सिपाही के लिए बीट सूचना" sheet.
+    const sheets = /-beat$|-yaksh$/.test(f.id) ? 7 : 6;
+    assert.equal((html.match(/class="doc-letter"/g) ?? []).length, sheets, f.id);
     assert.equal((html.match(/doc-closing/g) ?? []).length, 4, f.id);
     assert.deepEqual((html.match(/class="att">\d+/g) ?? []).map((x: string) => x.slice(12)), ['1', '2', '3', '1', '2', '3', '1', '2', '3', '1', '2', '3'], f.id);
     assert.doesNotMatch(html, /\[\[/, f.id);
