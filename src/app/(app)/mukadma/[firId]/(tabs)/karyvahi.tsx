@@ -55,18 +55,18 @@ function getSemanticColors(scheme: 'light' | 'dark'): Record<SemanticKey, Semant
 
 // ── Priority config — labels and emoji ───────────────────────────────────────
 const PRIORITY_CONFIG: Record<KaryvahiPriority, { label: string; emoji: string }> = {
-  MANDATORY:    { label: 'Mandatory',    emoji: '🔴' },
-  CONDITIONAL:  { label: 'Conditional',  emoji: '🟡' },
-  RECOMMENDED:  { label: 'Recommended',  emoji: '🟢' },
+  MANDATORY:    { label: 'अनिवार्य',    emoji: '🔴' },
+  CONDITIONAL:  { label: 'सशर्त',       emoji: '🟡' },
+  RECOMMENDED:  { label: 'अनुशंसित',    emoji: '🟢' },
 };
 
 // ── Status config — icon is a factory fn taking dynamic color ────────────────
 const STATUS_CONFIG: Record<KaryvahiStatus, { label: string; icon: (color: string) => React.ReactNode }> = {
-  PENDING:        { label: 'Pending',        icon: (c) => <Circle       size={12} color={c} /> },
-  IN_PROGRESS:    { label: 'In Progress',    icon: (c) => <PlayCircle   size={12} color={c} /> },
-  COMPLETED:      { label: 'Completed',      icon: (c) => <CheckCircle2 size={12} color={c} /> },
-  NOT_APPLICABLE: { label: 'Not Applicable', icon: (c) => <Ban          size={12} color={c} /> },
-  DEFERRED:       { label: 'Deferred',       icon: (c) => <Pause        size={12} color={c} /> },
+  PENDING:        { label: 'लंबित',          icon: (c) => <Circle       size={12} color={c} /> },
+  IN_PROGRESS:    { label: 'प्रगति में',     icon: (c) => <PlayCircle   size={12} color={c} /> },
+  COMPLETED:      { label: 'पूर्ण',          icon: (c) => <CheckCircle2 size={12} color={c} /> },
+  NOT_APPLICABLE: { label: 'लागू नहीं', icon: (c) => <Ban          size={12} color={c} /> },
+  DEFERRED:       { label: 'स्थगित',         icon: (c) => <Pause        size={12} color={c} /> },
 };
 
 function getStatusColor(status: KaryvahiStatus, sem: Record<SemanticKey, SemanticColor>): SemanticColor {
@@ -319,7 +319,7 @@ function ReasonModal({
           style={{ width: '100%' }}
         >
           <AlertDialogHeader>
-            <AlertDialogTitle>Reason Required</AlertDialogTitle>
+            <AlertDialogTitle>कारण लिखें</AlertDialogTitle>
             <AlertDialogDescription>
               Please provide a reason for marking this action as &quot;{statusLabel}&quot;.
             </AlertDialogDescription>
@@ -327,7 +327,7 @@ function ReasonModal({
           <TextInput
             value={reason}
             onChangeText={setReason}
-            placeholder="Enter reason…"
+            placeholder="कारण लिखें…"
             multiline
             numberOfLines={3}
             className="border border-border rounded-xl px-3 py-2 text-sm text-foreground bg-card"
@@ -335,12 +335,12 @@ function ReasonModal({
             placeholderTextColor={c.mutedForeground}
           />
           <AlertDialogFooter>
-            <AlertDialogCancel onPress={onCancel}><Text>Cancel</Text></AlertDialogCancel>
+            <AlertDialogCancel onPress={onCancel}><Text>रद्द करें</Text></AlertDialogCancel>
             <AlertDialogAction
               onPress={() => { if (reason.trim()) onConfirm(reason.trim()); }}
               disabled={!reason.trim()}
             >
-              <Text>Confirm</Text>
+              <Text>पुष्टि करें</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </KeyboardAvoidingView>
@@ -1295,7 +1295,7 @@ export default function KaryvahiTab() {
                         color: progress === 1 ? sem.COMPLETED_STATUS.fg : c.primary,
                       }}
                     >
-                      {completed} of {total} done · {Math.round(progress * 100)}%
+                      {total} में से {completed} पूर्ण · {Math.round(progress * 100)}%
                     </Text>
                     <View className="h-1.5 bg-secondary rounded-full overflow-hidden">
                       <View

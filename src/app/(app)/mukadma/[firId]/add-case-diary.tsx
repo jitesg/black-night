@@ -138,7 +138,12 @@ export default function AddCaseDiaryScreen() {
   const isEdit = !!paramDiaryId;
   const { t } = useTranslation();
 
-  const [prepDate, setPrepDate]   = useState('');
+  // New diary: today's date is filled in (can be changed).
+  const [prepDate, setPrepDate]   = useState(() => {
+    if (paramDiaryId) return '';
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  });
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime]     = useState('');
   const [places, setPlaces]       = useState<string[]>([]);

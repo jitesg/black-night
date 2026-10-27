@@ -10,6 +10,9 @@
  *   • text with its own onPress / onLongPress is not selectable
  *   • text inside a Pressable / Touchable is not selectable
  * TextInputs already support select / copy / paste on their own.
+ *
+ * Android only: every Text also gets textBreakStrategy="simple" and a minimum
+ * line height of 1.4 × fontSize, so Hindi lines and matras are not cut.
  */
 import React, { createContext, forwardRef, useContext } from 'react';
 
@@ -32,12 +35,38 @@ function patch(name: string, make: (orig: React.ComponentType<AnyProps>) => unkn
   } catch { /* export not configurable — leave as is */ }
 }
 
+const IS_ANDROID = (rnModule.Platform as { OS?: string } | undefined)?.OS === 'android';
+const flatten = (rnModule.StyleSheet as { flatten: (s: unknown) => Record<string, unknown> | undefined }).flatten;
+/** Devanagari needs ~1.4× the font size per line, or matras (ि े ु ्र) get cut. */
+const MIN_LINE_RATIO = 1.35;
+const FIX_LINE_RATIO = 1.4;
+
 patch('Text', (OrigText) => forwardRef<unknown, AnyProps>(function SelectableText(props, ref) {
   const noSelect = useContext(NoSelectContext);
   const selectable = props.selectable !== undefined
     ? props.selectable
     : !noSelect && !props.onPress && !props.onLongPress;
-  return React.createElement(OrigText, { ...props, selectable, ref });
+  if (!IS_ANDROID) return React.createElement(OrigText, { ...props, selectable, ref });
+
+  // Hindi text cut on Android (owner's report):
+  //  • the default "highQuality" line breaking measures Devanagari lines too
+  //    short, so the last letters of a line are cut → use "simple" everywhere;
+  //  • a lineHeight too small for the font clips the top / bottom matras →
+  //    raise it to 1.4 × fontSize.
+  let style = props.style;
+  if (style) {
+    const flat = flatten(style);
+    const fs = Number(flat?.fontSize);
+    const lh = Number(flat?.lineHeight);
+    if (fs > 0 && lh > 0 && lh < fs * MIN_LINE_RATIO) style = [style, { lineHeight: Math.ceil(fs * FIX_LINE_RATIO) }];
+  }
+  return React.createElement(OrigText, {
+    ...props,
+    style,
+    textBreakStrategy: props.textBreakStrategy ?? 'simple',
+    selectable,
+    ref,
+  });
 }));
 
 function wrapPressable(Orig: React.ComponentType<AnyProps>) {

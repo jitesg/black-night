@@ -244,4 +244,6 @@ export async function deleteFIR(id: string): Promise<void> {
     logger.warn('[PROBE] deleteFIR after-cascade snapshot failed:', e);
   }
   resyncCdAlerts();
+  // Its reminders go too (lazy import: reminderService pulls in notifications).
+  import('@/lib/reminderService').then((m) => m.removeRemindersForFir(id)).catch(() => {});
 }

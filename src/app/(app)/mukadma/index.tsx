@@ -56,7 +56,7 @@ function StatusBadge({ status, scheme }: { status: string; scheme: 'light' | 'da
         className="text-xs font-semibold"
         style={{ color: STATUS_TEXT[scheme][key] }}
       >
-        {status}
+        {key === 'Finished' ? 'समाप्त' : 'विचाराधीन'}
       </Text>
     </View>
   );
@@ -174,7 +174,7 @@ const FIRCard = memo(function FIRCard({
           style={{ minWidth: 44, minHeight: 44, alignItems: 'center' }}
           hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
           accessibilityRole="button"
-          accessibilityLabel="Edit FIR"
+          accessibilityLabel="FIR संपादित करें"
         >
           <Pencil size={14} color="#2D52B8" />
           <Text className="text-xs font-semibold" style={{ color: '#2D52B8' }}>{t('fir.list.edit')}</Text>
@@ -185,7 +185,7 @@ const FIRCard = memo(function FIRCard({
           style={{ minWidth: 44, minHeight: 44, alignItems: 'center' }}
           hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
           accessibilityRole="button"
-          accessibilityLabel="Delete FIR"
+          accessibilityLabel="FIR हटाएं"
         >
           <Trash2 size={14} color={palette.destructive} />
           <Text className="text-xs font-semibold text-destructive">{t('fir.list.delete')}</Text>
@@ -195,10 +195,10 @@ const FIRCard = memo(function FIRCard({
           className="flex-row items-center gap-1.5 active:opacity-60"
           style={{ minWidth: 44, minHeight: 44, alignItems: 'center' }}
           accessibilityRole="button"
-          accessibilityLabel="Ask AI"
+          accessibilityLabel="AI से पूछें"
         >
           <Sparkles size={14} color={palette.primary} />
-          <Text style={{ fontSize: 12, fontWeight: '600', color: palette.primary }}>Ask AI</Text>
+          <Text style={{ fontSize: 12, fontWeight: '600', color: palette.primary }}>AI से पूछें</Text>
         </Pressable>
       </View>
     </Pressable>

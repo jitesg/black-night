@@ -87,6 +87,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   modules (`isCopilotRoute`: mukadma/gd/nirodhatmak/nyayalay/prarthna-patra/knowledge, not add/edit/fill/select-format)
   and in `DashboardHeader` (home); opens via `src/lib/copilotStore.ts`; sheet mounted by `CopilotHost` (root layout,
   FIR layout with activeFirId).
+- Text wrapper `src/lib/selectableText.tsx` (imported first in index.ts): selectable text app-wide (not inside
+  Pressable/Touchables); on Android every Text gets textBreakStrategy 'simple' and lineHeight ≥ 1.4×fontSize
+  (Hindi lines/matras were cut). Don't add per-screen workarounds for this.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

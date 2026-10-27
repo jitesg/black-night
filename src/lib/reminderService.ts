@@ -192,6 +192,14 @@ export async function removeReminder(r: Reminder): Promise<void> {
   await repo.updateReminder(r.id, { notification_id: null }).catch(() => {});
 }
 
+/** A मुकदमा was deleted → remove its reminders and their alarms too. */
+export async function removeRemindersForFir(firId: string): Promise<void> {
+  if (!firId) return;
+  for (const r of await repo.getRemindersByFir(firId)) {
+    await removeReminder(r).catch(() => {});
+  }
+}
+
 export async function restoreRemovedReminder(id: string): Promise<void> {
   await repo.restoreReminder(id);
   await syncById(id);

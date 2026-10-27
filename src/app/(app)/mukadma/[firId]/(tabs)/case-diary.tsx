@@ -360,7 +360,7 @@ export default function CaseDiaryTab() {
         <View className="absolute inset-0 items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.15)' }}>
           <View className="bg-card rounded-2xl px-6 py-5 gap-3 items-center">
             <ActivityIndicator size="small" color="#059669" />
-            <Text className="text-sm font-medium text-foreground">Exporting Document...</Text>
+            <Text className="text-sm font-medium text-foreground">दस्तावेज़ export हो रहा है…</Text>
           </View>
         </View>
       )}

@@ -100,6 +100,16 @@ export async function getUpcomingReminders(): Promise<Reminder[]> {
   return rows.map(rowToReminder);
 }
 
+/** Active (not deleted) reminders linked to one FIR. */
+export async function getRemindersByFir(firId: string): Promise<Reminder[]> {
+  const db = await getDatabase();
+  const rows = await db.getAllAsync<Record<string, unknown>>(
+    `SELECT * FROM reminders WHERE deleted_at IS NULL AND fir_id = ?`,
+    [firId]
+  );
+  return rows.map(rowToReminder);
+}
+
 /** All active (not deleted) reminders. */
 export async function getAllReminders(): Promise<Reminder[]> {
   const db = await getDatabase();

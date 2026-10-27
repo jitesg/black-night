@@ -540,7 +540,7 @@ export default function AddFIRScreen() {
     if (accusedType === 'unknown' && unknownCount.trim() !== '') {
       const parsed = parseInt(unknownCount.trim(), 10);
       if (isNaN(parsed) || parsed < 0 || String(parsed) !== unknownCount.trim()) {
-        setError('Enter a valid number for unknown accused count');
+        setError('अज्ञात अभियुक्तों की संख्या सही अंकों में लिखें।');
         return;
       }
     }
@@ -549,7 +549,7 @@ export default function AddFIRScreen() {
     if (accusedType === 'known') {
       const validCount = knownAccused.filter((a) => a.name.trim()).length;
       if (validCount === 0) {
-        setError('Please enter a name for at least one accused.');
+        setError('कम से कम एक अभियुक्त का नाम लिखें।');
         return;
       }
       const incomplete = knownAccused.find(
@@ -559,7 +559,7 @@ export default function AddFIRScreen() {
            a.jati.trim()   || a.age.trim())
       );
       if (incomplete) {
-        setError('Please enter a name for all added accused, or remove the empty one');
+        setError('जोड़े गए सभी अभियुक्तों के नाम लिखें, या खाली अभियुक्त हटा दें।');
         return;
       }
     }
@@ -793,12 +793,12 @@ export default function AddFIRScreen() {
               <Sparkles size={18} color="#6366F1" />
             </View>
             <View className="flex-1">
-              <Text className="text-xs font-bold text-foreground">Auto-fill via OCR Scan</Text>
-              <Text className="text-[11px] text-muted-foreground">Scan complaint letter or FIR using AI</Text>
+              <Text className="text-xs font-bold text-foreground">OCR स्कैन से स्वतः भरें</Text>
+              <Text className="text-[11px] text-muted-foreground">तहरीर या FIR को AI से स्कैन करें</Text>
             </View>
           </View>
           <View className="shrink-0 px-3 py-1.5 rounded-xl bg-indigo-600">
-            <Text className="text-xs font-semibold text-white">Scan</Text>
+            <Text className="text-xs font-semibold text-white">स्कैन</Text>
           </View>
         </Pressable>
 
@@ -1008,7 +1008,7 @@ export default function AddFIRScreen() {
         onClose={() => setOcrModalVisible(false)}
         fields={FIR_OCR_FIELDS}
         onApply={handleOcrApply}
-        title="FIR / Mukadma OCR Scanner"
+        title="FIR / मुकदमा OCR स्कैनर"
       />
     </KeyboardAvoidingView>
   );
