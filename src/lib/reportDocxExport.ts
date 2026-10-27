@@ -92,9 +92,12 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
   if (model.salutation) p(model.salutation, { before: 160, after: 60 });
 
   if (model.marked) {
+    let prev = '';
     for (const b of model.bodyBlocks ?? []) {
+      const prevKind = prev; prev = b.kind;
       if (b.kind === 'center') p(b.text, { align: AlignmentType.CENTER, bold: true });
-      else if (b.kind === 'right') p(b.text, { align: AlignmentType.RIGHT, before: 120, after: 60 });
+      // consecutive right lines (a signature block) stay together
+      else if (b.kind === 'right') p(b.text, { align: AlignmentType.RIGHT, before: prevKind === 'right' ? 0 : 120 });
       else if (b.kind === 'split') {
         const at = b.text.indexOf('|');
         push(twoCol([[at < 0 ? b.text : b.text.slice(0, at).trim(), at < 0 ? '' : b.text.slice(at + 1).trim()]], Math.round(TEXT_W / 2)));

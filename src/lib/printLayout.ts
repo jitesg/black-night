@@ -203,7 +203,8 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-body p { text-align: justify; text-indent: var(--doc-indent); margin: 0 0 0.3em; }
   .letters .doc-closing { text-align: center; margin-top: 0.6em; }
   .letters .doc-body p.doc-center { text-align: center; text-indent: 0; font-weight: bold; margin: 0 0 0.2em; }
-  .letters .doc-body p.doc-right { text-align: right; text-indent: 0; margin: 0.6em 0 0.3em; }
+  .letters .doc-body p.doc-right { text-align: right; text-indent: 0; margin: 0.6em 0 0; }
+  .letters .doc-body p.doc-right + p.doc-right { margin-top: 0; }
   .letters .doc-split { width: 100%; border-collapse: collapse; margin: 0.4em 0; }
   .letters .doc-split td { border: none; padding: 0; background: none; vertical-align: top; }
   .letters .doc-split td:last-child { text-align: right; }
