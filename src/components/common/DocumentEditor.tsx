@@ -262,7 +262,7 @@ export function buildPrintHtml(bodyHtml: string, title: string): string {
     margin-bottom: var(--doc-para-spacing);
   }
   .doc-closing {
-    text-align: right;
+    text-align: center;
     margin-top: 1em;
   }
   .doc-witness {

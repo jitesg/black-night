@@ -351,7 +351,7 @@ export function renderDocumentModelForEditor(model: DocumentModel): string {
   // Blank line before closing
   if (model.closing) {
     parts.push('<div><br></div>');
-    parts.push(`<div style="${S_RIGHT}">${esc(model.closing)}</div>`);
+    parts.push(`<div style="text-align:center;">${esc(model.closing)}</div>`);
   }
 
   // Witness line — left
@@ -416,7 +416,7 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
       parts.push(`<table data-fmt="${markName('split')}" style="width:100%;border-collapse:collapse;border:none;"><tr><td style="text-align:left;vertical-align:top;">${esc(left)}</td><td style="text-align:right;vertical-align:top;">${esc(right)}</td></tr></table>`);
     }
   }
-  if (model.closing) parts.push(div('closing', 'text-align:right;margin-top:0.6em;', esc(model.closing)));
+  if (model.closing) parts.push(div('closing', 'text-align:center;margin-top:0.6em;', esc(model.closing)));
   if (model.witnessLine) parts.push(div('witness', 'text-align:left;', esc(model.witnessLine)));
   if (model.attachments.length) {
     parts.push(div('attachments', 'text-align:left;margin-top:0.6em;', '<b>संलग्नक -</b>'));
