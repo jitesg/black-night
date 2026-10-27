@@ -58,3 +58,17 @@ test('one A4 sheet per letter', () => {
   assert.ok(html.includes('doc-sewa-mein'));
   assert.ok(renderTextForPrint('फर्द\n\nपाठ').includes('doc-plain'));
 });
+
+test('closing line "रिपोर्ट सादर…" after a blank line stays in the same letter; attachments renumbered 1, 2, 3', () => {
+  const text = [
+    'रिपोर्ट चालानी अन्तर्गत धारा 126/135 BNSS थाना बछरावा',
+    'सेवा मे,', 'श्रीमान उपजिलामजिस्ट्रेट महोदय', '', 'महोदय,', 'निवेदन है कि … कृपा करें।', '',
+    'रिपोर्ट सादर सेवा मे प्रेषित है ।', 'संलग्नक -',
+    '4.\tरिपोर्ट चालानी 01 वर्क          (जीतेश सिंह)', '5.\tनकल रपट 1 वर्क          उ0नि0',
+  ].join('\n');
+  const html = renderTextForPrint(text);
+  assert.equal((html.match(/class="doc-letter"/g) ?? []).length, 1);
+  assert.match(html, /doc-closing">रिपोर्ट सादर/);
+  assert.match(html, /class="att">1\. रिपोर्ट चालानी/);
+  assert.match(html, /class="att">2\. नकल रपट/);
+});

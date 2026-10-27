@@ -111,9 +111,10 @@ export function renderLetterHtml(model: DocumentModel): string {
   if (rows.length || sigExtra.length) {
     const tr: string[] = [];
     if (rows.length) tr.push('<tr><td class="att att-title">संलग्नक -</td><td class="sig"></td></tr>');
-    for (const r of rows) {
-      tr.push(`<tr><td class="att">${r.no ? `${esc(r.no)}. ` : ''}${esc(r.left)}</td><td class="sig">${esc(r.right)}</td></tr>`);
-    }
+    // Numbered 1, 2, 3 in every letter (owner's templates carry Word's running count: 4., 5., 6.).
+    rows.forEach((r, i) => {
+      tr.push(`<tr><td class="att">${r.no ? `${i + 1}. ` : ''}${esc(r.left)}</td><td class="sig">${esc(r.right)}</td></tr>`);
+    });
     for (const s of sigExtra) tr.push(`<tr><td class="att"></td><td class="sig">${esc(s)}</td></tr>`);
     out.push(`<table class="doc-foot">${tr.join('')}</table>`);
   }

@@ -80,7 +80,8 @@ export function splitIntoSubLetters(text: string): string[] {
     const trimmed = line.trim();
     const isBlank  = trimmed === '';
 
-    if (!isBlank && prevWasBlank && SUB_LETTER_HEADER_RE.test(trimmed) && buffer.some(l => l.trim())) {
+    // "रिपोर्ट सादर सेवा मे प्रेषित है" is the closing line, not a new letter.
+    if (!isBlank && prevWasBlank && SUB_LETTER_HEADER_RE.test(trimmed) && !/प्रेषित/.test(trimmed) && buffer.some(l => l.trim())) {
       // Start of a new letter — flush the previous buffer
       const chunk = buffer.join('\n').trim();
       if (chunk) letters.push(chunk);
