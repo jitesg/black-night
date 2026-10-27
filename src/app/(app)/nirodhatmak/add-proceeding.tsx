@@ -22,7 +22,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   FileWarning, Calendar, ChevronDown,
-  LayoutTemplate, Save, AlertCircle,
+  LayoutTemplate, Save, AlertCircle, FileDown,
 } from 'lucide-react-native';
 import { DatePickerModal, dateStrToObj, dateObjToStr } from '@/components/common/DatePickerModal';
 import {
@@ -39,6 +39,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { exportKaryvahiDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const MODULE_COLOR = '#DC2626';
@@ -336,6 +337,14 @@ export default function AddProceedingScreen() {
         subtitle={t('nirodhatmak.subtitle', 'निरोधात्मक')}
         onBack={handleBack}
         rightActions={
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+          {editorContent.trim() ? (
+            <HeaderIconBtn
+              icon={FileDown}
+              onPress={() => exportKaryvahiDocx({ editor_content: editorContent, format_title: formatTitle })}
+              label="Word (.docx) में export करें"
+            />
+          ) : null}
           <Pressable
             onPress={handleSave}
             disabled={saving}
@@ -345,6 +354,7 @@ export default function AddProceedingScreen() {
             <Save size={15} color="#fff" />
             <Text className="text-sm font-bold text-white">{saving ? t('common.saving') : t('common.save')}</Text>
           </Pressable>
+          </View>
         }
       />
       <KeyboardAvoidingView

@@ -11,8 +11,9 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   FileWarning, Plus, Filter, ChevronDown,
-  Edit2, Trash2, MapPin, Calendar, X,
+  Edit2, Trash2, MapPin, Calendar, X, FileDown,
 } from 'lucide-react-native';
+import { exportKaryvahiDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import {
@@ -48,10 +49,11 @@ const NIRODHATMAK_TYPE_KEYS: Record<string, string> = {
 
 // ─── Action Menu ──────────────────────────────────────────────────────────
 function ActionMenu({
-  item, onEdit, onDelete, onClose, scheme,
+  item, onEdit, onExport, onDelete, onClose, scheme,
 }: {
   item: NirodhatmakKaryvahi;
   onEdit: () => void;
+  onExport: () => void;
   onDelete: () => void;
   onClose: () => void;
   scheme: 'light' | 'dark';
@@ -88,6 +90,10 @@ function ActionMenu({
       <Pressable onPress={onEdit} className="flex-row items-center gap-3 px-4 py-3 active:opacity-70 border-b border-border">
         <Edit2 size={16} color={palette.foreground} />
         <Text className="text-sm text-foreground">{t('common.edit')}</Text>
+      </Pressable>
+      <Pressable onPress={onExport} className="flex-row items-center gap-3 px-4 py-3 active:opacity-70 border-b border-border">
+        <FileDown size={16} color={palette.foreground} />
+        <Text className="text-sm text-foreground">Word (.docx) में export करें</Text>
       </Pressable>
       <Pressable onPress={onDelete} className="flex-row items-center gap-3 px-4 py-3 active:opacity-70">
         <Trash2 size={16} color={palette.destructive} />
@@ -340,6 +346,7 @@ export default function NirodhatmakHomeScreen() {
               setLongPressTarget(null);
               router.push(`/(app)/nirodhatmak/add-proceeding?editId=${item.id}` as never);
             }}
+            onExport={() => { setLongPressTarget(null); exportKaryvahiDocx(item); }}
             onDelete={() => { setLongPressTarget(null); setDeleteTarget(item); }}
             onClose={() => setLongPressTarget(null)}
           />
