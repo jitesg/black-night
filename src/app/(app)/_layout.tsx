@@ -2,7 +2,7 @@ import { Stack, useSegments } from 'expo-router';
 import { View } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import { FloatingAIButton } from '@/components/ai/FloatingAIButton';
+import { CopilotHost } from '@/components/ai/CopilotHost';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 export default function AppLayout() {
@@ -53,8 +53,8 @@ export default function AppLayout() {
           <Stack.Screen name="sys-knowledge-manager" />
         </Stack>
 
-        {/* Global floating AI button — hidden when inside a FIR detail (which renders its own FIR-aware button) */}
-        {!insideFIR && <FloatingAIButton />}
+        {/* AI Copilot sheet (opened from the header 🤖 button) — inside a FIR the FIR layout mounts its own, FIR-aware one */}
+        {!insideFIR && <CopilotHost />}
       </View>
     </ErrorBoundary>
   );

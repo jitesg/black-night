@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { FIRProvider } from '@/context/FIRContext';
-import { FloatingAIButton } from '@/components/ai/FloatingAIButton';
+import { CopilotHost } from '@/components/ai/CopilotHost';
 import { logger } from '@/lib/logger';
 import { useEffect } from 'react';
 
@@ -33,7 +33,7 @@ export default function FIRDetailLayout() {
         <Stack.Screen name="edit-case-diary-entry" />
         <Stack.Screen name="pending-actions" />
       </Stack>
-      <FloatingAIButton activeFirId={firId} />
+      <CopilotHost activeFirId={firId} />
     </FIRProvider>
   );
 }

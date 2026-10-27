@@ -72,6 +72,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Knowledge search = `src/lib/knowledgeSearchAll.ts` (`searchAllKnowledge`): knowledge entries + BNS/BNSS/BSA sections
   (`searchLaw`, section-like queries first) + फर्द + checklists + BNS संदर्भ rows; used by knowledge index and home.
   Law: `parseBareSectionNumber` ("धारा 103", "u/s 35(3)", १०३); Act screen filter understands it. bns-ref takes ?mode=&q=.
+- AI Copilot: no floating button any more. 🤖 header button — `CopilotHeaderBtn` auto-added by `AppHeader` on main
+  modules (`isCopilotRoute`: mukadma/gd/nirodhatmak/nyayalay/prarthna-patra/knowledge, not add/edit/fill/select-format)
+  and in `DashboardHeader` (home); opens via `src/lib/copilotStore.ts`; sheet mounted by `CopilotHost` (root layout,
+  FIR layout with activeFirId).
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

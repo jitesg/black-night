@@ -7,11 +7,12 @@
 import React, { memo, useCallback } from 'react';
 import { BackHandler, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router, useFocusEffect } from 'expo-router';
-import { ArrowLeft, Menu } from 'lucide-react-native';
+import { router, useFocusEffect, useSegments } from 'expo-router';
+import { ArrowLeft, Bot, Menu } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { openCopilot } from '@/lib/copilotStore';
 
 export interface AppHeaderProps {
   /** Primary title */
@@ -70,6 +71,7 @@ export const AppHeader = memo(function AppHeader({
   // Resolve effective subtitle and actions from legacy aliases
   const effectiveSubtitle = subtitle ?? countLabel;
   const effectiveActions  = actions ?? rightActions;
+  const showCopilot = useShowCopilotInHeader();
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme ?? 'light'];
@@ -191,8 +193,9 @@ export const AppHeader = memo(function AppHeader({
         </View>
 
         {/* Action buttons */}
-        {effectiveActions ? (
+        {effectiveActions || showCopilot ? (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingRight: 8 }}>
+            {showCopilot ? <CopilotHeaderBtn /> : null}
             {effectiveActions}
           </View>
         ) : (
@@ -248,4 +251,29 @@ export const HeaderIconBtn = memo(function HeaderIconBtn({
       ) : null}
     </Pressable>
   );
+});
+
+// ─── AI Copilot button ────────────────────────────────────────────────────
+// Shown automatically in the header of the main modules (मुकदमा, GD, निरोधात्मक,
+// न्यायालय, प्रार्थना पत्र, कानूनी ज्ञान); not on form screens or settings.
+const COPILOT_MODULES = ['mukadma', 'gd', 'nirodhatmak', 'nyayalay', 'prarthna-patra', 'knowledge'];
+
+export function isCopilotRoute(segs: readonly string[]): boolean {
+  if (!segs.some((s) => COPILOT_MODULES.includes(s))) return false;
+  return !segs.some((s) =>
+    s.startsWith('add') || s.startsWith('edit') || s.startsWith('fill') ||
+    s === 'take-action' || s === 'editor' || s === 'select-format',
+  );
+}
+
+function useShowCopilotInHeader(): boolean {
+  const segs = useSegments() as readonly string[];
+  return isCopilotRoute(segs);
+}
+
+/** 🤖 header button that opens the AI Copilot sheet. */
+export const CopilotHeaderBtn = memo(function CopilotHeaderBtn() {
+  const { colorScheme } = useColorScheme();
+  const c = THEME[colorScheme ?? 'light'];
+  return <HeaderIconBtn icon={Bot} onPress={openCopilot} label="AI Copilot" color={c.primary} />;
 });

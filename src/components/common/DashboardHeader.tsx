@@ -2,7 +2,7 @@
  * DashboardHeader — Compact enterprise-grade app bar
  *
  * Height: safe-area + 48dp content row
- * Layout: [☰ Menu] — [IS · InvestSuite / Investigation Operating System] — [🔔 Bell]
+ * Layout: [☰ Menu] — [IS · InvestSuite / Investigation Operating System] — [🤖 Copilot] [🔔 Bell]
  *
  * Theme-aware: reads useColorScheme + THEME so dark mode is honoured.
  * IS badge uses theme primary tokens for cohesive Trust Green styling.
@@ -10,7 +10,8 @@
 import { View, Text, Pressable } from 'react-native';
 import { T } from '@/lib/typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Menu, Bell } from 'lucide-react-native';
+import { Menu, Bell, Bot } from 'lucide-react-native';
+import { openCopilot } from '@/lib/copilotStore';
 import { H } from '@/lib/headerTokens';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
@@ -153,6 +154,11 @@ export function DashboardHeader({
             </View>
           ) : null}
         </View>
+
+        {/* ── Right: AI Copilot ─────────────────────────────────────── */}
+        <HeaderIconBtn onPress={openCopilot} accessibilityLabel="AI Copilot">
+          <Bot size={H.iconSize} color={colors.primary} strokeWidth={1.8} />
+        </HeaderIconBtn>
 
         {/* ── Right: Bell with optional badge ─────────────────────── */}
         <View style={{ width: H.iconBtnSize, height: H.iconBtnSize }}>
