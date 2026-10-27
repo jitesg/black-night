@@ -820,9 +820,12 @@ export const CREATE_TABLES_SQL = `
     step_id TEXT NOT NULL,
     done INTEGER NOT NULL DEFAULT 0,
     note TEXT,
-    updated_at INTEGER NOT NULL,
-    UNIQUE(sop_id, IFNULL(case_id,''), step_id)
+    updated_at INTEGER NOT NULL
   );
+  -- One row per (sop, case, step): the id is built from those three
+  -- ("<sop>__<case|none>__<step>"), so the primary key keeps them unique.
+  -- (A table UNIQUE(... IFNULL(case_id,'') ...) is an expression — SQLite
+  -- rejects it, and the table was never created.)
 
   CREATE INDEX IF NOT EXISTS idx_sop_checklist_lookup ON sop_checklist(sop_id, case_id);
   CREATE INDEX IF NOT EXISTS idx_sop_checklist_case   ON sop_checklist(case_id);

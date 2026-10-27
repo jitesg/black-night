@@ -24,6 +24,7 @@ import { SORT_OPTIONS, type SortOption } from '@/lib/mukadmaConstants';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useListBottomPadding } from '@/hooks/useListBottomPadding';
 import { THEME } from '@/lib/theme';
+import { crimeTypeLabel } from '@/lib/db/checklistRepo';
 
 const ACCENT = '#6366F1';
 const STATUS_FILTER_KEYS = ['All', 'Pending', 'Finished'] as const;
@@ -91,13 +92,16 @@ const FIRCard = memo(function FIRCard({
 }) {
   const { t } = useTranslation();
   const palette = THEME[scheme];
-  const registrationDate = new Date(fir.created_at).toLocaleDateString('en-IN', {
+  const crimeLabel = crimeTypeLabel(fir.crime_type);
+  // created_at is stored in seconds (older rows may be in ms).
+  const createdMs = fir.created_at < 10000000000 ? fir.created_at * 1000 : fir.created_at;
+  const registrationDate = new Date(createdMs).toLocaleDateString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
 
   const handleAskAI = async (e?: any) => {
     e?.stopPropagation?.();
-    const prompt = `Suggest an important investigation checklist for a "${fir.crime_type}" case.`;
+    const prompt = `Suggest an important investigation checklist for a "${crimeLabel || fir.crime_type}" case.`;
     try {
       await Share.share({ message: prompt });
     } catch {
@@ -143,14 +147,14 @@ const FIRCard = memo(function FIRCard({
       )}
       {highlight ? (
         <HighlightText
-          text={fir.crime_type}
+          text={crimeLabel}
           query={query}
           style={{ fontSize: 12, marginTop: 2, color: palette.mutedForeground }}
           numberOfLines={1}
           typoTolerant={typoTolerant}
         />
       ) : (
-        <Text style={{ fontSize: 12, marginTop: 2, color: palette.mutedForeground }} numberOfLines={1}>{fir.crime_type}</Text>
+        <Text style={{ fontSize: 12, marginTop: 2, color: palette.mutedForeground }} numberOfLines={1}>{crimeLabel}</Text>
       )}
       {fir.section ? (
         <Text className="text-xs text-muted-foreground">
@@ -279,14 +283,14 @@ export default function MukadmaHomeScreen() {
       const matchStatus = statusFilter === 'All' || f.status === statusFilter;
       // typoTolerance: when on, fall back to fuzzyMatch if exact substring doesn't match
       const exactMatch = matchesQuery(query,
-        f.fir_number, f.complainant_name, f.crime_type, f.section,
+        f.fir_number, f.complainant_name, f.crime_type, crimeTypeLabel(f.crime_type), f.section,
         f.complainant_address, f.complainant_mobile, f.ghatnasthal,
         f.nakal_chick, f.nakal_rapat,
       );
       const matchSearch = exactMatch || (
         settings.typoTolerance &&
         fuzzyMatch(query, [
-          f.fir_number, f.complainant_name, f.crime_type, f.section ?? '',
+          f.fir_number, f.complainant_name, f.crime_type, crimeTypeLabel(f.crime_type), f.section ?? '',
           f.complainant_address ?? '', f.complainant_mobile ?? '',
           f.ghatnasthal ?? '', f.nakal_chick ?? '', f.nakal_rapat ?? '',
         ].join(' '))

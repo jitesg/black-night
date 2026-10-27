@@ -2,7 +2,7 @@
  * Repository for SOP Checklist persistence (Task L30).
  * Backed by table:
  * sop_checklist(id PK, sop_id, case_id NULLABLE, step_id, done INTEGER 0/1, note TEXT, updated_at)
- * UNIQUE(sop_id, IFNULL(case_id,''), step_id)
+ * Unique per (sop_id, case_id, step_id) through the id "<sop>__<case|none>__<step>" (ON CONFLICT(id)).
  */
 
 import { getDatabase } from './database';
@@ -86,7 +86,7 @@ export async function setStepDone(
   await db.runAsync(
     `INSERT INTO sop_checklist (id, sop_id, case_id, step_id, done, note, updated_at)
      VALUES (?, ?, ?, ?, ?, NULL, ?)
-     ON CONFLICT(sop_id, IFNULL(case_id,''), step_id)
+     ON CONFLICT(id)
      DO UPDATE SET done = excluded.done, updated_at = excluded.updated_at`,
     [id, sopId, cId, stepId, doneVal, now]
   );
@@ -110,7 +110,7 @@ export async function setStepNote(
   await db.runAsync(
     `INSERT INTO sop_checklist (id, sop_id, case_id, step_id, done, note, updated_at)
      VALUES (?, ?, ?, ?, 0, ?, ?)
-     ON CONFLICT(sop_id, IFNULL(case_id,''), step_id)
+     ON CONFLICT(id)
      DO UPDATE SET note = excluded.note, updated_at = excluded.updated_at`,
     [id, sopId, cId, stepId, cleanNote, now]
   );

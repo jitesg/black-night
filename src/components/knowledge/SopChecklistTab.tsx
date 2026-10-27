@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { crimeTypeLabel } from '@/lib/db/checklistRepo';
 import { View, Text, ScrollView, Pressable, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { CheckSquare, Square, AlertCircle, RotateCcw, FileText, ChevronDown, Check } from 'lucide-react-native';
 import { getById as getIndexById, type SopStep } from '../../ai/sopIndex';
@@ -169,7 +170,7 @@ export function SopChecklistTab({
   // Selected case display name
   const selectedCaseObj = cases.find((c) => c.id === selectedCaseId);
   const selectedCaseLabel = selectedCaseObj
-    ? `FIR ${selectedCaseObj.fir_number} (${selectedCaseObj.crime_type})`
+    ? `FIR ${selectedCaseObj.fir_number} (${crimeTypeLabel(selectedCaseObj.crime_type)})`
     : 'बिना केस (सामान्य)';
 
   // Visible steps after toggle
@@ -462,7 +463,7 @@ export function SopChecklistTab({
                         FIR {c.fir_number}
                       </Text>
                       <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-                        {c.crime_type} • {c.complainant_name || 'अज्ञात वादी'}
+                        {crimeTypeLabel(c.crime_type)} • {c.complainant_name || 'अज्ञात वादी'}
                       </Text>
                     </View>
                     {isSel && <Check size={16} className="text-primary" />}

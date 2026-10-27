@@ -10,6 +10,7 @@
  * Checkbox state is the SAME sop_checklist rows the चेकलिस्ट tab uses, for the
  * case chosen in the parent screen (shared via selectedCaseId/onCaseChange).
  */
+import { crimeTypeLabel } from '@/lib/db/checklistRepo';
 import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, forwardRef } from 'react';
 import { View, Text, Pressable, ScrollView, Modal, type LayoutChangeEvent } from 'react-native';
 import { useColorScheme } from 'nativewind';
@@ -557,7 +558,7 @@ export const SopExplainTab = forwardRef<SopExplainTabHandle, Props>(function Sop
           <View className="bg-card rounded-t-3xl px-4 pt-4 pb-8" style={{ maxHeight: '70%' }}>
             <Text className="text-base font-bold text-foreground text-center mb-3">केस चुनें</Text>
             <ScrollView>
-              {[{ id: null as string | null, label: 'बिना केस (सामान्य)' }, ...cases.map((c) => ({ id: c.id as string | null, label: `FIR ${c.fir_number} (${c.crime_type})` }))].map((o) => (
+              {[{ id: null as string | null, label: 'बिना केस (सामान्य)' }, ...cases.map((c) => ({ id: c.id as string | null, label: `FIR ${c.fir_number} (${crimeTypeLabel(c.crime_type)})` }))].map((o) => (
                 <Pressable
                   key={o.id ?? 'none'}
                   onPress={() => { onCaseChange(o.id); setCasePickerOpen(false); }}

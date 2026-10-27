@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { crimeTypeLabel } from '@/lib/db/checklistRepo';
 import { logger } from '@/lib/logger';
 import {
   View, Text, ScrollView, Pressable, TextInput, KeyboardAvoidingView, ActivityIndicator,
@@ -523,7 +524,7 @@ export default function FIRDetailsTab() {
           <Field label={t('fir.crimeType')}>
             {/* Read-only: crime type is locked after FIR creation */}
             <View className="bg-muted rounded-xl px-4 py-3">
-              <Text className="text-sm text-muted-foreground">{crimeType || '—'}</Text>
+              <Text className="text-sm text-muted-foreground">{crimeTypeLabel(crimeType) || '—'}</Text>
             </View>
             <Text className="text-xs text-muted-foreground mt-1">
               {t('fir.crimeTypeLockNotice')}

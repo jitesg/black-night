@@ -232,6 +232,20 @@ export function getFlatCrimeTypes(): CrimeTypeMeta[] {
 }
 
 /**
+ * Stored crime_type ("road_accident|murder", or legacy "Murder:Sub") → Hindi
+ * names for display: "सड़क दुर्घटना, हत्या". Unknown / old free-text values are
+ * shown as they are.
+ */
+export function crimeTypeLabel(encoded: string | null | undefined): string {
+  const raw = String(encoded ?? '').trim();
+  if (!raw) return '';
+  const byId = new Map((crimeTaxonomySeed.crimeTypes as CrimeTypeMeta[]).map((c) => [c.id.toLowerCase(), c.name_hi]));
+  const names = [...new Set(parseCrimeTypePairs(raw).map((p) => p.crimeType))]
+    .map((id) => byId.get(id.toLowerCase()) ?? id);
+  return names.length ? names.join(', ') : raw;
+}
+
+/**
  * v2 replacement for getChecklistItemsForPairs.
  *
  * Returns all DISTINCT checklist items linked to ANY of the given flat
