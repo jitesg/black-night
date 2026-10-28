@@ -1155,6 +1155,7 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'nirodhatmak_karyvahi', 'proceeding_type',  "TEXT DEFAULT 'अन्य'");
   await _ensureColumn(database, 'nirodhatmak_karyvahi', 'editor_content',   "TEXT DEFAULT ''");
   await _ensureColumn(database, 'nirodhatmak_karyvahi', 'status',           "TEXT DEFAULT 'Active'");
+  await _ensureColumn(database, 'nirodhatmak_karyvahi', 'checklist_json',   "TEXT DEFAULT '{}'");
 
   // ── v130: Case Diary — places_visited + karyvahi completion traceability ─────
   // places_visited       → TEXT array of visited places (JSON-serialised string)

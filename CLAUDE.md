@@ -84,6 +84,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,
   0.5in margins, marks/data-fmt honoured; `exportReportToDocx` → share sheet). निरोधात्मक: card long-press menu + editor
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.
+- निरोधात्मक card checklist (owner: simple only — no dates/alerts/filters): 3 ticks `KARYVAHI_CHECKLIST` in nirodhatmakRepo
+  (चलानी प्रेषित / नोटिस प्राप्त / तामील), column `checklist_json`, `setKaryvahiChecklist`; rows on the card.
 - AI Copilot: no floating button any more. 🤖 header button — `CopilotHeaderBtn` auto-added by `AppHeader` on main
   modules (`isCopilotRoute`: mukadma/gd/nirodhatmak/nyayalay/prarthna-patra/knowledge, not add/edit/fill/select-format)
   and in `DashboardHeader` (home); opens via `src/lib/copilotStore.ts`; sheet mounted by `CopilotHost` (root layout,

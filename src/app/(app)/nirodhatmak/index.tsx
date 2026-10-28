@@ -11,7 +11,7 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   FileWarning, Plus, Filter, ChevronDown,
-  Edit2, Trash2, MapPin, Calendar, X, FileDown,
+  Edit2, Trash2, MapPin, Calendar, X, FileDown, Check,
 } from 'lucide-react-native';
 import { exportKaryvahiDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
@@ -20,6 +20,7 @@ import {
   getAllNirodhatmakKaryvahi, searchNirodhatmakKaryvahi, deleteNirodhatmakKaryvahi,
   NIRODHATMAK_TYPES,
   type NirodhatmakKaryvahi, type NirodhatmakType,
+  KARYVAHI_CHECKLIST, parseKaryvahiChecklist, setKaryvahiChecklist, type KaryvahiChecklist,
 } from '@/lib/db/nirodhatmakRepo';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
@@ -221,7 +222,10 @@ const KaryvahiCard = memo(function KaryvahiCard({
         </View>
       ) : null}
 
-      {/* 3. Footer: date + section badge */}
+      {/* 3. Checklist: चलानी प्रेषित → नोटिस प्राप्त → तामील */}
+      <KaryvahiChecklistRows itemId={item.id} json={item.checklist_json} scheme={scheme} />
+
+      {/* 4. Footer: date + section badge */}
       <View style={{
         flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10,
         marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: c.divider,
@@ -242,6 +246,50 @@ const KaryvahiCard = memo(function KaryvahiCard({
     </Pressable>
   );
 });
+
+// ─── Checklist rows on the card ───────────────────────────────────────────
+function KaryvahiChecklistRows({ itemId, json, scheme }: { itemId: string; json?: string; scheme: 'light' | 'dark' }) {
+  const [ticks, setTicks] = useState<KaryvahiChecklist>(() => parseKaryvahiChecklist(json));
+  useEffect(() => { setTicks(parseKaryvahiChecklist(json)); }, [json]);
+  const c = CARD_COLORS[scheme];
+  const green = scheme === 'dark' ? '#4ADE80' : '#15803D';
+
+  const toggle = (key: keyof KaryvahiChecklist) => {
+    const next = { ...ticks, [key]: !ticks[key] };
+    setTicks(next);
+    setKaryvahiChecklist(itemId, next).catch(() => setTicks(ticks));
+  };
+
+  return (
+    <View style={{ marginTop: 14, gap: 2 }}>
+      {KARYVAHI_CHECKLIST.map((row) => {
+        const on = !!ticks[row.key];
+        return (
+          <Pressable
+            key={row.key}
+            onPress={() => toggle(row.key)}
+            hitSlop={4}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: on }}
+            accessibilityLabel={row.label}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 }}
+          >
+            <View style={{
+              width: 20, height: 20, borderRadius: 5, borderWidth: 1.5,
+              borderColor: on ? green : c.muted, backgroundColor: on ? green : 'transparent',
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              {on ? <Check size={14} color="#FFFFFF" strokeWidth={3} /> : null}
+            </View>
+            <Text style={{ flex: 1, fontSize: 13.5, color: on ? green : c.muted, fontWeight: on ? '600' : '400' }}>
+              {row.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
 
 // ─── Main Screen ──────────────────────────────────────────────────────────
 export default function NirodhatmakHomeScreen() {

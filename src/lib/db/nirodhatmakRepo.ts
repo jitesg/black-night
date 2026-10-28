@@ -27,6 +27,8 @@ export interface NirodhatmakKaryvahi {
   proceeding_type: NirodhatmakType;
   editor_content: string;     // free-text editor (may include format-generated content)
   status: string;             // 'Active' | 'Closed'
+  /** Simple checklist ticks: { prashit, notice, tamil } (see KARYVAHI_CHECKLIST). */
+  checklist_json?: string;
   // legacy fields (preserved, nullable for old rows)
   format_id: string;
   format_title: string;
@@ -189,6 +191,25 @@ export async function updateNirodhatmakKaryvahi(
       id,
     ]
   );
+}
+
+// ─── Checklist (चलानी प्रेषित → नोटिस प्राप्त → तामील) ─────────────────────
+export const KARYVAHI_CHECKLIST = [
+  { key: 'prashit', label: 'चलानी प्रेषित की जा चुकी है' },
+  { key: 'notice', label: 'मजिस्ट्रेट से नोटिस प्राप्त हुआ' },
+  { key: 'tamil', label: 'नोटिस तामील करा दिया गया' },
+] as const;
+export type KaryvahiChecklistKey = (typeof KARYVAHI_CHECKLIST)[number]['key'];
+export type KaryvahiChecklist = Partial<Record<KaryvahiChecklistKey, boolean>>;
+
+export function parseKaryvahiChecklist(json: string | null | undefined): KaryvahiChecklist {
+  try { const v = JSON.parse(json || '{}'); return v && typeof v === 'object' ? v as KaryvahiChecklist : {}; } catch { return {}; }
+}
+
+/** Saves the ticks only (does not touch the report or updated_at ordering). */
+export async function setKaryvahiChecklist(id: string, checklist: KaryvahiChecklist): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync(`UPDATE nirodhatmak_karyvahi SET checklist_json = ? WHERE id = ?`, [JSON.stringify(checklist), id]);
 }
 
 export async function deleteNirodhatmakKaryvahi(id: string): Promise<void> {
