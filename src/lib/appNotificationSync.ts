@@ -7,6 +7,7 @@
  *   or personally identifying details. Only generic types, counts, and bare registration
  *   numbers are permitted.
  */
+import { syncNkChalaniAlerts } from '@/lib/nkChalaniService';
 import * as Notifications from 'expo-notifications';
 import { getDatabase } from '@/lib/db/database';
 import { getPersistedSettings } from '@/hooks/useSettingsStore';
@@ -150,6 +151,9 @@ export async function syncAppNotifications(): Promise<void> {
     // e) notifCaseDiaryGap — केस डायरी लंबित (7+ days since the last diary)
     // ──────────────────────────────────────────────────────────────────────────
     await syncCaseDiaryAlerts();
+
+    // f) notifNkChalani — निरोधात्मक चलानी प्रेषण लंबित (daily 9 AM summary)
+    await syncNkChalaniAlerts();
 
     // App-icon badge = सूचनाएँ that need action (same number as the home bell).
     await refreshAppBadge();

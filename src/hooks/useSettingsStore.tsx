@@ -47,6 +47,8 @@ export interface SettingsState {
   notifInvestigations: boolean;
   /** केस डायरी लंबित alert (7+ days since the last case diary). */
   notifCaseDiaryGap: boolean;
+  /** निरोधात्मक: चलानी प्रेषण लंबित — 9 AM daily alert. */
+  notifNkChalani: boolean;
 
   // AI Assistant
   aiSuggestions: boolean;
@@ -95,6 +97,7 @@ const DEFAULTS: SettingsState = {
   notifDailySummary: false,
   notifInvestigations: true,
   notifCaseDiaryGap: true,
+  notifNkChalani: true,
   aiSuggestions: true,
   aiDraftAssistance: true,
   aiKnowledgeSearch: true,

@@ -1,6 +1,6 @@
 /**
  * सूचनाएँ — notification centre opened from the home bell.
- * Cards are built live (src/lib/noticeCards.ts): केस डायरी लंबित, न्यायालय and
+ * Cards are built live (src/lib/noticeCards.ts): केस डायरी लंबित, चलानी प्रेषण लंबित, न्यायालय and
  * प्रार्थना पत्र deadlines (overdue / due in 3 days), reminders due today or missed.
  * Tapping a card opens that FIR / document / petition / Reminders.
  */
@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import { Bell, BellOff, ChevronRight, NotebookPen, Scale, Scroll } from 'lucide-react-native';
+import { Bell, BellOff, ChevronRight, FileWarning, NotebookPen, Scale, Scroll } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Pill } from '@/components/ui/ds/Pill';
 import { THEME } from '@/lib/theme';
@@ -21,6 +21,7 @@ const KIND_META: Record<NoticeKind, { label: string; icon: typeof Bell; light: s
   court:    { label: 'न्यायालय',    icon: Scale,       light: '#1D4ED8', dark: '#93C5FD' },
   petition: { label: 'प्रार्थना पत्र', icon: Scroll,      light: '#0F766E', dark: '#5EEAD4' },
   reminder: { label: 'रिमाइंडर',    icon: Bell,        light: '#B45309', dark: '#FCD34D' },
+  nk:       { label: 'निरोधात्मक',   icon: FileWarning, light: '#DC2626', dark: '#FCA5A5' },
 };
 
 const LEVEL_COLOR: Record<NoticeLevel, { light: string; dark: string }> = {
@@ -30,7 +31,7 @@ const LEVEL_COLOR: Record<NoticeLevel, { light: string; dark: string }> = {
 };
 
 type Filter = 'all' | NoticeKind;
-const FILTERS: Filter[] = ['all', 'cd', 'court', 'petition', 'reminder'];
+const FILTERS: Filter[] = ['all', 'cd', 'nk', 'court', 'petition', 'reminder'];
 
 function NoticeItem({ card, isDark }: { card: NoticeCard; isDark: boolean }) {
   const palette = THEME[isDark ? 'dark' : 'light'];
@@ -86,7 +87,7 @@ export default function NotificationsScreen() {
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const counts = useMemo(() => {
-    const c: Record<Filter, number> = { all: cards.length, cd: 0, court: 0, petition: 0, reminder: 0 };
+    const c: Record<Filter, number> = { all: cards.length, cd: 0, court: 0, petition: 0, reminder: 0, nk: 0 };
     for (const x of cards) c[x.kind] += 1;
     return c;
   }, [cards]);

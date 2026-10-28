@@ -86,6 +86,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.
 - निरोधात्मक card checklist (owner: simple only — no dates/alerts/filters): 3 ticks `KARYVAHI_CHECKLIST` in nirodhatmakRepo
   (चलानी प्रेषित / नोटिस प्राप्त / तामील), column `checklist_json`, `setKaryvahiChecklist`; rows on the card.
+  "चलानी प्रेषण लंबित" until `prashit` is ticked: amber pill on the card, सूचनाएँ card kind 'nk' (bell count), and one
+  9 AM summary alert per day from the day after the karyvahi date — rules `src/lib/nkChalani.ts` (tests
+  `scripts/test_nk_chalani.ts`), scheduler `nkChalaniService.ts` (`kind: nk_chalani`, route /(app)/nirodhatmak; setting
+  notifNkChalani; resync from repo create/delete/tick + syncAppNotifications).
 - AI Copilot: no floating button any more. 🤖 header button — `CopilotHeaderBtn` auto-added by `AppHeader` on main
   modules (`isCopilotRoute`: mukadma/gd/nirodhatmak/nyayalay/prarthna-patra/knowledge, not add/edit/fill/select-format)
   and in `DashboardHeader` (home); opens via `src/lib/copilotStore.ts`; sheet mounted by `CopilotHost` (root layout,

@@ -39,6 +39,7 @@ import { registerReminderBackgroundTask } from '@/lib/reminderBackgroundTask';
 import { syncAppNotifications } from '@/lib/appNotificationSync';
 import { CD_GAP_KIND } from '@/lib/caseDiaryGapService';
 import { DEADLINE_KIND } from '@/lib/deadlineAlertService';
+import { NK_CHALANI_KIND } from '@/lib/nkChalaniService';
 import { AIProviderManager } from '@/ai/level5/AIProviderManager';
 import { LearningEngine } from '@/ai/level5/LearningEngine';
 import { NAV_THEME } from '@/lib/theme';
@@ -244,7 +245,7 @@ function AppNavigator({
       const data = response.notification.request.content.data as Record<string, unknown> | undefined;
       if (data?.kind === CD_GAP_KIND && typeof data.firId === 'string') return `/(app)/mukadma/${data.firId}/case-diary`;
       // न्यायालय / प्रार्थना पत्र deadline alerts carry the screen to open.
-      if (data?.kind === DEADLINE_KIND && typeof data.route === 'string' && data.route.startsWith('/(app)/')) return data.route;
+      if ((data?.kind === DEADLINE_KIND || data?.kind === NK_CHALANI_KIND) && typeof data.route === 'string' && data.route.startsWith('/(app)/')) return data.route;
       return null;
     };
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {

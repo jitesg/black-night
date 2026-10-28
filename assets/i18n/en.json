@@ -448,6 +448,8 @@
       "investigationsDesc": "Updates on active investigation cases",
       "caseDiaryGap": "Case diary pending alert",
       "caseDiaryGapDesc": "Daily 9 AM reminder when the last case diary is more than 7 days old (keep the gap under 15 days)",
+      "nkChalani": "Chalani pending alert",
+      "nkChalaniDesc": "Daily 9 AM reminder until a preventive action's chalani is ticked as sent to the magistrate",
       "disclaimer": "Notifications require device permission. If notifications are not appearing, enable them in your device Settings → InvestSuite → Notifications."
     },
     "search": {

@@ -2,13 +2,13 @@
  * Notifications Settings Screen
  */
 import { View, Text, ScrollView, Switch } from 'react-native';
-import { Bell, Scale, Clock, BarChart2, Search, NotebookPen } from 'lucide-react-native';
+import { Bell, Scale, Clock, BarChart2, Search, NotebookPen, FileWarning } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 type NotifKey = keyof Pick<SettingsState,
-  'notifReminders' | 'notifCourtAlerts' | 'notifDeadlines' | 'notifDailySummary' | 'notifInvestigations' | 'notifCaseDiaryGap'
+  'notifReminders' | 'notifCourtAlerts' | 'notifDeadlines' | 'notifDailySummary' | 'notifInvestigations' | 'notifCaseDiaryGap' | 'notifNkChalani'
 >;
 
 const NOTIF_ITEMS: { key: NotifKey; labelKey: string; descKey: string; icon: typeof Bell; color: string }[] = [
@@ -18,6 +18,7 @@ const NOTIF_ITEMS: { key: NotifKey; labelKey: string; descKey: string; icon: typ
   { key: 'notifDailySummary', labelKey: 'settings.notifications.dailySummary', descKey: 'settings.notifications.dailySummaryDesc', icon: BarChart2, color: '#10B981' },
   { key: 'notifInvestigations', labelKey: 'settings.notifications.investigations', descKey: 'settings.notifications.investigationsDesc', icon: Search, color: '#7C3AED' },
   { key: 'notifCaseDiaryGap', labelKey: 'settings.notifications.caseDiaryGap', descKey: 'settings.notifications.caseDiaryGapDesc', icon: NotebookPen, color: '#B45309' },
+  { key: 'notifNkChalani', labelKey: 'settings.notifications.nkChalani', descKey: 'settings.notifications.nkChalaniDesc', icon: FileWarning, color: '#DC2626' },
 ];
 
 export default function NotificationsScreen() {

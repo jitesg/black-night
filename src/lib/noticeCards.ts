@@ -8,8 +8,9 @@
  * No React Native imports — tests: node --experimental-strip-types --test scripts/test_notice_cards.ts
  */
 import { CD_ALERT_AFTER_DAYS, CD_MAX_GAP_DAYS, daysBetween, fmtDate, gapBase, parseLocalDate, type CdFirRow } from './caseDiaryGap';
+import { nkDate, nkPendingDays, nkPlace, type NkPendingRow } from './nkChalani';
 
-export type NoticeKind = 'cd' | 'court' | 'petition' | 'reminder';
+export type NoticeKind = 'cd' | 'court' | 'petition' | 'reminder' | 'nk';
 export type NoticeLevel = 'over' | 'warn' | 'info';
 
 export interface NoticeCard {
@@ -93,8 +94,21 @@ function deadlineCard(
 
 export function buildNoticeCards(input: {
   firs?: CdFirRow[]; courtDocs?: CourtDocRow[]; petitions?: PetitionRow[]; reminders?: ReminderRow[];
+  nkPending?: NkPendingRow[];
 }, now: Date = new Date()): NoticeCard[] {
   const out: NoticeCard[] = [];
+
+  // निरोधात्मक: चलानी not yet sent to the magistrate (until the checklist tick is set).
+  for (const r of input.nkPending ?? []) {
+    const d = nkDate(r);
+    const days = nkPendingDays(r, now);
+    out.push({
+      id: `nk-${r.id}`, kind: 'nk', level: 'warn',
+      title: `चलानी प्रेषण लंबित — ${nkPlace(r)}`,
+      body: `निरोधात्मक कार्यवाही${r.proceeding_type ? ` (${r.proceeding_type})` : ''}${d ? ` दिनांक ${fmtDate(d)}` : ''} की चलानी अभी मजिस्ट्रेट को प्रेषित नहीं की गई है।`,
+      when: days === 0 ? 'आज' : `${days} दिन`, route: '/(app)/nirodhatmak', rank: -days,
+    });
+  }
 
   for (const f of input.firs ?? []) {
     const base = gapBase(f);

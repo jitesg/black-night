@@ -146,6 +146,7 @@ export async function createNirodhatmakKaryvahi(
       now,
     ]
   );
+  resyncNkAlerts();
   return {
     id,
     proceeding_date: input.proceeding_date,
@@ -210,6 +211,12 @@ export function parseKaryvahiChecklist(json: string | null | undefined): Karyvah
 export async function setKaryvahiChecklist(id: string, checklist: KaryvahiChecklist): Promise<void> {
   const db = await getDatabase();
   await db.runAsync(`UPDATE nirodhatmak_karyvahi SET checklist_json = ? WHERE id = ?`, [JSON.stringify(checklist), id]);
+  resyncNkAlerts();
+}
+
+/** चलानी प्रेषण लंबित alerts follow the ticks / new / deleted rows (lazy import). */
+function resyncNkAlerts(): void {
+  import('@/lib/nkChalaniService').then((m) => m.resyncNkChalaniAlertsSoon()).catch(() => {});
 }
 
 export async function deleteNirodhatmakKaryvahi(id: string): Promise<void> {
@@ -218,4 +225,5 @@ export async function deleteNirodhatmakKaryvahi(id: string): Promise<void> {
     `UPDATE nirodhatmak_karyvahi SET deleted_at = ?, updated_at = ? WHERE id = ?`,
     [nowTimestamp(), nowTimestamp(), id]
   );
+  resyncNkAlerts();
 }

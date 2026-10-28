@@ -11,7 +11,7 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   FileWarning, Plus, Filter, ChevronDown,
-  Edit2, Trash2, MapPin, Calendar, X, FileDown, Check,
+  Edit2, Trash2, MapPin, Calendar, X, FileDown, Check, Clock,
 } from 'lucide-react-native';
 import { exportKaryvahiDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
@@ -260,8 +260,17 @@ function KaryvahiChecklistRows({ itemId, json, scheme }: { itemId: string; json?
     setKaryvahiChecklist(itemId, next).catch(() => setTicks(ticks));
   };
 
+  const amber = scheme === 'dark' ? '#FBBF24' : '#B45309';
   return (
     <View style={{ marginTop: 14, gap: 2 }}>
+      {!ticks.prashit ? (
+        // Pending until "चलानी प्रेषित की जा चुकी है" is ticked (also in सूचनाएँ + daily 9 AM alert).
+        <View style={{ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4,
+          paddingHorizontal: 10, paddingVertical: 3, borderRadius: 999, backgroundColor: `${amber}1F`, borderWidth: 1, borderColor: `${amber}55` }}>
+          <Clock size={12} color={amber} />
+          <Text style={{ fontSize: 12, fontWeight: '700', color: amber }}>चलानी प्रेषण लंबित</Text>
+        </View>
+      ) : null}
       {KARYVAHI_CHECKLIST.map((row) => {
         const on = !!ticks[row.key];
         return (
