@@ -15,6 +15,7 @@ import type {
   AIProviderResponse,
   AIProviderType,
 } from './L5Types';
+import { askGemini, hasGeminiKey } from '../geminiDirect';
 
 // ── Default offline-rules provider ────────────────────────────────────────────
 // This is the always-available fallback: it produces structured reasoning
@@ -98,27 +99,49 @@ export class AIProviderManager {
       }
 
       if (primary.type === 'cloud-llm' || primary.type === 'hybrid') {
-        if (!primary.endpoint) throw new Error('Cloud LLM endpoint not configured.');
         const start = Date.now();
+        // The officer's own Gemini key (Settings → AI सहायक): talk to Gemini directly.
+        if (hasGeminiKey()) {
+          const content = await askGemini({
+            prompt: req.prompt, context: req.context, history: req.history, maxTokens: req.maxTokens,
+            timeoutMs: Math.max(primary.timeoutMs ?? 0, 45000),
+          });
+          return { content, provider: primary.type, usedFallback: false, latencyMs: Date.now() - start, confidence: 85, isOffline: false };
+        }
+        if (!primary.endpoint) throw new Error('ऑनलाइन AI सेट नहीं है');
         const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-        const res   = await Promise.race([
-          fetch(primary.endpoint, {
-            method:  'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            },
-            body:    JSON.stringify({ prompt: req.prompt, context: req.context, max_tokens: req.maxTokens ?? 512 }),
-          }),
-          new Promise<never>((_, rej) => setTimeout(() => rej(new Error('Timeout')), primary.timeoutMs)),
-        ]);
-        const json    = await (res as Response).json();
-        const latency = Date.now() - start;
+        let res: Response;
+        try {
+          res = await Promise.race([
+            fetch(primary.endpoint, {
+              method:  'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              },
+              body:    JSON.stringify({ prompt: req.prompt, context: req.context, max_tokens: Math.max(req.maxTokens ?? 0, 1024) }),
+            }),
+            new Promise<never>((_, rej) => setTimeout(() => rej(new Error('ऑनलाइन AI ने समय पर जवाब नहीं दिया')), Math.max(primary.timeoutMs ?? 0, 40000))),
+          ]);
+        } catch (e) {
+          throw new Error(e instanceof Error && /समय/.test(e.message) ? e.message : 'ऑनलाइन AI सर्वर से जुड़ नहीं पाए');
+        }
+        let json: Record<string, unknown> = {};
+        try { json = await res.json() as Record<string, unknown>; } catch { /* not JSON */ }
+        // A server error used to come back as an empty "answer" and was shown as if offline.
+        if (!res.ok || typeof json.error === 'string') {
+          const msg = String(json.error ?? '');
+          throw new Error(/429|rate limit/i.test(msg) ? 'Gemini की मुफ़्त सीमा अभी पूरी हो गई है'
+            : /API key missing/i.test(msg) ? 'सर्वर पर Gemini key सेट नहीं है'
+            : `ऑनलाइन AI त्रुटि ${res.status}${msg ? ` (${msg.slice(0, 80)})` : ''}`);
+        }
+        const content = typeof json.response === 'string' ? json.response.trim() : '';
+        if (!content) throw new Error('ऑनलाइन AI से खाली जवाब मिला');
         return {
-          content:      (json as Record<string,unknown>).response as string ?? '',
+          content,
           provider:     primary.type,
           usedFallback: false,
-          latencyMs:    latency,
+          latencyMs:    Date.now() - start,
           confidence:   85,
           isOffline:    false,
         };
@@ -130,10 +153,11 @@ export class AIProviderManager {
       }
 
       return offlineRulesInference(req);
-    } catch {
-      // Fallback
+    } catch (err) {
+      // Fallback (the reason travels with it so the Copilot can say why)
+      const error = err instanceof Error ? err.message : String(err);
       const fallbackType = primary.fallbackProvider ?? 'offline-rules';
-      if (fallbackType === 'offline-rules') return offlineRulesInference(req);
+      if (fallbackType === 'offline-rules') return { ...offlineRulesInference(req), usedFallback: true, error };
 
       const fallbackCfg = AIProviderManager.configs.find(
         (c) => c.type === fallbackType && c.isAvailable

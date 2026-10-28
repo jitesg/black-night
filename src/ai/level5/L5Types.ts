@@ -478,6 +478,8 @@ export interface AIProviderRequest {
   maxTokens?: number;
   module: L5ModuleId;
   requiresOnline: boolean;
+  /** Recent chat turns (Copilot), oldest first. */
+  history?: { role: 'user' | 'assistant'; content: string }[];
 }
 
 export interface AIProviderResponse {
@@ -487,6 +489,8 @@ export interface AIProviderResponse {
   latencyMs: number;
   confidence: number;
   isOffline: boolean;
+  /** Why the online answer failed (Hindi), when usedFallback. */
+  error?: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

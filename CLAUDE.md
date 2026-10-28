@@ -88,6 +88,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   modules (`isCopilotRoute`: mukadma/gd/nirodhatmak/nyayalay/prarthna-patra/knowledge, not add/edit/fill/select-format)
   and in `DashboardHeader` (home); opens via `src/lib/copilotStore.ts`; sheet mounted by `CopilotHost` (root layout,
   FIR layout with activeFirId).
+- Copilot online answers: `AIProviderManager.execute` → officer's own Gemini key if saved (`src/ai/geminiDirect.ts`:
+  key in expo-sqlite localStorage `investsuite:gemini_api_key`, Settings → AI सहायक card; ListModels picks flash models,
+  tries up to 3 on 404/429/503, joins non-thought parts, maxOutputTokens ≥ 4096, last 6 chat turns sent) else the
+  Supabase `ai-copilot-provider` (MeDo-managed, NOT deployable from this repo; sandbox can't reach supabase.co).
+  Failures carry a Hindi `error` → Copilot appends "⚠️ ऑनलाइन AI से जवाब नहीं मिला: …". Cloud only runs when
+  setting aiReportGeneration is on.
 - Text wrapper `src/lib/selectableText.tsx` (imported first in index.ts): selectable text app-wide (not inside
   Pressable/Touchables); on Android: textBreakStrategy forced to 'highQuality' unless numberOfLines=1 + explicit
   'simple' ('simple' splits a letter from its matra → "चकालस्ट", hidden 2nd line — build 21 regression), and

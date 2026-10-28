@@ -527,13 +527,24 @@ export class AICopilotService {
             : this.aiPreferences.restrictCaseData ? '' : buildConciseContextSummary(ctx, toolResults, message);
           // Handbook rows are law text, not case data: always sent when present.
           const contextSummary = bnsHits.length ? `${baseContext}\n\n${copilotContext(bnsHits)}`.trim() : baseContext;
+          // Recent chat so follow-up questions make sense ("और इसकी सज़ा?").
+          const history = this.memory.getMessages()
+            .filter((m) => m.id !== assistantMsgId && !m.error && m.content && m.content !== '…'
+              && (m.role === 'user' || m.role === 'assistant'))
+            .map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }));
+          if (history.length && history[history.length - 1].role === 'user' && history[history.length - 1].content.trim() === message.trim()) history.pop();
           const cloudResponse = await AIProviderManager.execute({
             prompt: message,
             context: contextSummary,
-            maxTokens: 700,
+            maxTokens: 2048,
             module: 'nlq',
             requiresOnline: false,
+            history: history.slice(-6),
           });
+          if (cloudResponse.usedFallback && cloudResponse.error) {
+            // Say why the online answer is missing instead of silently showing the offline one.
+            finalContent += `\n\n⚠️ ऑनलाइन AI से जवाब नहीं मिला: ${cloudResponse.error}। ऊपर app का offline जवाब है।`;
+          }
           if (cloudResponse.content && !cloudResponse.usedFallback) {
             finalContent = cloudResponse.content;
             cloudAnswerUsed = true;
