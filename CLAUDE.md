@@ -89,8 +89,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   and in `DashboardHeader` (home); opens via `src/lib/copilotStore.ts`; sheet mounted by `CopilotHost` (root layout,
   FIR layout with activeFirId).
 - Text wrapper `src/lib/selectableText.tsx` (imported first in index.ts): selectable text app-wide (not inside
-  Pressable/Touchables); on Android every Text gets textBreakStrategy 'simple' and lineHeight ≥ 1.4×fontSize
-  (Hindi lines/matras were cut). Don't add per-screen workarounds for this.
+  Pressable/Touchables); on Android: textBreakStrategy forced to 'highQuality' unless numberOfLines=1 + explicit
+  'simple' ('simple' splits a letter from its matra → "चकालस्ट", hidden 2nd line — build 21 regression), and
+  lineHeight ≥ 1.4×fontSize. Never use textBreakStrategy "simple" on text that can wrap.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

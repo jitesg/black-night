@@ -11,8 +11,9 @@
  *   • text inside a Pressable / Touchable is not selectable
  * TextInputs already support select / copy / paste on their own.
  *
- * Android only: every Text also gets textBreakStrategy="simple" and a minimum
- * line height of 1.4 × fontSize, so Hindi lines and matras are not cut.
+ * Android only: text that can wrap always uses textBreakStrategy "highQuality"
+ * ("simple" splits a letter from its matra) and every Text gets a minimum line
+ * height of 1.4 × fontSize, so Hindi lines and matras are not cut.
  */
 import React, { createContext, forwardRef, useContext } from 'react';
 
@@ -48,9 +49,11 @@ patch('Text', (OrigText) => forwardRef<unknown, AnyProps>(function SelectableTex
     : !noSelect && !props.onPress && !props.onLongPress;
   if (!IS_ANDROID) return React.createElement(OrigText, { ...props, selectable, ref });
 
-  // Hindi text cut on Android (owner's report):
-  //  • the default "highQuality" line breaking measures Devanagari lines too
-  //    short, so the last letters of a line are cut → use "simple" everywhere;
+  // Hindi text cut on Android (owner's screenshots, build 21):
+  //  • textBreakStrategy "simple" breaks a line between a letter and its matra
+  //    ("चेकलिस्ट" → "चकालस्ट" + the matras on a hidden 2nd line), so text that
+  //    may wrap always uses "highQuality"; "simple" is kept only on one-line
+  //    labels (pills), where it just trims the extra space;
   //  • a lineHeight too small for the font clips the top / bottom matras →
   //    raise it to 1.4 × fontSize.
   let style = props.style;
@@ -63,7 +66,7 @@ patch('Text', (OrigText) => forwardRef<unknown, AnyProps>(function SelectableTex
   return React.createElement(OrigText, {
     ...props,
     style,
-    textBreakStrategy: props.textBreakStrategy ?? 'simple',
+    textBreakStrategy: props.numberOfLines === 1 && props.textBreakStrategy === 'simple' ? 'simple' : 'highQuality',
     selectable,
     ref,
   });
