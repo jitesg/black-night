@@ -536,6 +536,37 @@ const INDEXED_ACCESS_RE = /\{\{([A-Za-z0-9_]+)\.(\d+)\.([A-Za-z0-9_]+)\}\}/g;
 
 // ─── Wanted status of accused (judicial custody report) ─────────────────────
 /**
+ * {{if:Key|text}} → text only when the field Key is filled / ticked (checkbox value "हाँ");
+ * {{ifnot:Key|text}} → text only when it is empty / unticked. The text may hold other tokens.
+ * E.g. the 170 चालानी "14 दिवस रिमांड" checkbox chooses between two निवेदन lines.
+ */
+export function isTicked(v: string | undefined | null): boolean {
+  const t = String(v ?? '').trim();
+  return t !== '' && !/^(नहीं|no|false|0)$/i.test(t);
+}
+
+function _applyIfTokens(template: string, values: Record<string, string>): string {
+  if (!template.includes('{{if')) return template;
+  const open = /\{\{(if|ifnot):([A-Za-z0-9_]+)\|/;
+  let out = '';
+  let rest = template;
+  for (let m = open.exec(rest); m; m = open.exec(rest)) {
+    let depth = 1;
+    let i = m.index + m[0].length;
+    while (i < rest.length && depth > 0) {
+      if (rest.startsWith('{{', i)) { depth += 1; i += 2; }
+      else if (rest.startsWith('}}', i)) { depth -= 1; i += 2; }
+      else i += 1;
+    }
+    const inner = rest.slice(m.index + m[0].length, depth === 0 ? i - 2 : i);
+    const on = isTicked(values[m[2]]);
+    out += rest.slice(0, m.index) + ((m[1] === 'if') === on ? inner : '');
+    rest = rest.slice(i);
+  }
+  return out + rest;
+}
+
+/**
  * Each accused can carry `status`: 'नामजद' | 'प्रकाश में आया' | 'वांछित नहीं'
  * (picker shown by AccusedGroupInput when the format uses these tokens; unset = प्रकाश में आया).
  *   {{Key#summary}}       → "अभियुक्तगण 1.A पुत्र X 2.B पुत्र Y उपरोक्त नामजद हैं व मुकदमा उपरोक्त में वांछित हैं
@@ -877,7 +908,7 @@ export function generateReport(
 ): string {
   // Layout marks ([[शीर्षक]] …) are only for the print pipeline (formats/fill).
   if (!opts?.keepMarkers) return stripFormatMarkers(generateReport(template, values, keyDefs, { keepMarkers: true }));
-  let processed = template;
+  let processed = _applyIfTokens(template, values);                        // Step -2 ({{if:Key|…}})
   if (keyDefs && keyDefs.length > 0) {
     processed = _applyGroupStatus(processed, values, keyDefs);            // Step -1 (accused status)
     processed = _applyFieldProjection(processed, values, keyDefs);        // Step 0

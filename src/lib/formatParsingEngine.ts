@@ -23,7 +23,7 @@
  *   patterns so each sub-letter is parsed independently.
  */
 
-import { hasFormatMarkers, markName, parseMarkedLetter, splitMarkedAttachment, splitMarkedLetters } from './formatMarkers';
+import { hasFormatMarkers, inlineBoldHtml, markName, parseMarkedLetter, splitMarkedAttachment, splitMarkedLetters } from './formatMarkers';
 
 // ─── Public types ─────────────────────────────────────────────────────────
 
@@ -415,7 +415,7 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
   for (const b of model.bodyBlocks ?? []) {
     const afterRight = prevKind === 'right' && b.kind !== 'right';
     prevKind = b.kind;
-    if (b.kind === 'para') parts.push(div('body', `text-align:justify;text-indent:1.5em;${afterRight ? 'margin-top:1.5em;' : ''}`, esc(b.text)));
+    if (b.kind === 'para') parts.push(div('body', `text-align:justify;text-indent:1.5em;${afterRight ? 'margin-top:1.5em;' : ''}`, inlineBoldHtml(esc(b.text))));
     else if (b.kind === 'line') parts.push(div('list', 'text-align:left;', esc(b.text)));
     else if (b.kind === 'center') parts.push(div('center', 'text-align:center;', `<b>${esc(b.text)}</b>`));
     else if (b.kind === 'right') parts.push(div('right', 'text-align:right;', esc(b.text)));

@@ -541,6 +541,19 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
       );
     }
 
+    // ── Checkbox — tick = "हाँ", empty = not ticked (format text uses {{if:Key|…}}) ──
+    if (fieldType === 'checkbox') {
+      return (
+        <FormatKeyCheckboxInput
+          ref={ref}
+          keyName={keyDef.key_name}
+          value={value}
+          onChange={onChange}
+          displayLabel={displayLabel}
+        />
+      );
+    }
+
     // ── Dropdown — one tap on an option (chips, like the संबंध प्रकार buttons) ──
     if (fieldType === 'dropdown') {
       const options = parseDropdownOptions(keyDef.dropdown_options);
@@ -627,6 +640,46 @@ const FormatKeyDropdownInput = forwardRef<View, {
 });
 
 FormatKeyDropdownInput.displayName = 'FormatKeyDropdownInput';
+
+// ── FormatKeyCheckboxInput — tick box for field_type=checkbox ───────────────
+
+const FormatKeyCheckboxInput = forwardRef<View, {
+  keyName: string;
+  value: string;
+  onChange: (keyName: string, value: string) => void;
+  displayLabel: string;
+}>(({ keyName, value, onChange, displayLabel }, ref) => {
+  const { colorScheme } = useColorScheme();
+  const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
+  const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
+  const on = value.trim() !== '' && !/^(नहीं|no|false|0)$/i.test(value.trim());
+  return (
+    <View ref={ref}>
+      <Pressable
+        onPress={() => onChange(keyName, on ? '' : 'हाँ')}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: on }}
+        accessibilityLabel={displayLabel}
+        style={{
+          flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, borderRadius: 12,
+          borderWidth: on ? 2 : 1, borderColor: on ? green : c.border, backgroundColor: on ? `${green}14` : c.card,
+        }}
+      >
+        <View style={{
+          width: 24, height: 24, borderRadius: 6, borderWidth: 2, borderColor: on ? green : c.mutedForeground,
+          backgroundColor: on ? green : 'transparent', alignItems: 'center', justifyContent: 'center',
+        }}>
+          {on ? <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '800', lineHeight: 20 }}>✓</Text> : null}
+        </View>
+        <Text style={{ flex: 1, fontSize: 14, lineHeight: 21, fontWeight: on ? '700' : '500', color: on ? green : c.foreground }}>
+          {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+        </Text>
+      </Pressable>
+    </View>
+  );
+});
+
+FormatKeyCheckboxInput.displayName = 'FormatKeyCheckboxInput';
 
 // ── FormatKeyDateInput — date-picker sub-component for field_type=date ─────────
 

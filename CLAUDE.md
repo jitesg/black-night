@@ -95,6 +95,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   AccusedGroupInput shows the per-accused "स्थिति" picker only when the format text contains `{{Key#` (unset =
   प्रकाश में आया). Tests `scripts/test_accused_status.ts`. Used by format `sys-fmt-nyayik-abhiraksha`
   "आत्मसमर्पण प्रा0पत्र पर आख्या (न्यायिक अभिरक्षा)" (Nyayalay, seed_version 1).
+- Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
+  `{{ifnot:Key|text}}` (templateEngine `_applyIfTokens`, Step -2, inner tokens allowed). `**…**` in a [[विवरण]] paragraph =
+  bold words (print/editor/Word; editor <b> in body → ** on the way back; stripped in plain text). Used by the 170 चालानी
+  "14 दिवस रिमांड" tick.
 - Format field type "dropdown" = option chips (`FormatKeyDropdownInput` in components/ui/input.tsx, options via
   `parseDropdownOptions`: JSON strings / {value,label} / comma list). Every `pad` (पद/रैंक) key is a dropdown
   उपनिरीक्षक / निरीक्षक (default उपनिरीक्षक) — seed (7 formats, seed_version bumped) + idempotent UPDATE in database.ts

@@ -18,6 +18,7 @@
  *   [[बीच]] …           centred bold line(s) (court notice titles)
  *   [[दाएँ]] …          right-aligned line(s) (e.g. "उपजिला मजिस्ट्रेट …")
  *   [[दोनों ओर]] …      "left | right" on one line (e.g. "शासन | बनाम …")
+ *   **…** inside [[विवरण]] text = bold words (print, editor, Word)
  *   [[सूची]] …          lines kept one per line, left, no indent (names list: {{Key#list}})
  *
  * Unmarked lines belong to the section above them. Formats without marks keep
@@ -93,8 +94,26 @@ export function splitMarkedAttachment(line: string): { left: string; right: stri
  * Plain text without marks (copy / share / save / old screens). Attachment lines
  * get their number back and the "|" becomes a tab, like the Word original.
  */
+/** Inline bold in marked body text: **…** (e.g. the रिमांड request line). */
+const BOLD_RE = /\*\*([^*\n]+?)\*\*/g;
+/** Already-escaped HTML: **…** → <b>…</b>. */
+export const inlineBoldHtml = (escaped: string): string => escaped.replace(BOLD_RE, '<b>$1</b>');
+/** Text parts with their bold flag (Word export). */
+export function splitInlineBold(text: string): { text: string; bold: boolean }[] {
+  const out: { text: string; bold: boolean }[] = [];
+  let last = 0;
+  for (const m of text.matchAll(BOLD_RE)) {
+    if (m.index! > last) out.push({ text: text.slice(last, m.index), bold: false });
+    out.push({ text: m[1], bold: true });
+    last = m.index! + m[0].length;
+  }
+  if (last < text.length) out.push({ text: text.slice(last), bold: false });
+  return out.length ? out : [{ text, bold: false }];
+}
+
 export function stripFormatMarkers(text: string): string {
   if (!hasFormatMarkers(text)) return text;
+  text = text.replace(BOLD_RE, '$1');
   const out: string[] = [];
   let inAtt = false;
   let n = 0;
@@ -244,6 +263,8 @@ export function editorHtmlToMarkedText(html: string): string {
     const fmt = /data-fmt="([^"]*)"/.exec(tok)?.[1] ?? null;
     if (name === 'hr') { flush(); out.push(`[[${markName('letter')}]]`); lastRole = null; continue; }
     if (name === 'br') { if (cell !== null) cell += ' '; else if (buf.trim()) flush(); continue; }
+    // Bold inside a body paragraph → **…** (centre / party lines are bold by their own role).
+    if ((name === 'b' || name === 'strong') && cell === null && current() === markName('body')) { buf += '**'; continue; }
     if (name === 'td' || name === 'th') {
       if (!closing) cell = '';
       else if (cell !== null) { cells?.push(cell.replace(/\s+/g, ' ').trim()); cell = null; }

@@ -14,7 +14,7 @@ import {
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from './formatParsingEngine';
-import { editorHtmlToMarkedText, hasEditorMarks, hasFormatMarkers } from './formatMarkers';
+import { editorHtmlToMarkedText, hasEditorMarks, hasFormatMarkers, splitInlineBold } from './formatMarkers';
 import { isPartyHeading, looksLikeLetter, splitAttachmentLine, splitClosing, splitPlainText, splitSewaMein } from './printLayout';
 import { markdownToHtml, needsMigration } from './markdownToHtml';
 import { htmlToPlainText } from './stringUtils';
@@ -44,7 +44,8 @@ type ParaOpts = {
   before?: number; after?: number; pageBreak?: boolean;
 };
 const para = (text: string, o: ParaOpts = {}) => new Paragraph({
-  children: [run(text, o)],
+  // **…** = bold words (marked formats)
+  children: splitInlineBold(text).map((p) => run(p.text, { ...o, bold: o.bold || p.bold })),
   alignment: o.align,
   indent: o.indentLeft || o.firstLine ? { left: o.indentLeft, firstLine: o.firstLine } : undefined,
   spacing: { before: o.before ?? 0, after: o.after ?? 0, line: 276 },

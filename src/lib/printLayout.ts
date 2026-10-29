@@ -13,7 +13,7 @@
  * Pure string functions (tested with node: scripts/test_print_layout.ts).
  */
 import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from './formatParsingEngine';
-import { hasFormatMarkers } from './formatMarkers';
+import { hasFormatMarkers, inlineBoldHtml } from './formatMarkers';
 
 export const esc = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -122,7 +122,7 @@ export function renderLetterHtml(model: DocumentModel): string {
           const r = at < 0 ? '' : b.text.slice(at + 1).trim();
           return `<table class="doc-split"><tr><td>${esc(l)}</td><td>${esc(r)}</td></tr></table>`;
         }
-        return `<p>${esc(b.text)}</p>`;
+        return `<p>${inlineBoldHtml(esc(b.text))}</p>`;
       }).join('')}</div>`);
     }
   } else {

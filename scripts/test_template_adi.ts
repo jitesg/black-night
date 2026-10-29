@@ -89,3 +89,11 @@ test('{{Key#block}} / #inline / #short / #count / #n', () => {
   assert.equal(c1, 'एक व्यक्ति');
   assert.equal(v1, 'सकता था');
 });
+
+test('{{if:Key|…}} / {{ifnot:Key|…}} (checkbox), inner tokens still work', () => {
+  const T3 = '{{ifnot:Remand|अतः {{first#short}} को पाबन्द करें।}}{{if:Remand|**अतः {{first#short}} का 14 दिवस का रिमांड …**}}';
+  const one = JSON.stringify([P('कैलाश', 'लल्लू', '35')]);
+  assert.equal(generateReport(T3, { first: one, Remand: 'हाँ' }, keys), '**अतः 1.कैलाश पुत्र लल्लू का 14 दिवस का रिमांड …**');
+  assert.equal(generateReport(T3, { first: one, Remand: '' }, keys), 'अतः 1.कैलाश पुत्र लल्लू को पाबन्द करें।');
+  assert.equal(generateReport(T3, { first: one }, keys), 'अतः 1.कैलाश पुत्र लल्लू को पाबन्द करें।');
+});

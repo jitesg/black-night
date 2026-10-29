@@ -136,3 +136,14 @@ test('party headings: प्रथम पक्ष alone and "( बनाम- �
   const ed = E.renderModelsForEditor([E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0])]);
   assert.match(ed, /text-align:center;"><b><u>\( बनाम- एकपक्षीय \)<\/u><\/b>/);
 });
+
+test('**bold** in a body paragraph: <b> in print + editor, kept after the editor round trip, stripped in plain text', () => {
+  const t = '[[पत्र]]\n[[शीर्षक]] रिपोर्ट\n[[सेवा में]] सेवा में,\nश्रीमान\n[[महोदय]] महोदय,\n[[विवरण]] पहला पैरा।\n\n**अतः रिमांड स्वीकृत करने की कृपा करें।**\n[[बीच]] बीच की लाइन';
+  const html = P.renderTextForPrint(t);
+  assert.match(html, /<p><b>अतः रिमांड स्वीकृत करने की कृपा करें।<\/b><\/p>/);
+  const ed = E.renderModelsForEditor([E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0])]);
+  assert.match(ed, /<b>अतः रिमांड/);
+  assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(ed)), html);
+  assert.doesNotMatch(M.stripFormatMarkers(t), /\*\*/);
+  assert.deepEqual(M.splitInlineBold('क **ख** ग'), [{ text: 'क ', bold: false }, { text: 'ख', bold: true }, { text: ' ग', bold: false }]);
+});
