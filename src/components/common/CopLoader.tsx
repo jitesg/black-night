@@ -98,8 +98,10 @@ export function CopLoader({ background, textColor, mutedColor, accent }: {
           <CopEmblem size={140} />
         </Animated.View>
       </View>
-      <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', marginTop: 18, letterSpacing: 0.5 }}>InvestSuite</Text>
-      <Text style={{ color: mutedColor, fontSize: 13, marginTop: 4 }}>विवेचना सहायक</Text>
+      {/* Full-width, centred text with room for matras: a shrink-wrapped Hindi line is
+          measured a little too narrow on Android and its last letters get cut. */}
+      <Text style={{ alignSelf: 'stretch', textAlign: 'center', paddingHorizontal: 24, color: textColor, fontSize: 24, lineHeight: 34, fontWeight: '800', marginTop: 18, letterSpacing: 0.5 }}>InvestSuite</Text>
+      <Text style={{ alignSelf: 'stretch', textAlign: 'center', paddingHorizontal: 24, color: mutedColor, fontSize: 14, lineHeight: 22, marginTop: 2 }}>विवेचना सहायक</Text>
       <View style={{ flexDirection: 'row', gap: 8, marginTop: 22 }}>
         <Dot delay={0} color={accent} />
         <Dot delay={150} color={accent} />
