@@ -182,14 +182,11 @@ export const AutocompleteInput = memo(({
         />
       </View>
 
-      {/* Suggestions dropdown */}
+      {/* Suggestions — in the normal flow right below the field (not floating):
+          a floating list covered the multiline पता field itself and the fields below. */}
       {showDropdown && suggestions.length > 0 && (
         <View style={{
-          position: 'absolute',
-          top: multiline ? undefined : 46,
-          left: 0,
-          right: 0,
-          zIndex: 999,
+          marginTop: 4,
           backgroundColor: C.dropdownBg,
           borderWidth: 1,
           borderColor: C.dropdownBorder,
@@ -213,7 +210,7 @@ export const AutocompleteInput = memo(({
             >
               <Text
                 style={{ fontSize: 14, color: C.itemText }}
-                numberOfLines={1}
+                numberOfLines={2}
               >
                 {s.value}
               </Text>
