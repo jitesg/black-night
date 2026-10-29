@@ -546,6 +546,11 @@ const INDEXED_ACCESS_RE = /\{\{([A-Za-z0-9_]+)\.(\d+)\.([A-Za-z0-9_]+)\}\}/g;
  *   {{Key#list}}          → one person per line (any group): "1.A पुत्र X उम्र करीब 30 वर्ष" … the last line
  *                            gets "नि0गण <address>" when all share it, else every line "निवासी <address>";
  *                            one person → a single line without number, "निवासी <address>".
+ *   {{Key#block}}         → like #list, but a shared address goes on its own last line "निवासीगण <address>"
+ *   {{Key#inline}}        → the same people on one line ("1.A … 2.B … निवासीगण <address>")
+ *   {{Key#short}}         → names without address ("1.A पुत्र X उम्र करीब 30 वर्ष 2.B …"), for "… उपरोक्त"
+ *   {{Key#count}}         → number of people in words (एक, दो, तीन …)
+ *   {{Key#n|one|many}}    → "one" for a single person, "many" for 2+ (e.g. अभियुक्त|अभियुक्तगण, सकता था|सकते थे)
  * Tests: scripts/test_accused_status.ts
  */
 type StatusEntry = AnyEntry & { status?: string; gender?: string };
@@ -588,6 +593,32 @@ function _groupListLines(entries: StatusEntry[]): string {
   }).join('\n');
 }
 
+const COUNT_WORDS = ['शून्य', 'एक', 'दो', 'तीन', 'चार', 'पाँच', 'छः', 'सात', 'आठ', 'नौ', 'दस'];
+
+/** One person's words without the address: "1.A पुत्र X उम्र करीब 30 वर्ष जाति Y". */
+function _personWords(e: StatusEntry, i: number, many: boolean): string {
+  const s = (v: unknown) => String(v ?? '').trim();
+  const parts: string[] = [many ? `${i + 1}.${s(e.name)}` : s(e.name)];
+  if (s(e.fatherOrHusbandName)) parts.push(`${_resolveConnector(e as never)} ${s(e.fatherOrHusbandName)}`);
+  if (s(e.age)) parts.push(`उम्र करीब ${s(e.age)} वर्ष`);
+  if (s(e.caste)) parts.push(`जाति ${s(e.caste)}`);
+  return parts.join(' ');
+}
+
+/** {{Key#block}} / {{Key#inline}} / {{Key#short}} (see above). */
+function _groupPeople(entries: StatusEntry[], kind: 'block' | 'inline' | 'short'): string {
+  const people = entries.filter((e) => String(e?.name ?? '').trim());
+  if (!people.length) return '';
+  const many = people.length > 1;
+  const words = people.map((e, i) => _personWords(e, i, many));
+  if (kind === 'short') return words.join(' ');
+  const addr = (e: StatusEntry) => String(e.fullAddress ?? '').trim() || String(e.address ?? '').trim();
+  const shared = many && addr(people[0]) !== '' && people.every((e) => addr(e) === addr(people[0]));
+  const lines = shared ? [...words, `निवासीगण ${addr(people[0])}`]
+    : words.map((w, i) => (addr(people[i]) ? `${w} निवासी ${addr(people[i])}` : w));
+  return lines.join(kind === 'block' ? '\n' : ' ');
+}
+
 function _applyGroupStatus(template: string, values: Record<string, string>, keyDefs: KeyDefForRender[]): string {
   if (!template.includes('#')) return template;
   const typeMap = new Map<string, string>();
@@ -613,9 +644,19 @@ function _applyGroupStatus(template: string, values: Record<string, string>, key
   }
   out += rest;
 
-  // 2) {{Key#summary}} / {{Key#wanted}}
-  return out.replace(/\{\{([A-Za-z0-9_]+)#(summary|wanted|list)\}\}/g, (match, key: string, kind: string) => {
+  // 2) {{Key#n|one|many}}
+  const count = (k: string) => _parseGroupEntries<StatusEntry>(values[k] ?? '').filter((e) => String(e?.name ?? '').trim()).length;
+  out = out.replace(/\{\{([A-Za-z0-9_]+)#count\}\}/g, (match, key: string) =>
+    (isGroup(key) ? (COUNT_WORDS[count(key)] ?? String(count(key))) : match));
+  out = out.replace(/\{\{([A-Za-z0-9_]+)#n\|([^|{}]*)\|([^{}]*)\}\}/g, (match, key: string, one: string, many: string) =>
+    (isGroup(key) ? (count(key) > 1 ? many : one) : match));
+
+  // 3) {{Key#summary}} / {{Key#wanted}} / {{Key#list|block|inline|short}}
+  return out.replace(/\{\{([A-Za-z0-9_]+)#(summary|wanted|list|block|inline|short)\}\}/g, (match, key: string, kind: string) => {
     if (!isGroup(key)) return match;
+    if (kind === 'block' || kind === 'inline' || kind === 'short') {
+      return _groupPeople(_parseGroupEntries<StatusEntry>(values[key] ?? ''), kind);
+    }
     if (kind === 'list') return _groupListLines(_parseGroupEntries<StatusEntry>(values[key] ?? ''));
     const g = _statusGroups(values, key);
     const gt = typeMap.get(key);
