@@ -85,7 +85,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Person/accused groups (`templateEngine.generateReport`): ONE person → no "आदि" right after `{{g.1.name}}`
   (`_dropAdiForSingleEntry`, Step 0.5) and address word "निवासी" (not नि0/नि0गण); 2+ people unchanged (numbering 1. 2.,
   नि0गण). `{{Key#list}}` = one person per line (shared address → "नि0गण <addr>" after the last name, else
-  "निवासी <addr>" on each; one person → no number) — used under वादी and in the धारा 130 notices of the five 126/135
+  "निवासी <addr>" on each; one person also "1." — owner's choice), `{{Key#num}}` = usual prose but one person "1."
+  (126/135 bodies). New tokens for the 170 BNSS formats: `#block` (shared address on its own line "निवासीगण …"),
+  `#inline`, `#short` (name + father only, before "उपरोक्त"), `#count` (एक/दो/तीन…), `#n|one|many` — used under वादी and in the धारा 130 notices of the five 126/135
   formats (`[[सूची]] {{…#list}}`). Last sheet "चालानी का GD प्रारूप" in all five (beat/yaksh: below the सिपाही
   note on the same sheet; others a new sheet; opening line per format) — seed_version beat/yaksh 13, thanabhraman 12, mukadma/ncr 10. Tests `scripts/test_template_adi.ts`.
 - Accused wanted status (judicial custody report): tokens `{{Key#summary}}` (groups नामजद / प्रकाश में आया / वांछित नहीं

@@ -545,10 +545,12 @@ const INDEXED_ACCESS_RE = /\{\{([A-Za-z0-9_]+)\.(\d+)\.([A-Za-z0-9_]+)\}\}/g;
  *   {{Key#ifWanted|text}} → text only when at least one accused is wanted (text may hold other tokens)
  *   {{Key#list}}          → one person per line (any group): "1.A पुत्र X उम्र करीब 30 वर्ष" … the last line
  *                            gets "नि0गण <address>" when all share it, else every line "निवासी <address>";
- *                            one person → a single line without number, "निवासी <address>".
+ *                            one person → a single line "1.A … निवासी <address>" (owner: "1." also for one).
  *   {{Key#block}}         → like #list, but a shared address goes on its own last line "निवासीगण <address>"
  *   {{Key#inline}}        → the same people on one line ("1.A … 2.B … निवासीगण <address>")
- *   {{Key#short}}         → names without address ("1.A पुत्र X उम्र करीब 30 वर्ष 2.B …"), for "… उपरोक्त"
+ *   {{Key#short}}         → name + father only ("1.A पुत्र X 2.B पुत्र Y"), for "… उपरोक्त"
+ *   {{Key#num}}           → the usual prose ({{Key}}), but one person also gets "1." (126/135 formats)
+ *   All of these number a single person "1." too (owner's choice for 126/135 and 170).
  *   {{Key#count}}         → number of people in words (एक, दो, तीन …)
  *   {{Key#n|one|many}}    → "one" for a single person, "many" for 2+ (e.g. अभियुक्त|अभियुक्तगण, सकता था|सकते थे)
  * Tests: scripts/test_accused_status.ts
@@ -580,7 +582,7 @@ function _groupListLines(entries: StatusEntry[]): string {
   const addr = (e: StatusEntry) => s(e.fullAddress) || s(e.address);
   const shared = people.length > 1 && addr(people[0]) !== '' && people.every((e) => addr(e) === addr(people[0]));
   return people.map((e, i) => {
-    const parts: string[] = [people.length > 1 ? `${i + 1}.${s(e.name)}` : s(e.name)];
+    const parts: string[] = [`${i + 1}.${s(e.name)}`];
     if (s(e.fatherOrHusbandName)) parts.push(`${_resolveConnector(e as never)} ${s(e.fatherOrHusbandName)}`);
     if (s(e.age)) parts.push(`उम्र करीब ${s(e.age)} वर्ष`);
     if (s(e.caste)) parts.push(`जाति ${s(e.caste)}`);
@@ -595,11 +597,12 @@ function _groupListLines(entries: StatusEntry[]): string {
 
 const COUNT_WORDS = ['शून्य', 'एक', 'दो', 'तीन', 'चार', 'पाँच', 'छः', 'सात', 'आठ', 'नौ', 'दस'];
 
-/** One person's words without the address: "1.A पुत्र X उम्र करीब 30 वर्ष जाति Y". */
-function _personWords(e: StatusEntry, i: number, many: boolean): string {
+/** One person's words without the address: "1.A पुत्र X उम्र करीब 30 वर्ष जाति Y" (nameOnly: "1.A पुत्र X"). */
+function _personWords(e: StatusEntry, i: number, nameOnly = false): string {
   const s = (v: unknown) => String(v ?? '').trim();
-  const parts: string[] = [many ? `${i + 1}.${s(e.name)}` : s(e.name)];
+  const parts: string[] = [`${i + 1}.${s(e.name)}`];
   if (s(e.fatherOrHusbandName)) parts.push(`${_resolveConnector(e as never)} ${s(e.fatherOrHusbandName)}`);
+  if (nameOnly) return parts.join(' ');
   if (s(e.age)) parts.push(`उम्र करीब ${s(e.age)} वर्ष`);
   if (s(e.caste)) parts.push(`जाति ${s(e.caste)}`);
   return parts.join(' ');
@@ -610,8 +613,8 @@ function _groupPeople(entries: StatusEntry[], kind: 'block' | 'inline' | 'short'
   const people = entries.filter((e) => String(e?.name ?? '').trim());
   if (!people.length) return '';
   const many = people.length > 1;
-  const words = people.map((e, i) => _personWords(e, i, many));
-  if (kind === 'short') return words.join(' ');
+  if (kind === 'short') return people.map((e, i) => _personWords(e, i, true)).join(' ');
+  const words = people.map((e, i) => _personWords(e, i));
   const addr = (e: StatusEntry) => String(e.fullAddress ?? '').trim() || String(e.address ?? '').trim();
   const shared = many && addr(people[0]) !== '' && people.every((e) => addr(e) === addr(people[0]));
   const lines = shared ? [...words, `निवासीगण ${addr(people[0])}`]
@@ -652,8 +655,13 @@ function _applyGroupStatus(template: string, values: Record<string, string>, key
     (isGroup(key) ? (count(key) > 1 ? many : one) : match));
 
   // 3) {{Key#summary}} / {{Key#wanted}} / {{Key#list|block|inline|short}}
-  return out.replace(/\{\{([A-Za-z0-9_]+)#(summary|wanted|list|block|inline|short)\}\}/g, (match, key: string, kind: string) => {
+  return out.replace(/\{\{([A-Za-z0-9_]+)#(summary|wanted|list|block|inline|short|num)\}\}/g, (match, key: string, kind: string) => {
     if (!isGroup(key)) return match;
+    if (kind === 'num') {
+      const list = _parseGroupEntries<StatusEntry>(values[key] ?? '').filter((e) => String(e?.name ?? '').trim());
+      const prose = _buildGroupProse(list as never, (typeMap.get(key) ?? 'person_group') as 'accused_group' | 'person_group');
+      return list.length === 1 && prose && !/^\d+\./.test(prose) ? `1.${prose}` : prose;
+    }
     if (kind === 'block' || kind === 'inline' || kind === 'short') {
       return _groupPeople(_parseGroupEntries<StatusEntry>(values[key] ?? ''), kind);
     }

@@ -58,7 +58,7 @@ test('126/135 formats: one person per side → no "नाम आदि", no "न
   }
 });
 
-test('{{Key#list}}: one person per line; shared address → नि0गण after the last; else निवासी each; one → no number', () => {
+test('{{Key#list}}: one person per line; shared address → नि0गण after the last; else निवासी each; one → "1." too', () => {
   const two = JSON.stringify([P('संगीता', 'रामदेव', '45'), P('रामू', 'रामदेव', '25')]);
   assert.equal(generateReport('{{first#list}}', { first: two }, keys),
     '1.संगीता पुत्र रामदेव उम्र करीब 45 वर्ष\n2.रामू पुत्र रामदेव उम्र करीब 25 वर्ष नि0गण ग्राम बबुरिहा खेड़ा थाना बछरावां');
@@ -66,7 +66,11 @@ test('{{Key#list}}: one person per line; shared address → नि0गण after 
   assert.equal(generateReport('{{first#list}}', { first: diff }, keys),
     '1.संगीता पुत्र रामदेव उम्र करीब 45 वर्ष निवासी ग्राम बबुरिहा खेड़ा थाना बछरावां\n2.रामू पुत्र रामदेव उम्र करीब 25 वर्ष निवासी ग्राम पूरे बाबू');
   assert.equal(generateReport('{{first#list}}', { first: JSON.stringify([P('कैलाश', 'लल्लू', '35')]) }, keys),
-    'कैलाश पुत्र लल्लू उम्र करीब 35 वर्ष निवासी ग्राम बबुरिहा खेड़ा थाना बछरावां');
+    '1.कैलाश पुत्र लल्लू उम्र करीब 35 वर्ष निवासी ग्राम बबुरिहा खेड़ा थाना बछरावां');
+  // #num: usual prose, one person numbered too
+  assert.equal(generateReport('{{first#num}}', { first: JSON.stringify([P('कैलाश', 'लल्लू', '35')]) }, keys),
+    '1.कैलाश पुत्र लल्लू उम्र करीब 35 वर्ष निवासी ग्राम बबुरिहा खेड़ा थाना बछरावां');
+  assert.equal(generateReport('{{first#num}}', { first: two }, keys), generateReport('{{first}}', { first: two }, keys));
 });
 
 test('{{Key#block}} / #inline / #short / #count / #n', () => {
@@ -76,12 +80,12 @@ test('{{Key#block}} / #inline / #short / #count / #n', () => {
   const [b, i, s, c, v] = generateReport(T2, { first: three }, keys).split('|');
   assert.equal(b, '1.सन्तोष पुत्र गुरूदीन उम्र करीब 23 वर्ष\n2.शुभम पुत्र रामलखन उम्र करीब 19 वर्ष\n3.सर्वेश पुत्र रामनरेश उम्र करीब 24 वर्ष\nनिवासीगण ग्राम बबुरिहा खेड़ा थाना बछरावां');
   assert.equal(i, b.replace(/\n/g, ' '));
-  assert.equal(s, '1.सन्तोष पुत्र गुरूदीन उम्र करीब 23 वर्ष 2.शुभम पुत्र रामलखन उम्र करीब 19 वर्ष 3.सर्वेश पुत्र रामनरेश उम्र करीब 24 वर्ष');
+  assert.equal(s, '1.सन्तोष पुत्र गुरूदीन 2.शुभम पुत्र रामलखन 3.सर्वेश पुत्र रामनरेश');
   assert.equal(c, 'तीन लोगो');
   assert.equal(v, 'सकते थे');
   const [b1, , s1, c1, v1] = generateReport(T2, { first: one }, keys).split('|');
-  assert.equal(b1, 'कैलाश पुत्र लल्लू उम्र करीब 35 वर्ष निवासी ग्राम बबुरिहा खेड़ा थाना बछरावां');
-  assert.equal(s1, 'कैलाश पुत्र लल्लू उम्र करीब 35 वर्ष');
+  assert.equal(b1, '1.कैलाश पुत्र लल्लू उम्र करीब 35 वर्ष निवासी ग्राम बबुरिहा खेड़ा थाना बछरावां');
+  assert.equal(s1, '1.कैलाश पुत्र लल्लू');
   assert.equal(c1, 'एक व्यक्ति');
   assert.equal(v1, 'सकता था');
 });
