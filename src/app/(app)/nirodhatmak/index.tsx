@@ -11,7 +11,7 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   FileWarning, Plus, Filter, ChevronDown,
-  Edit2, Trash2, MapPin, Calendar, X, FileDown, Check, Clock,
+  Edit2, Trash2, MapPin, Calendar, X, FileDown, Check, Clock, MoreVertical,
 } from 'lucide-react-native';
 import { exportKaryvahiDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
@@ -210,6 +210,17 @@ const KaryvahiCard = memo(function KaryvahiCard({
             {typeLabel}
           </Text>
         </View>
+        {/* ⋮ — same menu as press-and-hold (संपादित / Word export / हटाएं) */}
+        <Pressable
+          onPress={onLongPress}
+          hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel="और विकल्प"
+          style={{ width: 32, height: 32, marginTop: -6, marginRight: -8, borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}
+          className="active:opacity-50"
+        >
+          <MoreVertical size={20} color={c.muted} />
+        </Pressable>
       </View>
 
       {/* 2. Dispute — serif Hindi, coral, opening quote */}
@@ -392,7 +403,7 @@ export default function NirodhatmakHomeScreen() {
           setLongPressTarget(null);
           router.push(`/(app)/nirodhatmak/add-proceeding?editId=${item.id}` as never);
         }}
-        onLongPress={() => setLongPressTarget(item)}
+        onLongPress={() => setLongPressTarget((prev) => (prev?.id === item.id ? null : item))}
       />
       {longPressTarget?.id === item.id && (
         <View className="mt-2">
