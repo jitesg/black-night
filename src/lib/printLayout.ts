@@ -161,9 +161,14 @@ export const LETTER_FIT_SCRIPT = `
     var H = 297 * 3.7795275591 + 2;
     var root = getComputedStyle(document.documentElement);
     var base = parseFloat(root.getPropertyValue('--doc-font-size')) || 17;
-    try {
-      if (!(document.fonts && document.fonts.check && document.fonts.check('12pt Kokila'))) base = Math.min(base, 15);
-    } catch (e) { base = Math.min(base, 15); }
+    var kokila = false;
+    try { kokila = !!(document.fonts && document.fonts.check && document.fonts.check('12pt Kokila')); } catch (e) {}
+    if (!kokila) {
+      // Phones have no Kokila: the fallback Devanagari font is taller, so 1.15 lines
+      // made the matras of one line touch the next (owner's printout). Use 1.5.
+      base = Math.min(base, 15);
+      document.documentElement.style.setProperty('--doc-line-height', '1.5');
+    }
     var MIN = 10; // smallest print size (pt, like Word's 10)
     base = Math.max(base, MIN);
     var sheets = document.querySelectorAll('.doc-letter');
