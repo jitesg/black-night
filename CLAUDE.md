@@ -87,8 +87,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Accused wanted status (judicial custody report): tokens `{{Key#summary}}` (groups नामजद / प्रकाश में आया / वांछित नहीं
   with है/हैं, आया/आये agreement, joined by "तथा"), `{{Key#wanted}}`, `{{Key#ifWanted|text}}` (`_applyGroupStatus`, Step -1);
   AccusedGroupInput shows the per-accused "स्थिति" picker only when the format text contains `{{Key#` (unset =
-  प्रकाश में आया). Tests `scripts/test_accused_status.ts`. Draft format (NOT added yet, owner decides):
-  scratchpad nyayik_abhiraksha_format.json (id sys-fmt-nyayik-abhiraksha).
+  प्रकाश में आया). Tests `scripts/test_accused_status.ts`. Used by format `sys-fmt-nyayik-abhiraksha`
+  "आत्मसमर्पण प्रा0पत्र पर आख्या (न्यायिक अभिरक्षा)" (Nyayalay, seed_version 1).
 - Format field type "dropdown" = option chips (`FormatKeyDropdownInput` in components/ui/input.tsx, options via
   `parseDropdownOptions`: JSON strings / {value,label} / comma list). Every `pad` (पद/रैंक) key is a dropdown
   उपनिरीक्षक / निरीक्षक (default उपनिरीक्षक) — seed (7 formats, seed_version bumped) + idempotent UPDATE in database.ts

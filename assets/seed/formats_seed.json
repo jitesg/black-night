@@ -2518,6 +2518,93 @@
         }
       ],
       "last_updated": "2026-10-07"
+    },
+    {
+      "id": "sys-fmt-nyayik-abhiraksha",
+      "title": "आत्मसमर्पण प्रा0पत्र पर आख्या (न्यायिक अभिरक्षा)",
+      "format_type": "Nyayalay",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}} ।\n\n[[सेवा में]] सेवा मे ,\nन्यायालय श्रीमान {{CourtName}}\nजनपद {{District}} ।\n\n[[विषय]] विषय़ –मु0अ0सं0 {{FIRNumber}} धारा {{Section}} से सम्बन्धित {{Accused}} के द्वारा प्रेषित किये गए आत्मसमर्पण प्रा0पत्र के सम्बन्ध मे आख्या।\n\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि थाना स्थानीय पर पंजीकृत मु0अं0सं0 {{FIRNumber}} धारा {{Section}} की विवेचना मुझ {{pad}} द्वारा सम्पादित की जा रही है । अब तक कि तमामी विवेचना व साक्ष्य संकलन कि कार्यवाही में {{Accused#summary}} ।{{Accused#ifWanted| महोदय से निवेदन है {{Accused#wanted}} उपरोक्त न्यायिक अभिरक्षा में लेने कि कृपा करें ।}}\n[[समापन]] रिपोर्ट सादर सेवा मे प्रेषित है ।\n[[हस्ताक्षर]] ( {{OfficerName}} )\n{{pad}}\nथाना {{PoliceStation}} {{District}} ।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "आत्मसमर्पण",
+        "न्यायिक अभिरक्षा",
+        "वारण्ट बी",
+        "रिमाण्ड",
+        "अभियुक्त",
+        "मुख्य न्यायिक दण्डाधिकारी",
+        "न्यायालय"
+      ],
+      "keys": [
+        {
+          "key_name": "CourtName",
+          "label": "न्यायालय (श्रीमान …)",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 1,
+          "default_value": "मुख्य न्यायिक दण्डाधिकारी"
+        },
+        {
+          "key_name": "FIRNumber",
+          "label": "मु0अ0सं0 (जैसे 320/25)",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 2
+        },
+        {
+          "key_name": "Section",
+          "label": "धारा (जैसे 281/106(1) BNS)",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 3
+        },
+        {
+          "key_name": "Accused",
+          "label": "अभियुक्त — नाम, पिता/पति का नाम, पता व स्थिति (नामजद / प्रकाश में आया / वांछित नहीं)",
+          "field_type": "accused_group",
+          "is_required": 1,
+          "sort_order": 4
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "sort_order": 5,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\",\"निरीक्षक\"]"
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "विवेचक का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 6,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__"
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 7,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__"
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "sort_order": 8,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__"
+        }
+      ],
+      "last_updated": "2026-10-30"
     }
   ]
 }
