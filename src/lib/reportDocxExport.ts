@@ -15,7 +15,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from './formatParsingEngine';
 import { editorHtmlToMarkedText, hasEditorMarks, hasFormatMarkers } from './formatMarkers';
-import { looksLikeLetter, splitAttachmentLine, splitClosing, splitPlainText, splitSewaMein } from './printLayout';
+import { isPartyHeading, looksLikeLetter, splitAttachmentLine, splitClosing, splitPlainText, splitSewaMein } from './printLayout';
 import { markdownToHtml, needsMigration } from './markdownToHtml';
 import { htmlToPlainText } from './stringUtils';
 
@@ -88,7 +88,7 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
     p(l, { indentLeft: label ? undefined : INDENT, before: i === 0 ? 80 : 0 });
   });
   subject.forEach((l, i) => p(l, { indentLeft: INDENT, before: i === 0 ? 80 : 0 }));
-  parties.forEach((l, i) => p(l, { before: i === 0 ? 100 : 0 }));
+  parties.forEach((l, i) => p(l, { before: i === 0 ? 100 : 0, align: isPartyHeading(l) ? AlignmentType.CENTER : undefined }));
   if (model.salutation) p(model.salutation, { before: 160, after: 60 });
 
   if (model.marked) {

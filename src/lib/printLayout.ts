@@ -68,6 +68,11 @@ export function splitClosing(closing: string): { closing: string; signature: str
   return { closing: m[1].trim(), signature: sig.filter(Boolean) };
 }
 
+/** "प्रथम पक्ष" / "द्वितीय पक्ष" (owner's spelling "द्वित्तीय" too) on a line of its own → centred heading. */
+export function isPartyHeading(line: string): boolean {
+  return /^(प्रथम|द्वि\S*य|तृतीय)\s*पक्ष\s*[:\-–]?\s*$/.test(String(line ?? '').trim());
+}
+
 /** A real heading is one short line; a long first line (e.g. a फर्द note) is body text. */
 export function isHeading(line: string): boolean {
   const t = String(line ?? '').trim();
@@ -97,7 +102,7 @@ export function renderLetterHtml(model: DocumentModel): string {
     out.push(`<div class="doc-subject">${subject.map((l) => `<p>${esc(l)}</p>`).join('')}</div>`);
   }
   if (parties.length) {
-    out.push(`<div class="doc-parties">${parties.map((l) => `<p>${esc(l)}</p>`).join('')}</div>`);
+    out.push(`<div class="doc-parties">${parties.map((l) => `<p${isPartyHeading(l) ? ' class="party-head"' : ''}>${esc(l)}</p>`).join('')}</div>`);
   }
 
   if (model.salutation) out.push(`<div class="doc-salutation">${esc(model.salutation)}</div>`);
@@ -204,6 +209,7 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-subject p { margin: 0; padding-left: var(--doc-indent); text-indent: calc(-1 * var(--doc-indent) / 2); }
   .letters .doc-parties { margin: 0.5em 0 0; }
   .letters .doc-parties p { margin: 0; }
+  .letters .doc-parties p.party-head { text-align: center; }
   .letters .doc-salutation { margin: 0.8em 0 0.3em; }
   .letters .doc-body p { text-align: justify; text-indent: var(--doc-indent); margin: 0 0 0.3em; }
   .letters .doc-closing { text-align: center; margin-top: 0.6em; }
