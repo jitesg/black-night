@@ -626,6 +626,8 @@ const FormatKeyDropdownInput = forwardRef<View, {
   );
 });
 
+FormatKeyDropdownInput.displayName = 'FormatKeyDropdownInput';
+
 // ── FormatKeyDateInput — date-picker sub-component for field_type=date ─────────
 
 interface FormatKeyDateInputProps {
