@@ -319,6 +319,7 @@ export interface KeyDefForRender {
 
 /** All field_type values that hold a JSON array of repeatable entries. */
 const REPEATABLE_GROUP_TYPES = new Set(['accused_group', 'person_group']);
+// 'item_group' (rows with format-defined columns) is handled only by {{each:/count:/any:}} (_applyItemTokens).
 
 // ─── Pipeline Step 0: Field-projection pass ──────────────────────────────
 //
@@ -543,6 +544,83 @@ const INDEXED_ACCESS_RE = /\{\{([A-Za-z0-9_]+)\.(\d+)\.([A-Za-z0-9_]+)\}\}/g;
 export function isTicked(v: string | undefined | null): boolean {
   const t = String(v ?? '').trim();
   return t !== '' && !/^(नहीं|no|false|0)$/i.test(t);
+}
+
+/**
+ * Item lists (field type "item_group": JSON array of row objects, e.g. vehicles with their drivers).
+ *   {{each:Key?flag|row|sep}}  → one "row" per item (only items whose column `flag` is ticked, if given);
+ *                               in "row": {#} = 1, 2, 3 …, {col} = the column, {text~col} = "text"+value only when filled;
+ *                               sep defaults to " ", "\n" = new line.
+ *   {{count:Key?flag|one|many}} → "one" for a single item, "many" for 2+, nothing for none.
+ *   {{any:Key?flag|text}}       → text when at least one item matches.
+ * Branch text may hold any other tokens; "|" inside nested {{…}} does not split.
+ */
+type ItemRow = Record<string, unknown>;
+
+function _itemRows(values: Record<string, string>, key: string, flag?: string): ItemRow[] {
+  let rows: ItemRow[] = [];
+  try {
+    const v = JSON.parse(values[key] ?? '[]');
+    if (Array.isArray(v)) rows = v.filter((r) => r && typeof r === 'object') as ItemRow[];
+  } catch { /* not a list */ }
+  rows = rows.filter((r) => Object.entries(r).some(([k, x]) => !k.startsWith('_') && typeof x === 'string' && x.trim() && !/^(need|is)/.test(k)));
+  return flag ? rows.filter((r) => isTicked(String(r[flag] ?? ''))) : rows;
+}
+
+/** Split at "|" that are not inside nested {{…}}. */
+function _splitTop(inner: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let cur = '';
+  for (let i = 0; i < inner.length; i++) {
+    if (inner.startsWith('{{', i)) { depth += 1; cur += '{{'; i += 1; continue; }
+    if (inner.startsWith('}}', i)) { depth -= 1; cur += '}}'; i += 1; continue; }
+    if (inner[i] === '{') { // row placeholder {col} / {text~col}
+      const end = inner.indexOf('}', i);
+      if (end > i) { cur += inner.slice(i, end + 1); i = end; continue; }
+    }
+    if (inner[i] === '|' && depth === 0) { parts.push(cur); cur = ''; continue; }
+    cur += inner[i];
+  }
+  parts.push(cur);
+  return parts;
+}
+
+function _applyItemTokens(template: string, values: Record<string, string>): string {
+  if (!/\{\{(each|count|any):/.test(template)) return template;
+  const open = /\{\{(each|count|any):([A-Za-z0-9_]+)(?:\?([A-Za-z0-9_]+))?\|/;
+  let out = '';
+  let rest = template;
+  for (let m = open.exec(rest); m; m = open.exec(rest)) {
+    let depth = 1;
+    let i = m.index + m[0].length;
+    while (i < rest.length && depth > 0) {
+      if (rest.startsWith('{{', i)) { depth += 1; i += 2; }
+      else if (rest.startsWith('}}', i)) { depth -= 1; i += 2; }
+      else if (rest[i] === '{' && rest.indexOf('}', i) > i) i = rest.indexOf('}', i) + 1; // {col}
+      else i += 1;
+    }
+    const parts = _splitTop(rest.slice(m.index + m[0].length, depth === 0 ? i - 2 : i));
+    const rows = _itemRows(values, m[2], m[3]);
+    let rep = '';
+    if (m[1] === 'any') rep = rows.length ? parts.join('|') : '';
+    else if (m[1] === 'count') rep = rows.length === 0 ? '' : rows.length === 1 ? (parts[0] ?? '') : (parts[1] ?? parts[0] ?? '');
+    else {
+      const row = parts[0] ?? '';
+      const sep = (parts[1] ?? ' ').replace(/\\n/g, '\n');
+      rep = rows.map((r, n) => row
+        .replace(/\{([^{}~]*)~([A-Za-z0-9_]+)\}/g, (_x, pre: string, col: string) => {
+          const v = String(r[col] ?? '').trim();
+          return v ? `${pre}${v}` : '';
+        })
+        .replace(/\{(#|[A-Za-z0-9_]+)\}/g, (_x, col: string) => (col === '#' ? String(n + 1) : String(r[col] ?? '').trim()))
+        .replace(/ {2,}/g, ' ')).join(sep);
+    }
+    // the chosen text may hold more list tokens
+    out += rest.slice(0, m.index) + _applyItemTokens(rep, values);
+    rest = rest.slice(i);
+  }
+  return out + rest;
 }
 
 function _applyIfTokens(template: string, values: Record<string, string>): string {
@@ -908,7 +986,7 @@ export function generateReport(
 ): string {
   // Layout marks ([[शीर्षक]] …) are only for the print pipeline (formats/fill).
   if (!opts?.keepMarkers) return stripFormatMarkers(generateReport(template, values, keyDefs, { keepMarkers: true }));
-  let processed = _applyIfTokens(template, values);                        // Step -2 ({{if:Key|…}})
+  let processed = _applyIfTokens(_applyItemTokens(template, values), values); // Step -3/-2 (item lists, {{if:Key|…}})
   if (keyDefs && keyDefs.length > 0) {
     processed = _applyGroupStatus(processed, values, keyDefs);            // Step -1 (accused status)
     processed = _applyFieldProjection(processed, values, keyDefs);        // Step 0

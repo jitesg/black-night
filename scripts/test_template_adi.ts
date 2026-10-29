@@ -154,3 +154,14 @@ test('प्रार्थना पत्र जांच — मुकदम�
   assert.match(html, /class="att">3\. जांच में एकत्रित साक्ष्य/);
   assert.match(html, /<p>अतः मामले की गंभीरता/);
 });
+
+test('item lists: {{each:}} / {{count:}} / {{any:}} with a tick filter, {#}, {text~col}, nested tokens', () => {
+  const rows = JSON.stringify([
+    { role: 'दुर्घटनाकारक', vno: 'UP33CH3835', driver: 'अमित', father: 'प्रेम', dl: 'DL1', needDL: 'हाँ', needRC: 'हाँ' },
+    { role: 'दुर्घटनाग्रस्त', vno: 'UP33AB1234', driver: 'रामू', father: '', dl: 'DL2', needDL: '', needRC: 'हाँ' },
+    { role: '', vno: '', driver: '', needDL: 'हाँ' },
+  ]);
+  const T4 = '{{count:V?needDL|चालक {{each:V?needDL|{driver}{ पुत्र ~father} ({dl})}}|चालकों}}|{{count:V?needRC|एक|{{each:V?needRC|{#}.{role} {vno}{ पुत्र ~father}|\\n}}}}|{{any:V?needDL|DL पत्र}}{{any:V?none|X}}';
+  assert.equal(generateReport(T4, { V: rows }, []), 'चालक अमित पुत्र प्रेम (DL1)|1.दुर्घटनाकारक UP33CH3835 पुत्र प्रेम\n2.दुर्घटनाग्रस्त UP33AB1234|DL पत्र');
+  assert.equal(generateReport('{{any:V|क}}{{count:V|1|2}}', { V: '' }, []), '');
+});
