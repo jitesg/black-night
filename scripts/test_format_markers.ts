@@ -114,3 +114,14 @@ test('owner 126/135 formats: 6 sheets each (7 with the सिपाही note),
     assert.doesNotMatch(html, /\[\[/, f.id);
   }
 });
+
+test('[[सूची]]: lines stay separate, left, no indent; gap after a right line', () => {
+  const t = '[[पत्र]]\n[[विवरण]] क्षेत्राधिकार के अन्तर्गत आता है।\n\n[[सूची]] 1.राम\n2.श्याम नि0गण ग्राम क\n\n[[विवरण]] मैं थानाध्यक्ष …\n[[दाएँ]] उपजिला मजिस्ट्रेट\n[[विवरण]] प्रतिलिप - …';
+  const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
+  assert.deepEqual(m.bodyBlocks?.map((b) => b.kind), ['para', 'line', 'line', 'para', 'right', 'para']);
+  const html = P.renderTextForPrint(t);
+  assert.match(html, /<p class="doc-line">1\.राम<\/p><p class="doc-line">2\.श्याम नि0गण ग्राम क<\/p>/);
+  assert.match(P.LETTER_SHEET_CSS, /p\.doc-right \+ p:not\(\.doc-right\) \{ margin-top: 1\.5em/);
+  const back = P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m])));
+  assert.equal(back, html);
+});

@@ -49,7 +49,7 @@ export interface DocumentModel {
   /** Marked formats only: [[हस्ताक्षर]] lines. */
   signatureLines?: string[];
   /** Marked formats only: body in order — paragraphs and centred / right / split lines. */
-  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split'; text: string }[];
+  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split' | 'line'; text: string }[];
 }
 
 // ─── Anchor patterns ──────────────────────────────────────────────────────
@@ -411,8 +411,12 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
     parts.push(div('party', head ? 'text-align:center;' : 'text-align:left;', head ? `<b><u>${esc(l)}</u></b>` : esc(l)));
   }
   if (model.salutation) parts.push(div('salutation', 'text-align:left;margin-top:0.6em;', esc(model.salutation)));
+  let prevKind = '';
   for (const b of model.bodyBlocks ?? []) {
-    if (b.kind === 'para') parts.push(div('body', 'text-align:justify;text-indent:1.5em;', esc(b.text)));
+    const afterRight = prevKind === 'right' && b.kind !== 'right';
+    prevKind = b.kind;
+    if (b.kind === 'para') parts.push(div('body', `text-align:justify;text-indent:1.5em;${afterRight ? 'margin-top:1.5em;' : ''}`, esc(b.text)));
+    else if (b.kind === 'line') parts.push(div('list', 'text-align:left;', esc(b.text)));
     else if (b.kind === 'center') parts.push(div('center', 'text-align:center;', `<b>${esc(b.text)}</b>`));
     else if (b.kind === 'right') parts.push(div('right', 'text-align:right;', esc(b.text)));
     else {

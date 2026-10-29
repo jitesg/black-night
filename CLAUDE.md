@@ -74,7 +74,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Law: `parseBareSectionNumber` ("धारा 103", "u/s 35(3)", १०३); Act screen filter understands it. bns-ref takes ?mode=&q=.
 - Format layout marks (पहचान चिह्न): `src/lib/formatMarkers.ts` — line-start `[[पत्र]] [[शीर्षक]] [[सेवा में]] [[विषय]]
   [[पक्ष]] [[महोदय]] [[विवरण]] [[समापन]] [[गवाह]] [[संलग्नक]] (lines "item | signature") [[हस्ताक्षर]] [[बीच]] [[दाएँ]]
-  [[दोनों ओर]] ("left | right")`. Marked text skips the guessing parser (splitIntoSubLetters / parseIntoDocumentModel
+  [[दोनों ओर]] ("left | right") [[सूची]] (lines one per line, left, no indent; bodyBlock kind 'line')`. A body paragraph right after a
+  [[दाएँ]] line gets one blank line gap (प्रतिलिपि). Marked text skips the guessing parser (splitIntoSubLetters / parseIntoDocumentModel
   delegate). `generateReport` strips marks unless `{ keepMarkers: true }` (only formats/fill print + editor pipeline);
   editor HTML keeps them as `data-fmt` → `editorHtmlToMarkedText` in the DocumentEditor print; party lines "प्रथम/द्वितीय पक्ष" alone are centred, bold, underlined (`isPartyHeading`); NK save passes the
   marked editor HTML. Done: the 5 `sys-fmt-bnss126-*` formats (seed_version 7; thanabhraman 9; beat + yaksh = 10 with the extra last sheet
@@ -83,7 +84,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `scripts/test_format_markers.ts`.
 - Person/accused groups (`templateEngine.generateReport`): ONE person → no "आदि" right after `{{g.1.name}}`
   (`_dropAdiForSingleEntry`, Step 0.5) and address word "निवासी" (not नि0/नि0गण); 2+ people unchanged (numbering 1. 2.,
-  नि0गण). Tests `scripts/test_template_adi.ts`.
+  नि0गण). `{{Key#list}}` = one person per line (shared address → "नि0गण <addr>" after the last name, else
+  "निवासी <addr>" on each; one person → no number) — used under वादी and in the धारा 130 notices of the five 126/135
+  formats (`[[सूची]] {{…#list}}`; beat/yaksh 12, thanabhraman 11, mukadma/ncr 9). Tests `scripts/test_template_adi.ts`.
 - Accused wanted status (judicial custody report): tokens `{{Key#summary}}` (groups नामजद / प्रकाश में आया / वांछित नहीं
   with है/हैं, आया/आये agreement, joined by "तथा"), `{{Key#wanted}}`, `{{Key#ifWanted|text}}` (`_applyGroupStatus`, Step -1);
   AccusedGroupInput shows the per-accused "स्थिति" picker only when the format text contains `{{Key#` (unset =

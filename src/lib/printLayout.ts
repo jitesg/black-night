@@ -113,6 +113,7 @@ export function renderLetterHtml(model: DocumentModel): string {
       out.push(`<div class="doc-body">${blocks.map((b) => {
         if (b.kind === 'center') return `<p class="doc-center">${esc(b.text)}</p>`;
         if (b.kind === 'right') return `<p class="doc-right">${esc(b.text)}</p>`;
+        if (b.kind === 'line') return `<p class="doc-line">${esc(b.text)}</p>`;
         if (b.kind === 'split') {
           const at = b.text.indexOf('|');
           const l = at < 0 ? b.text : b.text.slice(0, at).trim();
@@ -216,6 +217,10 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-body p.doc-center { text-align: center; text-indent: 0; font-weight: bold; margin: 0 0 0.2em; }
   .letters .doc-body p.doc-right { text-align: right; text-indent: 0; margin: 0.6em 0 0; }
   .letters .doc-body p.doc-right + p.doc-right { margin-top: 0; }
+  /* one blank line between a right-aligned signature line and the paragraph below it (प्रतिलिपि) */
+  .letters .doc-body p.doc-right + p:not(.doc-right) { margin-top: 1.5em; }
+  .letters .doc-body p.doc-line { text-align: left; text-indent: 0; margin: 0; }
+  .letters .doc-body p.doc-line + p:not(.doc-line) { margin-top: 0.3em; }
   .letters .doc-split { width: 100%; border-collapse: collapse; margin: 0.4em 0; }
   .letters .doc-split td { border: none; padding: 0; background: none; vertical-align: top; }
   .letters .doc-split td:last-child { text-align: right; }

@@ -101,10 +101,11 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
       if (b.kind === 'center') p(b.text, { align: AlignmentType.CENTER, bold: true });
       // consecutive right lines (a signature block) stay together
       else if (b.kind === 'right') p(b.text, { align: AlignmentType.RIGHT, before: prevKind === 'right' ? 0 : 120 });
+      else if (b.kind === 'line') p(b.text, { align: AlignmentType.LEFT });
       else if (b.kind === 'split') {
         const at = b.text.indexOf('|');
         push(twoCol([[at < 0 ? b.text : b.text.slice(0, at).trim(), at < 0 ? '' : b.text.slice(at + 1).trim()]], Math.round(TEXT_W / 2)));
-      } else p(b.text, { align: AlignmentType.JUSTIFIED, firstLine: INDENT, after: 60 });
+      } else p(b.text, { align: AlignmentType.JUSTIFIED, firstLine: INDENT, after: 60, before: prevKind === 'right' ? 360 : prevKind === 'line' ? 60 : 0 });
     }
   } else {
     for (const b of [...(headerIsBody ? [model.header] : []), ...(model.body ?? [])]) {

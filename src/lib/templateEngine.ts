@@ -543,6 +543,9 @@ const INDEXED_ACCESS_RE = /\{\{([A-Za-z0-9_]+)\.(\d+)\.([A-Za-z0-9_]+)\}\}/g;
  *                            तथा अभियुक्त D पुत्र W उपरोक्त वांछित नहीं है" (only the groups that have someone)
  *   {{Key#wanted}}        → the wanted ones (नामजद + प्रकाश में आया): "अभियुक्त/अभियुक्तगण …"
  *   {{Key#ifWanted|text}} → text only when at least one accused is wanted (text may hold other tokens)
+ *   {{Key#list}}          → one person per line (any group): "1.A पुत्र X उम्र करीब 30 वर्ष" … the last line
+ *                            gets "नि0गण <address>" when all share it, else every line "निवासी <address>";
+ *                            one person → a single line without number, "निवासी <address>".
  * Tests: scripts/test_accused_status.ts
  */
 type StatusEntry = AnyEntry & { status?: string; gender?: string };
@@ -562,6 +565,27 @@ function _statusList(sub: StatusEntry[], groupType: string | undefined): string 
   if (!sub.length) return '';
   const head = sub.length > 1 ? 'अभियुक्तगण' : (sub[0].gender === 'महिला' ? 'अभियुक्ता' : 'अभियुक्त');
   return `${head} ${_resolveProjection(sub, [], ['name', 'fatherOrHusbandName'], groupType)}`;
+}
+
+/** {{Key#list}} — one person per line (see above). */
+function _groupListLines(entries: StatusEntry[]): string {
+  const people = entries.filter((e) => String(e?.name ?? '').trim());
+  if (!people.length) return '';
+  const s = (v: unknown) => String(v ?? '').trim();
+  const addr = (e: StatusEntry) => s(e.fullAddress) || s(e.address);
+  const shared = people.length > 1 && addr(people[0]) !== '' && people.every((e) => addr(e) === addr(people[0]));
+  return people.map((e, i) => {
+    const parts: string[] = [people.length > 1 ? `${i + 1}.${s(e.name)}` : s(e.name)];
+    if (s(e.fatherOrHusbandName)) parts.push(`${_resolveConnector(e as never)} ${s(e.fatherOrHusbandName)}`);
+    if (s(e.age)) parts.push(`उम्र करीब ${s(e.age)} वर्ष`);
+    if (s(e.caste)) parts.push(`जाति ${s(e.caste)}`);
+    if (shared) {
+      if (i === people.length - 1) parts.push(`नि0गण ${addr(e)}`);
+    } else if (addr(e)) {
+      parts.push(`निवासी ${addr(e)}`);
+    }
+    return parts.join(' ');
+  }).join('\n');
 }
 
 function _applyGroupStatus(template: string, values: Record<string, string>, keyDefs: KeyDefForRender[]): string {
@@ -590,8 +614,9 @@ function _applyGroupStatus(template: string, values: Record<string, string>, key
   out += rest;
 
   // 2) {{Key#summary}} / {{Key#wanted}}
-  return out.replace(/\{\{([A-Za-z0-9_]+)#(summary|wanted)\}\}/g, (match, key: string, kind: string) => {
+  return out.replace(/\{\{([A-Za-z0-9_]+)#(summary|wanted|list)\}\}/g, (match, key: string, kind: string) => {
     if (!isGroup(key)) return match;
+    if (kind === 'list') return _groupListLines(_parseGroupEntries<StatusEntry>(values[key] ?? ''));
     const g = _statusGroups(values, key);
     const gt = typeMap.get(key);
     if (kind === 'wanted') return _statusList(g.wanted, gt);

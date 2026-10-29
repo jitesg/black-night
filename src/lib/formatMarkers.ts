@@ -18,6 +18,7 @@
  *   [[बीच]] …           centred bold line(s) (court notice titles)
  *   [[दाएँ]] …          right-aligned line(s) (e.g. "उपजिला मजिस्ट्रेट …")
  *   [[दोनों ओर]] …      "left | right" on one line (e.g. "शासन | बनाम …")
+ *   [[सूची]] …          lines kept one per line, left, no indent (names list: {{Key#list}})
  *
  * Unmarked lines belong to the section above them. Formats without marks keep
  * the old automatic detection. Marks never show to the user: generateReport
@@ -31,7 +32,7 @@ import type { DocumentModel } from './formatParsingEngine';
 export type MarkRole =
   | 'letter' | 'header' | 'sewa' | 'subject' | 'party' | 'salutation'
   | 'body' | 'closing' | 'witness' | 'attachments' | 'signature'
-  | 'center' | 'right' | 'split';
+  | 'center' | 'right' | 'split' | 'list';
 
 export const MARK_ROLES: Record<string, MarkRole> = {
   'पत्र': 'letter',
@@ -51,13 +52,14 @@ export const MARK_ROLES: Record<string, MarkRole> = {
   'दाये': 'right',
   'दायें': 'right',
   'दोनों ओर': 'split',
+  'सूची': 'list',
 };
 
 const ROLE_NAME: Record<MarkRole, string> = {
   letter: 'पत्र', header: 'शीर्षक', sewa: 'सेवा में', subject: 'विषय', party: 'पक्ष',
   salutation: 'महोदय', body: 'विवरण', closing: 'समापन', witness: 'गवाह',
   attachments: 'संलग्नक', signature: 'हस्ताक्षर',
-  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर',
+  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची',
 };
 
 /** Hindi name of a role, as written in the mark. */
@@ -177,6 +179,10 @@ export function parseMarkedLetter(text: string): DocumentModel {
       case 'signature': model.signatureLines!.push(t); break;
       case 'center': case 'right': case 'split':
         model.bodyBlocks!.push({ kind: role, text: clean(t) });
+        break;
+      // [[सूची]]: every line stays its own line (left, no indent) — names one per line.
+      case 'list':
+        model.bodyBlocks!.push({ kind: 'line', text: clean(t) });
         break;
       default: break;
     }

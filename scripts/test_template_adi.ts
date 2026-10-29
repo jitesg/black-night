@@ -57,3 +57,14 @@ test('126/135 formats: one person per side → no "नाम आदि", no "न
     assert.equal((b.match(/आदि/g) ?? []).length - (a.match(/आदि/g) ?? []).length, removed, f.id);
   }
 });
+
+test('{{Key#list}}: one person per line; shared address → नि0गण after the last; else निवासी each; one → no number', () => {
+  const two = JSON.stringify([P('संगीता', 'रामदेव', '45'), P('रामू', 'रामदेव', '25')]);
+  assert.equal(generateReport('{{first#list}}', { first: two }, keys),
+    '1.संगीता पुत्र रामदेव उम्र करीब 45 वर्ष\n2.रामू पुत्र रामदेव उम्र करीब 25 वर्ष नि0गण ग्राम बबुरिहा खेड़ा थाना बछरावां');
+  const diff = JSON.stringify([P('संगीता', 'रामदेव', '45'), { ...P('रामू', 'रामदेव', '25'), fullAddress: 'ग्राम पूरे बाबू' }]);
+  assert.equal(generateReport('{{first#list}}', { first: diff }, keys),
+    '1.संगीता पुत्र रामदेव उम्र करीब 45 वर्ष निवासी ग्राम बबुरिहा खेड़ा थाना बछरावां\n2.रामू पुत्र रामदेव उम्र करीब 25 वर्ष निवासी ग्राम पूरे बाबू');
+  assert.equal(generateReport('{{first#list}}', { first: JSON.stringify([P('कैलाश', 'लल्लू', '35')]) }, keys),
+    'कैलाश पुत्र लल्लू उम्र करीब 35 वर्ष निवासी ग्राम बबुरिहा खेड़ा थाना बछरावां');
+});
