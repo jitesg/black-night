@@ -130,3 +130,15 @@ test('सामान्य पत्र: empty संलग्नक / दि�
   assert.match(full, /class="att">1\. प्रति - 02 वर्क/);
   assert.match(full, /दिनांक: 29\.10\.2026/);
 });
+
+test('चोरी वाहन फ्लैग पत्र: all fields filled, numbers repeat, आर0सी0 attachment', async () => {
+  const P2 = (await import('../src/lib/printLayout.ts'));
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-vahan-flag');
+  const v: Record<string, string> = {};
+  for (const k of f.keys) v[k.key_name] = k.key_name === 'VehicleNo' ? 'UP33 AB 1234' : 'क';
+  const html = P2.renderTextForPrint(generateReport(f.vivran, v, f.keys, { keepMarkers: true }));
+  assert.doesNotMatch(html, /\{\{|डी0एल0/);
+  assert.equal((html.match(/UP33 AB 1234/g) ?? []).length, 3);
+  assert.match(html, /class="att">1\. आर0सी0 की छायाप्रति - क वर्क/);
+});

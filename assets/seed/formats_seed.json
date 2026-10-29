@@ -3501,6 +3501,150 @@
           "sort_order": 9
         }
       ]
+    },
+    {
+      "id": "sys-fmt-vahan-flag",
+      "title": "चोरी वाहन को पोर्टल पर फ्लैग कराने हेतु पत्र (RTO)",
+      "format_type": "Any",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "वाहन",
+        "चोरी",
+        "फ्लैग",
+        "RTO",
+        "पत्र"
+      ],
+      "last_updated": "2026-10-29",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nश्रीमान सम्भागीय परिवहन अधिकारी महोदय,\nजनपद {{RTODistrict}}।\n[[विषय]] विषय – थाना क्षेत्र से चोरी हुए वाहन को पोर्टल पर फ्लैग कराने के संबंध में।\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि दिनांक {{TheftDate}} को थाना {{PoliceStation}} क्षेत्र के {{TheftPlace}} से वाहन {{VehicleType}} पंजीकरण संख्या {{VehicleNo}} चोरी हो गया था, जिसके संबंध में थाना स्थानीय पर मु0अ0सं0 {{FIRNO}} धारा {{SECTION}} पंजीकृत है तथा जिसकी विवेचना मुझ {{pad}} द्वारा सम्पादित की जा रही है। विवेचना के क्रम में वाहन संख्या {{VehicleNo}}, जिसका इंजन नंबर {{EngineNo}} तथा चेसिस नंबर {{ChassisNo}} है, को पोर्टल पर फ्लैग करवाना आवश्यक है।\n\nअतः निवेदन है कि वाहन संख्या {{VehicleNo}}, जिसका इंजन नंबर {{EngineNo}} तथा चेसिस नंबर {{ChassisNo}} है, को पोर्टल पर फ्लैग करवाने हेतु संबंधित को आदेशित करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक -\nआर0सी0 की छायाप्रति - {{RCPages}} वर्क\nएफआईआर की छायाप्रति - {{FIRPages}} वर्क\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}} जनपद {{District}}\n",
+      "keys": [
+        {
+          "key_name": "RTODistrict",
+          "label": "सम्भागीय परिवहन अधिकारी — जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 0
+        },
+        {
+          "key_name": "TheftDate",
+          "label": "चोरी की तिथि",
+          "field_type": "date",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 1
+        },
+        {
+          "key_name": "TheftPlace",
+          "label": "चोरी का स्थान (जैसे: ग्राम बन्नावां)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 2
+        },
+        {
+          "key_name": "VehicleType",
+          "label": "वाहन का प्रकार (जैसे: मोटरसाइकिल हीरो स्प्लेण्डर)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 3
+        },
+        {
+          "key_name": "VehicleNo",
+          "label": "पंजीकरण संख्या (वाहन नंबर)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 4
+        },
+        {
+          "key_name": "EngineNo",
+          "label": "इंजन नंबर",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 5
+        },
+        {
+          "key_name": "ChassisNo",
+          "label": "चेसिस नंबर",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 6
+        },
+        {
+          "key_name": "FIRNO",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 7
+        },
+        {
+          "key_name": "SECTION",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "303(2) BNS",
+          "sort_order": 8
+        },
+        {
+          "key_name": "RCPages",
+          "label": "आर0सी0 की छायाप्रति — वर्क",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "01",
+          "sort_order": 9
+        },
+        {
+          "key_name": "FIRPages",
+          "label": "एफआईआर की छायाप्रति — वर्क",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "02",
+          "sort_order": 10
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 11
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 12
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 13
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 14
+        }
+      ]
     }
   ]
 }
