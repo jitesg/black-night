@@ -11,9 +11,9 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   FileWarning, Plus, Filter, ChevronDown,
-  Edit2, Trash2, MapPin, Calendar, X, FileDown, Check, Clock, MoreVertical,
+  Edit2, Trash2, MapPin, Calendar, X, FileDown, Check, Clock, MoreVertical, CheckCheck,
 } from 'lucide-react-native';
-import { exportKaryvahiDocx } from '@/lib/nirodhatmak/karyvahiDocx';
+import { exportKaryvahiDocx, exportKaryvahisDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import {
@@ -139,12 +139,20 @@ const KaryvahiCard = memo(function KaryvahiCard({
   scheme,
   onPress,
   onLongPress,
+  onMenu,
+  selecting,
+  selected,
 }: {
   item: NirodhatmakKaryvahi;
   query: string;
   scheme: 'light' | 'dark';
   onPress: () => void;
   onLongPress: () => void;
+  /** ⋮ button: the संपादित / Word / हटाएं menu. */
+  onMenu: () => void;
+  /** Selection mode (press-and-hold): show a tick circle instead of ⋮. */
+  selecting?: boolean;
+  selected?: boolean;
 }) {
   const { t } = useTranslation();
   const c = CARD_COLORS[scheme];
@@ -179,7 +187,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
       className="active:opacity-80"
       style={{
         borderCurve: 'continuous', borderRadius: 16, padding: 20, backgroundColor: c.bg,
-        borderWidth: 1, borderColor: c.border,
+        borderWidth: selected ? 2 : 1, borderColor: selected ? MODULE_COLOR : c.border,
         shadowColor: '#000', shadowOpacity: isDark ? 0.35 : 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 6 },
         elevation: 4,
       }}
@@ -211,16 +219,26 @@ const KaryvahiCard = memo(function KaryvahiCard({
           </Text>
         </View>
         {/* ⋮ — same menu as press-and-hold (संपादित / Word export / हटाएं) */}
-        <Pressable
-          onPress={onLongPress}
-          hitSlop={10}
-          accessibilityRole="button"
-          accessibilityLabel="और विकल्प"
-          style={{ width: 32, height: 32, marginTop: -6, marginRight: -8, borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}
-          className="active:opacity-50"
-        >
-          <MoreVertical size={20} color={c.muted} />
-        </Pressable>
+        {selecting ? (
+          <View style={{
+            width: 24, height: 24, borderRadius: 12, marginTop: -2, borderWidth: 2,
+            borderColor: selected ? MODULE_COLOR : c.muted, backgroundColor: selected ? MODULE_COLOR : 'transparent',
+            alignItems: 'center', justifyContent: 'center',
+          }}>
+            {selected ? <Check size={15} color="#FFFFFF" strokeWidth={3} /> : null}
+          </View>
+        ) : (
+          <Pressable
+            onPress={onMenu}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel="और विकल्प"
+            style={{ width: 32, height: 32, marginTop: -6, marginRight: -8, borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}
+            className="active:opacity-50"
+          >
+            <MoreVertical size={20} color={c.muted} />
+          </Pressable>
+        )}
       </View>
 
       {/* 2. Dispute — serif Hindi, coral, opening quote */}
@@ -328,6 +346,20 @@ export default function NirodhatmakHomeScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<NirodhatmakKaryvahi | null>(null);
+  // Press-and-hold selection (batch Word export / batch delete in the header).
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+  const [batchDeleteOpen, setBatchDeleteOpen] = useState(false);
+  const selecting = selectedIds.size > 0;
+  const toggleSelected = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
+  const clearSelection = useCallback(() => setSelectedIds(new Set()), []);
+  const selectedIdsRef = useRef(selectedIds);
+  selectedIdsRef.current = selectedIds;
   const [longPressTarget, setLongPressTarget] = useState<NirodhatmakKaryvahi | null>(null);
 
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -365,6 +397,7 @@ export default function NirodhatmakHomeScreen() {
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (selectedIdsRef.current.size > 0) { setSelectedIds(new Set()); return true; }
       router.replace('/(app)/home' as never);
       return true;
     });
@@ -383,6 +416,21 @@ export default function NirodhatmakHomeScreen() {
     loadData(query, type);
   };
 
+  const handleBatchDelete = useCallback(async () => {
+    const ids = [...selectedIds];
+    for (const id of ids) {
+      try { await deleteNirodhatmakKaryvahi(id); } catch { /* keep going */ }
+    }
+    setRecords((prev) => prev.filter((r) => !selectedIds.has(r.id)));
+    setBatchDeleteOpen(false);
+    setSelectedIds(new Set());
+  }, [selectedIds]);
+
+  const handleBatchExport = useCallback(() => {
+    const items = records.filter((r) => selectedIds.has(r.id));
+    exportKaryvahisDocx(items).finally(() => setSelectedIds(new Set()));
+  }, [records, selectedIds]);
+
   const handleDeleteConfirm = useCallback(async () => {
     if (!deleteTarget) return;
     await deleteNirodhatmakKaryvahi(deleteTarget.id);
@@ -399,11 +447,15 @@ export default function NirodhatmakHomeScreen() {
         item={item}
         query={query}
         scheme={scheme}
+        selecting={selecting}
+        selected={selectedIds.has(item.id)}
         onPress={() => {
+          if (selecting) { toggleSelected(item.id); return; }
           setLongPressTarget(null);
           router.push(`/(app)/nirodhatmak/add-proceeding?editId=${item.id}` as never);
         }}
-        onLongPress={() => setLongPressTarget((prev) => (prev?.id === item.id ? null : item))}
+        onLongPress={() => { setLongPressTarget(null); toggleSelected(item.id); }}
+        onMenu={() => setLongPressTarget((prev) => (prev?.id === item.id ? null : item))}
       />
       {longPressTarget?.id === item.id && (
         <View className="mt-2">
@@ -422,24 +474,45 @@ export default function NirodhatmakHomeScreen() {
       )}
     </View>
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ), [query, longPressTarget, scheme]);
+  ), [query, longPressTarget, scheme, selecting, selectedIds, toggleSelected]);
 
   return (
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
-      <AppHeader
-        title={t('nirodhatmak.list.title')}
-        subtitle={loading ? t('common.loading') : t('nirodhatmak.list.proceedingCount', { count: records.length })}
-        onMenuPress={() => setDrawerOpen(true)}
-        actions={
-          <HeaderIconBtn
-            icon={Plus}
-            onPress={() => router.push('/(app)/nirodhatmak/add-proceeding' as never)}
-            label={t('nirodhatmak.list.addProceeding')}
-            color={MODULE_COLOR}
-          />
-        }
-      />
+      {selecting ? (
+        <AppHeader
+          title={`${selectedIds.size} चुनी गईं`}
+          subtitle="दबाकर रखें / tap करें: चुनें"
+          onBack={clearSelection}
+          actions={
+            <>
+              <HeaderIconBtn
+                icon={CheckCheck}
+                onPress={() => setSelectedIds(
+                  selectedIds.size === records.length ? new Set() : new Set(records.map((r) => r.id)),
+                )}
+                label={selectedIds.size === records.length ? 'सभी हटाएँ (चयन)' : 'सभी चुनें'}
+              />
+              <HeaderIconBtn icon={FileDown} onPress={handleBatchExport} label="चुनी गई कार्यवाहियाँ Word में export करें" />
+              <HeaderIconBtn icon={Trash2} onPress={() => setBatchDeleteOpen(true)} label="चुनी गई कार्यवाहियाँ हटाएं" color={MODULE_COLOR} />
+            </>
+          }
+        />
+      ) : (
+        <AppHeader
+          title={t('nirodhatmak.list.title')}
+          subtitle={loading ? t('common.loading') : t('nirodhatmak.list.proceedingCount', { count: records.length })}
+          onMenuPress={() => setDrawerOpen(true)}
+          actions={
+            <HeaderIconBtn
+              icon={Plus}
+              onPress={() => router.push('/(app)/nirodhatmak/add-proceeding' as never)}
+              label={t('nirodhatmak.list.addProceeding')}
+              color={MODULE_COLOR}
+            />
+          }
+        />
+      )}
 
       {/* Toolbar */}
       <View className="px-4 pt-3 pb-2 gap-2 bg-background border-b border-border">
@@ -546,6 +619,24 @@ export default function NirodhatmakHomeScreen() {
       )}
 
 
+
+      {/* ── Batch delete confirmation ───────────────────────────── */}
+      <AlertDialog open={batchDeleteOpen} onOpenChange={(v) => { if (!v) setBatchDeleteOpen(false); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{`${selectedIds.size} कार्यवाहियाँ हटाएं?`}</AlertDialogTitle>
+            <AlertDialogDescription>चुनी गई सभी कार्यवाहियाँ हट जाएँगी।</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onPress={() => setBatchDeleteOpen(false)}>
+              <Text>{t('common.cancel')}</Text>
+            </AlertDialogCancel>
+            <AlertDialogAction onPress={handleBatchDelete} className="bg-destructive">
+              <Text className="text-destructive-foreground font-semibold">{t('common.delete')}</Text>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* ── Delete Confirmation ─────────────────────────────────── */}
       <AlertDialog

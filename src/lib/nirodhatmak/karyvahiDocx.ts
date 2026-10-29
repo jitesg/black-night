@@ -20,3 +20,18 @@ export async function exportKaryvahiDocx(item: {
     Alert.alert('Export नहीं हो सका', e instanceof Error ? e.message : String(e));
   }
 }
+
+/** Several karyvahis → one Word file, each report on a new page. */
+export async function exportKaryvahisDocx(items: {
+  editor_content?: string | null; report_text?: string | null;
+}[]): Promise<void> {
+  const contents = items.map((i) => i.editor_content || i.report_text || '').filter((c) => c.trim());
+  if (!contents.length) { Alert.alert('Export नहीं हो सका', 'चुनी गई कार्यवाहियों में रिपोर्ट नहीं है।'); return; }
+  const d = new Date();
+  const name = `निरोधात्मक_${contents.length}_कार्यवाहियाँ_${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
+  try {
+    await exportReportToDocx(contents, name);
+  } catch (e) {
+    Alert.alert('Export नहीं हो सका', e instanceof Error ? e.message : String(e));
+  }
+}

@@ -130,14 +130,16 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
 }
 
 /** Text that is not a letter (फर्द, GD …): title centred, paragraphs, signature right. */
-function plainBlocks(text: string): Paragraph[] {
+function plainBlocks(text: string, newPage = false): Paragraph[] {
   const { notes, title, paras, signature } = splitPlainText(text);
-  return [
+  const out = [
     ...notes.map((n) => para(n, { after: 60 })),
     ...(title ? [para(title, { align: AlignmentType.CENTER, bold: true, underline: true, after: 120 })] : []),
     ...paras.map((t) => para(t, { align: AlignmentType.JUSTIFIED, firstLine: INDENT, after: 60 })),
     ...signature.map((s, i) => para(s, { align: AlignmentType.RIGHT, before: i === 0 ? 200 : 0 })),
   ];
+  if (newPage) out.unshift(para('', { pageBreak: true }));
+  return out;
 }
 
 /** Editor HTML / plain text → the text the print layout reads (layout marks kept). */
@@ -148,11 +150,14 @@ export function reportSourceText(content: string): string {
   return htmlToPlainText(html);
 }
 
-export function buildReportDocx(content: string): Document {
-  const text = reportSourceText(content);
-  const children = hasFormatMarkers(text) || looksLikeLetter(text)
-    ? splitIntoSubLetters(text).map(parseIntoDocumentModel).flatMap((m, i) => letterBlocks(m, i === 0))
-    : plainBlocks(text);
+/** One report, or several (batch export: each report starts on a new page). */
+export function buildReportDocx(content: string | string[]): Document {
+  const children = (Array.isArray(content) ? content : [content]).flatMap((one, k) => {
+    const text = reportSourceText(one);
+    return hasFormatMarkers(text) || looksLikeLetter(text)
+      ? splitIntoSubLetters(text).map(parseIntoDocumentModel).flatMap((m, i) => letterBlocks(m, k === 0 && i === 0))
+      : plainBlocks(text, k > 0);
+  });
   return new Document({
     styles: { default: { document: { run: { font: { ascii: FONT, hAnsi: FONT, cs: FONT }, size: SIZE } } } },
     sections: [{
@@ -163,8 +168,10 @@ export function buildReportDocx(content: string): Document {
 }
 
 /** Builds the .docx, saves it in the cache folder and opens the share / save sheet. */
-export async function exportReportToDocx(content: string, fileBase: string): Promise<void> {
-  if (!String(content ?? '').trim()) throw new Error('रिपोर्ट खाली है');
+export async function exportReportToDocx(content: string | string[], fileBase: string): Promise<void> {
+  const list = (Array.isArray(content) ? content : [content]).filter((c) => String(c ?? '').trim());
+  if (!list.length) throw new Error('रिपोर्ट खाली है');
+  content = list;
   const base64 = await Packer.toBase64String(buildReportDocx(content));
   const name = (fileBase || 'report').replace(/[\\/:*?"<>|\n\r\t]+/g, ' ').replace(/\s+/g, '_').slice(0, 60) || 'report';
   const uri = `${FileSystem.cacheDirectory}${name}.docx`;
