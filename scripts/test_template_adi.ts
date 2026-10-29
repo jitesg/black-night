@@ -117,3 +117,16 @@ test('170 चालानी formats (7): fill + render, no token left; ubhay = 
     assert.doesNotMatch(generateReport(f.vivran, v, f.keys), /रिमांड|\*\*/, f.id);
   }
 });
+
+test('सामान्य पत्र: empty संलग्नक / दिनांक leave nothing behind; filled ones print', async () => {
+  const P2 = (await import('../src/lib/printLayout.ts'));
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-samanya-patra');
+  const base = { Addressee: 'श्रीमान पुलिस अधीक्षक महोदय,\nजनपद रायबरेली।', Subject: 'क', Body: 'पैरा 1\n\nपैरा 2', Closing: 'सादर।', pad: 'उपनिरीक्षक', OfficerName: 'जीतेश सिंह', PoliceStation: 'बछरावां', District: 'रायबरेली' };
+  const empty = P2.renderTextForPrint(generateReport(f.vivran, { ...base, Attachments: '', Date: '' }, f.keys, { keepMarkers: true }));
+  assert.doesNotMatch(empty, /संलग्नक|दिनांक|\{\{/);
+  assert.equal((empty.match(/<p>पैरा/g) ?? []).length, 2);
+  const full = P2.renderTextForPrint(generateReport(f.vivran, { ...base, Attachments: 'प्रति - 02 वर्क\nविवरण - 01 वर्क', Date: '29.10.2026' }, f.keys, { keepMarkers: true }));
+  assert.match(full, /class="att">1\. प्रति - 02 वर्क/);
+  assert.match(full, /दिनांक: 29\.10\.2026/);
+});

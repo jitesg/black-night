@@ -3487,6 +3487,108 @@
         }
       ],
       "last_updated": "2026-10-30"
+    },
+    {
+      "id": "sys-fmt-samanya-patra",
+      "title": "सामान्य पत्र (किसी को भी)",
+      "format_type": "Any",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "पत्र",
+        "सामान्य",
+        "letter"
+      ],
+      "last_updated": "2026-10-29",
+      "vivran": "[[पत्र]]\n[[सेवा में]] सेवा में,\n{{Addressee}}\n[[विषय]] विषय – {{Subject}}\n[[महोदय]] महोदय,\n[[विवरण]] {{Body}}\n[[समापन]] {{Closing}}\n{{if:Attachments|[[संलग्नक]] संलग्नक -\n{{Attachments}}\n}}[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}} जनपद {{District}}\n{{if:Date|दिनांक: {{Date}}}}\n",
+      "keys": [
+        {
+          "key_name": "Addressee",
+          "label": "किसको (सेवा में के नीचे की लाइनें — पद, कार्यालय, जनपद)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "श्रीमान पुलिस अधीक्षक महोदय,\nजनपद रायबरेली।",
+          "sort_order": 0
+        },
+        {
+          "key_name": "Subject",
+          "label": "विषय",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 1
+        },
+        {
+          "key_name": "Body",
+          "label": "पत्र का मज़मून (नया पैरा = बीच में एक खाली लाइन)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "सविनय निवेदन है कि ",
+          "sort_order": 2
+        },
+        {
+          "key_name": "Closing",
+          "label": "आखिरी लाइन (बीच में)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "सादर सेवा में प्रेषित है।",
+          "sort_order": 3
+        },
+        {
+          "key_name": "Attachments",
+          "label": "संलग्नक (हर लाइन पर एक; न हो तो खाली छोड़ें)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 4
+        },
+        {
+          "key_name": "Date",
+          "label": "दिनांक (न हो तो खाली छोड़ें)",
+          "field_type": "date",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 5
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 6
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 7
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 8
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 9
+        }
+      ]
     }
   ]
 }

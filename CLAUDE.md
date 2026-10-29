@@ -100,6 +100,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   उभयपक्षीय = 170 बनाम प्रथम पक्ष, 170 बनाम द्वितीय पक्ष, 135(3) × 2 (same body). Accused list `#block`, body `#inline` then
   `#short` + "उपरोक्त", "( बनाम- … )" centred/bold/underlined, checkbox `Remand` → bold 14 दिवस रिमांड निवेदन in the 170
   letter. Tests in `scripts/test_template_adi.ts`.
+- `sys-fmt-samanya-patra` "सामान्य पत्र (किसी को भी)" (type Any): सेवा में (multiline), विषय, मज़मून (blank line = new
+  para), closing, optional संलग्नक / दिनांक via `{{if:…}}`, signature right.
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
   `{{ifnot:Key|text}}` (templateEngine `_applyIfTokens`, Step -2, inner tokens allowed). `**…**` in a [[विवरण]] paragraph =
   bold words (print/editor/Word; editor <b> in body → ** on the way back; stripped in plain text). Used by the 170 चालानी
