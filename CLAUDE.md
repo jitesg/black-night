@@ -76,7 +76,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   [[पक्ष]] [[महोदय]] [[विवरण]] [[समापन]] [[गवाह]] [[संलग्नक]] (lines "item | signature") [[हस्ताक्षर]] [[बीच]] [[दाएँ]]
   [[दोनों ओर]] ("left | right")`. Marked text skips the guessing parser (splitIntoSubLetters / parseIntoDocumentModel
   delegate). `generateReport` strips marks unless `{ keepMarkers: true }` (only formats/fill print + editor pipeline);
-  editor HTML keeps them as `data-fmt` → `editorHtmlToMarkedText` in the DocumentEditor print; party lines "प्रथम/द्वितीय पक्ष" alone are centred (`isPartyHeading`); NK save passes the
+  editor HTML keeps them as `data-fmt` → `editorHtmlToMarkedText` in the DocumentEditor print; party lines "प्रथम/द्वितीय पक्ष" alone are centred, bold, underlined (`isPartyHeading`); NK save passes the
   marked editor HTML. Done: the 5 `sys-fmt-bnss126-*` formats (seed_version 7; thanabhraman 9; beat + yaksh = 10 with the extra last sheet
   "सिपाही के लिए बीट सूचना"; originals in
   `docs/format-backups/bnss126_before_marks.json`). Owner approves each batch with an A4 preview. Tests

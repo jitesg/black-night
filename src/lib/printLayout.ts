@@ -209,7 +209,7 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-subject p { margin: 0; padding-left: var(--doc-indent); text-indent: calc(-1 * var(--doc-indent) / 2); }
   .letters .doc-parties { margin: 0.5em 0 0; }
   .letters .doc-parties p { margin: 0; }
-  .letters .doc-parties p.party-head { text-align: center; }
+  .letters .doc-parties p.party-head { text-align: center; font-weight: bold; text-decoration: underline; }
   .letters .doc-salutation { margin: 0.8em 0 0.3em; }
   .letters .doc-body p { text-align: justify; text-indent: var(--doc-indent); margin: 0 0 0.3em; }
   .letters .doc-closing { text-align: center; margin-top: 0.6em; }

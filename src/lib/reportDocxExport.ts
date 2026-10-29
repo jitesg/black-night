@@ -88,7 +88,10 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
     p(l, { indentLeft: label ? undefined : INDENT, before: i === 0 ? 80 : 0 });
   });
   subject.forEach((l, i) => p(l, { indentLeft: INDENT, before: i === 0 ? 80 : 0 }));
-  parties.forEach((l, i) => p(l, { before: i === 0 ? 100 : 0, align: isPartyHeading(l) ? AlignmentType.CENTER : undefined }));
+  parties.forEach((l, i) => {
+    const head = isPartyHeading(l);
+    p(l, { before: i === 0 ? 100 : 0, align: head ? AlignmentType.CENTER : undefined, bold: head, underline: head });
+  });
   if (model.salutation) p(model.salutation, { before: 160, after: 60 });
 
   if (model.marked) {
