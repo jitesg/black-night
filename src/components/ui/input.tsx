@@ -483,6 +483,25 @@ export interface FormatKeyDef {
   field_type?: 'text' | 'multiline' | 'number' | 'date' | 'dropdown' | 'accused_group' | string;
   is_required?: number | boolean;
   default_value?: string | null;
+  /** dropdown only: JSON array of strings or {value,label} objects (comma list also accepted). */
+  dropdown_options?: string | null;
+}
+
+/** Parse dropdown_options → [{ value, label }]. */
+export function parseDropdownOptions(raw: string | null | undefined): { value: string; label: string }[] {
+  const t = String(raw ?? '').trim();
+  if (!t) return [];
+  try {
+    const arr = JSON.parse(t) as unknown;
+    if (Array.isArray(arr)) {
+      return arr
+        .map((o) => (typeof o === 'string'
+          ? { value: o, label: o }
+          : { value: String((o as { value?: unknown }).value ?? ''), label: String((o as { label?: unknown }).label ?? (o as { value?: unknown }).value ?? '') }))
+        .filter((o) => o.value.trim());
+    }
+  } catch { /* not JSON → comma list */ }
+  return t.split(',').map((x) => x.trim()).filter(Boolean).map((x) => ({ value: x, label: x }));
 }
 
 export interface FormatKeyInputProps {
@@ -522,6 +541,25 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
       );
     }
 
+    // ── Dropdown — one tap on an option (chips, like the संबंध प्रकार buttons) ──
+    if (fieldType === 'dropdown') {
+      const options = parseDropdownOptions(keyDef.dropdown_options);
+      if (options.length) {
+        return (
+          <FormatKeyDropdownInput
+            ref={ref}
+            keyName={keyDef.key_name}
+            options={options}
+            value={value}
+            onChange={onChange}
+            error={error}
+            displayLabel={displayLabel}
+            required={required}
+          />
+        );
+      }
+    }
+
     const inputType = fieldTypeToInputType(fieldType);
     // multiline fields get 5 rows (~120 px) so police report text has breathing room
     const multilineLines = fieldType === 'multiline' ? 5 : undefined;
@@ -541,6 +579,52 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
     );
   }
 );
+
+// ── FormatKeyDropdownInput — option chips for field_type=dropdown ────────────
+
+const FormatKeyDropdownInput = forwardRef<View, {
+  keyName: string;
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (keyName: string, value: string) => void;
+  error?: string;
+  displayLabel: string;
+  required: boolean;
+}>(({ keyName, options, value, onChange, error, displayLabel, required }, ref) => {
+  const { colorScheme } = useColorScheme();
+  const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
+  const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
+  return (
+    <View ref={ref} style={{ gap: T.space.xs }}>
+      <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
+        {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+        {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
+      </Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        {options.map((o) => {
+          const on = value === o.value;
+          return (
+            <Pressable
+              key={o.value}
+              onPress={() => onChange(keyName, o.value)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: on }}
+              accessibilityLabel={o.label}
+              style={{
+                minWidth: 96, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, alignItems: 'center',
+                borderWidth: on ? 2 : 1, borderColor: on ? green : (error ? c.destructive : c.border),
+                backgroundColor: on ? `${green}14` : c.card,
+              }}
+            >
+              <Text style={{ fontSize: 14, fontWeight: on ? '700' : '500', color: on ? green : c.foreground }}>{o.label}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      {error ? <Text style={{ ...T.caption1, color: c.destructive } as TextStyle}>{error}</Text> : null}
+    </View>
+  );
+});
 
 // ── FormatKeyDateInput — date-picker sub-component for field_type=date ─────────
 

@@ -10,7 +10,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -178,10 +178,11 @@
         {
           "key_name": "pad",
           "label": "पद/रैंक",
-          "field_type": "text",
+          "field_type": "dropdown",
           "is_required": 1,
           "sort_order": 21,
-          "default_value": "उ0नि0"
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
         },
         {
           "key_name": "CurrentLocationOfStandingAccused",
@@ -204,7 +205,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 10,
+      "seed_version": 11,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -256,10 +257,11 @@
         {
           "key_name": "pad",
           "label": "पद/रैंक",
-          "field_type": "text",
+          "field_type": "dropdown",
           "is_required": 1,
-          "default_value": "उ0नि0",
-          "sort_order": 5
+          "default_value": "उपनिरीक्षक",
+          "sort_order": 5,
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
         },
         {
           "key_name": "Tehsil",
@@ -338,7 +340,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 10,
+      "seed_version": 11,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -398,10 +400,11 @@
         {
           "key_name": "pad",
           "label": "पद/रैंक",
-          "field_type": "text",
+          "field_type": "dropdown",
           "is_required": 1,
-          "default_value": "उ0नि0",
-          "sort_order": 11
+          "default_value": "उपनिरीक्षक",
+          "sort_order": 11,
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
         },
         {
           "key_name": "Tehsil",
@@ -456,7 +459,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 9,
+      "seed_version": 10,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -524,10 +527,11 @@
         {
           "key_name": "pad",
           "label": "पद/रैंक",
-          "field_type": "text",
+          "field_type": "dropdown",
           "is_required": 1,
-          "default_value": "उ0नि0",
-          "sort_order": 11
+          "default_value": "उपनिरीक्षक",
+          "sort_order": 11,
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
         },
         {
           "key_name": "Tehsil",
@@ -574,7 +578,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 7,
+      "seed_version": 8,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -658,10 +662,11 @@
         {
           "key_name": "pad",
           "label": "पद/रैंक",
-          "field_type": "text",
+          "field_type": "dropdown",
           "is_required": 1,
-          "default_value": "उ0नि0",
-          "sort_order": 13
+          "default_value": "उपनिरीक्षक",
+          "sort_order": 13,
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
         },
         {
           "key_name": "Tehsil",
@@ -708,7 +713,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 7,
+      "seed_version": 8,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -792,10 +797,11 @@
         {
           "key_name": "pad",
           "label": "पद/रैंक",
-          "field_type": "text",
+          "field_type": "dropdown",
           "is_required": 1,
-          "default_value": "उ0नि0",
-          "sort_order": 13
+          "default_value": "उपनिरीक्षक",
+          "sort_order": 13,
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
         },
         {
           "key_name": "Tehsil",
@@ -842,7 +848,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "DCRB",
@@ -905,10 +911,11 @@
         {
           "key_name": "pad",
           "label": "पद/रैंक",
-          "field_type": "text",
+          "field_type": "dropdown",
           "is_required": 1,
           "sort_order": 8,
-          "default_value": "उ0नि0"
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
         },
         {
           "key_name": "PoliceStation",

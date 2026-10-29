@@ -1156,6 +1156,15 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'nirodhatmak_karyvahi', 'editor_content',   "TEXT DEFAULT ''");
   await _ensureColumn(database, 'nirodhatmak_karyvahi', 'status',           "TEXT DEFAULT 'Active'");
   await _ensureColumn(database, 'nirodhatmak_karyvahi', 'checklist_json',   "TEXT DEFAULT '{}'");
+  // Owner's rule: every format's पद/रैंक ("pad") field is a dropdown — उपनिरीक्षक / निरीक्षक.
+  // System formats get it from the seed; this also covers formats made in the app. Idempotent.
+  try {
+    await database.runAsync(
+      `UPDATE format_keys SET field_type = 'dropdown', dropdown_options = ?, default_value = 'उपनिरीक्षक'
+        WHERE key_name = 'pad' AND field_type = 'text'`,
+      ['["उपनिरीक्षक","निरीक्षक"]'],
+    );
+  } catch { /* table not ready yet — next start */ }
 
   // ── v130: Case Diary — places_visited + karyvahi completion traceability ─────
   // places_visited       → TEXT array of visited places (JSON-serialised string)
