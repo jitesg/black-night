@@ -534,6 +534,83 @@ function _applyFieldProjection(
 
 const INDEXED_ACCESS_RE = /\{\{([A-Za-z0-9_]+)\.(\d+)\.([A-Za-z0-9_]+)\}\}/g;
 
+// ─── Wanted status of accused (judicial custody report) ─────────────────────
+/**
+ * Each accused can carry `status`: 'नामजद' | 'प्रकाश में आया' | 'वांछित नहीं'
+ * (picker shown by AccusedGroupInput when the format uses these tokens; unset = प्रकाश में आया).
+ *   {{Key#summary}}       → "अभियुक्तगण 1.A पुत्र X 2.B पुत्र Y उपरोक्त नामजद हैं व मुकदमा उपरोक्त में वांछित हैं
+ *                            तथा अभियुक्त C पुत्र Z उपरोक्त का नाम प्रकाश में आया है व मुकदमा उपरोक्त में वांछित है
+ *                            तथा अभियुक्त D पुत्र W उपरोक्त वांछित नहीं है" (only the groups that have someone)
+ *   {{Key#wanted}}        → the wanted ones (नामजद + प्रकाश में आया): "अभियुक्त/अभियुक्तगण …"
+ *   {{Key#ifWanted|text}} → text only when at least one accused is wanted (text may hold other tokens)
+ * Tests: scripts/test_accused_status.ts
+ */
+type StatusEntry = AnyEntry & { status?: string; gender?: string };
+
+function _statusGroups(values: Record<string, string>, key: string) {
+  const all = _parseGroupEntries<StatusEntry>(values[key] ?? '').filter((e) => String(e?.name ?? '').trim());
+  const st = (e: StatusEntry) => (e.status || 'प्रकाश में आया').trim();
+  return {
+    named: all.filter((e) => st(e) === 'नामजद'),
+    surfaced: all.filter((e) => st(e) === 'प्रकाश में आया'),
+    notWanted: all.filter((e) => st(e) === 'वांछित नहीं'),
+    wanted: all.filter((e) => st(e) !== 'वांछित नहीं'),
+  };
+}
+
+function _statusList(sub: StatusEntry[], groupType: string | undefined): string {
+  if (!sub.length) return '';
+  const head = sub.length > 1 ? 'अभियुक्तगण' : (sub[0].gender === 'महिला' ? 'अभियुक्ता' : 'अभियुक्त');
+  return `${head} ${_resolveProjection(sub, [], ['name', 'fatherOrHusbandName'], groupType)}`;
+}
+
+function _applyGroupStatus(template: string, values: Record<string, string>, keyDefs: KeyDefForRender[]): string {
+  if (!template.includes('#')) return template;
+  const typeMap = new Map<string, string>();
+  for (const kd of keyDefs) typeMap.set(kd.key_name, kd.field_type);
+  const isGroup = (k: string) => REPEATABLE_GROUP_TYPES.has(typeMap.get(k) ?? '');
+
+  // 1) {{Key#ifWanted|…}} — the text can contain {{…}}, so find the matching "}}".
+  let out = '';
+  let rest = template;
+  const open = /\{\{([A-Za-z0-9_]+)#ifWanted\|/;
+  for (let m = open.exec(rest); m; m = open.exec(rest)) {
+    let depth = 1;
+    let i = m.index + m[0].length;
+    while (i < rest.length && depth > 0) {
+      if (rest.startsWith('{{', i)) { depth += 1; i += 2; }
+      else if (rest.startsWith('}}', i)) { depth -= 1; i += 2; }
+      else i += 1;
+    }
+    const inner = rest.slice(m.index + m[0].length, depth === 0 ? i - 2 : i);
+    const show = isGroup(m[1]) && _statusGroups(values, m[1]).wanted.length > 0;
+    out += rest.slice(0, m.index) + (show ? inner : '');
+    rest = rest.slice(i);
+  }
+  out += rest;
+
+  // 2) {{Key#summary}} / {{Key#wanted}}
+  return out.replace(/\{\{([A-Za-z0-9_]+)#(summary|wanted)\}\}/g, (match, key: string, kind: string) => {
+    if (!isGroup(key)) return match;
+    const g = _statusGroups(values, key);
+    const gt = typeMap.get(key);
+    if (kind === 'wanted') return _statusList(g.wanted, gt);
+    const verb = (n: number) => (n > 1 ? 'हैं' : 'है');
+    const parts: string[] = [];
+    if (g.named.length) {
+      parts.push(`${_statusList(g.named, gt)} उपरोक्त नामजद ${verb(g.named.length)} व मुकदमा उपरोक्त में वांछित ${verb(g.named.length)}`);
+    }
+    if (g.surfaced.length) {
+      const n = g.surfaced.length;
+      parts.push(`${_statusList(g.surfaced, gt)} उपरोक्त ${n > 1 ? 'के नाम प्रकाश में आये' : 'का नाम प्रकाश में आया'} ${verb(n)} व मुकदमा उपरोक्त में वांछित ${verb(n)}`);
+    }
+    if (g.notWanted.length) {
+      parts.push(`${_statusList(g.notWanted, gt)} उपरोक्त वांछित नहीं ${verb(g.notWanted.length)}`);
+    }
+    return parts.join(' तथा ');
+  });
+}
+
 /**
  * "{{group.1.name}} आदि" when the group has only ONE person → drop "आदि"
  * ("बनाम संगीता आदि" → "बनाम संगीता"). Two or more people keep it. Runs before
@@ -728,6 +805,7 @@ export function generateReport(
   if (!opts?.keepMarkers) return stripFormatMarkers(generateReport(template, values, keyDefs, { keepMarkers: true }));
   let processed = template;
   if (keyDefs && keyDefs.length > 0) {
+    processed = _applyGroupStatus(processed, values, keyDefs);            // Step -1 (accused status)
     processed = _applyFieldProjection(processed, values, keyDefs);        // Step 0
     processed = _dropAdiForSingleEntry(processed, values, keyDefs);       // Step 0.5 (1 person → no "आदि")
     processed = _applyIndexedFieldAccess(processed, values, keyDefs);     // Step 1

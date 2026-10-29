@@ -85,6 +85,8 @@ export interface AccusedEntry {
   relationType: 'पुत्र' | 'पुत्री' | 'पत्नी' | '';
   email: string;
   caughtBy: string;
+  /** Only in formats that use {{Key#summary}} (judicial custody report): wanted status. */
+  status?: AccusedStatus;
   // legacy compat — old data may have 'address' instead of 'fullAddress'
   address?: string;
 }
@@ -104,6 +106,10 @@ const EMPTY_ACCUSED: AccusedEntry = {
 
 const GENDER_OPTIONS: Array<'पुरुष' | 'महिला' | 'अन्य'> = ['पुरुष', 'महिला', 'अन्य'];
 const RELATION_OPTIONS: Array<'पुत्र' | 'पुत्री' | 'पत्नी'> = ['पुत्र', 'पुत्री', 'पत्नी'];
+
+/** Wanted status per accused (templateEngine {{Key#summary}} / {{Key#wanted}}). */
+export type AccusedStatus = 'नामजद' | 'प्रकाश में आया' | 'वांछित नहीं';
+export const ACCUSED_STATUS_OPTIONS: AccusedStatus[] = ['नामजद', 'प्रकाश में आया', 'वांछित नहीं'];
 
 // ─── Serialise / Deserialise helpers (exported for use in fill screens) ────────
 
@@ -308,6 +314,35 @@ const RelationPicker = memo(({ C, value, onSelect }: RelationPickerProps) => (
 ));
 RelationPicker.displayName = 'RelationPicker';
 
+const StatusPicker = memo(({ C, value, onSelect }: {
+  C: ReturnType<typeof useGroupTokens>;
+  value: AccusedStatus | undefined;
+  onSelect: (s: AccusedStatus) => void;
+}) => (
+  <View style={{ flexDirection: 'row', gap: 8 }}>
+    {ACCUSED_STATUS_OPTIONS.map((opt) => {
+      // Not chosen yet → "प्रकाश में आया" (same default the report uses).
+      const selected = (value || 'प्रकाश में आया') === opt;
+      return (
+        <Pressable
+          key={opt}
+          onPress={() => onSelect(opt)}
+          style={{
+            flex: 1, paddingVertical: 10, paddingHorizontal: 4, borderRadius: 10, borderWidth: 1.5, alignItems: 'center',
+            backgroundColor: selected ? C.selectedBg : C.bg,
+            borderColor: selected ? C.selectedBorder : C.border,
+          }}
+        >
+          <Text style={{ fontSize: 12.5, fontWeight: selected ? '600' : '400', color: selected ? C.selectedText : C.text, textAlign: 'center' }}>
+            {opt}
+          </Text>
+        </Pressable>
+      );
+    })}
+  </View>
+));
+StatusPicker.displayName = 'StatusPicker';
+
 // ─── Same-Address picker (mirrors PersonGroupInput) ───────────────────────────
 interface AddressPickerProps {
   C: ReturnType<typeof useGroupTokens>;
@@ -363,13 +398,15 @@ interface AccusedCardProps {
   allEntries: AccusedEntry[];
   genderLabels: [string, string, string];
   t: (key: string, opts?: Record<string, unknown>) => string;
+  /** Show the "स्थिति" (नामजद / प्रकाश में आया / वांछित नहीं) picker. */
+  showStatus?: boolean;
 }
 
 const AccusedCard = memo(({
   C, index, entry, collapsed, cardErrors, touched,
   onToggleCollapse, onChange, onBlur, onRemove, canRemove,
   onScanPress, isScanning, scanError, onDismissScanError,
-  allEntries, genderLabels, t,
+  allEntries, genderLabels, t, showStatus,
 }: AccusedCardProps) => {
   const priorEntries = allEntries.slice(0, index);
   const hasErr = hasCardErrors(cardErrors);
@@ -501,6 +538,12 @@ const AccusedCard = memo(({
               hasError={!!fieldErr('name')}
             />
           </FieldRow>
+
+          {showStatus ? (
+            <FieldRow C={C} label="स्थिति (मुकदमे में)">
+              <StatusPicker C={C} value={entry.status} onSelect={(st) => onChange(index, 'status', st)} />
+            </FieldRow>
+          ) : null}
 
           {/* relationType picker — sits above fatherOrHusbandName */}
           <FieldRow C={C} label={t('group.fields.relationType')}>
@@ -637,10 +680,12 @@ export interface AccusedGroupInputProps {
   onValidChange?: (keyName: string, isValid: boolean) => void;
   keyName: string;
   error?: string;
+  /** Format uses {{Key#summary}}: ask each accused's status (नामजद / प्रकाश में आया / वांछित नहीं). */
+  showStatus?: boolean;
 }
 
 export const AccusedGroupInput = memo(({
-  label, value, onChange, onValidChange, keyName, error,
+  label, value, onChange, onValidChange, keyName, error, showStatus,
 }: AccusedGroupInputProps) => {
   const C = useGroupTokens();
   const { t } = useTranslation();
@@ -913,6 +958,7 @@ export const AccusedGroupInput = memo(({
           allEntries={entries}
           genderLabels={genderLabels}
           t={t}
+          showStatus={showStatus}
         />
       ))}
 

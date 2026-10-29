@@ -264,6 +264,7 @@ export default function PPFillFormatScreen() {
                 key.field_type === 'accused_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
                     <AccusedGroupInput
+                      showStatus={format.vivran.includes(`{{${key.key_name}#`)}
                       keyName={key.key_name}
                       label={key.label || key.key_name}
                       value={values[key.key_name] ?? initAccusedGroup()}
