@@ -120,7 +120,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Text wrapper `src/lib/selectableText.tsx` (imported first in index.ts): selectable text app-wide (not inside
   Pressable/Touchables); on Android: textBreakStrategy forced to 'highQuality' unless numberOfLines=1 + explicit
   'simple' ('simple' splits a letter from its matra → "चकालस्ट", hidden 2nd line — build 21 regression), and
-  lineHeight ≥ 1.4×fontSize. Never use textBreakStrategy "simple" on text that can wrap.
+  Hindi text (Devanagari in children) gets lineHeight ≥ 1.5×fontSize (also when includeFontPadding is off);
+  maxFontSizeMultiplier 1.2 by default. Never use textBreakStrategy "simple" on text that can wrap.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

@@ -12,8 +12,11 @@
  * TextInputs already support select / copy / paste on their own.
  *
  * Android only: text that can wrap always uses textBreakStrategy "highQuality"
- * ("simple" splits a letter from its matra) and every Text gets a minimum line
- * height of 1.4 × fontSize, so Hindi lines and matras are not cut.
+ * ("simple" splits a letter from its matra); Hindi text gets a line height of
+ * at least 1.5 × fontSize (also when includeFontPadding is off), so the top
+ * matras (ि ी े ै ँ) and bottom ones (ु ू ृ ्र) are not cut; and the phone's
+ * font-size setting is capped at 1.2× so very large system fonts don't push
+ * text out of buttons, pills and headers.
  */
 import React, { createContext, forwardRef, useContext } from 'react';
 
@@ -38,9 +41,22 @@ function patch(name: string, make: (orig: React.ComponentType<AnyProps>) => unkn
 
 const IS_ANDROID = (rnModule.Platform as { OS?: string } | undefined)?.OS === 'android';
 const flatten = (rnModule.StyleSheet as { flatten: (s: unknown) => Record<string, unknown> | undefined }).flatten;
-/** Devanagari needs ~1.4× the font size per line, or matras (ि े ु ्र) get cut. */
-const MIN_LINE_RATIO = 1.35;
-const FIX_LINE_RATIO = 1.4;
+/** Devanagari needs ~1.5× the font size per line, or matras (ि े ु ्र) get cut. */
+const MIN_LINE_RATIO = 1.45;
+const FIX_LINE_RATIO = 1.5;
+/** Phone font size ("Display → Font size") is honoured up to this factor. */
+const MAX_FONT_SCALE = 1.2;
+const DEVANAGARI = /[\u0900-\u097F\uA8E0-\uA8FF]/;
+
+/** true when the text (or a nested Text) has Hindi letters; numbers / English stay as they are. */
+function hasDevanagari(children: unknown, depth = 0): boolean {
+  if (children == null || typeof children === 'boolean' || depth > 4) return false;
+  if (typeof children === 'string') return DEVANAGARI.test(children);
+  if (typeof children === 'number') return false;
+  if (Array.isArray(children)) return children.some((c) => hasDevanagari(c, depth + 1));
+  const props = (children as { props?: { children?: unknown } }).props;
+  return props ? hasDevanagari(props.children, depth + 1) : false;
+}
 
 patch('Text', (OrigText) => forwardRef<unknown, AnyProps>(function SelectableText(props, ref) {
   const noSelect = useContext(NoSelectContext);
@@ -56,14 +72,17 @@ patch('Text', (OrigText) => forwardRef<unknown, AnyProps>(function SelectableTex
   //    labels (pills), where it just trims the extra space;
   //  • a lineHeight too small for the font clips the top / bottom matras →
   //    raise it to 1.4 × fontSize.
+  //  • very large phone font sizes overflow fixed-height rows → cap the scale.
   let style = props.style;
-  if (style) {
+  if (style && hasDevanagari(props.children)) {
     const flat = flatten(style);
-    const fs = Number(flat?.fontSize);
+    const fs = Number(flat?.fontSize) || 14;
     const lh = Number(flat?.lineHeight);
-    if (fs > 0 && lh > 0 && lh < fs * MIN_LINE_RATIO) style = [style, { lineHeight: Math.ceil(fs * FIX_LINE_RATIO) }];
+    const tight = lh > 0 ? lh < fs * MIN_LINE_RATIO : flat?.includeFontPadding === false;
+    if (tight) style = [style, { lineHeight: Math.ceil(fs * FIX_LINE_RATIO) }];
   }
   return React.createElement(OrigText, {
+    maxFontSizeMultiplier: MAX_FONT_SCALE,
     ...props,
     style,
     textBreakStrategy: props.numberOfLines === 1 && props.textBreakStrategy === 'simple' ? 'simple' : 'highQuality',
