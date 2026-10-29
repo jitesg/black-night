@@ -97,3 +97,23 @@ test('{{if:Key|…}} / {{ifnot:Key|…}} (checkbox), inner tokens still work', (
   assert.equal(generateReport(T3, { first: one, Remand: '' }, keys), 'अतः 1.कैलाश पुत्र लल्लू को पाबन्द करें।');
   assert.equal(generateReport(T3, { first: one }, keys), 'अतः 1.कैलाश पुत्र लल्लू को पाबन्द करें।');
 });
+
+test('170 चालानी formats (7): fill + render, no token left; ubhay = 4 letters; रिमांड tick → bold line', async () => {
+  const P2 = (await import('../src/lib/printLayout.ts'));
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const fmts = d.formats.filter((f: { id: string }) => f.id.startsWith('sys-fmt-bnss170'));
+  assert.equal(fmts.length, 7);
+  const two = JSON.stringify([P('संगीता', 'रामदेव', '45'), P('रामू', 'रामदेव', '25')]);
+  for (const f of fmts) {
+    const v: Record<string, string> = {};
+    for (const k of f.keys) v[k.key_name] = k.field_type === 'person_group' ? two : (k.field_type === 'checkbox' ? 'हाँ' : 'क');
+    const marked = generateReport(f.vivran, v, f.keys, { keepMarkers: true });
+    assert.doesNotMatch(marked, /\{\{|\}\}/, f.id);
+    const html = P2.renderTextForPrint(marked);
+    assert.equal((html.match(/class="doc-letter"/g) ?? []).length, /ubhay|kshetra$/.test(f.id) ? 4 : 2, f.id);
+    assert.match(html, /<b>अतः श्रीमान से निवेदन है कि [^<]*14 दिवस का रिमांड/, f.id);
+    assert.match(html, /party-head">\( बनाम- /, f.id);
+    v.Remand = '';
+    assert.doesNotMatch(generateReport(f.vivran, v, f.keys), /रिमांड|\*\*/, f.id);
+  }
+});

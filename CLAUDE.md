@@ -95,6 +95,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   AccusedGroupInput shows the per-accused "स्थिति" picker only when the format text contains `{{Key#` (unset =
   प्रकाश में आया). Tests `scripts/test_accused_status.ts`. Used by format `sys-fmt-nyayik-abhiraksha`
   "आत्मसमर्पण प्रा0पत्र पर आख्या (न्यायिक अभिरक्षा)" (Nyayalay, seed_version 1).
+- 170/126/135 BNSS चालानी (गिरफ्तारी) — 7 formats `sys-fmt-bnss170-{mukadma,prv,prv-ubhay,prarthna,prarthna-ubhay,kshetra-ek,kshetra}`
+  (BNSS Karyavahi, seed_version 1; built from the owner's sample letters, words corrected). एकपक्षीय = 170 letter + 135(3);
+  उभयपक्षीय = 170 बनाम प्रथम पक्ष, 170 बनाम द्वितीय पक्ष, 135(3) × 2 (same body). Accused list `#block`, body `#inline` then
+  `#short` + "उपरोक्त", "( बनाम- … )" centred/bold/underlined, checkbox `Remand` → bold 14 दिवस रिमांड निवेदन in the 170
+  letter. Tests in `scripts/test_template_adi.ts`.
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
   `{{ifnot:Key|text}}` (templateEngine `_applyIfTokens`, Step -2, inner tokens allowed). `**…**` in a [[विवरण]] paragraph =
   bold words (print/editor/Word; editor <b> in body → ** on the way back; stripped in plain text). Used by the 170 चालानी
