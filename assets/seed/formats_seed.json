@@ -3763,6 +3763,103 @@
           "sort_order": 11
         }
       ]
+    },
+    {
+      "id": "sys-fmt-rto-dl-rc",
+      "title": "दुर्घटना — DL / RC की प्रमाणित प्रति हेतु पत्र (RTO)",
+      "format_type": "Any",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "दुर्घटना",
+        "DL",
+        "RC",
+        "RTO",
+        "पत्र"
+      ],
+      "last_updated": "2026-10-29",
+      "vivran": "{{any:Vehicles?needDL|[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\n{{Addressee}}\n[[विषय]] विषय – मु0अ0सं0 {{FIRNO}} धारा {{SECTION}} से सम्बन्धित {{count:Vehicles?needDL|वाहन चालक {{each:Vehicles?needDL|{driver}{ पुत्र ~father}{ निवासी ~address} के ड्राइविंग लाइसेंस {dl}}} की {{Copies}} प्रमाणित छायाप्रति|वाहन चालकों के ड्राइविंग लाइसेंस की {{Copies}}-{{Copies}} प्रमाणित छायाप्रति}} उपलब्ध कराने विषयक।\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि थाना {{PoliceStation}} जनपद {{District}} पर पंजीकृत मु0अ0सं0 {{FIRNO}} धारा {{SECTION}} की विवेचना मुझ {{pad}} द्वारा सम्पादित की जा रही है। {{count:Vehicles?needDL|विवेचना से मुकदमा उपरोक्त से सम्बन्धित {{each:Vehicles?needDL|{role} वाहन {vtype} नं0 {vno} के चालक {driver}{ पुत्र ~father}{ निवासी ~address}}} का नाम प्रकाश में आया है। विवेचना के क्रम में वाहन चालक उपरोक्त के ड्राइविंग लाइसेंस {{each:Vehicles?needDL|{dl}}} की {{Copies}} प्रमाणित छायाप्रति की आवश्यकता है।\n\nअतः महोदय से निवेदन है कि उक्त वाहन चालक के ड्राइविंग लाइसेंस की {{Copies}} प्रमाणित छायाप्रति उपलब्ध कराने की कृपा करें।|विवेचना से मुकदमा उपरोक्त से सम्बन्धित निम्नलिखित वाहन चालकों के नाम प्रकाश में आये हैं –\n\n[[सूची]] {{each:Vehicles?needDL|{#}.{role} वाहन {vtype} नं0 {vno} का चालक {driver}{ पुत्र ~father}{ निवासी ~address} – ड्राइविंग लाइसेंस संख्या {dl}|\\n}}\n\n[[विवरण]] विवेचना के क्रम में उपरोक्त वाहन चालकों के ड्राइविंग लाइसेंस की {{Copies}}-{{Copies}} प्रमाणित छायाप्रति की आवश्यकता है।\n\nअतः महोदय से निवेदन है कि उक्त वाहन चालकों के ड्राइविंग लाइसेंस की {{Copies}}-{{Copies}} प्रमाणित छायाप्रति उपलब्ध कराने की कृपा करें।}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}} जनपद {{District}}\n}}{{any:Vehicles?needRC|[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\n{{Addressee}}\n[[विषय]] विषय – मु0अ0सं0 {{FIRNO}} धारा {{SECTION}} से सम्बन्धित {{count:Vehicles?needRC|वाहन {{each:Vehicles?needRC|{vtype} नं0 {vno}}} के रजिस्ट्रेशन सर्टिफिकेट की {{Copies}} प्रमाणित छायाप्रति|वाहनों के रजिस्ट्रेशन सर्टिफिकेट की {{Copies}}-{{Copies}} प्रमाणित छायाप्रति}} उपलब्ध कराने विषयक।\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि थाना {{PoliceStation}} जनपद {{District}} पर पंजीकृत मु0अ0सं0 {{FIRNO}} धारा {{SECTION}} की विवेचना मुझ {{pad}} द्वारा सम्पादित की जा रही है। {{count:Vehicles?needRC|विवेचना के क्रम में {{each:Vehicles?needRC|{role} वाहन {vtype} नं0 {vno}}} के रजिस्ट्रेशन सर्टिफिकेट की {{Copies}} प्रमाणित छायाप्रति की आवश्यकता है।\n\nअतः महोदय से निवेदन है कि उक्त वाहन के रजिस्ट्रेशन सर्टिफिकेट की {{Copies}} प्रमाणित छायाप्रति उपलब्ध कराने की कृपा करें।|विवेचना के क्रम में मुकदमा उपरोक्त से सम्बन्धित निम्नलिखित वाहनों के रजिस्ट्रेशन सर्टिफिकेट की {{Copies}}-{{Copies}} प्रमाणित छायाप्रति की आवश्यकता है –\n\n[[सूची]] {{each:Vehicles?needRC|{#}.{role} वाहन {vtype} नं0 {vno}|\\n}}\n\n[[विवरण]] अतः महोदय से निवेदन है कि उक्त वाहनों के रजिस्ट्रेशन सर्टिफिकेट की {{Copies}}-{{Copies}} प्रमाणित छायाप्रति उपलब्ध कराने की कृपा करें।}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}} जनपद {{District}}\n}}",
+      "keys": [
+        {
+          "key_name": "Addressee",
+          "label": "किसको (सेवा में के नीचे की लाइनें)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "प्रभारी संभागीय परिवहन अधिकारी महोदय,\nजनपद लखनऊ, उत्तर प्रदेश।",
+          "sort_order": 0
+        },
+        {
+          "key_name": "FIRNO",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 1
+        },
+        {
+          "key_name": "SECTION",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "281/125(b) BNS",
+          "sort_order": 2
+        },
+        {
+          "key_name": "Copies",
+          "label": "कितनी प्रमाणित प्रतियाँ",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "02",
+          "sort_order": 3
+        },
+        {
+          "key_name": "Vehicles",
+          "label": "वाहन व उनके चालक",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"वाहन की भूमिका\", \"type\": \"choice\", \"options\": [\"दुर्घटनाकारक\", \"दुर्घटनाग्रस्त\"], \"default\": \"दुर्घटनाकारक\"}, {\"key\": \"vtype\", \"label\": \"वाहन का प्रकार (जैसे: ट्रैक्टर, मोटरसाइकिल)\"}, {\"key\": \"vno\", \"label\": \"वाहन नंबर\"}, {\"key\": \"driver\", \"label\": \"चालक का नाम\"}, {\"key\": \"father\", \"label\": \"चालक के पिता का नाम\"}, {\"key\": \"address\", \"label\": \"चालक का पता\"}, {\"key\": \"dl\", \"label\": \"ड्राइविंग लाइसेंस नंबर\"}, {\"key\": \"needDL\", \"label\": \"इस चालक के DL की प्रति माँगनी है\", \"type\": \"check\", \"default\": \"हाँ\"}, {\"key\": \"needRC\", \"label\": \"इस वाहन की RC की प्रति माँगनी है\", \"type\": \"check\", \"default\": \"हाँ\"}], \"addLabel\": \"+ और वाहन जोड़ें\"}",
+          "sort_order": 4
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 5
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 6
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 7
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 8
+        }
+      ]
     }
   ]
 }

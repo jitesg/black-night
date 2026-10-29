@@ -47,6 +47,21 @@ export function validateRequiredFields(
       continue;
     }
 
+    // item_group: at least one row with something typed (tick columns don't count)
+    if (key.field_type === 'item_group') {
+      let filled = false;
+      try {
+        const arr = JSON.parse(values[key.key_name] ?? '[]');
+        filled = Array.isArray(arr) && arr.some((r: Record<string, unknown>) =>
+          Object.entries(r ?? {}).some(([k, v]) => !/^(need|is)/.test(k) && typeof v === 'string' && v.trim() && k !== 'role'));
+      } catch { /* invalid */ }
+      if (!filled) {
+        fieldErrors[key.key_name] = `${key.label || key.key_name}: कम से कम एक भरें`;
+        if (!firstErrorKey) firstErrorKey = key.key_name;
+      }
+      continue;
+    }
+
     if (!values[key.key_name]?.trim()) {
       fieldErrors[key.key_name] = `${key.label || key.key_name} is required`;
       if (!firstErrorKey) firstErrorKey = key.key_name;

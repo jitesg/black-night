@@ -165,3 +165,23 @@ test('item lists: {{each:}} / {{count:}} / {{any:}} with a tick filter, {#}, {te
   assert.equal(generateReport(T4, { V: rows }, []), 'चालक अमित पुत्र प्रेम (DL1)|1.दुर्घटनाकारक UP33CH3835 पुत्र प्रेम\n2.दुर्घटनाग्रस्त UP33AB1234|DL पत्र');
   assert.equal(generateReport('{{any:V|क}}{{count:V|1|2}}', { V: '' }, []), '');
 });
+
+test('DL / RC पत्र (RTO): 1 vehicle → owner wording; 2 → lists; unticked → that letter skipped', async () => {
+  const P2 = (await import('../src/lib/printLayout.ts'));
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-rto-dl-rc');
+  const A = { role: 'दुर्घटनाकारक', vtype: 'ट्रैक्टर', vno: 'UP33CH3835', driver: 'अमित', father: 'प्रेम', address: 'लोदीपुर', dl: 'UP33DL1', needDL: 'हाँ', needRC: 'हाँ' };
+  const B = { ...A, role: 'दुर्घटनाग्रस्त', vtype: 'मोटरसाइकिल', vno: 'UP33AB1234', driver: 'रामू', dl: 'UP33DL2' };
+  const base = { Addressee: 'प्रभारी', FIRNO: '331/25', SECTION: '281 BNS', Copies: '02', pad: 'उपनिरीक्षक', OfficerName: 'क', PoliceStation: 'ख', District: 'ग' };
+  const render = (rows: object[]) => P2.renderTextForPrint(generateReport(f.vivran, { ...base, Vehicles: JSON.stringify(rows) }, f.keys, { keepMarkers: true }));
+  const one = render([A]);
+  assert.equal((one.match(/class="doc-letter"/g) ?? []).length, 2);
+  assert.match(one, /वाहन चालक अमित पुत्र प्रेम निवासी लोदीपुर के ड्राइविंग लाइसेंस UP33DL1 की 02 प्रमाणित छायाप्रति उपलब्ध कराने विषयक/);
+  assert.doesNotMatch(one, /\{|\}/);
+  const two = render([A, B]);
+  assert.match(two, /doc-line">2\.दुर्घटनाग्रस्त वाहन मोटरसाइकिल नं0 UP33AB1234 का चालक रामू/);
+  assert.match(two, /02-02 प्रमाणित छायाप्रति/);
+  const rcOnly = render([{ ...A, needDL: '' }]);
+  assert.equal((rcOnly.match(/class="doc-letter"/g) ?? []).length, 1);
+  assert.match(rcOnly, /रजिस्ट्रेशन सर्टिफिकेट/);
+});

@@ -104,6 +104,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   para), closing, optional संलग्नक / दिनांक via `{{if:…}}`, signature right.
 - `sys-fmt-vahan-flag` "चोरी वाहन को पोर्टल पर फ्लैग कराने हेतु पत्र (RTO)" (type Any; संलग्नक आर0सी0 + FIR copies).
 - `sys-fmt-pp-fir-sanstuti` "प्रार्थना पत्र जांच — मुकदमा पंजीकृत करने की संस्तुति" (type Prarthna Patra).
+- Field type "item_group" = rows with format-defined columns (`src/components/ui/ItemGroupInput.tsx`, config in key
+  dropdown_options `{"columns":[{key,label,type:text|choice|check,options,default}],"addLabel"}`; validation: one row typed).
+  Template tokens `{{each:Key?flag|row|sep}}` ({#}, {col}, {text~col}), `{{count:Key?flag|one|many}}`, `{{any:Key?flag|text}}`
+  (`_applyItemTokens`, Step -3). Used by `sys-fmt-rto-dl-rc` "दुर्घटना — DL / RC की प्रमाणित प्रति हेतु पत्र (RTO)" (vehicles:
+  भूमिका दुर्घटनाकारक/दुर्घटनाग्रस्त, driver, DL, ticks needDL/needRC → DL letter and/or RC letter; 1 row = owner wording).
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
   `{{ifnot:Key|text}}` (templateEngine `_applyIfTokens`, Step -2, inner tokens allowed). `**…**` in a [[विवरण]] paragraph =
   bold words (print/editor/Word; editor <b> in body → ** on the way back; stripped in plain text). Used by the 170 चालानी

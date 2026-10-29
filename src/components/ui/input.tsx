@@ -33,6 +33,7 @@ import { useColorScheme } from 'nativewind';
 import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
 import { DatePickerModal, dateStrToObj } from '@/components/common/DatePickerModal';
+import { ItemGroupInput, parseItemGroupConfig } from './ItemGroupInput';
 
 // ─── Input Type Definitions ───────────────────────────────────────────────────
 
@@ -537,6 +538,22 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
           error={error}
           displayLabel={displayLabel}
           required={required}
+        />
+      );
+    }
+
+    // ── Item list (rows with format-defined columns, e.g. vehicles + drivers) ──
+    if (fieldType === 'item_group') {
+      return (
+        <ItemGroupInput
+          ref={ref}
+          keyName={keyDef.key_name}
+          config={parseItemGroupConfig(keyDef.dropdown_options)}
+          value={value}
+          onChange={onChange}
+          displayLabel={displayLabel}
+          required={required}
+          error={error}
         />
       );
     }
