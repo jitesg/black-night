@@ -142,3 +142,15 @@ test('चोरी वाहन फ्लैग पत्र: all fields filled,
   assert.equal((html.match(/UP33 AB 1234/g) ?? []).length, 3);
   assert.match(html, /class="att">1\. आर0सी0 की छायाप्रति - क वर्क/);
 });
+
+test('प्रार्थना पत्र जांच — मुकदमा पंजीकृत करने की संस्तुति: fills, 2 paras, attachments numbered', async () => {
+  const P2 = (await import('../src/lib/printLayout.ts'));
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-pp-fir-sanstuti');
+  const v: Record<string, string> = {};
+  for (const k of f.keys) v[k.key_name] = k.default_value && !k.default_value.startsWith('__') ? k.default_value : 'क';
+  const html = P2.renderTextForPrint(generateReport(f.vivran, v, f.keys, { keepMarkers: true }));
+  assert.doesNotMatch(html, /\{\{/);
+  assert.match(html, /class="att">3\. जांच में एकत्रित साक्ष्य/);
+  assert.match(html, /<p>अतः मामले की गंभीरता/);
+});

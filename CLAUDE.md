@@ -103,6 +103,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - `sys-fmt-samanya-patra` "सामान्य पत्र (किसी को भी)" (type Any): सेवा में (multiline), विषय, मज़मून (blank line = new
   para), closing, optional संलग्नक / दिनांक via `{{if:…}}`, signature right.
 - `sys-fmt-vahan-flag` "चोरी वाहन को पोर्टल पर फ्लैग कराने हेतु पत्र (RTO)" (type Any; संलग्नक आर0सी0 + FIR copies).
+- `sys-fmt-pp-fir-sanstuti` "प्रार्थना पत्र जांच — मुकदमा पंजीकृत करने की संस्तुति" (type Prarthna Patra).
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
   `{{ifnot:Key|text}}` (templateEngine `_applyIfTokens`, Step -2, inner tokens allowed). `**…**` in a [[विवरण]] paragraph =
   bold words (print/editor/Word; editor <b> in body → ** on the way back; stripped in plain text). Used by the 170 चालानी
