@@ -70,7 +70,9 @@ export function splitClosing(closing: string): { closing: string; signature: str
 
 /** "प्रथम पक्ष" / "द्वितीय पक्ष" (owner's spelling "द्वित्तीय" too) on a line of its own → centred heading. */
 export function isPartyHeading(line: string): boolean {
-  return /^(प्रथम|द्वि\S*य|तृतीय)\s*पक्ष\s*[:\-–]?\s*$/.test(String(line ?? '').trim());
+  const t = String(line ?? '').trim();
+  // "प्रथम पक्ष" alone, or "( बनाम- एकपक्षीय )" / "( बनाम- प्रथम पक्ष )" (170 BNSS चालानी)
+  return /^(प्रथम|द्वि\S*य|तृतीय)\s*पक्ष\s*[:\-–]?\s*$/.test(t) || /^\(\s*बनाम\s*[:\-–]?\s*[^()]+\)$/.test(t);
 }
 
 /** A real heading is one short line; a long first line (e.g. a फर्द note) is body text. */

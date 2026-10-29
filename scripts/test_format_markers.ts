@@ -125,3 +125,14 @@ test('[[सूची]]: lines stay separate, left, no indent; gap after a right 
   const back = P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m])));
   assert.equal(back, html);
 });
+
+test('party headings: प्रथम पक्ष alone and "( बनाम- एकपक्षीय )" are centred, bold, underlined', () => {
+  assert.equal(P.isPartyHeading('प्रथम पक्ष'), true);
+  assert.equal(P.isPartyHeading('( बनाम- एकपक्षीय )'), true);
+  assert.equal(P.isPartyHeading('( बनाम- द्वितीय पक्ष  )'), true);
+  assert.equal(P.isPartyHeading('राज्य द्वारा- उ0नि0 जीतेश सिंह'), false);
+  const t = '[[पत्र]]\n[[शीर्षक]] रिपोर्ट\n[[सेवा में]] सेवा में,\nश्रीमान\n[[पक्ष]] राज्य द्वारा- उ0नि0 क\n( बनाम- एकपक्षीय )\n1.राम\n[[महोदय]] महोदय,\n[[विवरण]] क';
+  assert.match(P.renderTextForPrint(t), /<p class="party-head">\( बनाम- एकपक्षीय \)<\/p>/);
+  const ed = E.renderModelsForEditor([E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0])]);
+  assert.match(ed, /text-align:center;"><b><u>\( बनाम- एकपक्षीय \)<\/u><\/b>/);
+});
