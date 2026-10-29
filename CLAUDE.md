@@ -81,6 +81,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   "सिपाही के लिए बीट सूचना"; originals in
   `docs/format-backups/bnss126_before_marks.json`). Owner approves each batch with an A4 preview. Tests
   `scripts/test_format_markers.ts`.
+- Person/accused groups (`templateEngine.generateReport`): ONE person → no "आदि" right after `{{g.1.name}}`
+  (`_dropAdiForSingleEntry`, Step 0.5) and address word "निवासी" (not नि0/नि0गण); 2+ people unchanged (numbering 1. 2.,
+  नि0गण). Tests `scripts/test_template_adi.ts`.
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,
   0.5in margins, marks/data-fmt honoured; `exportReportToDocx` → share sheet). निरोधात्मक: card long-press menu + editor
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.

@@ -205,7 +205,8 @@ function _buildGroupProse(
       tokens.push(`${s((e as AccusedEntry).caughtBy)} द्वारा पकड़ा गया`);
 
     const addrVal = addrOf(e);
-    if (addrVal) tokens.push(`नि0 ${addrVal}`);
+    // One person → "निवासी" (owner's rule; "नि0गण" is only for several people).
+    if (addrVal) tokens.push(`निवासी ${addrVal}`);
 
     return tokens.join(' ');
   }
@@ -250,7 +251,7 @@ function _buildGroupProse(
  * Delegates entirely to _buildGroupProse (shared with renderPersonGroup)
  * so both code paths use the same field-renderer logic.
  *
- * SINGULAR:  "अभियुक्त/अभियुक्ता {name} {connector} {father} उम्र करीब {age} वर्ष … नि0 {addr}"
+ * SINGULAR:  "अभियुक्त/अभियुक्ता {name} {connector} {father} उम्र करीब {age} वर्ष … निवासी {addr}"
  * PLURAL:    "अभियुक्तगण 1.{name} {connector} {father} … 2.… [नि0गण sharedAddr]"
  *   connector = relationType if set (पुत्र/पुत्री/पत्नी), else gender-inferred fallback.
  */
@@ -267,7 +268,7 @@ export function renderAccusedGroup(jsonStr: string): string {
  * Delegates entirely to _buildGroupProse (shared with renderAccusedGroup)
  * so both code paths use the same field-renderer logic.
  *
- * SINGULAR:  "{name} {connector} {fatherOrHusbandName}, उम्र करीब {age} वर्ष, नि0 {fullAddress}"
+ * SINGULAR:  "{name} {connector} {fatherOrHusbandName} उम्र करीब {age} वर्ष निवासी {fullAddress}"
  * PLURAL:    "1.{name} {connector} {father} उम्र करीब {age} वर्ष 2.… [नि0गण sharedAddr]"
  *   connector = relationType if set (पुत्र/पुत्री/पत्नी), else gender-inferred fallback.
  *
@@ -437,7 +438,8 @@ function _resolveProjection(
     }
   }
 
-  const prefixes = _addrPrefix(groupType);
+  // One person → "निवासी" (never the plural "नि0गण").
+  const prefixes = selected.length === 1 ? { shared: 'निवासी', inline: 'निवासी' } : _addrPrefix(groupType);
 
   const parts = selected.map((e) => {
     const tokens: string[] = [];
@@ -531,6 +533,32 @@ function _applyFieldProjection(
 // Out-of-bounds index → '' + DEV warning (no crash, no placeholder left).
 
 const INDEXED_ACCESS_RE = /\{\{([A-Za-z0-9_]+)\.(\d+)\.([A-Za-z0-9_]+)\}\}/g;
+
+/**
+ * "{{group.1.name}} आदि" when the group has only ONE person → drop "आदि"
+ * ("बनाम संगीता आदि" → "बनाम संगीता"). Two or more people keep it. Runs before
+ * _applyIndexedFieldAccess. Only touches "आदि" right after the first person's name.
+ * Tests: scripts/test_template_adi.ts
+ */
+const ADI_AFTER_FIRST_NAME_RE = /\{\{([A-Za-z0-9_]+)\.1\.name\}\}\s*आदि/g;
+
+function _dropAdiForSingleEntry(
+  template: string,
+  values: Record<string, string>,
+  keyDefs: KeyDefForRender[],
+): string {
+  const typeMap = new Map<string, string>();
+  for (const kd of keyDefs) typeMap.set(kd.key_name, kd.field_type);
+  return template.replace(ADI_AFTER_FIRST_NAME_RE, (match, groupKey: string) => {
+    if (!REPEATABLE_GROUP_TYPES.has(typeMap.get(groupKey) ?? '')) return match;
+    let named = 0;
+    try {
+      named = _parseGroupEntries<{ name?: string }>(values[groupKey] ?? '')
+        .filter((e) => String(e?.name ?? '').trim()).length;
+    } catch { return match; }
+    return named === 1 ? `{{${groupKey}.1.name}}` : match;
+  });
+}
 
 function _applyIndexedFieldAccess(
   template: string,
@@ -701,6 +729,7 @@ export function generateReport(
   let processed = template;
   if (keyDefs && keyDefs.length > 0) {
     processed = _applyFieldProjection(processed, values, keyDefs);        // Step 0
+    processed = _dropAdiForSingleEntry(processed, values, keyDefs);       // Step 0.5 (1 person → no "आदि")
     processed = _applyIndexedFieldAccess(processed, values, keyDefs);     // Step 1
     processed = _applyDropdownConditional(processed, values, keyDefs);    // Step 2 (NEW)
     processed = _applyGroupAgreementText(processed, values, keyDefs);     // Step 3
