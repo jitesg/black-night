@@ -550,7 +550,8 @@ export function isTicked(v: string | undefined | null): boolean {
 /**
  * Item lists (field type "item_group": JSON array of row objects, e.g. vehicles with their drivers).
  *   {{each:Key?flag|row|sep}}  → one "row" per item (only items whose column `flag` is ticked, if given);
- *                               in "row": {#} = 1, 2, 3 …, {col} = the column, {text~col} = "text"+value only when filled;
+ *                               in "row": {#} = 1, 2, 3 …, {col} = the column, {text~col} / {text~col~after} = with the
+ *                               words around it, only when the column is filled;
  *                               sep defaults to " ", "\n" = new line.
  *   {{count:Key?flag|one|many}} → "one" for a single item, "many" for 2+, nothing for none.
  *   {{any:Key?flag|text}}       → text when at least one item matches.
@@ -610,9 +611,9 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
       const row = parts[0] ?? '';
       const sep = (parts[1] ?? ' ').replace(/\\n/g, '\n');
       rep = rows.map((r, n) => row
-        .replace(/\{([^{}~]*)~([A-Za-z0-9_]+)\}/g, (_x, pre: string, col: string) => {
+        .replace(/\{([^{}~]*)~([A-Za-z0-9_]+)(?:~([^{}~]*))?\}/g, (_x, pre: string, col: string, post?: string) => {
           const v = String(r[col] ?? '').trim();
-          return v ? `${pre}${v}` : '';
+          return v ? `${pre}${v}${post ?? ''}` : '';
         })
         .replace(/\{(#|[A-Za-z0-9_]+)\}/g, (_x, col: string) => (col === '#' ? String(n + 1) : String(r[col] ?? '').trim()))
         .replace(/ {2,}/g, ' ')).join(sep);
@@ -682,6 +683,7 @@ function _applyIfTokens(template: string, values: Record<string, string>): strin
  *   {{Key#num}}           → the usual prose ({{Key}}), but one person also gets "1." (126/135 formats)
  *   All of these number a single person "1." too (owner's choice for 126/135 and 170).
  *   {{Key#count}}         → number of people in words (एक, दो, तीन …)
+ *   {{Key#cnt}}           → number of people as two digits (01, 03 …)
  *   {{Key#n|one|many}}    → "one" for a single person, "many" for 2+ (e.g. अभियुक्त|अभियुक्तगण, सकता था|सकते थे)
  * Tests: scripts/test_accused_status.ts
  */
@@ -781,6 +783,9 @@ function _applyGroupStatus(template: string, values: Record<string, string>, key
   const count = (k: string) => _parseGroupEntries<StatusEntry>(values[k] ?? '').filter((e) => String(e?.name ?? '').trim()).length;
   out = out.replace(/\{\{([A-Za-z0-9_]+)#count\}\}/g, (match, key: string) =>
     (isGroup(key) ? (COUNT_WORDS[count(key)] ?? String(count(key))) : match));
+  // {{Key#cnt}} → "01", "03" (GD: "01 नफर अभियुक्त")
+  out = out.replace(/\{\{([A-Za-z0-9_]+)#cnt\}\}/g, (match, key: string) =>
+    (isGroup(key) ? String(count(key)).padStart(2, '0') : match));
   out = out.replace(/\{\{([A-Za-z0-9_]+)#n\|([^|{}]*)\|([^{}]*)\}\}/g, (match, key: string, one: string, many: string) =>
     (isGroup(key) ? (count(key) > 1 ? many : one) : match));
 

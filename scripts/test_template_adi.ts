@@ -235,3 +235,9 @@ test('तस्करा (one format): every stage × reason fills with no token
     }
   }
 });
+
+test('{{Key#cnt}} two digits; {text~col~after} in item rows', () => {
+  const two = JSON.stringify([P('संगीता', 'रामदेव', '45'), P('रामू', 'रामदेव', '25')]);
+  assert.equal(generateReport('{{first#cnt}} नफर', { first: two }, keys), '02 नफर');
+  assert.equal(generateReport('{{each:H|{who}{ उम्र करीब ~age~ वर्ष}|, }}', { H: JSON.stringify([{ who: 'क', age: '20' }, { who: 'ख', age: '' }]) }, []), 'क उम्र करीब 20 वर्ष, ख');
+});
