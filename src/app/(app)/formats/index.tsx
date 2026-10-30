@@ -495,7 +495,7 @@ export default function FormatsScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 12, paddingBottom: 32 }}
         >
-          <Text style={{ fontSize: 14, lineHeight: 24, color: '#374151' }}>
+          <Text style={{ fontSize: 14, lineHeight: 24, color: palette.foreground }}>
             {stripFormatMarkers(stripHtmlTags(previewFormat?.vivran ?? '')).replace(/\{\{.*?\}\}/g, '....')}
           </Text>
         </ScrollView>
