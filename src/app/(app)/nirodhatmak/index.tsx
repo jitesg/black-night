@@ -1,17 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, BackHandler, FlatList, Platform, Pressable, ScrollView,
+  ActivityIndicator, BackHandler, Dimensions, FlatList, Modal, Platform, Pressable, ScrollView,
   Text, View,
 } from 'react-native';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import { router, useFocusEffect } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   FileWarning, Plus, Filter, ChevronDown,
-  Edit2, Trash2, MapPin, Calendar, X, FileDown, Check, Clock, MoreVertical, CheckCheck,
+  Edit2, Trash2, MapPin, Calendar, FileDown, Check, Clock, MoreVertical, CheckCheck,
 } from 'lucide-react-native';
 import { exportKaryvahiDocx, exportKaryvahisDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
@@ -48,11 +49,15 @@ const NIRODHATMAK_TYPE_KEYS: Record<string, string> = {
   'अन्य':         'other',
 };
 
-// ─── Action Menu ──────────────────────────────────────────────────────────
+// ─── Action Menu (small floating popup next to the ⋮ button) ─────────────
+type MenuAnchor = { x: number; y: number; w: number; h: number };
+const MENU_W = 196;
+const MENU_ROW_H = 44;
+
 function ActionMenu({
-  item, onEdit, onExport, onDelete, onClose, scheme,
+  anchor, onEdit, onExport, onDelete, onClose, scheme,
 }: {
-  item: NirodhatmakKaryvahi;
+  anchor: MenuAnchor;
   onEdit: () => void;
   onExport: () => void;
   onDelete: () => void;
@@ -61,46 +66,39 @@ function ActionMenu({
 }) {
   const { t } = useTranslation();
   const palette = THEME[scheme];
-  const typeDisplay = item.proceeding_type
-    ? (NIRODHATMAK_TYPE_KEYS[item.proceeding_type] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type]) : item.proceeding_type)
-    : '';
-
-  return (
-    <View
-      className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm shadow-black/5"
-      style={{ borderCurve: 'continuous' }}
+  const { width: sw, height: sh } = Dimensions.get('window');
+  const menuH = MENU_ROW_H * 3 + 8;
+  // Right edge under the ⋮ button; opens upwards when there is no room below.
+  const left = Math.max(8, Math.min(anchor.x + anchor.w - MENU_W, sw - MENU_W - 8));
+  const below = anchor.y + anchor.h + 4;
+  const top = below + menuH > sh - NAV_BAR_INSET - 8 ? Math.max(8, anchor.y - menuH - 4) : below;
+  const row = (icon: React.ReactNode, label: string, onPress: () => void, danger = false) => (
+    <Pressable
+      onPress={onPress}
+      className="active:opacity-60"
+      style={{ height: MENU_ROW_H, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 14 }}
+      accessibilityRole="menuitem"
     >
-      <View className="px-4 py-3 border-b border-border flex-row items-center justify-between">
-        <View className="flex-1 gap-0.5" style={{ minWidth: 0 }}>
-          <Text className="text-sm font-semibold text-foreground" numberOfLines={1}>
-            {item.format_title || t('nirodhatmak.card.defaultTitle')}
-          </Text>
-          <Text className="text-xs text-muted-foreground">{typeDisplay}</Text>
-        </View>
-        {/* Close: 36×36dp + hitSlop 4 = 44dp touch target */}
-        <Pressable
-          onPress={onClose}
-          className="w-9 h-9 items-center justify-center active:opacity-70"
-          hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-          accessibilityRole="button"
-          accessibilityLabel={t('nirodhatmak.menu.closeAccessibility')}
+      {icon}
+      <Text style={{ fontSize: 14, color: danger ? palette.destructive : palette.foreground }}>{label}</Text>
+    </Pressable>
+  );
+  return (
+    <Modal transparent visible animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
+      <Pressable style={{ flex: 1 }} onPress={onClose} accessibilityLabel={t('nirodhatmak.menu.closeAccessibility')}>
+        <View
+          style={{
+            position: 'absolute', left, top, width: MENU_W, paddingVertical: 4, borderRadius: 12,
+            backgroundColor: palette.card, borderWidth: 1, borderColor: palette.border,
+            shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8,
+          }}
         >
-          <X size={16} color={palette.mutedForeground} />
-        </Pressable>
-      </View>
-      <Pressable onPress={onEdit} className="flex-row items-center gap-3 px-4 py-3 active:opacity-70 border-b border-border">
-        <Edit2 size={16} color={palette.foreground} />
-        <Text className="text-sm text-foreground">{t('common.edit')}</Text>
+          {row(<Edit2 size={16} color={palette.foreground} />, t('common.edit'), onEdit)}
+          {row(<FileDown size={16} color={palette.foreground} />, 'Word में export', onExport)}
+          {row(<Trash2 size={16} color={palette.destructive} />, t('common.delete'), onDelete, true)}
+        </View>
       </Pressable>
-      <Pressable onPress={onExport} className="flex-row items-center gap-3 px-4 py-3 active:opacity-70 border-b border-border">
-        <FileDown size={16} color={palette.foreground} />
-        <Text className="text-sm text-foreground">Word (.docx) में export करें</Text>
-      </Pressable>
-      <Pressable onPress={onDelete} className="flex-row items-center gap-3 px-4 py-3 active:opacity-70">
-        <Trash2 size={16} color={palette.destructive} />
-        <Text className="text-sm text-destructive">{t('common.delete')}</Text>
-      </Pressable>
-    </View>
+    </Modal>
   );
 }
 
@@ -148,8 +146,8 @@ const KaryvahiCard = memo(function KaryvahiCard({
   scheme: 'light' | 'dark';
   onPress: () => void;
   onLongPress: () => void;
-  /** ⋮ button: the संपादित / Word / हटाएं menu. */
-  onMenu: () => void;
+  /** ⋮ button: the संपादित / Word / हटाएं menu (gets the button's place on screen). */
+  onMenu: (anchor: MenuAnchor) => void;
   /** Selection mode (press-and-hold): show a tick circle instead of ⋮. */
   selecting?: boolean;
   selected?: boolean;
@@ -158,6 +156,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
   const c = CARD_COLORS[scheme];
   const isDark = scheme === 'dark';
   const dateStr = cardDate(item);
+  const menuBtnRef = useRef<View>(null);
   const facts = useMemo(
     () => extractKaryvahiFacts(item.editor_content || item.report_text || ''),
     [item.editor_content, item.report_text],
@@ -229,7 +228,8 @@ const KaryvahiCard = memo(function KaryvahiCard({
           </View>
         ) : (
           <Pressable
-            onPress={onMenu}
+            ref={menuBtnRef}
+            onPress={() => menuBtnRef.current?.measureInWindow((x, y, w, h) => onMenu({ x, y, w, h }))}
             hitSlop={10}
             accessibilityRole="button"
             accessibilityLabel="और विकल्प"
@@ -360,7 +360,7 @@ export default function NirodhatmakHomeScreen() {
   const clearSelection = useCallback(() => setSelectedIds(new Set()), []);
   const selectedIdsRef = useRef(selectedIds);
   selectedIdsRef.current = selectedIds;
-  const [longPressTarget, setLongPressTarget] = useState<NirodhatmakKaryvahi | null>(null);
+  const [longPressTarget, setLongPressTarget] = useState<{ item: NirodhatmakKaryvahi; anchor: MenuAnchor } | null>(null);
 
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -455,30 +455,28 @@ export default function NirodhatmakHomeScreen() {
           router.push(`/(app)/nirodhatmak/add-proceeding?editId=${item.id}` as never);
         }}
         onLongPress={() => { setLongPressTarget(null); toggleSelected(item.id); }}
-        onMenu={() => setLongPressTarget((prev) => (prev?.id === item.id ? null : item))}
+        onMenu={(anchor) => setLongPressTarget({ item, anchor })}
       />
-      {longPressTarget?.id === item.id && (
-        <View className="mt-2">
-          <ActionMenu
-            item={item}
-            scheme={scheme}
-            onEdit={() => {
-              setLongPressTarget(null);
-              router.push(`/(app)/nirodhatmak/add-proceeding?editId=${item.id}` as never);
-            }}
-            onExport={() => { setLongPressTarget(null); exportKaryvahiDocx(item); }}
-            onDelete={() => { setLongPressTarget(null); setDeleteTarget(item); }}
-            onClose={() => setLongPressTarget(null)}
-          />
-        </View>
-      )}
     </View>
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  ), [query, longPressTarget, scheme, selecting, selectedIds, toggleSelected]);
+  ), [query, scheme, selecting, selectedIds, toggleSelected]);
 
   return (
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      {longPressTarget ? (
+        <ActionMenu
+          anchor={longPressTarget.anchor}
+          scheme={scheme}
+          onEdit={() => {
+            const id = longPressTarget.item.id;
+            setLongPressTarget(null);
+            router.push(`/(app)/nirodhatmak/add-proceeding?editId=${id}` as never);
+          }}
+          onExport={() => { const it = longPressTarget.item; setLongPressTarget(null); exportKaryvahiDocx(it); }}
+          onDelete={() => { const it = longPressTarget.item; setLongPressTarget(null); setDeleteTarget(it); }}
+          onClose={() => setLongPressTarget(null)}
+        />
+      ) : null}
       {selecting ? (
         <AppHeader
           title={`${selectedIds.size} चुनी गईं`}
