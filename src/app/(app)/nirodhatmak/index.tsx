@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, memo } from '
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, BackHandler, Dimensions, FlatList, Modal, Platform, Pressable, ScrollView,
+  ActivityIndicator, BackHandler, Dimensions, FlatList, LayoutAnimation, Modal, Platform, Pressable, ScrollView,
   Text, View,
 } from 'react-native';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
@@ -12,7 +12,7 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   FileWarning, Plus, Filter, ChevronDown,
-  Edit2, Trash2, MapPin, Calendar, FileDown, Check, Clock, MoreVertical, CheckCheck,
+  Edit2, Trash2, MapPin, Calendar, FileDown, Check, Clock, MoreVertical, CheckCheck, ChevronUp,
 } from 'lucide-react-native';
 import { exportKaryvahiDocx, exportKaryvahisDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
@@ -290,17 +290,44 @@ function KaryvahiChecklistRows({ itemId, json, scheme }: { itemId: string; json?
   };
 
   const amber = scheme === 'dark' ? '#FBBF24' : '#B45309';
+  // Ticks stay hidden until the "चेकलिस्ट n/3" button is pressed (closed again on every visit).
+  const [open, setOpen] = useState(false);
+  const done = KARYVAHI_CHECKLIST.filter((r) => ticks[r.key]).length;
+  const all = done === KARYVAHI_CHECKLIST.length;
+  const btnColor = all ? green : c.muted;
+  const toggleOpen = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setOpen((o) => !o);
+  };
   return (
     <View style={{ marginTop: 14, gap: 2 }}>
-      {!ticks.prashit ? (
-        // Pending until "चलानी प्रेषित की जा चुकी है" is ticked (also in सूचनाएँ + daily 9 AM alert).
-        <View style={{ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4,
-          paddingHorizontal: 10, paddingVertical: 3, borderRadius: 999, backgroundColor: `${amber}1F`, borderWidth: 1, borderColor: `${amber}55` }}>
-          <Clock size={12} color={amber} />
-          <Text style={{ fontSize: 12, fontWeight: '700', color: amber }}>चलानी प्रेषण लंबित</Text>
-        </View>
-      ) : null}
-      {KARYVAHI_CHECKLIST.map((row) => {
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+        {!ticks.prashit ? (
+          // Pending until "चलानी प्रेषित की जा चुकी है" is ticked (also in सूचनाएँ + daily 9 AM alert).
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6,
+            paddingHorizontal: 10, paddingVertical: 3, borderRadius: 999, backgroundColor: `${amber}1F`, borderWidth: 1, borderColor: `${amber}55` }}>
+            <Clock size={12} color={amber} />
+            <Text style={{ fontSize: 12, fontWeight: '700', color: amber }}>चलानी प्रेषण लंबित</Text>
+          </View>
+        ) : <View />}
+        <Pressable
+          onPress={toggleOpen}
+          hitSlop={6}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: open }}
+          accessibilityLabel={`चेकलिस्ट ${done}/${KARYVAHI_CHECKLIST.length}`}
+          className="active:opacity-60"
+          style={{
+            flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999,
+            borderWidth: 1, borderColor: all ? `${green}66` : c.border, backgroundColor: all ? `${green}14` : 'transparent',
+          }}
+        >
+          {all ? <Check size={13} color={green} strokeWidth={3} /> : null}
+          <Text style={{ fontSize: 12.5, fontWeight: '700', color: btnColor }}>चेकलिस्ट {done}/{KARYVAHI_CHECKLIST.length}</Text>
+          {open ? <ChevronUp size={15} color={btnColor} /> : <ChevronDown size={15} color={btnColor} />}
+        </Pressable>
+      </View>
+      {open && KARYVAHI_CHECKLIST.map((row) => {
         const on = !!ticks[row.key];
         return (
           <Pressable
