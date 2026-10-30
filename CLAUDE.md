@@ -115,6 +115,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - GD `sys-gd-fmt-taskara` "तस्करा — पूछताछ / सुपुर्दगी" (replaced 5 old taskara formats; backup docs/format-backups/taskara_old_removed.json):
   dropdowns Stage (बैठाया / सुपुर्दगी) × Reason (मुकदमा / प्रार्थना पत्र / PRV / अन्य) → `{{if:Key=value|…}}`; fields shown only when
   needed via showIf; सुपुर्दगी: GiveMode one receiver (relation incl. दोस्त/पड़ोसी/गाँव के व्यक्ति) or item_group `Givers` per person.
+- GD `sys-gd-fmt-abhiyukt-dakhila` "तस्करा / वापसी — अभियुक्त दाखिला": Mode (दूसरे अधिकारी लाये / मैं वापसी / थाने पर ही)
+  × CaseType (मुकदमा / 170 BNSS चालानी) → heading line + opening; standard जामा तलाशी/जरावात/खाना/हवालात/ताला text, optional
+  बरामदगी, चोट, हवालात मर्दाना/महिला, हुलिया item_group (`{text~col~after}`), free "विवरण गिरफ्तारी", सूचना की/के by relation;
+  `{{Key#cnt}}` = 01/03 नफर.
 - Fields that appear only when needed (option values must not contain "/" — it means "or"): `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
   "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + validation (hidden = not required).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि

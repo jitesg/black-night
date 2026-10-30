@@ -241,3 +241,19 @@ test('{{Key#cnt}} two digits; {text~col~after} in item rows', () => {
   assert.equal(generateReport('{{first#cnt}} नफर', { first: two }, keys), '02 नफर');
   assert.equal(generateReport('{{each:H|{who}{ उम्र करीब ~age~ वर्ष}|, }}', { H: JSON.stringify([{ who: 'क', age: '20' }, { who: 'ख', age: '' }]) }, []), 'क उम्र करीब 20 वर्ष, ख');
 });
+
+test('अभियुक्त दाखिला: every mode × case type fills with no token left', () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-abhiyukt-dakhila');
+  const def: Record<string, string> = {};
+  for (const k of f.keys) def[k.key_name] = k.default_value && !k.default_value.startsWith('__') ? k.default_value : 'क';
+  const modes = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'Mode').dropdown_options);
+  const types = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'CaseType').dropdown_options);
+  for (const Mode of modes) for (const CaseType of types) {
+    const t = generateReport(f.vivran, { ...def, Mode, CaseType, doHulia: 'हाँ', Accused: JSON.stringify([P('रवि', 'रामपाल', '24')]),
+      Hulia: JSON.stringify([{ who: 'रवि', kad: 'औसत', rang: 'गेंहुआ', jism: 'इकहरा', age: '24' }]) }, f.keys);
+    assert.doesNotMatch(t, /\{\{|\}\}|\{[a-z#]/, `${Mode} ${CaseType}`);
+    assert.match(t, /दाखिला 01 नफर अभियुक्त (सम्बन्धित|मय)/, `${Mode} ${CaseType}`);
+    assert.match(t, /मा0 न्यायालय रवाना करना सुनिश्चित करें।/);
+  }
+});
