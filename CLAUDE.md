@@ -125,6 +125,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - GD `sys-gd-fmt-vahan-dakhila` "वापसी व दाखिला वाहन": item_group Vehicles (भूमिका, प्रकार, संख्या, चेचिस, इंजन), `{{cnt:Vehicles?vno|}}`
   = 01/02 अदद, वाहन को/वाहनों को, खड़ा/खड़े कराये गये.
 - GD `sys-gd-fmt-aaropi-avmukt` "तस्करा — आरोपी अवमुक्त (धारा 480(2) BNSS)": आरोपी list, गिरफ्तारी तिथि/आधार, नये तथ्य, अवकाश tick.
+- `sys-fmt-medical-patra` "मेडिकल प्रपत्र / एक्स-रे / सप्लीमेंटरी / DNA हेतु पत्र (अस्पताल)" (type Any): Type dropdown (BHT / एक्स-रे
+  [+ CT, देरी ticks] / सप्लीमेंटरी / DNA), Role (मजरूब… → plural मजरूबगण/अभियुक्तगण), item_group Persons (name, addr, age, MLC, CR).
 - Fields that appear only when needed (option values must not contain "/" — it means "or"): `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
   "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + validation (hidden = not required).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि

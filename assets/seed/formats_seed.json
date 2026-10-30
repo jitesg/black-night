@@ -4516,6 +4516,158 @@
           "sort_order": 8
         }
       ]
+    },
+    {
+      "id": "sys-fmt-medical-patra",
+      "title": "मेडिकल प्रपत्र / एक्स-रे / सप्लीमेंटरी / DNA हेतु पत्र (अस्पताल)",
+      "format_type": "Any",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "मेडिकल",
+        "BHT",
+        "एक्स-रे",
+        "सप्लीमेंटरी",
+        "DNA",
+        "अस्पताल",
+        "पत्र"
+      ],
+      "last_updated": "2026-10-30",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\n{{Hospital}}\n[[विषय]] विषय – मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित {{if:Type=BHT (मेडिकल प्रपत्र)|{{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} के मेडिकल प्रपत्र/बी0एच0टी0 प्रेषित करने के सम्बन्ध में।}}{{if:Type=एक्स-रे रिपोर्ट|{{ifnot:doDelay|{{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} की एक्स-रे{{if:doCT| व सीटी स्कैन}} रिपोर्ट प्रेषित करने के सम्बन्ध में।}}{{if:doDelay|{{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} की एक्स-रे{{if:doCT| व सीटी स्कैन}} रिपोर्ट रेडियोलॉजी विभाग से प्राप्त होने में विलम्ब के कारण सप्लीमेंटरी रिपोर्ट तैयार न हो पाने व विवेचना का विधिक निस्तारण न हो पाने के सम्बन्ध में।}}}}{{if:Type=सप्लीमेंटरी रिपोर्ट|{{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} की सप्लीमेंटरी रिपोर्ट (चोटों की प्रकृति का उल्लेख करते हुए) प्रेषित करने के सम्बन्ध में।}}{{if:Type=DNA परीक्षण|{{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} का डी0एन0ए0 परीक्षण कराये जाने के सम्बन्ध में।}}\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि थाना {{PoliceStation}} पर पंजीकृत मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} की विवेचना मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} द्वारा सम्पादित की जा रही है।{{if:Type=BHT (मेडिकल प्रपत्र)| मुकदमा उपरोक्त से सम्बन्धित {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} {{each:Persons?name|{name}{ निवासी ~addr}{ उम्र लगभग ~age~ वर्ष}{ (MLC No. ~mlc~)}{ (CR No. ~cr~)}| व }} का उपचार {{HospitalShort}} में{{if:TestDate| दिनांक {{TestDate}} को}} किया गया है। विवेचना के विधिक निस्तारण हेतु {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} उपरोक्त के मेडिकल प्रपत्र/बी0एच0टी0 (बेड हेड टिकट) की आवश्यकता है।\n\nअतः निवेदन है कि {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} उपरोक्त के मेडिकल प्रपत्र/बी0एच0टी0 उपलब्ध कराने का कष्ट करें, जिससे विवेचना का विधिक निस्तारण किया जा सके।}}{{if:Type=एक्स-रे रिपोर्ट| मुकदमा उपरोक्त से सम्बन्धित {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} {{each:Persons?name|{name}{ निवासी ~addr}{ उम्र लगभग ~age~ वर्ष}{ (MLC No. ~mlc~)}{ (CR No. ~cr~)}| व }} का एक्स-रे{{if:doCT| व सीटी स्कैन}} परीक्षण {{HospitalShort}} में{{if:TestDate| दिनांक {{TestDate}} को}} हुआ था।{{ifnot:doDelay| विवेचना के क्रम में {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} उपरोक्त की एक्स-रे{{if:doCT| व सीटी स्कैन}} रिपोर्ट की आवश्यकता है।\n\nअतः निवेदन है कि {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} उपरोक्त की एक्स-रे{{if:doCT| व सीटी स्कैन}} रिपोर्ट उपलब्ध कराने का कष्ट करें, जिससे विवेचना का विधिक निस्तारण किया जा सके।}}{{if:doDelay| अभी तक {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} के समस्त मेडिकल प्रपत्र प्राप्त हो गये हैं, परन्तु एक्स-रे{{if:doCT| व सीटी स्कैन}} रिपोर्ट प्राप्त नहीं हो पायी है, जिसकी वजह से सप्लीमेंटरी रिपोर्ट तैयार नहीं हो पा रही है।\n\nअतः महोदय से निवेदन है कि सम्बन्धित को आदेशित करने की कृपा करें, ताकि जल्द से जल्द एक्स-रे{{if:doCT| व सीटी स्कैन}} रिपोर्ट प्राप्त कर सप्लीमेंटरी रिपोर्ट तैयार करायी जा सके, जिससे विवेचना का विधिक निस्तारण समय से किया जा सके।}}}}{{if:Type=सप्लीमेंटरी रिपोर्ट| मुकदमा उपरोक्त से सम्बन्धित {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} {{each:Persons?name|{name}{ निवासी ~addr}{ उम्र लगभग ~age~ वर्ष}{ (MLC No. ~mlc~)}{ (CR No. ~cr~)}| व }} का मेडिकल परीक्षण {{HospitalShort}} में{{if:TestDate| दिनांक {{TestDate}} को}} हुआ था।\n\nअतः महोदय से निवेदन है कि {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} उपरोक्त की सप्लीमेंटरी रिपोर्ट (चोटों की प्रकृति का उल्लेख करते हुए) तैयार कराकर प्रेषित करने की कृपा करें, जिससे विवेचना का विधिक निस्तारण समय से किया जा सके।}}{{if:Type=DNA परीक्षण| मुकदमा उपरोक्त की विवेचना के दौरान {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} {{each:Persons?name|{name}{ निवासी ~addr}{ उम्र लगभग ~age~ वर्ष}{ (MLC No. ~mlc~)}{ (CR No. ~cr~)}| व }} का डी0एन0ए0 परीक्षण कराया जाना विवेचनात्मक क्रम में आवश्यक है।\n\nअतः {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} उपरोक्त को आपके समक्ष प्रस्तुत किया जा रहा है। कृपया नियमानुसार {{count:Persons?name|{{Role}}|{{if:Role=मजरूब|मजरूबगण}}{{if:Role=मजरूबा|मजरूबगण}}{{if:Role=अभियुक्त|अभियुक्तगण}}{{if:Role=अभियुक्ता|अभियुक्तगण}}{{if:Role=पीड़िता|पीड़िताओं}}}} के डी0एन0ए0 परीक्षण हेतु आवश्यक जैविक नमूने संकलित कर परीक्षण हेतु अग्रेतर आवश्यक कार्यवाही करने का कष्ट करें।}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}/विवेचक\nथाना {{PoliceStation}} जनपद {{District}}\n{{if:Mobile|मो0 {{Mobile}}}}\n",
+      "keys": [
+        {
+          "key_name": "Type",
+          "label": "क्या मँगाना है",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "BHT (मेडिकल प्रपत्र)",
+          "dropdown_options": "[\"BHT (मेडिकल प्रपत्र)\", \"एक्स-रे रिपोर्ट\", \"सप्लीमेंटरी रिपोर्ट\", \"DNA परीक्षण\"]",
+          "sort_order": 0
+        },
+        {
+          "key_name": "doCT",
+          "label": "सीटी स्कैन रिपोर्ट भी",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"Type=एक्स-रे रिपोर्ट\"}",
+          "sort_order": 1
+        },
+        {
+          "key_name": "doDelay",
+          "label": "रिपोर्ट मिलने में देरी (सप्लीमेंटरी रुकी है)",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"Type=एक्स-रे रिपोर्ट\"}",
+          "sort_order": 2
+        },
+        {
+          "key_name": "Hospital",
+          "label": "किसको (सेवा में के नीचे की लाइनें)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "श्रीमान मुख्य चिकित्साधीक्षक महोदय,\nजिला अस्पताल रायबरेली।",
+          "sort_order": 3
+        },
+        {
+          "key_name": "HospitalShort",
+          "label": "अस्पताल का नाम — पत्र के अंदर (जैसे: जिला अस्पताल रायबरेली, SGPGI लखनऊ, सीएचसी बछरावां)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 4
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 5
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 6
+        },
+        {
+          "key_name": "Role",
+          "label": "व्यक्ति कौन हैं",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मजरूब",
+          "dropdown_options": "[\"मजरूब\", \"मजरूबा\", \"अभियुक्त\", \"अभियुक्ता\", \"पीड़िता\"]",
+          "sort_order": 7
+        },
+        {
+          "key_name": "Persons",
+          "label": "व्यक्ति (हर व्यक्ति की एक पंक्ति)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम व पिता/पति (जैसे: मनीष पुत्र हरीशंकर)\"}, {\"key\": \"addr\", \"label\": \"पता\"}, {\"key\": \"age\", \"label\": \"उम्र — न हो तो खाली\"}, {\"key\": \"mlc\", \"label\": \"MLC No. — न हो तो खाली\"}, {\"key\": \"cr\", \"label\": \"CR No. — न हो तो खाली\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "TestDate",
+          "label": "उपचार / परीक्षण की तिथि (जैसे: 01.05.2025 या 16.04.2025 व 20.04.2025) — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Type=BHT (मेडिकल प्रपत्र)/एक्स-रे रिपोर्ट/सप्लीमेंटरी रिपोर्ट\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "sort_order": 10
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 11
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 12
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 13
+        },
+        {
+          "key_name": "Mobile",
+          "label": "मोबाइल नं0 (हस्ताक्षर के नीचे) — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 14
+        }
+      ]
     }
   ]
 }

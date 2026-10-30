@@ -282,3 +282,21 @@ test('GD: विवेचना में परिवर्तन / वाह�
   assert.match(one, /अवमुक्त किये जाने आरोपी सम्बन्धित/);
   assert.match(one, /उपस्थित होगा,/);
 });
+
+test('मेडिकल पत्र: every type (and एक्स-रे ticks) × 1 / 2 persons fills with no token left', async () => {
+  const P2 = (await import('../src/lib/printLayout.ts'));
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-medical-patra');
+  const types = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'Type').dropdown_options);
+  const one = JSON.stringify([{ name: 'मनीष पुत्र हरीशंकर', addr: 'लखनऊ', mlc: '1' }]);
+  const two = JSON.stringify([{ name: 'रोहित', addr: 'क' }, { name: 'रामकुमार', addr: 'ख' }]);
+  for (const Type of types) for (const Persons of [one, two]) for (const doDelay of ['', 'हाँ']) {
+    const v = { Type, Persons, doDelay, doCT: 'हाँ', Hospital: 'श्रीमान', HospitalShort: 'SGPGI लखनऊ', FIRNo: '1/25', Sections: '115(2) BNS', Role: 'मजरूब', TestDate: '01.05.2025',
+      pad: 'उपनिरीक्षक', OfficerName: 'क', PoliceStation: 'ख', District: 'ग', Mobile: '' };
+    const marked = generateReport(f.vivran, v, f.keys, { keepMarkers: true });
+    assert.doesNotMatch(marked, /\{\{|\}\}|\{[a-z#]/, `${Type}`);
+    const html = P2.renderTextForPrint(marked);
+    assert.equal((html.match(/class="doc-letter"/g) ?? []).length, 1);
+    assert.match(html, Persons === two ? /मजरूबगण/ : /मजरूब मनीष पुत्र हरीशंकर/);
+  }
+});
