@@ -1,0 +1,223 @@
+{
+  "removed": "2026-10-30",
+  "reason": "owner: replaced by sys-gd-fmt-taskara",
+  "formats": [
+    {
+      "id": "sys-gd-fmt-taskara-pp",
+      "title": "तस्करा बाबत पूछताछ व सुपुर्दगीनामा(प्रा0 पत्र)",
+      "format_type": "GD",
+      "vivran": "इस समय थाना कार्यालय/पूछताछ कक्ष में बैठे {{PersonName}} जिसको {{ApplicationInfo}} पूछताछ हेतु थाना हाजा बुलवाया गया था जो तलबिदा उपस्थित आये थे। {{ReleasedTo}} हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जाएगा तो थाने पर उपस्थित होगें। तस्करा अंकित किया गया।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "तस्करा",
+        "पूछताछ",
+        "सुपुर्दगी",
+        "प्रार्थना पत्र",
+        "GD"
+      ],
+      "keys": [
+        {
+          "key_name": "PersonName",
+          "label": "थाने पर आये व्यक्ति/ व्यक्तियों का नाम",
+          "field_type": "person_group",
+          "is_required": 0,
+          "sort_order": 1,
+          "default_value": ""
+        },
+        {
+          "key_name": "ReleasedTo",
+          "label": "सुपुर्दगी लेने वाले का नाम व पहचान",
+          "field_type": "multiline",
+          "is_required": 0,
+          "sort_order": 2,
+          "default_value": "जिन्हे बाद पूछताछ पिता गुड्डू उर्फ हयात मोहम्मद के हमराह कर हस्ब आदेश प्रभारी निरीक्षक महोदय थाना हाजा से रूखसत किया गया।"
+        },
+        {
+          "key_name": "ApplicationInfo",
+          "label": "प्रा0 पत्र विवरण",
+          "field_type": "multiline",
+          "is_required": 0,
+          "sort_order": 5,
+          "default_value": "आवेदक/ आवेदिका राम स्वरूप पुत्र श्रीकेशन निवासी ग्राम अघौरा थाना बछरावा जनपद रायबरेली द्वारा प्रेषित किये गये प्रा0 पत्र के संबंध में"
+        }
+      ],
+      "last_updated": "2026-07-17"
+    },
+    {
+      "id": "sys-gd-fmt-taskara-fir",
+      "title": "तस्करा बाबत पूछताछ व सुपुर्दगीनामा(मुकदमा)",
+      "format_type": "GD",
+      "vivran": "इस समय थाना कार्यालय/पूछताछ कक्ष में बैठे {{PersonName}} जिसको मु0अ0सं0 {{FIRNo}} धारा {{Sections}} से सम्बन्धित पूछताछ हेतु थाना हाजा बुलवाया गया था जो तलबिदा उपस्थित आये थे। {{ReleasedTo}} हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जाएगा तो थाने पर उपस्थित होगें। तस्करा अंकित किया गया।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "तस्करा",
+        "पूछताछ",
+        "सुपुर्दगी",
+        "मुकदमा",
+        "GD"
+      ],
+      "keys": [
+        {
+          "key_name": "PersonName",
+          "label": "थाने पर आये व्यक्ति/ व्यक्तियों का नाम",
+          "field_type": "person_group",
+          "is_required": 0,
+          "sort_order": 1,
+          "default_value": ""
+        },
+        {
+          "key_name": "ReleasedTo",
+          "label": "सुपुर्दगी लेने वाले का नाम व पहचान",
+          "field_type": "multiline",
+          "is_required": 0,
+          "sort_order": 2,
+          "default_value": "जिन्हे बाद पूछताछ पिता गुड्डू उर्फ हयात मोहम्मद के हमराह कर हस्ब आदेश प्रभारी निरीक्षक महोदय थाना हाजा से रूखसत किया गया।"
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "FIR No. दर्ज करें",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 3,
+          "default_value": ""
+        },
+        {
+          "key_name": "Sections",
+          "label": "धाराएं",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 4,
+          "default_value": ""
+        }
+      ],
+      "last_updated": "2026-07-17"
+    },
+    {
+      "id": "sys-gd-fmt-taskara-fir-only",
+      "title": "तस्करा बाबत पूछताछ (मुकदमा)",
+      "format_type": "GD",
+      "vivran": "इस समय {{PersonName}} को मु0अ0सं0{{FIRNo}} धारा {{Sections}} से सम्बन्धित पूछताछ हेतु थाना हाजा बुलवाया गया था जो तलबिदा उपस्थित आये थे। जिन्हे पूछताछ हेतु पूछताछ कक्ष में सन्तरी पहरा की निगरानी में बैठाया गया। तस्करा अंकित किया गया।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "तस्करा",
+        "पूछताछ",
+        "मुकदमा",
+        "GD"
+      ],
+      "keys": [
+        {
+          "key_name": "PersonName",
+          "label": "थाने पर आये व्यक्ति/ व्यक्तियों का नाम",
+          "field_type": "person_group",
+          "is_required": 0,
+          "sort_order": 1,
+          "default_value": ""
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "FIR No. दर्ज करें",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 3,
+          "default_value": ""
+        },
+        {
+          "key_name": "Sections",
+          "label": "धाराएं",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 4,
+          "default_value": ""
+        }
+      ],
+      "last_updated": "2026-07-17"
+    },
+    {
+      "id": "sys-gd-fmt-taskara-pp-only",
+      "title": "तस्करा बाबत पूछताछ(प्रा0 पत्र)",
+      "format_type": "GD",
+      "vivran": "इस समय {{PersonName}} को जिसको {{ApplicationInfo}} पूछताछ हेतु थाना हाजा बुलवाया गया था जो तलबिदा उपस्थित आये थे। जिन्हे पूछताछ हेतु पूछताछ कक्ष में सन्तरी पहरा की निगरानी में बैठाया गया। तस्करा अंकित किया गया।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "तस्करा",
+        "पूछताछ",
+        "प्रार्थना पत्र",
+        "GD"
+      ],
+      "keys": [
+        {
+          "key_name": "PersonName",
+          "label": "थाने पर आये व्यक्ति/ व्यक्तियों का नाम",
+          "field_type": "person_group",
+          "is_required": 0,
+          "sort_order": 1,
+          "default_value": ""
+        },
+        {
+          "key_name": "ApplicationInfo",
+          "label": "प्रा0 पत्र विवरण",
+          "field_type": "multiline",
+          "is_required": 0,
+          "sort_order": 5,
+          "default_value": "आवेदक/ आवेदिका राम स्वरूप पुत्र श्रीकेशन निवासी ग्राम अघौरा थाना बछरावा जनपद रायबरेली द्वारा प्रेषित किये गये प्रा0 पत्र के संबंध में"
+        }
+      ],
+      "last_updated": "2026-07-17"
+    },
+    {
+      "id": "sys-gd-fmt-taskara-prv",
+      "title": "तस्करा सुपुर्दगी(पुलिस पीआरवी द्वारा लाये जाने पर)",
+      "format_type": "GD",
+      "vivran": "थाना स्थानीय पर पीआरवी द्वारा अपने इवेन्ट संख्या {{EventNo}} की सूचना पर एक व्यक्ति जो मानसिक रुप से विक्षिप्त था को लाया गया था। उक्त व्यक्ति से नाम पता पूछा गया तो उसने अपना नाम राजू पुत्र रणधीर सिंह निवासी ग्राम घनातेजा थाना रिफाइनरी जनपद मथुरा बताया था। राजू के परिजनो से सम्पर्क किया गया तो तारीखी इमरोजा मे अजीत पुत्र ओमप्रकाश निवासी घानातेजा थाना रिफाइनरी जनपद मथुरा उपस्थित आये, जिनको सुपुर्दगी मे देकर रुखसत किया गया। तस्करा अंकित किया गया।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "तस्करा",
+        "सुपुर्दगी",
+        "पीआरवी",
+        "PRV",
+        "GD"
+      ],
+      "keys": [
+        {
+          "key_name": "EventNo",
+          "label": "पुलिस पीआरवी की ईवेंट सं0 दर्ज करें",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 6,
+          "default_value": ""
+        }
+      ],
+      "last_updated": "2026-07-17"
+    }
+  ]
+}

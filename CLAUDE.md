@@ -112,6 +112,13 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - GD `sys-gd-fmt-wapsi` "वापसी उ0नि0" v2: pad dropdown, OfficerName universal, optional हमराह / रपट नं0 / समय via `{{if:}}`,
   one checkbox per activity (do*) → its paragraph; order words by `{{seq|सर्वप्रथम|तत्पश्चात…|वहाँ से…|…}}` (`_applySeqTokens`, after if);
   विवेचना paragraph has FIRNo/Sections fields. Old v1 in `docs/format-backups/gd_wapsi_v1.json`.
+- GD `sys-gd-fmt-taskara` "तस्करा — पूछताछ / सुपुर्दगी" (replaced 5 old taskara formats; backup docs/format-backups/taskara_old_removed.json):
+  dropdowns Stage (बैठाया / सुपुर्दगी) × Reason (मुकदमा / प्रार्थना पत्र / PRV / अन्य) → `{{if:Key=value|…}}`; fields shown only when
+  needed via showIf; सुपुर्दगी: GiveMode one receiver (relation incl. दोस्त/पड़ोसी/गाँव के व्यक्ति) or item_group `Givers` per person.
+- Fields that appear only when needed: `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
+  "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + validation (hidden = not required).
+- `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
+  instead of FIRNO/SECTION (seed_version 1).
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
   `{{ifnot:Key|text}}` (templateEngine `_applyIfTokens`, Step -2, inner tokens allowed). `**…**` in a [[विवरण]] paragraph =
   bold words (print/editor/Word; editor <b> in body → ** on the way back; stripped in plain text). Used by the 170 चालानी

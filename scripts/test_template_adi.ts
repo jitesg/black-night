@@ -218,3 +218,20 @@ test('{{if:Key=A/B|…}} and showIf (fields that appear only when needed)', asyn
   assert.equal(isKeyVisible(k('S=x & R=a/b'), { S: 'x', R: 'b' }), true);
   assert.equal(isKeyVisible({ dropdown_options: '["a","b"]' }, {}), true);
 });
+
+test('तस्करा (one format): every stage × reason fills with no token left; old 5 removed', () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  assert.equal(d.formats.filter((x: { id: string }) => /^sys-gd-fmt-taskara-/.test(x.id)).length, 0);
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-taskara');
+  const ppl = JSON.stringify([P('रवि', 'रामपाल', '24'), P('मोहन', 'रामपाल', '21')]);
+  for (const Stage of ['पूछताछ हेतु बैठाया', 'पूछताछ के बाद सुपुर्दगी']) {
+    for (const Reason of ['मुकदमा', 'प्रार्थना पत्र', 'PRV द्वारा लाये गये', 'अन्य']) {
+      for (const GiveMode of ['सबको एक ही व्यक्ति को', 'हर व्यक्ति को अलग-अलग']) {
+        const t = generateReport(f.vivran, { Stage, Reason, GiveMode, FIRNo: '1/26', Applicant: 'क', OtherReason: 'ख', EventNo: '9', PersonName: ppl,
+          ReceiverRelation: 'दोस्त', ReceiverName: 'ग', Givers: JSON.stringify([{ who: 'रवि', rel: 'पिता', name: 'रामपाल', addr: '' }]) }, f.keys);
+        assert.doesNotMatch(t, /\{\{|\}\}|\{[a-z#]/, `${Stage} ${Reason}`);
+        assert.match(t, /तस्करा अंकित किया गया।$/, `${Stage} ${Reason}`);
+      }
+    }
+  }
+});

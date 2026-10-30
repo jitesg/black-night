@@ -839,6 +839,150 @@
       "last_updated": "2026-08-13"
     },
     {
+      "id": "sys-fmt-bnss126-prarthna",
+      "title": "प्रार्थना पत्र जांच में 126/135 की कार्यवाही",
+      "format_type": "BNSS Karyavahi",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}।\n\n[[सेवा में]] सेवा मे,\nश्रीमान उपजिलामजिस्ट्रेट महोदय\nतहसील {{Tehsil}} जनपद {{District}}।\n[[पक्ष]] वादी- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}} ।\n{{FirstParty}}\n\n{{firstpartyDetails#list}}\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि आज दिनांक {{DateOfAction}} को मुझ {{pad}} द्वारा {{Avedak}} {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र{{if:PPDate| दिनांक {{PPDate}}}} की जांच हेतु ग्राम {{village}} आया तो ज्ञात हुआ है कि ग्राम {{village}} में {{FirstParty}} के  {{firstpartyDetails#num}} व {{secondparty}} {{secondpartyDetail#num}} {{Matter}} । जो किसी भी समय आपस में लड झगड कर शान्ति भंग कर सकते हैं । शान्ति एवम कानून व्यवस्था के दृष्टिगत व संगीन संज्ञेय अपराध की रोकथाम हेतु {{FirstParty}} उपरोक्त के विरुद्ध धारा 126/135 BNSS की कार्यवाही मा0 न्यायालय की जाती है । श्रीमान जी से निवेदन है कि शान्ति एवम कानून व्यवस्था कायम रखने हेतु {{FirstParty}} उपरोक्त को अधिक से अधिक धनराशि की मुचलका पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा मे प्रेषित है ।\n[[गवाह]] गवाहान – {{FirstParty}} के विरूद्ध {{secondparty}} के व्यक्ति गवाही देंगे ।\n\n[[संलग्नक]] संलग्नक -\nरिपोर्ट चालानी 01 वर्क | ({{OfficerName}})\nनकल रपट 1 वर्क | {{pad}}\n135(3) वर्क  -01 वर्क | थाना {{PoliceStation}} जनपद {{District}}\n\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}।\n\n[[सेवा में]] सेवा मे,\nश्रीमान उपजिलामजिस्ट्रेट महोदय\nतहसील {{Tehsil}} जनपद {{District}}।\n[[पक्ष]] वादी- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}।\n\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि {{FirstParty}} के  {{firstpartyDetails#num}} का चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 126/135 बीएनएस में चालान मा0 न्यायालय किया जा चुका है। शान्ति व्यवस्था बनाये रखने हेतु धारा 135(3) बीएनएसएस के अन्तर्गत कार्यवही आवश्यक है।\nअतः महोदय से निवेदन है कि {{FirstParty}} उपरोक्त को न्यायालय में तलब कर भारी से भारी धनराशि के जमानतनामे/मुचलके से पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा मे प्रेषित है।\n\n[[संलग्नक]] संलग्नक -\nरिपोर्ट चालानी 01 वर्क | ( {{OfficerName}})\nनकल रपट 1 वर्क | {{pad}}\n135(3) वर्क  -01 वर्क | थाना {{PoliceStation}} जनपद {{District}}\n\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}।\n\n[[सेवा में]] सेवा मे,\nश्रीमान उपजिलामजिस्ट्रेट महोदय\nतहसील {{Tehsil}} जनपद {{District}}।\n[[पक्ष]] वादी- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}।\n{{secondparty}}\n{{secondpartyDetail#list}}\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि आज दिनांक {{DateOfAction}} को मुझ {{pad}} द्वारा {{Avedak}} {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र{{if:PPDate| दिनांक {{PPDate}}}} की जांच हेतु ग्राम {{village}} आया तो ज्ञात हुआ है कि ग्राम  {{village}} में  {{secondparty}} के {{secondpartyDetail#num}} व {{FirstParty}} के  {{firstpartyDetails#num}} {{Matter}} जो किसी भी समय आपस में लड झगड कर शान्ति भंग कर सकते हैं । शान्ति एवम कानून व्यवस्था के दृष्टिगत व संगीन संज्ञेय अपराध की रोकथाम हेतु {{secondparty}} उपरोक्त के विरुद्ध धारा 126/135 BNSS की कार्यवाही मा0 न्यायालय की जाती है । श्रीमान जी से निवेदन है कि शान्ति एवम कानून व्यवस्था कायम रखने हेतु {{secondparty}} उपरोक्त को अधिक से अधिक धनराशि की मुचलका पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा मे प्रेषित है ।\n[[गवाह]] गवाहान – {{secondparty}} के विरूद्ध {{FirstParty}} के व्यक्ति गवाही देंगे । ।\n\n[[संलग्नक]] संलग्नक -\nरिपोर्ट चालानी 01 वर्क | ({{OfficerName}})\nनकल रपट 1 वर्क | {{pad}}\n135(3) वर्क  -01 वर्क | थाना {{PoliceStation}} जनपद {{District}}।\n\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}।\n\n[[सेवा में]] सेवा मे ,\nश्रीमान उपजिलामजिस्ट्रेट महोदय\nतहसील {{Tehsil}} जनपद {{District}}।\n[[पक्ष]] वादी- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}।\n\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि {{secondparty}} के {{secondpartyDetail#num}}का चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 126/135 बीएनएस में चालान मा0 न्यायालय किया जा चुका है। शान्ति व्यवस्था बनाये रखने हेतु धारा 135(3) बीएनएसएस के अन्तर्गत कार्यवही आवश्यक है।\nअतः महोदय से निवेदन है कि {{secondparty}} उपरोक्त को न्यायालय में तलब कर भारी से भारी धनराशि के जमानतनामे/मुचलके से पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा मे प्रेषित है।\n\n[[संलग्नक]] संलग्नक -\nरिपोर्ट चालानी 01 वर्क | ( {{OfficerName}})\nनकल रपट 1 वर्क | {{pad}}\n135(3) वर्क  -01 वर्क | थाना {{PoliceStation}} जनपद {{District}}\n\n\n[[पत्र]]\n[[बीच]] न्यायालय उपजिला मजिस्ट्रेट, तहसील {{Tehsil}} जनपद {{District}}\nनोटिस अन्तर्गत धारा 130 भा0ना0सु0सं0\n\n[[दोनों ओर]] शासन | बनाम {{firstpartyDetails.1.name}} आदि\n[[विवरण]] अधोहस्ताक्षरी के समक्ष थानाध्यक्ष {{PoliceStation}} ने चालानी रिपोर्ट अन्तर्गत धारा 126/135 भा0ना0सुं0सं0 दिनांक {{DateOfAction}} द्वारा अवगत कराया गया कि {{FirstParty}} की {{firstpartyDetails.1.name}} आदि व {{secondparty}} के {{secondpartyDetail.1.name}} आदि के {{Matter}} इसी बात को लेकर {{FirstParty}} के {{firstpartyDetails.1.name}} आदि उपरोक्त कभी भी अप्रिय घटना कारित कर लोक परिशान्ति भंग करने की पूर्ण सम्भावना है। थानाध्यक्ष की आख्या के आधार पर निरोधात्मक कार्यवाही करने का पर्याप्त आधार है प्रकरण मेरे न्यायालय क्षेत्राधिकार के अन्तर्गत आता है।\n\n[[सूची]] {{firstpartyDetails#list}}\n\n[[विवरण]] मैं थानाध्यक्ष {{PoliceStation}} की चालानी रिपोर्ट के आधार पर पक्षों के मध्य विवाद के कारण लोक परिशान्ति भंग होने की प्रबल सम्भावना के दृष्टिगत एक वर्ष अवधि के लिए परिशान्ति कायम रखने हेतु दो जमानतें सहित निजी बन्ध पत्र निष्पादित करने के लिए आदेश क्यों न किया जाये।\n\nअतः मैं उपजिला मंजिस्ट्रेट तहसील {{Tehsil}} जनपद {{District}} {{FirstParty}} के {{firstpartyDetails.1.name}} आदि उपरोक्त को आदेशित करता हूँ कि आप कारण बताये कि क्यों न एक वर्ष के लिए तहसील {{Tehsil}} जनपद {{District}} उपरोक्त आख्या से संतुष्ट होते हुए परिशान्ति कायम रखने हेतु 50000 -50000 रूपये की दो जमानतें व इतनी ही धनराशि का स्वयं का बन्धपत्र दिनांक ...................को न्यायालय में प्रस्तुत करे।\n\n[[दाएँ]] उपजिला मजिस्ट्रेट, तहसील {{Tehsil}} जनपद {{District}}\n[[विवरण]] प्रतिलिप - थानाध्यक्ष {{PoliceStation}} को इस आशय के साथ प्रषित कि विपक्षी को नियत दिनांक पर न्यायालय उपस्थित होने हेतु सूचित करते हुए नोटिस पर विपक्षी के हस्ताक्षर मय आख्या इस न्यायालय को उपलब्ध कराये।\n\n[[दाएँ]] उपजिला मजिस्ट्रेट, तहसील {{Tehsil}} जनपद {{District}}\n\n\n[[पत्र]]\n[[बीच]] न्यायालय उपजिला मजिस्ट्रेट, तहसील {{Tehsil}} जनपद {{District}}\nनोटिस अन्तर्गत धारा 130 भा0ना0सु0सं0\n\n[[दोनों ओर]] शासन | बनाम {{secondpartyDetail.1.name}} आदि\n[[विवरण]] अधोहस्ताक्षरी के समक्ष थानाध्यक्ष {{PoliceStation}} ने चालानी रिपोर्ट अन्तर्गत धारा 126/135 भा0ना0सुं0सं0 दिनांक {{DateOfAction}} द्वारा अवगत कराया गया कि {{FirstParty}} की {{firstpartyDetails.1.name}} आदि व {{secondparty}} के {{secondpartyDetail.1.name}} आदि के {{Matter}} इसी बात को लेकर {{secondparty}} के {{secondpartyDetail.1.name}} आदि उपरोक्त कभी भी अप्रिय घटना कारित कर लोक परिशान्ति भंग करने की पूर्ण सम्भावना है। थानाध्यक्ष की आख्या के आधार पर निरोधात्मक कार्यवाही करने का पर्याप्त आधार है प्रकरण मेरे न्यायालय क्षेत्राधिकार के अन्तर्गत आता है।\n\n[[सूची]] {{secondpartyDetail#list}}\n\n[[विवरण]] मैं थानाध्यक्ष {{PoliceStation}} की चालानी रिपोर्ट के आधार पर पक्षों के मध्य विवाद के कारण लोक परिशान्ति भंग होने की प्रबल सम्भावना के दृष्टिगत एक वर्ष अवधि के लिए परिशान्ति कायम रखने हेतु दो जमानतें सहित निजी बन्ध पत्र निष्पादित करने के लिए आदेश क्यों न किया जाये।\n\nअतः मैं उपजिला, मंजिस्ट्रेट  तहसील {{Tehsil}} जनपद {{District}} {{secondparty}} के {{secondpartyDetail.1.name}} आदि उपरोक्त को आदेशित करता हूँ कि आप कारण बताये कि क्यों न एक वर्ष के लिए तहसील {{Tehsil}} जनपद {{District}} उपरोक्त आख्या से संतुष्ट होते हुए परिशान्ति कायम रखने हेतु 50000 -50000 रूपये की दो जमानतें व इतनी ही धनराशि का स्वयं का बन्धपत्र दिनांक ...................को न्यायालय में प्रस्तुत करे।\n\n[[दाएँ]] उपजिला मजिस्ट्रेट, तहसील {{Tehsil}} जनपद {{District}}\n[[विवरण]] प्रतिलिप - थानाध्यक्ष {{PoliceStation}} को इस आशय के साथ प्रषित कि विपक्षी को नियत दिनांक पर न्यायालय उपस्थित होने हेतु सूचित करते हुए नोटिस पर विपक्षी के हस्ताक्षर मय आख्या इस न्यायालय को उपलब्ध कराये।\n\n[[दाएँ]] उपजिला मजिस्ट्रेट, तहसील {{Tehsil}} जनपद {{District}}\n\n[[पत्र]]\n[[बीच]] चालानी का GD प्रारूप\n\n[[विवरण]] {{Avedak}} {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच हेतु ग्राम {{village}} आया जहाँ पर जांच मे ज्ञात हुआ कि {{FirstParty}} के {{firstpartyDetails#num}} व {{secondparty}} के {{secondpartyDetail#num}} {{Matter}} उक्त विवाद के कारण उभय पक्षो मे कसीदगी व्याप्त है । उभय पक्ष लड़ झगड़ कर किसी भी समय शान्ति व्यवस्था भंग कर सकते है । शान्ति व्यवस्था के दृष्टिगत उभय पक्षो का चालान अन्तर्गत धारा 126/135 बीएनएसएस माननीय न्यायालय किया जाता है । चालानी रिपोर्ट दाखिल दफ्तर है । एचएम/सीएम को हिदायत किया गया कि चालानी रिपोर्ट समय से माननीय न्यायालय रवाना करे ।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "BNSS",
+        "126/135",
+        "प्रार्थना पत्र",
+        "शांति भंग"
+      ],
+      "keys": [
+        {
+          "key_name": "Avedak",
+          "label": "आवेदक / आवेदिका",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "आवेदक",
+          "dropdown_options": "[\"आवेदक\", \"आवेदिका\"]",
+          "sort_order": 0
+        },
+        {
+          "key_name": "Applicant",
+          "label": "आवेदक का नाम-पता (जैसे: राम स्वरूप पुत्र श्रीकृष्ण निवासी ग्राम अघौरा)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 1
+        },
+        {
+          "key_name": "PPDate",
+          "label": "प्रार्थना पत्र की तिथि (न हो तो खाली)",
+          "field_type": "date",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 2
+        },
+        {
+          "key_name": "FirstParty",
+          "label": "पक्ष",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "प्रथम पक्ष",
+          "sort_order": 3
+        },
+        {
+          "key_name": "firstpartyDetails",
+          "label": "प्रथम पक्ष के सभी लोगो के नाम व पते",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 4
+        },
+        {
+          "key_name": "secondparty",
+          "label": "पक्ष",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "द्वित्तीय पक्ष",
+          "sort_order": 5
+        },
+        {
+          "key_name": "secondpartyDetail",
+          "label": "द्वित्तीय पक्ष के सभी लोगो के नाम व पते",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 6
+        },
+        {
+          "key_name": "Matter",
+          "label": "विवाद का कारण",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "मध्य दिनांक 02/.06/2026 को मारपीट हुई थी जिसके संबंध मे मुकदमा उपरोक्त पंजीकृत हुआ था। उक्त घटना के बाद दोनो पक्षों में कसीदगी व तनाव व्याप्त है ।",
+          "sort_order": 7
+        },
+        {
+          "key_name": "DateOfAction",
+          "label": "कार्यवाही करने की तिथि",
+          "field_type": "date",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 8
+        },
+        {
+          "key_name": "village",
+          "label": "गावं का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 9
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "sort_order": 10,
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
+        },
+        {
+          "key_name": "Tehsil",
+          "label": "तहसील",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 11
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 12
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 13
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "जांचकर्ता का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 14
+        }
+      ],
+      "last_updated": "2026-10-30"
+    },
+    {
       "id": "sys-fmt-bnss170-mukadma",
       "title": "170/126/135 – मुकदमे में (एकपक्षीय)",
       "format_type": "BNSS Karyavahi",
@@ -2511,14 +2655,13 @@
       ]
     },
     {
-      "id": "sys-gd-fmt-taskara-pp",
-      "title": "तस्करा बाबत पूछताछ व सुपुर्दगीनामा(प्रा0 पत्र)",
+      "id": "sys-gd-fmt-taskara",
+      "title": "तस्करा — पूछताछ / सुपुर्दगी",
       "format_type": "GD",
-      "vivran": "इस समय थाना कार्यालय/पूछताछ कक्ष में बैठे {{PersonName}} जिसको {{ApplicationInfo}} पूछताछ हेतु थाना हाजा बुलवाया गया था जो तलबिदा उपस्थित आये थे। {{ReleasedTo}} हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जाएगा तो थाने पर उपस्थित होगें। तस्करा अंकित किया गया।",
       "is_favorite": 0,
       "created_by": "system",
       "source": "system",
-      "editable": 0,
+      "editable": 1,
       "content_type": "format",
       "seed_version": 1,
       "app_version": "1.0.0",
@@ -2526,206 +2669,137 @@
         "तस्करा",
         "पूछताछ",
         "सुपुर्दगी",
-        "प्रार्थना पत्र",
         "GD"
       ],
+      "last_updated": "2026-10-30",
+      "vivran": "{{if:Stage=पूछताछ हेतु बैठाया|{{ifnot:Reason=PRV द्वारा लाये गये|इस समय {{PersonName#inline}} को {{if:Reason=मुकदमा|मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित}}{{if:Reason=प्रार्थना पत्र|आवेदक/आवेदिका {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच के सम्बन्ध में}}{{if:Reason=अन्य|{{OtherReason}}}} पूछताछ हेतु थाना हाजा बुलवाया गया था, जो तलबिदा उपस्थित आये थे।}}{{if:Reason=PRV द्वारा लाये गये|इस समय थाना स्थानीय पर पीआरवी द्वारा{{if:EventNo| इवेन्ट संख्या {{EventNo}} की सूचना पर}} {{PersonName#n|एक व्यक्ति|{{PersonName#count}} व्यक्तियों}} को लाया गया था{{if:Condition|, जो {{Condition}}}}। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} से नाम पता पूछा गया तो {{PersonName#n|उसने अपना नाम पता|उन्होंने अपने नाम पते}} {{PersonName#inline}} बताया।}} जिन्हें पूछताछ हेतु पूछताछ कक्ष में सन्तरी पहरा की निगरानी में बैठाया गया। तस्करा अंकित किया गया।}}{{if:Stage=पूछताछ के बाद सुपुर्दगी|{{ifnot:Reason=PRV द्वारा लाये गये|इस समय थाना कार्यालय/पूछताछ कक्ष में बैठे {{PersonName#inline}} को {{if:Reason=मुकदमा|मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित}}{{if:Reason=प्रार्थना पत्र|आवेदक/आवेदिका {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच के सम्बन्ध में}}{{if:Reason=अन्य|{{OtherReason}}}} पूछताछ हेतु थाना हाजा बुलवाया गया था, जो तलबिदा उपस्थित आये थे।{{if:GiveMode=सबको एक ही व्यक्ति को| जिन्हें बाद पूछताछ उनके {{ReceiverRelation}} {{ReceiverName}}{{if:ReceiverAddress| निवासी {{ReceiverAddress}}}} के हमराह कर हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जायेगा तो थाने पर उपस्थित होंगे।}}{{if:GiveMode=हर व्यक्ति को अलग-अलग| जिनमें से बाद पूछताछ {{each:Givers?name|{who} को उनके {rel} {name}{ निवासी ~addr} के हमराह| तथा }} कर हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जायेगा तो थाने पर उपस्थित होंगे।}}}}{{if:Reason=PRV द्वारा लाये गये|थाना स्थानीय पर पीआरवी द्वारा{{if:EventNo| इवेन्ट संख्या {{EventNo}} की सूचना पर}} {{PersonName#n|एक व्यक्ति|{{PersonName#count}} व्यक्तियों}} को लाया गया था{{if:Condition|, जो {{Condition}}}}। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} से नाम पता पूछा गया तो {{PersonName#n|उसने अपना नाम पता|उन्होंने अपने नाम पते}} {{PersonName#inline}} बताया। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} के परिजनों/परिचितों से सम्पर्क किया गया तो तारीखी इमरोजा में {{if:GiveMode=सबको एक ही व्यक्ति को|उनके {{ReceiverRelation}} {{ReceiverName}}{{if:ReceiverAddress| निवासी {{ReceiverAddress}}}} उपस्थित आये, जिनको सुपुर्दगी में देकर रुखसत किया गया।}}{{if:GiveMode=हर व्यक्ति को अलग-अलग|{{each:Givers?name|{who} के {rel} {name}{ निवासी ~addr}| तथा }} उपस्थित आये, जिनको क्रमशः सुपुर्दगी में देकर रुखसत किया गया।}}}} तस्करा अंकित किया गया।}}",
       "keys": [
         {
-          "key_name": "PersonName",
-          "label": "थाने पर आये व्यक्ति/ व्यक्तियों का नाम",
-          "field_type": "person_group",
-          "is_required": 0,
-          "sort_order": 1,
-          "default_value": ""
+          "key_name": "Stage",
+          "label": "क्या लिखना है",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पूछताछ हेतु बैठाया",
+          "dropdown_options": "[\"पूछताछ हेतु बैठाया\", \"पूछताछ के बाद सुपुर्दगी\"]",
+          "sort_order": 0
         },
         {
-          "key_name": "ReleasedTo",
-          "label": "सुपुर्दगी लेने वाले का नाम व पहचान",
-          "field_type": "multiline",
-          "is_required": 0,
-          "sort_order": 2,
-          "default_value": "जिन्हे बाद पूछताछ पिता गुड्डू उर्फ हयात मोहम्मद के हमराह कर हस्ब आदेश प्रभारी निरीक्षक महोदय थाना हाजा से रूखसत किया गया।"
-        },
-        {
-          "key_name": "ApplicationInfo",
-          "label": "प्रा0 पत्र विवरण",
-          "field_type": "multiline",
-          "is_required": 0,
-          "sort_order": 5,
-          "default_value": "आवेदक/ आवेदिका राम स्वरूप पुत्र श्रीकेशन निवासी ग्राम अघौरा थाना बछरावा जनपद रायबरेली द्वारा प्रेषित किये गये प्रा0 पत्र के संबंध में"
-        }
-      ],
-      "last_updated": "2026-07-17"
-    },
-    {
-      "id": "sys-gd-fmt-taskara-fir",
-      "title": "तस्करा बाबत पूछताछ व सुपुर्दगीनामा(मुकदमा)",
-      "format_type": "GD",
-      "vivran": "इस समय थाना कार्यालय/पूछताछ कक्ष में बैठे {{PersonName}} जिसको मु0अ0सं0 {{FIRNo}} धारा {{Sections}} से सम्बन्धित पूछताछ हेतु थाना हाजा बुलवाया गया था जो तलबिदा उपस्थित आये थे। {{ReleasedTo}} हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जाएगा तो थाने पर उपस्थित होगें। तस्करा अंकित किया गया।",
-      "is_favorite": 0,
-      "created_by": "system",
-      "source": "system",
-      "editable": 0,
-      "content_type": "format",
-      "seed_version": 1,
-      "app_version": "1.0.0",
-      "tags": [
-        "तस्करा",
-        "पूछताछ",
-        "सुपुर्दगी",
-        "मुकदमा",
-        "GD"
-      ],
-      "keys": [
-        {
-          "key_name": "PersonName",
-          "label": "थाने पर आये व्यक्ति/ व्यक्तियों का नाम",
-          "field_type": "person_group",
-          "is_required": 0,
-          "sort_order": 1,
-          "default_value": ""
-        },
-        {
-          "key_name": "ReleasedTo",
-          "label": "सुपुर्दगी लेने वाले का नाम व पहचान",
-          "field_type": "multiline",
-          "is_required": 0,
-          "sort_order": 2,
-          "default_value": "जिन्हे बाद पूछताछ पिता गुड्डू उर्फ हयात मोहम्मद के हमराह कर हस्ब आदेश प्रभारी निरीक्षक महोदय थाना हाजा से रूखसत किया गया।"
+          "key_name": "Reason",
+          "label": "किस बारे में",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मुकदमा",
+          "dropdown_options": "[\"मुकदमा\", \"प्रार्थना पत्र\", \"PRV द्वारा लाये गये\", \"अन्य\"]",
+          "sort_order": 1
         },
         {
           "key_name": "FIRNo",
-          "label": "FIR No. दर्ज करें",
+          "label": "मु0अ0सं0",
           "field_type": "text",
-          "is_required": 0,
-          "sort_order": 3,
-          "default_value": ""
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Reason=मुकदमा\"}",
+          "sort_order": 2
         },
         {
           "key_name": "Sections",
-          "label": "धाराएं",
+          "label": "धारा",
           "field_type": "text",
           "is_required": 0,
-          "sort_order": 4,
-          "default_value": ""
-        }
-      ],
-      "last_updated": "2026-07-17"
-    },
-    {
-      "id": "sys-gd-fmt-taskara-fir-only",
-      "title": "तस्करा बाबत पूछताछ (मुकदमा)",
-      "format_type": "GD",
-      "vivran": "इस समय {{PersonName}} को मु0अ0सं0{{FIRNo}} धारा {{Sections}} से सम्बन्धित पूछताछ हेतु थाना हाजा बुलवाया गया था जो तलबिदा उपस्थित आये थे। जिन्हे पूछताछ हेतु पूछताछ कक्ष में सन्तरी पहरा की निगरानी में बैठाया गया। तस्करा अंकित किया गया।",
-      "is_favorite": 0,
-      "created_by": "system",
-      "source": "system",
-      "editable": 0,
-      "content_type": "format",
-      "seed_version": 1,
-      "app_version": "1.0.0",
-      "tags": [
-        "तस्करा",
-        "पूछताछ",
-        "मुकदमा",
-        "GD"
-      ],
-      "keys": [
-        {
-          "key_name": "PersonName",
-          "label": "थाने पर आये व्यक्ति/ व्यक्तियों का नाम",
-          "field_type": "person_group",
-          "is_required": 0,
-          "sort_order": 1,
-          "default_value": ""
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Reason=मुकदमा\"}",
+          "sort_order": 3
         },
         {
-          "key_name": "FIRNo",
-          "label": "FIR No. दर्ज करें",
-          "field_type": "text",
-          "is_required": 0,
-          "sort_order": 3,
-          "default_value": ""
-        },
-        {
-          "key_name": "Sections",
-          "label": "धाराएं",
-          "field_type": "text",
-          "is_required": 0,
-          "sort_order": 4,
-          "default_value": ""
-        }
-      ],
-      "last_updated": "2026-07-17"
-    },
-    {
-      "id": "sys-gd-fmt-taskara-pp-only",
-      "title": "तस्करा बाबत पूछताछ(प्रा0 पत्र)",
-      "format_type": "GD",
-      "vivran": "इस समय {{PersonName}} को जिसको {{ApplicationInfo}} पूछताछ हेतु थाना हाजा बुलवाया गया था जो तलबिदा उपस्थित आये थे। जिन्हे पूछताछ हेतु पूछताछ कक्ष में सन्तरी पहरा की निगरानी में बैठाया गया। तस्करा अंकित किया गया।",
-      "is_favorite": 0,
-      "created_by": "system",
-      "source": "system",
-      "editable": 0,
-      "content_type": "format",
-      "seed_version": 1,
-      "app_version": "1.0.0",
-      "tags": [
-        "तस्करा",
-        "पूछताछ",
-        "प्रार्थना पत्र",
-        "GD"
-      ],
-      "keys": [
-        {
-          "key_name": "PersonName",
-          "label": "थाने पर आये व्यक्ति/ व्यक्तियों का नाम",
-          "field_type": "person_group",
-          "is_required": 0,
-          "sort_order": 1,
-          "default_value": ""
-        },
-        {
-          "key_name": "ApplicationInfo",
-          "label": "प्रा0 पत्र विवरण",
+          "key_name": "Applicant",
+          "label": "आवेदक/आवेदिका का नाम-पता (जैसे: राम स्वरूप पुत्र श्रीकृष्ण निवासी ग्राम …)",
           "field_type": "multiline",
-          "is_required": 0,
-          "sort_order": 5,
-          "default_value": "आवेदक/ आवेदिका राम स्वरूप पुत्र श्रीकेशन निवासी ग्राम अघौरा थाना बछरावा जनपद रायबरेली द्वारा प्रेषित किये गये प्रा0 पत्र के संबंध में"
-        }
-      ],
-      "last_updated": "2026-07-17"
-    },
-    {
-      "id": "sys-gd-fmt-taskara-prv",
-      "title": "तस्करा सुपुर्दगी(पुलिस पीआरवी द्वारा लाये जाने पर)",
-      "format_type": "GD",
-      "vivran": "थाना स्थानीय पर पीआरवी द्वारा अपने इवेन्ट संख्या {{EventNo}} की सूचना पर एक व्यक्ति जो मानसिक रुप से विक्षिप्त था को लाया गया था। उक्त व्यक्ति से नाम पता पूछा गया तो उसने अपना नाम राजू पुत्र रणधीर सिंह निवासी ग्राम घनातेजा थाना रिफाइनरी जनपद मथुरा बताया था। राजू के परिजनो से सम्पर्क किया गया तो तारीखी इमरोजा मे अजीत पुत्र ओमप्रकाश निवासी घानातेजा थाना रिफाइनरी जनपद मथुरा उपस्थित आये, जिनको सुपुर्दगी मे देकर रुखसत किया गया। तस्करा अंकित किया गया।",
-      "is_favorite": 0,
-      "created_by": "system",
-      "source": "system",
-      "editable": 0,
-      "content_type": "format",
-      "seed_version": 1,
-      "app_version": "1.0.0",
-      "tags": [
-        "तस्करा",
-        "सुपुर्दगी",
-        "पीआरवी",
-        "PRV",
-        "GD"
-      ],
-      "keys": [
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Reason=प्रार्थना पत्र\"}",
+          "sort_order": 4
+        },
         {
           "key_name": "EventNo",
-          "label": "पुलिस पीआरवी की ईवेंट सं0 दर्ज करें",
+          "label": "पीआरवी इवेन्ट संख्या",
           "field_type": "text",
           "is_required": 0,
-          "sort_order": 6,
-          "default_value": ""
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Reason=PRV द्वारा लाये गये\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "Condition",
+          "label": "व्यक्ति के बारे में (जैसे: मानसिक रूप से विक्षिप्त था) — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Reason=PRV द्वारा लाये गये\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "OtherReason",
+          "label": "किस बारे में बुलाया (जैसे: गुमशुदगी की जांच के सम्बन्ध में)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Reason=अन्य\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "PersonName",
+          "label": "थाने पर आये / लाये गये व्यक्ति",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 8
+        },
+        {
+          "key_name": "GiveMode",
+          "label": "सुपुर्दगी किसे दी",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "सबको एक ही व्यक्ति को",
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी\", \"options\": [\"सबको एक ही व्यक्ति को\", \"हर व्यक्ति को अलग-अलग\"]}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "ReceiverRelation",
+          "label": "सुपुर्दगी लेने वाले का रिश्ता",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पिता",
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"]}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "ReceiverName",
+          "label": "सुपुर्दगी लेने वाले का नाम (जैसे: गुड्डू उर्फ हयात मोहम्मद)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "ReceiverAddress",
+          "label": "सुपुर्दगी लेने वाले का पता — व्यक्ति वाला ही हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "Givers",
+          "label": "सुपुर्दगी विवरण (हर व्यक्ति / समूह की एक पंक्ति)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"किसको सौंपा (जैसे: रवि  या  रवि व मोहन)\"}, {\"key\": \"rel\", \"label\": \"सुपुर्दगी लेने वाले का रिश्ता\", \"type\": \"choice\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"], \"default\": \"पिता\"}, {\"key\": \"name\", \"label\": \"सुपुर्दगी लेने वाले का नाम\"}, {\"key\": \"addr\", \"label\": \"पता — व्यक्ति वाला ही हो तो खाली\"}], \"addLabel\": \"+ और सुपुर्दगी जोड़ें\", \"itemLabel\": \"सुपुर्दगी\", \"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=हर व्यक्ति को अलग-अलग\"}",
+          "sort_order": 13
         }
-      ],
-      "last_updated": "2026-07-17"
+      ]
     },
     {
       "id": "sys-gd-fmt-rawangi-samanya",

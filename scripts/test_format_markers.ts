@@ -102,7 +102,7 @@ test('editor HTML keeps the layout after a round trip (and after an added line)'
 test('owner 126/135 formats: 7 sheets each (last = सिपाही note / GD प्रारूप), attachments 1-3, nothing lost', () => {
   const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
   const fmts = d.formats.filter((f: { id: string }) => f.id.startsWith('sys-fmt-bnss126'));
-  assert.equal(fmts.length, 5);
+  assert.equal(fmts.length, 6); // + प्रार्थना पत्र जांच
   for (const f of fmts) {
     assert.equal(M.hasFormatMarkers(f.vivran), true, f.id);
     const html = P.renderTextForPrint(f.vivran);
