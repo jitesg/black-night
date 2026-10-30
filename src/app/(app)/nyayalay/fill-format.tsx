@@ -9,6 +9,7 @@
  *   formatId  – the selected PredefinedFormat id
  *   docId     – the nyayalay document id (passed through for context)
  */
+import { isKeyVisible } from '@/lib/formatShowIf';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -265,7 +266,7 @@ export default function NyayalayFillFormatScreen() {
               <Text className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                 {t('nyayalay.format.fillRequiredDetails')}
               </Text>
-              {dynamicKeys.map((key) => (
+              {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) => (
                 <FormatKeyInput
                   key={key.id}
                   ref={(r) => { fieldRefs.current[key.key_name] = r; }}

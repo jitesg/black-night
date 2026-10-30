@@ -5,6 +5,7 @@
  *   - mode=action (default): generates text → ppActionDraftStore → back to take-action
  *   - mode=report: generates text → ppReportDraftStore → back to report screen
  */
+import { isKeyVisible } from '@/lib/formatShowIf';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -260,7 +261,7 @@ export default function PPFillFormatScreen() {
               <Text className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                 {t('format.fill.fillFieldsLabel')}
               </Text>
-              {dynamicKeys.map((key) =>
+              {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) =>
                 key.field_type === 'accused_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
                     <AccusedGroupInput

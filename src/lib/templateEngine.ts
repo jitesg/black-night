@@ -539,6 +539,7 @@ const INDEXED_ACCESS_RE = /\{\{([A-Za-z0-9_]+)\.(\d+)\.([A-Za-z0-9_]+)\}\}/g;
 /**
  * {{if:Key|text}} → text only when the field Key is filled / ticked (checkbox value "हाँ");
  * {{ifnot:Key|text}} → text only when it is empty / unticked. The text may hold other tokens.
+ * {{if:Key=A|text}} / {{if:Key=A/B|text}} → text only when the value is A (or B) — for dropdowns.
  * E.g. the 170 चालानी "14 दिवस रिमांड" checkbox chooses between two निवेदन lines.
  */
 export function isTicked(v: string | undefined | null): boolean {
@@ -641,7 +642,7 @@ function _applySeqTokens(template: string): string {
 
 function _applyIfTokens(template: string, values: Record<string, string>): string {
   if (!template.includes('{{if')) return template;
-  const open = /\{\{(if|ifnot):([A-Za-z0-9_]+)\|/;
+  const open = /\{\{(if|ifnot):([A-Za-z0-9_]+)(?:=([^|{}]+))?\|/;
   let out = '';
   let rest = template;
   for (let m = open.exec(rest); m; m = open.exec(rest)) {
@@ -653,7 +654,10 @@ function _applyIfTokens(template: string, values: Record<string, string>): strin
       else i += 1;
     }
     const inner = rest.slice(m.index + m[0].length, depth === 0 ? i - 2 : i);
-    const on = isTicked(values[m[2]]);
+    // {{if:Key|…}} = filled / ticked; {{if:Key=A/B|…}} = the value is A or B (dropdowns)
+    const on = m[3] !== undefined
+      ? m[3].split('/').map((x) => x.trim()).includes(String(values[m[2]] ?? '').trim())
+      : isTicked(values[m[2]]);
     // the kept text may hold more {{if:…}} (nested)
     out += rest.slice(0, m.index) + ((m[1] === 'if') === on ? _applyIfTokens(inner, values) : '');
     rest = rest.slice(i);

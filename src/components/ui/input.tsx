@@ -493,7 +493,9 @@ export function parseDropdownOptions(raw: string | null | undefined): { value: s
   const t = String(raw ?? '').trim();
   if (!t) return [];
   try {
-    const arr = JSON.parse(t) as unknown;
+    let arr = JSON.parse(t) as unknown;
+    // {"options": [...], "showIf": "..."} — list plus a show condition (formatShowIf.ts)
+    if (arr && typeof arr === 'object' && !Array.isArray(arr)) arr = (arr as { options?: unknown }).options ?? [];
     if (Array.isArray(arr)) {
       return arr
         .map((o) => (typeof o === 'string'

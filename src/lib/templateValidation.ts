@@ -5,6 +5,7 @@
  * Builds a per-field error map so each field can show its own inline error.
  */
 import type { FormatKey } from '@/lib/db/predefinedFormatRepo';
+import { isKeyVisible } from '@/lib/formatShowIf';
 
 export interface ValidationResult {
   /** keyed by key_name → error message; empty if field is valid */
@@ -29,6 +30,7 @@ export function validateRequiredFields(
 
   for (const key of keys) {
     if (key.is_required !== 1) continue;
+    if (!isKeyVisible(key, values)) continue; // hidden by its showIf
 
     // accused_group / person_group: valid when the JSON array has at least one entry with a name filled
     if (key.field_type === 'accused_group' || key.field_type === 'person_group') {

@@ -1,4 +1,5 @@
 import { resolveContextDefaults } from '@/lib/contextDefaultResolver';
+import { isKeyVisible } from '@/lib/formatShowIf';
 import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -527,7 +528,7 @@ export default function FillScreen() {
               <Text style={{ fontSize: 11, color: '#5C5C60', fontWeight: '500', letterSpacing: 0.8, textTransform: 'uppercase' }}>
                 {t('format.fill.fillFieldsLabel')}
               </Text>
-              {dynamicKeys.map((key) =>
+              {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) =>
                 key.field_type === 'accused_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
                     <AccusedGroupInput

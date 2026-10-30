@@ -206,3 +206,15 @@ test('GD वापसी: nothing ticked → only the opening; ticks → paragra
   assert.match(two, /\n\nतत्पश्चात बालाबाला रवाना होकर अपने बीट क्षेत्र/);
   assert.doesNotMatch(two, /\{\{|\}\}|\n{3,}/);
 });
+
+test('{{if:Key=A/B|…}} and showIf (fields that appear only when needed)', async () => {
+  assert.equal(generateReport('{{if:R=मुकदमा|M}}{{if:R=प्रार्थना पत्र/अन्य|P}}{{ifnot:R=मुकदमा|N}}', { R: 'अन्य' }, []), 'PN');
+  const { isKeyVisible } = await import('../src/lib/formatShowIf.ts');
+  const k = (showIf: string) => ({ dropdown_options: JSON.stringify({ showIf }) });
+  assert.equal(isKeyVisible(k('R=मुकदमा'), { R: 'मुकदमा' }), true);
+  assert.equal(isKeyVisible(k('R=मुकदमा'), { R: 'अन्य' }), false);
+  assert.equal(isKeyVisible(k('doPP'), { doPP: 'हाँ' }), true);
+  assert.equal(isKeyVisible(k('!doPP'), { doPP: 'हाँ' }), false);
+  assert.equal(isKeyVisible(k('S=x & R=a/b'), { S: 'x', R: 'b' }), true);
+  assert.equal(isKeyVisible({ dropdown_options: '["a","b"]' }, {}), true);
+});
