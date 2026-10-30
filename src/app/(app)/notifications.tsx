@@ -8,65 +8,17 @@ import { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import { Bell, BellOff, ChevronRight, FileWarning, NotebookPen, Scale, Scroll } from 'lucide-react-native';
+import { BellOff } from 'lucide-react-native';
+import { KIND_META, NoticeItem } from '@/components/notifications/NoticeItem';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Pill } from '@/components/ui/ds/Pill';
 import { THEME } from '@/lib/theme';
 import { loadNoticeCards } from '@/lib/db/noticeRepo';
 import { refreshAppBadge } from '@/lib/appBadge';
-import type { NoticeCard, NoticeKind, NoticeLevel } from '@/lib/noticeCards';
-
-const KIND_META: Record<NoticeKind, { label: string; icon: typeof Bell; light: string; dark: string }> = {
-  cd:       { label: 'केस डायरी',   icon: NotebookPen, light: '#7C3AED', dark: '#C4B5FD' },
-  court:    { label: 'न्यायालय',    icon: Scale,       light: '#1D4ED8', dark: '#93C5FD' },
-  petition: { label: 'प्रार्थना पत्र', icon: Scroll,      light: '#0F766E', dark: '#5EEAD4' },
-  reminder: { label: 'रिमाइंडर',    icon: Bell,        light: '#B45309', dark: '#FCD34D' },
-  nk:       { label: 'निरोधात्मक',   icon: FileWarning, light: '#DC2626', dark: '#FCA5A5' },
-};
-
-const LEVEL_COLOR: Record<NoticeLevel, { light: string; dark: string }> = {
-  over: { light: '#DC2626', dark: '#F87171' },
-  warn: { light: '#D97706', dark: '#FBBF24' },
-  info: { light: '#475569', dark: '#CBD5E1' },
-};
+import type { NoticeCard, NoticeKind } from '@/lib/noticeCards';
 
 type Filter = 'all' | NoticeKind;
 const FILTERS: Filter[] = ['all', 'cd', 'nk', 'court', 'petition', 'reminder'];
-
-function NoticeItem({ card, isDark }: { card: NoticeCard; isDark: boolean }) {
-  const palette = THEME[isDark ? 'dark' : 'light'];
-  const meta = KIND_META[card.kind];
-  const Icon = meta.icon;
-  const kindColor = isDark ? meta.dark : meta.light;
-  const levelColor = LEVEL_COLOR[card.level][isDark ? 'dark' : 'light'];
-  return (
-    <Pressable
-      onPress={() => router.push(card.route as never)}
-      accessibilityRole="button"
-      accessibilityLabel={`${card.title}. ${card.body}`}
-      style={({ pressed }) => ({
-        flexDirection: 'row', gap: 12, padding: 14, borderRadius: 16,
-        backgroundColor: palette.card, borderWidth: 1, borderColor: palette.border,
-        borderLeftWidth: 4, borderLeftColor: levelColor, opacity: pressed ? 0.75 : 1,
-      })}
-    >
-      <View style={{ width: 38, height: 38, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: `${kindColor}${isDark ? '2E' : '1A'}` }}>
-        <Icon size={18} color={kindColor} />
-      </View>
-      <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          <Text textBreakStrategy="simple" style={{ flex: 1, fontSize: 14, fontWeight: '700', lineHeight: 20, color: palette.foreground }} numberOfLines={2}>
-            {card.title}
-          </Text>
-          <Pill size="xs" label={card.when} color={levelColor} />
-        </View>
-        <Text textBreakStrategy="simple" style={{ fontSize: 12.5, lineHeight: 18, color: palette.mutedForeground }}>{card.body}</Text>
-        <Text style={{ fontSize: 11, fontWeight: '600', color: kindColor }}>{meta.label}</Text>
-      </View>
-      <ChevronRight size={16} color={palette.mutedForeground} style={{ alignSelf: 'center' }} />
-    </Pressable>
-  );
-}
 
 export default function NotificationsScreen() {
   const { colorScheme } = useColorScheme();
@@ -116,7 +68,7 @@ export default function NotificationsScreen() {
         data={shown}
         keyExtractor={(c) => c.id}
         renderItem={({ item }) => <NoticeItem card={item} isDark={isDark} />}
-        contentContainerStyle={{ padding: 16, gap: 10, paddingBottom: 120 }}
+        contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: 120 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} />}
         ListEmptyComponent={loading ? null : (
           <View style={{ alignItems: 'center', paddingVertical: 48, gap: 10 }}>

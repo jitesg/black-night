@@ -52,3 +52,15 @@ test('case diary pending from day 7; reminders due today or missed', () => {
   assert.match(cd?.body ?? '', /15 दिन की सीमा पार/);
   assert.equal(noticeBadgeCount(cards), 2); // r2 later today is info only
 });
+
+test('card extras: cd progress, deadline meta + action', () => {
+  const cards = buildNoticeCards({
+    firs: [{ id: 'f1', fir_number: '12/26', date_of_information: '2026-10-15', last_diary_date: null }],
+    courtDocs: [{ id: 'c1', registration_number: '12/26', doc_type: 'NBW', deadline_date: '2026-10-26' }],
+  }, now);
+  const cd = cards.find((c) => c.kind === 'cd');
+  assert.ok(cd?.progress && cd.progress.value > 0 && cd.progress.value <= 1);
+  const court = cards.find((c) => c.kind === 'court');
+  assert.deepEqual(court?.meta, ['सं0 12/26', 'अंतिम तिथि 26.10.2026']);
+  assert.equal(court?.action, 'दस्तावेज़ खोलें');
+});

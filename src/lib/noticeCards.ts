@@ -24,6 +24,13 @@ export interface NoticeCard {
   route: string;
   /** Lower = more urgent (used for sorting inside a level). */
   rank: number;
+  /** Card extras (screen only; phone alerts use title/body): */
+  /** progress bar, e.g. केस डायरी gap: 9 of 15 days. */
+  progress?: { value: number; label: string };
+  /** small info items under the body ("मु0अ0सं0 12/26", "अंतिम तिथि 27.10.2026"). */
+  meta?: string[];
+  /** short action chip text ("चलानी प्रेषित करें"). */
+  action?: string;
 }
 
 export interface CourtDocRow { id: string; registration_number: string; doc_type: string; sub_type?: string | null; writ_type?: string | null; deadline_date: string }
@@ -89,6 +96,8 @@ function deadlineCard(
   return {
     id: `${kind}-${id}`, kind, level: over || days === 0 ? 'over' : 'warn',
     title: `${label} — सं0 ${reg}`, body, when: dueLabel(days), route, rank: days,
+    meta: [`सं0 ${reg}`, `अंतिम तिथि ${fmtDate(d)}`],
+    action: kind === 'court' ? 'दस्तावेज़ खोलें' : 'प्रार्थना पत्र खोलें',
   };
 }
 
@@ -107,6 +116,8 @@ export function buildNoticeCards(input: {
       title: `चलानी प्रेषण लंबित — ${nkPlace(r)}`,
       body: `निरोधात्मक कार्यवाही${r.proceeding_type ? ` (${r.proceeding_type})` : ''}${d ? ` दिनांक ${fmtDate(d)}` : ''} की चलानी अभी मजिस्ट्रेट को प्रेषित नहीं की गई है।`,
       when: days === 0 ? 'आज' : `${days} दिन`, route: '/(app)/nirodhatmak', rank: -days,
+      meta: [r.proceeding_type, d ? `दिनांक ${fmtDate(d)}` : ''].filter((x): x is string => !!x),
+      action: 'चलानी प्रेषित करें',
     });
   }
 
@@ -124,6 +135,7 @@ export function buildNoticeCards(input: {
         : `${fmtDate(base.date)} से अभी तक कोई केस डायरी नहीं काटी गई है।`)
         + (over ? ` ${CD_MAX_GAP_DAYS} दिन की सीमा पार।` : ''),
       when: `${days} दिन`, route: `/(app)/mukadma/${f.id}/case-diary`, rank: -days,
+      progress: { value: Math.min(1, days / CD_MAX_GAP_DAYS), label: `${days}/${CD_MAX_GAP_DAYS} दिन` },
     });
   }
 
@@ -154,6 +166,7 @@ export function buildNoticeCards(input: {
         .filter(Boolean).join(' · '),
       when: missed ? (daysAgo > 0 ? `${daysAgo} दिन पहले` : 'छूटा') : time,
       route: '/(app)/reminders', rank: ms / 86400000 - 1e6,
+      meta: [missed ? (daysAgo > 0 ? `${fmtDate(at)} ${time}` : `आज ${time}`) : `आज ${time}`, r.fir_label ?? ''].filter(Boolean),
     });
   }
 

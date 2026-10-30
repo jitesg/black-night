@@ -49,7 +49,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   15-day warning; tests `scripts/test_case_diary_gap.ts`), scheduler `caseDiaryGapService.ts` (cancel + reschedule
   `kind: cd_gap`; run from syncAppNotifications and after case diary / FIR changes via lazy import in the repos),
   tap → `/(app)/mukadma/<firId>/case-diary` (root `_layout.tsx`), setting `notifCaseDiaryGap`, badge in mukadma list.
-- Home bell → `(app)/notifications.tsx` (सूचनाएँ): live cards from `src/lib/noticeCards.ts` (pure; केस डायरी लंबित,
+- Home bell → `(app)/notifications.tsx` (सूचनाएँ): cards `components/notifications/NoticeItem.tsx` (icon tile, title + time, body, extras: progress / meta / action from the card) built live from `src/lib/noticeCards.ts` (pure; केस डायरी लंबित,
   न्यायालय/प्रार्थना पत्र overdue or due in 3 days, reminders due today/missed; tests `scripts/test_notice_cards.ts`),
   data via `src/lib/db/noticeRepo.ts`; bell badge = `noticeBadgeCount`.
 - न्यायालय / प्रार्थना पत्र phone alerts: plan `src/lib/deadlineAlerts.ts` (9 AM, 2/1/0 days before, High Court 5/3/1/0,
