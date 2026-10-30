@@ -20,6 +20,7 @@
  * the selected branch are resolved against `values` before output.
  */
 import { stripFormatMarkers } from './formatMarkers';
+import { composeSentence, parseSentenceConfig } from './sentenceField';
 
 // ─── Key detection ────────────────────────────────────────────────────────
 const KEY_REGEX = /\{\{([A-Za-z0-9_]+)\}\}/g;
@@ -315,6 +316,24 @@ function _resolveGroupAgreement(
 export interface KeyDefForRender {
   key_name: string;
   field_type: string;
+  dropdown_options?: string | null;
+}
+
+/**
+ * Step -4 — field_type "sentence" (card + blanks, src/lib/sentenceField.ts): {{Key}} becomes
+ * the composed sentence before any other step, so the card text may use normal tokens.
+ */
+function _applySentenceFields(template: string, values: Record<string, string>, keyDefs?: KeyDefForRender[]): string {
+  if (!keyDefs) return template;
+  let out = template;
+  for (const kd of keyDefs) {
+    if (kd.field_type !== 'sentence') continue;
+    const token = `{{${kd.key_name}}}`;
+    if (!out.includes(token)) continue;
+    const text = composeSentence(parseSentenceConfig(kd.dropdown_options), values[kd.key_name] ?? '', values);
+    out = out.split(token).join(text);
+  }
+  return out;
 }
 
 /** All field_type values that hold a JSON array of repeatable entries. */
@@ -1014,7 +1033,7 @@ export function generateReport(
 ): string {
   // Layout marks ([[शीर्षक]] …) are only for the print pipeline (formats/fill).
   if (!opts?.keepMarkers) return stripFormatMarkers(generateReport(template, values, keyDefs, { keepMarkers: true }));
-  let processed = _applySeqTokens(_applyIfTokens(_applyItemTokens(template, values), values)); // Step -3/-2 (item lists, {{if:Key|…}}, {{seq|…}})
+  let processed = _applySeqTokens(_applyIfTokens(_applyItemTokens(_applySentenceFields(template, values, keyDefs), values), values)); // Step -3/-2 (item lists, {{if:Key|…}}, {{seq|…}})
   if (keyDefs && keyDefs.length > 0) {
     processed = _applyGroupStatus(processed, values, keyDefs);            // Step -1 (accused status)
     processed = _applyFieldProjection(processed, values, keyDefs);        // Step 0

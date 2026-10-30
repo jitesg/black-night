@@ -6,6 +6,7 @@
  */
 import type { FormatKey } from '@/lib/db/predefinedFormatRepo';
 import { isKeyVisible } from '@/lib/formatShowIf';
+import { findCard, parseSentenceConfig, parseSentenceValue, pendingSlots } from '@/lib/sentenceField';
 
 export interface ValidationResult {
   /** keyed by key_name → error message; empty if field is valid */
@@ -44,6 +45,26 @@ export function validateRequiredFields(
       } catch { /* treat as invalid */ }
       if (!hasNamed) {
         fieldErrors[key.key_name] = emptyMsg;
+        if (!firstErrorKey) firstErrorKey = key.key_name;
+      }
+      continue;
+    }
+
+    // sentence (card + blanks): a card chosen and every required blank filled
+    if (key.field_type === 'sentence') {
+      const cfg = parseSentenceConfig(key.dropdown_options);
+      const v = parseSentenceValue(values[key.key_name]);
+      const name = key.label || key.key_name;
+      let msg = '';
+      if (!v.legacy) {
+        if (!findCard(cfg, v.card)) msg = `${name}: एक कार्ड चुनें`;
+        else {
+          const n = pendingSlots(cfg, v, values).length;
+          if (n) msg = `${name}: ${n} जगह भरना बाकी`;
+        }
+      }
+      if (msg) {
+        fieldErrors[key.key_name] = msg;
         if (!firstErrorKey) firstErrorKey = key.key_name;
       }
       continue;

@@ -217,6 +217,8 @@ function FormatFillPanel({
                   setGenError('');
                 }}
                 error={fieldErrors[key.key_name]}
+                allValues={values}
+                allKeys={dynKeys}
               />
             ))
           )}

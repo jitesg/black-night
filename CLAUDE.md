@@ -119,6 +119,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   × CaseType (मुकदमा / 170 BNSS चालानी) → heading line + opening; standard जामा तलाशी/जरावात/खाना/हवालात/ताला text, optional
   बरामदगी, चोट, हवालात मर्दाना/महिला, हुलिया item_group (`{text~col~after}`), free "विवरण गिरफ्तारी", सूचना की/के by relation;
   `{{Key#cnt}}` = 01/03 नफर.
+- Field type "sentence" (card + coloured blanks, owner's idea): `src/lib/sentenceField.ts` (pure: config `{hint,cards:[{id,icon,label,text}],
+  slots:{name:{label,title,type text|multiline|choice|date,default ("today"),optional,before,after,showIf,whenHidden,remember}},extraLabel}`,
+  card text = template text with blanks `<<name>>` — never inside a {{…}} token), value JSON `{card,s,extra}` (old plain text used as is);
+  templateEngine Step -4 `_applySentenceFields` (needs keyDefs with dropdown_options); UI `components/ui/SentenceFieldInput.tsx`
+  (cards grid → chip row; yellow = to fill, green = filled, blue = choice; sheet with आज/कल and "पिछली बार लिखा" from localStorage);
+  fill screens pass `allValues`/`allKeys` to FormatKeyInput for the preview. Used by अभियुक्त दाखिला `ArrestDetail` (8 cards, seed_version 2).
 - GD `sys-gd-fmt-vivechana-parivartan` "तस्करा — विवेचना में परिवर्तन (धारा / नाम)": optional वापसी opening (doWapsi, हमराह,
   शस्त्र मालखाना tick) + 4 ticks धारा बढ़ोत्तरी / घटोत्तरी / नाम प्रकाश में / नामजदगी गलत (each opens its fields); heading parts
   joined with "व" by `{{seq||व }}`; अग्रिम विवेचना धारा / बनाम optional.

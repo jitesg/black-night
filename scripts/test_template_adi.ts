@@ -300,3 +300,40 @@ test('मेडिकल पत्र: every type (and एक्स-रे ticks
     assert.match(html, Persons === two ? /मजरूबगण/ : /मजरूब मनीष पुत्र हरीशंकर/);
   }
 });
+
+test('अभियुक्त दाखिला: विवरण गिरफ्तारी = card + blanks (sentence field)', async () => {
+  const SF = await import('../src/lib/sentenceField.ts');
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-abhiyukt-dakhila');
+  const key = f.keys.find((k: { key_name: string }) => k.key_name === 'ArrestDetail');
+  assert.equal(key.field_type, 'sentence');
+  const cfg = SF.parseSentenceConfig(key.dropdown_options);
+  assert.equal(cfg.cards.length, 8);
+  const one = JSON.stringify([{ name: 'रामू', fatherName: 'श्यामलाल', address: 'रामपुर' }]);
+  const base = { Mode: 'मैं वापस आकर दाखिल कर रहा (वापसी)', Hamrah: 'का0 सुरेश', Purpose: 'गश्त', pad: 'उपनिरीक्षक', OfficerName: 'राजेश कुमार',
+    CaseType: 'मुकदमा', FIRNo: '245/2025', Accused: one, Injury: 'कोई जाहिरा चोट नहीं', Hawalat: 'मर्दाना' };
+  const val = (card: string, s: Record<string, string>, extra = '') => SF.serializeSentenceValue({ card, s, extra });
+  const out = (v: Record<string, string>) => {
+    const t = generateReport(f.vivran, v, f.keys);
+    assert.doesNotMatch(t, /\{\{|\}\}|<<|>>/);
+    return /विवरण गिरफ्तारी इस प्रकार है – (.*?) दौराने/s.exec(t)?.[1] ?? '';
+  };
+  let s = out({ ...base, ArrestDetail: val('mukhbir', { date: '30.10.2025', time: '10.30', place: 'ग्राम रामपुर तिराहा' }) });
+  assert.equal(s, 'दिनांक 30.10.2025 को समय करीब 10.30 बजे मुझ उपनिरीक्षक राजेश कुमार द्वारा मय हमराह मुखबिर खास की सूचना पर ग्राम रामपुर तिराहा से अभियुक्त उपरोक्त को नामजद होने के आधार पर गिरफ्तार किया गया।');
+  // no time → phrase dropped; extra appended; other officer
+  s = out({ ...base, Mode: 'दूसरे अधिकारी ने लाकर दाखिल किया', BringerRank: 'उ0नि0', BringerName: 'अमित सिंह',
+    ArrestDetail: val('dabish', { date: '01.10.2025', place: 'अभियुक्त के घर', basis: 'अपराध करते समय रंगे हाथ' }, 'घेराबन्दी कर पकड़ा गया।') });
+  assert.equal(s, 'दिनांक 01.10.2025 को उ0नि0 अमित सिंह द्वारा अभियुक्त के घर पर दबिश देकर अभियुक्त उपरोक्त को अपराध करते समय रंगे हाथ गिरफ्तार किया गया। घेराबन्दी कर पकड़ा गया।');
+  // 170 चालानी → basis replaced by the 170 wording, no place blank on "स्वयं थाने आया"
+  s = out({ ...base, CaseType: '170 BNSS चालानी (शांति भंग)', ArrestDetail: val('swayam', { date: '30.10.2025' }) });
+  assert.match(s, /थाना परिसर से अभियुक्त उपरोक्त को शांति व्यवस्था भंग होने की प्रबल आशंका के दृष्टिगत धारा 170 भा0ना0सु0सं0 के अन्तर्गत गिरफ्तार/);
+  // every card renders with its blanks filled
+  for (const c of cfg.cards) out({ ...base, ArrestDetail: val(c.id, { date: '30.10.2025', place: 'क', prv: '12', court: 'ख', own: 'ग' }) });
+  // validation: no card / blank left / complete / old plain text
+  const done = (v: string) => SF.isSentenceComplete(cfg, v, base);
+  assert.equal(done(''), false);
+  assert.deepEqual(SF.pendingSlots(cfg, SF.parseSentenceValue(val('mukhbir', {})), base), ['place']); // date = today, time optional
+  assert.equal(done(val('mukhbir', { place: 'क' })), true);
+  assert.equal(done('पुराना लिखा विवरण'), true);
+  assert.match(out({ ...base, ArrestDetail: 'पुराना लिखा विवरण' }), /^पुराना लिखा विवरण$/);
+});

@@ -34,6 +34,8 @@ import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
 import { DatePickerModal, dateStrToObj } from '@/components/common/DatePickerModal';
 import { ItemGroupInput, parseItemGroupConfig } from './ItemGroupInput';
+import { SentenceFieldInput } from './SentenceFieldInput';
+import type { KeyDefForRender } from '@/lib/templateEngine';
 
 // ─── Input Type Definitions ───────────────────────────────────────────────────
 
@@ -512,6 +514,9 @@ export interface FormatKeyInputProps {
   value: string;
   onChange: (keyName: string, value: string) => void;
   error?: string;
+  /** sentence fields: the whole form (other tokens in the card text are shown filled). */
+  allValues?: Record<string, string>;
+  allKeys?: KeyDefForRender[];
 }
 
 function fieldTypeToInputType(ft: string | undefined): InputType {
@@ -524,7 +529,7 @@ function fieldTypeToInputType(ft: string | undefined): InputType {
 }
 
 export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
-  ({ keyDef, value, onChange, error }, ref) => {
+  ({ keyDef, value, onChange, error, allValues, allKeys }, ref) => {
     const fieldType = keyDef.field_type ?? 'text';
     const displayLabel = keyDef.label || keyDef.key_name;
     const required = Boolean(keyDef.is_required);
@@ -540,6 +545,24 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
           error={error}
           displayLabel={displayLabel}
           required={required}
+        />
+      );
+    }
+
+    // ── Sentence: situation card + tappable blanks (src/lib/sentenceField.ts) ──
+    if (fieldType === 'sentence') {
+      return (
+        <SentenceFieldInput
+          ref={ref}
+          keyName={keyDef.key_name}
+          configRaw={keyDef.dropdown_options}
+          value={value}
+          onChange={onChange}
+          displayLabel={displayLabel}
+          required={required}
+          error={error}
+          allValues={allValues}
+          allKeys={allKeys}
         />
       );
     }

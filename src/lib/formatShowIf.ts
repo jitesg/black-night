@@ -24,8 +24,8 @@ export function keyShowIf(key: ShowIfKey): string {
   } catch { return ''; }
 }
 
-export function isKeyVisible(key: ShowIfKey, values: Record<string, string>): boolean {
-  const cond = keyShowIf(key);
+/** Evaluate a showIf condition string against the form values. */
+export function evalShowIf(cond: string, values: Record<string, string>): boolean {
   if (!cond) return true;
   return cond.split('&').every((part) => {
     const c = part.trim();
@@ -36,4 +36,8 @@ export function isKeyVisible(key: ShowIfKey, values: Record<string, string>): bo
     const k = c.slice(0, eq).trim();
     return c.slice(eq + 1).split('/').map((x) => x.trim()).includes(String(values[k] ?? '').trim());
   });
+}
+
+export function isKeyVisible(key: ShowIfKey, values: Record<string, string>): boolean {
+  return evalShowIf(keyShowIf(key), values);
 }

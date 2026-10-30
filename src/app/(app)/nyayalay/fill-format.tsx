@@ -274,6 +274,8 @@ export default function NyayalayFillFormatScreen() {
                   value={values[key.key_name] ?? ''}
                   onChange={setValue}
                   error={fieldErrors[key.key_name]}
+                  allValues={values}
+                  allKeys={dynamicKeys}
                 />
               ))}
             </>
