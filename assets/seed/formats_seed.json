@@ -3016,6 +3016,444 @@
       ]
     },
     {
+      "id": "sys-gd-fmt-vivechana-parivartan",
+      "title": "तस्करा — विवेचना में परिवर्तन (धारा / नाम)",
+      "format_type": "GD",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "तस्करा",
+        "धारा बढ़ोत्तरी",
+        "धारा घटोत्तरी",
+        "नाम प्रकाश में",
+        "नामजदगी गलत",
+        "GD"
+      ],
+      "last_updated": "2026-10-30",
+      "vivran": "{{if:GDTime|{{GDTime}} }}{{if:doWapsi|वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} व }}तस्करा बावत {{if:doBadh|{{seq||व }}धारा बढ़ोत्तरी }}{{if:doGhat|{{seq||व }}धारा घटोत्तरी }}{{if:doNaamAdd|{{seq||व }}अभियुक्त का नाम प्रकाश में लाये जाने }}{{if:doNaamHata|{{seq||व }}नामजदगी गलत पाये जाने }}सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}\n{{if:doWapsi|इस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}} रवानाशुदा रो0आम तारीखी इमरोजा से बाद {{WapsiKaam}} से वापस थाना हाजा आया।{{if:doShastra| हमराह के रवानाशुदा शस्त्र-कारतूस अन्दर मालखाना रखाकर ताला मालखाना बन्द ठीक सन्तरी पहरा को दिखाया गया, चाबी पूर्ववत रही।}} }}{{ifnot:doWapsi|इस समय }}मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} की विवेचना मुझ {{pad}}{{ifnot:doWapsi| {{OfficerName}}}} द्वारा सम्पादित की जा रही है।{{if:doBadh| अब तक की गयी तमामी विवेचना, बयान वादी, गवाहान एवं अन्य संकलित साक्ष्यों से {{BadhReason}} अतः अभियोग में धारा {{BadhSection}} की बढ़ोत्तरी की जाती है।}}{{if:doGhat| अब तक की गयी तमामी विवेचना, बयान वादी, गवाहान एवं अन्य संकलित साक्ष्यों से {{GhatReason}} अतः अभियोग से धारा {{GhatSection}} का लोप किया जाता है।}}{{if:doNaamAdd| विवेचना से {{NaamAddReason}} अतः {{NaamAdd#inline}} {{NaamAdd#n|का नाम प्रकाश में लाया जाता है।|के नाम प्रकाश में लाये जाते हैं।}}}}{{if:doNaamHata| {{NaamHataReason}} अतः {{NaamHata#n|नामित आरोपी|नामित आरोपीगण}} {{NaamHata#inline}} की नामजदगी गलत पाये जाने पर {{NaamHata#n|उसका नाम विवेचना से पृथक किया जाता है।|उनके नाम विवेचना से पृथक किये जाते हैं।}}}} अभियोग की अग्रिम विवेचना{{if:NewSections| अन्तर्गत धारा {{NewSections}}}}{{if:FurtherAgainst| बनाम {{FurtherAgainst}}}} सम्पादित की जायेगी। विवरण विवेचना जरिये सीडी प्रेषित है। तस्करा दर्ज किया जाता है।",
+      "keys": [
+        {
+          "key_name": "GDTime",
+          "label": "GD का समय (जैसे 20.50) — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 0
+        },
+        {
+          "key_name": "doWapsi",
+          "label": "वापसी के साथ (मैं क्षेत्र से वापस आया)",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 1
+        },
+        {
+          "key_name": "pad",
+          "label": "मेरा पद",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "sort_order": 2
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "मेरा नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 3
+        },
+        {
+          "key_name": "Hamrah",
+          "label": "हमराह — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}",
+          "sort_order": 4
+        },
+        {
+          "key_name": "WapsiKaam",
+          "label": "किस काम से गये थे",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "देखभाल क्षेत्र, रोकथाम जुर्म जरायम, चेकिंग संदिग्ध व्यक्ति/वाहन व जाँच पेण्डिंग विवेचना",
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "doShastra",
+          "label": "हमराह के शस्त्र-कारतूस मालखाना में जमा किये",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 7
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा (अभी तक की)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 8
+        },
+        {
+          "key_name": "doBadh",
+          "label": "धारा बढ़ोत्तरी",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 9
+        },
+        {
+          "key_name": "BadhSection",
+          "label": "कौन सी धारा बढ़ी (जैसे: 106(1) बीएनएस)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doBadh\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "BadhReason",
+          "label": "बढ़ोत्तरी का कारण — पूरा वाक्य (जैसे: मजरूब जियाउद्दीन पुत्र नूर मोहम्मद … की इलाज के दौरान मृत्यु हो गयी है।)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doBadh\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "doGhat",
+          "label": "धारा घटोत्तरी (लोप)",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 12
+        },
+        {
+          "key_name": "GhatSection",
+          "label": "कौन सी धारा हटी (जैसे: 303(2) बीएनएस)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doGhat\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "GhatReason",
+          "label": "घटोत्तरी का कारण — पूरा वाक्य (जैसे: अभियोग में धारा 303(2) बीएनएस का अपराध होना नहीं पाया गया।)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doGhat\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "doNaamAdd",
+          "label": "अभियुक्त का नाम प्रकाश में लाना",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 15
+        },
+        {
+          "key_name": "NaamAdd",
+          "label": "जिनके नाम प्रकाश में आये",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doNaamAdd\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "NaamAddReason",
+          "label": "कैसे प्रकाश में आये — पूरा वाक्य (जैसे: यह तथ्य प्रकाश में आया है कि … ने अपराध कारित किया है।)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doNaamAdd\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "doNaamHata",
+          "label": "नामजदगी गलत / नाम पृथक",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 18
+        },
+        {
+          "key_name": "NaamHata",
+          "label": "जिनके नाम पृथक किये",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doNaamHata\"}",
+          "sort_order": 19
+        },
+        {
+          "key_name": "NaamHataReason",
+          "label": "पृथक करने का कारण — पूरा वाक्य (जैसे: अब तक की विवेचना से … द्वारा अपराध कारित किया जाना नहीं पाया गया।)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doNaamHata\"}",
+          "sort_order": 20
+        },
+        {
+          "key_name": "NewSections",
+          "label": "अग्रिम विवेचना किन धाराओं में (जैसे: 281/125(b)/106(1) बीएनएस) — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 21
+        },
+        {
+          "key_name": "FurtherAgainst",
+          "label": "अग्रिम विवेचना किसके विरुद्ध (जैसे: प्रकाश में आये अभियुक्त रविकान्त पुत्र रामनरेश …) — न हो तो खाली",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 22
+        }
+      ]
+    },
+    {
+      "id": "sys-gd-fmt-vahan-dakhila",
+      "title": "वापसी व दाखिला वाहन",
+      "format_type": "GD",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "वाहन",
+        "दाखिला",
+        "वापसी",
+        "GD"
+      ],
+      "last_updated": "2026-10-30",
+      "vivran": "{{if:GDTime|{{GDTime}} }}वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} व दाखिला {{cnt:Vehicles?vno|}} अदद वाहन{{if:FIRNo| सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}}\nइस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}} रवानाशुदा रो0आम तारीखी इमरोजा से बाद {{WapsiKaam}}{{if:FIRNo| व विवेचना मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}} से मय {{cnt:Vehicles?vno|}} अदद वाहन {{each:Vehicles?vno|{role} वाहन {vtype} संख्या {vno}{ चेचिस सं0 ~chassis}{ इंजन सं0 ~engine}| व }} के वापस थाना हाजा आया।{{if:doShastra| हमराह के रवानाशुदा शस्त्र-कारतूस अन्दर मालखाना रखाकर ताला मालखाना बन्द ठीक सन्तरी पहरा को दिखाया गया, चाबी पूर्ववत रही।}} {{count:Vehicles?vno|वाहन को|वाहनों को}} {{From}} से {{Lana}} थाने लाकर थाना परिसर में सन्तरी पहरा की निगरानी में {{count:Vehicles?vno|खड़ा कराया गया।|खड़े कराये गये।}} हे0मो0 को अवगत कराया गया।{{if:FIRNo| विवरण विवेचना जरिये सीडी प्रेषित है।}}",
+      "keys": [
+        {
+          "key_name": "GDTime",
+          "label": "GD का समय (जैसे 20.35) — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 0
+        },
+        {
+          "key_name": "pad",
+          "label": "मेरा पद",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "sort_order": 1
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "मेरा नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 2
+        },
+        {
+          "key_name": "Hamrah",
+          "label": "हमराह — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 3
+        },
+        {
+          "key_name": "WapsiKaam",
+          "label": "किस काम से गये थे",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "देखभाल क्षेत्र, रोकथाम जुर्म जरायम, चेकिंग संदिग्ध व्यक्ति/वाहन",
+          "sort_order": 4
+        },
+        {
+          "key_name": "doShastra",
+          "label": "हमराह के शस्त्र-कारतूस मालखाना में जमा किये",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 5
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "मु0अ0सं0 — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 6
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"FIRNo\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "Vehicles",
+          "label": "वाहन (हर वाहन की एक पंक्ति)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"वाहन किस रूप में\", \"type\": \"choice\", \"options\": [\"दुर्घटनाकारक\", \"दुर्घटनाग्रस्त\", \"बरामद\", \"सम्बन्धित\"], \"default\": \"दुर्घटनाकारक\"}, {\"key\": \"vtype\", \"label\": \"वाहन का प्रकार (जैसे: स्कार्पियो, ओमनी कार, मोटरसाइकिल)\"}, {\"key\": \"vno\", \"label\": \"वाहन संख्या\"}, {\"key\": \"chassis\", \"label\": \"चेचिस सं0 — न हो तो खाली\"}, {\"key\": \"engine\", \"label\": \"इंजन सं0 — न हो तो खाली\"}], \"addLabel\": \"+ और वाहन जोड़ें\", \"itemLabel\": \"वाहन\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "From",
+          "label": "वाहन कहाँ से लाये",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "घटनास्थल",
+          "sort_order": 9
+        },
+        {
+          "key_name": "Lana",
+          "label": "कैसे लाये",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "वैकल्पिक व्यवस्था कर",
+          "dropdown_options": "[\"वैकल्पिक व्यवस्था कर\", \"चलवाकर\", \"क्रेन की सहायता से\"]",
+          "sort_order": 10
+        }
+      ]
+    },
+    {
+      "id": "sys-gd-fmt-aaropi-avmukt",
+      "title": "तस्करा — आरोपी अवमुक्त (धारा 480(2) BNSS)",
+      "format_type": "GD",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "तस्करा",
+        "अवमुक्त",
+        "480(2) BNSS",
+        "189 BNSS",
+        "GD"
+      ],
+      "last_updated": "2026-10-30",
+      "vivran": "{{if:GDTime|{{GDTime}} }}तस्करा बावत अवमुक्त किये जाने {{Accused#n|आरोपी|आरोपीगण}} सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}\nइस समय मुझ {{pad}} {{OfficerName}} द्वारा मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} में अब तक की गयी विवेचना से यह तथ्य प्रकाश में आये हैं कि {{Reason}} चूँकि {{Accused#n|आरोपी|आरोपीगण}} {{Accused#short}} उपरोक्त को {{if:ArrestDate|दिनांक {{ArrestDate}} को }}{{ArrestBasis}} गिरफ्तार किया गया था, परन्तु विवेचना से प्राप्त नये तथ्यों से {{Accused#n|आरोपी|आरोपीगण}} के विरुद्ध पर्याप्त साक्ष्य एवं संदेह का पर्याप्त आधार नहीं पाया गया है, इसलिए {{Accused#n|उसे|उन्हें}} न्यायिक अभिरक्षा में भेजने हेतु धारा 187(1) BNSS के अन्तर्गत रिमाण्ड याचना की आवश्यकता नहीं है।{{if:doAvkash| मा0 न्यायालय में अवकाश है।}} अतः {{Accused#n|आरोपी|आरोपीगण}} {{Accused#short}} उपरोक्त को {{Accused#n|उसके|उनके}} व्यक्तिगत बंध पत्र व जमानतनामा के आधार पर इस हिदायत के साथ कि मुझ विवेचक अथवा मा0 न्यायालय द्वारा बुलाये जाने पर समय से उपस्थित {{Accused#n|होगा|होंगे}}, धारा 480(2) BNSS के अन्तर्गत गिरफ्तारी से अवमुक्त किया जाता है। मा0 न्यायालय के समक्ष अकब से धारा 189 BNSS की रिपोर्ट प्रेषित की जायेगी। तस्करा अंकित किया गया।",
+      "keys": [
+        {
+          "key_name": "GDTime",
+          "label": "GD का समय (जैसे 17.30) — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 0
+        },
+        {
+          "key_name": "pad",
+          "label": "मेरा पद",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "sort_order": 1
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "मेरा नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 2
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 3
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 4
+        },
+        {
+          "key_name": "Accused",
+          "label": "अवमुक्त किये जाने वाले आरोपी",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 5
+        },
+        {
+          "key_name": "ArrestDate",
+          "label": "गिरफ्तारी की तिथि — न हो तो खाली",
+          "field_type": "date",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 6
+        },
+        {
+          "key_name": "ArrestBasis",
+          "label": "किस आधार पर गिरफ्तार हुए थे",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "विवेचना में असहयोग करने के आधार पर",
+          "sort_order": 7
+        },
+        {
+          "key_name": "Reason",
+          "label": "विवेचना में सामने आये नये तथ्य — पूरा वाक्य (जैसे: मृतक … की हत्या नामित आरोपीगण द्वारा नहीं की गयी है, बल्कि …)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 8
+        },
+        {
+          "key_name": "doAvkash",
+          "label": "मा0 न्यायालय में अवकाश है",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 9
+        }
+      ]
+    },
+    {
       "id": "sys-gd-fmt-rawangi-samanya",
       "title": "रवानगी उ0नि0(सामान्य)",
       "format_type": "GD",

@@ -257,3 +257,28 @@ test('अभियुक्त दाखिला: every mode × case type fills
     assert.match(t, /मा0 न्यायालय रवाना करना सुनिश्चित करें।/);
   }
 });
+
+test('GD: विवेचना में परिवर्तन / वाहन दाखिला / आरोपी अवमुक्त — fill with no token left', () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const get = (id: string) => d.formats.find((x: { id: string }) => x.id === id);
+  const def = (f: { keys: { key_name: string; default_value?: string }[] }) => {
+    const v: Record<string, string> = {};
+    for (const k of f.keys) v[k.key_name] = k.default_value && !k.default_value.startsWith('__') ? k.default_value : 'क';
+    return v;
+  };
+  const ppl = JSON.stringify([P('रवि', 'रामपाल', '24'), P('मोहन', 'रामपाल', '21')]);
+  const p = get('sys-gd-fmt-vivechana-parivartan');
+  const all = generateReport(p.vivran, { ...def(p), doWapsi: 'हाँ', doShastra: 'हाँ', doBadh: 'हाँ', doGhat: 'हाँ', doNaamAdd: 'हाँ', doNaamHata: 'हाँ', NaamAdd: ppl, NaamHata: ppl }, p.keys);
+  assert.doesNotMatch(all, /\{\{|\}\}/);
+  assert.match(all, /तस्करा बावत धारा बढ़ोत्तरी व धारा घटोत्तरी व अभियुक्त का नाम प्रकाश में लाये जाने व नामजदगी गलत पाये जाने सम्बन्धित/);
+  const v = get('sys-gd-fmt-vahan-dakhila');
+  const two = generateReport(v.vivran, { ...def(v), Vehicles: JSON.stringify([{ role: 'दुर्घटनाकारक', vtype: 'कार', vno: 'UP1', chassis: '', engine: '' }, { role: 'दुर्घटनाग्रस्त', vtype: 'बाइक', vno: 'UP2', chassis: 'C', engine: '' }]) }, v.keys);
+  assert.doesNotMatch(two, /\{\{|\}\}|\{[a-z#]/);
+  assert.match(two, /दाखिला 02 अदद वाहन/);
+  assert.match(two, /वाहनों को .* खड़े कराये गये।/);
+  const a = get('sys-gd-fmt-aaropi-avmukt');
+  const one = generateReport(a.vivran, { ...def(a), Accused: JSON.stringify([P('रवि', 'रामपाल', '24')]), ArrestDate: '' }, a.keys);
+  assert.doesNotMatch(one, /\{\{|\}\}/);
+  assert.match(one, /अवमुक्त किये जाने आरोपी सम्बन्धित/);
+  assert.match(one, /उपस्थित होगा,/);
+});

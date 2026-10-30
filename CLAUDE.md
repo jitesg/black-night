@@ -119,6 +119,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   × CaseType (मुकदमा / 170 BNSS चालानी) → heading line + opening; standard जामा तलाशी/जरावात/खाना/हवालात/ताला text, optional
   बरामदगी, चोट, हवालात मर्दाना/महिला, हुलिया item_group (`{text~col~after}`), free "विवरण गिरफ्तारी", सूचना की/के by relation;
   `{{Key#cnt}}` = 01/03 नफर.
+- GD `sys-gd-fmt-vivechana-parivartan` "तस्करा — विवेचना में परिवर्तन (धारा / नाम)": optional वापसी opening (doWapsi, हमराह,
+  शस्त्र मालखाना tick) + 4 ticks धारा बढ़ोत्तरी / घटोत्तरी / नाम प्रकाश में / नामजदगी गलत (each opens its fields); heading parts
+  joined with "व" by `{{seq||व }}`; अग्रिम विवेचना धारा / बनाम optional.
+- GD `sys-gd-fmt-vahan-dakhila` "वापसी व दाखिला वाहन": item_group Vehicles (भूमिका, प्रकार, संख्या, चेचिस, इंजन), `{{cnt:Vehicles?vno|}}`
+  = 01/02 अदद, वाहन को/वाहनों को, खड़ा/खड़े कराये गये.
+- GD `sys-gd-fmt-aaropi-avmukt` "तस्करा — आरोपी अवमुक्त (धारा 480(2) BNSS)": आरोपी list, गिरफ्तारी तिथि/आधार, नये तथ्य, अवकाश tick.
 - Fields that appear only when needed (option values must not contain "/" — it means "or"): `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
   "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + validation (hidden = not required).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि

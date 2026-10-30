@@ -555,6 +555,7 @@ export function isTicked(v: string | undefined | null): boolean {
  *                               sep defaults to " ", "\n" = new line.
  *   {{count:Key?flag|one|many}} → "one" for a single item, "many" for 2+, nothing for none.
  *   {{any:Key?flag|text}}       → text when at least one item matches.
+ *   {{cnt:Key?flag|}}           → number of matching items as two digits (01, 02 …).
  * Branch text may hold any other tokens; "|" inside nested {{…}} does not split.
  */
 type ItemRow = Record<string, unknown>;
@@ -589,8 +590,8 @@ function _splitTop(inner: string): string[] {
 }
 
 function _applyItemTokens(template: string, values: Record<string, string>): string {
-  if (!/\{\{(each|count|any):/.test(template)) return template;
-  const open = /\{\{(each|count|any):([A-Za-z0-9_]+)(?:\?([A-Za-z0-9_]+))?\|/;
+  if (!/\{\{(each|count|any|cnt):/.test(template)) return template;
+  const open = /\{\{(each|count|any|cnt):([A-Za-z0-9_]+)(?:\?([A-Za-z0-9_]+))?\|/;
   let out = '';
   let rest = template;
   for (let m = open.exec(rest); m; m = open.exec(rest)) {
@@ -606,6 +607,7 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
     const rows = _itemRows(values, m[2], m[3]);
     let rep = '';
     if (m[1] === 'any') rep = rows.length ? parts.join('|') : '';
+    else if (m[1] === 'cnt') rep = String(rows.length).padStart(2, '0');
     else if (m[1] === 'count') rep = rows.length === 0 ? '' : rows.length === 1 ? (parts[0] ?? '') : (parts[1] ?? parts[0] ?? '');
     else {
       const row = parts[0] ?? '';
