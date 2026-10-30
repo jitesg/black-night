@@ -139,7 +139,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Failures carry a Hindi `error` → Copilot appends "⚠️ ऑनलाइन AI से जवाब नहीं मिला: …". Cloud only runs when
   setting aiReportGeneration is on.
 - Text wrapper `src/lib/selectableText.tsx` (imported first in index.ts): selectable text app-wide (not inside
-  Pressable/Touchables); on Android: textBreakStrategy forced to 'highQuality' unless numberOfLines=1 + explicit
+  Pressable/Touchables; on Android only text of 60+ chars by default — a selectable short label is drawn by a different
+  text view than the one that measured it, wraps, and the 2nd line is hidden: "चेकलिस्ट प्रगति" → "चकालस्ट", builds 20–22); on Android: textBreakStrategy forced to 'highQuality' unless numberOfLines=1 + explicit
   'simple' ('simple' splits a letter from its matra → "चकालस्ट", hidden 2nd line — build 21 regression), and
   Hindi text (Devanagari in children) gets lineHeight ≥ 1.5×fontSize (also when includeFontPadding is off);
   maxFontSizeMultiplier 1.2 by default. Never use textBreakStrategy "simple" on text that can wrap.

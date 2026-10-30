@@ -11,6 +11,7 @@
  *   • text inside a Pressable / Touchable is not selectable
  * TextInputs already support select / copy / paste on their own.
  *
+ * Android: only longer text (60+ characters) is selectable by default (see below).
  * Android only: text that can wrap always uses textBreakStrategy "highQuality"
  * ("simple" splits a letter from its matra); Hindi text gets a line height of
  * at least 1.5 × fontSize (also when includeFontPadding is off), so the top
@@ -58,11 +59,30 @@ function hasDevanagari(children: unknown, depth = 0): boolean {
   return props ? hasDevanagari(props.children, depth + 1) : false;
 }
 
+/** Length of the plain text inside (nested Text included); newline counts as long. */
+function textLength(children: unknown, depth = 0): number {
+  if (children == null || typeof children === 'boolean' || depth > 4) return 0;
+  if (typeof children === 'string') return children.includes('\n') ? 999 : children.length;
+  if (typeof children === 'number') return String(children).length;
+  if (Array.isArray(children)) return children.reduce((n: number, c) => n + textLength(c, depth + 1), 0);
+  const props = (children as { props?: { children?: unknown } }).props;
+  return props ? textLength(props.children, depth + 1) : 0;
+}
+/**
+ * Android: selectable text is drawn by a different text view than the one that
+ * measured it, so a label that exactly fits its width wraps when drawn and the
+ * 2nd line is hidden ("चेकलिस्ट प्रगति" → "चकालस्ट", owner's screenshots, builds 20–22).
+ * So on Android only longer text (paragraphs) is selectable by default; short
+ * labels / headings are not. An explicit `selectable` prop still wins.
+ */
+const ANDROID_MIN_SELECTABLE_LEN = 60;
+
 patch('Text', (OrigText) => forwardRef<unknown, AnyProps>(function SelectableText(props, ref) {
   const noSelect = useContext(NoSelectContext);
+  const autoOk = !IS_ANDROID || (props.numberOfLines !== 1 && textLength(props.children) >= ANDROID_MIN_SELECTABLE_LEN);
   const selectable = props.selectable !== undefined
     ? props.selectable
-    : !noSelect && !props.onPress && !props.onLongPress;
+    : !noSelect && !props.onPress && !props.onLongPress && autoOk;
   if (!IS_ANDROID) return React.createElement(OrigText, { ...props, selectable, ref });
 
   // Hindi text cut on Android (owner's screenshots, build 21):
