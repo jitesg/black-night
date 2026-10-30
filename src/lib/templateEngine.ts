@@ -623,6 +623,22 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
   return out + rest;
 }
 
+/**
+ * {{seq|first|next1|next2|…}} — order words for paragraphs that may be left out:
+ * the 1st one left in the text gets "first", the following ones take next1, next2, … in turn
+ * (e.g. सर्वप्रथम / तत्पश्चात … / वहाँ से … in the GD वापसी). Runs after {{if:…}}.
+ */
+function _applySeqTokens(template: string): string {
+  if (!template.includes('{{seq|')) return template;
+  let n = 0;
+  return template.replace(/\{\{seq\|([^{}]*)\}\}/g, (_m, list: string) => {
+    const w = list.split('|');
+    const pick = n === 0 || w.length < 2 ? w[0] : w[1 + ((n - 1) % (w.length - 1))];
+    n += 1;
+    return pick ?? '';
+  });
+}
+
 function _applyIfTokens(template: string, values: Record<string, string>): string {
   if (!template.includes('{{if')) return template;
   const open = /\{\{(if|ifnot):([A-Za-z0-9_]+)\|/;
@@ -638,7 +654,8 @@ function _applyIfTokens(template: string, values: Record<string, string>): strin
     }
     const inner = rest.slice(m.index + m[0].length, depth === 0 ? i - 2 : i);
     const on = isTicked(values[m[2]]);
-    out += rest.slice(0, m.index) + ((m[1] === 'if') === on ? inner : '');
+    // the kept text may hold more {{if:…}} (nested)
+    out += rest.slice(0, m.index) + ((m[1] === 'if') === on ? _applyIfTokens(inner, values) : '');
     rest = rest.slice(i);
   }
   return out + rest;
@@ -986,7 +1003,7 @@ export function generateReport(
 ): string {
   // Layout marks ([[शीर्षक]] …) are only for the print pipeline (formats/fill).
   if (!opts?.keepMarkers) return stripFormatMarkers(generateReport(template, values, keyDefs, { keepMarkers: true }));
-  let processed = _applyIfTokens(_applyItemTokens(template, values), values); // Step -3/-2 (item lists, {{if:Key|…}})
+  let processed = _applySeqTokens(_applyIfTokens(_applyItemTokens(template, values), values)); // Step -3/-2 (item lists, {{if:Key|…}}, {{seq|…}})
   if (keyDefs && keyDefs.length > 0) {
     processed = _applyGroupStatus(processed, values, keyDefs);            // Step -1 (accused status)
     processed = _applyFieldProjection(processed, values, keyDefs);        // Step 0

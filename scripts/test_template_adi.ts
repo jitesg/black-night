@@ -185,3 +185,9 @@ test('DL / RC पत्र (RTO): 1 vehicle → owner wording; 2 → lists; unti
   assert.equal((rcOnly.match(/class="doc-letter"/g) ?? []).length, 1);
   assert.match(rcOnly, /रजिस्ट्रेशन सर्टिफिकेट/);
 });
+
+test('{{seq|…}} order words follow the paragraphs left in; nested {{if:}} works', () => {
+  const T5 = '{{if:a|[{{seq|पहले|फिर|बाद में}} A]}}{{if:b|[{{seq|पहले|फिर|बाद में}} B]}}{{if:c|[{{seq|पहले|फिर|बाद में}} C{{if:x| X}}]}}';
+  assert.equal(generateReport(T5, { a: '', b: 'हाँ', c: 'हाँ', x: 'हाँ' }, []), '[पहले B][फिर C X]');
+  assert.equal(generateReport(T5, { a: 'हाँ', b: 'हाँ', c: 'हाँ' }, []), '[पहले A][फिर B][बाद में C]');
+});
