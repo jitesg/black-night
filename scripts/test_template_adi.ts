@@ -191,3 +191,18 @@ test('{{seq|…}} order words follow the paragraphs left in; nested {{if:}} work
   assert.equal(generateReport(T5, { a: '', b: 'हाँ', c: 'हाँ', x: 'हाँ' }, []), '[पहले B][फिर C X]');
   assert.equal(generateReport(T5, { a: 'हाँ', b: 'हाँ', c: 'हाँ' }, []), '[पहले A][फिर B][बाद में C]');
 });
+
+test('GD वापसी: nothing ticked → only the opening; ticks → paragraphs with order words, no tokens / blank runs', () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-wapsi');
+  const v: Record<string, string> = {};
+  for (const k of f.keys) v[k.key_name] = k.default_value && !k.default_value.startsWith('__') ? k.default_value : '';
+  v.OfficerName = 'क';
+  const none = generateReport(f.vivran, v, f.keys);
+  assert.match(none, /सकुशल वापस थाना उपस्थित आया। कार्य विवरण इस प्रकार है:$/);
+  assert.doesNotMatch(none, /मय हमराह|रपट नं0/);
+  const two = generateReport(f.vivran, { ...v, doBeat: 'हाँ', doVivechana: 'हाँ', FIRNo: '12/26' }, f.keys);
+  assert.match(two, /\n\nसर्वप्रथम थाना स्थानीय पर पंजीकृत मु0अ0सं0 12\/26 की विवेचना/);
+  assert.match(two, /\n\nतत्पश्चात बालाबाला रवाना होकर अपने बीट क्षेत्र/);
+  assert.doesNotMatch(two, /\{\{|\}\}|\n{3,}/);
+});
