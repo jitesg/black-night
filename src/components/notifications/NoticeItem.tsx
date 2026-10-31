@@ -46,7 +46,7 @@ export function NoticeItem({ card, isDark }: { card: NoticeCard; isDark: boolean
       // Plain style object (not a function): on the phone the function form was ignored —
       // the card lost its background, border and the icon-beside-text row.
       style={{
-        flexDirection: 'row', gap: 14, padding: 16, borderRadius: 22,
+        flexDirection: 'row', gap: 12, padding: 16, borderRadius: 22,
         backgroundColor: isDark ? '#1E2530' : palette.card,
         borderWidth: 1.5, borderColor: isDark ? '#3A4556' : '#D6DEEA',
         shadowColor: isDark ? '#000' : '#1E3A8A', shadowOpacity: isDark ? 0.3 : 0.08,
@@ -56,9 +56,9 @@ export function NoticeItem({ card, isDark }: { card: NoticeCard; isDark: boolean
     >
       {/* Icon tile */}
       <View style={{
-        width: 52, height: 52, borderRadius: 15, alignItems: 'center', justifyContent: 'center', backgroundColor: meta.tile,
+        width: 28, height: 28, borderRadius: 8, marginTop: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: meta.tile,
       }}>
-        <Icon size={24} color="#FFFFFF" strokeWidth={2.2} />
+        <Icon size={14} color="#FFFFFF" strokeWidth={2.4} />
       </View>
 
       <View style={{ flex: 1, minWidth: 0, gap: 6 }}>
