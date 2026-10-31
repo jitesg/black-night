@@ -91,10 +91,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   formats (`[[सूची]] {{…#list}}`). Last sheet "चालानी का GD प्रारूप" in all five (beat/yaksh: below the सिपाही
   note on the same sheet; others a new sheet; opening line per format) — seed_version beat/yaksh 13, thanabhraman 12, mukadma/ncr 10. Tests `scripts/test_template_adi.ts`.
 - Accused wanted status (judicial custody report): tokens `{{Key#summary}}` (groups नामजद / प्रकाश में आया / वांछित नहीं
-  with है/हैं, आया/आये agreement, joined by "तथा"), `{{Key#wanted}}`, `{{Key#ifWanted|text}}` (`_applyGroupStatus`, Step -1);
+  with है/हैं, आया/आये agreement, joined by "तथा"; नामजद = "मुकदमा उपरोक्त में … नामजद है तथा वांछित है", the others start once with
+  "अब तक की तमामी विवेचना व साक्ष्य संकलन की कार्यवाही में" — owner's wording), `{{Key#wanted}}`, `{{Key#ifWanted|text}}` (`_applyGroupStatus`, Step -1);
   AccusedGroupInput shows the per-accused "स्थिति" picker only when the format text contains `{{Key#` (unset =
   प्रकाश में आया). Tests `scripts/test_accused_status.ts`. Used by format `sys-fmt-nyayik-abhiraksha`
-  "आत्मसमर्पण प्रा0पत्र पर आख्या (न्यायिक अभिरक्षा)" (Nyayalay, seed_version 1).
+  "आत्मसमर्पण प्रा0पत्र पर आख्या (न्यायिक अभिरक्षा)" (Nyayalay, seed_version 2).
 - 170/126/135 BNSS चालानी (गिरफ्तारी) — 7 formats `sys-fmt-bnss170-{mukadma,prv,prv-ubhay,prarthna,prarthna-ubhay,kshetra-ek,kshetra}`
   (BNSS Karyavahi, seed_version 1; built from the owner's sample letters, words corrected). एकपक्षीय = 170 letter + 135(3);
   उभयपक्षीय = 170 बनाम प्रथम पक्ष, 170 बनाम द्वितीय पक्ष, 135(3) × 2 (same body). Accused list `#block`, body `#inline` then

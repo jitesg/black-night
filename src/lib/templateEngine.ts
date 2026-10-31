@@ -826,16 +826,22 @@ function _applyGroupStatus(template: string, values: Record<string, string>, key
     const gt = typeMap.get(key);
     if (kind === 'wanted') return _statusList(g.wanted, gt);
     const verb = (n: number) => (n > 1 ? 'हैं' : 'है');
+    // Owner's wording: नामजद → "मुकदमा उपरोक्त में … नामजद है तथा वांछित है"; the others keep the
+    // "अब तक की तमामी विवेचना …" opening (written once, before the first of them).
+    const INQ = 'अब तक की तमामी विवेचना व साक्ष्य संकलन की कार्यवाही में';
     const parts: string[] = [];
+    let inqUsed = false;
+    const inq = () => (inqUsed ? '' : ((inqUsed = true), `${INQ} `));
     if (g.named.length) {
-      parts.push(`${_statusList(g.named, gt)} उपरोक्त नामजद ${verb(g.named.length)} व मुकदमा उपरोक्त में वांछित ${verb(g.named.length)}`);
+      const v = verb(g.named.length);
+      parts.push(`मुकदमा उपरोक्त में ${_statusList(g.named, gt)} उपरोक्त नामजद ${v} तथा वांछित ${v}`);
     }
     if (g.surfaced.length) {
       const n = g.surfaced.length;
-      parts.push(`${_statusList(g.surfaced, gt)} उपरोक्त ${n > 1 ? 'के नाम प्रकाश में आये' : 'का नाम प्रकाश में आया'} ${verb(n)} व मुकदमा उपरोक्त में वांछित ${verb(n)}`);
+      parts.push(`${inq()}${_statusList(g.surfaced, gt)} उपरोक्त ${n > 1 ? 'के नाम प्रकाश में आये' : 'का नाम प्रकाश में आया'} ${verb(n)} व मुकदमा उपरोक्त में वांछित ${verb(n)}`);
     }
     if (g.notWanted.length) {
-      parts.push(`${_statusList(g.notWanted, gt)} उपरोक्त वांछित नहीं ${verb(g.notWanted.length)}`);
+      parts.push(`${inq()}${_statusList(g.notWanted, gt)} उपरोक्त वांछित नहीं ${verb(g.notWanted.length)}`);
     }
     return parts.join(' तथा ');
   });
