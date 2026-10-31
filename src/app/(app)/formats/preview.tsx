@@ -178,6 +178,7 @@ export default function PreviewScreen() {
           editorHtml={decodedEditorHtml || undefined}
           title={title}
           onSave={isBlank ? undefined : async (v) => setReportContent(v)}
+          wordExport
         />
       </ScrollView>
 

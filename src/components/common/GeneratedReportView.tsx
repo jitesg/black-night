@@ -19,14 +19,15 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Pressable, Share, Text, View,
+  ActivityIndicator, Alert, Pressable, Share, Text, View,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import {
-  CheckCircle, Copy, Edit3, FileDown, Save, Share2, X,
+  CheckCircle, Copy, Edit3, FileDown, FileText, Save, Share2, X,
 } from 'lucide-react-native';
+import { hasEditorMarks } from '@/lib/formatMarkers';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
@@ -62,6 +63,8 @@ interface GeneratedReportViewProps {
    * date, etc.) without polluting the editable content.
    */
   sharePrefix?: string;
+  /** Show a Word (.docx) export button instead of the PDF one (formats → generated report, owner's choice). */
+  wordExport?: boolean;
 }
 
 export function GeneratedReportView({
@@ -71,6 +74,7 @@ export function GeneratedReportView({
   title = 'Report',
   onSave,
   sharePrefix,
+  wordExport,
 }: GeneratedReportViewProps) {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
@@ -141,6 +145,23 @@ export function GeneratedReportView({
       setEditing(false);
     } finally {
       setSaving(false);
+    }
+  };
+
+  // ── Word (.docx) export — same layout as the A4 print (reportDocxExport) ──
+  const handleExportWord = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      // Unedited marked format → its editor HTML (keeps the layout marks); after an edit the content itself.
+      const unedited = !hasEditorMarks(content) && !/<[a-z][\s\S]*?>/i.test(content);
+      const source = unedited && editorHtml && hasEditorMarks(editorHtml) ? editorHtml : content;
+      const { exportReportToDocx } = await import('@/lib/reportDocxExport');
+      await exportReportToDocx(source, title);
+    } catch (e) {
+      Alert.alert('Word फ़ाइल नहीं बनी', e instanceof Error ? e.message : String(e));
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -258,20 +279,36 @@ export function GeneratedReportView({
           <Text className="text-xs font-medium text-foreground">{t('common.share')}</Text>
         </Pressable>
 
-        {/* PDF Export — always shown; uses fixedHtml when available */}
-        <Pressable
-          onPress={handleExportPdf}
-          disabled={exporting}
-          className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card active:opacity-70"
-          style={{ borderCurve: 'continuous' }}
-        >
-          {exporting
-            ? <ActivityIndicator size={13} color={C.foreground} />
-            : <FileDown size={13} color={C.foreground} />}
-          <Text className="text-xs font-medium text-foreground">
-            {exporting ? t('editor.exporting') : t('common.exportPdf')}
-          </Text>
-        </Pressable>
+        {wordExport ? (
+          <Pressable
+            onPress={handleExportWord}
+            disabled={exporting}
+            className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card active:opacity-70"
+            style={{ borderCurve: 'continuous' }}
+          >
+            {exporting
+              ? <ActivityIndicator size={13} color={C.foreground} />
+              : <FileText size={13} color={C.foreground} />}
+            <Text className="text-xs font-medium text-foreground">
+              {exporting ? t('editor.exporting') : 'Word (DOC) एक्सपोर्ट'}
+            </Text>
+          </Pressable>
+        ) : (
+          /* PDF Export — uses fixedHtml when available */
+          <Pressable
+            onPress={handleExportPdf}
+            disabled={exporting}
+            className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card active:opacity-70"
+            style={{ borderCurve: 'continuous' }}
+          >
+            {exporting
+              ? <ActivityIndicator size={13} color={C.foreground} />
+              : <FileDown size={13} color={C.foreground} />}
+            <Text className="text-xs font-medium text-foreground">
+              {exporting ? t('editor.exporting') : t('common.exportPdf')}
+            </Text>
+          </Pressable>
+        )}
 
         {onSave ? (
           <Pressable

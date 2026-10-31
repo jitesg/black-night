@@ -161,6 +161,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `parseDropdownOptions`: JSON strings / {value,label} / comma list). Every `pad` (पद/रैंक) key is a dropdown
   उपनिरीक्षक / निरीक्षक (default उपनिरीक्षक) — seed (7 formats, seed_version bumped) + idempotent UPDATE in database.ts
   for formats made in the app.
+- Formats → जनरेटेड रिपोर्ट (`formats/preview.tsx`): `GeneratedReportView wordExport` shows "Word (DOC) एक्सपोर्ट" instead of PDF (owner);
+  unedited marked format → its editor HTML, else the edited content. Other screens keep PDF.
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,
   0.5in margins, marks/data-fmt honoured; `exportReportToDocx` → share sheet). निरोधात्मक: card long-press menu + editor
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.
