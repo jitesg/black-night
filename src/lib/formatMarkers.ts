@@ -18,7 +18,9 @@
  *   [[बीच]] …           centred bold line(s) (court notice titles)
  *   [[दाएँ]] …          right-aligned line(s) (e.g. "उपजिला मजिस्ट्रेट …")
  *   [[तालिका]] a | b …  bordered table: one row per line, cells split by "|", first row = heading (bold);
- *                       a blank line ends the table (police form 33)
+ *                       a blank line ends the table (police form 33). "(12mm) a | b" on the first row = height
+ *                       of the data rows (default 60mm); "# a | b" = another heading row; a row without "|"
+ *                       spans the whole width (a note line). See parseTableBlock.
  *   [[चित्र]] <name>     a picture from src/lib/formatImages.ts, centred (e.g. फोटो-लाश)
  *   [[दोनों ओर]] …      "left | right" on one line (e.g. "शासन | बनाम …")
  *   **…** inside [[विवरण]] text = bold words (print, editor, Word)
@@ -85,6 +87,27 @@ export function readMark(line: string): { role: MarkRole; rest: string } | null 
 export function hasFormatMarkers(text: string | null | undefined): boolean {
   if (!text) return false;
   return String(text).split('\n').some((l) => readMark(l) !== null);
+}
+
+export interface TableRowModel { cells: string[]; head: boolean; full: boolean }
+export const TABLE_ROW_MM = 60;
+
+/** [[तालिका]] block text → rows (heading / full-width flags) + data-row height + column count. */
+export function parseTableBlock(text: string): { heightMm: number; cols: number; rows: TableRowModel[] } {
+  let heightMm = TABLE_ROW_MM;
+  const rows: TableRowModel[] = text.split('\n').map((raw, i) => {
+    let line = raw.trim();
+    if (i === 0) {
+      const m = /^\((\d{1,3})\s*mm\)\s*/.exec(line);
+      if (m) { heightMm = Number(m[1]); line = line.slice(m[0].length); }
+    }
+    let head = i === 0;
+    if (line.startsWith('#')) { head = true; line = line.slice(1).trim(); }
+    const full = !line.includes('|');
+    return { cells: full ? [line] : line.split('|').map((c) => c.trim()), head, full };
+  });
+  const cols = Math.max(1, ...rows.map((r) => (r.full ? 1 : r.cells.length)));
+  return { heightMm, cols, rows };
 }
 
 /** "रिपोर्ट चालानी 01 वर्क | (जीतेश सिंह)" → left / right. */
@@ -254,6 +277,9 @@ export function editorHtmlToMarkedText(html: string): string {
   let buf = '';
   let cells: string[] | null = null;
   let cell: string | null = null;
+  let tableH: string | null = null;
+  let tableRow = 0;
+  let rowHead = false;
 
   const current = (): string | null => {
     for (let i = stack.length - 1; i >= 0; i--) if (stack[i]) return stack[i];
@@ -295,10 +321,18 @@ export function editorHtmlToMarkedText(html: string): string {
       else if (cell !== null) { cells?.push(cell.replace(/\s+/g, ' ').trim()); cell = null; }
       continue;
     }
+    if (name === 'table' && !closing) {
+      tableH = /data-h="(\d+)"/.exec(tok)?.[1] ?? null;
+      tableRow = 0;
+    }
     if (name === 'tr') {
-      if (!closing) { flush(); cells = []; continue; }
+      if (!closing) { flush(); cells = []; rowHead = /data-head="1"/.test(tok); continue; }
       if (cells && current() === markName('table')) {
-        emit(cells.map((c) => c || '-').join(' | '), current());
+        const prefix = (tableRow === 0 && tableH && Number(tableH) !== TABLE_ROW_MM ? `(${tableH}mm) ` : '')
+          + (tableRow > 0 && rowHead ? '# ' : '');
+        const body = cells.length === 1 ? cells[0] : cells.join(' | ');
+        emit(`${prefix}${body}` || '|', current());
+        tableRow += 1;
       } else if (cells) {
         const [first = '', ...rest] = cells;
         const left = first.replace(/^\d{1,2}\s*[.)]\s*/, '');

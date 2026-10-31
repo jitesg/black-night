@@ -23,7 +23,7 @@
  *   patterns so each sub-letter is parsed independently.
  */
 
-import { hasFormatMarkers, inlineBoldHtml, markName, parseMarkedLetter, splitMarkedAttachment, splitMarkedLetters } from './formatMarkers';
+import { hasFormatMarkers, inlineBoldHtml, markName, parseMarkedLetter, parseTableBlock, splitMarkedAttachment, splitMarkedLetters } from './formatMarkers';
 import { formatImage } from './formatImages';
 
 // ─── Public types ─────────────────────────────────────────────────────────
@@ -424,8 +424,12 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
       const img = formatImage(b.text);
       parts.push(div('body', 'text-align:center;', img ? `<img data-fmt="${markName('image')}" alt="${esc(b.text)}" src="${img.uri}" style="max-width:100%;height:auto;" />` : ''));
     } else if (b.kind === 'table') {
-      const trs = b.text.split('\n').map((r, i) => `<tr>${r.split('|').map((c) => `<td style="border:1px solid #000;padding:4px;vertical-align:top;">${i === 0 ? `<b>${esc(c.trim())}</b>` : esc(c.trim())}</td>`).join('')}</tr>`).join('');
-      parts.push(`<table data-fmt="${markName('table')}" style="width:100%;border-collapse:collapse;">${trs}</table>`);
+      const t = parseTableBlock(b.text);
+      const td = 'border:1px solid #000;padding:4px;vertical-align:top;';
+      const trs = t.rows.map((r) => (r.full
+        ? `<tr><td colspan="${t.cols}" style="${td}">${esc(r.cells[0])}</td></tr>`
+        : `<tr${r.head ? ' data-head="1"' : ''}>${r.cells.map((c) => `<td style="${td}">${r.head ? `<b>${esc(c)}</b>` : esc(c)}</td>`).join('')}</tr>`)).join('');
+      parts.push(`<table data-fmt="${markName('table')}" data-h="${t.heightMm}" style="width:100%;border-collapse:collapse;">${trs}</table>`);
     } else {
       const { left, right } = splitMarkedAttachment(b.text);
       parts.push(`<table data-fmt="${markName('split')}" style="width:100%;border-collapse:collapse;border:none;"><tr><td style="text-align:left;vertical-align:top;">${esc(left)}</td><td style="text-align:right;vertical-align:top;">${esc(right)}</td></tr></table>`);

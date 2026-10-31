@@ -153,7 +153,7 @@ test('[[तालिका]]: bordered table (heading row bold), blank line ends
   const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
   assert.deepEqual(m.bodyBlocks?.map((b) => b.kind), ['center', 'table']);
   const html = P.renderTextForPrint(t);
-  assert.match(html, /<table class="doc-table"><tr><th>क<\/th><th>ख<\/th><th>ग<\/th><\/tr><tr><td>1<\/td><td>2<\/td><td>3<\/td><\/tr><\/table>/);
+  assert.match(html, /<table class="doc-table"><tr><th>क<\/th><th>ख<\/th><th>ग<\/th><\/tr><tr><td style="height:60mm">1<\/td><td style="height:60mm">2<\/td><td style="height:60mm">3<\/td><\/tr><\/table>/);
   const ed = E.renderModelsForEditor([m]);
   assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(ed)), html);
   assert.match(M.stripFormatMarkers(t), /क \| ख \| ग/);
@@ -168,4 +168,18 @@ test('[[चित्र]]: named picture centred in print + editor round trip, d
   assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
   assert.doesNotMatch(M.stripFormatMarkers(t), /फोटो-लाश-पुरुष/);
   assert.doesNotMatch(P.renderTextForPrint(t.replace('फोटो-लाश-पुरुष', 'कुछ-और')), /<img/);
+});
+
+test('[[तालिका]] options: "(12mm)" row height, "#" heading row, a row without "|" spans the width — kept after the editor round trip', () => {
+  const t = '[[पत्र]]\n[[बीच]] अवकाश\n[[तालिका]] (12mm) थाना प्रभारी की संस्तुति | दिवस | कब से कब तक | हस्ताक्षर\n |  |  | \n# क्षेत्राधिकारी की संस्तुति | दिवस | कब से कब तक | हस्ताक्षर\n |  |  | \nसहमत हो तो केवल हस्ताक्षर करें।\n\n[[हस्ताक्षर]] (राम)';
+  const tb = M.parseTableBlock('(12mm) a | b\n | \n# c | d\nनोट');
+  assert.equal(tb.heightMm, 12);
+  assert.equal(tb.cols, 2);
+  assert.deepEqual(tb.rows.map((r) => [r.head, r.full]), [[true, false], [false, false], [true, false], [false, true]]);
+  const html = P.renderTextForPrint(t);
+  assert.equal((html.match(/<th>/g) ?? []).length, 8);
+  assert.match(html, /<td style="height:12mm"><\/td>/);
+  assert.match(html, /<td class="full" colspan="4">सहमत हो तो केवल हस्ताक्षर करें।<\/td>/);
+  const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
+  assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
 });

@@ -13,7 +13,7 @@
  * Pure string functions (tested with node: scripts/test_print_layout.ts).
  */
 import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from './formatParsingEngine';
-import { hasFormatMarkers, inlineBoldHtml } from './formatMarkers';
+import { hasFormatMarkers, inlineBoldHtml, parseTableBlock } from './formatMarkers';
 import { IMAGE_HEIGHT_MM, formatImage } from './formatImages';
 
 export const esc = (s: string): string =>
@@ -122,8 +122,14 @@ export function renderLetterHtml(model: DocumentModel): string {
           return img ? `<p class="doc-image"><img src="${img.uri}" alt="${esc(b.text)}" style="max-height:${IMAGE_HEIGHT_MM}mm" /></p>` : '';
         }
         if (b.kind === 'table') {
-          const [head, ...body] = b.text.split('\n').map((r) => r.split('|').map((c) => esc(c.trim())));
-          return `<table class="doc-table"><tr>${head.map((c) => `<th>${c}</th>`).join('')}</tr>${body.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+          const t = parseTableBlock(b.text);
+          const trs = t.rows.map((r) => {
+            if (r.full) return `<tr><td class="full" colspan="${t.cols}">${esc(r.cells[0])}</td></tr>`;
+            const tag = r.head ? 'th' : 'td';
+            const h = r.head ? '' : ` style="height:${t.heightMm}mm"`;
+            return `<tr>${r.cells.map((c) => `<${tag}${h}>${esc(c)}</${tag}>`).join('')}</tr>`;
+          }).join('');
+          return `<table class="doc-table">${trs}</table>`;
         }
         if (b.kind === 'split') {
           const at = b.text.indexOf('|');
@@ -238,7 +244,7 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-table { width: 100%; border-collapse: collapse; margin: 0.5em 0; table-layout: fixed; font-size: 0.9em; }
   .letters .doc-table th, .letters .doc-table td { border: 1px solid #000; padding: 0.3em; vertical-align: top; text-align: left; text-indent: 0; word-wrap: break-word; }
   .letters .doc-table th { font-weight: bold; }
-  .letters .doc-table td { height: 60mm; }
+  .letters .doc-table td.full { height: auto; }
   .letters .doc-split td { border: none; padding: 0; background: none; vertical-align: top; }
   .letters .doc-split td:last-child { text-align: right; }
   .letters .doc-witness { margin-top: 0.4em; }
