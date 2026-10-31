@@ -4637,6 +4637,220 @@
           "sort_order": 14
         }
       ]
+    },
+    {
+      "id": "sys-fmt-postmortem-33",
+      "title": "पोस्टमार्टम हेतु शव भेजने के कागज़ (RI पत्र, CMO पत्र, फार्म 33, नमूना सील)",
+      "format_type": "Any",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "पोस्टमार्टम",
+        "पंचायतनामा",
+        "फार्म 33",
+        "शव",
+        "CMO",
+        "प्रतिसार निरीक्षक",
+        "नमूना सील"
+      ],
+      "last_updated": "2026-10-31",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nश्रीमान प्रतिसार निरीक्षक महोदय,\nजनपद {{District}}।\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} थाना {{PoliceStation}} जनपद {{District}} के हमराह {{Gender}} {{DName}} {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} उम्र {{Age}} वर्ष का शव पोस्टमार्टम हेतु भेजा जा रहा है।\n[[विवरण]] कृपया {{Gender}} के शव का पोस्टमार्टम कराने की व्यवस्था करने की कृपा करें।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nश्रीमान मुख्य चिकित्साधिकारी महोदय,\nजनपद {{District}}।\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि {{Gender}} {{DName}} उम्र {{Age}} वर्ष {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} की मृत्यु {{DeathCause}} हुई है। {{Gender}} का शव {{Wrap}} में रखकर सील सर्वमुहर कर {{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} के सुपुर्द कर पोस्टमार्टम हेतु भेजा जा रहा है।\n[[विवरण]] अतः श्रीमान जी से निवेदन है कि {{Gender}} के शव का पोस्टमार्टम कर रिपोर्ट से अवगत कराने की कृपा करें।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] फार्म संख्या-33   पी0एम0 संख्या ..............   दिनांक ..............\n\n[[सेवा में]] सेवा में,\nश्रीमान मुख्य चिकित्साधिकारी महोदय,\nजनपद {{District}}।\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} थाना {{PoliceStation}} जनपद {{District}} के हमराह {{Gender}} {{DName}} {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} उम्र {{Age}} वर्ष का शव पोस्टमार्टम हेतु भेजा जा रहा है।\n[[हस्ताक्षर]] प्रतिसार निरीक्षक\nजनपद {{District}}\n\n[[पत्र]]\n[[बीच]] पुलिस फार्म नं0 379\nफोटो लाश\n\n[[विवरण]] {{Gender}} {{DName}}{{if:Caste| जाति {{Caste}}}} उम्र {{Age}} वर्ष {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जिला {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}}।\n[[चित्र]] {{if:Gender=मृतक|फोटो-लाश-पुरुष}}{{if:Gender=मृतका|फोटो-लाश-महिला}}\n[[बीच]] ​\n​\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n\n[[पत्र]]\n[[बीच]] नमूना सील\n\n[[विवरण]] {{Gender}} {{DName}}{{if:Caste| जाति {{Caste}}}} उम्र {{Age}} वर्ष {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} का शव एक {{Wrap}} में रखकर, सीलकर, सर्वमुहर करके शव विच्छेदन हेतु मॉर्चरी जिला {{District}} भेजा जा रहा है।\n[[विवरण]] जिसके सील का नमूना निम्नवत है –\n[[बीच]] ​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n\n[[पत्र]]\n[[बीच]] पुलिस फार्म नं0 33\nचालान शव विच्छेदन हेतु\n\n[[विवरण]] {{Gender}} {{DName}}{{if:Caste| जाति {{Caste}}}} उम्र {{Age}} वर्ष {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जिला {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}}।\n[[तालिका]] शव को हेड क्वार्टर भेजने का दिनांक व समय | थाने में सूचना का दिनांक व समय | समय जब समझा कि मृत्यु हुई, दिनांक व समय | शव का विवरण कि पुरुष या स्त्री का है, यदि ज्ञात हो तो नाम व पता | शव विच्छेदन हेतु शव भेजने वाले अधिकारी का नाम व पता\n{{SendDT}} | {{InfoDT}} | {{DeathDT}} | {{if:Gender=मृतक|पुरुष}}{{if:Gender=मृतका|स्त्री}} — {{DName}} {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} | {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n\n[[तालिका]] शव के साथ जाने वाले कर्मचारीगणों के नाम व पता | मुख्यालय पहुँचने का दिनांक व समय | शव प्राप्ति के स्थान से मुख्यालय की दिशा व दूरी | शव को किस तरह से भेजा गया का विवरण\n{{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} थाना {{PoliceStation}} जनपद {{District}} | ​ | {{Direction}} | शव को {{Wrap}} में रखकर, सील सर्वमुहर कर {{SendMode}} {{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} के सुपुर्द कर भेजा गया।\n\n[[बीच]] ​\n​\n​\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n",
+      "keys": [
+        {
+          "key_name": "Gender",
+          "label": "मृतक या मृतका",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मृतक",
+          "dropdown_options": "[\"मृतक\", \"मृतका\"]",
+          "sort_order": 0
+        },
+        {
+          "key_name": "DName",
+          "label": "मृतक/मृतका का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 1
+        },
+        {
+          "key_name": "Relation",
+          "label": "रिश्ता",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पुत्र",
+          "dropdown_options": "[\"पुत्र\", \"पुत्री\", \"पत्नी\"]",
+          "sort_order": 2
+        },
+        {
+          "key_name": "Father",
+          "label": "पिता / पति का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 3
+        },
+        {
+          "key_name": "Age",
+          "label": "उम्र (वर्ष)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 4
+        },
+        {
+          "key_name": "Caste",
+          "label": "जाति — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 5
+        },
+        {
+          "key_name": "DAddress",
+          "label": "निवासी — ग्राम / मोहल्ला (जैसे: ग्राम रामपुर मजरे सरायउमर)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 6
+        },
+        {
+          "key_name": "DThana",
+          "label": "मृतक का थाना — अपना थाना हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 7
+        },
+        {
+          "key_name": "DDistrict",
+          "label": "मृतक का जनपद — अपना जनपद हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 8
+        },
+        {
+          "key_name": "DeathCause",
+          "label": "मृत्यु कैसे हुई (जैसे: सड़क दुर्घटना में / फाँसी लगाने से / पानी में डूबने से)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 9
+        },
+        {
+          "key_name": "Wrap",
+          "label": "शव किसमें रखा",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "कपड़े",
+          "dropdown_options": "[\"कपड़े\", \"बॉडी बैग\"]",
+          "sort_order": 10
+        },
+        {
+          "key_name": "CarrierRank",
+          "label": "शव ले जाने वाले कर्मचारी का पद",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "आरक्षी",
+          "dropdown_options": "[\"मुख्य आरक्षी\", \"आरक्षी\", \"महिला आरक्षी\"]",
+          "sort_order": 11
+        },
+        {
+          "key_name": "CarrierName",
+          "label": "कर्मचारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 12
+        },
+        {
+          "key_name": "Carrier2",
+          "label": "दूसरा कर्मचारी — पद व नाम (जैसे: आरक्षी रामू यादव) — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 13
+        },
+        {
+          "key_name": "SendDT",
+          "label": "फार्म 33 — शव भेजने का दिनांक व समय (जैसे: 31.10.2026 समय 14.30 बजे)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 14
+        },
+        {
+          "key_name": "InfoDT",
+          "label": "फार्म 33 — थाने पर सूचना का दिनांक व समय",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 15
+        },
+        {
+          "key_name": "DeathDT",
+          "label": "फार्म 33 — मृत्यु का अनुमानित दिनांक व समय",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 16
+        },
+        {
+          "key_name": "Direction",
+          "label": "फार्म 33 — मुख्यालय से दिशा व दूरी (जैसे: पूर्व 35 किमी0)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 17
+        },
+        {
+          "key_name": "SendMode",
+          "label": "फार्म 33 — किस वाहन से भेजा (जैसे: एम्बुलेंस द्वारा / निजी वाहन द्वारा)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "एम्बुलेंस द्वारा",
+          "sort_order": 18
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "sort_order": 19
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 20
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 21
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 22
+        }
+      ]
     }
   ]
 }
