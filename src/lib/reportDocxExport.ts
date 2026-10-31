@@ -80,7 +80,7 @@ function gridTable(text: string): Table {
     width: { size: TEXT_W, type: WidthType.DXA },
     columnWidths: Array(n).fill(w),
     rows: rows.map((r, i) => new TableRow({
-      height: i === 0 ? undefined : { value: 4500, rule: 'atLeast' },
+      height: i === 0 ? undefined : { value: 3400, rule: 'atLeast' },
       children: Array.from({ length: n }, (_, j) => new TableCell({
         borders: { top: LINE, bottom: LINE, left: LINE, right: LINE },
         width: { size: w, type: WidthType.DXA },

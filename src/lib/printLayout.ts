@@ -231,7 +231,7 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-table { width: 100%; border-collapse: collapse; margin: 0.5em 0; table-layout: fixed; font-size: 0.9em; }
   .letters .doc-table th, .letters .doc-table td { border: 1px solid #000; padding: 0.3em; vertical-align: top; text-align: left; text-indent: 0; word-wrap: break-word; }
   .letters .doc-table th { font-weight: bold; }
-  .letters .doc-table td { height: 80mm; }
+  .letters .doc-table td { height: 60mm; }
   .letters .doc-split td { border: none; padding: 0; background: none; vertical-align: top; }
   .letters .doc-split td:last-child { text-align: right; }
   .letters .doc-witness { margin-top: 0.4em; }
