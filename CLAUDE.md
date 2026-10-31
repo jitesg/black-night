@@ -74,7 +74,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Law: `parseBareSectionNumber` ("धारा 103", "u/s 35(3)", १०३); Act screen filter understands it. bns-ref takes ?mode=&q=.
 - Format layout marks (पहचान चिह्न): `src/lib/formatMarkers.ts` — line-start `[[पत्र]] [[शीर्षक]] [[सेवा में]] [[विषय]]
   [[पक्ष]] [[महोदय]] [[विवरण]] [[समापन]] [[गवाह]] [[संलग्नक]] (lines "item | signature") [[हस्ताक्षर]] [[बीच]] [[दाएँ]]
-  [[दोनों ओर]] ("left | right") [[सूची]] (lines one per line, left, no indent; bodyBlock kind 'line')`. A body paragraph right after a
+  [[दोनों ओर]] ("left | right") [[सूची]] (lines one per line, left, no indent; bodyBlock kind 'line')`. `[[तालिका]] a | b | c` = bordered table (one row per line, first row bold heading, data cells 80mm tall like the paper form; blank line ends it; bodyBlock kind 'table'; print/Word/editor round trip). A body paragraph right after a
   [[दाएँ]] line gets one blank line gap (प्रतिलिपि). Marked text skips the guessing parser (splitIntoSubLetters / parseIntoDocumentModel
   delegate). `generateReport` strips marks unless `{ keepMarkers: true }` (only formats/fill print + editor pipeline);
   editor HTML keeps them as `data-fmt` → `editorHtmlToMarkedText` in the DocumentEditor print; party lines "प्रथम/द्वितीय पक्ष" alone and "( बनाम- … )" are centred, bold, underlined (`isPartyHeading`); NK save passes the

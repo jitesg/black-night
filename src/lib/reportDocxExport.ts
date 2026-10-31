@@ -70,6 +70,26 @@ function twoCol(rows: [string, string, boolean?][], leftW: number): Table {
   });
 }
 
+/** [[तालिका]] block → bordered Word table (first row bold, data rows tall like the paper form). */
+function gridTable(text: string): Table {
+  const rows = text.split('\n').map((r) => r.split('|').map((c) => c.trim()));
+  const n = Math.max(...rows.map((r) => r.length));
+  const w = Math.floor(TEXT_W / n);
+  const LINE = { style: BorderStyle.SINGLE, size: 6, color: '000000' } as const;
+  return new Table({
+    width: { size: TEXT_W, type: WidthType.DXA },
+    columnWidths: Array(n).fill(w),
+    rows: rows.map((r, i) => new TableRow({
+      height: i === 0 ? undefined : { value: 4500, rule: 'atLeast' },
+      children: Array.from({ length: n }, (_, j) => new TableCell({
+        borders: { top: LINE, bottom: LINE, left: LINE, right: LINE },
+        width: { size: w, type: WidthType.DXA },
+        children: [para(r[j] ?? '', { align: AlignmentType.LEFT, bold: i === 0 })],
+      })),
+    })),
+  });
+}
+
 /** One letter → Word blocks (mirrors renderLetterHtml). */
 function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)[] {
   const out: (Paragraph | Table)[] = [];
@@ -103,6 +123,7 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
       // consecutive right lines (a signature block) stay together
       else if (b.kind === 'right') p(b.text, { align: AlignmentType.RIGHT, before: prevKind === 'right' ? 0 : 120 });
       else if (b.kind === 'line') p(b.text, { align: AlignmentType.LEFT });
+      else if (b.kind === 'table') { if (pageBreak) p(''); push(gridTable(b.text)); }
       else if (b.kind === 'split') {
         const at = b.text.indexOf('|');
         push(twoCol([[at < 0 ? b.text : b.text.slice(0, at).trim(), at < 0 ? '' : b.text.slice(at + 1).trim()]], Math.round(TEXT_W / 2)));

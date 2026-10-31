@@ -147,3 +147,14 @@ test('**bold** in a body paragraph: <b> in print + editor, kept after the editor
   assert.doesNotMatch(M.stripFormatMarkers(t), /\*\*/);
   assert.deepEqual(M.splitInlineBold('क **ख** ग'), [{ text: 'क ', bold: false }, { text: 'ख', bold: true }, { text: ' ग', bold: false }]);
 });
+
+test('[[तालिका]]: bordered table (heading row bold), blank line ends it, same after the editor round trip', () => {
+  const t = '[[पत्र]]\n[[बीच]] पुलिस फार्म नं0 33\n[[तालिका]] क | ख | ग\n1 | 2 | 3\n\n[[हस्ताक्षर]] (राम)';
+  const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
+  assert.deepEqual(m.bodyBlocks?.map((b) => b.kind), ['center', 'table']);
+  const html = P.renderTextForPrint(t);
+  assert.match(html, /<table class="doc-table"><tr><th>क<\/th><th>ख<\/th><th>ग<\/th><\/tr><tr><td>1<\/td><td>2<\/td><td>3<\/td><\/tr><\/table>/);
+  const ed = E.renderModelsForEditor([m]);
+  assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(ed)), html);
+  assert.match(M.stripFormatMarkers(t), /क \| ख \| ग/);
+});

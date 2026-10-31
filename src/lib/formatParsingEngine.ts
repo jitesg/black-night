@@ -49,7 +49,7 @@ export interface DocumentModel {
   /** Marked formats only: [[हस्ताक्षर]] lines. */
   signatureLines?: string[];
   /** Marked formats only: body in order — paragraphs and centred / right / split lines. */
-  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split' | 'line'; text: string }[];
+  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split' | 'line' | 'table'; text: string }[];
 }
 
 // ─── Anchor patterns ──────────────────────────────────────────────────────
@@ -419,7 +419,10 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
     else if (b.kind === 'line') parts.push(div('list', 'text-align:left;', esc(b.text)));
     else if (b.kind === 'center') parts.push(div('center', 'text-align:center;', `<b>${esc(b.text)}</b>`));
     else if (b.kind === 'right') parts.push(div('right', 'text-align:right;', esc(b.text)));
-    else {
+    else if (b.kind === 'table') {
+      const trs = b.text.split('\n').map((r, i) => `<tr>${r.split('|').map((c) => `<td style="border:1px solid #000;padding:4px;vertical-align:top;">${i === 0 ? `<b>${esc(c.trim())}</b>` : esc(c.trim())}</td>`).join('')}</tr>`).join('');
+      parts.push(`<table data-fmt="${markName('table')}" style="width:100%;border-collapse:collapse;">${trs}</table>`);
+    } else {
       const { left, right } = splitMarkedAttachment(b.text);
       parts.push(`<table data-fmt="${markName('split')}" style="width:100%;border-collapse:collapse;border:none;"><tr><td style="text-align:left;vertical-align:top;">${esc(left)}</td><td style="text-align:right;vertical-align:top;">${esc(right)}</td></tr></table>`);
     }

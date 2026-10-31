@@ -17,6 +17,8 @@
  *   [[हस्ताक्षर]] …     signature lines (right)
  *   [[बीच]] …           centred bold line(s) (court notice titles)
  *   [[दाएँ]] …          right-aligned line(s) (e.g. "उपजिला मजिस्ट्रेट …")
+ *   [[तालिका]] a | b …  bordered table: one row per line, cells split by "|", first row = heading (bold);
+ *                       a blank line ends the table (police form 33)
  *   [[दोनों ओर]] …      "left | right" on one line (e.g. "शासन | बनाम …")
  *   **…** inside [[विवरण]] text = bold words (print, editor, Word)
  *   [[सूची]] …          lines kept one per line, left, no indent (names list: {{Key#list}})
@@ -33,7 +35,7 @@ import type { DocumentModel } from './formatParsingEngine';
 export type MarkRole =
   | 'letter' | 'header' | 'sewa' | 'subject' | 'party' | 'salutation'
   | 'body' | 'closing' | 'witness' | 'attachments' | 'signature'
-  | 'center' | 'right' | 'split' | 'list';
+  | 'center' | 'right' | 'split' | 'list' | 'table';
 
 export const MARK_ROLES: Record<string, MarkRole> = {
   'पत्र': 'letter',
@@ -54,13 +56,14 @@ export const MARK_ROLES: Record<string, MarkRole> = {
   'दायें': 'right',
   'दोनों ओर': 'split',
   'सूची': 'list',
+  'तालिका': 'table',
 };
 
 const ROLE_NAME: Record<MarkRole, string> = {
   letter: 'पत्र', header: 'शीर्षक', sewa: 'सेवा में', subject: 'विषय', party: 'पक्ष',
   salutation: 'महोदय', body: 'विवरण', closing: 'समापन', witness: 'गवाह',
   attachments: 'संलग्नक', signature: 'हस्ताक्षर',
-  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची',
+  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची', table: 'तालिका',
 };
 
 /** Hindi name of a role, as written in the mark. */
@@ -167,17 +170,23 @@ export function parseMarkedLetter(text: string): DocumentModel {
     para = [];
   };
   const join = (a: string, b: string) => (a ? `${a} ${b}` : b);
+  let rows: string[] = [];
+  const flushTable = () => {
+    if (rows.length) model.bodyBlocks!.push({ kind: 'table', text: rows.join('\n') });
+    rows = [];
+  };
 
   for (const raw of text.split('\n')) {
     const mk = readMark(raw);
     let line = raw;
     if (mk) {
       if (role === 'body') flushPara();
+      flushTable();
       role = mk.role === 'letter' ? role : mk.role;
       line = mk.rest;
     }
     const t = line.trim();
-    if (!t) { if (role === 'body') flushPara(); continue; }
+    if (!t) { if (role === 'body') flushPara(); flushTable(); continue; }
     switch (role) {
       case 'header': model.header = join(model.header, clean(t)); break;
       case 'sewa': model.sewaMein.push(t); break;
@@ -203,10 +212,14 @@ export function parseMarkedLetter(text: string): DocumentModel {
       case 'list':
         model.bodyBlocks!.push({ kind: 'line', text: clean(t) });
         break;
+      case 'table':
+        rows.push(t.split('|').map((c) => clean(c)).join(' | '));
+        break;
       default: break;
     }
   }
   flushPara();
+  flushTable();
   return model;
 }
 
@@ -272,7 +285,9 @@ export function editorHtmlToMarkedText(html: string): string {
     }
     if (name === 'tr') {
       if (!closing) { flush(); cells = []; continue; }
-      if (cells) {
+      if (cells && current() === markName('table')) {
+        emit(cells.map((c) => c || '-').join(' | '), current());
+      } else if (cells) {
         const [first = '', ...rest] = cells;
         const left = first.replace(/^\d{1,2}\s*[.)]\s*/, '');
         const right = rest.filter(Boolean).join(' ');
