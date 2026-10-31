@@ -4,7 +4,7 @@
  */
 import { FORMAT_IMAGE_DATA } from './formatImagesData';
 
-/** Printed height of a picture on the A4 sheet (mm). */
+/** Largest printed height of a picture on the A4 sheet (mm); width is at most the text width. */
 export const IMAGE_HEIGHT_MM = 175;
 
 export function formatImage(name: string): { uri: string; png: string; w: number; h: number } | null {

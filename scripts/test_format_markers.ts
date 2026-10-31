@@ -160,12 +160,12 @@ test('[[तालिका]]: bordered table (heading row bold), blank line ends
 });
 
 test('[[चित्र]]: named picture centred in print + editor round trip, dropped from plain text; unknown name prints nothing', () => {
-  const t = '[[पत्र]]\n[[बीच]] फोटो लाश\n[[विवरण]] मृतक राम\n[[चित्र]] फोटो-लाश\n[[हस्ताक्षर]] (राम)';
+  const t = '[[पत्र]]\n[[बीच]] फोटो लाश\n[[विवरण]] मृतक राम\n[[चित्र]] फोटो-लाश-पुरुष\n[[हस्ताक्षर]] (राम)';
   const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
   assert.deepEqual(m.bodyBlocks?.map((b) => b.kind), ['center', 'para', 'image']);
   const html = P.renderTextForPrint(t);
   assert.match(html, /<p class="doc-image"><img src="data:image\/png;base64,iVBOR/);
   assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
-  assert.doesNotMatch(M.stripFormatMarkers(t), /फोटो-लाश/);
-  assert.doesNotMatch(P.renderTextForPrint(t.replace('फोटो-लाश', 'कुछ-और')), /<img/);
+  assert.doesNotMatch(M.stripFormatMarkers(t), /फोटो-लाश-पुरुष/);
+  assert.doesNotMatch(P.renderTextForPrint(t.replace('फोटो-लाश-पुरुष', 'कुछ-और')), /<img/);
 });

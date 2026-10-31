@@ -127,11 +127,12 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
       else if (b.kind === 'image') {
         const img = formatImage(b.text);
         if (img) {
-          const hPx = Math.round((IMAGE_HEIGHT_MM / 25.4) * 96);
+          // fit inside the text width and IMAGE_HEIGHT_MM, keeping the shape
+          const k = Math.min(((TEXT_W / 1440) * 96) / img.w, ((IMAGE_HEIGHT_MM / 25.4) * 96) / img.h);
           push(new Paragraph({
             alignment: AlignmentType.CENTER,
             pageBreakBefore: pageBreak || undefined,
-            children: [new ImageRun({ type: 'png', data: base64ToBytes(img.png), transformation: { width: Math.round((hPx * img.w) / img.h), height: hPx } })],
+            children: [new ImageRun({ type: 'png', data: base64ToBytes(img.png), transformation: { width: Math.round(img.w * k), height: Math.round(img.h * k) } })],
           }));
           pageBreak = false;
         }
