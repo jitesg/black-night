@@ -1,0 +1,72 @@
+{
+  "id": "sys-fmt-vehicle-technical-inspection",
+  "title": "वाहन तकनीकी निरीक्षण रिपोर्ट हेतु आवेदन",
+  "format_type": "Nyayalay",
+  "vivran": "रिपोर्ट थाना {{PoliceStation}} जनपद {{District}} ।\n\n\nसेवा मे ,\n              श्रीमान प्रतिसार निरिक्षक महोदय\n              रिजर्व पुलिस लाइन {{District}} ।\n\nविषय़ – थाना स्थानीय पर पंजीकृत मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} से सम्बन्धित वाहन {{VehicleNumber}} तकनीकी निरीक्षण कर रिपोर्ट उपलब्ध कराये जाने के सम्बन्ध मे आवेदन ।\n\nमहोदय,\n             निवेदन है कि थाना स्थानीय पर पंजीकृत मु0अं0सं0 {{FIRNumber}} धारा {{Sections}} की विवेचना मुझ {{Rank}} द्वारा सम्पादित की जा रही है । विवेचना के क्रम में दुर्घटना कारित वाहन {{VehicleNumber}} की तकनीकी निरीक्षण रिपोर्ट की आवश्यकता है । निवेदन है वाहन उपरोक्त की तकनीकी निरीक्षण कर रिपोर्ट उपलब्ध कराने का कष्ट करें ।\n                                               रिपोर्ट सादर सेवा मे प्रेषित है ।\n\n                                                                                                  ( {{OfficerName}})\n                                                                                                   {{Rank}}\n                                                                                           थाना {{PoliceStation}}जनपद {{District}}  ।",
+  "is_favorite": 0,
+  "created_by": "system",
+  "source": "system",
+  "editable": 0,
+  "content_type": "format",
+  "seed_version": 2,
+  "app_version": "1.0.0",
+  "tags": [
+    "वाहन निरीक्षण",
+    "पुलिस लाइन",
+    "दुर्घटना"
+  ],
+  "keys": [
+    {
+      "key_name": "FIRNumber",
+      "label": "मु0अ0सं0",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 1
+    },
+    {
+      "key_name": "Sections",
+      "label": "धारा",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 2
+    },
+    {
+      "key_name": "VehicleNumber",
+      "label": "वाहन सं0/नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 3,
+      "default_value": "सफेद क्रेटा वाहन सं UP58AT0846"
+    },
+    {
+      "key_name": "PoliceStation",
+      "label": "थाना",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 4
+    },
+    {
+      "key_name": "OfficerName",
+      "label": "अधिकारी का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 5
+    },
+    {
+      "key_name": "District",
+      "label": "जनपद",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 6
+    },
+    {
+      "key_name": "Rank",
+      "label": "पद/रैंक",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 7,
+      "default_value": "उ0नि0"
+    }
+  ],
+  "last_updated": "2026-08-06"
+}

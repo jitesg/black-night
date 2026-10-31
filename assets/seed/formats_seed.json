@@ -2043,19 +2043,22 @@
     {
       "id": "sys-fmt-vehicle-technical-inspection",
       "title": "वाहन तकनीकी निरीक्षण रिपोर्ट हेतु आवेदन",
-      "format_type": "Nyayalay",
-      "vivran": "रिपोर्ट थाना {{PoliceStation}} जनपद {{District}} ।\n\n\nसेवा मे ,\n              श्रीमान प्रतिसार निरिक्षक महोदय\n              रिजर्व पुलिस लाइन {{District}} ।\n\nविषय़ – थाना स्थानीय पर पंजीकृत मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} से सम्बन्धित वाहन {{VehicleNumber}} तकनीकी निरीक्षण कर रिपोर्ट उपलब्ध कराये जाने के सम्बन्ध मे आवेदन ।\n\nमहोदय,\n             निवेदन है कि थाना स्थानीय पर पंजीकृत मु0अं0सं0 {{FIRNumber}} धारा {{Sections}} की विवेचना मुझ {{Rank}} द्वारा सम्पादित की जा रही है । विवेचना के क्रम में दुर्घटना कारित वाहन {{VehicleNumber}} की तकनीकी निरीक्षण रिपोर्ट की आवश्यकता है । निवेदन है वाहन उपरोक्त की तकनीकी निरीक्षण कर रिपोर्ट उपलब्ध कराने का कष्ट करें ।\n                                               रिपोर्ट सादर सेवा मे प्रेषित है ।\n\n                                                                                                  ( {{OfficerName}})\n                                                                                                   {{Rank}}\n                                                                                           थाना {{PoliceStation}}जनपद {{District}}  ।",
+      "format_type": "Prarthna Patra",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nश्रीमान प्रतिसार निरीक्षक महोदय,\nरिजर्व पुलिस लाइन, जनपद {{District}}।\n[[विषय]] विषय – थाना स्थानीय पर पंजीकृत मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} से सम्बन्धित {{count:Vehicles?vno|{{each:Vehicles?vno|{role} वाहन {vtype} नं0 {vno}}}|{{cnt:Vehicles?vno|}} वाहनों}} का तकनीकी निरीक्षण कर रिपोर्ट उपलब्ध कराये जाने के सम्बन्ध में।\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि थाना स्थानीय पर पंजीकृत मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} की विवेचना मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा सम्पादित की जा रही है। {{count:Vehicles?vno|विवेचना के क्रम में {{each:Vehicles?vno|{role} वाहन {vtype} नं0 {vno}}} का तकनीकी निरीक्षण कराकर रिपोर्ट प्राप्त करना आवश्यक है। वाहन उपरोक्त {{VehiclePlace}} खड़ा है।\n\nअतः निवेदन है कि वाहन उपरोक्त का तकनीकी निरीक्षण कर रिपोर्ट उपलब्ध कराने का कष्ट करें।|विवेचना के क्रम में निम्नलिखित वाहनों का तकनीकी निरीक्षण कराकर रिपोर्ट प्राप्त करना आवश्यक है –\n\n[[सूची]] {{each:Vehicles?vno|{#}. {role} वाहन – {vtype} नं0 {vno}|\\n}}\n\n[[विवरण]] उपरोक्त वाहन {{VehiclePlace}} खड़े हैं। अतः निवेदन है कि उपरोक्त वाहनों का तकनीकी निरीक्षण कर रिपोर्ट उपलब्ध कराने का कष्ट करें।}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}} जनपद {{District}}\n{{if:Mobile|मो0 {{Mobile}}}}\n",
       "is_favorite": 0,
       "created_by": "system",
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
-        "वाहन निरीक्षण",
+        "तकनीकी निरीक्षण",
+        "दुर्घटना",
         "पुलिस लाइन",
-        "दुर्घटना"
+        "प्रतिसार निरीक्षक",
+        "वाहन",
+        "वाहन निरीक्षण"
       ],
       "keys": [
         {
@@ -2063,28 +2066,41 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 1
+          "default_value": null,
+          "sort_order": 0
         },
         {
           "key_name": "Sections",
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
+          "default_value": "281/125(b) BNS",
+          "sort_order": 1
+        },
+        {
+          "key_name": "Vehicles",
+          "label": "वाहन (हर वाहन की एक पंक्ति)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"वाहन की भूमिका\", \"type\": \"choice\", \"options\": [\"दुर्घटनाकारक\", \"दुर्घटनाग्रस्त\", \"सम्बन्धित\"], \"default\": \"दुर्घटनाकारक\"}, {\"key\": \"vtype\", \"label\": \"वाहन का प्रकार / रंग (जैसे: सफेद क्रेटा कार, ट्रैक्टर, मोटरसाइकिल)\"}, {\"key\": \"vno\", \"label\": \"वाहन नंबर (जैसे: UP33AB1234)\"}], \"addLabel\": \"और वाहन जोड़ें\", \"itemLabel\": \"वाहन\"}",
           "sort_order": 2
         },
         {
-          "key_name": "VehicleNumber",
-          "label": "वाहन सं0/नाम",
+          "key_name": "VehiclePlace",
+          "label": "वाहन कहाँ खड़ा है",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 3,
-          "default_value": "सफेद क्रेटा वाहन सं UP58AT0846"
+          "default_value": "थाना परिसर में",
+          "sort_order": 3
         },
         {
-          "key_name": "PoliceStation",
-          "label": "थाना",
-          "field_type": "text",
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
           "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
           "sort_order": 4
         },
         {
@@ -2092,25 +2108,35 @@
           "label": "अधिकारी का नाम",
           "field_type": "text",
           "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
           "sort_order": 5
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 6
         },
         {
           "key_name": "District",
           "label": "जनपद",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 6
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 7
         },
         {
-          "key_name": "Rank",
-          "label": "पद/रैंक",
+          "key_name": "Mobile",
+          "label": "मोबाइल नं0 (हस्ताक्षर के नीचे) — न हो तो खाली",
           "field_type": "text",
-          "is_required": 1,
-          "sort_order": 7,
-          "default_value": "उ0नि0"
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 8
         }
       ],
-      "last_updated": "2026-08-06"
+      "last_updated": "2026-10-31"
     },
     {
       "id": "sys-fmt-missing-person-search",

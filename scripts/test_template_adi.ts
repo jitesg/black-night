@@ -371,3 +371,19 @@ test('अवकाश प्रार्थना पत्र: one sheet, स�
   assert.equal((html.match(/<th>/g) ?? []).length, 8);
   assert.doesNotMatch(html, /प्रार्थी/);
 });
+
+test('वाहन तकनीकी निरीक्षण: 1 vehicle inline, 2 vehicles = "02 वाहनों" + list with roles', async () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-vehicle-technical-inspection');
+  assert.equal(f.format_type, 'Prarthna Patra');
+  const base = { FIRNumber: '1/26', Sections: '281 BNS', VehiclePlace: 'थाना परिसर में', pad: 'उपनिरीक्षक', OfficerName: 'क', PoliceStation: 'ख', District: 'ग' };
+  const one = generateReport(f.vivran, { ...base, Vehicles: JSON.stringify([{ role: 'दुर्घटनाकारक', vtype: 'कार', vno: 'UP1' }]) }, f.keys);
+  assert.doesNotMatch(one, /\{\{|\}\}|\{[a-z#]/);
+  assert.match(one, /सम्बन्धित दुर्घटनाकारक वाहन कार नं0 UP1 का तकनीकी निरीक्षण कर रिपोर्ट/);
+  assert.match(one, /वाहन उपरोक्त थाना परिसर में खड़ा है।/);
+  const two = generateReport(f.vivran, { ...base, Vehicles: JSON.stringify([{ role: 'दुर्घटनाकारक', vtype: 'ट्रैक्टर', vno: 'UP1' }, { role: 'दुर्घटनाग्रस्त', vtype: 'बाइक', vno: 'UP2' }]) }, f.keys);
+  assert.doesNotMatch(two, /\{\{|\}\}|\{[a-z#]/);
+  assert.match(two, /सम्बन्धित 02 वाहनों का/);
+  assert.match(two, /1\. दुर्घटनाकारक वाहन – ट्रैक्टर नं0 UP1\n2\. दुर्घटनाग्रस्त वाहन – बाइक नं0 UP2/);
+  assert.match(two, /उपरोक्त वाहन थाना परिसर में खड़े हैं।/);
+});
