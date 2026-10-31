@@ -136,6 +136,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - `sys-fmt-postmortem-33` "पोस्टमार्टम हेतु शव भेजने के कागज़ (RI पत्र, CMO पत्र, फार्म 33, नमूना सील)" (type Any, from the owner's
   फार्म 33 docx): 6 sheets — RI letter, CMO letter, फार्म संख्या-33 cover (RI signs; PM no. blank), फोटो लाश (form 379; picture by
   Gender मृतक/मृतका), नमूना सील (blank space, signature low), पुलिस फार्म 33 = two `[[तालिका]]` tables (5 + 4 columns) on one sheet.
+- `sys-fmt-avkash-patra` "अवकाश प्रार्थना पत्र (आरक्षी / मुख्य आरक्षी / उ0नि0)" (type Any, owner's docx): `[[सूची]]` lines with
+  blank (zero-width) lines between, संस्तुति table `(14mm)` + `#` heading + full-width note row, CO / थाना प्रभारी signature low; no प्रार्थी block (owner).
 - Fields that appear only when needed (option values must not contain "/" — it means "or"): `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
   "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + validation (hidden = not required).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि

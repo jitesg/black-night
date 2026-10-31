@@ -4851,6 +4851,110 @@
           "sort_order": 22
         }
       ]
+    },
+    {
+      "id": "sys-fmt-avkash-patra",
+      "title": "अवकाश प्रार्थना पत्र (आरक्षी / मुख्य आरक्षी / उ0नि0)",
+      "format_type": "Any",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "अवकाश",
+        "छुट्टी",
+        "प्रार्थना पत्र",
+        "CL",
+        "आकस्मिक अवकाश"
+      ],
+      "last_updated": "2026-10-31",
+      "vivran": "[[पत्र]]\n[[बीच]] अवकाश प्रार्थना पत्र\n​\n\n[[सूची]] पद नाम – {{Post}}\n​\nनाम कर्मचारी – {{EmpName}}\n​\nनियुक्ति का स्थान – थाना {{PoliceStation}} जनपद {{District}}\n​\nअवकाश की कब से आवश्यकता है – दिनांक {{FromDate}} से {{ToDate}} तक{{if:Days| (कुल {{Days}} दिवस)}}\n​\nअवकाश जाने का कारण – {{Reason}}\n​\nथाना पर नियुक्त आरक्षी / मुख्य आरक्षियों की संख्या – {{if:StaffCount|{{StaffCount}}}}{{ifnot:StaffCount|........................}}\n​\nथाने से अवकाश पर गये उप निरीक्षक / मुख्य आरक्षी / आरक्षी की वापसी का दिनांक – {{if:LastReturn|{{LastReturn}}}}{{ifnot:LastReturn|........................}}\n​\nनोटः- सम्बन्धित कर्मचारी अपनी बीट बुक प्रार्थना पत्र के साथ प्रस्तुत करना सुनिश्चित करें।\n\n[[तालिका]] (14mm) थाना प्रभारी की संस्तुति | दिवस | कब से कब तक | हस्ताक्षर\n |  |  | \n# क्षेत्राधिकारी की संस्तुति | दिवस | कब से कब तक | हस्ताक्षर\n |  |  | \nक्षेत्राधिकारी / थाना प्रभारी सहमत हो तो केवल हस्ताक्षर करें।\n\n[[सूची]] Sd…… Days C.L. Wef Date ……/……/20……\n[[बीच]] ​\n​\n​\n​\n​\n[[हस्ताक्षर]] क्षेत्राधिकारी / थाना प्रभारी\nसर्किल / थाना\n",
+      "keys": [
+        {
+          "key_name": "Post",
+          "label": "पद नाम",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "आरक्षी",
+          "dropdown_options": "[\"आरक्षी\", \"मुख्य आरक्षी\", \"महिला आरक्षी\", \"आरक्षी चालक\", \"उपनिरीक्षक\", \"महिला उपनिरीक्षक\"]",
+          "sort_order": 0
+        },
+        {
+          "key_name": "EmpName",
+          "label": "नाम कर्मचारी",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 1
+        },
+        {
+          "key_name": "FromDate",
+          "label": "अवकाश कब से (दिनांक)",
+          "field_type": "date",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 2
+        },
+        {
+          "key_name": "ToDate",
+          "label": "अवकाश कब तक (दिनांक)",
+          "field_type": "date",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 3
+        },
+        {
+          "key_name": "Days",
+          "label": "कुल दिवस — न लिखना हो तो खाली",
+          "field_type": "number",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 4
+        },
+        {
+          "key_name": "Reason",
+          "label": "अवकाश जाने का कारण",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 5
+        },
+        {
+          "key_name": "StaffCount",
+          "label": "थाना पर नियुक्त आरक्षी / मुख्य आरक्षियों की संख्या — खाली छोड़ें तो ....... छपेगा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 6
+        },
+        {
+          "key_name": "LastReturn",
+          "label": "अवकाश पर गये कर्मचारी की वापसी का दिनांक — खाली छोड़ें तो ....... छपेगा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 7
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 8
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 9
+        }
+      ]
     }
   ]
 }

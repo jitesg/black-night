@@ -356,3 +356,18 @@ test('पोस्टमार्टम कागज़: 6 sheets, मृतक 
     assert.match(html, new RegExp(`${Gender} राम`));
   }
 });
+
+test('अवकाश प्रार्थना पत्र: one sheet, संस्तुति table, blanks become dots, कुल दिवस only when filled', async () => {
+  const P2 = await import('../src/lib/printLayout.ts');
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-avkash-patra');
+  const v = { Post: 'आरक्षी', EmpName: 'राम', PoliceStation: 'क', District: 'ख', FromDate: '01.11.2026', ToDate: '03.11.2026', Reason: 'घरेलू कार्य हेतु' };
+  const marked = generateReport(f.vivran, v, f.keys, { keepMarkers: true });
+  assert.doesNotMatch(marked, /\{\{|\}\}|कुल/);
+  assert.match(marked, /संख्या – \.{10,}/);
+  assert.match(generateReport(f.vivran, { ...v, Days: '03' }, f.keys), /तक \(कुल 03 दिवस\)/);
+  const html = P2.renderTextForPrint(marked);
+  assert.equal((html.match(/class="doc-letter"/g) ?? []).length, 1);
+  assert.equal((html.match(/<th>/g) ?? []).length, 8);
+  assert.doesNotMatch(html, /प्रार्थी/);
+});
