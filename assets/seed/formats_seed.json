@@ -2810,7 +2810,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "दाखिला",
@@ -2819,17 +2819,9 @@
         "हवालात",
         "GD"
       ],
-      "last_updated": "2026-10-30",
-      "vivran": "{{if:GDTime|{{GDTime}} }}{{ifnot:Mode=मैं वापस आकर दाखिल कर रहा (वापसी)|तस्करा बावत दाखिला {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{if:CaseType=मुकदमा|सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} मय {{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|मय 01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 मय {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}}}}{{if:Mode=मैं वापस आकर दाखिल कर रहा (वापसी)|वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} व दाखिला {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{if:CaseType=मुकदमा|सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} मय {{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|मय 01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 मय {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}}}}\n{{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|इस समय {{BringerRank}} {{BringerName}} थाना उपस्थित आकर मय गिरफ्तारशुदा {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{Accused#inline}}{{if:CaseType=मुकदमा| सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}} के जेर निगरानी व हिरासत खुद के मय {{if:CaseType=मुकदमा|{{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 व {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}} के दाखिल किये।}}{{if:Mode=मैं वापस आकर दाखिल कर रहा (वापसी)|इस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}} रवानाशुदा रो0आम तारीखी इमरोजा से बाद {{Purpose}} से मय गिरफ्तारशुदा {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{Accused#inline}}{{if:CaseType=मुकदमा| सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}} के जेर निगरानी खुद व हिरासत {{if:Hamrah|हमराहीगण}}{{ifnot:Hamrah|स्वयं}} के मय {{if:CaseType=मुकदमा|{{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 व {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}} के वापस थाना आकर दाखिल किये।}}{{if:Mode=थाने पर ही गिरफ्तार कर दाखिल किया|इस समय मुझ {{pad}} {{OfficerName}} द्वारा{{if:CaseType=मुकदमा| मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित}} गिरफ्तारशुदा {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{Accused#inline}} को मय {{if:CaseType=मुकदमा|{{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 व {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}} के दाखिल किया गया।}} {{Accused#n|अभियुक्त|अभियुक्तगण}} की जामा तलाशी रूबरू सन्तरी पहरा लिवायी गयी तो {{ifnot:Recovery|पहने कपड़ों के अलावा अन्य कोई शय बरामद नहीं हुई।}}{{if:Recovery|{{Recovery}}}} {{Accused#n|अभियुक्त|अभियुक्तगण}} के जिस्म जरावात का मुआयना किया गया तो {{if:Injury=कोई जाहिरा चोट नहीं|शरीर पर कोई जाहिरा चोट नहीं है।}}{{if:Injury=चोट है|{{InjuryText}}}} खाना खुराक को पूछा गया तो खाना खाने से मुनकिर {{Accused#n|है|हैं}}, हस्व ख्वाहिश खाना दिया जायेगा। {{Accused#n|अभियुक्त|अभियुक्तगण}} को बाद देकर सरकारी रिहायशी इस्तेमाली कम्बल अन्दर हवालात {{Hawalat}} किया गया, जो पूर्व से खाली व साफ था। ताला बन्द ठीक सन्तरी पहरा को दिखाया गया। चाबी पूर्ववत है।{{if:doHulia| हुलिया {{Accused#n|अभियुक्त|अभियुक्तगण}} {{each:Hulia?who|{#}.{who} उपरोक्त आँख, नाक, कान, कद {kad}, रंग {rang}, {jism} जिस्म{ उम्र करीब ~age~ वर्ष}|, }} है।}} विवरण गिरफ्तारी इस प्रकार है – {{ArrestDetail}} दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मा0 मानवाधिकार आयोग के आदेशों-निर्देशों का अक्षरशः पालन किया गया।{{if:InformName| गिरफ्तारी की सूचना {{Accused#n|अभियुक्त|अभियुक्तगण}} {{if:InformRel=पत्नी/माता/बहन|की}}{{ifnot:InformRel=पत्नी/माता/बहन|के}} {{InformRel}} {{InformName}} को {{if:InformMobile|जरिये दूरभाष मो0नं0 {{InformMobile}} पर }}दी गयी।}} {{Accused#n|अभियुक्त|अभियुक्तगण}} को रो0आम में दाखिल कराया गया।{{if:CaseType=170 BNSS चालानी (शांति भंग)| रिपोर्ट चालानी दाखिल दफ्तर की गयी।}} हे0मो0/का0मो0 को हिदायत दी गयी कि बाद तकमीला सम्बन्धित रजिस्ट्रान {{Accused#n|अभियुक्त|अभियुक्तगण}} का मेडिकल परीक्षण कराकर समय से मा0 न्यायालय रवाना करना सुनिश्चित करें।{{if:CaseType=मुकदमा| विस्तृत विवरण जरिये सीडी इरसाल है।}}",
+      "last_updated": "2026-10-31",
+      "vivran": "{{ifnot:Mode=मैं वापस आकर दाखिल कर रहा (वापसी)|तस्करा बावत दाखिला {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{if:CaseType=मुकदमा|सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} मय {{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|मय 01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 मय {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}}}}{{if:Mode=मैं वापस आकर दाखिल कर रहा (वापसी)|वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} व दाखिला {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{if:CaseType=मुकदमा|सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} मय {{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|मय 01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 मय {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}}}}\n{{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|इस समय {{BringerRank}} {{BringerName}} थाना उपस्थित आकर मय गिरफ्तारशुदा {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{Accused#inline}}{{if:CaseType=मुकदमा| सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}} के जेर निगरानी व हिरासत खुद के मय {{if:CaseType=मुकदमा|{{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 व {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}} के दाखिल किये।}}{{if:Mode=मैं वापस आकर दाखिल कर रहा (वापसी)|इस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}} रवानाशुदा रो0आम तारीखी इमरोजा से बाद {{Purpose}} से मय गिरफ्तारशुदा {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{Accused#inline}}{{if:CaseType=मुकदमा| सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}} के जेर निगरानी खुद व हिरासत {{if:Hamrah|हमराहीगण}}{{ifnot:Hamrah|स्वयं}} के मय {{if:CaseType=मुकदमा|{{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 व {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}} के वापस थाना आकर दाखिल किये।}}{{if:Mode=थाने पर ही गिरफ्तार कर दाखिल किया|इस समय मुझ {{pad}} {{OfficerName}} द्वारा{{if:CaseType=मुकदमा| मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित}} गिरफ्तारशुदा {{Accused#cnt}} नफर {{Accused#n|अभियुक्त|अभियुक्तगण}} {{Accused#inline}} को मय {{if:CaseType=मुकदमा|{{Accused#cnt}} किता गिरफ्तारी प्रपत्र}}{{if:CaseType=170 BNSS चालानी (शांति भंग)|01 किता चालानी रिपोर्ट अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 व {{Accused#cnt}} अदद गिरफ्तारी प्रपत्र}} के दाखिल किया गया।}} {{Accused#n|अभियुक्त|अभियुक्तगण}} की जामा तलाशी रूबरू सन्तरी पहरा लिवायी गयी तो {{ifnot:Recovery|पहने कपड़ों के अलावा अन्य कोई शय बरामद नहीं हुई।}}{{if:Recovery|{{Recovery}}}} {{Accused#n|अभियुक्त|अभियुक्तगण}} के जिस्म जरावात का मुआयना किया गया तो {{if:Injury=कोई जाहिरा चोट नहीं|शरीर पर कोई जाहिरा चोट नहीं है।}}{{if:Injury=चोट है|{{InjuryText}}}} खाना खुराक को पूछा गया तो खाना खाने से मुनकिर {{Accused#n|है|हैं}}, हस्व ख्वाहिश खाना दिया जायेगा। {{Accused#n|अभियुक्त|अभियुक्तगण}} को बाद देकर सरकारी रिहायशी इस्तेमाली कम्बल अन्दर हवालात {{Hawalat}} किया गया, जो पूर्व से खाली व साफ था। ताला बन्द ठीक सन्तरी पहरा को दिखाया गया। चाबी पूर्ववत है।{{if:doHulia| हुलिया {{Accused#n|अभियुक्त|अभियुक्तगण}} {{each:Hulia?who|{#}.{who} उपरोक्त आँख, नाक, कान, कद {kad}, रंग {rang}, {jism} जिस्म{ उम्र करीब ~age~ वर्ष}|, }} है।}} विवरण गिरफ्तारी इस प्रकार है – {{ArrestDetail}} दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मा0 मानवाधिकार आयोग के आदेशों-निर्देशों का अक्षरशः पालन किया गया।{{if:InformName| गिरफ्तारी की सूचना {{Accused#n|अभियुक्त|अभियुक्तगण}} {{if:InformRel=पत्नी/माता/बहन|की}}{{ifnot:InformRel=पत्नी/माता/बहन|के}} {{InformRel}} {{InformName}} को {{if:InformMobile|जरिये दूरभाष मो0नं0 {{InformMobile}} पर }}दी गयी।}} {{Accused#n|अभियुक्त|अभियुक्तगण}} को रो0आम में दाखिल कराया गया।{{if:CaseType=170 BNSS चालानी (शांति भंग)| रिपोर्ट चालानी दाखिल दफ्तर की गयी।}} हे0मो0/का0मो0 को हिदायत दी गयी कि बाद तकमीला सम्बन्धित रजिस्ट्रान {{Accused#n|अभियुक्त|अभियुक्तगण}} का मेडिकल परीक्षण कराकर समय से मा0 न्यायालय रवाना करना सुनिश्चित करें।{{if:CaseType=मुकदमा| विस्तृत विवरण जरिये सीडी इरसाल है।}}",
       "keys": [
-        {
-          "key_name": "GDTime",
-          "label": "GD का समय (जैसे 15.05) — न हो तो खाली",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "sort_order": 0
-        },
         {
           "key_name": "Mode",
           "label": "दाखिला कैसे",
@@ -2837,7 +2829,7 @@
           "is_required": 1,
           "default_value": "दूसरे अधिकारी ने लाकर दाखिल किया",
           "dropdown_options": "[\"दूसरे अधिकारी ने लाकर दाखिल किया\", \"मैं वापस आकर दाखिल कर रहा (वापसी)\", \"थाने पर ही गिरफ्तार कर दाखिल किया\"]",
-          "sort_order": 1
+          "sort_order": 0
         },
         {
           "key_name": "CaseType",
@@ -2846,7 +2838,7 @@
           "is_required": 1,
           "default_value": "मुकदमा",
           "dropdown_options": "[\"मुकदमा\", \"170 BNSS चालानी (शांति भंग)\"]",
-          "sort_order": 2
+          "sort_order": 1
         },
         {
           "key_name": "FIRNo",
@@ -2855,7 +2847,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"CaseType=मुकदमा\"}",
-          "sort_order": 3
+          "sort_order": 2
         },
         {
           "key_name": "Sections",
@@ -2864,7 +2856,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"CaseType=मुकदमा\"}",
-          "sort_order": 4
+          "sort_order": 3
         },
         {
           "key_name": "BringerRank",
@@ -2873,7 +2865,7 @@
           "is_required": 1,
           "default_value": "उ0नि0",
           "dropdown_options": "{\"options\": [\"उ0नि0\", \"निरीक्षक\", \"हे0का0\", \"का0\", \"प्रभारी निरीक्षक\"], \"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\"}",
-          "sort_order": 5
+          "sort_order": 4
         },
         {
           "key_name": "BringerName",
@@ -2882,7 +2874,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\"}",
-          "sort_order": 6
+          "sort_order": 5
         },
         {
           "key_name": "pad",
@@ -2891,7 +2883,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\"}",
-          "sort_order": 7
+          "sort_order": 6
         },
         {
           "key_name": "OfficerName",
@@ -2900,7 +2892,7 @@
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
           "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\"}",
-          "sort_order": 8
+          "sort_order": 7
         },
         {
           "key_name": "Hamrah",
@@ -2909,7 +2901,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)\"}",
-          "sort_order": 9
+          "sort_order": 8
         },
         {
           "key_name": "Purpose",
@@ -2918,7 +2910,7 @@
           "is_required": 1,
           "default_value": "देखभाल क्षेत्र, चेकिंग संदिग्ध व्यक्ति/वाहन, रोकथाम जुर्म जरायम व तलाश वांछित",
           "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)\"}",
-          "sort_order": 10
+          "sort_order": 9
         },
         {
           "key_name": "Accused",
@@ -2926,7 +2918,7 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 11
+          "sort_order": 10
         },
         {
           "key_name": "Recovery",
@@ -2934,7 +2926,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 12
+          "sort_order": 11
         },
         {
           "key_name": "Injury",
@@ -2943,7 +2935,7 @@
           "is_required": 1,
           "default_value": "कोई जाहिरा चोट नहीं",
           "dropdown_options": "[\"कोई जाहिरा चोट नहीं\", \"चोट है\"]",
-          "sort_order": 13
+          "sort_order": 12
         },
         {
           "key_name": "InjuryText",
@@ -2952,7 +2944,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"Injury=चोट है\"}",
-          "sort_order": 14
+          "sort_order": 13
         },
         {
           "key_name": "Hawalat",
@@ -2961,7 +2953,7 @@
           "is_required": 1,
           "default_value": "मर्दाना",
           "dropdown_options": "[\"मर्दाना\", \"महिला\"]",
-          "sort_order": 15
+          "sort_order": 14
         },
         {
           "key_name": "doHulia",
@@ -2969,7 +2961,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 16
+          "sort_order": 15
         },
         {
           "key_name": "Hulia",
@@ -2978,7 +2970,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"अभियुक्त का नाम\"}, {\"key\": \"kad\", \"label\": \"कद\", \"type\": \"choice\", \"options\": [\"औसत\", \"लम्बा\", \"नाटा\"], \"default\": \"औसत\"}, {\"key\": \"rang\", \"label\": \"रंग\", \"type\": \"choice\", \"options\": [\"गेंहुआ\", \"सांवला\", \"गोरा\", \"काला\"], \"default\": \"गेंहुआ\"}, {\"key\": \"jism\", \"label\": \"जिस्म\", \"type\": \"choice\", \"options\": [\"इकहरा\", \"इकहरा मजबूत\", \"भारी\"], \"default\": \"इकहरा मजबूत\"}, {\"key\": \"age\", \"label\": \"उम्र (जैसे 25)\"}], \"addLabel\": \"+ और हुलिया जोड़ें\", \"itemLabel\": \"हुलिया\", \"showIf\": \"doHulia\"}",
-          "sort_order": 17
+          "sort_order": 16
         },
         {
           "key_name": "ArrestDetail",
@@ -2986,7 +2978,7 @@
           "field_type": "sentence",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 18,
+          "sort_order": 17,
           "dropdown_options": "{\"hint\": \"अभियुक्त कैसे पकड़ा गया? एक कार्ड छुएँ\", \"cards\": [{\"id\": \"mukhbir\", \"icon\": \"🕵️\", \"label\": \"मुखबिर की सूचना\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} मुखबिर खास की सूचना पर <<place>> से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"dabish\", \"icon\": \"🚪\", \"label\": \"दबिश\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<place>> पर दबिश देकर {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"checking\", \"icon\": \"🚓\", \"label\": \"चेकिंग के दौरान\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<place>> पर चेकिंग के दौरान {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"mauka\", \"icon\": \"📍\", \"label\": \"मौके पर ही\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} घटना स्थल <<place>> से मौके पर ही {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"dial112\", \"icon\": \"📞\", \"label\": \"डायल 112 से प्राप्त\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} डायल 112 की पीआरवी <<prv>> द्वारा पकड़कर सुपुर्द किये गये {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को प्राप्त कर <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"warrant\", \"icon\": \"⚖️\", \"label\": \"वारंट पर\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} मा0 न्यायालय <<court>> द्वारा जारी वारंट के अनुपालन में <<place>> से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को गिरफ्तार किया गया।\"}, {\"id\": \"swayam\", \"icon\": \"🙋\", \"label\": \"स्वयं थाने आया\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} स्वयं थाने पर उपस्थित होने पर थाना परिसर से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"own\", \"icon\": \"✍️\", \"label\": \"अपने शब्दों में\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<own>> {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}], \"slots\": {\"date\": {\"label\": \"गिरफ्तारी दिनांक\", \"type\": \"date\", \"default\": \"today\", \"placeholder\": \"जैसे 30.10.2025\"}, \"time\": {\"label\": \"समय\", \"type\": \"text\", \"optional\": true, \"before\": \" समय करीब \", \"after\": \" बजे\", \"placeholder\": \"जैसे 10.30\", \"title\": \"गिरफ्तारी का समय\"}, \"place\": {\"label\": \"स्थान\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे ग्राम रामपुर तिराहा\", \"title\": \"गिरफ्तारी का स्थान\"}, \"prv\": {\"label\": \"पीआरवी नं0\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे 1234\", \"title\": \"डायल 112 पीआरवी नंबर\"}, \"court\": {\"label\": \"न्यायालय\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे सी0जे0एम0 लखनऊ\", \"title\": \"वारंट जारी करने वाला न्यायालय\"}, \"own\": {\"label\": \"कैसे पकड़ा\", \"type\": \"multiline\", \"placeholder\": \"जैसे: वादी द्वारा पकड़कर सुपुर्द करने पर\", \"title\": \"अभियुक्त कैसे पकड़ा गया — अपने शब्दों में\"}, \"basis\": {\"label\": \"गिरफ्तारी का आधार\", \"type\": \"choice\", \"default\": \"नामजद होने के आधार पर\", \"options\": [\"नामजद होने के आधार पर\", \"साक्ष्य संकलन के आधार पर\", \"नाम प्रकाश में आने पर\", \"अपराध करते समय रंगे हाथ\"], \"showIf\": \"CaseType=मुकदमा\", \"whenHidden\": \"शांति व्यवस्था भंग होने की प्रबल आशंका के दृष्टिगत धारा 170 भा0ना0सु0सं0 के अन्तर्गत\"}}, \"extraLabel\": \"और कुछ लिखें\"}"
         },
         {
@@ -2996,7 +2988,7 @@
           "is_required": 0,
           "default_value": "पिता",
           "dropdown_options": "[\"पिता\", \"माता\", \"पत्नी\", \"पति\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\"]",
-          "sort_order": 19
+          "sort_order": 18
         },
         {
           "key_name": "InformName",
@@ -3004,7 +2996,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 20
+          "sort_order": 19
         },
         {
           "key_name": "InformMobile",
@@ -3012,7 +3004,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 21
+          "sort_order": 20
         }
       ]
     },
@@ -3025,7 +3017,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -3035,24 +3027,16 @@
         "नामजदगी गलत",
         "GD"
       ],
-      "last_updated": "2026-10-30",
-      "vivran": "{{if:GDTime|{{GDTime}} }}{{if:doWapsi|वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} व }}तस्करा बावत {{if:doBadh|{{seq||व }}धारा बढ़ोत्तरी }}{{if:doGhat|{{seq||व }}धारा घटोत्तरी }}{{if:doNaamAdd|{{seq||व }}अभियुक्त का नाम प्रकाश में लाये जाने }}{{if:doNaamHata|{{seq||व }}नामजदगी गलत पाये जाने }}सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}\n{{if:doWapsi|इस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}} रवानाशुदा रो0आम तारीखी इमरोजा से बाद {{WapsiKaam}} से वापस थाना हाजा आया।{{if:doShastra| हमराह के रवानाशुदा शस्त्र-कारतूस अन्दर मालखाना रखाकर ताला मालखाना बन्द ठीक सन्तरी पहरा को दिखाया गया, चाबी पूर्ववत रही।}} }}{{ifnot:doWapsi|इस समय }}मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} की विवेचना मुझ {{pad}}{{ifnot:doWapsi| {{OfficerName}}}} द्वारा सम्पादित की जा रही है।{{if:doBadh| अब तक की गयी तमामी विवेचना, बयान वादी, गवाहान एवं अन्य संकलित साक्ष्यों से {{BadhReason}} अतः अभियोग में धारा {{BadhSection}} की बढ़ोत्तरी की जाती है।}}{{if:doGhat| अब तक की गयी तमामी विवेचना, बयान वादी, गवाहान एवं अन्य संकलित साक्ष्यों से {{GhatReason}} अतः अभियोग से धारा {{GhatSection}} का लोप किया जाता है।}}{{if:doNaamAdd| विवेचना से {{NaamAddReason}} अतः {{NaamAdd#inline}} {{NaamAdd#n|का नाम प्रकाश में लाया जाता है।|के नाम प्रकाश में लाये जाते हैं।}}}}{{if:doNaamHata| {{NaamHataReason}} अतः {{NaamHata#n|नामित आरोपी|नामित आरोपीगण}} {{NaamHata#inline}} की नामजदगी गलत पाये जाने पर {{NaamHata#n|उसका नाम विवेचना से पृथक किया जाता है।|उनके नाम विवेचना से पृथक किये जाते हैं।}}}} अभियोग की अग्रिम विवेचना{{if:NewSections| अन्तर्गत धारा {{NewSections}}}}{{if:FurtherAgainst| बनाम {{FurtherAgainst}}}} सम्पादित की जायेगी। विवरण विवेचना जरिये सीडी प्रेषित है। तस्करा दर्ज किया जाता है।",
+      "last_updated": "2026-10-31",
+      "vivran": "{{if:doWapsi|वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} व }}तस्करा बावत {{if:doBadh|{{seq||व }}धारा बढ़ोत्तरी }}{{if:doGhat|{{seq||व }}धारा घटोत्तरी }}{{if:doNaamAdd|{{seq||व }}अभियुक्त का नाम प्रकाश में लाये जाने }}{{if:doNaamHata|{{seq||व }}नामजदगी गलत पाये जाने }}सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}\n{{if:doWapsi|इस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}} रवानाशुदा रो0आम तारीखी इमरोजा से बाद {{WapsiKaam}} से वापस थाना हाजा आया।{{if:doShastra| हमराह के रवानाशुदा शस्त्र-कारतूस अन्दर मालखाना रखाकर ताला मालखाना बन्द ठीक सन्तरी पहरा को दिखाया गया, चाबी पूर्ववत रही।}} }}{{ifnot:doWapsi|इस समय }}मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} की विवेचना मुझ {{pad}}{{ifnot:doWapsi| {{OfficerName}}}} द्वारा सम्पादित की जा रही है।{{if:doBadh| अब तक की गयी तमामी विवेचना, बयान वादी, गवाहान एवं अन्य संकलित साक्ष्यों से {{BadhReason}} अतः अभियोग में धारा {{BadhSection}} की बढ़ोत्तरी की जाती है।}}{{if:doGhat| अब तक की गयी तमामी विवेचना, बयान वादी, गवाहान एवं अन्य संकलित साक्ष्यों से {{GhatReason}} अतः अभियोग से धारा {{GhatSection}} का लोप किया जाता है।}}{{if:doNaamAdd| विवेचना से {{NaamAddReason}} अतः {{NaamAdd#inline}} {{NaamAdd#n|का नाम प्रकाश में लाया जाता है।|के नाम प्रकाश में लाये जाते हैं।}}}}{{if:doNaamHata| {{NaamHataReason}} अतः {{NaamHata#n|नामित आरोपी|नामित आरोपीगण}} {{NaamHata#inline}} की नामजदगी गलत पाये जाने पर {{NaamHata#n|उसका नाम विवेचना से पृथक किया जाता है।|उनके नाम विवेचना से पृथक किये जाते हैं।}}}} अभियोग की अग्रिम विवेचना{{if:NewSections| अन्तर्गत धारा {{NewSections}}}}{{if:FurtherAgainst| बनाम {{FurtherAgainst}}}} सम्पादित की जायेगी। विवरण विवेचना जरिये सीडी प्रेषित है। तस्करा दर्ज किया जाता है।",
       "keys": [
-        {
-          "key_name": "GDTime",
-          "label": "GD का समय (जैसे 20.50) — न हो तो खाली",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "sort_order": 0
-        },
         {
           "key_name": "doWapsi",
           "label": "वापसी के साथ (मैं क्षेत्र से वापस आया)",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 1
+          "sort_order": 0
         },
         {
           "key_name": "pad",
@@ -3061,7 +3045,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
-          "sort_order": 2
+          "sort_order": 1
         },
         {
           "key_name": "OfficerName",
@@ -3069,7 +3053,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 3
+          "sort_order": 2
         },
         {
           "key_name": "Hamrah",
@@ -3078,7 +3062,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doWapsi\"}",
-          "sort_order": 4
+          "sort_order": 3
         },
         {
           "key_name": "WapsiKaam",
@@ -3087,7 +3071,7 @@
           "is_required": 1,
           "default_value": "देखभाल क्षेत्र, रोकथाम जुर्म जरायम, चेकिंग संदिग्ध व्यक्ति/वाहन व जाँच पेण्डिंग विवेचना",
           "dropdown_options": "{\"showIf\": \"doWapsi\"}",
-          "sort_order": 5
+          "sort_order": 4
         },
         {
           "key_name": "doShastra",
@@ -3096,7 +3080,7 @@
           "is_required": 0,
           "default_value": "",
           "dropdown_options": "{\"showIf\": \"doWapsi\"}",
-          "sort_order": 6
+          "sort_order": 5
         },
         {
           "key_name": "FIRNo",
@@ -3104,7 +3088,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 6
         },
         {
           "key_name": "Sections",
@@ -3112,7 +3096,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 7
         },
         {
           "key_name": "doBadh",
@@ -3120,7 +3104,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 9
+          "sort_order": 8
         },
         {
           "key_name": "BadhSection",
@@ -3129,7 +3113,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doBadh\"}",
-          "sort_order": 10
+          "sort_order": 9
         },
         {
           "key_name": "BadhReason",
@@ -3138,7 +3122,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doBadh\"}",
-          "sort_order": 11
+          "sort_order": 10
         },
         {
           "key_name": "doGhat",
@@ -3146,7 +3130,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 12
+          "sort_order": 11
         },
         {
           "key_name": "GhatSection",
@@ -3155,7 +3139,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doGhat\"}",
-          "sort_order": 13
+          "sort_order": 12
         },
         {
           "key_name": "GhatReason",
@@ -3164,7 +3148,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doGhat\"}",
-          "sort_order": 14
+          "sort_order": 13
         },
         {
           "key_name": "doNaamAdd",
@@ -3172,7 +3156,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 15
+          "sort_order": 14
         },
         {
           "key_name": "NaamAdd",
@@ -3181,7 +3165,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doNaamAdd\"}",
-          "sort_order": 16
+          "sort_order": 15
         },
         {
           "key_name": "NaamAddReason",
@@ -3190,7 +3174,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doNaamAdd\"}",
-          "sort_order": 17
+          "sort_order": 16
         },
         {
           "key_name": "doNaamHata",
@@ -3198,7 +3182,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 18
+          "sort_order": 17
         },
         {
           "key_name": "NaamHata",
@@ -3207,7 +3191,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doNaamHata\"}",
-          "sort_order": 19
+          "sort_order": 18
         },
         {
           "key_name": "NaamHataReason",
@@ -3216,7 +3200,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"doNaamHata\"}",
-          "sort_order": 20
+          "sort_order": 19
         },
         {
           "key_name": "NewSections",
@@ -3224,7 +3208,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 21
+          "sort_order": 20
         },
         {
           "key_name": "FurtherAgainst",
@@ -3232,7 +3216,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 22
+          "sort_order": 21
         }
       ]
     },
@@ -3245,7 +3229,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "वाहन",
@@ -3253,17 +3237,9 @@
         "वापसी",
         "GD"
       ],
-      "last_updated": "2026-10-30",
-      "vivran": "{{if:GDTime|{{GDTime}} }}वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} व दाखिला {{cnt:Vehicles?vno|}} अदद वाहन{{if:FIRNo| सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}}\nइस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}} रवानाशुदा रो0आम तारीखी इमरोजा से बाद {{WapsiKaam}}{{if:FIRNo| व विवेचना मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}} से मय {{cnt:Vehicles?vno|}} अदद वाहन {{each:Vehicles?vno|{role} वाहन {vtype} संख्या {vno}{ चेचिस सं0 ~chassis}{ इंजन सं0 ~engine}| व }} के वापस थाना हाजा आया।{{if:doShastra| हमराह के रवानाशुदा शस्त्र-कारतूस अन्दर मालखाना रखाकर ताला मालखाना बन्द ठीक सन्तरी पहरा को दिखाया गया, चाबी पूर्ववत रही।}} {{count:Vehicles?vno|वाहन को|वाहनों को}} {{From}} से {{Lana}} थाने लाकर थाना परिसर में सन्तरी पहरा की निगरानी में {{count:Vehicles?vno|खड़ा कराया गया।|खड़े कराये गये।}} हे0मो0 को अवगत कराया गया।{{if:FIRNo| विवरण विवेचना जरिये सीडी प्रेषित है।}}",
+      "last_updated": "2026-10-31",
+      "vivran": "वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} व दाखिला {{cnt:Vehicles?vno|}} अदद वाहन{{if:FIRNo| सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}}\nइस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}} रवानाशुदा रो0आम तारीखी इमरोजा से बाद {{WapsiKaam}}{{if:FIRNo| व विवेचना मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}} से मय {{cnt:Vehicles?vno|}} अदद वाहन {{each:Vehicles?vno|{role} वाहन {vtype} संख्या {vno}{ चेचिस सं0 ~chassis}{ इंजन सं0 ~engine}| व }} के वापस थाना हाजा आया।{{if:doShastra| हमराह के रवानाशुदा शस्त्र-कारतूस अन्दर मालखाना रखाकर ताला मालखाना बन्द ठीक सन्तरी पहरा को दिखाया गया, चाबी पूर्ववत रही।}} {{count:Vehicles?vno|वाहन को|वाहनों को}} {{From}} से {{Lana}} थाने लाकर थाना परिसर में सन्तरी पहरा की निगरानी में {{count:Vehicles?vno|खड़ा कराया गया।|खड़े कराये गये।}} हे0मो0 को अवगत कराया गया।{{if:FIRNo| विवरण विवेचना जरिये सीडी प्रेषित है।}}",
       "keys": [
-        {
-          "key_name": "GDTime",
-          "label": "GD का समय (जैसे 20.35) — न हो तो खाली",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "sort_order": 0
-        },
         {
           "key_name": "pad",
           "label": "मेरा पद",
@@ -3271,7 +3247,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
-          "sort_order": 1
+          "sort_order": 0
         },
         {
           "key_name": "OfficerName",
@@ -3279,7 +3255,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 2
+          "sort_order": 1
         },
         {
           "key_name": "Hamrah",
@@ -3287,7 +3263,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 2
         },
         {
           "key_name": "WapsiKaam",
@@ -3295,7 +3271,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "देखभाल क्षेत्र, रोकथाम जुर्म जरायम, चेकिंग संदिग्ध व्यक्ति/वाहन",
-          "sort_order": 4
+          "sort_order": 3
         },
         {
           "key_name": "doShastra",
@@ -3303,7 +3279,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 5
+          "sort_order": 4
         },
         {
           "key_name": "FIRNo",
@@ -3311,7 +3287,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 6
+          "sort_order": 5
         },
         {
           "key_name": "Sections",
@@ -3320,7 +3296,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"showIf\": \"FIRNo\"}",
-          "sort_order": 7
+          "sort_order": 6
         },
         {
           "key_name": "Vehicles",
@@ -3329,7 +3305,7 @@
           "is_required": 1,
           "default_value": null,
           "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"वाहन किस रूप में\", \"type\": \"choice\", \"options\": [\"दुर्घटनाकारक\", \"दुर्घटनाग्रस्त\", \"बरामद\", \"सम्बन्धित\"], \"default\": \"दुर्घटनाकारक\"}, {\"key\": \"vtype\", \"label\": \"वाहन का प्रकार (जैसे: स्कार्पियो, ओमनी कार, मोटरसाइकिल)\"}, {\"key\": \"vno\", \"label\": \"वाहन संख्या\"}, {\"key\": \"chassis\", \"label\": \"चेचिस सं0 — न हो तो खाली\"}, {\"key\": \"engine\", \"label\": \"इंजन सं0 — न हो तो खाली\"}], \"addLabel\": \"+ और वाहन जोड़ें\", \"itemLabel\": \"वाहन\"}",
-          "sort_order": 8
+          "sort_order": 7
         },
         {
           "key_name": "From",
@@ -3337,7 +3313,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "घटनास्थल",
-          "sort_order": 9
+          "sort_order": 8
         },
         {
           "key_name": "Lana",
@@ -3346,7 +3322,7 @@
           "is_required": 1,
           "default_value": "वैकल्पिक व्यवस्था कर",
           "dropdown_options": "[\"वैकल्पिक व्यवस्था कर\", \"चलवाकर\", \"क्रेन की सहायता से\"]",
-          "sort_order": 10
+          "sort_order": 9
         }
       ]
     },
@@ -3359,7 +3335,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -3368,17 +3344,9 @@
         "189 BNSS",
         "GD"
       ],
-      "last_updated": "2026-10-30",
-      "vivran": "{{if:GDTime|{{GDTime}} }}तस्करा बावत अवमुक्त किये जाने {{Accused#n|आरोपी|आरोपीगण}} सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}\nइस समय मुझ {{pad}} {{OfficerName}} द्वारा मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} में अब तक की गयी विवेचना से यह तथ्य प्रकाश में आये हैं कि {{Reason}} चूँकि {{Accused#n|आरोपी|आरोपीगण}} {{Accused#short}} उपरोक्त को {{if:ArrestDate|दिनांक {{ArrestDate}} को }}{{ArrestBasis}} गिरफ्तार किया गया था, परन्तु विवेचना से प्राप्त नये तथ्यों से {{Accused#n|आरोपी|आरोपीगण}} के विरुद्ध पर्याप्त साक्ष्य एवं संदेह का पर्याप्त आधार नहीं पाया गया है, इसलिए {{Accused#n|उसे|उन्हें}} न्यायिक अभिरक्षा में भेजने हेतु धारा 187(1) BNSS के अन्तर्गत रिमाण्ड याचना की आवश्यकता नहीं है।{{if:doAvkash| मा0 न्यायालय में अवकाश है।}} अतः {{Accused#n|आरोपी|आरोपीगण}} {{Accused#short}} उपरोक्त को {{Accused#n|उसके|उनके}} व्यक्तिगत बंध पत्र व जमानतनामा के आधार पर इस हिदायत के साथ कि मुझ विवेचक अथवा मा0 न्यायालय द्वारा बुलाये जाने पर समय से उपस्थित {{Accused#n|होगा|होंगे}}, धारा 480(2) BNSS के अन्तर्गत गिरफ्तारी से अवमुक्त किया जाता है। मा0 न्यायालय के समक्ष अकब से धारा 189 BNSS की रिपोर्ट प्रेषित की जायेगी। तस्करा अंकित किया गया।",
+      "last_updated": "2026-10-31",
+      "vivran": "तस्करा बावत अवमुक्त किये जाने {{Accused#n|आरोपी|आरोपीगण}} सम्बन्धित मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}\nइस समय मुझ {{pad}} {{OfficerName}} द्वारा मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} में अब तक की गयी विवेचना से यह तथ्य प्रकाश में आये हैं कि {{Reason}} चूँकि {{Accused#n|आरोपी|आरोपीगण}} {{Accused#short}} उपरोक्त को {{if:ArrestDate|दिनांक {{ArrestDate}} को }}{{ArrestBasis}} गिरफ्तार किया गया था, परन्तु विवेचना से प्राप्त नये तथ्यों से {{Accused#n|आरोपी|आरोपीगण}} के विरुद्ध पर्याप्त साक्ष्य एवं संदेह का पर्याप्त आधार नहीं पाया गया है, इसलिए {{Accused#n|उसे|उन्हें}} न्यायिक अभिरक्षा में भेजने हेतु धारा 187(1) BNSS के अन्तर्गत रिमाण्ड याचना की आवश्यकता नहीं है।{{if:doAvkash| मा0 न्यायालय में अवकाश है।}} अतः {{Accused#n|आरोपी|आरोपीगण}} {{Accused#short}} उपरोक्त को {{Accused#n|उसके|उनके}} व्यक्तिगत बंध पत्र व जमानतनामा के आधार पर इस हिदायत के साथ कि मुझ विवेचक अथवा मा0 न्यायालय द्वारा बुलाये जाने पर समय से उपस्थित {{Accused#n|होगा|होंगे}}, धारा 480(2) BNSS के अन्तर्गत गिरफ्तारी से अवमुक्त किया जाता है। मा0 न्यायालय के समक्ष अकब से धारा 189 BNSS की रिपोर्ट प्रेषित की जायेगी। तस्करा अंकित किया गया।",
       "keys": [
-        {
-          "key_name": "GDTime",
-          "label": "GD का समय (जैसे 17.30) — न हो तो खाली",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "sort_order": 0
-        },
         {
           "key_name": "pad",
           "label": "मेरा पद",
@@ -3386,7 +3354,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
-          "sort_order": 1
+          "sort_order": 0
         },
         {
           "key_name": "OfficerName",
@@ -3394,7 +3362,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 2
+          "sort_order": 1
         },
         {
           "key_name": "FIRNo",
@@ -3402,7 +3370,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 2
         },
         {
           "key_name": "Sections",
@@ -3410,7 +3378,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 3
         },
         {
           "key_name": "Accused",
@@ -3418,7 +3386,7 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 5
+          "sort_order": 4
         },
         {
           "key_name": "ArrestDate",
@@ -3426,7 +3394,7 @@
           "field_type": "date",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 6
+          "sort_order": 5
         },
         {
           "key_name": "ArrestBasis",
@@ -3434,7 +3402,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "विवेचना में असहयोग करने के आधार पर",
-          "sort_order": 7
+          "sort_order": 6
         },
         {
           "key_name": "Reason",
@@ -3442,7 +3410,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 7
         },
         {
           "key_name": "doAvkash",
@@ -3450,7 +3418,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 9
+          "sort_order": 8
         }
       ]
     },

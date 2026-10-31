@@ -124,7 +124,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   card text = template text with blanks `<<name>>` — never inside a {{…}} token), value JSON `{card,s,extra}` (old plain text used as is);
   templateEngine Step -4 `_applySentenceFields` (needs keyDefs with dropdown_options); UI `components/ui/SentenceFieldInput.tsx`
   (cards grid → chip row; yellow = to fill, green = filled, blue = choice; sheet with आज/कल and "पिछली बार लिखा" from localStorage);
-  fill screens pass `allValues`/`allKeys` to FormatKeyInput for the preview. Used by अभियुक्त दाखिला `ArrestDetail` (8 cards, seed_version 2).
+  fill screens pass `allValues`/`allKeys` to FormatKeyInput for the preview. Used by अभियुक्त दाखिला `ArrestDetail` (8 cards, seed_version 3). No "GD का समय" field in GD formats (owner removed it).
 - GD `sys-gd-fmt-vivechana-parivartan` "तस्करा — विवेचना में परिवर्तन (धारा / नाम)": optional वापसी opening (doWapsi, हमराह,
   शस्त्र मालखाना tick) + 4 ticks धारा बढ़ोत्तरी / घटोत्तरी / नाम प्रकाश में / नामजदगी गलत (each opens its fields); heading parts
   joined with "व" by `{{seq||व }}`; अग्रिम विवेचना धारा / बनाम optional.
