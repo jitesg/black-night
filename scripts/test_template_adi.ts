@@ -387,3 +387,17 @@ test('वाहन तकनीकी निरीक्षण: 1 vehicle inline
   assert.match(two, /1\. दुर्घटनाकारक वाहन – ट्रैक्टर नं0 UP1\n2\. दुर्घटनाग्रस्त वाहन – बाइक नं0 UP2/);
   assert.match(two, /उपरोक्त वाहन थाना परिसर में खड़े हैं।/);
 });
+
+test('वाहन अवमुक्त आख्या: 1 / 2 vehicles, tech + objection sentences, no प्रार्थी line', async () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-vehicle-release');
+  const base = { CourtName: 'न्यायालय श्रीमान मुख्य न्यायिक मजिस्ट्रेट', FIRNumber: '1/26', Sections: '281 BNS', KeptAt: 'थाना परिसर में', pad: 'उपनिरीक्षक', OfficerName: 'क', PoliceStation: 'ख', District: 'ग' };
+  const one = generateReport(f.vivran, { ...base, Tech: 'हो चुका है', Objection: 'कोई आपत्ति नहीं', Vehicles: JSON.stringify([{ role: 'सीजशुदा', vtype: 'कार', vno: 'UP1' }]) }, f.keys);
+  assert.doesNotMatch(one, /\{\{|\}\}|\{[a-z#]|प्रार्थी/);
+  assert.match(one, /सम्बन्धित सीजशुदा वाहन कार नं0 UP1 थाना परिसर में खड़ा है। वाहन उपरोक्त का तकनीकी निरीक्षण कराया जा चुका है। विवेचना की दृष्टि से वाहन उपरोक्त को नियमानुसार अवमुक्त/);
+  const two = generateReport(f.vivran, { ...base, Tech: 'आवश्यकता नहीं', Objection: 'आपत्ति है', ObjReason: 'जाँच शेष है।', Vehicles: JSON.stringify([{ role: 'बरामदशुदा', vtype: 'बाइक', vno: 'UP1' }, { role: 'दुर्घटनाग्रस्त', vtype: 'कार', vno: 'UP2' }]) }, f.keys);
+  assert.doesNotMatch(two, /\{\{|\}\}|\{[a-z#]/);
+  assert.match(two, /सम्बन्धित 02 वाहनों को अवमुक्त/);
+  assert.match(two, /1\. बरामदशुदा वाहन बाइक नं0 UP1\n2\. दुर्घटनाग्रस्त वाहन कार नं0 UP2/);
+  assert.match(two, /उपरोक्त वाहनों के तकनीकी निरीक्षण की आवश्यकता नहीं है। जाँच शेष है। अतः विवेचना की दृष्टि से अभी उपरोक्त वाहनों को अवमुक्त किया जाना उचित नहीं है।/);
+});

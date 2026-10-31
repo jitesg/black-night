@@ -142,6 +142,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - `sys-fmt-vehicle-technical-inspection` "वाहन तकनीकी निरीक्षण रिपोर्ट हेतु आवेदन" v3 (type Prarthna Patra — owner moved it from Nyayalay):
   to प्रतिसार निरीक्षक; item_group Vehicles (role दुर्घटनाकारक/दुर्घटनाग्रस्त/सम्बन्धित, vtype, vno) — 1 vehicle inline, 2+ = "02 वाहनों" + [[सूची]];
   VehiclePlace (खड़ा/खड़े), optional Mobile. Old v2 in `docs/format-backups/vehicle_technical_inspection_v2.json`.
+- `sys-fmt-vehicle-release` "वाहन अवमुक्त कराये जाने हेतु आख्या (दुर्घटनाकारक / दुर्घटनाग्रस्त / बरामदशुदा / सीजशुदा)" v3 (Nyayalay):
+  item_group Vehicles (role 5 options, vtype, vno — no chassis/engine, owner), KeptAt, Tech dropdown (हो चुका है / नहीं हुआ है /
+  आवश्यकता नहीं; no date), Objection (कोई आपत्ति नहीं / आपत्ति है + ObjReason via showIf); no प्रार्थी line (owner). Old v2 in
+  `docs/format-backups/vehicle_release_v2.json`.
 - Fields that appear only when needed (option values must not contain "/" — it means "or"): `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
   "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + validation (hidden = not required).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि

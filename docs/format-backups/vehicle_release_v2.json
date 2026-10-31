@@ -1,0 +1,80 @@
+{
+  "id": "sys-fmt-vehicle-release",
+  "title": "दुर्घटनाकारक वाहन अवमुक्त कराये जाने हेतु आख्या",
+  "format_type": "Nyayalay",
+  "vivran": "रिपोर्ट थाना {{PoliceStation}} जनपद {{District}} ।\n\nसेवा मे ,\n              {{CourtName}}\n              जनपद {{District}} ।\n\nविषय़ –मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} से सम्बन्धित दुर्घटनाकारक {{VehicleNumber}} को अवमुक्त कराये जाने के सम्बन्ध में आख्या ।\n\nमहोदय,\n             निवेदन है कि थाना स्थानीय पर पंजीकृत मु0अं0सं0 {{FIRNumber}} धारा {{Sections}} की विवेचना मुझ {{Rank}} द्वारा सम्पादित की जा रही है । मुकदमा उपरोक्त से संबंधित दुर्घटनाकारक {{VehicleNumber}} संतरी पहरा कि निगरानी में सुरक्षार्थ खड़ा है। जिसका तकनिकि परीक्षण हुआ है/नहीं हुआ है।\n                                               रिपोर्ट सादर सेवा मे प्रेषित है ।\n\n                                                                                                  ( {{OfficerName}})\n                                                                                                   {{Rank}}\n                                                                                           थाना {{PoliceStation}}जनपद{{District}}  ।",
+  "is_favorite": 0,
+  "created_by": "system",
+  "source": "system",
+  "editable": 0,
+  "content_type": "format",
+  "seed_version": 2,
+  "app_version": "1.0.0",
+  "tags": [
+    "वाहन अवमुक्त",
+    "दुर्घटना",
+    "न्यायालय"
+  ],
+  "keys": [
+    {
+      "key_name": "CourtName",
+      "label": "न्यायालय का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 1,
+      "default_value": "न्यायालय श्रीमान मुख्य न्यायिक दण्डाधिकारी"
+    },
+    {
+      "key_name": "FIRNumber",
+      "label": "मु0अ0सं0",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 2
+    },
+    {
+      "key_name": "Sections",
+      "label": "धारा",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 3
+    },
+    {
+      "key_name": "VehicleNumber",
+      "label": "वाहन सं0/नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 4,
+      "default_value": "सफेद क्रेटा वाहन सं UP58AT0846"
+    },
+    {
+      "key_name": "PoliceStation",
+      "label": "थाना",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 5
+    },
+    {
+      "key_name": "OfficerName",
+      "label": "अधिकारी का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 6
+    },
+    {
+      "key_name": "District",
+      "label": "जनपद",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 7
+    },
+    {
+      "key_name": "Rank",
+      "label": "पद/रैंक",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 8,
+      "default_value": "उ0नि0"
+    }
+  ],
+  "last_updated": "2026-08-06"
+}
