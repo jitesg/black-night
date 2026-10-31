@@ -24,6 +24,7 @@
  */
 
 import { hasFormatMarkers, inlineBoldHtml, markName, parseMarkedLetter, splitMarkedAttachment, splitMarkedLetters } from './formatMarkers';
+import { formatImage } from './formatImages';
 
 // ─── Public types ─────────────────────────────────────────────────────────
 
@@ -49,7 +50,7 @@ export interface DocumentModel {
   /** Marked formats only: [[हस्ताक्षर]] lines. */
   signatureLines?: string[];
   /** Marked formats only: body in order — paragraphs and centred / right / split lines. */
-  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split' | 'line' | 'table'; text: string }[];
+  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split' | 'line' | 'table' | 'image'; text: string }[];
 }
 
 // ─── Anchor patterns ──────────────────────────────────────────────────────
@@ -419,7 +420,10 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
     else if (b.kind === 'line') parts.push(div('list', 'text-align:left;', esc(b.text)));
     else if (b.kind === 'center') parts.push(div('center', 'text-align:center;', `<b>${esc(b.text)}</b>`));
     else if (b.kind === 'right') parts.push(div('right', 'text-align:right;', esc(b.text)));
-    else if (b.kind === 'table') {
+    else if (b.kind === 'image') {
+      const img = formatImage(b.text);
+      parts.push(div('body', 'text-align:center;', img ? `<img data-fmt="${markName('image')}" alt="${esc(b.text)}" src="${img.uri}" style="max-width:100%;height:auto;" />` : ''));
+    } else if (b.kind === 'table') {
       const trs = b.text.split('\n').map((r, i) => `<tr>${r.split('|').map((c) => `<td style="border:1px solid #000;padding:4px;vertical-align:top;">${i === 0 ? `<b>${esc(c.trim())}</b>` : esc(c.trim())}</td>`).join('')}</tr>`).join('');
       parts.push(`<table data-fmt="${markName('table')}" style="width:100%;border-collapse:collapse;">${trs}</table>`);
     } else {

@@ -19,6 +19,7 @@
  *   [[दाएँ]] …          right-aligned line(s) (e.g. "उपजिला मजिस्ट्रेट …")
  *   [[तालिका]] a | b …  bordered table: one row per line, cells split by "|", first row = heading (bold);
  *                       a blank line ends the table (police form 33)
+ *   [[चित्र]] <name>     a picture from src/lib/formatImages.ts, centred (e.g. फोटो-लाश)
  *   [[दोनों ओर]] …      "left | right" on one line (e.g. "शासन | बनाम …")
  *   **…** inside [[विवरण]] text = bold words (print, editor, Word)
  *   [[सूची]] …          lines kept one per line, left, no indent (names list: {{Key#list}})
@@ -35,7 +36,7 @@ import type { DocumentModel } from './formatParsingEngine';
 export type MarkRole =
   | 'letter' | 'header' | 'sewa' | 'subject' | 'party' | 'salutation'
   | 'body' | 'closing' | 'witness' | 'attachments' | 'signature'
-  | 'center' | 'right' | 'split' | 'list' | 'table';
+  | 'center' | 'right' | 'split' | 'list' | 'table' | 'image';
 
 export const MARK_ROLES: Record<string, MarkRole> = {
   'पत्र': 'letter',
@@ -57,13 +58,14 @@ export const MARK_ROLES: Record<string, MarkRole> = {
   'दोनों ओर': 'split',
   'सूची': 'list',
   'तालिका': 'table',
+  'चित्र': 'image',
 };
 
 const ROLE_NAME: Record<MarkRole, string> = {
   letter: 'पत्र', header: 'शीर्षक', sewa: 'सेवा में', subject: 'विषय', party: 'पक्ष',
   salutation: 'महोदय', body: 'विवरण', closing: 'समापन', witness: 'गवाह',
   attachments: 'संलग्नक', signature: 'हस्ताक्षर',
-  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची', table: 'तालिका',
+  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची', table: 'तालिका', image: 'चित्र',
 };
 
 /** Hindi name of a role, as written in the mark. */
@@ -126,6 +128,7 @@ export function stripFormatMarkers(text: string): string {
       inAtt = mk.role === 'attachments';
       n = 0;
       if (mk.role === 'letter') { if (mk.rest.trim()) out.push(mk.rest); continue; }
+      if (mk.role === 'image') continue;
       out.push(mk.rest);
       continue;
     }
@@ -215,6 +218,10 @@ export function parseMarkedLetter(text: string): DocumentModel {
       case 'table':
         rows.push(t.split('|').map((c) => clean(c)).join(' | '));
         break;
+      case 'image':
+        model.bodyBlocks!.push({ kind: 'image', text: clean(t) });
+        role = 'body';
+        break;
       default: break;
     }
   }
@@ -275,6 +282,11 @@ export function editorHtmlToMarkedText(html: string): string {
     const name = tag[2].toLowerCase();
     const fmt = /data-fmt="([^"]*)"/.exec(tok)?.[1] ?? null;
     if (name === 'hr') { flush(); out.push(`[[${markName('letter')}]]`); lastRole = null; continue; }
+    if (name === 'img') {
+      const alt = /alt="([^"]*)"/.exec(tok)?.[1];
+      if (alt && /data-fmt="/.test(tok)) { flush(); out.push(`[[${markName('image')}]] ${decode(alt)}`); lastRole = markName('image'); }
+      continue;
+    }
     if (name === 'br') { if (cell !== null) cell += ' '; else if (buf.trim()) flush(); continue; }
     // Bold inside a body paragraph → **…** (centre / party lines are bold by their own role).
     if ((name === 'b' || name === 'strong') && cell === null && current() === markName('body')) { buf += '**'; continue; }

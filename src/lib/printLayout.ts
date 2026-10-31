@@ -14,6 +14,7 @@
  */
 import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from './formatParsingEngine';
 import { hasFormatMarkers, inlineBoldHtml } from './formatMarkers';
+import { IMAGE_HEIGHT_MM, formatImage } from './formatImages';
 
 export const esc = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -116,6 +117,10 @@ export function renderLetterHtml(model: DocumentModel): string {
         if (b.kind === 'center') return `<p class="doc-center">${esc(b.text)}</p>`;
         if (b.kind === 'right') return `<p class="doc-right">${esc(b.text)}</p>`;
         if (b.kind === 'line') return `<p class="doc-line">${esc(b.text)}</p>`;
+        if (b.kind === 'image') {
+          const img = formatImage(b.text);
+          return img ? `<p class="doc-image"><img src="${img.uri}" alt="${esc(b.text)}" style="height:${IMAGE_HEIGHT_MM}mm" /></p>` : '';
+        }
         if (b.kind === 'table') {
           const [head, ...body] = b.text.split('\n').map((r) => r.split('|').map((c) => esc(c.trim())));
           return `<table class="doc-table"><tr>${head.map((c) => `<th>${c}</th>`).join('')}</tr>${body.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
@@ -228,6 +233,8 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-body p.doc-line { text-align: left; text-indent: 0; margin: 0; }
   .letters .doc-body p.doc-line + p:not(.doc-line) { margin-top: 0.3em; }
   .letters .doc-split { width: 100%; border-collapse: collapse; margin: 0.4em 0; }
+  .letters .doc-body p.doc-image { text-align: center; text-indent: 0; margin: 0.4em 0; }
+  .letters .doc-image img { max-width: 100%; width: auto; }
   .letters .doc-table { width: 100%; border-collapse: collapse; margin: 0.5em 0; table-layout: fixed; font-size: 0.9em; }
   .letters .doc-table th, .letters .doc-table td { border: 1px solid #000; padding: 0.3em; vertical-align: top; text-align: left; text-indent: 0; word-wrap: break-word; }
   .letters .doc-table th { font-weight: bold; }

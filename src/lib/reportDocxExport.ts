@@ -8,7 +8,7 @@
  * Used by निरोधात्मक कार्यवाही (card menu + editor screen).
  */
 import {
-  AlignmentType, BorderStyle, Document, Packer, Paragraph, Table, TableCell, TableRow,
+  AlignmentType, BorderStyle, Document, ImageRun, Packer, Paragraph, Table, TableCell, TableRow,
   TextRun, WidthType,
 } from 'docx';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -17,6 +17,7 @@ import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from 
 import { editorHtmlToMarkedText, hasEditorMarks, hasFormatMarkers, splitInlineBold } from './formatMarkers';
 import { isPartyHeading, looksLikeLetter, splitAttachmentLine, splitClosing, splitPlainText, splitSewaMein } from './printLayout';
 import { markdownToHtml, needsMigration } from './markdownToHtml';
+import { IMAGE_HEIGHT_MM, base64ToBytes, formatImage } from './formatImages';
 import { htmlToPlainText } from './stringUtils';
 
 const FONT = 'Kokila';
@@ -123,7 +124,18 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
       // consecutive right lines (a signature block) stay together
       else if (b.kind === 'right') p(b.text, { align: AlignmentType.RIGHT, before: prevKind === 'right' ? 0 : 120 });
       else if (b.kind === 'line') p(b.text, { align: AlignmentType.LEFT });
-      else if (b.kind === 'table') { if (pageBreak) p(''); push(gridTable(b.text)); }
+      else if (b.kind === 'image') {
+        const img = formatImage(b.text);
+        if (img) {
+          const hPx = Math.round((IMAGE_HEIGHT_MM / 25.4) * 96);
+          push(new Paragraph({
+            alignment: AlignmentType.CENTER,
+            pageBreakBefore: pageBreak || undefined,
+            children: [new ImageRun({ type: 'png', data: base64ToBytes(img.png), transformation: { width: Math.round((hPx * img.w) / img.h), height: hPx } })],
+          }));
+          pageBreak = false;
+        }
+      } else if (b.kind === 'table') { if (pageBreak) p(''); push(gridTable(b.text)); }
       else if (b.kind === 'split') {
         const at = b.text.indexOf('|');
         push(twoCol([[at < 0 ? b.text : b.text.slice(0, at).trim(), at < 0 ? '' : b.text.slice(at + 1).trim()]], Math.round(TEXT_W / 2)));
