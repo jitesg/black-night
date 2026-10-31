@@ -2393,114 +2393,161 @@
     },
     {
       "id": "sys-fmt-victim-age-certificate",
-      "title": "पीड़िता आयु प्रमाण-पत्र हेतु विद्यालय को पत्र",
-      "format_type": "Nyayalay",
-      "vivran": "सेवा में ,\n        श्रीमान प्रधानाध्यापक महोदय\n        {{SchoolName}}।\n\nविषय: थाना {{PoliceStation}}पर पंजीकृत मु0अ0सं0 {{FIRNumber}}धारा {{Sections}} से सम्बन्धित पीड़िता {{VictimName}} के आयु सम्बन्धी प्रमाण-पत्र उपलब्ध कराए जाने के सम्बन्ध में।\n\nमहोदय ,\n       सविनय निवेदन है कि थाना {{PoliceStation}} जनपद {{District}} पर पंजीकृत मु0अ0सं0 {{FIRNumber}}धारा {{Sections}} की विवेचना मुझ {{Rank}}द्वारा सम्पादित की जा रही है। विवेचना के दौरान ज्ञात हुआ है कि मुकदमा उपरोक्त से सम्बन्धित पीड़िता {{VictimName}} {{VictimAddress}} उम्र करीब {{VictimAge}} वर्ष आपके विद्यालय में शैक्षिक सत्र {{SchoolSession}} के दौरान कक्षा {{Class}} की छात्रा रही है/ छात्र रहा है। मुकदमे की निष्पक्ष एवं विधिसम्मत विवेचना हेतु पीड़िता की आयु का सत्यापन आवश्यक है। अतः आपसे अनुरोध है कि विद्यालय के अभिलेखों के आधार पर पीड़िता का जन्मतिथि/आयु प्रमाण-पत्र, अथवा प्रवेश पंजिका (Scholar Register) में अंकित जन्मतिथि का प्रमाणित प्रतिलिपि उपलब्ध कराने का कष्ट करें, जिससे विवेचना का विधिक एवं समयबद्ध निस्तारण किया जा सके।\n\n({{OfficerName}})\n{{Rank}}\nथाना {{PoliceStation}},जनपद  {{District}}",
+      "title": "आयु प्रमाण-पत्र हेतु विद्यालय को पत्र (पीड़ित / अभियुक्त / बाल अपचारी / अन्य)",
+      "format_type": "Prarthna Patra",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nश्रीमान {{Head}} महोदय,\n{{SchoolName}}।\n[[विषय]] विषय – थाना {{PoliceStation}} पर पंजीकृत मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} से सम्बन्धित {{if:Gender=लड़का|{{Role}}}}{{if:Gender=लड़की|{{if:Role=पीड़ित|पीड़िता}}{{if:Role=अभियुक्त|अभियुक्ता}}{{if:Role=बाल अपचारी|बाल अपचारी}}{{if:Role=वादी|वादिनी}}{{if:Role=गवाह|गवाह}}{{if:Role=व्यक्ति|व्यक्ति}}}} {{PName}} का जन्मतिथि / आयु प्रमाण-पत्र उपलब्ध कराये जाने के सम्बन्ध में।\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि थाना {{PoliceStation}} जनपद {{District}} पर पंजीकृत मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} की विवेचना मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा सम्पादित की जा रही है। विवेचना के दौरान ज्ञात हुआ है कि मुकदमा उपरोक्त से सम्बन्धित {{if:Gender=लड़का|{{Role}}}}{{if:Gender=लड़की|{{if:Role=पीड़ित|पीड़िता}}{{if:Role=अभियुक्त|अभियुक्ता}}{{if:Role=बाल अपचारी|बाल अपचारी}}{{if:Role=वादी|वादिनी}}{{if:Role=गवाह|गवाह}}{{if:Role=व्यक्ति|व्यक्ति}}}} {{PName}} निवासी {{PAddress}}{{if:PAge| उम्र करीब {{PAge}} वर्ष}} आपके विद्यालय{{if:Session| में शैक्षिक सत्र {{Session}}}}{{if:Class| में कक्षा {{Class}}}} {{if:Gender=लड़की|की छात्रा रही है}}{{if:Gender=लड़का|का छात्र रहा है}}। मुकदमे की निष्पक्ष एवं विधिसम्मत विवेचना हेतु {{if:Gender=लड़का|{{Role}}}}{{if:Gender=लड़की|{{if:Role=पीड़ित|पीड़िता}}{{if:Role=अभियुक्त|अभियुक्ता}}{{if:Role=बाल अपचारी|बाल अपचारी}}{{if:Role=वादी|वादिनी}}{{if:Role=गवाह|गवाह}}{{if:Role=व्यक्ति|व्यक्ति}}}} उपरोक्त की आयु का सत्यापन (किशोर न्याय (बालकों की देखरेख और संरक्षण) अधिनियम 2015 की धारा 94 के अनुसार) आवश्यक है।\n[[विवरण]] अतः आपसे अनुरोध है कि विद्यालय के अभिलेखों के आधार पर {{if:Gender=लड़का|{{Role}}}}{{if:Gender=लड़की|{{if:Role=पीड़ित|पीड़िता}}{{if:Role=अभियुक्त|अभियुक्ता}}{{if:Role=बाल अपचारी|बाल अपचारी}}{{if:Role=वादी|वादिनी}}{{if:Role=गवाह|गवाह}}{{if:Role=व्यक्ति|व्यक्ति}}}} उपरोक्त का जन्मतिथि / आयु प्रमाण-पत्र तथा प्रवेश पंजिका (स्कॉलर रजिस्टर) में अंकित जन्मतिथि की प्रमाणित प्रतिलिपि उपलब्ध कराने का कष्ट करें, जिससे विवेचना का विधिक एवं समयबद्ध निस्तारण किया जा सके।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}} जनपद {{District}}\n{{if:Mobile|मो0 {{Mobile}}}}\n",
       "is_favorite": 0,
       "created_by": "system",
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
-        "पीड़िता",
+        "आयु",
         "आयु प्रमाण",
+        "जन्मतिथि",
+        "पाक्सो",
+        "पीड़िता",
+        "प्रमाण पत्र",
+        "बाल अपचारी",
         "विद्यालय"
       ],
       "keys": [
         {
-          "key_name": "SchoolName",
-          "label": "स्कूल का नाम, पता जनपद",
+          "key_name": "Role",
+          "label": "किसका प्रमाण पत्र",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पीड़ित",
+          "dropdown_options": "[\"पीड़ित\", \"अभियुक्त\", \"बाल अपचारी\", \"वादी\", \"गवाह\", \"व्यक्ति\"]",
+          "sort_order": 0
+        },
+        {
+          "key_name": "Gender",
+          "label": "लड़का या लड़की",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "लड़की",
+          "dropdown_options": "[\"लड़का\", \"लड़की\"]",
+          "sort_order": 1
+        },
+        {
+          "key_name": "PName",
+          "label": "नाम व पिता का नाम (जैसे: मेघना पुत्री तुलाराम)",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 1,
-          "default_value": "कम्पोजिट विद्यालय खैरहनी, जनपद रायबरेली"
+          "default_value": null,
+          "sort_order": 2
+        },
+        {
+          "key_name": "PAddress",
+          "label": "पता — 'निवासी' के बाद का (जैसे: ग्राम पलही बाजार मजरे सरायउमर थाना बछरावां जनपद रायबरेली)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 3
+        },
+        {
+          "key_name": "PAge",
+          "label": "उम्र करीब (वर्ष) — न पता हो तो खाली",
+          "field_type": "number",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 4
+        },
+        {
+          "key_name": "Head",
+          "label": "विद्यालय में किसको",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "प्रधानाध्यापक",
+          "dropdown_options": "[\"प्रधानाध्यापक\", \"प्रधानाचार्य\"]",
+          "sort_order": 5
+        },
+        {
+          "key_name": "SchoolName",
+          "label": "विद्यालय का नाम व पता (जैसे: कम्पोजिट विद्यालय खैरहनी, जनपद रायबरेली)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 6
+        },
+        {
+          "key_name": "Session",
+          "label": "शैक्षिक सत्र (जैसे: 2023-24) — न पता हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 7
+        },
+        {
+          "key_name": "Class",
+          "label": "कक्षा (जैसे: 8 / 10 हाईस्कूल) — न पता हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 8
         },
         {
           "key_name": "FIRNumber",
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 2
+          "default_value": null,
+          "sort_order": 9
         },
         {
           "key_name": "Sections",
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 3
+          "default_value": null,
+          "sort_order": 10
         },
         {
-          "key_name": "VictimName",
-          "label": "पीड़िता/पीड़ित का नाम",
-          "field_type": "text",
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
           "is_required": 1,
-          "sort_order": 4,
-          "default_value": "श्री मेघना पुत्री तुलाराम"
-        },
-        {
-          "key_name": "VictimAddress",
-          "label": "पीड़िता/पीड़ित का पूरा पता/मो0 व जाति",
-          "field_type": "text",
-          "is_required": 1,
-          "sort_order": 5,
-          "default_value": "निवासी ग्राम पलही बाजार मजरे सरायउमर थाना बछरावां जनपद रायबरेली"
-        },
-        {
-          "key_name": "VictimAge",
-          "label": "पीड़िता/पीड़ित की उम्र",
-          "field_type": "number",
-          "is_required": 1,
-          "sort_order": 6
-        },
-        {
-          "key_name": "SchoolSession",
-          "label": "सत्र",
-          "field_type": "text",
-          "is_required": 1,
-          "sort_order": 7,
-          "default_value": "2023-24"
-        },
-        {
-          "key_name": "Class",
-          "label": "कक्षा/हाईस्कूल/इंटर",
-          "field_type": "text",
-          "is_required": 1,
-          "sort_order": 8,
-          "default_value": "10/हाईस्कूल"
-        },
-        {
-          "key_name": "PoliceStation",
-          "label": "थाना",
-          "field_type": "text",
-          "is_required": 1,
-          "sort_order": 9
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 11
         },
         {
           "key_name": "OfficerName",
           "label": "अधिकारी का नाम",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 10
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 12
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 13
         },
         {
           "key_name": "District",
           "label": "जनपद",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 11
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 14
         },
         {
-          "key_name": "Rank",
-          "label": "पद/रैंक",
+          "key_name": "Mobile",
+          "label": "मोबाइल नं0 (हस्ताक्षर के नीचे) — न हो तो खाली",
           "field_type": "text",
-          "is_required": 1,
-          "sort_order": 12,
-          "default_value": "उ0नि0"
+          "is_required": 0,
+          "default_value": null,
+          "sort_order": 15
         }
       ],
-      "last_updated": "2026-08-06"
+      "last_updated": "2026-10-31"
     },
     {
       "id": "sys-fmt-cd-parcha-start",

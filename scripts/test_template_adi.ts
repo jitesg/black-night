@@ -401,3 +401,16 @@ test('वाहन अवमुक्त आख्या: 1 / 2 vehicles, tech +
   assert.match(two, /1\. बरामदशुदा वाहन बाइक नं0 UP1\n2\. दुर्घटनाग्रस्त वाहन कार नं0 UP2/);
   assert.match(two, /उपरोक्त वाहनों के तकनीकी निरीक्षण की आवश्यकता नहीं है। जाँच शेष है। अतः विवेचना की दृष्टि से अभी उपरोक्त वाहनों को अवमुक्त किया जाना उचित नहीं है।/);
 });
+
+test('आयु प्रमाण-पत्र पत्र: role × gender words, optional सत्र / कक्षा shorten the sentence', async () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-victim-age-certificate');
+  assert.equal(f.format_type, 'Prarthna Patra');
+  const base = { FIRNumber: '1/26', Sections: '65 BNS', pad: 'उपनिरीक्षक', OfficerName: 'क', PoliceStation: 'ख', District: 'ग', Head: 'प्रधानाध्यापक', SchoolName: 'विद्यालय क', PName: 'राम', PAddress: 'ग्राम घ' };
+  const g = generateReport(f.vivran, { ...base, Role: 'पीड़ित', Gender: 'लड़की', Session: '2023-24', Class: '8' }, f.keys);
+  assert.doesNotMatch(g, /\{\{|\}\}/);
+  assert.match(g, /सम्बन्धित पीड़िता राम निवासी ग्राम घ आपके विद्यालय में शैक्षिक सत्र 2023-24 में कक्षा 8 की छात्रा रही है।/);
+  const b = generateReport(f.vivran, { ...base, Role: 'अभियुक्त', Gender: 'लड़का' }, f.keys);
+  assert.match(b, /सम्बन्धित अभियुक्त राम निवासी ग्राम घ आपके विद्यालय का छात्र रहा है।/);
+  assert.match(generateReport(f.vivran, { ...base, Role: 'वादी', Gender: 'लड़की' }, f.keys), /वादिनी राम/);
+});

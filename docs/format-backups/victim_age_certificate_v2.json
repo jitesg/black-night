@@ -1,0 +1,111 @@
+{
+  "id": "sys-fmt-victim-age-certificate",
+  "title": "पीड़िता आयु प्रमाण-पत्र हेतु विद्यालय को पत्र",
+  "format_type": "Nyayalay",
+  "vivran": "सेवा में ,\n        श्रीमान प्रधानाध्यापक महोदय\n        {{SchoolName}}।\n\nविषय: थाना {{PoliceStation}}पर पंजीकृत मु0अ0सं0 {{FIRNumber}}धारा {{Sections}} से सम्बन्धित पीड़िता {{VictimName}} के आयु सम्बन्धी प्रमाण-पत्र उपलब्ध कराए जाने के सम्बन्ध में।\n\nमहोदय ,\n       सविनय निवेदन है कि थाना {{PoliceStation}} जनपद {{District}} पर पंजीकृत मु0अ0सं0 {{FIRNumber}}धारा {{Sections}} की विवेचना मुझ {{Rank}}द्वारा सम्पादित की जा रही है। विवेचना के दौरान ज्ञात हुआ है कि मुकदमा उपरोक्त से सम्बन्धित पीड़िता {{VictimName}} {{VictimAddress}} उम्र करीब {{VictimAge}} वर्ष आपके विद्यालय में शैक्षिक सत्र {{SchoolSession}} के दौरान कक्षा {{Class}} की छात्रा रही है/ छात्र रहा है। मुकदमे की निष्पक्ष एवं विधिसम्मत विवेचना हेतु पीड़िता की आयु का सत्यापन आवश्यक है। अतः आपसे अनुरोध है कि विद्यालय के अभिलेखों के आधार पर पीड़िता का जन्मतिथि/आयु प्रमाण-पत्र, अथवा प्रवेश पंजिका (Scholar Register) में अंकित जन्मतिथि का प्रमाणित प्रतिलिपि उपलब्ध कराने का कष्ट करें, जिससे विवेचना का विधिक एवं समयबद्ध निस्तारण किया जा सके।\n\n({{OfficerName}})\n{{Rank}}\nथाना {{PoliceStation}},जनपद  {{District}}",
+  "is_favorite": 0,
+  "created_by": "system",
+  "source": "system",
+  "editable": 0,
+  "content_type": "format",
+  "seed_version": 2,
+  "app_version": "1.0.0",
+  "tags": [
+    "पीड़िता",
+    "आयु प्रमाण",
+    "विद्यालय"
+  ],
+  "keys": [
+    {
+      "key_name": "SchoolName",
+      "label": "स्कूल का नाम, पता जनपद",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 1,
+      "default_value": "कम्पोजिट विद्यालय खैरहनी, जनपद रायबरेली"
+    },
+    {
+      "key_name": "FIRNumber",
+      "label": "मु0अ0सं0",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 2
+    },
+    {
+      "key_name": "Sections",
+      "label": "धारा",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 3
+    },
+    {
+      "key_name": "VictimName",
+      "label": "पीड़िता/पीड़ित का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 4,
+      "default_value": "श्री मेघना पुत्री तुलाराम"
+    },
+    {
+      "key_name": "VictimAddress",
+      "label": "पीड़िता/पीड़ित का पूरा पता/मो0 व जाति",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 5,
+      "default_value": "निवासी ग्राम पलही बाजार मजरे सरायउमर थाना बछरावां जनपद रायबरेली"
+    },
+    {
+      "key_name": "VictimAge",
+      "label": "पीड़िता/पीड़ित की उम्र",
+      "field_type": "number",
+      "is_required": 1,
+      "sort_order": 6
+    },
+    {
+      "key_name": "SchoolSession",
+      "label": "सत्र",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 7,
+      "default_value": "2023-24"
+    },
+    {
+      "key_name": "Class",
+      "label": "कक्षा/हाईस्कूल/इंटर",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 8,
+      "default_value": "10/हाईस्कूल"
+    },
+    {
+      "key_name": "PoliceStation",
+      "label": "थाना",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 9
+    },
+    {
+      "key_name": "OfficerName",
+      "label": "अधिकारी का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 10
+    },
+    {
+      "key_name": "District",
+      "label": "जनपद",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 11
+    },
+    {
+      "key_name": "Rank",
+      "label": "पद/रैंक",
+      "field_type": "text",
+      "is_required": 1,
+      "sort_order": 12,
+      "default_value": "उ0नि0"
+    }
+  ],
+  "last_updated": "2026-08-06"
+}

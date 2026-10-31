@@ -146,6 +146,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   item_group Vehicles (role 5 options, vtype, vno — no chassis/engine, owner), KeptAt, Tech dropdown (हो चुका है / नहीं हुआ है /
   आवश्यकता नहीं; no date), Objection (कोई आपत्ति नहीं / आपत्ति है + ObjReason via showIf); no प्रार्थी line (owner). Old v2 in
   `docs/format-backups/vehicle_release_v2.json`.
+- `sys-fmt-victim-age-certificate` "आयु प्रमाण-पत्र हेतु विद्यालय को पत्र (पीड़ित / अभियुक्त / बाल अपचारी / अन्य)" v3 (type Prarthna Patra,
+  owner moved it): Role (पीड़ित/अभियुक्त/बाल अपचारी/वादी/गवाह/व्यक्ति) × Gender (लड़का/लड़की → पीड़िता, अभियुक्ता, वादिनी, छात्र/छात्रा),
+  Head प्रधानाध्यापक/प्रधानाचार्य, optional age / सत्र / कक्षा (sentence shortens), JJ Act 2015 धारा 94 line. Old v2 in docs/format-backups/.
 - Fields that appear only when needed (option values must not contain "/" — it means "or"): `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
   "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + validation (hidden = not required).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
