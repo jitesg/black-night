@@ -172,6 +172,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   'simple' ('simple' splits a letter from its matra → "चकालस्ट", hidden 2nd line — build 21 regression), and
   Hindi text (Devanagari in children) gets lineHeight ≥ 1.5×fontSize (also when includeFontPadding is off);
   maxFontSizeMultiplier 1.2 by default. Never use textBreakStrategy "simple" on text that can wrap.
+- Pressable `style={({ pressed }) => …}` (function form) was ignored on the phone (सूचनाएँ card lost background, border and
+  row layout, build 24) — use a plain style object (pressed look via onPressIn/onPressOut state) in new code.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

@@ -5,7 +5,7 @@
  * items (सं0 / अंतिम तिथि / time) and an action chip. Rounded white card with
  * a soft shadow (owner's reference design).
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { ArrowRight, Bell, CalendarClock, FileText, FileWarning, NotebookPen, Scale, Scroll } from 'lucide-react-native';
@@ -34,20 +34,25 @@ export function NoticeItem({ card, isDark }: { card: NoticeCard; isDark: boolean
   const levelColor = LEVEL_COLOR[card.level][isDark ? 'dark' : 'light'];
   const go = () => router.push(card.route as never);
   const items = card.meta ?? [];
+  const [pressed, setPressed] = useState(false);
 
   return (
     <Pressable
       onPress={go}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
       accessibilityRole="button"
       accessibilityLabel={`${card.title}. ${card.body}`}
-      style={({ pressed }) => ({
+      // Plain style object (not a function): on the phone the function form was ignored —
+      // the card lost its background, border and the icon-beside-text row.
+      style={{
         flexDirection: 'row', gap: 14, padding: 16, borderRadius: 22,
-        backgroundColor: palette.card,
-        borderWidth: 1, borderColor: isDark ? palette.border : '#E6ECF5',
+        backgroundColor: isDark ? '#1E2530' : palette.card,
+        borderWidth: 1.5, borderColor: isDark ? '#3A4556' : '#D6DEEA',
         shadowColor: isDark ? '#000' : '#1E3A8A', shadowOpacity: isDark ? 0.3 : 0.08,
         shadowRadius: 14, shadowOffset: { width: 0, height: 6 }, elevation: 3,
-        transform: [{ scale: pressed ? 0.985 : 1 }],
-      })}
+        opacity: pressed ? 0.85 : 1,
+      }}
     >
       {/* Icon tile */}
       <View style={{

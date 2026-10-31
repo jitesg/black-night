@@ -111,7 +111,7 @@ export const SentenceFieldInput = forwardRef<View, {
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
             {cfg.cards.map((cd) => (
               <Pressable key={cd.id} onPress={() => pickCard(cd.id)} accessibilityRole="button"
-                style={({ pressed }) => ({ width: '48.5%', flexDirection: 'row', alignItems: 'center', gap: 7, paddingHorizontal: 10, paddingVertical: 9, borderRadius: 12, borderWidth: 1, borderColor: c.border, backgroundColor: pressed ? `${green}14` : c.background })}>
+                style={{ width: '48.5%', flexDirection: 'row', alignItems: 'center', gap: 7, paddingHorizontal: 10, paddingVertical: 9, borderRadius: 12, borderWidth: 1, borderColor: c.border, backgroundColor: c.background }}>
                 {cd.icon ? <Text style={{ fontSize: 19, lineHeight: 26 }}>{cd.icon}</Text> : null}
                 <Text style={{ flex: 1, fontSize: 13.5, lineHeight: 20, color: c.foreground }}>{cd.label}</Text>
               </Pressable>
@@ -256,7 +256,7 @@ function SlotSheet({ name, cfg, current, onClose, onDone }: {
                 </View>
               </>
             ) : null}
-            <Pressable onPress={() => onDone(text)} style={({ pressed }) => ({ backgroundColor: green, opacity: pressed ? 0.85 : 1, borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginTop: 4 })}>
+            <Pressable onPress={() => onDone(text)} style={{ backgroundColor: green, borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginTop: 4 }}>
               <Text style={{ color: dark ? '#052E16' : '#FFFFFF', fontSize: 15, lineHeight: 22, fontWeight: '700' }}>ठीक है</Text>
             </Pressable>
           </>
