@@ -652,12 +652,16 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
  * (e.g. सर्वप्रथम / तत्पश्चात … / वहाँ से … in the GD वापसी). Runs after {{if:…}}.
  */
 function _applySeqTokens(template: string): string {
-  if (!template.includes('{{seq|')) return template;
-  let n = 0;
-  return template.replace(/\{\{seq\|([^{}]*)\}\}/g, (_m, list: string) => {
+  if (!template.includes('{{seq')) return template;
+  // {{seq|a|b|c}} = one shared counter; {{seq:name|…}} = its own counter (e.g. a heading joined with "व"
+  // next to a body that numbers its paragraphs सर्वप्रथम / तत्पश्चात).
+  const counters = new Map<string, number>();
+  return template.replace(/\{\{seq(?::([A-Za-z0-9_]+))?\|([^{}]*)\}\}/g, (_m, name: string | undefined, list: string) => {
+    const k = name ?? '';
+    const n = counters.get(k) ?? 0;
     const w = list.split('|');
     const pick = n === 0 || w.length < 2 ? w[0] : w[1 + ((n - 1) % (w.length - 1))];
-    n += 1;
+    counters.set(k, n + 1);
     return pick ?? '';
   });
 }

@@ -414,3 +414,8 @@ test('आयु प्रमाण-पत्र पत्र: role × gender wor
   assert.match(b, /सम्बन्धित अभियुक्त राम निवासी ग्राम घ आपके विद्यालय का छात्र रहा है।/);
   assert.match(generateReport(f.vivran, { ...base, Role: 'वादी', Gender: 'लड़की' }, f.keys), /वादिनी राम/);
 });
+
+test('{{seq:name|…}} keeps its own counter (heading joined with "व" next to सर्वप्रथम / तत्पश्चात paragraphs)', () => {
+  const t = 'H{{seq:h||व }}A {{seq:h||व }}B | {{seq|सर्वप्रथम|तत्पश्चात}} x {{seq|सर्वप्रथम|तत्पश्चात}} y';
+  assert.equal(generateReport(t, {}), 'HA व B | सर्वप्रथम x तत्पश्चात y');
+});
