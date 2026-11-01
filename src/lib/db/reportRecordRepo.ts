@@ -25,7 +25,7 @@ export async function saveReportRecord(input: {
     // Generated again soon after (a correction) → replace that record instead of adding one more.
     if (input.formatId) {
       const recent = await dbGetFirstAsync<{ id: string }>(
-        `SELECT id FROM report_records WHERE deleted_at IS NULL AND format_id = ? AND created_at >= ?
+        `SELECT id FROM report_records WHERE deleted_at IS NULL AND COALESCE(status, 'done') = 'done' AND format_id = ? AND created_at >= ?
          ORDER BY created_at DESC LIMIT 1`,
         [input.formatId, now - REPLACE_WINDOW_S],
       );
@@ -46,6 +46,37 @@ export async function saveReportRecord(input: {
     return id;
   } catch (e) {
     if (__DEV__) console.warn('[reportRecords] save failed', e);
+    return null;
+  }
+}
+
+/**
+ * Direct Formats path: save (or update) a half-filled form as a "हाल के कार्य" draft. Returns its id.
+ * The time is moved to now so the draft sits on top of the list.
+ */
+export async function saveDraftRecord(input: {
+  id?: string | null; formatId: string; formatTitle: string; values: Record<string, string>;
+}): Promise<string | null> {
+  try {
+    const now = nowTimestamp();
+    const summary = reportSummary(input.values, '') || 'अधूरा भरा प्रारूप';
+    const json = JSON.stringify(input.values);
+    if (input.id) {
+      await dbRunAsync(
+        `UPDATE report_records SET values_json = ?, summary = ?, created_at = ?, updated_at = ?, deleted_at = NULL WHERE id = ?`,
+        [json, summary, now, now, input.id],
+      );
+      return input.id;
+    }
+    const id = generateUUID();
+    await dbRunAsync(
+      `INSERT INTO report_records (id, format_id, format_title, module, summary, marked_text, edited_html, created_at, updated_at, status, values_json)
+       VALUES (?, ?, ?, NULL, ?, '', NULL, ?, ?, 'draft', ?)`,
+      [id, input.formatId, input.formatTitle || 'प्रारूप', summary, now, now, json],
+    );
+    return id;
+  } catch (e) {
+    if (__DEV__) console.warn('[reportRecords] draft save failed', e);
     return null;
   }
 }
@@ -78,7 +109,7 @@ export async function reportRecordCounts(): Promise<{ today: number; week: numbe
   try {
     const row = await dbGetFirstAsync<{ today: number; week: number }>(
       `SELECT SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) AS today, COUNT(*) AS week
-       FROM report_records WHERE deleted_at IS NULL AND created_at >= ?`,
+       FROM report_records WHERE deleted_at IS NULL AND COALESCE(status, 'done') = 'done' AND created_at >= ?`,
       [rangeStart('today'), rangeStart('week')],
     );
     return { today: Number(row?.today ?? 0), week: Number(row?.week ?? 0) };

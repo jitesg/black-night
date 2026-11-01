@@ -1,7 +1,9 @@
 import { resolveContextDefaults } from '@/lib/contextDefaultResolver';
 import { isKeyVisible } from '@/lib/formatShowIf';
 import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
-import { saveReportRecord } from '@/lib/db/reportRecordRepo';
+import { deleteReportRecord, getReportRecord, saveDraftRecord, saveReportRecord } from '@/lib/db/reportRecordRepo';
+import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
+import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -13,7 +15,6 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   getFormatById, getFormatKeys, logUsage,
   type PredefinedFormat, type FormatKey,
@@ -66,17 +67,18 @@ function getFormatTypeLabel(type: string, t: (k: string) => string): string {
   }
 }
 
-/** Draft key for AsyncStorage — scoped to formatId and firId so multiple formats/cases don't conflict. */
-function _draftKey(formatId: string, firId?: string) {
-  return firId
-    ? `investsuite:fill_draft:${formatId}:${firId}`
-    : `investsuite:fill_draft:${formatId}`;
-}
 
 export default function FillScreen() {
-  const { formatId, callingModule, firId } = useLocalSearchParams<{
-    formatId: string; callingModule?: string; firId?: string;
+  const { formatId, callingModule, firId, draftId } = useLocalSearchParams<{
+    formatId: string; callingModule?: string; firId?: string; draftId?: string;
   }>();
+  // Owner's rules: opened from a module (GD / निरोधात्मक / कार्यवाही) → empty form, a saved draft is offered by
+  // a button (src/lib/fillDraft.ts). Opened from the Formats list (no callingModule) → drafts and reports go to
+  // "हाल के कार्य" (draftId = such a draft being continued).
+  const isDirectPath = !callingModule;
+  const draftScope = callingModule || 'formats';
+  const [pendingDraft, setPendingDraft] = useState<Record<string, string> | null>(null);
+  const draftRecordIdRef = useRef<string | null>(draftId || null);
   const { workspace } = useWorkspace();
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
@@ -121,13 +123,12 @@ export default function FillScreen() {
     }, [])
   );
 
-  /** Persist current form values to AsyncStorage (debounced 500 ms). */
+  /** Module path: keep the half-filled form as a draft while typing (debounced 500 ms). */
   const saveDraft = useCallback((nextValues: Record<string, string>, fmtId: string) => {
+    if (isDirectPath) return; // direct path: saved to "हाल के कार्य" only when leaving with "ड्राफ़्ट रखें"
     if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
-    draftTimerRef.current = setTimeout(() => {
-      AsyncStorage.setItem(_draftKey(fmtId, firId), JSON.stringify(nextValues)).catch(() => null);
-    }, 500);
-  }, [firId]);
+    draftTimerRef.current = setTimeout(() => saveFillDraft(draftScope, fmtId, firId, nextValues), 500);
+  }, [firId, isDirectPath, draftScope]);
 
   useFocusEffect(
     useCallback(() => {
@@ -171,15 +172,21 @@ export default function FillScreen() {
             // Resolve context-aware "@MARKER.field" defaults (DB queries, scoped to firId)
             const contextDefaults = await resolveContextDefaults(dynKeys, firId);
 
-            // Restore draft if it exists — draft wins over bare defaults
+            // Always open empty (owner). Continuing a "हाल के कार्य" draft (direct path) loads its values;
+            // a module-path draft is only offered by the banner button.
             let draft: Record<string, string> = {};
-            try {
-              const raw = await AsyncStorage.getItem(_draftKey(formatId, firId));
-              if (raw) draft = JSON.parse(raw) as Record<string, string>;
-            } catch { /* non-critical — start fresh */ }
+            if (draftId) {
+              const rec = await getReportRecord(draftId);
+              try { if (rec?.values_json) draft = JSON.parse(rec.values_json) as Record<string, string>; } catch { /* start fresh */ }
+            } else if (!isDirectPath) {
+              setPendingDraft(await loadFillDraft(draftScope, formatId, firId));
+            }
 
             // Merge order: static defaults < context defaults < workspace auto < draft
             setValues({ ...defaults, ...contextDefaults, ...resolved, ...draft });
+            // A draft keeps the पुलिस स्टेशन / जनपद / नाम the officer had typed in the pills.
+            const pillDraft = Object.fromEntries(Object.keys(resolved).filter((key) => draft[key]).map((key) => [key, draft[key]]));
+            if (Object.keys(pillDraft).length) setAutoValues({ ...resolved, ...pillDraft });
             setFieldErrors({});
             setGroupValid({});
             setBannerError('');
@@ -192,7 +199,7 @@ export default function FillScreen() {
         }
       })();
       return () => { active = false; };
-    }, [formatId, firId, workspace, t])
+    }, [formatId, firId, draftId, isDirectPath, draftScope, workspace, t])
   );
 
   const setValue = (keyName: string, val: string) => {
@@ -247,9 +254,10 @@ export default function FillScreen() {
         }
         return;
       }
+      // The editable पुलिस स्टेशन / जनपद / नाम pills win — what the officer sees goes into the report.
       const mergedValues = {
-        ...autoValues,
         ...values,
+        ...autoValues,
       };
       // User formats are saved as editor HTML — convert to plain text first.
       // Layout marks ([[शीर्षक]] …) stay in for the print / editor layout; the
@@ -271,6 +279,14 @@ export default function FillScreen() {
       const editorHtml = renderModelsForEditor(models);
 
       await logUsage(format.id, callingModule, resolvedText);
+      // Draft done: module path → forget it; direct path → the "हाल के कार्य" draft becomes this report.
+      if (isDirectPath) {
+        if (draftRecordIdRef.current) { await deleteReportRecord(draftRecordIdRef.current); draftRecordIdRef.current = null; }
+      } else {
+        if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+        clearFillDraft(draftScope, format.id, firId);
+      }
+      isDirty.current = false;
       // "हाल के कार्य" — keep every generated report (with its layout marks)
       const recordId = await saveReportRecord({ formatId: format.id, formatTitle: format.title, module: callingModule || format.format_type, markedText, values: mergedValues });
 
@@ -387,18 +403,27 @@ export default function FillScreen() {
             <AlertDialogAction
               onPress={() => {
                 setShowDiscardDialog(false);
-                if (formatId) AsyncStorage.removeItem(_draftKey(formatId, firId)).catch(() => null);
+                // रद्द: everything typed now is dropped (module draft deleted; a हाल के कार्य draft stays as it was)
+                if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+                if (formatId && !isDirectPath) clearFillDraft(draftScope, formatId, firId);
                 router.back();
               }}
               className="bg-destructive"
             >
               <Text className="text-white font-semibold text-sm">{t('format.fill.discardConfirm')}</Text>
             </AlertDialogAction>
-            {/* Save as Draft — flush current values to AsyncStorage then exit */}
+            {/* Save as Draft — module path: draft store; Formats list: हाल के कार्य */}
             <AlertDialogAction
               onPress={() => {
                 setShowDiscardDialog(false);
-                if (formatId) AsyncStorage.setItem(_draftKey(formatId, firId), JSON.stringify(values)).catch(() => null);
+                if (formatId && format) {
+                  if (isDirectPath) {
+                    void saveDraftRecord({ id: draftRecordIdRef.current, formatId, formatTitle: format.title, values: { ...values, ...autoValues } });
+                  } else {
+                    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+                    saveFillDraft(draftScope, formatId, firId, values);
+                  }
+                }
                 router.back();
               }}
               className="bg-primary"
@@ -468,6 +493,23 @@ export default function FillScreen() {
             </View>
           )}
 
+          {/* ── Saved half-filled draft (module path) — offered, never auto-filled ── */}
+          {pendingDraft ? (
+            <DraftResumeBanner
+              onResume={() => {
+                const d = pendingDraft;
+                setPendingDraft(null);
+                isDirty.current = true;
+                setValues((prev) => ({ ...prev, ...d }));
+                setAutoValues((prev) => ({ ...prev, ...Object.fromEntries(Object.keys(prev).filter((key) => d[key]).map((key) => [key, d[key]])) }));
+              }}
+              onDiscard={() => {
+                setPendingDraft(null);
+                if (formatId) clearFillDraft(draftScope, formatId, firId);
+              }}
+            />
+          ) : null}
+
           {/* ── Auto-filled Global Keys pill row ─────────────────── */}
           {autoFilledKeyNames.length > 0 && (
             <View className="gap-2">
@@ -491,7 +533,7 @@ export default function FillScreen() {
                     </Text>
                     <TextInput
                       value={autoValues[k]}
-                      onChangeText={(v) => setAutoValues((prev) => ({ ...prev, [k]: v }))}
+                      onChangeText={(v) => { setAutoValues((prev) => ({ ...prev, [k]: v })); setValue(k, v); }}
                       style={[
                         {
                           fontSize: 12,

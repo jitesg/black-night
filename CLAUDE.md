@@ -170,6 +170,14 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   screen `(app)/recent-tasks.tsx` (search, आज/इस हफ़्ते/सभी, खोलें/Word/हटाएँ), reopen = `reportRecordOpen.ts` → formats/preview via the
   bridge (recordId; edits saved by `updateReportRecordEdit`). Home "आज का सारांश": the old रिमाइंडर tile (opened मुकदमा) is now
   "हाल के कार्य" (आज / इस हफ़्ते counts). Plain text of `[[तालिका]]` rows drops the "(12mm)" / "#" helpers.
+- Fill-screen drafts (owner): a format ALWAYS opens empty (defaults + workspace + FIR context only).
+  Module path (formats/fill with callingModule GD/NK/KARYVAHI, nyayalay + prarthna-patra fill-format): half-filled form → AsyncStorage
+  via `src/lib/fillDraft.ts` (scope + formatId + firId/docId/mode), offered by `DraftResumeBanner` ("अधूरा ड्राफ़्ट जारी रखें" / हटाएँ);
+  back dialog "छोड़ें" deletes it, "ड्राफ्ट सेव करें" keeps it, a generated report deletes it. Direct path (Formats list, no
+  callingModule): "ड्राफ्ट सेव करें" → `saveDraftRecord` = report_records row status 'draft' + values_json (columns via _ensureColumn),
+  shown in हाल के कार्य as "अधूरा" → "आगे भरें" opens formats/fill?draftId=…; generating deletes the draft row. Home counts skip drafts.
+  Universal-key pills (थाना / जनपद / नाम) on formats/fill: an edit goes into values AND autoValues; generate merges `{...values, ...autoValues}`
+  so the pill text is what the report gets (workspace setting unchanged). केस डायरी कार्यवाही panel keeps its own in-screen draft.
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,
   0.5in margins, marks/data-fmt honoured; `exportReportToDocx` → share sheet). निरोधात्मक: card long-press menu + editor
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.

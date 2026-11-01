@@ -25,6 +25,8 @@ import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS } from '@/lib/g
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput } from '@/components/ui/input';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
+import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
+import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
 import { AccusedGroupInput, initAccusedGroup } from '@/components/ui/AccusedGroupInput';
 import { PersonGroupInput, initPersonGroup } from '@/components/ui/PersonGroupInput';
 import { useWorkspace } from '@/context/WorkspaceContext';
@@ -55,6 +57,8 @@ export default function PPFillFormatScreen() {
   const [bannerError, setBannerError] = useState('');
   const [saving, setSaving] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+  // Saved half-filled draft — offered by a button, never filled in by itself (owner).
+  const [pendingDraft, setPendingDraft] = useState<Record<string, string> | null>(null);
 
   const scrollRef = useRef<ScrollView>(null);
   const fieldRefs = useRef<Record<string, View | null>>({});
@@ -88,8 +92,9 @@ export default function PPFillFormatScreen() {
       setFieldErrors({});
       setGroupValid({});
       setBannerError('');
+      setPendingDraft(await loadFillDraft('PP', formatId, mode ?? null));
     })();
-  }, [formatId, workspace]));
+  }, [formatId, workspace, mode]));
 
   const isDirty = dynamicKeys.some(
     (k) => (values[k.key_name] ?? '') !== (initialValues[k.key_name] ?? '')
@@ -138,6 +143,7 @@ export default function PPFillFormatScreen() {
     setSaving(true);
     try {
       const generatedText = generateReport(format.vivran, values, dynamicKeys);
+      clearFillDraft('PP', format.id, mode ?? null);
       void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Prarthna Patra', markedText: generateReport(format.vivran, values, dynamicKeys, { keepMarkers: true }), values });
       if (isReportMode) {
         ppReportDraftStore.set({
@@ -192,6 +198,12 @@ export default function PPFillFormatScreen() {
         behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
+        {pendingDraft ? (
+          <DraftResumeBanner
+            onResume={() => { const d = pendingDraft; setPendingDraft(null); setValues((prev) => ({ ...prev, ...d })); }}
+            onDiscard={() => { setPendingDraft(null); if (formatId) clearFillDraft('PP', formatId, mode ?? null); }}
+          />
+        ) : null}
 
         <ScrollView
           ref={scrollRef}
@@ -342,7 +354,13 @@ export default function PPFillFormatScreen() {
               <Text>{t('common.stay')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
-              onPress={() => { setShowDiscardDialog(false); router.back(); }}
+              onPress={() => { setShowDiscardDialog(false); if (formatId) saveFillDraft('PP', formatId, mode ?? null, values); router.back(); }}
+              className="bg-primary"
+            >
+              <Text className="text-primary-foreground font-semibold">ड्राफ़्ट रखें</Text>
+            </AlertDialogAction>
+            <AlertDialogAction
+              onPress={() => { setShowDiscardDialog(false); if (formatId) clearFillDraft('PP', formatId, mode ?? null); router.back(); }}
               className="bg-destructive"
             >
               <Text className="text-destructive-foreground font-semibold">{t('common.discard')}</Text>

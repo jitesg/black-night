@@ -14,7 +14,12 @@ export interface ReportRecord {
   edited_html: string | null;
   created_at: number; // unix seconds
   updated_at: number;
+  /** 'draft' = half-filled form from the Formats list (values_json), else a generated report. */
+  status?: string | null;
+  values_json?: string | null;
 }
+
+export const isDraftRecord = (r: Pick<ReportRecord, 'status'>) => r.status === 'draft';
 
 export type RecordRange = 'today' | 'week' | 'all';
 

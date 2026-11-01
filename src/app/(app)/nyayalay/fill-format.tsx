@@ -32,6 +32,8 @@ import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS, resolveNyayala
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput } from '@/components/ui/input';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
+import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
+import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { nyayalayDraftStore } from '@/lib/nyayalayDraftStore';
 import {
@@ -58,6 +60,8 @@ export default function NyayalayFillFormatScreen() {
   const [bannerError, setBannerError] = useState('');
   const [saving, setSaving] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+  // Saved half-filled draft — offered by a button, never filled in by itself (owner).
+  const [pendingDraft, setPendingDraft] = useState<Record<string, string> | null>(null);
 
   const scrollRef = useRef<ScrollView>(null);
   const fieldRefs = useRef<Record<string, View | null>>({});
@@ -115,6 +119,7 @@ export default function NyayalayFillFormatScreen() {
       setInitialValues(merged);
       setFieldErrors({});
       setBannerError('');
+      setPendingDraft(await loadFillDraft('Nyayalay', formatId, docId));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formatId, docId]));
@@ -156,6 +161,7 @@ export default function NyayalayFillFormatScreen() {
     setSaving(true);
     try {
       const generatedText = generateReport(format.vivran, values, dynamicKeys);
+      clearFillDraft('Nyayalay', format.id, docId);
       void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Nyayalay', markedText: generateReport(format.vivran, values, dynamicKeys, { keepMarkers: true }), values });
       nyayalayDraftStore.set({
         generatedText,
@@ -201,6 +207,12 @@ export default function NyayalayFillFormatScreen() {
         behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
+        {pendingDraft ? (
+          <DraftResumeBanner
+            onResume={() => { const d = pendingDraft; setPendingDraft(null); setValues((prev) => ({ ...prev, ...d })); }}
+            onDiscard={() => { setPendingDraft(null); if (formatId) clearFillDraft('Nyayalay', formatId, docId); }}
+          />
+        ) : null}
         <ScrollView
           ref={scrollRef}
           contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 20, gap: 20, paddingBottom: 64 }}
@@ -318,7 +330,13 @@ export default function NyayalayFillFormatScreen() {
               <Text>{t('nyayalay.dialog.continueEditing')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
-              onPress={() => { setShowDiscardDialog(false); router.back(); }}
+              onPress={() => { setShowDiscardDialog(false); if (formatId) saveFillDraft('Nyayalay', formatId, docId, values); router.back(); }}
+              className="bg-primary"
+            >
+              <Text className="text-primary-foreground font-semibold">ड्राफ़्ट रखें</Text>
+            </AlertDialogAction>
+            <AlertDialogAction
+              onPress={() => { setShowDiscardDialog(false); if (formatId) clearFillDraft('Nyayalay', formatId, docId); router.back(); }}
               className="bg-destructive"
             >
               <Text className="text-destructive-foreground font-semibold">{t('common.discard')}</Text>

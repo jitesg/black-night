@@ -324,7 +324,9 @@ export const CREATE_TABLES_SQL = `
     edited_html TEXT,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
-    deleted_at INTEGER
+    deleted_at INTEGER,
+    status TEXT NOT NULL DEFAULT 'done',
+    values_json TEXT
   );
 
   CREATE INDEX IF NOT EXISTS idx_report_records_created ON report_records(created_at);

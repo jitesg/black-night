@@ -1336,6 +1336,9 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
 
   // ── format_usage_log.values_json (JSON blob for autocomplete backfill) ────
   await _ensureColumn(database, 'format_usage_log', 'values_json', 'TEXT');
+  // ── report_records (हाल के कार्य): drafts of the direct Formats path ─────
+  await _ensureColumn(database, 'report_records', 'status', "TEXT NOT NULL DEFAULT 'done'");
+  await _ensureColumn(database, 'report_records', 'values_json', 'TEXT');
 
   // ── v202: make checklist_items.checklist_id nullable ─────────────────────
   // The original schema had checklist_id NOT NULL (every item belonged to one
