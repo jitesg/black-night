@@ -217,6 +217,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   maxFontSizeMultiplier 1.2 by default. Never use textBreakStrategy "simple" on text that can wrap.
 - Pressable `style={({ pressed }) => …}` (function form) was ignored on the phone (सूचनाएँ card lost background, border and
   row layout, build 24) — use a plain style object (pressed look via onPressIn/onPressOut state) in new code.
+- ✕ / 📋 in name, father / husband name and address boxes (owner): `useClearCopy` (`components/common/ClearCopyTools.tsx`; icons only
+  when filled; clear → "मिटाया गया · वापस लाएँ" 5 s; copy → "कॉपी हुआ"). AutocompleteInput turns it on by default for FIELD_KEYS
+  person_name / father_husband_name / address (person + accused group cards); `<Input clearCopy>` in प्रार्थना पत्र add and मुकदमा add-fir.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

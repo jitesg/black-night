@@ -34,6 +34,7 @@ import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
 import { DatePickerModal, dateStrToObj } from '@/components/common/DatePickerModal';
 import { ItemGroupInput, parseItemGroupConfig } from './ItemGroupInput';
+import { useClearCopy } from '@/components/common/ClearCopyTools';
 import { SentenceFieldInput } from './SentenceFieldInput';
 import type { KeyDefForRender } from '@/lib/templateEngine';
 
@@ -212,6 +213,9 @@ export interface InputProps {
 
   // Legacy className support (used by the bare <Input> shadcn compat export)
   className?: string;
+
+  /** ✕ / 📋 inside the filled box (name / father / address fields). */
+  clearCopy?: boolean;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -248,6 +252,7 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
     style,
     containerStyle,
     className,
+    clearCopy,
   },
   ref
 ) {
@@ -341,6 +346,8 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
     ...(Platform.OS !== 'web' ? { borderCurve: 'continuous' } as unknown as ViewStyle : {}),
   };
 
+  const tools = useClearCopy(value, (v) => onChangeText?.(v), !!clearCopy && !disabled && !readOnly);
+
   // ── Right slot ──────────────────────────────────────────────────────────────
   let rightSlot: React.ReactNode = rightIcon ?? null;
   if (isPassword) {
@@ -366,6 +373,8 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
       </Pressable>
     );
   }
+
+  if (tools.icons) rightSlot = rightSlot ? <>{rightSlot}{tools.icons}</> : tools.icons;
 
   const inputStyle: TextStyle = {
     flex: 1,
@@ -450,6 +459,8 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
           </View>
         ) : null}
       </Pressable>
+
+      {tools.notice}
 
       {/* Helper / error / success */}
       {bottomMsg ? (

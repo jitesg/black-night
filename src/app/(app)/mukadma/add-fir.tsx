@@ -348,10 +348,10 @@ function AccusedCard({
       </View>
 
       <Field label={t('fir.addFir.fieldAccusedName')}>
-        <Input value={accused.name} onChangeText={(v) => onChange(accused.id, 'name', v)} placeholder={t('fir.addFir.namePlaceholder')} />
+        <Input clearCopy value={accused.name} onChangeText={(v) => onChange(accused.id, 'name', v)} placeholder={t('fir.addFir.namePlaceholder')} />
       </Field>
       <Field label={t('fir.addFir.fieldAccusedAddress')}>
-        <Input type="multiline" value={accused.address} onChangeText={(v) => onChange(accused.id, 'address', v)} placeholder={t('fir.addFir.addressPlaceholder')} numberOfLines={2} />
+        <Input clearCopy type="multiline" value={accused.address} onChangeText={(v) => onChange(accused.id, 'address', v)} placeholder={t('fir.addFir.addressPlaceholder')} numberOfLines={2} />
       </Field>
       <View className="flex-row gap-3">
         <View className="flex-1">
@@ -844,10 +844,10 @@ export default function AddFIRScreen() {
           <SectionHeader title={t('fir.addFir.sectionComplainant')} />
           <View className="gap-4">
             <Field label={t('fir.addFir.fieldName')}>
-              <Input value={cName} onChangeText={(v) => { isDirty.current = true; setCName(v); }} placeholder={t('fir.addFir.namePlaceholder')} />
+              <Input clearCopy value={cName} onChangeText={(v) => { isDirty.current = true; setCName(v); }} placeholder={t('fir.addFir.namePlaceholder')} />
             </Field>
             <Field label={t('fir.addFir.fieldAddress')}>
-              <Input type="multiline" value={cAddress} onChangeText={(v) => { isDirty.current = true; setCAddress(v); }} placeholder={t('fir.addFir.addressPlaceholder')} numberOfLines={2} />
+              <Input clearCopy type="multiline" value={cAddress} onChangeText={(v) => { isDirty.current = true; setCAddress(v); }} placeholder={t('fir.addFir.addressPlaceholder')} numberOfLines={2} />
             </Field>
             <View className="flex-row gap-3">
               <View className="flex-1">

@@ -677,6 +677,7 @@ export default function AddPrarthnaPatraScreen() {
                 </View>
                 <Field label={t('prarthnaPatra.form.fieldName')} error={idx === 0 ? errors.complainant0 : undefined}>
                   <Input
+                    clearCopy
                     value={c.name}
                     onChangeText={(v) => {
                       updateComplainant(idx, 'name', v);
@@ -687,7 +688,7 @@ export default function AddPrarthnaPatraScreen() {
                   />
                 </Field>
                 <Field label={t('prarthnaPatra.form.fieldFatherHusband')}>
-                  <Input value={c.father_husband_name} onChangeText={(v) => updateComplainant(idx, 'father_husband_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherHusband')} />
+                  <Input clearCopy value={c.father_husband_name} onChangeText={(v) => updateComplainant(idx, 'father_husband_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherHusband')} />
                 </Field>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
                   <View style={{ flex: 1 }}>
@@ -702,7 +703,7 @@ export default function AddPrarthnaPatraScreen() {
                   </View>
                 </View>
                 <Field label={t('prarthnaPatra.form.fieldFullAddress')}>
-                  <Input type="multiline" value={c.full_address} onChangeText={(v) => updateComplainant(idx, 'full_address', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldFullAddress')} />
+                  <Input clearCopy type="multiline" value={c.full_address} onChangeText={(v) => updateComplainant(idx, 'full_address', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldFullAddress')} />
                 </Field>
                 {/* Village with autocomplete */}
                 <View>
@@ -846,10 +847,10 @@ export default function AddPrarthnaPatraScreen() {
                   </Pressable>
                 </View>
                 <Field label={t('prarthnaPatra.form.fieldNameOptional')}>
-                  <Input value={a.name} onChangeText={(v) => updateAccused(idx, 'name', v)} placeholder={t('prarthnaPatra.form.fieldFullName')} />
+                  <Input clearCopy value={a.name} onChangeText={(v) => updateAccused(idx, 'name', v)} placeholder={t('prarthnaPatra.form.fieldFullName')} />
                 </Field>
                 <Field label={t('prarthnaPatra.form.fieldFatherName')}>
-                  <Input value={a.father_name} onChangeText={(v) => updateAccused(idx, 'father_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherName')} />
+                  <Input clearCopy value={a.father_name} onChangeText={(v) => updateAccused(idx, 'father_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherName')} />
                 </Field>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
                   <View style={{ flex: 1 }}>
@@ -864,7 +865,7 @@ export default function AddPrarthnaPatraScreen() {
                   </View>
                 </View>
                 <Field label={t('prarthnaPatra.form.fieldFullAddress')}>
-                  <Input type="multiline" value={a.full_address} onChangeText={(v) => updateAccused(idx, 'full_address', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldFullAddress')} />
+                  <Input clearCopy type="multiline" value={a.full_address} onChangeText={(v) => updateAccused(idx, 'full_address', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldFullAddress')} />
                 </Field>
                 {/* Village with autocomplete */}
                 <View>

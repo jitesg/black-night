@@ -29,10 +29,12 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import {
+  FIELD_KEYS,
   getSuggestions,
   type FieldKey,
   type FieldValueSuggestion,
 } from '@/lib/db/fieldValueHistoryRepo';
+import { useClearCopy } from '@/components/common/ClearCopyTools';
 
 function useAutocompleteTokens() {
   const { colorScheme } = useColorScheme();
@@ -60,6 +62,8 @@ export interface AutocompleteInputProps {
   /** Suppress the autocomplete dropdown even when fieldKey is provided.
    *  Useful when the parent temporarily wants plain-text behaviour. */
   disableSuggestions?: boolean;
+  /** ✕ / 📋 inside the filled box (default: on for name, father / husband name and address). */
+  clearCopy?: boolean;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -76,7 +80,10 @@ export const AutocompleteInput = memo(({
   keyboardType,
   hasError,
   disableSuggestions = false,
+  clearCopy,
 }: AutocompleteInputProps) => {
+  const tools = useClearCopy(value, onChangeText,
+    clearCopy ?? (fieldKey === FIELD_KEYS.person_name || fieldKey === FIELD_KEYS.father_husband_name || fieldKey === FIELD_KEYS.address));
   const C = useAutocompleteTokens();
   const { settings } = useSettingsStore();
   const [suggestions, setSuggestions] = useState<FieldValueSuggestion[]>([]);
@@ -159,6 +166,8 @@ export const AutocompleteInput = memo(({
         paddingVertical: 10,
         backgroundColor: C.bg,
         minHeight: multiline ? 72 : 44,
+        flexDirection: 'row',
+        alignItems: multiline ? 'flex-start' : 'center',
       }}>
         <TextInput
           value={value}
@@ -180,7 +189,9 @@ export const AutocompleteInput = memo(({
             ...(Platform.OS === 'web' ? { outlineStyle: 'none', outlineWidth: 0 } as never : {}),
           }}
         />
+        {tools.icons}
       </View>
+      {tools.notice}
 
       {/* Suggestions — in the normal flow right below the field (not floating):
           a floating list covered the multiline पता field itself and the fields below. */}
