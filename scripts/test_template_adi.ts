@@ -436,3 +436,12 @@ test('GD वापसी / तस्करा: heading joined with व, था�
   const none = generateReport(f.vivran, { ...base, doWapsi: 'हाँ' }, f.keys);
   assert.match(none, /^वापसी उ0नि0\n/);
 });
+
+test('GD वापसी / तस्करा: optional "और विवरण / कारण" box joins its own paragraph', async () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-wapsi');
+  assert.equal(f.keys.filter((k: { key_name: string }) => /^h\dExtra$/.test(k.key_name)).length, 9);
+  const v = { pad: 'उपनिरीक्षक', OfficerName: 'क', doWapsi: '', h5: 'हाँ', h5FIR: '1/26', h5Dhara: '118(1) BNS', h5Extra: 'मजरूब की मेडिकल रिपोर्ट में चोट गंभीर पायी गयी।' };
+  assert.match(generateReport(f.vivran, v, f.keys), /धारा 118\(1\) BNS की बढ़ोत्तरी की गयी। मजरूब की मेडिकल रिपोर्ट में चोट गंभीर पायी गयी।/);
+  assert.doesNotMatch(generateReport(f.vivran, { ...v, h5Extra: '' }, f.keys), /मेडिकल/);
+});
