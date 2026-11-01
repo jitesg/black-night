@@ -3659,23 +3659,35 @@
     },
     {
       "id": "sys-gd-fmt-wapsi",
-      "title": "वापसी उ0नि0",
+      "title": "वापसी उ0नि0 / तस्करा (हैडिंग सहित)",
       "format_type": "GD",
-      "vivran": "इस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}}, रवानाशुदा रोजनामचा आम तारीखी इमरोजा से बाद देखभाल क्षेत्र एवं शासकीय कार्य सम्पादित कर सकुशल वापस थाना उपस्थित आया। कार्य विवरण इस प्रकार है:{{if:doPP|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{PrarthnaPatraJanch}}}}{{if:doVivechana|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} थाना स्थानीय पर पंजीकृत {{if:FIRNo|मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}}{{ifnot:FIRNo|पेंडिंग मुकदमात}} की विवेचना के क्रम में {{VivechanaKaryawahi}}}}{{if:doGumshuda|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{GumshudaTalash}}}}{{if:doBeat|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{BeatSuchna}}}}{{if:doHS|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{HSNigrani}}}}{{if:doVishesh|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{VisheshAbhiyan}}}}{{if:doSuraksha|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{SurakshaChecking}}}}{{if:doCourt|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{CourtTamila}}}}{{if:doVistrit|\n\n{{VistritKaryawahi}}}}",
+      "vivran": "{{if:doWapsi|वापसी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}}}{{if:h1|{{seq:h|{{if:doWapsi| व }}| व }}दाखिला {{h1Kita}} किता चालानी अंतर्गत धारा 126/135 BNSS}}{{if:h2|{{seq:h|{{if:doWapsi| व }}| व }}दाखिला {{h2Kita}} किता चालानी अंतर्गत धारा 170/135 BNSS व {{if:h2Nafar=01|अभियुक्त}}{{ifnot:h2Nafar=01|अभियुक्तगण}} {{h2Nafar}} नफर}}{{if:h3|{{seq:h|{{if:doWapsi| व }}| व }}दाखिला {{h3Count}} अदद वाहन सम्बन्धित मु0अ0सं0 {{h3FIR}}{{if:h3Sec| धारा {{h3Sec}}}}}}{{if:h4|{{seq:h|{{if:doWapsi| व }}| व }}तस्करा बावत धारा घटोत्तरी सम्बन्धित मु0अ0सं0 {{h4FIR}}{{if:h4Sec| धारा {{h4Sec}}}}}}{{if:h5|{{seq:h|{{if:doWapsi| व }}| व }}तस्करा बावत धारा बढ़ोत्तरी सम्बन्धित मु0अ0सं0 {{h5FIR}}{{if:h5Sec| धारा {{h5Sec}}}}}}{{if:h6|{{seq:h|{{if:doWapsi| व }}| व }}तस्करा बावत दाखिला गिरफ्तारशुदा {{h6Nafar}} नफर {{if:h6Nafar=01|अभियुक्त}}{{ifnot:h6Nafar=01|अभियुक्तगण}} सम्बन्धित मु0अ0सं0 {{h6FIR}}{{if:h6Sec| धारा {{h6Sec}}}}}}{{if:h7|{{seq:h|{{if:doWapsi| व }}| व }}तस्करा बावत अवमुक्त किये जाने {{if:h7Nafar=01|आरोपी}}{{ifnot:h7Nafar=01|आरोपीगण}} सम्बन्धित मु0अ0सं0 {{h7FIR}}{{if:h7Sec| धारा {{h7Sec}}}}}}{{if:h8|{{seq:h|{{if:doWapsi| व }}| व }}तस्करा बावत प्रकाश में लाये जाने {{if:h8Nafar=01|अभियुक्त}}{{ifnot:h8Nafar=01|अभियुक्तगण}} सम्बन्धित मु0अ0सं0 {{h8FIR}}{{if:h8Sec| धारा {{h8Sec}}}}}}{{if:h9|{{seq:h|{{if:doWapsi| व }}| व }}तस्करा बावत नामजदगी गलत पाये जाने के सम्बन्ध में सम्बन्धित मु0अ0सं0 {{h9FIR}}{{if:h9Sec| धारा {{h9Sec}}}}}}\n\n{{if:doWapsi|इस समय मैं {{pad}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}} के}}, रवानाशुदा रोजनामचा आम तारीखी इमरोजा से बाद देखभाल क्षेत्र एवं शासकीय कार्य सम्पादित कर सकुशल वापस थाना उपस्थित आया। कार्य विवरण इस प्रकार है:{{if:doPP|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{PrarthnaPatraJanch}}}}{{if:doVivechana|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} थाना स्थानीय पर पंजीकृत {{if:FIRNo|मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}}}}{{ifnot:FIRNo|पेंडिंग मुकदमात}} की विवेचना के क्रम में {{VivechanaKaryawahi}}}}{{if:doGumshuda|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{GumshudaTalash}}}}{{if:doBeat|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{BeatSuchna}}}}{{if:doHS|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{HSNigrani}}}}{{if:doVishesh|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{VisheshAbhiyan}}}}{{if:doSuraksha|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{SurakshaChecking}}}}{{if:doCourt|\n\n{{seq|सर्वप्रथम|तत्पश्चात बालाबाला रवाना होकर|वहाँ से बालाबाला रवाना होकर|तदोपरान्त बालाबाला रवाना होकर|पुनः बालाबाला रवाना होकर}} {{CourtTamila}}}}{{if:doVistrit|\n\n{{VistritKaryawahi}}}}}}{{ifnot:doWapsi|इस समय मुझ {{pad}} {{OfficerName}} द्वारा तस्करा अंकित किया जाता है कि –}}{{if:h1|\n\n{{if:h1Detail|{{h1Detail}} }}शान्ति व्यवस्था बनाये रखने हेतु {{h1Kita}} किता चालानी रिपोर्ट अन्तर्गत धारा 126/135 BNSS तैयार कर दाखिल दफ्तर की गयी।}}{{if:h2|\n\nशान्ति व्यवस्था भंग होने की प्रबल आशंका पर {{h2Nafar}} नफर {{if:h2Nafar=01|अभियुक्त}}{{ifnot:h2Nafar=01|अभियुक्तगण}} {{h2Names}} को धारा 170 BNSS के अन्तर्गत गिरफ्तार कर {{h2Kita}} किता चालानी रिपोर्ट अन्तर्गत धारा 170/135 BNSS तैयार की गयी तथा {{if:h2Nafar=01|अभियुक्त}}{{ifnot:h2Nafar=01|अभियुक्तगण}} को मय चालानी रिपोर्ट दाखिल किया गया।}}{{if:h3|\n\nमु0अ0सं0 {{h3FIR}}{{if:h3Sec| धारा {{h3Sec}}}} से सम्बन्धित {{h3Count}} अदद {{if:h3Count=01|वाहन}}{{ifnot:h3Count=01|वाहनों}} {{h3Detail}} को थाना परिसर में दाखिल कर सुरक्षार्थ {{if:h3Count=01|खड़ा कराया गया}}{{ifnot:h3Count=01|खड़े कराये गये}}।}}{{if:h4|\n\nमु0अ0सं0 {{h4FIR}}{{if:h4Sec| धारा {{h4Sec}}}} की विवेचना में संकलित साक्ष्यों के आधार पर धारा {{h4Dhara}} की घटोत्तरी की गयी।{{if:h4New| अग्रिम विवेचना धारा {{h4New}} में प्रचलित है।}}}}{{if:h5|\n\nमु0अ0सं0 {{h5FIR}}{{if:h5Sec| धारा {{h5Sec}}}} की विवेचना में संकलित साक्ष्यों के आधार पर धारा {{h5Dhara}} की बढ़ोत्तरी की गयी।{{if:h5New| अग्रिम विवेचना धारा {{h5New}} में प्रचलित है।}}}}{{if:h6|\n\nमु0अ0सं0 {{h6FIR}}{{if:h6Sec| धारा {{h6Sec}}}} से सम्बन्धित गिरफ्तारशुदा {{h6Nafar}} नफर {{if:h6Nafar=01|अभियुक्त}}{{ifnot:h6Nafar=01|अभियुक्तगण}} {{h6Names}} को मय गिरफ्तारी प्रपत्र दाखिल हवालात किया गया।}}{{if:h7|\n\nमु0अ0सं0 {{h7FIR}}{{if:h7Sec| धारा {{h7Sec}}}} की विवेचना से प्राप्त नये तथ्यों के आधार पर {{if:h7Nafar=01|आरोपी}}{{ifnot:h7Nafar=01|आरोपीगण}} {{h7Names}} के विरुद्ध पर्याप्त साक्ष्य न पाये जाने पर {{if:h7Nafar=01|उसे}}{{ifnot:h7Nafar=01|उन्हें}} धारा 480(2) BNSS के अन्तर्गत व्यक्तिगत बंध पत्र के आधार पर अवमुक्त किया गया।}}{{if:h8|\n\nमु0अ0सं0 {{h8FIR}}{{if:h8Sec| धारा {{h8Sec}}}} की विवेचना से {{if:h8Nafar=01|अभियुक्त}}{{ifnot:h8Nafar=01|अभियुक्तगण}} {{h8Names}} {{if:h8Nafar=01|का नाम प्रकाश में आया है।}}{{ifnot:h8Nafar=01|के नाम प्रकाश में आये हैं।}}}}{{if:h9|\n\nमु0अ0सं0 {{h9FIR}}{{if:h9Sec| धारा {{h9Sec}}}} की विवेचना से नामजद {{h9Names}} की नामजदगी गलत पायी गयी है।}}",
       "is_favorite": 0,
       "created_by": "system",
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
-        "वापसी",
-        "गश्त",
+        "GD",
         "कार्य विवरण",
-        "GD"
+        "गश्त",
+        "चालानी",
+        "तस्करा",
+        "दाखिला",
+        "वापसी",
+        "हैडिंग"
       ],
       "keys": [
+        {
+          "key_name": "doWapsi",
+          "label": "☑ मैं वापस थाने आया (हैडिंग \"वापसी उ0नि0 व …\") — थाने पर ही तस्करा हो तो हटाएँ",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "sort_order": 0
+        },
         {
           "key_name": "pad",
           "label": "पद/रैंक",
@@ -3683,7 +3695,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
-          "sort_order": 0
+          "sort_order": 1
         },
         {
           "key_name": "OfficerName",
@@ -3691,7 +3703,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 1
+          "sort_order": 2
         },
         {
           "key_name": "Hamrah",
@@ -3699,15 +3711,377 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 2
+          "sort_order": 3,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
-          "key_name": "doPP",
-          "label": "☐ प्रार्थना पत्र जांच (आईजीआरएस आदि)",
+          "key_name": "h1",
+          "label": "☐ हैडिंग: दाखिला चालानी 126/135 BNSS",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 3
+          "sort_order": 4
+        },
+        {
+          "key_name": "h1Kita",
+          "label": "कितनी किता चालानी",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "01",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h1\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "h1Detail",
+          "label": "विवरण — न हो तो खाली (जैसे: ग्राम रामपुर में भूमि विवाद के उभय पक्षों के विरुद्ध)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h1\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "h2",
+          "label": "☐ हैडिंग: दाखिला चालानी 170/135 BNSS व अभियुक्त",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 7
+        },
+        {
+          "key_name": "h2Kita",
+          "label": "कितनी किता चालानी",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "01",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h2\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "h2Nafar",
+          "label": "कितने नफर अभियुक्त",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "01",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h2\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "h2Names",
+          "label": "अभियुक्तों के नाम (जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h2\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "h3",
+          "label": "☐ हैडिंग: दाखिला वाहन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 11
+        },
+        {
+          "key_name": "h3Count",
+          "label": "कितने अदद वाहन",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "01",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h3\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "h3FIR",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h3\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "h3Sec",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h3\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "h3Detail",
+          "label": "वाहन का विवरण (जैसे: मोटरसाइकिल नं0 UP33AB1234)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h3\"}",
+          "sort_order": 15
+        },
+        {
+          "key_name": "h4",
+          "label": "☐ हैडिंग: धारा घटोत्तरी",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 16
+        },
+        {
+          "key_name": "h4FIR",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h4\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "h4Sec",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h4\"}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "h4Dhara",
+          "label": "किस धारा की घटोत्तरी",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h4\"}",
+          "sort_order": 19
+        },
+        {
+          "key_name": "h4New",
+          "label": "अग्रिम विवेचना किस धारा में — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h4\"}",
+          "sort_order": 20
+        },
+        {
+          "key_name": "h5",
+          "label": "☐ हैडिंग: धारा बढ़ोत्तरी",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 21
+        },
+        {
+          "key_name": "h5FIR",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h5\"}",
+          "sort_order": 22
+        },
+        {
+          "key_name": "h5Sec",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h5\"}",
+          "sort_order": 23
+        },
+        {
+          "key_name": "h5Dhara",
+          "label": "किस धारा की बढ़ोत्तरी",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h5\"}",
+          "sort_order": 24
+        },
+        {
+          "key_name": "h5New",
+          "label": "अग्रिम विवेचना किस धारा में — न हो तो खाली",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h5\"}",
+          "sort_order": 25
+        },
+        {
+          "key_name": "h6",
+          "label": "☐ हैडिंग: दाखिला गिरफ्तारशुदा अभियुक्त",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 26
+        },
+        {
+          "key_name": "h6Nafar",
+          "label": "कितने नफर",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "01",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h6\"}",
+          "sort_order": 27
+        },
+        {
+          "key_name": "h6FIR",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h6\"}",
+          "sort_order": 28
+        },
+        {
+          "key_name": "h6Sec",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h6\"}",
+          "sort_order": 29
+        },
+        {
+          "key_name": "h6Names",
+          "label": "अभियुक्तों के नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h6\"}",
+          "sort_order": 30
+        },
+        {
+          "key_name": "h7",
+          "label": "☐ हैडिंग: अवमुक्त किये जाने आरोपी",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 31
+        },
+        {
+          "key_name": "h7Nafar",
+          "label": "कितने आरोपी",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "01",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h7\"}",
+          "sort_order": 32
+        },
+        {
+          "key_name": "h7FIR",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h7\"}",
+          "sort_order": 33
+        },
+        {
+          "key_name": "h7Sec",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h7\"}",
+          "sort_order": 34
+        },
+        {
+          "key_name": "h7Names",
+          "label": "आरोपियों के नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h7\"}",
+          "sort_order": 35
+        },
+        {
+          "key_name": "h8",
+          "label": "☐ हैडिंग: प्रकाश में लाये जाने अभियुक्त",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 36
+        },
+        {
+          "key_name": "h8Nafar",
+          "label": "कितने अभियुक्त",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "01",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h8\"}",
+          "sort_order": 37
+        },
+        {
+          "key_name": "h8FIR",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h8\"}",
+          "sort_order": 38
+        },
+        {
+          "key_name": "h8Sec",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h8\"}",
+          "sort_order": 39
+        },
+        {
+          "key_name": "h8Names",
+          "label": "अभियुक्तों के नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h8\"}",
+          "sort_order": 40
+        },
+        {
+          "key_name": "h9",
+          "label": "☐ हैडिंग: नामजदगी गलत",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 41
+        },
+        {
+          "key_name": "h9FIR",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h9\"}",
+          "sort_order": 42
+        },
+        {
+          "key_name": "h9Sec",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h9\"}",
+          "sort_order": 43
+        },
+        {
+          "key_name": "h9Names",
+          "label": "किसकी नामजदगी गलत (जैसे: अभियुक्त रामू पुत्र श्याम)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"h9\"}",
+          "sort_order": 44
+        },
+        {
+          "key_name": "doPP",
+          "label": "☐ वापसी कार्य: प्रार्थना पत्र जांच (आईजीआरएस आदि)",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 45,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "PrarthnaPatraJanch",
@@ -3715,15 +4089,17 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "आईजीआरएस एवं थाने पर प्राप्त शिकायती प्रार्थना पत्रों की मौके पर जाकर निष्पक्ष जांच की गयी तथा उभय पक्षों को सुनकर वैधानिक निस्तारण हेतु आख्या प्रेषित की गयी।",
-          "sort_order": 4
+          "sort_order": 46,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doPP\"}"
         },
         {
           "key_name": "doVivechana",
-          "label": "☐ विवेचना सम्बन्धी कार्यवाही",
+          "label": "☐ वापसी कार्य: विवेचना सम्बन्धी कार्यवाही",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 5
+          "sort_order": 47,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "FIRNo",
@@ -3731,7 +4107,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 6
+          "sort_order": 48,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\"}"
         },
         {
           "key_name": "Sections",
@@ -3739,7 +4116,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 49,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\"}"
         },
         {
           "key_name": "VivechanaKaryawahi",
@@ -3747,15 +4125,17 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "घटनास्थल का निरीक्षण, साक्ष्य संकलन व गवाहों के बयान अंकित किये गये।",
-          "sort_order": 8
+          "sort_order": 50,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\"}"
         },
         {
           "key_name": "doGumshuda",
-          "label": "☐ गुमशुदा / अपहृत की पतारसी व तलाश",
+          "label": "☐ वापसी कार्य: गुमशुदा / अपहृत की पतारसी व तलाश",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 9
+          "sort_order": 51,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "GumshudaTalash",
@@ -3763,15 +4143,17 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "थाना स्थानीय पर दर्ज गुमशुदगी/अपहरण के सम्बन्ध में गुमशुदा/अपहृत व्यक्ति की पतारसी-सुरागरसी एवं सकुशल बरामदगी हेतु उसके परिजनों, रिश्तेदारों व परिचितों से विस्तृत पूछताछ कर क्षेत्र के सम्भावित स्थानों यथा- रेलवे स्टेशन, बस स्टैंड, टैक्सी स्टैंड, रैन बसेरा, धर्मशालाओं व अस्पतालों में सघन तलाश की गयी। दौरान पतारसी गुमशुदा के फोटोग्राफ/पम्फलेट आमजन, ऑटो चालकों व दुकानदारों को दिखाकर पूछताछ की गयी तथा घटनास्थल व मार्गों पर लगे सीसीटीवी कैमरों की फुटेज का अवलोकन किया गया। साथ ही गोपनीय जानकारी संकलित करने हेतु क्षेत्र के मुखबिरों (खास-व-आम) को सक्रिय कर आवश्यक दिशा-निर्देश दिये गये।",
-          "sort_order": 10
+          "sort_order": 52,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doGumshuda\"}"
         },
         {
           "key_name": "doBeat",
-          "label": "☐ बीट भ्रमण व आसूचना संकलन",
+          "label": "☐ वापसी कार्य: बीट भ्रमण व आसूचना संकलन",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 11
+          "sort_order": 53,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "BeatSuchna",
@@ -3779,15 +4161,17 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "अपने बीट क्षेत्र में भ्रमण कर ग्राम प्रहरियों (चौकीदारों) व सम्भ्रान्त व्यक्तियों से वार्ता की गयी एवं क्षेत्र की गोपनीय बीट सूचना/आसूचना संकलित की गयी।",
-          "sort_order": 12
+          "sort_order": 54,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doBeat\"}"
         },
         {
           "key_name": "doHS",
-          "label": "☐ हिस्ट्रीशीटर व निगरानीशुदा की चेकिंग",
+          "label": "☐ वापसी कार्य: हिस्ट्रीशीटर व निगरानीशुदा की चेकिंग",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 13
+          "sort_order": 55,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "HSNigrani",
@@ -3795,15 +4179,17 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "क्षेत्र के सक्रिय हिस्ट्रीशीटरों व निगरानीशुदा व्यक्तियों की भौतिक तस्दीक हेतु उनके घरों पर चेकिंग की गयी। उपस्थित व्यक्तियों की वर्तमान आजीविका की जानकारी लेकर उन्हें सख्त हिदायत दी गयी तथा अनुपस्थित व्यक्तियों के परिजनों से पूछताछ कर उनके ठिकानों का सुराग लगाया गया। मुखबिरों व चौकीदारों को इन अपराधियों की गतिविधियों पर कड़ी नज़र रखने हेतु निर्देशित किया गया।",
-          "sort_order": 14
+          "sort_order": 56,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doHS\"}"
         },
         {
           "key_name": "doVishesh",
-          "label": "☐ विशेष अभियान (शराब / जुआ / वांछित)",
+          "label": "☐ वापसी कार्य: विशेष अभियान (शराब / जुआ / वांछित)",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 15
+          "sort_order": 57,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "VisheshAbhiyan",
@@ -3811,15 +4197,17 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "उच्चाधिकारियों के निर्देशानुसार चलाये जा रहे विशेष अभियान के तहत क्षेत्र में अवैध शराब के निर्माण, बिक्री एवं परिवहन की रोकथाम हेतु सम्भावित स्थानों एवं संदिग्ध वाहनों की सघन चेकिंग की गयी। सार्वजनिक स्थानों पर शराब पीने वाले व्यक्तियों की चेकिंग कर आवश्यक वैधानिक कार्यवाही/चेतावनी दी गयी। जुआ एवं सट्टेबाजी की रोकथाम हेतु सम्भावित स्थानों पर दबिश दी गयी तथा अवैध शराब, जुआ एवं अन्य असामाजिक गतिविधियों के सम्बन्ध में गोपनीय जानकारी संकलित की गयी।",
-          "sort_order": 16
+          "sort_order": 58,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVishesh\"}"
         },
         {
           "key_name": "doSuraksha",
-          "label": "☐ सुरक्षा चेकिंग (बैंक / एटीएम / प्रतिष्ठान)",
+          "label": "☐ वापसी कार्य: सुरक्षा चेकिंग (बैंक / एटीएम / प्रतिष्ठान)",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 17
+          "sort_order": 59,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "SurakshaChecking",
@@ -3827,15 +4215,17 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "क्षेत्र के बैंक, वित्तीय संस्थानों, एटीएम, सर्राफा दुकानों व अन्य महत्वपूर्ण प्रतिष्ठानों की सुरक्षा व्यवस्था की विधिवत चेकिंग की गयी।",
-          "sort_order": 18
+          "sort_order": 60,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doSuraksha\"}"
         },
         {
           "key_name": "doCourt",
-          "label": "☐ सम्मन / वारंट तामीली",
+          "label": "☐ वापसी कार्य: सम्मन / वारंट तामीली",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 19
+          "sort_order": 61,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "CourtTamila",
@@ -3843,15 +4233,17 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "माननीय न्यायालय से प्राप्त सम्मन, नोटिस, बी0डब्लू0 तथा एन0बी0डब्लू0 की तामीली हेतु सम्बन्धित व्यक्तियों के निवास स्थानों पर दबिश दी गयी/सम्पर्क किया गया तथा न्यायालय के आदेशों का विधिवत तामीला सुनिश्चित कराया गया।",
-          "sort_order": 20
+          "sort_order": 62,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doCourt\"}"
         },
         {
           "key_name": "doVistrit",
-          "label": "☐ आमजन से वार्ता / ग्राम सुरक्षा समिति",
+          "label": "☐ वापसी कार्य: आमजन से वार्ता / ग्राम सुरक्षा समिति",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 21
+          "sort_order": 63,
+          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
         },
         {
           "key_name": "VistritKaryawahi",
@@ -3859,7 +4251,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "क्षेत्र भ्रमण के दौरान क्षेत्र के सम्भ्रान्त व्यक्तियों एवं आमजन से वार्ता कर कानून-व्यवस्था एवं अपराध सम्बन्धी जानकारी प्राप्त की गयी तथा चोरी की घटनाओं की रोकथाम हेतु ग्राम सुरक्षा समिति को क्रियाशील रहने हेतु उच्चाधिकारियों से प्राप्त आवश्यक दिशा-निर्देश साझा किये गये।",
-          "sort_order": 22
+          "sort_order": 64,
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVistrit\"}"
         }
       ],
       "last_updated": "2026-11-01"

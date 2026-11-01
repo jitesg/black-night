@@ -419,3 +419,20 @@ test('{{seq:name|…}} keeps its own counter (heading joined with "व" next to 
   const t = 'H{{seq:h||व }}A {{seq:h||व }}B | {{seq|सर्वप्रथम|तत्पश्चात}} x {{seq|सर्वप्रथम|तत्पश्चात}} y';
   assert.equal(generateReport(t, {}), 'HA व B | सर्वप्रथम x तत्पश्चात y');
 });
+
+test('GD वापसी / तस्करा: heading joined with व, थाने पर ही → तस्करा बावत, paragraphs per tick, no token left', async () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-wapsi');
+  const base = { pad: 'उपनिरीक्षक', OfficerName: 'क' };
+  const a = generateReport(f.vivran, { ...base, doWapsi: 'हाँ', h1: 'हाँ', h1Kita: '02', h3: 'हाँ', h3Count: '01', h3FIR: '104/26', h3Detail: 'बाइक', doBeat: 'हाँ', BeatSuchna: 'बीट।' }, f.keys);
+  assert.doesNotMatch(a, /\{\{|\}\}/);
+  assert.match(a, /^वापसी उ0नि0 व दाखिला 02 किता चालानी अंतर्गत धारा 126\/135 BNSS व दाखिला 01 अदद वाहन सम्बन्धित मु0अ0सं0 104\/26\n/);
+  assert.match(a, /सर्वप्रथम बीट।/);
+  assert.match(a, /01 अदद वाहन बाइक को थाना परिसर में दाखिल कर सुरक्षार्थ खड़ा कराया गया।/);
+  const b = generateReport(f.vivran, { ...base, doWapsi: '', h4: 'हाँ', h4FIR: '1/26', h4Dhara: '106 BNS', h6: 'हाँ', h6Nafar: '03', h6FIR: '1/26', h6Names: 'क ख ग' }, f.keys);
+  assert.match(b, /^तस्करा बावत धारा घटोत्तरी सम्बन्धित मु0अ0सं0 1\/26 व तस्करा बावत दाखिला गिरफ्तारशुदा 03 नफर अभियुक्तगण/);
+  assert.match(b, /तस्करा अंकित किया जाता है कि –/);
+  assert.doesNotMatch(b, /रवानाशुदा/);
+  const none = generateReport(f.vivran, { ...base, doWapsi: 'हाँ' }, f.keys);
+  assert.match(none, /^वापसी उ0नि0\n/);
+});
