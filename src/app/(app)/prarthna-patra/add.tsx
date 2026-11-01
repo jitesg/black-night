@@ -97,11 +97,17 @@ function emptyAccused(): AccusedForm {
 
 // ── UI atoms ───────────────────────────────────────────────────────────────────
 
+function useMuted(): string {
+  const { colorScheme } = useColorScheme();
+  return (colorScheme === 'dark' ? THEME.dark : THEME.light).mutedForeground;
+}
+
 function Section({ title }: { title: string }) {
+  const muted = useMuted();
   return (
     <Text style={{
       ...T.micro, letterSpacing: 1.2, textTransform: 'uppercase',
-      color: '#6B7280', marginTop: T.space.lg, marginBottom: T.space.sm,
+      color: muted, marginTop: T.space.lg, marginBottom: T.space.sm,
     }}>
       {title}
     </Text>
@@ -109,7 +115,8 @@ function Section({ title }: { title: string }) {
 }
 
 function FieldLabel({ label }: { label: string }) {
-  return <Text style={{ ...T.caption1, color: '#6B7280', fontWeight: T.weight.medium, marginBottom: T.space.xs }}>{label}</Text>;
+  const muted = useMuted();
+  return <Text style={{ ...T.caption1, color: muted, fontWeight: T.weight.medium, marginBottom: T.space.xs }}>{label}</Text>;
 }
 
 import { Input } from '@/components/ui/input';
@@ -160,7 +167,7 @@ function DatePickerField({
       </Pressable>
       {error ? <Text style={{ ...T.caption2, color: '#DC2626', marginTop: 3 }}>{error}</Text> : null}
       {helperText && !error ? (
-        <Text style={{ ...T.caption2, color: '#6B7280', marginTop: 3 }}>{helperText}</Text>
+        <Text style={{ ...T.caption2, color: palette.mutedForeground, marginTop: 3 }}>{helperText}</Text>
       ) : null}
       <DatePickerModal
         visible={open}
@@ -214,12 +221,12 @@ function TypePicker({
                 onPress={() => { onChange(tItem); setOpen(false); }}
                 style={{
                   paddingVertical: T.space.md - 4, paddingHorizontal: T.space.md,
-                  borderBottomWidth: 1, borderBottomColor: '#F3F4F6',
+                  borderBottomWidth: 1, borderBottomColor: BORDER,
                   flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
                 }}
               >
                 <Text style={{ ...T.subhead, color: palette.foreground }}>{PETITION_TYPE_LABELS[tItem]}</Text>
-                {value === tItem && <Text style={{ ...T.subhead, color: '#1E3A5F' }}>✓</Text>}
+                {value === tItem && <Text style={{ ...T.subhead, color: palette.primary }}>✓</Text>}
               </Pressable>
             ))}
           </ScrollView>
@@ -558,7 +565,7 @@ export default function AddPrarthnaPatraScreen() {
       behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
       style={{ flex: 1 }}
     >
-      <View style={{ flex: 1, backgroundColor: '#F9FAFB' }}>
+      <View style={{ flex: 1, backgroundColor: palette.background }}>
         <AppHeader
           title={isEdit ? t('prarthnaPatra.form.editTitle') : t('prarthnaPatra.form.addTitle')}
           subtitle={t('prarthnaPatra.form.subtitle')}
@@ -730,7 +737,7 @@ export default function AddPrarthnaPatraScreen() {
                             updateComplainant(idx, 'village', s);
                             setActiveVillageField(null);
                           }}
-                          style={{ paddingHorizontal: 12, paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}
+                          style={{ paddingHorizontal: 12, paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: BORDER }}
                         >
                           <Text style={{ ...T.footnote, color: palette.foreground }}>{s}</Text>
                         </Pressable>
@@ -778,8 +785,8 @@ export default function AddPrarthnaPatraScreen() {
               flexDirection: 'row', justifyContent: 'center', gap: T.space.sm - 2, marginBottom: T.space.xs,
             }}
           >
-            <Plus size={14} color="#6B7280" />
-            <Text style={{ ...T.footnote, color: '#6B7280' }}>{t('prarthnaPatra.form.addAnotherComplainant')}</Text>
+            <Plus size={14} color={palette.mutedForeground} />
+            <Text style={{ ...T.footnote, color: palette.mutedForeground }}>{t('prarthnaPatra.form.addAnotherComplainant')}</Text>
           </Pressable>
 
           {/* ── Same As Toggle ── */}
@@ -788,12 +795,12 @@ export default function AddPrarthnaPatraScreen() {
             style={{
               flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
               gap: T.space.sm - 2, paddingVertical: T.space.sm + 2,
-              borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 10,
-              backgroundColor: '#F9FAFB', marginVertical: T.space.sm,
+              borderWidth: 1, borderColor: BORDER, borderRadius: 10,
+              backgroundColor: SURFACE, marginVertical: T.space.sm,
             }}
           >
-            <Copy size={13} color="#4B5563" />
-            <Text style={{ ...T.footnote, color: '#4B5563', fontWeight: T.weight.medium }}>
+            <Copy size={13} color={palette.foreground} />
+            <Text style={{ ...T.footnote, color: palette.foreground, fontWeight: T.weight.medium }}>
               {t('prarthnaPatra.form.sameAs')}
             </Text>
           </Pressable>
@@ -892,7 +899,7 @@ export default function AddPrarthnaPatraScreen() {
                             updateAccused(idx, 'village', s);
                             setActiveVillageField(null);
                           }}
-                          style={{ paddingHorizontal: 12, paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}
+                          style={{ paddingHorizontal: 12, paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: BORDER }}
                         >
                           <Text style={{ ...T.footnote, color: palette.foreground }}>{s}</Text>
                         </Pressable>
@@ -943,13 +950,13 @@ export default function AddPrarthnaPatraScreen() {
               flexDirection: 'row', justifyContent: 'center', gap: T.space.sm - 2, marginBottom: T.space.xs,
             }}
           >
-            <Plus size={14} color="#6B7280" />
-            <Text style={{ ...T.footnote, color: '#6B7280' }}>{t('prarthnaPatra.form.addAnotherAccused')}</Text>
+            <Plus size={14} color={palette.mutedForeground} />
+            <Text style={{ ...T.footnote, color: palette.mutedForeground }}>{t('prarthnaPatra.form.addAnotherAccused')}</Text>
           </Pressable>
 
           {/* Status note */}
-          <View style={{ marginTop: T.space.md, backgroundColor: '#F3F4F6', borderRadius: 10, padding: T.space.sm + 2 }}>
-            <Text style={{ ...T.caption1, color: '#6B7280', lineHeight: 18 }}>
+          <View style={{ marginTop: T.space.md, backgroundColor: palette.muted, borderRadius: 10, padding: T.space.sm + 2 }}>
+            <Text style={{ ...T.caption1, color: palette.mutedForeground, lineHeight: 18 }}>
               {t('prarthnaPatra.form.statusNote')}
             </Text>
           </View>
