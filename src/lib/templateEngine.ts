@@ -21,6 +21,7 @@
  */
 import { stripFormatMarkers } from './formatMarkers';
 import { composeSentence, parseSentenceConfig } from './sentenceField';
+import { joinDhara, minusDhara } from './dharaMath';
 
 // ─── Key detection ────────────────────────────────────────────────────────
 const KEY_REGEX = /\{\{([A-Za-z0-9_]+)\}\}/g;
@@ -651,6 +652,19 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
  * the 1st one left in the text gets "first", the following ones take next1, next2, … in turn
  * (e.g. सर्वप्रथम / तत्पश्चात … / वहाँ से … in the GD वापसी). Runs after {{if:…}}.
  */
+/**
+ * {{dhara+:OldKey|AddedKey|before|after}} / {{dhara-:OldKey|RemovedKey|before|after}} → अग्रिम विवेचना धारा
+ * (src/lib/dharaMath.ts) wrapped in before/after; nothing at all when it can't be worked out.
+ */
+function _applyDharaTokens(template: string, values: Record<string, string>): string {
+  if (!template.includes('{{dhara')) return template;
+  return template.replace(/\{\{dhara([+-]):([A-Za-z0-9_]+)\|([A-Za-z0-9_]+)(?:\|([^|{}]*)\|([^|{}]*))?\}\}/g,
+    (_m, op: string, a: string, b: string, pre?: string, post?: string) => {
+      const r = op === '+' ? joinDhara(values[a] ?? '', values[b] ?? '') : minusDhara(values[a] ?? '', values[b] ?? '');
+      return r ? `${pre ?? ''}${r}${post ?? ''}` : '';
+    });
+}
+
 function _applySeqTokens(template: string): string {
   if (!template.includes('{{seq')) return template;
   // {{seq|a|b|c}} = one shared counter; {{seq:name|…}} = its own counter (e.g. a heading joined with "व"
@@ -1043,7 +1057,7 @@ export function generateReport(
 ): string {
   // Layout marks ([[शीर्षक]] …) are only for the print pipeline (formats/fill).
   if (!opts?.keepMarkers) return stripFormatMarkers(generateReport(template, values, keyDefs, { keepMarkers: true }));
-  let processed = _applySeqTokens(_applyIfTokens(_applyItemTokens(_applySentenceFields(template, values, keyDefs), values), values)); // Step -3/-2 (item lists, {{if:Key|…}}, {{seq|…}})
+  let processed = _applySeqTokens(_applyDharaTokens(_applyIfTokens(_applyItemTokens(_applySentenceFields(template, values, keyDefs), values), values), values)); // Step -3/-2 (item lists, {{if:Key|…}}, {{seq|…}})
   if (keyDefs && keyDefs.length > 0) {
     processed = _applyGroupStatus(processed, values, keyDefs);            // Step -1 (accused status)
     processed = _applyFieldProjection(processed, values, keyDefs);        // Step 0

@@ -445,3 +445,26 @@ test('GD वापसी / तस्करा: optional "और विवरण 
   assert.match(generateReport(f.vivran, v, f.keys), /धारा 118\(1\) BNS की बढ़ोत्तरी की गयी। मजरूब की मेडिकल रिपोर्ट में चोट गंभीर पायी गयी।/);
   assert.doesNotMatch(generateReport(f.vivran, { ...v, h5Extra: '' }, f.keys), /मेडिकल/);
 });
+
+test('अग्रिम विवेचना धारा = पूर्व धारा + नई (बढ़ोत्तरी) / − हटाई (घटोत्तरी)', async () => {
+  const M = await import('../src/lib/dharaMath.ts');
+  assert.equal(M.joinDhara('281/125(b)/106(1) BNS', '118(1) BNS'), '281/125(b)/106(1)/118(1) BNS');
+  assert.equal(M.joinDhara('115(2)/352 BNS', '118(1)'), '115(2)/352/118(1) BNS');
+  assert.equal(M.joinDhara('115(2) BNS', '3(2)5 SC/ST Act'), '115(2) BNS व 3(2)5 SC/ST Act');
+  assert.equal(M.minusDhara('281/125(b)/106(1) BNS', '106(1) BNS'), '281/125(b) BNS');
+  assert.equal(M.minusDhara('281/125(b) BNS', '304 BNS'), '');
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-wapsi');
+  const out = generateReport(f.vivran, { pad: 'उपनिरीक्षक', OfficerName: 'क', doWapsi: '', h5: 'हाँ', h5FIR: '106/2026', h5Sec: '281/125(b)/106(1) BNS', h5Dhara: '118(1) BNS', h4: 'हाँ', h4FIR: '106/2026', h4Sec: '281/125(b)/106(1) BNS', h4Dhara: '106(1) BNS' }, f.keys);
+  assert.match(out, /धारा 118\(1\) BNS की बढ़ोत्तरी की गयी। अग्रिम विवेचना धारा 281\/125\(b\)\/106\(1\)\/118\(1\) BNS में प्रचलित है।/);
+  assert.match(out, /धारा 106\(1\) BNS की घटोत्तरी की गयी। अग्रिम विवेचना धारा 281\/125\(b\) BNS में प्रचलित है।/);
+  assert.doesNotMatch(out, /\{\{|\}\}/);
+});
+
+test('घटोत्तरी: when the removed धारा is not in the पूर्व धारा, the अग्रिम विवेचना sentence is left out', async () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-wapsi');
+  const out = generateReport(f.vivran, { pad: 'उपनिरीक्षक', OfficerName: 'क', doWapsi: '', h4: 'हाँ', h4FIR: '1/26', h4Sec: '281 BNS', h4Dhara: '304 BNS' }, f.keys);
+  assert.match(out, /धारा 304 BNS की घटोत्तरी की गयी।$/m);
+  assert.doesNotMatch(out, /अग्रिम विवेचना/);
+});
