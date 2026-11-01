@@ -163,6 +163,13 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   for formats made in the app.
 - Formats → जनरेटेड रिपोर्ट (`formats/preview.tsx`): `GeneratedReportView wordExport` shows "Word (DOC) एक्सपोर्ट" instead of PDF (owner);
   unedited marked format → its editor HTML, else the edited content. Other screens keep PDF.
+- हाल के कार्य (owner): every report generated from a predefined format is kept forever in table `report_records` (marked text +
+  edited HTML; schema.ts) — saved from formats/fill (module = callingModule GD/NK or format_type), nyayalay / prarthna-patra
+  fill-format and केस डायरी कार्यवाही (`saveReportRecord`; same format again within 15 min replaces it). Rules `src/lib/reportRecordCore.ts`
+  (summary मु0अ0सं0 + person/vehicle, module labels, day groups; tests `scripts/test_report_records.ts`), repo `db/reportRecordRepo.ts`,
+  screen `(app)/recent-tasks.tsx` (search, आज/इस हफ़्ते/सभी, खोलें/Word/हटाएँ), reopen = `reportRecordOpen.ts` → formats/preview via the
+  bridge (recordId; edits saved by `updateReportRecordEdit`). Home "आज का सारांश": the old रिमाइंडर tile (opened मुकदमा) is now
+  "हाल के कार्य" (आज / इस हफ़्ते counts). Plain text of `[[तालिका]]` rows drops the "(12mm)" / "#" helpers.
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,
   0.5in margins, marks/data-fmt honoured; `exportReportToDocx` → share sheet). निरोधात्मक: card long-press menu + editor
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.

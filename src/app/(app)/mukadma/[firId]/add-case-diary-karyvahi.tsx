@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { FormatKeyInput } from '@/components/ui/input';
+import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { useLocalSearchParams, useFocusEffect, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
@@ -158,6 +159,7 @@ function FormatFillPanel({
         : 'Please fill all mandatory fields.');
       return;
     }
+    void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Case Diary', markedText: generateReport(format.vivran, values, dynKeys, { keepMarkers: true }), values });
     onGenerated(generateReport(format.vivran, values, dynKeys), format.title);
   };
 

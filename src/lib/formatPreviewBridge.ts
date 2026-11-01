@@ -13,6 +13,10 @@ interface FormatPreviewPayload {
   formatEditorHtml: string;
   /** Filled key values (e.g. Matter = विवाद का कारण) — kept with a निरोधात्मक कार्यवाही. */
   values?: Record<string, string>;
+  /** "हाल के कार्य" record this report is saved as (edits update it). */
+  recordId?: string;
+  /** Saved edited version of a reopened record. */
+  editedHtml?: string;
 }
 
 const _empty: FormatPreviewPayload = {

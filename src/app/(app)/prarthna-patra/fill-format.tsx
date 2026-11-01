@@ -24,6 +24,7 @@ import { generateReport } from '@/lib/templateEngine';
 import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput } from '@/components/ui/input';
+import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { AccusedGroupInput, initAccusedGroup } from '@/components/ui/AccusedGroupInput';
 import { PersonGroupInput, initPersonGroup } from '@/components/ui/PersonGroupInput';
 import { useWorkspace } from '@/context/WorkspaceContext';
@@ -137,6 +138,7 @@ export default function PPFillFormatScreen() {
     setSaving(true);
     try {
       const generatedText = generateReport(format.vivran, values, dynamicKeys);
+      void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Prarthna Patra', markedText: generateReport(format.vivran, values, dynamicKeys, { keepMarkers: true }), values });
       if (isReportMode) {
         ppReportDraftStore.set({
           generatedText,

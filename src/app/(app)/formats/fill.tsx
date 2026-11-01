@@ -1,6 +1,7 @@
 import { resolveContextDefaults } from '@/lib/contextDefaultResolver';
 import { isKeyVisible } from '@/lib/formatShowIf';
 import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
+import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -270,6 +271,8 @@ export default function FillScreen() {
       const editorHtml = renderModelsForEditor(models);
 
       await logUsage(format.id, callingModule, resolvedText);
+      // "हाल के कार्य" — keep every generated report (with its layout marks)
+      const recordId = await saveReportRecord({ formatId: format.id, formatTitle: format.title, module: callingModule || format.format_type, markedText, values: mergedValues });
 
       // ── Record field values for autocomplete history ────────────────────
       // Fire-and-forget — never block or throw on the generate CTA.
@@ -314,7 +317,7 @@ export default function FillScreen() {
       })();
 
       // ── Phase 1: Use memory bridge instead of URL params for large strings ──
-      formatPreviewBridge.set({ reportText: resolvedText, formatHtml: fixedHtml, formatEditorHtml: editorHtml, values: mergedValues });
+      formatPreviewBridge.set({ reportText: resolvedText, formatHtml: fixedHtml, formatEditorHtml: editorHtml, values: mergedValues, recordId: recordId ?? undefined });
       const callingParam = callingModule ? `&callingModule=${encodeURIComponent(callingModule)}` : '';
       router.push(
         `/(app)/formats/preview?formatId=${encodeURIComponent(format.id)}&formatTitle=${encodeURIComponent(format.title)}${callingParam}` as never

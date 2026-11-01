@@ -31,6 +31,7 @@ import { generateReport } from '@/lib/templateEngine';
 import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS, resolveNyayalayKeys, NYAYALAY_KEY_LABELS } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput } from '@/components/ui/input';
+import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { nyayalayDraftStore } from '@/lib/nyayalayDraftStore';
 import {
@@ -155,6 +156,7 @@ export default function NyayalayFillFormatScreen() {
     setSaving(true);
     try {
       const generatedText = generateReport(format.vivran, values, dynamicKeys);
+      void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Nyayalay', markedText: generateReport(format.vivran, values, dynamicKeys, { keepMarkers: true }), values });
       nyayalayDraftStore.set({
         generatedText,
         formatTitle: format.title,

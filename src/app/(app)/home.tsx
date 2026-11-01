@@ -29,6 +29,7 @@ import { AppDrawer } from '@/components/common/AppDrawer';
 import { DashboardHeader } from '@/components/common/DashboardHeader';
 import { loadNoticeCards } from '@/lib/db/noticeRepo';
 import { noticeBadgeCount } from '@/lib/noticeCards';
+import { reportRecordCounts } from '@/lib/db/reportRecordRepo';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
@@ -76,8 +77,8 @@ function usePalette() {
   };
 }
 
-function StatCard({ label, value, color, onPress }: {
-  label: string; value: number; color: string; onPress?: () => void;
+function StatCard({ label, value, color, onPress, note }: {
+  label: string; value: number; color: string; onPress?: () => void; note?: string;
 }) {
   const C = usePalette();
   return (
@@ -91,6 +92,7 @@ function StatCard({ label, value, color, onPress }: {
     >
       <Text style={{ fontSize: 28, fontWeight: '700', color, lineHeight: 34 }}>{value}</Text>
       <Text style={{ ...T.caption1, color: C.textMuted, marginTop: 2, lineHeight: 16 }}>{label}</Text>
+      {note ? <Text style={{ fontSize: 11, color: C.textMuted, marginTop: 2, lineHeight: 17 }}>{note}</Text> : null}
     </Pressable>
   );
 }
@@ -316,6 +318,13 @@ export default function HomeScreen() {
   useFocusEffect(useCallback(() => {
     let alive = true;
     loadNoticeCards().then((c) => { if (alive) setNoticeCount(noticeBadgeCount(c)); }).catch(() => {});
+    return () => { alive = false; };
+  }, []));
+  // "हाल के कार्य" tile (owner): reports made from predefined formats today / this week.
+  const [recentCounts, setRecentCounts] = useState({ today: 0, week: 0 });
+  useFocusEffect(useCallback(() => {
+    let alive = true;
+    reportRecordCounts().then((r) => { if (alive) setRecentCounts(r); }).catch(() => {});
     return () => { alive = false; };
   }, []));
   const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -611,9 +620,9 @@ export default function HomeScreen() {
                 onPress={() => router.push('/(app)/nirodhatmak' as never)} />
             </View>
             <View style={{ flexDirection: 'row', gap: 10 }}>
-              <StatCard label={t('home.reminders')} value={reminders.length}
-                color={reminders.some(r => r.daysLeft < 0) ? C.red : C.amber}
-                onPress={() => router.push('/(app)/mukadma' as never)} />
+              <StatCard label="हाल के कार्य" value={recentCounts.today} color="#10B981"
+                note={`आज ${recentCounts.today} · इस हफ़्ते ${recentCounts.week} रिपोर्ट`}
+                onPress={() => router.push('/(app)/recent-tasks' as never)} />
               <StatCard label={t('home.petitions')} value={today.pendingPrarthnaPatra} color={C.teal}
                 onPress={() => router.push('/(app)/prarthna-patra' as never)} />
             </View>

@@ -11,6 +11,7 @@ import { THEME } from '@/lib/theme';
 import { gdFormatBridge } from '@/lib/gdFormatBridge';
 import { nirodhatmakFormatBridge } from '@/lib/nirodhatmakFormatBridge';
 import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
+import { updateReportRecordEdit } from '@/lib/db/reportRecordRepo';
 import { GeneratedReportView } from '@/components/common/GeneratedReportView';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
@@ -90,11 +91,13 @@ export default function PreviewScreen() {
   const [decodedEditorHtml, setDecodedEditorHtml] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const [keyValues, setKeyValues] = useState<Record<string, string> | undefined>(undefined);
+  const [recordId, setRecordId] = useState<string | undefined>(undefined);
 
   // Retrieve payload from bridge on mount and clear it to free memory
   useEffect(() => {
     const payload = formatPreviewBridge.get();
-    setReportContent(payload.reportText);
+    setReportContent(payload.editedHtml || payload.reportText);
+    setRecordId(payload.recordId);
     setDecodedHtml(payload.formatHtml);
     setDecodedEditorHtml(payload.formatEditorHtml);
     setKeyValues(payload.values);
@@ -177,7 +180,7 @@ export default function PreviewScreen() {
           fixedHtml={decodedHtml || undefined}
           editorHtml={decodedEditorHtml || undefined}
           title={title}
-          onSave={isBlank ? undefined : async (v) => setReportContent(v)}
+          onSave={isBlank ? undefined : async (v) => { setReportContent(v); if (recordId) await updateReportRecordEdit(recordId, v); }}
           wordExport
         />
       </ScrollView>

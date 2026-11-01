@@ -144,15 +144,25 @@ export function stripFormatMarkers(text: string): string {
   text = text.replace(BOLD_RE, '$1');
   const out: string[] = [];
   let inAtt = false;
+  let inTable = false;
   let n = 0;
+  // Table rows in plain text: no "(12mm)" / "#" helpers, cells joined by " | ".
+  const tableRow = (l: string) => l.trim().replace(/^\(\d{1,3}\s*mm\)\s*/, '').replace(/^#\s*/, '');
   for (const line of text.split('\n')) {
     const mk = readMark(line);
     if (mk) {
       inAtt = mk.role === 'attachments';
+      inTable = mk.role === 'table';
       n = 0;
+      if (inTable) { out.push(tableRow(mk.rest)); continue; }
       if (mk.role === 'letter') { if (mk.rest.trim()) out.push(mk.rest); continue; }
       if (mk.role === 'image') continue;
       out.push(mk.rest);
+      continue;
+    }
+    if (inTable) {
+      if (!line.trim()) inTable = false;
+      out.push(inTable ? tableRow(line) : line);
       continue;
     }
     if (inAtt && line.trim()) {

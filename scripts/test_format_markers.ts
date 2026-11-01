@@ -182,4 +182,7 @@ test('[[तालिका]] options: "(12mm)" row height, "#" heading row, a ro
   assert.match(html, /<td class="full" colspan="4">सहमत हो तो केवल हस्ताक्षर करें।<\/td>/);
   const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
   assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
+  const plain = M.stripFormatMarkers(t);
+  assert.doesNotMatch(plain, /\(12mm\)|^#/m);
+  assert.match(plain, /^क्षेत्राधिकारी की संस्तुति \| दिवस/m);
 });

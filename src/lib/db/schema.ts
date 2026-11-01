@@ -314,6 +314,21 @@ export const CREATE_TABLES_SQL = `
     values_json TEXT
   );
 
+  CREATE TABLE IF NOT EXISTS report_records (
+    id TEXT PRIMARY KEY,
+    format_id TEXT,
+    format_title TEXT NOT NULL,
+    module TEXT,
+    summary TEXT,
+    marked_text TEXT NOT NULL,
+    edited_html TEXT,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    deleted_at INTEGER
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_report_records_created ON report_records(created_at);
+
   CREATE TABLE IF NOT EXISTS gd_entries (
     id TEXT PRIMARY KEY,
     preparation_date TEXT NOT NULL,
