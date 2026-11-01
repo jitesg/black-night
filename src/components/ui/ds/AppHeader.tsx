@@ -4,15 +4,17 @@
  * Replaces every custom header (ModuleHeader, ScreenHeader, DashboardHeader variants).
  * Covers: back button, icon-button actions, search slot, status bar colour.
  */
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { BackHandler, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router, useFocusEffect, useSegments } from 'expo-router';
-import { ArrowLeft, Bot, Menu } from 'lucide-react-native';
+import { ArrowLeft, Bell, Bot, Menu } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { openCopilot } from '@/lib/copilotStore';
+import { loadNoticeCards } from '@/lib/db/noticeRepo';
+import { noticeBadgeCount } from '@/lib/noticeCards';
 
 export interface AppHeaderProps {
   /** Primary title */
@@ -72,6 +74,7 @@ export const AppHeader = memo(function AppHeader({
   const effectiveSubtitle = subtitle ?? countLabel;
   const effectiveActions  = actions ?? rightActions;
   const showCopilot = useShowCopilotInHeader();
+  const showBell = useShowBellInHeader();
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme ?? 'light'];
@@ -193,9 +196,10 @@ export const AppHeader = memo(function AppHeader({
         </View>
 
         {/* Action buttons */}
-        {effectiveActions || showCopilot ? (
+        {effectiveActions || showCopilot || showBell ? (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingRight: 8 }}>
             {showCopilot ? <CopilotHeaderBtn /> : null}
+            {showBell ? <NoticeBellBtn /> : null}
             {effectiveActions}
           </View>
         ) : (
@@ -276,4 +280,33 @@ export const CopilotHeaderBtn = memo(function CopilotHeaderBtn() {
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme ?? 'light'];
   return <HeaderIconBtn icon={Bot} onPress={openCopilot} label="AI Copilot" color={c.primary} />;
+});
+
+// ─── सूचनाएँ bell (owner) ──────────────────────────────────────────────────
+// Same main screens as the Copilot button + हाल के कार्य; never on form / edit / print screens.
+export function isBellRoute(segs: readonly string[]): boolean {
+  return isCopilotRoute(segs) || segs[segs.length - 1] === 'recent-tasks';
+}
+
+function useShowBellInHeader(): boolean {
+  const segs = useSegments() as readonly string[];
+  return isBellRoute(segs);
+}
+
+/** 🔔 header button → सूचनाएँ, with the same count as the home bell. */
+export const NoticeBellBtn = memo(function NoticeBellBtn() {
+  const [count, setCount] = useState(0);
+  useFocusEffect(useCallback(() => {
+    let alive = true;
+    loadNoticeCards().then((c) => { if (alive) setCount(noticeBadgeCount(c)); }).catch(() => {});
+    return () => { alive = false; };
+  }, []));
+  return (
+    <HeaderIconBtn
+      icon={Bell}
+      onPress={() => router.push('/(app)/notifications' as never)}
+      label={count ? `सूचनाएँ — ${count}` : 'सूचनाएँ'}
+      badge={count}
+    />
+  );
 });

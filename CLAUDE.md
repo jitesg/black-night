@@ -193,6 +193,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   modules (`isCopilotRoute`: mukadma/gd/nirodhatmak/nyayalay/prarthna-patra/knowledge, not add/edit/fill/select-format)
   and in `DashboardHeader` (home); opens via `src/lib/copilotStore.ts`; sheet mounted by `CopilotHost` (root layout,
   FIR layout with activeFirId).
+- सूचनाएँ 🔔 in module headers (owner): `NoticeBellBtn` auto-added by `AppHeader` next to the 🤖 button (`isBellRoute` = isCopilotRoute +
+  recent-tasks; not on add/edit/fill/editor screens), badge = `noticeBadgeCount(loadNoticeCards())` on focus → `/(app)/notifications`.
 - Copilot online answers: `AIProviderManager.execute` → officer's own Gemini key if saved (`src/ai/geminiDirect.ts`:
   key in expo-sqlite localStorage `investsuite:gemini_api_key`, Settings → AI सहायक card; ListModels picks flash models,
   tries up to 3 on 404/429/503, joins non-thought parts, maxOutputTokens ≥ 4096, last 6 chat turns sent) else the
