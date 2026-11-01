@@ -490,6 +490,19 @@ export interface FormatKeyDef {
   dropdown_options?: string | null;
 }
 
+/**
+ * Grey example text for a field ({"placeholder": "जैसे: …"} in dropdown_options) — shown in the empty box,
+ * gone on typing, never printed.
+ */
+export function keyPlaceholder(raw: string | null | undefined): string | undefined {
+  const t = String(raw ?? '').trim();
+  if (!t.startsWith('{')) return undefined;
+  try {
+    const v = JSON.parse(t) as { placeholder?: unknown };
+    return typeof v.placeholder === 'string' && v.placeholder.trim() ? v.placeholder : undefined;
+  } catch { return undefined; }
+}
+
 /** Parse dropdown_options → [{ value, label }]. */
 export function parseDropdownOptions(raw: string | null | undefined): { value: string; label: string }[] {
   const t = String(raw ?? '').trim();
@@ -623,7 +636,7 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
         <Input
           type={inputType}
           label={displayLabel} // <Input> adds the red * for required fields
-          placeholder={keyDef.default_value ?? `Enter ${displayLabel}`}
+          placeholder={keyPlaceholder(keyDef.dropdown_options) ?? keyDef.default_value ?? `Enter ${displayLabel}`}
           value={value}
           onChangeText={(v) => onChange(keyDef.key_name, v)}
           errorText={error}

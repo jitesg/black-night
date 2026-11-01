@@ -115,7 +115,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   h1–h9 (126/135 चालानी, 170/135 + नफर, वाहन, धारा घटोत्तरी/बढ़ोत्तरी, गिरफ्तारशुदा दाखिला, अवमुक्त, प्रकाश में, नामजदगी गलत), each with
   its fields (showIf) and its own content paragraph; heading parts joined by `{{seq:h|…| व }}` (named counter, separate from the body's
   सर्वप्रथम/तत्पश्चात); counts are 01–08 dropdowns (01 = singular); each tick has an optional `hNExtra` box appended to its
-  paragraph (seed_version 5). Backup `docs/format-backups/gd_wapsi_v2_before_heading.json`.
+  paragraph, with a grey example (`{"placeholder":"जैसे: …"}` in dropdown_options → `keyPlaceholder` in input.tsx; never printed; also on the मु0अ0सं0 / धारा / नाम boxes) (seed_version 7). Backup `docs/format-backups/gd_wapsi_v2_before_heading.json`.
 - (older) वापसी उ0नि0 v2 (seed_version 3): pad dropdown, OfficerName universal, optional हमराह via `{{if:}}` (रवानगी रपट नं0 /
   रवानगी समय / वापसी समय removed — owner),
   one checkbox per activity (do*) → its paragraph; order words by `{{seq|सर्वप्रथम|तत्पश्चात…|वहाँ से…|…}}` (`_applySeqTokens`, after if);
