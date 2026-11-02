@@ -31,12 +31,14 @@ import {
   type PPWithDetails,
 } from '@/lib/db/prarthnaPatraRepo';
 import { ppReportDraftStore } from '@/lib/ppReportDraftStore';
+import { htmlToPlainText } from '@/lib/stringUtils';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 import { FileText, Plus } from 'lucide-react-native';
 
 /** Petition types that use the inline report-attach flow */
-const REPORT_PETITION_TYPES = new Set(['RL', 'जनता दर्शन', 'CO पेशी', 'SDM', 'DM']);
+// थाना प्रार्थना पत्र / RTI / अन्य added (owner): same screen with "प्रारूप से जोड़ें" for every petition except बीट सूचना / NCR.
+const REPORT_PETITION_TYPES = new Set(['RL', 'जनता दर्शन', 'CO पेशी', 'SDM', 'DM', 'थाना प्रार्थना पत्र', 'RTI', 'अन्य']);
 
 // ── Selectable field row ──────────────────────────────────────────────────────
 function DetailRow({ label, value }: { label: string; value?: string | null }) {
@@ -83,8 +85,10 @@ export default function ReportScreen() {
           setPP(data);
           if (data?.report) {
             setReportDate(data.report.report_preparation_date);
-            // Strict assignment — no `prev ||` fallback so users can clear the field
-            setReportContent(data.report.report_content);
+            // Strict assignment — no `prev ||` fallback so users can clear the field.
+            // Reports written in the old screen's rich editor are HTML → plain text for the inline box.
+            const rc = data.report.report_content ?? '';
+            setReportContent(REPORT_PETITION_TYPES.has(data.petition_type) && /<[a-z][\s\S]*?>/i.test(rc) ? htmlToPlainText(rc) : rc);
             setEditorVisible(true);
           }
         } finally {
