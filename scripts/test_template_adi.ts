@@ -468,3 +468,15 @@ test('घटोत्तरी: when the removed धारा is not in the प�
   assert.match(out, /धारा 304 BNS की घटोत्तरी की गयी।$/m);
   assert.doesNotMatch(out, /अग्रिम विवेचना/);
 });
+
+test('126/135 + 170/135: the 135(3) report letters have no संलग्नक (owner), signature kept', () => {
+  const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  for (const f of d.formats.filter((x: { id: string }) => /^sys-fmt-bnss1(26|70)-/.test(x.id))) {
+    for (const L of f.vivran.split('[[पत्र]]')) {
+      const head = /\[\[शीर्षक\]\][^\n]*/.exec(L)?.[0] ?? '';
+      if (!/135\(3\) BNSS/.test(head) || /126\/135/.test(head)) continue;
+      assert.doesNotMatch(L, /\[\[संलग्नक\]\]/, f.id);
+      assert.match(L, /\[\[हस्ताक्षर\]\][^\n]*\{\{OfficerName\}\}/, f.id);
+    }
+  }
+});
