@@ -325,7 +325,7 @@ export function editorHtmlToMarkedText(html: string): string {
     }
     if (name === 'br') { if (cell !== null) cell += ' '; else if (buf.trim()) flush(); continue; }
     // Bold inside a body paragraph → **…** (centre / party lines are bold by their own role).
-    if ((name === 'b' || name === 'strong') && cell === null && current() === markName('body')) { buf += '**'; continue; }
+    if ((name === 'b' || name === 'strong') && cell === null && (current() === markName('body') || current() === markName('list'))) { buf += '**'; continue; }
     if (name === 'td' || name === 'th') {
       if (!closing) cell = '';
       else if (cell !== null) { cells?.push(cell.replace(/\s+/g, ' ').trim()); cell = null; }

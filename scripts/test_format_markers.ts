@@ -187,3 +187,11 @@ test('[[तालिका]] options: "(12mm)" row height, "#" heading row, a ro
   assert.doesNotMatch(plain, /\(12mm\)|^#/m);
   assert.match(plain, /^क्षेत्राधिकारी की संस्तुति \| दिवस/m);
 });
+
+test('**bold** also works in [[सूची]] lines (print + editor round trip)', () => {
+  const t = '[[पत्र]]\n[[सूची]] **जनता दर्शन संख्या –** 232/25\n**आवेदक का नाम –** राम';
+  const html = P.renderTextForPrint(t);
+  assert.match(html, /<p class="doc-line"><b>जनता दर्शन संख्या –<\/b> 232\/25<\/p><p class="doc-line"><b>आवेदक का नाम –<\/b> राम<\/p>/);
+  const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
+  assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
+});

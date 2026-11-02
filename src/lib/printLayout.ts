@@ -116,7 +116,7 @@ export function renderLetterHtml(model: DocumentModel): string {
       out.push(`<div class="doc-body">${blocks.map((b) => {
         if (b.kind === 'center') return `<p class="doc-center">${esc(b.text)}</p>`;
         if (b.kind === 'right') return `<p class="doc-right">${esc(b.text)}</p>`;
-        if (b.kind === 'line') return `<p class="doc-line">${esc(b.text)}</p>`;
+        if (b.kind === 'line') return `<p class="doc-line">${inlineBoldHtml(esc(b.text))}</p>`;
         if (b.kind === 'image') {
           const img = formatImage(b.text);
           return img ? `<p class="doc-image"><img src="${img.uri}" alt="${esc(b.text)}" style="max-height:${IMAGE_HEIGHT_MM}mm" /></p>` : '';
