@@ -105,7 +105,7 @@ export function renderLetterHtml(model: DocumentModel): string {
     out.push(`<div class="doc-subject">${subject.map((l) => `<p>${esc(l)}</p>`).join('')}</div>`);
   }
   if (parties.length) {
-    out.push(`<div class="doc-parties">${parties.map((l) => `<p${isPartyHeading(l) ? ' class="party-head"' : ''}>${esc(l)}</p>`).join('')}</div>`);
+    out.push(`<div class="doc-parties">${parties.map((l) => `<p${isPartyHeading(l) ? ' class="party-head"' : ''}>${inlineBoldHtml(esc(l))}</p>`).join('')}</div>`);
   }
 
   if (model.salutation) out.push(`<div class="doc-salutation">${esc(model.salutation)}</div>`);

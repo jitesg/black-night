@@ -296,7 +296,9 @@ export function editorHtmlToMarkedText(html: string): string {
     return null;
   };
   const emit = (text: string, role: string | null) => {
-    const t = text.replace(/\s+/g, ' ').trim();
+    let t = text.replace(/\s+/g, ' ').trim();
+    // A whole-bold party line ("प्रथम पक्ष") is bold by its own role.
+    if (role === markName('party') && /^\*\*[^*]+\*\*$/.test(t)) t = t.slice(2, -2).trim();
     if (!t) { out.push(''); return; }
     if (role && role !== lastRole) { out.push(`[[${role}]] ${t}`); lastRole = role; return; }
     // Body paragraphs stay separate paragraphs.
@@ -325,7 +327,7 @@ export function editorHtmlToMarkedText(html: string): string {
     }
     if (name === 'br') { if (cell !== null) cell += ' '; else if (buf.trim()) flush(); continue; }
     // Bold inside a body paragraph → **…** (centre / party lines are bold by their own role).
-    if ((name === 'b' || name === 'strong') && cell === null && (current() === markName('body') || current() === markName('list'))) { buf += '**'; continue; }
+    if ((name === 'b' || name === 'strong') && cell === null && (current() === markName('body') || current() === markName('list') || current() === markName('party'))) { buf += '**'; continue; }
     if (name === 'td' || name === 'th') {
       if (!closing) cell = '';
       else if (cell !== null) { cells?.push(cell.replace(/\s+/g, ' ').trim()); cell = null; }

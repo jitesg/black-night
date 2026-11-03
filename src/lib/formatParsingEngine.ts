@@ -409,7 +409,7 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
   // "प्रथम पक्ष" / "द्वितीय पक्ष" / "( बनाम- एकपक्षीय )" headings centred (same rule as printLayout.isPartyHeading).
   for (const l of model.parties ?? []) {
     const head = /^(प्रथम|द्वि\S*य|तृतीय)\s*पक्ष\s*[:\-–]?\s*$/.test(l.trim()) || /^\(\s*बनाम\s*[:\-–]?\s*[^()]+\)$/.test(l.trim());
-    parts.push(div('party', head ? 'text-align:center;' : 'text-align:left;', head ? `<b><u>${esc(l)}</u></b>` : esc(l)));
+    parts.push(div('party', head ? 'text-align:center;' : 'text-align:left;', head ? `<b><u>${esc(l)}</u></b>` : inlineBoldHtml(esc(l))));
   }
   if (model.salutation) parts.push(div('salutation', 'text-align:left;margin-top:0.6em;', esc(model.salutation)));
   let prevKind = '';

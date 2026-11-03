@@ -195,3 +195,11 @@ test('**bold** also works in [[सूची]] lines (print + editor round trip)'
   const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
   assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
 });
+
+test('**bold** also works in [[पक्ष]] lines', () => {
+  const t = '[[पत्र]]\n[[सेवा में]] सेवा में,\nश्रीमान\n[[पक्ष]] **1. आवेदक –** राम\n[[महोदय]] महोदय,\n[[विवरण]] पाठ';
+  const html = P.renderTextForPrint(t);
+  assert.match(html, /<p><b>1\. आवेदक –<\/b> राम<\/p>/);
+  const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
+  assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
+});
