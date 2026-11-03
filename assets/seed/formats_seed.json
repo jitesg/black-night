@@ -5515,6 +5515,327 @@
           "sort_order": 9
         }
       ]
+    },
+    {
+      "id": "sys-fmt-pp-janta-darshan-aakhya",
+      "title": "जनता दर्शन / शिकायत प्रकोष्ठ प्रार्थना पत्र — जांच आख्या (14 बिन्दु)",
+      "format_type": "Prarthna Patra",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "जनता दर्शन",
+        "आईजीआरएस",
+        "शिकायत प्रकोष्ठ",
+        "जांच आख्या",
+        "14 बिन्दु"
+      ],
+      "last_updated": "2026-11-03",
+      "vivran": "[[पत्र]]\n[[बीच]] जांच प्रा0 पत्र शिकायत प्रकोष्ठ संख्या थाना {{PoliceStation}} जनपद {{District}}\n\n[[सूची]] **{{RefType}} संख्या –** {{RefNo}}\n**आवेदक का नाम –** {{Applicant}}।\n**विपक्षी का नाम –** {{Vipakshi#inline}}।\nजाँच आख्या –\nश्रीमान जी,\n[[विवरण]] सविनय निवेदन है कि आवेदक द्वारा प्रेषित किये गये प्रार्थना पत्र की जाँच मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा {{if:Witness|मौके पर उपस्थित गवाहों {{Witness}} के समक्ष }}की गयी तो पाया कि {{Findings}}{{if:doNoAction| महोदय उक्त प्रकरण में अन्य कोई कार्यवाही समीचीन प्रतीत नहीं हो रही है।}}\n[[बीच]] रिपोर्ट सादर सेवा में प्रेषित है।\n{{if:Lat|[[सूची]] अक्षांश – {{Lat}}{{if:Long|    देशान्तर – {{Long}}}}\n}}{{ifnot:Lat|{{if:Long|[[सूची]] देशान्तर – {{Long}}\n}}}}[[सूची]] 14 बिन्दुओं पर कार्यवाही –\n1- 126 बीएनएसएस{{if:p1| ✓{{if:p1Text| – {{p1Text}}}}}}\n2- 170 बीएनएसएस{{if:p2| ✓{{if:p2Text| – {{p2Text}}}}}}\n3- समझौता / सुलह{{if:p3| ✓{{if:p3Text| – {{p3Text}}}}}}\n4- साक्षात्कार{{if:p4| ✓{{if:p4Text| – {{p4Text}}}}}}\n5- झूठा प्रा0 पत्र{{if:p5| ✓{{if:p5Text| – {{p5Text}}}}}}\n6- मुकदमा पंजीकृत{{if:p6| ✓{{if:p6Text| – {{p6Text}}}}}}\n7- विवेचना लम्बित{{if:p7| ✓{{if:p7Text| – {{p7Text}}}}}}\n8- जाँच पूर्ण{{if:p8| ✓{{if:p8Text| – {{p8Text}}}}}}\n9- भूमि माप से सम्बन्धित{{if:p9| ✓{{if:p9Text| – {{p9Text}}}}}}\n10- एनसीआर पंजीकृत{{if:p10| ✓{{if:p10Text| – {{p10Text}}}}}}\n11- कोई कार्यवाही आवश्यक नहीं{{if:p11| ✓{{if:p11Text| – {{p11Text}}}}}}\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}} जनपद {{District}}\n",
+      "keys": [
+        {
+          "key_name": "RefType",
+          "label": "प्रार्थना पत्र कहाँ से",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "जनता दर्शन",
+          "dropdown_options": "[\"जनता दर्शन\", \"आईजीआरएस\", \"शिकायत प्रकोष्ठ\", \"मुख्यमंत्री हेल्पलाइन\"]",
+          "sort_order": 0
+        },
+        {
+          "key_name": "RefNo",
+          "label": "संख्या",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 232/25\"}",
+          "sort_order": 1
+        },
+        {
+          "key_name": "Applicant",
+          "label": "आवेदक",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 2
+        },
+        {
+          "key_name": "Vipakshi",
+          "label": "विपक्षी",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 3
+        },
+        {
+          "key_name": "Witness",
+          "label": "मौके पर उपस्थित गवाह — न हों तो खाली",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. कुंज बिहारी पुत्र गयादीन उम्र 47 मो0 8869959533 2. रामस्वरूप पुत्र स्व0 देवीदीन उम्र 60 निवासीगण उपरोक्त\"}",
+          "sort_order": 4
+        },
+        {
+          "key_name": "Findings",
+          "label": "जाँच में क्या पाया (पूरा विवरण)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: आवेदक उपरोक्त व विपक्षी उपरोक्त के मध्य जमीन के सीमांकन को लेकर विवाद था। उभय पक्षों ने आपस में सुलह समझौता कर लिया है। मौके पर शांति व्यवस्था कायम है।\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "doNoAction",
+          "label": "अंत में लिखें: \"उक्त प्रकरण में अन्य कोई कार्यवाही समीचीन प्रतीत नहीं हो रही है\"",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "sort_order": 6
+        },
+        {
+          "key_name": "Lat",
+          "label": "अक्षांश (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 26.454217\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "Long",
+          "label": "देशान्तर (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 81.190763\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "p1",
+          "label": "बिन्दु 1: 126 बीएनएसएस",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 9
+        },
+        {
+          "key_name": "p1Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: दोनों पक्षों को धारा 126/135 बीएनएसएस में पाबन्द कराया गया\", \"showIf\": \"p1\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "p2",
+          "label": "बिन्दु 2: 170 बीएनएसएस",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 11
+        },
+        {
+          "key_name": "p2Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: विपक्षी को धारा 170 बीएनएसएस में गिरफ्तार कर चालान किया गया\", \"showIf\": \"p2\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "p3",
+          "label": "बिन्दु 3: समझौता / सुलह",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 13
+        },
+        {
+          "key_name": "p3Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: दोनों पक्षों में आपसी सुलह-समझौता हो गया है\", \"showIf\": \"p3\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "p4",
+          "label": "बिन्दु 4: साक्षात्कार",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 15
+        },
+        {
+          "key_name": "p4Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: आवेदक से फोन पर वार्ता की गयी, संतुष्ट है\", \"showIf\": \"p4\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "p5",
+          "label": "बिन्दु 5: झूठा प्रा0 पत्र",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 17
+        },
+        {
+          "key_name": "p5Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: जाँच में आरोप असत्य पाये गये\", \"showIf\": \"p5\"}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "p6",
+          "label": "बिन्दु 6: मुकदमा पंजीकृत",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 19
+        },
+        {
+          "key_name": "p6Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: मु0अ0सं0 123/25 धारा 115(2), 352 बीएनएस पंजीकृत\", \"showIf\": \"p6\"}",
+          "sort_order": 20
+        },
+        {
+          "key_name": "p7",
+          "label": "बिन्दु 7: विवेचना लम्बित",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 21
+        },
+        {
+          "key_name": "p7Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: मु0अ0सं0 123/25 की विवेचना प्रचलित है\", \"showIf\": \"p7\"}",
+          "sort_order": 22
+        },
+        {
+          "key_name": "p8",
+          "label": "बिन्दु 8: जाँच पूर्ण",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 23
+        },
+        {
+          "key_name": "p8Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: जाँच पूर्ण कर आख्या प्रेषित\", \"showIf\": \"p8\"}",
+          "sort_order": 24
+        },
+        {
+          "key_name": "p9",
+          "label": "बिन्दु 9: भूमि माप से सम्बन्धित",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 25
+        },
+        {
+          "key_name": "p9Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: राजस्व टीम के साथ भूमि की पैमाइश हेतु अवगत कराया गया\", \"showIf\": \"p9\"}",
+          "sort_order": 26
+        },
+        {
+          "key_name": "p10",
+          "label": "बिन्दु 10: एनसीआर पंजीकृत",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 27
+        },
+        {
+          "key_name": "p10Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: एनसीआर नं0 45/25 धारा 115(2) बीएनएस पंजीकृत\", \"showIf\": \"p10\"}",
+          "sort_order": 28
+        },
+        {
+          "key_name": "p11",
+          "label": "बिन्दु 11: कोई कार्यवाही आवश्यक नहीं",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 29
+        },
+        {
+          "key_name": "p11Text",
+          "label": "कार्यवाही विवरण (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: प्रकरण में कोई कार्यवाही अपेक्षित नहीं\", \"showIf\": \"p11\"}",
+          "sort_order": 30
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 31
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 32
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 33
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 34
+        }
+      ]
     }
   ]
 }
