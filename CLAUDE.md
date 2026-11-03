@@ -180,6 +180,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   above the [[हस्ताक्षर]] (optional मो0नं0). `sys-fmt-pp-samadhan-diwas` "समाधान दिवस प्रार्थना पत्र — जांच आख्या": bold-label
   [[सूची]] header (संदर्भ संख्या optional, तहसील, आवेदक, प्रतिपक्षी/निल, विवाद का कारण, विवाद का प्रकार, जाँचकर्ता, मो0, lat/long) +
   "( जांच का विवरण ) –" paragraph.
+- `sys-fmt-notice-35-3-bnss` "धारा 35(3) BNSS — पुलिस द्वारा उपस्थिति के लिये नोटिस (पावती सहित)" (Case Diary, owner's docx; FIRNo/Sections
+  default @FIR.*): one justified bold-label header paragraph, notice para (appear date/time bold), 10 शर्तें [[सूची]] (10th = OtherCond or
+  "कोई नहीं।"), [[दाएँ]] officer block, पावती, [[दोनों ओर]] signatures; blank optional fields → ".........."; spacing by zero-width
+  [[सूची]] lines (3 before the officer block, 1 before पावती, 3 before the last signature line — owner).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
