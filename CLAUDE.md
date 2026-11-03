@@ -171,6 +171,15 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   in dropdown_options, {value,label}; value = ticked values in option order joined by ", " — `src/lib/multiChoice.ts`, tests
   `scripts/test_multi_choice.ts`). Used by `Vivad` "विवाद का प्रकार" (the 16 सामान्य कारण of SOP शारीरिक क्षति) in the
   प्रार्थना पत्र जांच formats → bold line "**विवाद का प्रकार – …**" (जनता दर्शन seed_version 2).
+- `sys-fmt-bail-notice-aakhya` "बेल नोटिस आख्या (19 बिन्दु)" (Nyayalay, owner's scanned form): header [[सूची]] lines + one
+  `[[तालिका]] (6mm) [7/30/63]` table, sub-points joined by ⏎; dropdowns AccStatus / Notice353 / CSStatus open their boxes; 10 group
+  ticks (gDeath, gRecovery, gFsl, gDying, gInjury, gPocso, gScst, gWomen, gGang, gNdps) — unticked → "लागू नहीं।"; नोट line dots when blank.
+- `sys-fmt-pp-jaanch-aakhya` "प्रार्थना पत्र जांच आख्या (पुलिस अधीक्षक / जिलाधिकारी / क्षेत्राधिकारी / थानाध्यक्ष)" (owner's RL docx files):
+  To dropdown → सेवा में lines (Circle / ToOther via showIf), Avedak आवेदक/आवेदिका, doParties tick → bold [[पक्ष]] lines
+  "1. आवेदक… 2. विपक्षी…" (noVip → निल), Vivad, Witness, Findings, doNoAction; left [[सूची]] दिनांक / अक्षांश / देशान्तर (each optional)
+  above the [[हस्ताक्षर]] (optional मो0नं0). `sys-fmt-pp-samadhan-diwas` "समाधान दिवस प्रार्थना पत्र — जांच आख्या": bold-label
+  [[सूची]] header (संदर्भ संख्या optional, तहसील, आवेदक, प्रतिपक्षी/निल, विवाद का कारण, विवाद का प्रकार, जाँचकर्ता, मो0, lat/long) +
+  "( जांच का विवरण ) –" paragraph.
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
