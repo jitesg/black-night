@@ -5,7 +5,7 @@ import {
 } from './database';
 
 // ─── Types ────────────────────────────────────────────────────────────────
-export type FieldType = 'text' | 'multiline' | 'number' | 'date' | 'dropdown' | 'accused_group' | 'person_group' | 'checkbox' | 'item_group' | 'sentence';
+export type FieldType = 'text' | 'multiline' | 'number' | 'date' | 'dropdown' | 'accused_group' | 'person_group' | 'checkbox' | 'item_group' | 'sentence' | 'multi_choice';
 
 /**
  * Layout profile for A4 rendering — controls font, margins, spacing.

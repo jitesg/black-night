@@ -167,6 +167,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - `sys-fmt-pp-janta-darshan-aakhya` "जनता दर्शन / शिकायत प्रकोष्ठ प्रार्थना पत्र — जांच आख्या (14 बिन्दु)" (Prarthna Patra, owner's docx):
   bold header lines via `**…**` in [[सूची]] (supported in list lines too), optional गवाह / Lat / Long, doNoAction tick, बिन्दु ticks
   p1–p11 each opening `pNText` (showIf) → "✓ – विवरण" in the printed list. Owner's file has 11 points under a "14 बिन्दु" heading.
+- Field type "multi_choice" = checklist with several ticks (`FormatKeyMultiChoiceInput` in input.tsx; options like a dropdown
+  in dropdown_options, {value,label}; value = ticked values in option order joined by ", " — `src/lib/multiChoice.ts`, tests
+  `scripts/test_multi_choice.ts`). Used by `Vivad` "विवाद का प्रकार" (the 16 सामान्य कारण of SOP शारीरिक क्षति) in the
+  प्रार्थना पत्र जांच formats → bold line "**विवाद का प्रकार – …**" (जनता दर्शन seed_version 2).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /

@@ -37,6 +37,7 @@ import { ItemGroupInput, parseItemGroupConfig } from './ItemGroupInput';
 import { useClearCopy } from '@/components/common/ClearCopyTools';
 import { SentenceFieldInput } from './SentenceFieldInput';
 import type { KeyDefForRender } from '@/lib/templateEngine';
+import { multiChoiceSelected, multiChoiceToggle } from '@/lib/multiChoice';
 
 // ─── Input Type Definitions ───────────────────────────────────────────────────
 
@@ -620,6 +621,25 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
       );
     }
 
+    // ── Checklist — several ticks, value "A, B" (src/lib/multiChoice.ts) ──
+    if (fieldType === 'multi_choice') {
+      const options = parseDropdownOptions(keyDef.dropdown_options);
+      if (options.length) {
+        return (
+          <FormatKeyMultiChoiceInput
+            ref={ref}
+            keyName={keyDef.key_name}
+            options={options}
+            value={value}
+            onChange={onChange}
+            error={error}
+            displayLabel={displayLabel}
+            required={required}
+          />
+        );
+      }
+    }
+
     // ── Dropdown — one tap on an option (chips, like the संबंध प्रकार buttons) ──
     if (fieldType === 'dropdown') {
       const options = parseDropdownOptions(keyDef.dropdown_options);
@@ -706,6 +726,64 @@ const FormatKeyDropdownInput = forwardRef<View, {
 });
 
 FormatKeyDropdownInput.displayName = 'FormatKeyDropdownInput';
+
+// ── FormatKeyMultiChoiceInput — checklist for field_type=multi_choice ─────────
+
+const FormatKeyMultiChoiceInput = forwardRef<View, {
+  keyName: string;
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (keyName: string, value: string) => void;
+  error?: string;
+  displayLabel: string;
+  required: boolean;
+}>(({ keyName, options, value, onChange, error, displayLabel, required }, ref) => {
+  const { colorScheme } = useColorScheme();
+  const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
+  const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
+  const selected = multiChoiceSelected(value);
+  const order = options.map((o) => o.value);
+  return (
+    <View ref={ref} style={{ gap: T.space.xs }}>
+      <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
+        {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+        {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
+        {selected.length ? <Text style={{ color: green, fontWeight: '700' }}>{`  (${selected.length} चुने)`}</Text> : null}
+      </Text>
+      <View style={{ borderWidth: 1, borderColor: error ? c.destructive : c.border, borderRadius: 12, backgroundColor: c.card, overflow: 'hidden' }}>
+        {options.map((o, i) => {
+          const on = selected.includes(o.value);
+          return (
+            <Pressable
+              key={o.value}
+              onPress={() => onChange(keyName, multiChoiceToggle(value, o.value, order))}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: on }}
+              accessibilityLabel={o.label}
+              style={{
+                flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 12, paddingVertical: 9,
+                borderTopWidth: i ? 1 : 0, borderTopColor: c.border, backgroundColor: on ? `${green}14` : 'transparent',
+              }}
+            >
+              <View style={{
+                width: 22, height: 22, borderRadius: 6, borderWidth: 2, borderColor: on ? green : c.mutedForeground,
+                backgroundColor: on ? green : 'transparent', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {on ? <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: '800', lineHeight: 18 }}>✓</Text> : null}
+              </View>
+              <Text style={{ flex: 1, fontSize: 14, lineHeight: 21, fontWeight: on ? '700' : '500', color: on ? green : c.foreground }}>
+                {`${i + 1}. ${o.label}`}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      {error ? <Text style={{ ...T.caption1, color: c.destructive } as TextStyle}>{error}</Text> : null}
+    </View>
+  );
+});
+
+FormatKeyMultiChoiceInput.displayName = 'FormatKeyMultiChoiceInput';
 
 // ── FormatKeyCheckboxInput — tick box for field_type=checkbox ───────────────
 
