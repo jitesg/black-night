@@ -203,3 +203,16 @@ test('**bold** also works in [[पक्ष]] lines', () => {
   const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
   assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
 });
+
+test('[[तालिका]] column widths [a/b/c] and ⏎ line breaks in a cell (print + editor round trip)', () => {
+  const t = '[[पत्र]]\n[[तालिका]] (6mm) [8/27/65] क्र0 | विषय | विवरण\n1 | घटना | ए– दिनांक – 01.01.2025 ⏎ बी– FIR – 02.01.2025';
+  const tb = M.parseTableBlock('(6mm) [8/27/65] a | b | c\n1 | 2 | 3');
+  assert.deepEqual(tb.widths, [8, 27, 65]);
+  assert.equal(tb.heightMm, 6);
+  const html = P.renderTextForPrint(t);
+  assert.match(html, /<col style="width:8%"><col style="width:27%"><col style="width:65%">/);
+  assert.match(html, /ए– दिनांक – 01\.01\.2025<br>बी– FIR – 02\.01\.2025/);
+  const m = E.parseIntoDocumentModel(E.splitIntoSubLetters(t)[0]);
+  assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
+  assert.doesNotMatch(M.stripFormatMarkers(t), /⏎|\[8\//);
+});

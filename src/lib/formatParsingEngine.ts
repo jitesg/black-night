@@ -23,7 +23,7 @@
  *   patterns so each sub-letter is parsed independently.
  */
 
-import { hasFormatMarkers, inlineBoldHtml, markName, parseMarkedLetter, parseTableBlock, splitMarkedAttachment, splitMarkedLetters } from './formatMarkers';
+import { hasFormatMarkers, inlineBoldHtml, markName, parseMarkedLetter, parseTableBlock, splitMarkedAttachment, splitMarkedLetters, tableCellLines } from './formatMarkers';
 import { formatImage } from './formatImages';
 
 // ─── Public types ─────────────────────────────────────────────────────────
@@ -426,10 +426,12 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
     } else if (b.kind === 'table') {
       const t = parseTableBlock(b.text);
       const td = 'border:1px solid #000;padding:4px;vertical-align:top;';
+      const cellHtml = (c: string) => tableCellLines(c).map((l) => esc(l)).join('<br>');
+      const wd = (j: number) => (t.widths ? `width:${t.widths[j]}%;` : '');
       const trs = t.rows.map((r) => (r.full
-        ? `<tr><td colspan="${t.cols}" style="${td}">${esc(r.cells[0])}</td></tr>`
-        : `<tr${r.head ? ' data-head="1"' : ''}>${r.cells.map((c) => `<td style="${td}">${r.head ? `<b>${esc(c)}</b>` : esc(c)}</td>`).join('')}</tr>`)).join('');
-      parts.push(`<table data-fmt="${markName('table')}" data-h="${t.heightMm}" style="width:100%;border-collapse:collapse;">${trs}</table>`);
+        ? `<tr><td colspan="${t.cols}" style="${td}">${cellHtml(r.cells[0])}</td></tr>`
+        : `<tr${r.head ? ' data-head="1"' : ''}>${r.cells.map((c, j) => `<td style="${td}${wd(j)}">${r.head ? `<b>${cellHtml(c)}</b>` : cellHtml(c)}</td>`).join('')}</tr>`)).join('');
+      parts.push(`<table data-fmt="${markName('table')}" data-h="${t.heightMm}"${t.widths ? ` data-w="${t.widths.join('/')}"` : ''} style="width:100%;border-collapse:collapse;">${trs}</table>`);
     } else {
       const { left, right } = splitMarkedAttachment(b.text);
       parts.push(`<table data-fmt="${markName('split')}" style="width:100%;border-collapse:collapse;border:none;"><tr><td style="text-align:left;vertical-align:top;">${esc(left)}</td><td style="text-align:right;vertical-align:top;">${esc(right)}</td></tr></table>`);

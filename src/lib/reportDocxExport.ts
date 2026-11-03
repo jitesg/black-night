@@ -14,7 +14,7 @@ import {
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from './formatParsingEngine';
-import { editorHtmlToMarkedText, hasEditorMarks, hasFormatMarkers, parseTableBlock, splitInlineBold } from './formatMarkers';
+import { editorHtmlToMarkedText, hasEditorMarks, hasFormatMarkers, parseTableBlock, splitInlineBold, tableCellLines } from './formatMarkers';
 import { isPartyHeading, looksLikeLetter, splitAttachmentLine, splitClosing, splitPlainText, splitSewaMein } from './printLayout';
 import { markdownToHtml, needsMigration } from './markdownToHtml';
 import { IMAGE_HEIGHT_MM, base64ToBytes, formatImage } from './formatImages';
@@ -76,19 +76,21 @@ function gridTable(text: string): Table {
   const t = parseTableBlock(text);
   const n = t.cols;
   const w = Math.floor(TEXT_W / n);
+  const cw = (j: number) => (t.widths ? Math.floor((TEXT_W * t.widths[j]) / t.widths.reduce((a, b) => a + b, 0)) : w);
+  const lines = (c: string, o: ParaOpts) => tableCellLines(c).map((l) => para(l, o));
   const LINE = { style: BorderStyle.SINGLE, size: 6, color: '000000' } as const;
   const borders = { top: LINE, bottom: LINE, left: LINE, right: LINE };
   return new Table({
     width: { size: TEXT_W, type: WidthType.DXA },
-    columnWidths: Array(n).fill(w),
+    columnWidths: Array.from({ length: n }, (_, j) => cw(j)),
     rows: t.rows.map((r) => new TableRow({
       height: r.head || r.full ? undefined : { value: Math.round((t.heightMm / 25.4) * 1440), rule: 'atLeast' },
       children: r.full
-        ? [new TableCell({ borders, columnSpan: n, width: { size: w * n, type: WidthType.DXA }, children: [para(r.cells[0], { align: AlignmentType.LEFT })] })]
+        ? [new TableCell({ borders, columnSpan: n, width: { size: TEXT_W, type: WidthType.DXA }, children: lines(r.cells[0], { align: AlignmentType.LEFT }) })]
         : Array.from({ length: n }, (_, j) => new TableCell({
           borders,
-          width: { size: w, type: WidthType.DXA },
-          children: [para(r.cells[j] ?? '', { align: AlignmentType.LEFT, bold: r.head })],
+          width: { size: cw(j), type: WidthType.DXA },
+          children: lines(r.cells[j] ?? '', { align: AlignmentType.LEFT, bold: r.head }),
         })),
     })),
   });

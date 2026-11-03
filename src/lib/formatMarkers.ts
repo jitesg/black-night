@@ -91,15 +91,26 @@ export function hasFormatMarkers(text: string | null | undefined): boolean {
 
 export interface TableRowModel { cells: string[]; head: boolean; full: boolean }
 export const TABLE_ROW_MM = 60;
+/** "⏎" inside a table cell = line break in that cell (print / Word / editor). */
+export const CELL_BREAK = '⏎';
+export const tableCellLines = (cell: string): string[] => String(cell ?? '').split(/\s*⏎\s*/);
 
-/** [[तालिका]] block text → rows (heading / full-width flags) + data-row height + column count. */
-export function parseTableBlock(text: string): { heightMm: number; cols: number; rows: TableRowModel[] } {
+/**
+ * [[तालिका]] block text → rows (heading / full-width flags) + data-row height + column count.
+ * First row may start with "(12mm)" (data-row height) and/or "[8/27/65]" (column widths in %).
+ */
+export function parseTableBlock(text: string): { heightMm: number; cols: number; rows: TableRowModel[]; widths?: number[] } {
   let heightMm = TABLE_ROW_MM;
+  let widths: number[] | undefined;
   const rows: TableRowModel[] = text.split('\n').map((raw, i) => {
     let line = raw.trim();
     if (i === 0) {
-      const m = /^\((\d{1,3})\s*mm\)\s*/.exec(line);
-      if (m) { heightMm = Number(m[1]); line = line.slice(m[0].length); }
+      for (let k = 0; k < 2; k++) {
+        const m = /^\((\d{1,3})\s*mm\)\s*/.exec(line);
+        if (m) { heightMm = Number(m[1]); line = line.slice(m[0].length); }
+        const w = /^\[(\d{1,2}(?:\/\d{1,2})+)\]\s*/.exec(line);
+        if (w) { widths = w[1].split('/').map(Number); line = line.slice(w[0].length); }
+      }
     }
     let head = i === 0;
     if (line.startsWith('#')) { head = true; line = line.slice(1).trim(); }
@@ -107,7 +118,7 @@ export function parseTableBlock(text: string): { heightMm: number; cols: number;
     return { cells: full ? [line] : line.split('|').map((c) => c.trim()), head, full };
   });
   const cols = Math.max(1, ...rows.map((r) => (r.full ? 1 : r.cells.length)));
-  return { heightMm, cols, rows };
+  return { heightMm, cols, rows, widths: widths && widths.length === cols ? widths : undefined };
 }
 
 /** "रिपोर्ट चालानी 01 वर्क | (जीतेश सिंह)" → left / right. */
@@ -147,7 +158,8 @@ export function stripFormatMarkers(text: string): string {
   let inTable = false;
   let n = 0;
   // Table rows in plain text: no "(12mm)" / "#" helpers, cells joined by " | ".
-  const tableRow = (l: string) => l.trim().replace(/^\(\d{1,3}\s*mm\)\s*/, '').replace(/^#\s*/, '');
+  const tableRow = (l: string) => l.trim().replace(/^\(\d{1,3}\s*mm\)\s*/, '').replace(/^\[\d{1,2}(?:\/\d{1,2})+\]\s*/, '')
+    .replace(/^\(\d{1,3}\s*mm\)\s*/, '').replace(/^#\s*/, '').replace(/\s*⏎\s*/g, ' ');
   for (const line of text.split('\n')) {
     const mk = readMark(line);
     if (mk) {
@@ -288,6 +300,7 @@ export function editorHtmlToMarkedText(html: string): string {
   let cells: string[] | null = null;
   let cell: string | null = null;
   let tableH: string | null = null;
+  let tableW: string | null = null;
   let tableRow = 0;
   let rowHead = false;
 
@@ -325,7 +338,7 @@ export function editorHtmlToMarkedText(html: string): string {
       if (alt && /data-fmt="/.test(tok)) { flush(); out.push(`[[${markName('image')}]] ${decode(alt)}`); lastRole = markName('image'); }
       continue;
     }
-    if (name === 'br') { if (cell !== null) cell += ' '; else if (buf.trim()) flush(); continue; }
+    if (name === 'br') { if (cell !== null) cell += ` ${CELL_BREAK} `; else if (buf.trim()) flush(); continue; }
     // Bold inside a body paragraph → **…** (centre / party lines are bold by their own role).
     if ((name === 'b' || name === 'strong') && cell === null && (current() === markName('body') || current() === markName('list') || current() === markName('party'))) { buf += '**'; continue; }
     if (name === 'td' || name === 'th') {
@@ -335,12 +348,14 @@ export function editorHtmlToMarkedText(html: string): string {
     }
     if (name === 'table' && !closing) {
       tableH = /data-h="(\d+)"/.exec(tok)?.[1] ?? null;
+      tableW = /data-w="([\d/]+)"/.exec(tok)?.[1] ?? null;
       tableRow = 0;
     }
     if (name === 'tr') {
       if (!closing) { flush(); cells = []; rowHead = /data-head="1"/.test(tok); continue; }
       if (cells && current() === markName('table')) {
         const prefix = (tableRow === 0 && tableH && Number(tableH) !== TABLE_ROW_MM ? `(${tableH}mm) ` : '')
+          + (tableRow === 0 && tableW ? `[${tableW}] ` : '')
           + (tableRow > 0 && rowHead ? '# ' : '');
         const body = cells.length === 1 ? cells[0] : cells.join(' | ');
         emit(`${prefix}${body}` || '|', current());

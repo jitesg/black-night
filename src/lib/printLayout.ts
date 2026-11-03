@@ -13,7 +13,7 @@
  * Pure string functions (tested with node: scripts/test_print_layout.ts).
  */
 import { parseIntoDocumentModel, splitIntoSubLetters, type DocumentModel } from './formatParsingEngine';
-import { hasFormatMarkers, inlineBoldHtml, parseTableBlock } from './formatMarkers';
+import { hasFormatMarkers, inlineBoldHtml, parseTableBlock, tableCellLines } from './formatMarkers';
 import { IMAGE_HEIGHT_MM, formatImage } from './formatImages';
 
 export const esc = (s: string): string =>
@@ -124,12 +124,14 @@ export function renderLetterHtml(model: DocumentModel): string {
         if (b.kind === 'table') {
           const t = parseTableBlock(b.text);
           const trs = t.rows.map((r) => {
-            if (r.full) return `<tr><td class="full" colspan="${t.cols}">${esc(r.cells[0])}</td></tr>`;
+            const cellHtml = (c: string) => tableCellLines(c).map((l) => inlineBoldHtml(esc(l))).join('<br>');
+            if (r.full) return `<tr><td class="full" colspan="${t.cols}">${cellHtml(r.cells[0])}</td></tr>`;
             const tag = r.head ? 'th' : 'td';
             const h = r.head ? '' : ` style="height:${t.heightMm}mm"`;
-            return `<tr>${r.cells.map((c) => `<${tag}${h}>${esc(c)}</${tag}>`).join('')}</tr>`;
+            return `<tr>${r.cells.map((c) => `<${tag}${h}>${cellHtml(c)}</${tag}>`).join('')}</tr>`;
           }).join('');
-          return `<table class="doc-table">${trs}</table>`;
+          const cols = t.widths ? `<colgroup>${t.widths.map((w) => `<col style="width:${w}%">`).join('')}</colgroup>` : '';
+          return `<table class="doc-table">${cols}${trs}</table>`;
         }
         if (b.kind === 'split') {
           const at = b.text.indexOf('|');
