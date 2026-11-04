@@ -2696,68 +2696,133 @@
     },
     {
       "id": "sys-fmt-cd-nirikshan-ghatnasthal",
-      "title": "निरीक्षण घटना स्थल",
+      "title": "निरीक्षण घटना स्थल (नक्शा नजरी व ई-साक्ष्य वीडियोग्राफी)",
       "format_type": "Case Diary",
-      "vivran": "तत्पश्चात {{COMPLAINANTGENDER}} मुकदमा से घटना स्थल का निरीक्षण कराने हेतु कहा गया {{COMPLAINANTGENDER}} मुकदमा तैयार है । {{COMPLAINANTGENDER}} मुकदमा को साथ लेकर घटना स्थल आया । {{COMPLAINANTGENDER}} मुकदमा की निशादेही पर घटना स्थल का निरीक्षण किया जा रहा है ।\nनिरीक्षण घटना स्थल.........हस्वनिशादेही {{COMPLAINANTGENDER}} मुकदमा के घटना स्थल का निरीक्षण किया गया तो घटनास्थल {{PLACEOFINCIDENT}} का है। नक्शा नजरी मे X चिन्ह से घटना स्थल को प्रदर्शित किया गया है । {{PLACEOFINCIDENTDetail}} । घटना स्थल का अक्षांश {{LAT}} व देशान्तर {{LONG}} है । मौके की नक्शा नजरी तैयार कर संलग्न सीडी किया जा रहा है ।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 2,
+      "app_version": "1.0.0",
+      "tags": [
+        "निरीक्षण",
+        "घटना स्थल",
+        "नक्शा नजरी",
+        "ई-साक्ष्य",
+        "केस डायरी"
+      ],
+      "last_updated": "2026-11-04",
+      "vivran": "तत्पश्चात {{if:Pointer=वादी|{{COMPLAINANTGENDER}} मुकदमा}}{{if:Pointer=अन्य|{{OtherName}}{{if:OtherDetail| {{OtherDetail}}}}}} से घटना स्थल का निरीक्षण कराने हेतु कहा गया, {{if:Pointer=वादी|{{COMPLAINANTGENDER}} मुकदमा}}{{if:Pointer=अन्य|{{OtherName}} उपरोक्त}} तैयार है। {{if:Where=साथ लेकर गये|{{if:Pointer=वादी|{{COMPLAINANTGENDER}} मुकदमा}}{{if:Pointer=अन्य|{{OtherName}} उपरोक्त}} को साथ लेकर घटना स्थल आया। }}{{if:Pointer=वादी|{{COMPLAINANTGENDER}} मुकदमा}}{{if:Pointer=अन्य|{{OtherName}} उपरोक्त}} की निशानदेही पर घटना स्थल का निरीक्षण किया जा रहा है।\n\nनिरीक्षण घटना स्थल — हस्ब निशानदेही {{if:Pointer=वादी|{{COMPLAINANTGENDER}} मुकदमा}}{{if:Pointer=अन्य|{{OtherName}} उपरोक्त}} घटना स्थल का निरीक्षण किया गया तो घटना स्थल {{PLACEOFINCIDENT}} का है। नक्शा नजरी में {{Mark}} चिन्ह से घटना स्थल को प्रदर्शित किया गया है।{{any:Dirs| घटना स्थल के {{each:Dirs|दिशा {dir} में {what}|, }} स्थित है।}}{{if:LAT| घटना स्थल का अक्षांश {{LAT}}{{if:LONG| व देशान्तर {{LONG}}}} है।}}{{if:ESakshya=की गयी| घटना स्थल की ई-साक्ष्य एप्प से वीडियोग्राफी की गयी{{if:SID|, जिसकी SID No. {{SID}} है}}।}}{{if:ESakshya=तकनीकी समस्या| ई-साक्ष्य एप्प में तकनीकी समस्या होने के कारण घटना स्थल की वीडियोग्राफी नहीं की जा सकी।}} मौके की नक्शा नजरी तैयार कर संलग्न सी0डी0 किया जा रहा है।\n",
       "keys": [
         {
-          "key_name": "COMPLAINANTGENDER",
-          "label": "वादी/ वादिनी",
+          "key_name": "Pointer",
+          "label": "घटना स्थल किसकी निशानदेही पर",
           "field_type": "dropdown",
           "is_required": 1,
+          "default_value": "वादी",
+          "dropdown_options": "[{\"value\": \"वादी\", \"label\": \"वादी / वादिनी मुकदमा\"}, {\"value\": \"अन्य\", \"label\": \"किसी अन्य व्यक्ति\"}]",
+          "sort_order": 0
+        },
+        {
+          "key_name": "COMPLAINANTGENDER",
+          "label": "वादी / वादिनी",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "वादी",
+          "dropdown_options": "{\"options\": [\"वादी\", \"वादिनी\"], \"showIf\": \"Pointer=वादी\"}",
+          "sort_order": 1
+        },
+        {
+          "key_name": "OtherName",
+          "label": "उस व्यक्ति का नाम",
+          "field_type": "text",
+          "is_required": 1,
           "default_value": null,
-          "sort_order": 1,
-          "dropdown_options": "[\"वादी\",\"वादिनी\"]"
+          "dropdown_options": "{\"placeholder\": \"जैसे: गवाह रामपाल\", \"showIf\": \"Pointer=अन्य\"}",
+          "sort_order": 2
+        },
+        {
+          "key_name": "OtherDetail",
+          "label": "पिता / पति व पता (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: पुत्र शिवबालक निवासी ग्राम बन्नावां थाना बछरावां जनपद रायबरेली\", \"showIf\": \"Pointer=अन्य\"}",
+          "sort_order": 3
+        },
+        {
+          "key_name": "Where",
+          "label": "निरीक्षण के समय वह कहाँ थे",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "साथ लेकर गये",
+          "dropdown_options": "[{\"value\": \"साथ लेकर गये\", \"label\": \"थाने / कहीं और थे — साथ लेकर घटना स्थल गये\"}, {\"value\": \"घटना स्थल पर मौजूद\", \"label\": \"घटना स्थल पर ही मौजूद थे\"}]",
+          "sort_order": 4
         },
         {
           "key_name": "PLACEOFINCIDENT",
-          "label": "घटनास्थल विवरण",
+          "label": "घटना स्थल कहाँ का है",
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_RELATED_FIR__",
-          "sort_order": 2,
-          "dropdown_options": null
+          "dropdown_options": "{\"placeholder\": \"जैसे: चुरुवा टोल प्लाजा के पास स्थित साहू रेस्टारेंट के पास\"}",
+          "sort_order": 5
         },
         {
-          "key_name": "PLACEOFINCIDENTDetail",
-          "label": "घटनास्थल विस्तृत विवरण",
-          "field_type": "multiline",
+          "key_name": "Mark",
+          "label": "नक्शा नजरी में चिन्ह",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "A",
+          "dropdown_options": "{\"placeholder\": \"जैसे: A / X\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "Dirs",
+          "label": "घटना स्थल के चारों ओर (दिशा व क्या स्थित है)",
+          "field_type": "item_group",
           "is_required": 0,
-          "default_value": "घटना स्थल के दिशा उत्तर मे ---- , दिशा दक्षिण-पश्चिम मे ---- स्थित है",
-          "sort_order": 3,
-          "dropdown_options": null
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"dir\", \"label\": \"दिशा\", \"type\": \"choice\", \"options\": [\"उत्तर\", \"दक्षिण\", \"पूर्व\", \"पश्चिम\", \"उत्तर-पूर्व\", \"उत्तर-पश्चिम\", \"दक्षिण-पूर्व\", \"दक्षिण-पश्चिम\"], \"default\": \"उत्तर\"}, {\"key\": \"what\", \"label\": \"इस दिशा में क्या है (जैसे: साहू रेस्टारेंट)\"}], \"addLabel\": \"+ और दिशा जोड़ें\", \"itemLabel\": \"दिशा\"}",
+          "sort_order": 7
         },
         {
           "key_name": "LAT",
-          "label": "अक्षांश",
-          "field_type": "number",
+          "label": "अक्षांश (वैकल्पिक)",
+          "field_type": "decimal",
           "is_required": 0,
           "default_value": "26.",
-          "sort_order": 4,
-          "dropdown_options": null
+          "dropdown_options": "{\"placeholder\": \"जैसे: 26.522196\"}",
+          "sort_order": 8
         },
         {
           "key_name": "LONG",
-          "label": "देशांतर",
-          "field_type": "number",
+          "label": "देशान्तर (वैकल्पिक)",
+          "field_type": "decimal",
           "is_required": 0,
           "default_value": "81.",
-          "sort_order": 5,
-          "dropdown_options": null
+          "dropdown_options": "{\"placeholder\": \"जैसे: 81.068095\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "ESakshya",
+          "label": "ई-साक्ष्य एप्प से वीडियोग्राफी",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "की गयी",
+          "dropdown_options": "[{\"value\": \"की गयी\", \"label\": \"की गयी\"}, {\"value\": \"तकनीकी समस्या\", \"label\": \"तकनीकी समस्या से नहीं हो सकी\"}, {\"value\": \"नहीं लिखना\", \"label\": \"कुछ न लिखें\"}]",
+          "sort_order": 10
+        },
+        {
+          "key_name": "SID",
+          "label": "SID नंबर",
+          "field_type": "number",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1603969790436464\", \"showIf\": \"ESakshya=की गयी\"}",
+          "sort_order": 11
         }
-      ],
-      "is_favorite": 0,
-      "source": "system",
-      "editable": 1,
-      "created_by": "system",
-      "content_type": "format",
-      "seed_version": 1,
-      "app_version": "1.0.0",
-      "last_updated": "2026-07-17",
-      "tags": [
-        "निरीक्षण",
-        "घटनास्थल",
-        "Case Diary"
       ]
     },
     {

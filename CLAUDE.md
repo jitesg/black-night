@@ -195,6 +195,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `{{count:…|{{any:…?mahila|F}}{{none:…?mahila|M}}|MANY}}`; heading containers `{{each}}` + `{{sum:Accused|litre}}`; per-row
   `{?mahila|अभियुक्ता|अभियुक्त}`; LadyConstable used when any row is महिला; opening "थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम
   जुर्म जरायम… में मामूर", witness search + आपस में जामा तलाशी lines (owner). Old v3 in `docs/format-backups/fard_60_1_daru_v3.json`.
+- केस डायरी formats (owner, started): `sys-fmt-cd-nirikshan-ghatnasthal` "निरीक्षण घटना स्थल (नक्शा नजरी व ई-साक्ष्य वीडियोग्राफी)" v2 (Case Diary,
+  plain text — no layout marks): Pointer वादी / अन्य (OtherName + optional OtherDetail → first mention full, later "<name> उपरोक्त"),
+  Where साथ लेकर गये / घटना स्थल पर मौजूद (only the first adds "…को साथ लेकर घटना स्थल आया।"), PLACEOFINCIDENT (@FIR.ghatnasthal), Mark (A),
+  item_group Dirs (दिशा choice + what), LAT/LONG type decimal (default 26. / 81.), ESakshya की गयी (+ required number SID) / तकनीकी समस्या /
+  नहीं लिखना. Old v1 in `docs/format-backups/cd_nirikshan_ghatnasthal_v1.json`.
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use

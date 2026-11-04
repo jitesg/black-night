@@ -1,0 +1,70 @@
+{
+  "formats": [
+    {
+      "id": "sys-fmt-cd-nirikshan-ghatnasthal",
+      "title": "निरीक्षण घटना स्थल",
+      "format_type": "Case Diary",
+      "vivran": "तत्पश्चात {{COMPLAINANTGENDER}} मुकदमा से घटना स्थल का निरीक्षण कराने हेतु कहा गया {{COMPLAINANTGENDER}} मुकदमा तैयार है । {{COMPLAINANTGENDER}} मुकदमा को साथ लेकर घटना स्थल आया । {{COMPLAINANTGENDER}} मुकदमा की निशादेही पर घटना स्थल का निरीक्षण किया जा रहा है ।\nनिरीक्षण घटना स्थल.........हस्वनिशादेही {{COMPLAINANTGENDER}} मुकदमा के घटना स्थल का निरीक्षण किया गया तो घटनास्थल {{PLACEOFINCIDENT}} का है। नक्शा नजरी मे X चिन्ह से घटना स्थल को प्रदर्शित किया गया है । {{PLACEOFINCIDENTDetail}} । घटना स्थल का अक्षांश {{LAT}} व देशान्तर {{LONG}} है । मौके की नक्शा नजरी तैयार कर संलग्न सीडी किया जा रहा है ।",
+      "keys": [
+        {
+          "key_name": "COMPLAINANTGENDER",
+          "label": "वादी/ वादिनी",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": null,
+          "sort_order": 1,
+          "dropdown_options": "[\"वादी\",\"वादिनी\"]"
+        },
+        {
+          "key_name": "PLACEOFINCIDENT",
+          "label": "घटनास्थल विवरण",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_RELATED_FIR__",
+          "sort_order": 2,
+          "dropdown_options": null
+        },
+        {
+          "key_name": "PLACEOFINCIDENTDetail",
+          "label": "घटनास्थल विस्तृत विवरण",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": "घटना स्थल के दिशा उत्तर मे ---- , दिशा दक्षिण-पश्चिम मे ---- स्थित है",
+          "sort_order": 3,
+          "dropdown_options": null
+        },
+        {
+          "key_name": "LAT",
+          "label": "अक्षांश",
+          "field_type": "number",
+          "is_required": 0,
+          "default_value": "26.",
+          "sort_order": 4,
+          "dropdown_options": null
+        },
+        {
+          "key_name": "LONG",
+          "label": "देशांतर",
+          "field_type": "number",
+          "is_required": 0,
+          "default_value": "81.",
+          "sort_order": 5,
+          "dropdown_options": null
+        }
+      ],
+      "is_favorite": 0,
+      "source": "system",
+      "editable": 1,
+      "created_by": "system",
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "last_updated": "2026-07-17",
+      "tags": [
+        "निरीक्षण",
+        "घटनास्थल",
+        "Case Diary"
+      ]
+    }
+  ]
+}
