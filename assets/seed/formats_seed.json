@@ -7360,6 +7360,990 @@
           "sort_order": 25
         }
       ]
+    },
+    {
+      "id": "sys-fmt-cd-medical-avlokan",
+      "title": "मेडिकल अवलोकन — MLC / इमरजेंसी रजिस्टर / एक्स-रे / BHT (1 से 3 व्यक्ति)",
+      "format_type": "Case Diary",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "मेडिकल",
+        "अवलोकन",
+        "MLC",
+        "BHT",
+        "एक्स-रे",
+        "इमरजेंसी रजिस्टर",
+        "मजरूब",
+        "केस डायरी"
+      ],
+      "last_updated": "2026-11-04",
+      "vivran": "{{if:p1Mlc|थाना कार्यालय से {{p1Role}} {{p1Name}} का मेडिकल प्रपत्र प्राप्त हुआ है, जिसका अवलोकन किया जा रहा है।\n\nअवलोकन मेडिकल प्रपत्र — {{p1Name}}{{if:p1Father| {{p1Rel}} {{p1Father}}}}{{if:p1Addr| निवासी {{p1Addr}}}}{{if:p1Age| उम्र {{p1Age}} वर्ष}} का मेडिकल परीक्षण दिनांक {{p1MlcDate}} को{{if:p1MlcTime| समय {{p1MlcTime}} पर}} {{p1MlcHosp}} में डॉ0 {{p1MlcDoc}} द्वारा किया गया है। चोटों के विवरण में {{p1MlcInj}} अंकित है।{{if:p1MlcOpinion| डॉक्टर की राय में {{p1MlcOpinion}}।}}{{if:p1MlcWeapon=कठोर व कुन्द वस्तु| चोटें किसी कठोर व कुन्द वस्तु से कारित की गयी हैं।}}{{if:p1MlcWeapon=धारदार वस्तु| चोटें किसी धारदार वस्तु से कारित की गयी हैं।}} बाद अवलोकन संलग्न सी0डी0 है।\n\n}}{{if:p2On|{{if:p2Mlc|थाना कार्यालय से {{p2Role}} {{p2Name}} का मेडिकल प्रपत्र प्राप्त हुआ है, जिसका अवलोकन किया जा रहा है।\n\nअवलोकन मेडिकल प्रपत्र — {{p2Name}}{{if:p2Father| {{p2Rel}} {{p2Father}}}}{{if:p2Addr| निवासी {{p2Addr}}}}{{if:p2Age| उम्र {{p2Age}} वर्ष}} का मेडिकल परीक्षण दिनांक {{p2MlcDate}} को{{if:p2MlcTime| समय {{p2MlcTime}} पर}} {{p2MlcHosp}} में डॉ0 {{p2MlcDoc}} द्वारा किया गया है। चोटों के विवरण में {{p2MlcInj}} अंकित है।{{if:p2MlcOpinion| डॉक्टर की राय में {{p2MlcOpinion}}।}}{{if:p2MlcWeapon=कठोर व कुन्द वस्तु| चोटें किसी कठोर व कुन्द वस्तु से कारित की गयी हैं।}}{{if:p2MlcWeapon=धारदार वस्तु| चोटें किसी धारदार वस्तु से कारित की गयी हैं।}} बाद अवलोकन संलग्न सी0डी0 है।\n\n}}}}{{if:p3On|{{if:p3Mlc|थाना कार्यालय से {{p3Role}} {{p3Name}} का मेडिकल प्रपत्र प्राप्त हुआ है, जिसका अवलोकन किया जा रहा है।\n\nअवलोकन मेडिकल प्रपत्र — {{p3Name}}{{if:p3Father| {{p3Rel}} {{p3Father}}}}{{if:p3Addr| निवासी {{p3Addr}}}}{{if:p3Age| उम्र {{p3Age}} वर्ष}} का मेडिकल परीक्षण दिनांक {{p3MlcDate}} को{{if:p3MlcTime| समय {{p3MlcTime}} पर}} {{p3MlcHosp}} में डॉ0 {{p3MlcDoc}} द्वारा किया गया है। चोटों के विवरण में {{p3MlcInj}} अंकित है।{{if:p3MlcOpinion| डॉक्टर की राय में {{p3MlcOpinion}}।}}{{if:p3MlcWeapon=कठोर व कुन्द वस्तु| चोटें किसी कठोर व कुन्द वस्तु से कारित की गयी हैं।}}{{if:p3MlcWeapon=धारदार वस्तु| चोटें किसी धारदार वस्तु से कारित की गयी हैं।}} बाद अवलोकन संलग्न सी0डी0 है।\n\n}}}}{{if:p1Er|अवलोकन इमरजेंसी रजिस्टर प्रमाणित प्रति — {{p1Name}}{{if:p1Father| {{p1Rel}} {{p1Father}}}}{{if:p1Addr| निवासी {{p1Addr}}}}{{if:p1Age| उम्र {{p1Age}} वर्ष}} का मेडिकल परीक्षण दिनांक {{p1ErDate}} को{{if:p1ErTime| समय {{p1ErTime}}}} {{p1ErHosp}} में डॉ0 {{p1ErDoc}} द्वारा किया गया है। चोटों के विवरण में {{p1ErInj}} अंकित है। बाद अवलोकन संलग्न सी0डी0 है।\n\n}}{{if:p2On|{{if:p2Er|अवलोकन इमरजेंसी रजिस्टर प्रमाणित प्रति — {{p2Name}}{{if:p2Father| {{p2Rel}} {{p2Father}}}}{{if:p2Addr| निवासी {{p2Addr}}}}{{if:p2Age| उम्र {{p2Age}} वर्ष}} का मेडिकल परीक्षण दिनांक {{p2ErDate}} को{{if:p2ErTime| समय {{p2ErTime}}}} {{p2ErHosp}} में डॉ0 {{p2ErDoc}} द्वारा किया गया है। चोटों के विवरण में {{p2ErInj}} अंकित है। बाद अवलोकन संलग्न सी0डी0 है।\n\n}}}}{{if:p3On|{{if:p3Er|अवलोकन इमरजेंसी रजिस्टर प्रमाणित प्रति — {{p3Name}}{{if:p3Father| {{p3Rel}} {{p3Father}}}}{{if:p3Addr| निवासी {{p3Addr}}}}{{if:p3Age| उम्र {{p3Age}} वर्ष}} का मेडिकल परीक्षण दिनांक {{p3ErDate}} को{{if:p3ErTime| समय {{p3ErTime}}}} {{p3ErHosp}} में डॉ0 {{p3ErDoc}} द्वारा किया गया है। चोटों के विवरण में {{p3ErInj}} अंकित है। बाद अवलोकन संलग्न सी0डी0 है।\n\n}}}}{{if:p1Xray|अवलोकन एक्स-रे रिपोर्ट — {{p1Role}} {{p1Name}}{{if:p1Father| {{p1Rel}} {{p1Father}}}}{{if:p1Addr| निवासी {{p1Addr}}}}{{if:p1Age| उम्र {{p1Age}} वर्ष}} का एक्स-रे दिनांक {{p1XrayDate}} को {{if:p1XraySent|{{p1XraySent}} के साथ भिजवाकर }}{{p1XrayHosp}} में कराया गया है। एक्स-रे नं0 {{p1XrayNo}} है।{{if:p1XrayDoc| एक्स-रे डॉ0 {{p1XrayDoc}} द्वारा किया गया है।}} रिपोर्ट में {{p1XrayResult}} अंकित है। बाद अवलोकन संलग्न सी0डी0 है।\n\n}}{{if:p2On|{{if:p2Xray|अवलोकन एक्स-रे रिपोर्ट — {{p2Role}} {{p2Name}}{{if:p2Father| {{p2Rel}} {{p2Father}}}}{{if:p2Addr| निवासी {{p2Addr}}}}{{if:p2Age| उम्र {{p2Age}} वर्ष}} का एक्स-रे दिनांक {{p2XrayDate}} को {{if:p2XraySent|{{p2XraySent}} के साथ भिजवाकर }}{{p2XrayHosp}} में कराया गया है। एक्स-रे नं0 {{p2XrayNo}} है।{{if:p2XrayDoc| एक्स-रे डॉ0 {{p2XrayDoc}} द्वारा किया गया है।}} रिपोर्ट में {{p2XrayResult}} अंकित है। बाद अवलोकन संलग्न सी0डी0 है।\n\n}}}}{{if:p3On|{{if:p3Xray|अवलोकन एक्स-रे रिपोर्ट — {{p3Role}} {{p3Name}}{{if:p3Father| {{p3Rel}} {{p3Father}}}}{{if:p3Addr| निवासी {{p3Addr}}}}{{if:p3Age| उम्र {{p3Age}} वर्ष}} का एक्स-रे दिनांक {{p3XrayDate}} को {{if:p3XraySent|{{p3XraySent}} के साथ भिजवाकर }}{{p3XrayHosp}} में कराया गया है। एक्स-रे नं0 {{p3XrayNo}} है।{{if:p3XrayDoc| एक्स-रे डॉ0 {{p3XrayDoc}} द्वारा किया गया है।}} रिपोर्ट में {{p3XrayResult}} अंकित है। बाद अवलोकन संलग्न सी0डी0 है।\n\n}}}}{{if:p1Bht|{{if:p2On|{{if:p2Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूबगणों की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}{{ifnot:p2Bht|{{if:p3On|{{if:p3Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूबगणों की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}{{ifnot:p3Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूब की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}}}{{ifnot:p3On|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूब की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}}}}}{{ifnot:p2On|{{if:p3On|{{if:p3Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूबगणों की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}{{ifnot:p3Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूब की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}}}{{ifnot:p3On|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूब की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}}}}}{{ifnot:p1Bht|{{if:p2On|{{if:p2Bht|{{if:p3On|{{if:p3Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूबगणों की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}{{ifnot:p3Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूब की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}}}{{ifnot:p3On|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूब की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}}}{{ifnot:p2Bht|{{if:p3On|{{if:p3Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूब की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}{{ifnot:p3Bht|}}}}{{ifnot:p3On|}}}}}}{{ifnot:p2On|{{if:p3On|{{if:p3Bht|श्रीमान जी, थाना कार्यालय से मुकदमा उपरोक्त से सम्बन्धित मजरूब की बी0एच0टी0 रिपोर्ट प्राप्त हुई है, जिसका अवलोकन कर संलग्न सी0डी0 किया जाता है।\n\n}}{{ifnot:p3Bht|}}}}{{ifnot:p3On|}}}}}}{{if:p1Bht|अवलोकन बी0एच0टी0 रिपोर्ट — {{p1BhtHosp}} में {{p1Role}} {{p1Name}}{{if:p1Father| {{p1Rel}} {{p1Father}}}}{{if:p1Addr| निवासी {{p1Addr}}}}{{if:p1Age| उम्र {{p1Age}} वर्ष}} का दवा-इलाज आई0पी0डी0 नं0 {{p1BhtIpd}} दिनांक {{p1BhtFrom}} से {{p1BhtTo}} तक{{if:p1BhtWard| {{p1BhtWard}} पर}} होना अंकित है। {{p1Role}} के {{p1BhtDiag}} अंकित है{{if:p1BhtRef|, जिसको {{p1BhtRef}} से रेफर किया गया है}}। बाद अवलोकन बी0एच0टी0 रिपोर्ट संलग्न सी0डी0 है।\n\n}}{{if:p2On|{{if:p2Bht|अवलोकन बी0एच0टी0 रिपोर्ट — {{p2BhtHosp}} में {{p2Role}} {{p2Name}}{{if:p2Father| {{p2Rel}} {{p2Father}}}}{{if:p2Addr| निवासी {{p2Addr}}}}{{if:p2Age| उम्र {{p2Age}} वर्ष}} का दवा-इलाज आई0पी0डी0 नं0 {{p2BhtIpd}} दिनांक {{p2BhtFrom}} से {{p2BhtTo}} तक{{if:p2BhtWard| {{p2BhtWard}} पर}} होना अंकित है। {{p2Role}} के {{p2BhtDiag}} अंकित है{{if:p2BhtRef|, जिसको {{p2BhtRef}} से रेफर किया गया है}}। बाद अवलोकन बी0एच0टी0 रिपोर्ट संलग्न सी0डी0 है।\n\n}}}}{{if:p3On|{{if:p3Bht|अवलोकन बी0एच0टी0 रिपोर्ट — {{p3BhtHosp}} में {{p3Role}} {{p3Name}}{{if:p3Father| {{p3Rel}} {{p3Father}}}}{{if:p3Addr| निवासी {{p3Addr}}}}{{if:p3Age| उम्र {{p3Age}} वर्ष}} का दवा-इलाज आई0पी0डी0 नं0 {{p3BhtIpd}} दिनांक {{p3BhtFrom}} से {{p3BhtTo}} तक{{if:p3BhtWard| {{p3BhtWard}} पर}} होना अंकित है। {{p3Role}} के {{p3BhtDiag}} अंकित है{{if:p3BhtRef|, जिसको {{p3BhtRef}} से रेफर किया गया है}}। बाद अवलोकन बी0एच0टी0 रिपोर्ट संलग्न सी0डी0 है।\n\n}}}}",
+      "keys": [
+        {
+          "key_name": "p1Role",
+          "label": "व्यक्ति 1 — भूमिका",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मजरूब/वादी",
+          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"]}",
+          "sort_order": 0
+        },
+        {
+          "key_name": "p1Name",
+          "label": "व्यक्ति 1 — नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: रमेश सिंह उर्फ पुतान सिंह\"}",
+          "sort_order": 1
+        },
+        {
+          "key_name": "p1Rel",
+          "label": "सम्बन्ध",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पुत्र",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"]}",
+          "sort_order": 2
+        },
+        {
+          "key_name": "p1Father",
+          "label": "पिता / पति का नाम",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: राजेन्द्र सिंह\"}",
+          "sort_order": 3
+        },
+        {
+          "key_name": "p1Addr",
+          "label": "पता",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\"}",
+          "sort_order": 4
+        },
+        {
+          "key_name": "p1Age",
+          "label": "उम्र (वैकल्पिक, वर्ष)",
+          "field_type": "number",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 45\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "p1Mlc",
+          "label": "मेडिकल प्रपत्र (MLC) का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "sort_order": 6
+        },
+        {
+          "key_name": "p1MlcHosp",
+          "label": "MLC — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p1Mlc\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "p1MlcDate",
+          "label": "MLC — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p1Mlc\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "p1MlcTime",
+          "label": "MLC — समय",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p1Mlc\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "p1MlcDoc",
+          "label": "MLC — डॉक्टर का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p1Mlc\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "p1MlcInj",
+          "label": "MLC — चोटों का विवरण (जैसा लिखा है)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p1Mlc\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "p1MlcOpinion",
+          "label": "MLC — डॉक्टर की राय / रेफर (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p1Mlc\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "p1MlcWeapon",
+          "label": "चोटें किससे कारित",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "कठोर व कुन्द वस्तु",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p1Mlc\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "p1Er",
+          "label": "इमरजेंसी रजिस्टर की प्रमाणित प्रति का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 14
+        },
+        {
+          "key_name": "p1ErHosp",
+          "label": "इमरजेंसी — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p1Er\"}",
+          "sort_order": 15
+        },
+        {
+          "key_name": "p1ErDate",
+          "label": "इमरजेंसी — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p1Er\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "p1ErTime",
+          "label": "इमरजेंसी — समय",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p1Er\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "p1ErDoc",
+          "label": "इमरजेंसी — डॉक्टर का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p1Er\"}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "p1ErInj",
+          "label": "इमरजेंसी — चोटें / Advise (जैसा लिखा है)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p1Er\"}",
+          "sort_order": 19
+        },
+        {
+          "key_name": "p1Xray",
+          "label": "एक्स-रे रिपोर्ट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 20
+        },
+        {
+          "key_name": "p1XrayDate",
+          "label": "एक्स-रे — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p1Xray\"}",
+          "sort_order": 21
+        },
+        {
+          "key_name": "p1XrayHosp",
+          "label": "एक्स-रे — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "जिला अस्पताल रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p1Xray\"}",
+          "sort_order": 22
+        },
+        {
+          "key_name": "p1XraySent",
+          "label": "किसके साथ भिजवाकर कराया (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p1Xray\"}",
+          "sort_order": 23
+        },
+        {
+          "key_name": "p1XrayNo",
+          "label": "एक्स-रे नं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p1Xray\"}",
+          "sort_order": 24
+        },
+        {
+          "key_name": "p1XrayDoc",
+          "label": "एक्स-रे — डॉक्टर का नाम (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p1Xray\"}",
+          "sort_order": 25
+        },
+        {
+          "key_name": "p1XrayResult",
+          "label": "एक्स-रे — रिपोर्ट में क्या अंकित है",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p1Xray\"}",
+          "sort_order": 26
+        },
+        {
+          "key_name": "p1Bht",
+          "label": "BHT (भर्ती) रिपोर्ट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 27
+        },
+        {
+          "key_name": "p1BhtHosp",
+          "label": "BHT — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "राणा बेनी माधव सिंह जिला अस्पताल रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p1Bht\"}",
+          "sort_order": 28
+        },
+        {
+          "key_name": "p1BhtIpd",
+          "label": "BHT — आई0पी0डी0 नं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p1Bht\"}",
+          "sort_order": 29
+        },
+        {
+          "key_name": "p1BhtFrom",
+          "label": "BHT — भर्ती दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p1Bht\"}",
+          "sort_order": 30
+        },
+        {
+          "key_name": "p1BhtTo",
+          "label": "BHT — छुट्टी दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p1Bht\"}",
+          "sort_order": 31
+        },
+        {
+          "key_name": "p1BhtWard",
+          "label": "वार्ड नं0 / बेड नं0 (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p1Bht\"}",
+          "sort_order": 32
+        },
+        {
+          "key_name": "p1BhtDiag",
+          "label": "BHT — क्या चोट / बीमारी अंकित है",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p1Bht\"}",
+          "sort_order": 33
+        },
+        {
+          "key_name": "p1BhtRef",
+          "label": "कहाँ से रेफर होकर आया (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": "सीएचसी बछरावां रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p1Bht\"}",
+          "sort_order": 34
+        },
+        {
+          "key_name": "p2On",
+          "label": "व्यक्ति 2 का भी अवलोकन करना है",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 35
+        },
+        {
+          "key_name": "p2Role",
+          "label": "व्यक्ति 2 — भूमिका",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मजरूब",
+          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"], \"showIf\": \"p2On\"}",
+          "sort_order": 36
+        },
+        {
+          "key_name": "p2Name",
+          "label": "व्यक्ति 2 — नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: खुशबू खान\", \"showIf\": \"p2On\"}",
+          "sort_order": 37
+        },
+        {
+          "key_name": "p2Rel",
+          "label": "सम्बन्ध",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पुत्र",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"showIf\": \"p2On\"}",
+          "sort_order": 38
+        },
+        {
+          "key_name": "p2Father",
+          "label": "पिता / पति का नाम",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब खान\", \"showIf\": \"p2On\"}",
+          "sort_order": 39
+        },
+        {
+          "key_name": "p2Addr",
+          "label": "पता",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम रैन थाना बछरावां जनपद रायबरेली\", \"showIf\": \"p2On\"}",
+          "sort_order": 40
+        },
+        {
+          "key_name": "p2Age",
+          "label": "उम्र (वैकल्पिक, वर्ष)",
+          "field_type": "number",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"showIf\": \"p2On\"}",
+          "sort_order": 41
+        },
+        {
+          "key_name": "p2Mlc",
+          "label": "मेडिकल प्रपत्र (MLC) का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "sort_order": 42
+        },
+        {
+          "key_name": "p2MlcHosp",
+          "label": "MLC — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p2On & p2Mlc\"}",
+          "sort_order": 43
+        },
+        {
+          "key_name": "p2MlcDate",
+          "label": "MLC — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p2On & p2Mlc\"}",
+          "sort_order": 44
+        },
+        {
+          "key_name": "p2MlcTime",
+          "label": "MLC — समय",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p2On & p2Mlc\"}",
+          "sort_order": 45
+        },
+        {
+          "key_name": "p2MlcDoc",
+          "label": "MLC — डॉक्टर का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p2On & p2Mlc\"}",
+          "sort_order": 46
+        },
+        {
+          "key_name": "p2MlcInj",
+          "label": "MLC — चोटों का विवरण (जैसा लिखा है)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p2On & p2Mlc\"}",
+          "sort_order": 47
+        },
+        {
+          "key_name": "p2MlcOpinion",
+          "label": "MLC — डॉक्टर की राय / रेफर (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p2On & p2Mlc\"}",
+          "sort_order": 48
+        },
+        {
+          "key_name": "p2MlcWeapon",
+          "label": "चोटें किससे कारित",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "कठोर व कुन्द वस्तु",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p2On & p2Mlc\"}",
+          "sort_order": 49
+        },
+        {
+          "key_name": "p2Er",
+          "label": "इमरजेंसी रजिस्टर की प्रमाणित प्रति का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "sort_order": 50
+        },
+        {
+          "key_name": "p2ErHosp",
+          "label": "इमरजेंसी — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p2On & p2Er\"}",
+          "sort_order": 51
+        },
+        {
+          "key_name": "p2ErDate",
+          "label": "इमरजेंसी — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p2On & p2Er\"}",
+          "sort_order": 52
+        },
+        {
+          "key_name": "p2ErTime",
+          "label": "इमरजेंसी — समय",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p2On & p2Er\"}",
+          "sort_order": 53
+        },
+        {
+          "key_name": "p2ErDoc",
+          "label": "इमरजेंसी — डॉक्टर का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p2On & p2Er\"}",
+          "sort_order": 54
+        },
+        {
+          "key_name": "p2ErInj",
+          "label": "इमरजेंसी — चोटें / Advise (जैसा लिखा है)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p2On & p2Er\"}",
+          "sort_order": 55
+        },
+        {
+          "key_name": "p2Xray",
+          "label": "एक्स-रे रिपोर्ट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "sort_order": 56
+        },
+        {
+          "key_name": "p2XrayDate",
+          "label": "एक्स-रे — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p2On & p2Xray\"}",
+          "sort_order": 57
+        },
+        {
+          "key_name": "p2XrayHosp",
+          "label": "एक्स-रे — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "जिला अस्पताल रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p2On & p2Xray\"}",
+          "sort_order": 58
+        },
+        {
+          "key_name": "p2XraySent",
+          "label": "किसके साथ भिजवाकर कराया (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p2On & p2Xray\"}",
+          "sort_order": 59
+        },
+        {
+          "key_name": "p2XrayNo",
+          "label": "एक्स-रे नं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p2On & p2Xray\"}",
+          "sort_order": 60
+        },
+        {
+          "key_name": "p2XrayDoc",
+          "label": "एक्स-रे — डॉक्टर का नाम (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p2On & p2Xray\"}",
+          "sort_order": 61
+        },
+        {
+          "key_name": "p2XrayResult",
+          "label": "एक्स-रे — रिपोर्ट में क्या अंकित है",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p2On & p2Xray\"}",
+          "sort_order": 62
+        },
+        {
+          "key_name": "p2Bht",
+          "label": "BHT (भर्ती) रिपोर्ट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "sort_order": 63
+        },
+        {
+          "key_name": "p2BhtHosp",
+          "label": "BHT — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "राणा बेनी माधव सिंह जिला अस्पताल रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p2On & p2Bht\"}",
+          "sort_order": 64
+        },
+        {
+          "key_name": "p2BhtIpd",
+          "label": "BHT — आई0पी0डी0 नं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p2On & p2Bht\"}",
+          "sort_order": 65
+        },
+        {
+          "key_name": "p2BhtFrom",
+          "label": "BHT — भर्ती दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p2On & p2Bht\"}",
+          "sort_order": 66
+        },
+        {
+          "key_name": "p2BhtTo",
+          "label": "BHT — छुट्टी दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p2On & p2Bht\"}",
+          "sort_order": 67
+        },
+        {
+          "key_name": "p2BhtWard",
+          "label": "वार्ड नं0 / बेड नं0 (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p2On & p2Bht\"}",
+          "sort_order": 68
+        },
+        {
+          "key_name": "p2BhtDiag",
+          "label": "BHT — क्या चोट / बीमारी अंकित है",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p2On & p2Bht\"}",
+          "sort_order": 69
+        },
+        {
+          "key_name": "p2BhtRef",
+          "label": "कहाँ से रेफर होकर आया (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": "सीएचसी बछरावां रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p2On & p2Bht\"}",
+          "sort_order": 70
+        },
+        {
+          "key_name": "p3On",
+          "label": "व्यक्ति 3 का भी अवलोकन करना है",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "sort_order": 71
+        },
+        {
+          "key_name": "p3Role",
+          "label": "व्यक्ति 3 — भूमिका",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मजरूब",
+          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"], \"showIf\": \"p3On\"}",
+          "sort_order": 72
+        },
+        {
+          "key_name": "p3Name",
+          "label": "व्यक्ति 3 — नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: तेजरानी\", \"showIf\": \"p3On\"}",
+          "sort_order": 73
+        },
+        {
+          "key_name": "p3Rel",
+          "label": "सम्बन्ध",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पुत्र",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"showIf\": \"p3On\"}",
+          "sort_order": 74
+        },
+        {
+          "key_name": "p3Father",
+          "label": "पिता / पति का नाम",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चन्दन सिंह\", \"showIf\": \"p3On\"}",
+          "sort_order": 75
+        },
+        {
+          "key_name": "p3Addr",
+          "label": "पता",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम भवानीखेड़ा मजरे पश्चिम गांव थाना बछरावां जनपद रायबरेली\", \"showIf\": \"p3On\"}",
+          "sort_order": 76
+        },
+        {
+          "key_name": "p3Age",
+          "label": "उम्र (वैकल्पिक, वर्ष)",
+          "field_type": "number",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"showIf\": \"p3On\"}",
+          "sort_order": 77
+        },
+        {
+          "key_name": "p3Mlc",
+          "label": "मेडिकल प्रपत्र (MLC) का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p3On\"}",
+          "sort_order": 78
+        },
+        {
+          "key_name": "p3MlcHosp",
+          "label": "MLC — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p3On & p3Mlc\"}",
+          "sort_order": 79
+        },
+        {
+          "key_name": "p3MlcDate",
+          "label": "MLC — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p3On & p3Mlc\"}",
+          "sort_order": 80
+        },
+        {
+          "key_name": "p3MlcTime",
+          "label": "MLC — समय",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p3On & p3Mlc\"}",
+          "sort_order": 81
+        },
+        {
+          "key_name": "p3MlcDoc",
+          "label": "MLC — डॉक्टर का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p3On & p3Mlc\"}",
+          "sort_order": 82
+        },
+        {
+          "key_name": "p3MlcInj",
+          "label": "MLC — चोटों का विवरण (जैसा लिखा है)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p3On & p3Mlc\"}",
+          "sort_order": 83
+        },
+        {
+          "key_name": "p3MlcOpinion",
+          "label": "MLC — डॉक्टर की राय / रेफर (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p3On & p3Mlc\"}",
+          "sort_order": 84
+        },
+        {
+          "key_name": "p3MlcWeapon",
+          "label": "चोटें किससे कारित",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "कठोर व कुन्द वस्तु",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p3On & p3Mlc\"}",
+          "sort_order": 85
+        },
+        {
+          "key_name": "p3Er",
+          "label": "इमरजेंसी रजिस्टर की प्रमाणित प्रति का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p3On\"}",
+          "sort_order": 86
+        },
+        {
+          "key_name": "p3ErHosp",
+          "label": "इमरजेंसी — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p3On & p3Er\"}",
+          "sort_order": 87
+        },
+        {
+          "key_name": "p3ErDate",
+          "label": "इमरजेंसी — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p3On & p3Er\"}",
+          "sort_order": 88
+        },
+        {
+          "key_name": "p3ErTime",
+          "label": "इमरजेंसी — समय",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p3On & p3Er\"}",
+          "sort_order": 89
+        },
+        {
+          "key_name": "p3ErDoc",
+          "label": "इमरजेंसी — डॉक्टर का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p3On & p3Er\"}",
+          "sort_order": 90
+        },
+        {
+          "key_name": "p3ErInj",
+          "label": "इमरजेंसी — चोटें / Advise (जैसा लिखा है)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p3On & p3Er\"}",
+          "sort_order": 91
+        },
+        {
+          "key_name": "p3Xray",
+          "label": "एक्स-रे रिपोर्ट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p3On\"}",
+          "sort_order": 92
+        },
+        {
+          "key_name": "p3XrayDate",
+          "label": "एक्स-रे — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p3On & p3Xray\"}",
+          "sort_order": 93
+        },
+        {
+          "key_name": "p3XrayHosp",
+          "label": "एक्स-रे — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "जिला अस्पताल रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p3On & p3Xray\"}",
+          "sort_order": 94
+        },
+        {
+          "key_name": "p3XraySent",
+          "label": "किसके साथ भिजवाकर कराया (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p3On & p3Xray\"}",
+          "sort_order": 95
+        },
+        {
+          "key_name": "p3XrayNo",
+          "label": "एक्स-रे नं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p3On & p3Xray\"}",
+          "sort_order": 96
+        },
+        {
+          "key_name": "p3XrayDoc",
+          "label": "एक्स-रे — डॉक्टर का नाम (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p3On & p3Xray\"}",
+          "sort_order": 97
+        },
+        {
+          "key_name": "p3XrayResult",
+          "label": "एक्स-रे — रिपोर्ट में क्या अंकित है",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p3On & p3Xray\"}",
+          "sort_order": 98
+        },
+        {
+          "key_name": "p3Bht",
+          "label": "BHT (भर्ती) रिपोर्ट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"p3On\"}",
+          "sort_order": 99
+        },
+        {
+          "key_name": "p3BhtHosp",
+          "label": "BHT — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "राणा बेनी माधव सिंह जिला अस्पताल रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p3On & p3Bht\"}",
+          "sort_order": 100
+        },
+        {
+          "key_name": "p3BhtIpd",
+          "label": "BHT — आई0पी0डी0 नं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p3On & p3Bht\"}",
+          "sort_order": 101
+        },
+        {
+          "key_name": "p3BhtFrom",
+          "label": "BHT — भर्ती दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p3On & p3Bht\"}",
+          "sort_order": 102
+        },
+        {
+          "key_name": "p3BhtTo",
+          "label": "BHT — छुट्टी दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p3On & p3Bht\"}",
+          "sort_order": 103
+        },
+        {
+          "key_name": "p3BhtWard",
+          "label": "वार्ड नं0 / बेड नं0 (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p3On & p3Bht\"}",
+          "sort_order": 104
+        },
+        {
+          "key_name": "p3BhtDiag",
+          "label": "BHT — क्या चोट / बीमारी अंकित है",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p3On & p3Bht\"}",
+          "sort_order": 105
+        },
+        {
+          "key_name": "p3BhtRef",
+          "label": "कहाँ से रेफर होकर आया (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": "सीएचसी बछरावां रायबरेली",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p3On & p3Bht\"}",
+          "sort_order": 106
+        }
+      ]
     }
   ]
 }

@@ -200,6 +200,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Where साथ लेकर गये / घटना स्थल पर मौजूद (only the first adds "…को साथ लेकर घटना स्थल आया।"), PLACEOFINCIDENT (@FIR.ghatnasthal), Mark (A),
   item_group Dirs (दिशा choice + what), LAT/LONG type decimal (default 26. / 81.), ESakshya की गयी (+ required number SID) / तकनीकी समस्या /
   नहीं लिखना. Old v1 in `docs/format-backups/cd_nirikshan_ghatnasthal_v1.json`.
+- `sys-fmt-cd-medical-avlokan` "मेडिकल अवलोकन — MLC / इमरजेंसी रजिस्टर / एक्स-रे / BHT (1 से 3 व्यक्ति)" (Case Diary, plain text, owner's samples):
+  fixed person slots p1..p3 (p2On / p3On ticks, p3On shown only with p2On) — role chips, name, rel, father, addr, age; per person ticks
+  pNMlc / pNEr / pNXray / pNBht open their boxes (showIf). Output grouped by document: MLCs (with "थाना कार्यालय से … प्राप्त हुआ है" intro,
+  डॉक्टर की राय, MlcWeapon), इमरजेंसी रजिस्टर, एक्स-रे, then one BHT intro (मजरूब / मजरूबगणों by count via nested ifs) + BHT paras.
+  Supplementary not yet (owner: later as a 5th tick).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use
