@@ -42,6 +42,7 @@ import { getPublishedFormatsByType } from '@/lib/db/sysFormatRepo';
 import { generateReport } from '@/lib/templateEngine';
 import { filterDynamicKeys, resolveGlobalKeys } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
+import { isKeyVisible } from '@/lib/formatShowIf';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 
@@ -208,7 +209,7 @@ function FormatFillPanel({
           {dynKeys.length === 0 ? (
             <Text className="text-xs text-muted-foreground text-center py-2">No variable fields — tap Generate to use as-is.</Text>
           ) : (
-            dynKeys.map((key) => (
+            dynKeys.filter((key) => isKeyVisible(key, values)).map((key) => (
               <FormatKeyInput
                 key={key.id}
                 keyDef={key}

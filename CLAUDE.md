@@ -161,7 +161,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   owner moved it): Role (पीड़ित/अभियुक्त/बाल अपचारी/वादी/गवाह/व्यक्ति) × Gender (लड़का/लड़की → पीड़िता, अभियुक्ता, वादिनी, छात्र/छात्रा),
   Head प्रधानाध्यापक/प्रधानाचार्य, optional age / सत्र / कक्षा (sentence shortens), JJ Act 2015 धारा 94 line. Old v2 in docs/format-backups/.
 - Fields that appear only when needed (option values must not contain "/" — it means "or"): `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
-  "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + validation (hidden = not required).
+  "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + the केस डायरी कार्यवाही panel + validation (hidden = not required).
 - प्रार्थना पत्र report screen (`prarthna-patra/[ppId]/report.tsx`): every type except बीट सूचना / NCR (those = take-action) uses the inline flow
   (full petition details, "रिपोर्ट लगाएं", "प्रारूप से जोड़ें") — `REPORT_PETITION_TYPES` now also has थाना प्रार्थना पत्र / RTI / अन्य (owner);
   an old HTML report is turned into plain text for the inline box.
