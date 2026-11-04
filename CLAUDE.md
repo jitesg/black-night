@@ -256,6 +256,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - ✕ / 📋 in name, father / husband name and address boxes (owner): `useClearCopy` (`components/common/ClearCopyTools.tsx`; icons only
   when filled; clear → "मिटाया गया · वापस लाएँ" 5 s; copy → "कॉपी हुआ"). AutocompleteInput turns it on by default for FIELD_KEYS
   person_name / father_husband_name / address (person + accused group cards); `<Input clearCopy>` in प्रार्थना पत्र add and मुकदमा add-fir.
+  Every typed format box too (owner): FormatKeyInput text/multiline → `clearCopy`, item_group text cells → `ItemTextCell` (ItemGroupInput).
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

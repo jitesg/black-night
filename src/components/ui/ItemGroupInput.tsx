@@ -11,6 +11,7 @@ import { Pressable, Text, TextInput, View, type TextStyle } from 'react-native';
 import { Plus, Trash2 } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { T } from '@/lib/typography';
+import { useClearCopy } from '@/components/common/ClearCopyTools';
 import { THEME } from '@/lib/theme';
 
 export interface ItemColumn {
@@ -146,21 +147,7 @@ export const ItemGroupInput = forwardRef<View, {
                 </View>
               );
             }
-            return (
-              <View key={col.key} style={{ gap: 4 }}>
-                <Text style={{ ...T.caption1, color: c.mutedForeground } as TextStyle}>{col.label}</Text>
-                <TextInput
-                  value={v}
-                  onChangeText={(t) => setCell(i, col.key, t)}
-                  placeholder={col.label}
-                  placeholderTextColor={c.mutedForeground}
-                  style={{
-                    borderWidth: 1, borderColor: c.border, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10,
-                    fontSize: 15, lineHeight: 22, color: c.foreground, backgroundColor: c.background,
-                  }}
-                />
-              </View>
-            );
+            return <ItemTextCell key={col.key} label={col.label} value={v} onChange={(t) => setCell(i, col.key, t)} />;
           })}
         </View>
       ))}
@@ -182,3 +169,29 @@ export const ItemGroupInput = forwardRef<View, {
 });
 
 ItemGroupInput.displayName = 'ItemGroupInput';
+
+/** One typed cell of a row — with ✕ / 📋 like the other format boxes (owner). */
+function ItemTextCell({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const { colorScheme } = useColorScheme();
+  const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
+  const tools = useClearCopy(value, onChange);
+  return (
+    <View style={{ gap: 4 }}>
+      <Text style={{ ...T.caption1, color: c.mutedForeground } as TextStyle}>{label}</Text>
+      <View style={{
+        flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: c.border, borderRadius: 10,
+        paddingLeft: 12, paddingRight: 6, backgroundColor: c.background,
+      }}>
+        <TextInput
+          value={value}
+          onChangeText={onChange}
+          placeholder={label}
+          placeholderTextColor={c.mutedForeground}
+          style={{ flex: 1, paddingVertical: 10, fontSize: 15, lineHeight: 22, color: c.foreground }}
+        />
+        {tools.icons}
+      </View>
+      {tools.notice}
+    </View>
+  );
+}

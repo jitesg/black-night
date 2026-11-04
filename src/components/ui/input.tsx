@@ -672,6 +672,8 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
           onChangeText={(v) => onChange(keyDef.key_name, v)}
           errorText={error}
           required={required}
+          // ✕ / 📋 in every typed format box (owner)
+          clearCopy={inputType === 'text' || inputType === 'multiline'}
           {...(multilineLines !== undefined ? { numberOfLines: multilineLines } : {})}
         />
       </View>
