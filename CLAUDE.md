@@ -189,6 +189,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
   पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)
   → custody paragraph + [[संलग्नक]] (3 items) with the signature; fixed subject "…सर्वोत्तम हित एवं कल्याण… सुपुर्दगी आदेश…" (owner).
+- `sys-fmt-fard-60-1-daru` "60(1) आबकारी अधिनियम फर्द बरामदगी व गिरफ्तारी (एक या अधिक अभियुक्त / अभियुक्ता)" v4 (BNSS Karyavahi, owner's docx) —
+  **the base pattern for all future फर्द (owner)**: item_group `Accused` (name, rel, father, addr, age, mahila tick, cqty, ctype, litre,
+  carry = choice हाथ / पैंट-लोअर-जीन्स की दाहिनी-बायीं जेब / शर्ट / पीछे की जेब / बगल, inform); one man / one woman / many wording via
+  `{{count:…|{{any:…?mahila|F}}{{none:…?mahila|M}}|MANY}}`; heading containers `{{each}}` + `{{sum:Accused|litre}}`; per-row
+  `{?mahila|अभियुक्ता|अभियुक्त}`; LadyConstable used when any row is महिला; opening "थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम
+  जुर्म जरायम… में मामूर", witness search + आपस में जामा तलाशी lines (owner). Old v3 in `docs/format-backups/fard_60_1_daru_v3.json`.
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
