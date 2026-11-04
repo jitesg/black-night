@@ -286,7 +286,17 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   accused_rows (item_group JSON; FIR accused have no father/gender → blank, templates use `{?father|{rel} {father} |}`), accused1_name/_mobile.
   Fallback: `"@FIR.complainant_relation|पुत्री"` (used when empty / no FIR; screens without FIR context use `literalDefault`). Connected:
   183 बयान, मेडिकल अवलोकन, डॉक्टर बयान, अभियुक्त बयान, निरीक्षण घटना स्थल, 35(3) नोटिस (seed_version +1).
-  Next phases (agreed): connect all other formats, "मुकदमा चुनें" on formats opened outside a मुकदमा, one-tap buttons.
+  Phase 3 done: FIR अभियुक्त like the वादी card — fir_accused columns father / relation / gender (_ensureColumn), shared UI
+  `components/fir/AccusedIdentityFields.tsx` (सम्बन्ध chips → लिंग auto, पिता / पति, लिंग) on add-fir and the FIR details tab (details tab now
+  edits accused + "+ अभियुक्त जोड़ें"; saved with the FIR). More @FIR fields: fir_datetime, occurrence_datetime, complainant_with_role
+  ("वादिनी रेनू पत्नी धीरज"), accused1_* (name/father/relation/gender/address/age/mobile/full/abhiyukt/mahila), accused_names
+  ("क, ख व ग"), accused_count / _co_count (01), accused_abhiyukt / accused_number, accused_cards (PersonGroupInput JSON),
+  accused_group (AccusedGroupInput JSON, status नामजद). Markers set in 22 formats (all FIRNo / Sections keys, 170 मुकदमा वादी + अभियुक्त,
+  न्यायिक अभिरक्षा / DCRB / GD dakhila + avmukt accused, बेल नोटिस अभियुक्त, वाहन फ्लैग TheftPlace…; an old literal default kept as fallback).
+  `mergeContextDefaults` (empty FIR value never wipes a default card). "मुकदमा चुनें": `components/formats/FirPickBanner.tsx` on
+  formats/fill (no firId), nyayalay + prarthna-patra fill-format when `hasFirMarkers`; pick → `applyPickedFir` fills only untouched
+  fields (empty / opening value / last pick). Tests in `scripts/test_*.ts` must treat "@…" defaults as empty.
+  Next (agreed): one-tap buttons.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

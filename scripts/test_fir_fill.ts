@@ -33,3 +33,21 @@ test('first accused + fallback', async () => {
   assert.equal(literalDefault('पुत्र'), 'पुत्र');
   assert.equal(isMarkerDefault('__FROM_RELATED_FIR__'), true);
 });
+test('accused like वादी', () => {
+  const acc = [{ is_known: 1, name: 'सुनीता', relation: 'पत्नी', father: 'रमेश', address: 'ग्राम बन्नावां', age: '35' },
+    { is_known: 1, name: 'बबलू', father: 'रामलाल', address: 'रिशालखेड़ा' }, { is_known: 1, name: 'नीरज' }];
+  assert.equal(firFillValue('accused1_full', fir, acc), 'सुनीता पत्नी रमेश निवासी ग्राम बन्नावां उम्र करीब 35 वर्ष');
+  assert.equal(firFillValue('accused1_abhiyukt', fir, acc), 'अभियुक्ता');
+  assert.equal(firFillValue('accused_abhiyukt', fir, acc), 'अभियुक्तगण');
+  assert.equal(firFillValue('accused_names', fir, acc), 'सुनीता, बबलू व नीरज');
+  assert.equal(firFillValue('accused_co_count', fir, acc), '02');
+  const rows = JSON.parse(firFillValue('accused_rows', fir, acc) ?? '[]');
+  assert.deepEqual([rows[0].mahila, rows[1].rel, rows[1].father, rows[2].father], ['हाँ', 'पुत्र', 'रामलाल', '']);
+  const cards = JSON.parse(firFillValue('accused_group', fir, acc) ?? '[]');
+  assert.deepEqual([cards[0].gender, cards[0].relationType, cards[0].status, cards[1].gender], ['महिला', 'पत्नी', 'नामजद', 'पुरुष']);
+  assert.equal(firFillValue('complainant_with_role', fir), 'वादिनी आरती पुत्री राजबहादुर');
+  assert.equal(firFillValue('fir_datetime', { ...fir, time_of_information: '10:15' }), '01.07.2025 समय 10:15 बजे');
+});
+test('occurrence date + time', () => {
+  assert.equal(firFillValue('occurrence_datetime', { date_of_occurrence: '2025-06-30', time_of_occurrence: '20:00' }), '30.06.2025 समय करीब 20:00 बजे');
+});

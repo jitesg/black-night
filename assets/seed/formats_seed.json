@@ -556,7 +556,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 13,
+      "seed_version": 14,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -570,7 +570,7 @@
           "label": "एफआईआर न0",
           "field_type": "TEXT",
           "is_required": 1,
-          "default_value": "230/26",
+          "default_value": "@FIR.fir_number|230/26",
           "sort_order": 0
         },
         {
@@ -578,7 +578,7 @@
           "label": "धाराएं",
           "field_type": "TEXT",
           "is_required": 1,
-          "default_value": "115(2) बीएनएस",
+          "default_value": "@FIR.section|115(2) बीएनएस",
           "sort_order": 1
         },
         {
@@ -969,7 +969,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -986,7 +986,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 0
         },
         {
@@ -994,7 +994,7 @@
           "label": "धाराएं",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "sort_order": 1
         },
         {
@@ -1002,7 +1002,7 @@
           "label": "वादी / वादिनी (जैसे: वादिनी रेनू पत्नी धीरज)",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.complainant_with_role",
           "sort_order": 2
         },
         {
@@ -1010,7 +1010,7 @@
           "label": "अभियुक्त (एकपक्षीय) — नाम, पिता/पति, उम्र, पता",
           "field_type": "person_group",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.accused_cards",
           "sort_order": 3
         },
         {
@@ -1852,7 +1852,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "DCRB",
@@ -1866,7 +1866,8 @@
           "label": "अभियुक्तगण",
           "field_type": "accused_group",
           "is_required": 1,
-          "sort_order": 1
+          "sort_order": 1,
+          "default_value": "@FIR.accused_group"
         },
         {
           "key_name": "HighCourtBench",
@@ -1903,7 +1904,8 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 6
+          "sort_order": 6,
+          "default_value": "@FIR.section"
         },
         {
           "key_name": "OfficerName",
@@ -1948,7 +1950,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "अवमुक्त",
@@ -1974,7 +1976,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 1
         },
         {
@@ -1982,7 +1984,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "sort_order": 2
         },
         {
@@ -2083,7 +2085,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "तकनीकी निरीक्षण",
@@ -2099,7 +2101,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 0
         },
         {
@@ -2107,7 +2109,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "default_value": "281/125(b) BNS",
+          "default_value": "@FIR.section|281/125(b) BNS",
           "sort_order": 1
         },
         {
@@ -2277,7 +2279,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "पोस्टमार्टम",
@@ -2298,14 +2300,16 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 2
+          "sort_order": 2,
+          "default_value": "@FIR.fir_number"
         },
         {
           "key_name": "Sections",
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 3
+          "sort_order": 3,
+          "default_value": "@FIR.section"
         },
         {
           "key_name": "DeadPersonName",
@@ -2379,7 +2383,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "आयु",
@@ -2472,7 +2476,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 9
         },
         {
@@ -2480,7 +2484,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "sort_order": 10
         },
         {
@@ -2646,7 +2650,7 @@
           "label": "अभियुक्त/ अभियुक्तगण",
           "field_type": "dropdown",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.accused_number|",
           "sort_order": 1,
           "dropdown_options": "[\"अभियुक्त\",\"अभियुक्तगण\"]"
         }
@@ -2656,7 +2660,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "last_updated": "2026-07-17",
       "tags": [
@@ -2676,7 +2680,7 @@
           "label": "अभियुक्त/ अभियुक्तगण",
           "field_type": "dropdown",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.accused_number|",
           "sort_order": 1,
           "dropdown_options": "[\"अभियुक्त\",\"अभियुक्तगण\"]"
         }
@@ -2686,7 +2690,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "last_updated": "2026-07-17",
       "tags": [
@@ -2834,7 +2838,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -2868,7 +2872,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"Reason=मुकदमा\"}",
           "sort_order": 2
         },
@@ -2877,7 +2881,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "dropdown_options": "{\"showIf\": \"Reason=मुकदमा\"}",
           "sort_order": 3
         },
@@ -2981,7 +2985,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "दाखिला",
@@ -3016,7 +3020,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"CaseType=मुकदमा\"}",
           "sort_order": 2
         },
@@ -3025,7 +3029,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "dropdown_options": "{\"showIf\": \"CaseType=मुकदमा\"}",
           "sort_order": 3
         },
@@ -3088,7 +3092,7 @@
           "label": "गिरफ्तारशुदा अभियुक्त",
           "field_type": "person_group",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.accused_cards",
           "sort_order": 10
         },
         {
@@ -3188,7 +3192,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -3258,7 +3262,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 6
         },
         {
@@ -3266,7 +3270,7 @@
           "label": "धारा (अभी तक की)",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "sort_order": 7
         },
         {
@@ -3400,7 +3404,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "वाहन",
@@ -3457,7 +3461,7 @@
           "label": "मु0अ0सं0 — न हो तो खाली",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 5
         },
         {
@@ -3465,7 +3469,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "dropdown_options": "{\"showIf\": \"FIRNo\"}",
           "sort_order": 6
         },
@@ -3506,7 +3510,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -3540,7 +3544,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 2
         },
         {
@@ -3548,7 +3552,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "sort_order": 3
         },
         {
@@ -3556,7 +3560,7 @@
           "label": "अवमुक्त किये जाने वाले आरोपी",
           "field_type": "person_group",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.accused_cards",
           "sort_order": 4
         },
         {
@@ -3648,7 +3652,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "रवानगी",
@@ -3663,7 +3667,7 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 3,
-          "default_value": ""
+          "default_value": "@FIR.fir_number"
         },
         {
           "key_name": "Sections",
@@ -3671,7 +3675,7 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 4,
-          "default_value": ""
+          "default_value": "@FIR.section"
         },
         {
           "key_name": "Rank",
@@ -3710,7 +3714,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 8,
+      "seed_version": 9,
       "app_version": "1.0.0",
       "tags": [
         "GD",
@@ -3858,7 +3862,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"h3\", \"placeholder\": \"जैसे: 106/2026\"}",
           "sort_order": 15
         },
@@ -3902,7 +3906,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: 106/2026\"}",
           "sort_order": 20
         },
@@ -3911,7 +3915,7 @@
           "label": "पूर्व की धारा (अभी जिसमें मुकदमा दर्ज है)",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
           "sort_order": 21
         },
@@ -3946,7 +3950,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: 106/2026\"}",
           "sort_order": 25
         },
@@ -3955,7 +3959,7 @@
           "label": "पूर्व की धारा (अभी जिसमें मुकदमा दर्ज है)",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
           "sort_order": 26
         },
@@ -3999,7 +4003,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: 106/2026\"}",
           "sort_order": 31
         },
@@ -4052,7 +4056,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: 106/2026\"}",
           "sort_order": 37
         },
@@ -4105,7 +4109,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: 106/2026\"}",
           "sort_order": 43
         },
@@ -4149,7 +4153,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: 106/2026\"}",
           "sort_order": 48
         },
@@ -4212,7 +4216,7 @@
           "label": "विवेचना — मु0अ0सं0 (न हो तो खाली)",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 55,
           "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\"}"
         },
@@ -4221,7 +4225,7 @@
           "label": "विवेचना — धारा",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "sort_order": 56,
           "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\"}"
         },
@@ -4551,7 +4555,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "आत्मसमर्पण",
@@ -4576,21 +4580,24 @@
           "label": "मु0अ0सं0 (जैसे 320/25)",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 2
+          "sort_order": 2,
+          "default_value": "@FIR.fir_number"
         },
         {
           "key_name": "Section",
           "label": "धारा (जैसे 281/106(1) BNS)",
           "field_type": "text",
           "is_required": 1,
-          "sort_order": 3
+          "sort_order": 3,
+          "default_value": "@FIR.section"
         },
         {
           "key_name": "Accused",
           "label": "अभियुक्त — नाम, पिता/पति का नाम, पता व स्थिति (नामजद / प्रकाश में आया / वांछित नहीं)",
           "field_type": "accused_group",
           "is_required": 1,
-          "sort_order": 4
+          "sort_order": 4,
+          "default_value": "@FIR.accused_group"
         },
         {
           "key_name": "pad",
@@ -4739,7 +4746,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "वाहन",
@@ -4772,7 +4779,7 @@
           "label": "चोरी का स्थान (जैसे: ग्राम बन्नावां)",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.ghatnasthal",
           "sort_order": 2
         },
         {
@@ -4812,7 +4819,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 7
         },
         {
@@ -4820,7 +4827,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "default_value": "303(2) BNS",
+          "default_value": "@FIR.section|303(2) BNS",
           "sort_order": 8
         },
         {
@@ -5001,7 +5008,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "दुर्घटना",
@@ -5026,7 +5033,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 1
         },
         {
@@ -5034,7 +5041,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "default_value": "281/125(b) BNS",
+          "default_value": "@FIR.section|281/125(b) BNS",
           "sort_order": 2
         },
         {
@@ -5098,7 +5105,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "मेडिकल",
@@ -5160,7 +5167,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "sort_order": 5
         },
         {
@@ -5168,7 +5175,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "sort_order": 6
         },
         {
@@ -5898,7 +5905,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "बेल नोटिस",
@@ -5915,7 +5922,7 @@
           "label": "अभियुक्त का नाम",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.accused1_name",
           "dropdown_options": "{\"placeholder\": \"जैसे: रामू\"}",
           "sort_order": 0
         },
@@ -5924,7 +5931,7 @@
           "label": "पिता का नाम",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.accused1_father",
           "dropdown_options": "{\"placeholder\": \"जैसे: श्यामलाल\"}",
           "sort_order": 1
         },
@@ -5933,7 +5940,7 @@
           "label": "पता",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.accused1_address",
           "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम बन्नावां थाना बछरावां जनपद रायबरेली\"}",
           "sort_order": 2
         },
@@ -5960,7 +5967,7 @@
           "label": "मु0अ0सं0",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.fir_number",
           "dropdown_options": "{\"placeholder\": \"जैसे: 284/2025\"}",
           "sort_order": 5
         },
@@ -5978,7 +5985,7 @@
           "label": "धारा",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.section",
           "dropdown_options": "{\"placeholder\": \"जैसे: 115(2), 352, 351(3) बीएनएस\"}",
           "sort_order": 7
         },
@@ -5987,7 +5994,7 @@
           "label": "1ए. घटना का दिनांक व समय",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.occurrence_datetime",
           "dropdown_options": "{\"placeholder\": \"जैसे: 30.06.2025 समय करीब 20:00 बजे\"}",
           "sort_order": 8
         },
@@ -5996,7 +6003,7 @@
           "label": "1बी. प्रथम सूचना रिपोर्ट का दिनांक व समय",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.fir_datetime",
           "dropdown_options": "{\"placeholder\": \"जैसे: 01.07.2025 समय 10:15 बजे\"}",
           "sort_order": 9
         },
@@ -6122,7 +6129,7 @@
           "label": "7. सहअभियुक्तों की संख्या",
           "field_type": "text",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "@FIR.accused_co_count",
           "dropdown_options": "{\"placeholder\": \"जैसे: 02\"}",
           "sort_order": 23
         },
@@ -6904,7 +6911,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "35(3)",
@@ -6976,7 +6983,7 @@
           "label": "सम्बन्ध",
           "field_type": "dropdown",
           "is_required": 1,
-          "default_value": "पुत्र",
+          "default_value": "@FIR.accused1_relation|पुत्र",
           "dropdown_options": "[\"पुत्र\", \"पुत्री\", \"पत्नी\"]",
           "sort_order": 6
         },
@@ -6985,7 +6992,7 @@
           "label": "पिता / पति का नाम",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
+          "default_value": "@FIR.accused1_father",
           "dropdown_options": "{\"placeholder\": \"जैसे: भिखारी\"}",
           "sort_order": 7
         },

@@ -10,7 +10,8 @@ import { ChevronDown, MapPin, Edit2, ListChecks, ChevronRight, Plus, Search, X, 
 import { useTranslation } from 'react-i18next';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { getFIRById, updateFIR, type FIR } from '@/lib/db/firRepo';
-import { getAccusedByFIR, type FIRAccused } from '@/lib/db/firAccusedRepo';
+import { createAccused, getAccusedByFIR, updateAccused, type FIRAccused } from '@/lib/db/firAccusedRepo';
+import { AccusedIdentityFields } from '@/components/fir/AccusedIdentityFields';
 import { getKaryvahiByFIR, type FIRKaryvahi, type KaryvahiStatus, type KaryvahiPriority } from '@/lib/db/firKaryvahiRepo';
 import { getCaseChecklists } from '@/lib/db/sopChecklistRepo';
 import { getAll as getAllSops, getById as getSopById, type SopIndexEntry } from '@/ai/sopIndex';
@@ -129,7 +130,9 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function AccusedRow({ accused }: { accused: FIRAccused }) {
+function AccusedRow({
+  accused, onChange, onRemove,
+}: { accused: FIRAccused; onChange: (field: keyof FIRAccused, v: string) => void; onRemove?: () => void }) {
   const { t } = useTranslation();
   const BAIL_LABELS: Record<string, string> = {
     unknown: t('fir.bailUnknown'),
@@ -137,11 +140,28 @@ function AccusedRow({ accused }: { accused: FIRAccused }) {
     on_bail: t('fir.bailOnBail'),
   };
   return (
-    <View className="bg-secondary rounded-xl px-4 py-3 gap-1 mb-2">
-      <Text className="text-sm font-semibold text-foreground">{accused.name ?? t('fir.accusedUnknown')}</Text>
-      {accused.address ? <Text className="text-xs text-muted-foreground">{accused.address}</Text> : null}
-      {accused.mobile ? <Text className="text-xs text-muted-foreground">📞 {accused.mobile}</Text> : null}
-      <View className="flex-row items-center gap-2 mt-1">
+    <View className="bg-secondary rounded-xl px-4 py-3 gap-3 mb-2">
+      <View className="flex-row items-center justify-between">
+        <Text className="text-xs font-semibold text-muted-foreground">अभियुक्त / अभियुक्ता</Text>
+        {onRemove ? (
+          <Pressable onPress={onRemove} className="px-2 py-1"><Text className="text-xs text-red-600">हटाएँ</Text></Pressable>
+        ) : null}
+      </View>
+      <Field label="नाम">
+        <Input clearCopy value={accused.name ?? ''} onChangeText={(v) => onChange('name', v)} placeholder="जैसे: बबलू" />
+      </Field>
+      <AccusedIdentityFields
+        value={{ relation: accused.relation ?? '', father: accused.father ?? '', gender: accused.gender ?? '' }}
+        onChange={(f, v) => onChange(f, v)}
+      />
+      <Field label="पता">
+        <Input clearCopy type="multiline" value={accused.address ?? ''} onChangeText={(v) => onChange('address', v)} numberOfLines={2} placeholder="जैसे: रिशालखेड़ा मजरे महेरी थाना बछरावां जनपद रायबरेली" />
+      </Field>
+      <View className="flex-row gap-3">
+        <View className="flex-1"><Field label="मोबाइल"><Input type="mobile" value={accused.mobile ?? ''} onChangeText={(v) => onChange('mobile', v)} /></Field></View>
+        <View className="flex-1"><Field label="उम्र"><Input type="age" value={accused.age ?? ''} onChangeText={(v) => onChange('age', v)} /></Field></View>
+      </View>
+      <View className="flex-row items-center gap-2">
         <View className="rounded-full bg-card border border-border px-2.5 py-1">
           <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{BAIL_LABELS[accused.bail_status] ?? accused.bail_status}</Text>
         </View>
@@ -175,6 +195,11 @@ export default function FIRDetailsTab() {
 
   const [fir, setFir] = useState<FIR | null>(null);
   const [accused, setAccused] = useState<FIRAccused[]>([]);
+  const accDirty = useRef(new Set<string>());
+  const editAccused = (id: string, field: keyof FIRAccused, v: string) => {
+    accDirty.current.add(id);
+    setAccused((prev) => prev.map((a) => (a.id === id ? { ...a, [field]: v } : a)));
+  };
   const [karyvahiItems, setKaryvahiItems] = useState<FIRKaryvahi[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -367,6 +392,24 @@ export default function FIRDetailsTab() {
         nakal_chick: nakalChick, nakal_rapat: nakalRapat,
         mukadma_saransh: mukadmaSaransh,
       });
+      // अभियुक्त edits (owner: same as the वादी card) — changed rows updated, new rows with a name created
+      for (const a of accused) {
+        if (a.id.startsWith('new_')) {
+          if (!a.name?.trim()) continue;
+          await createAccused({
+            fir_id: stableFirId!, is_known: 1, name: a.name.trim(), address: a.address ?? '', mobile: a.mobile ?? '',
+            age: a.age ?? '', father: a.father?.trim() ?? '', relation: a.relation ?? '', gender: a.gender ?? '',
+            bail_status: 'unknown',
+          });
+        } else if (accDirty.current.has(a.id)) {
+          await updateAccused(a.id, {
+            name: a.name ?? '', address: a.address ?? '', mobile: a.mobile ?? '', age: a.age ?? '',
+            father: a.father ?? '', relation: a.relation ?? '', gender: a.gender ?? '',
+          });
+        }
+      }
+      accDirty.current.clear();
+      setAccused(await getAccusedByFIR(stableFirId!));
       const updated = await getFIRById(stableFirId!);
       if (updated && mountedRef.current) setFir(updated);
     } catch {
@@ -528,14 +571,30 @@ export default function FIRDetailsTab() {
         </View>
 
         {/* Accused */}
-        {accused.length > 0 && (
-          <View className="gap-3">
-            <Text className="text-base font-bold text-foreground border-b border-border pb-2">
-              {t('fir.accusedSectionTitle', { count: accused.length })}
-            </Text>
-            {accused.map((a) => <AccusedRow key={a.id} accused={a} />)}
-          </View>
-        )}
+        <View className="gap-3">
+          <Text className="text-base font-bold text-foreground border-b border-border pb-2">
+            {t('fir.accusedSectionTitle', { count: accused.filter((a) => a.is_known !== 0).length })}
+          </Text>
+          {accused.filter((a) => a.is_known !== 0).map((a) => (
+            <AccusedRow
+              key={a.id}
+              accused={a}
+              onChange={(f, v) => editAccused(a.id, f, v)}
+              onRemove={a.id.startsWith('new_') ? () => setAccused((prev) => prev.filter((x) => x.id !== a.id)) : undefined}
+            />
+          ))}
+          {accused.some((a) => a.is_known === 0) ? (
+            <Text className="text-xs text-muted-foreground">{t('fir.accusedUnknown')}</Text>
+          ) : null}
+          <Pressable
+            onPress={() => setAccused((prev) => [...prev, {
+              id: `new_${Date.now()}`, fir_id: stableFirId ?? '', is_known: 1, bail_status: 'unknown', created_at: 0, updated_at: 0,
+            }])}
+            className="items-center border-2 border-dashed border-border rounded-2xl py-3"
+          >
+            <Text className="text-sm font-semibold text-primary">+ अभियुक्त जोड़ें</Text>
+          </Pressable>
+        </View>
 
         {/* Detailed Reports & Summary */}
         <View className="gap-4">

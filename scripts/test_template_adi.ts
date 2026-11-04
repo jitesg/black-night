@@ -148,7 +148,7 @@ test('प्रार्थना पत्र जांच — मुकदम�
   const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
   const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-pp-fir-sanstuti');
   const v: Record<string, string> = {};
-  for (const k of f.keys) v[k.key_name] = k.default_value && !k.default_value.startsWith('__') ? k.default_value : 'क';
+  for (const k of f.keys) v[k.key_name] = k.default_value && !/^(__|@)/.test(k.default_value) ? k.default_value : 'क';
   const html = P2.renderTextForPrint(generateReport(f.vivran, v, f.keys, { keepMarkers: true }));
   assert.doesNotMatch(html, /\{\{/);
   assert.match(html, /class="att">3\. जांच में एकत्रित साक्ष्य/);
@@ -196,7 +196,7 @@ test('GD वापसी: nothing ticked → only the opening; ticks → paragra
   const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
   const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-wapsi');
   const v: Record<string, string> = {};
-  for (const k of f.keys) v[k.key_name] = k.default_value && !k.default_value.startsWith('__') ? k.default_value : '';
+  for (const k of f.keys) v[k.key_name] = k.default_value && !/^(__|@)/.test(k.default_value) ? k.default_value : '';
   v.OfficerName = 'क';
   const none = generateReport(f.vivran, v, f.keys);
   assert.match(none, /सकुशल वापस थाना उपस्थित आया। कार्य विवरण इस प्रकार है:$/);
@@ -246,7 +246,7 @@ test('अभियुक्त दाखिला: every mode × case type fills
   const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
   const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-abhiyukt-dakhila');
   const def: Record<string, string> = {};
-  for (const k of f.keys) def[k.key_name] = k.default_value && !k.default_value.startsWith('__') ? k.default_value : 'क';
+  for (const k of f.keys) def[k.key_name] = k.default_value && !/^(__|@)/.test(k.default_value) ? k.default_value : 'क';
   const modes = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'Mode').dropdown_options);
   const types = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'CaseType').dropdown_options);
   for (const Mode of modes) for (const CaseType of types) {
@@ -263,7 +263,7 @@ test('GD: विवेचना में परिवर्तन / वाह�
   const get = (id: string) => d.formats.find((x: { id: string }) => x.id === id);
   const def = (f: { keys: { key_name: string; default_value?: string }[] }) => {
     const v: Record<string, string> = {};
-    for (const k of f.keys) v[k.key_name] = k.default_value && !k.default_value.startsWith('__') ? k.default_value : 'क';
+    for (const k of f.keys) v[k.key_name] = k.default_value && !/^(__|@)/.test(k.default_value) ? k.default_value : 'क';
     return v;
   };
   const ppl = JSON.stringify([P('रवि', 'रामपाल', '24'), P('मोहन', 'रामपाल', '21')]);

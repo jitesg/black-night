@@ -195,3 +195,34 @@ export async function resolveContextDefaults(
 
   return result;
 }
+
+/** defaults < context: an empty context value never wipes a default (e.g. a fresh person card when the FIR has no अभियुक्त). */
+export function mergeContextDefaults(defaults: Record<string, string>, ctx: Record<string, string>): Record<string, string> {
+  const out = { ...defaults };
+  for (const [k, v] of Object.entries(ctx)) if (v !== '' || !(k in out)) out[k] = v;
+  return out;
+}
+
+/**
+ * "मुकदमा चुनें": fill the picked FIR's values into fields the officer has not typed in
+ * (empty, still the opening value, or filled by the previous pick). Returns the new values + what this pick set.
+ */
+export function applyPickedFir(
+  prev: Record<string, string>, ctx: Record<string, string>,
+  initial: Record<string, string>, prevPicked: Record<string, string>,
+): { next: Record<string, string>; picked: Record<string, string> } {
+  const next = { ...prev };
+  const picked: Record<string, string> = {};
+  for (const [k, v] of Object.entries(ctx)) {
+    const cur = prev[k] ?? '';
+    if (cur.trim() && cur !== (initial[k] ?? '') && cur !== prevPicked[k]) continue;
+    next[k] = v || (initial[k] ?? '');
+    picked[k] = next[k];
+  }
+  return { next, picked };
+}
+
+/** Does this format have fields the FIR can fill? (shows the "मुकदमा चुनें" banner) */
+export function hasFirMarkers(keys: KeyWithDefault[]): boolean {
+  return keys.some((k) => /^@FIR\.|^__FROM_RELATED_FIR__$/.test(k.default_value ?? ''));
+}

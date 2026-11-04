@@ -1,9 +1,11 @@
-import { resolveContextDefaults } from '@/lib/contextDefaultResolver';
+import { applyPickedFir, hasFirMarkers, mergeContextDefaults, resolveContextDefaults } from '@/lib/contextDefaultResolver';
 import { isKeyVisible } from '@/lib/formatShowIf';
 import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
 import { deleteReportRecord, getReportRecord, saveDraftRecord, saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
 import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
+import { FirPickBanner } from '@/components/formats/FirPickBanner';
+import type { FIR } from '@/lib/db/firRepo';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -78,6 +80,10 @@ export default function FillScreen() {
   const isDirectPath = !callingModule;
   const draftScope = callingModule || 'formats';
   const [pendingDraft, setPendingDraft] = useState<Record<string, string> | null>(null);
+  // "मुकदमा चुनें" (opened outside a मुकदमा): the picked FIR fills the "@FIR.*" fields that are still untouched
+  const [pickedFir, setPickedFir] = useState<FIR | null>(null);
+  const initialValuesRef = useRef<Record<string, string>>({});
+  const pickedValuesRef = useRef<Record<string, string>>({});
   const draftRecordIdRef = useRef<string | null>(draftId || null);
   const { workspace } = useWorkspace();
   const { t } = useTranslation();
@@ -183,7 +189,11 @@ export default function FillScreen() {
             }
 
             // Merge order: static defaults < context defaults < workspace auto < draft
-            setValues({ ...defaults, ...contextDefaults, ...resolved, ...draft });
+            const startValues = { ...mergeContextDefaults(defaults, contextDefaults), ...resolved, ...draft };
+            initialValuesRef.current = startValues;
+            pickedValuesRef.current = {};
+            setPickedFir(null);
+            setValues(startValues);
             // A draft keeps the पुलिस स्टेशन / जनपद / नाम the officer had typed in the pills.
             const pillDraft = Object.fromEntries(Object.keys(resolved).filter((key) => draft[key]).map((key) => [key, draft[key]]));
             if (Object.keys(pillDraft).length) setAutoValues({ ...resolved, ...pillDraft });
@@ -492,6 +502,20 @@ export default function FillScreen() {
               </Pressable>
             </View>
           )}
+
+          {!firId && hasFirMarkers(dynamicKeys) ? (
+            <FirPickBanner
+              picked={pickedFir}
+              onPick={async (fir) => {
+                const ctx = await resolveContextDefaults(dynamicKeys, fir.id);
+                const r = applyPickedFir(values, ctx, initialValuesRef.current, pickedValuesRef.current);
+                setValues(r.next);
+                pickedValuesRef.current = r.picked;
+                isDirty.current = true;
+                setPickedFir(fir);
+              }}
+            />
+          ) : null}
 
           {/* ── Saved half-filled draft (module path) — offered, never auto-filled ── */}
           {pendingDraft ? (

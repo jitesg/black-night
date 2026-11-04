@@ -1102,6 +1102,9 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'firs', 'complainant_father',   'TEXT');
   await _ensureColumn(database, 'firs', 'complainant_relation', 'TEXT');
   await _ensureColumn(database, 'firs', 'complainant_gender',   'TEXT');
+  await _ensureColumn(database, 'fir_accused', 'father',   'TEXT');
+  await _ensureColumn(database, 'fir_accused', 'relation', 'TEXT');
+  await _ensureColumn(database, 'fir_accused', 'gender',   'TEXT');
   await _ensureColumn(database, 'fir_karyvahi', 'deleted_at',  'INTEGER');
   await _ensureColumn(database, 'fir_karyvahi', 'precautions', 'TEXT');
   await _ensureColumn(database, 'knowledge_entries', 'crime_type', "TEXT DEFAULT ''");

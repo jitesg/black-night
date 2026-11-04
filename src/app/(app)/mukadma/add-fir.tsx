@@ -16,6 +16,7 @@ import { OcrScanModal } from '@/components/common/OcrScanModal';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { createFIR } from '@/lib/db/firRepo';
 import { createAccused } from '@/lib/db/firAccusedRepo';
+import { AccusedIdentityFields } from '@/components/fir/AccusedIdentityFields';
 import { seedFIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
 import { getDatabase, getDbInstanceTag } from '@/lib/db/database';
 import { getFlatCrimeTypes, type CrimeTypeMeta } from '@/lib/db/checklistRepo';
@@ -52,6 +53,9 @@ interface KnownAccused {
   altMobile: string;
   jati: string;
   age: string;
+  relation: string;
+  father: string;
+  gender: string;
   bailStatus: 'unknown' | 'in_jail' | 'on_bail';
   remandNumber: string;
   dateOfRemand: string;
@@ -62,7 +66,7 @@ function mkAccused(): KnownAccused {
   return {
     id: Math.random().toString(36).slice(2),
     name: '', address: '', mobile: '', altMobile: '',
-    jati: '', age: '', bailStatus: 'unknown',
+    jati: '', age: '', relation: '', father: '', gender: '', bailStatus: 'unknown',
     remandNumber: '', dateOfRemand: '', nextRemandDate: '',
   };
 }
@@ -352,6 +356,7 @@ function AccusedCard({
       <Field label={t('fir.addFir.fieldAccusedName')}>
         <Input clearCopy value={accused.name} onChangeText={(v) => onChange(accused.id, 'name', v)} placeholder={t('fir.addFir.namePlaceholder')} />
       </Field>
+      <AccusedIdentityFields value={accused} onChange={(f, v) => onChange(accused.id, f, v)} />
       <Field label={t('fir.addFir.fieldAccusedAddress')}>
         <Input clearCopy type="multiline" value={accused.address} onChangeText={(v) => onChange(accused.id, 'address', v)} placeholder={t('fir.addFir.addressPlaceholder')} numberOfLines={2} />
       </Field>
@@ -675,6 +680,7 @@ export default function AddFIRScreen() {
               alt_mobile: a.altMobile, jati: a.jati, age: a.age,
               bail_status: a.bailStatus, remand_number: a.remandNumber,
               date_of_remand: a.dateOfRemand, next_remand_date: a.nextRemandDate,
+              father: a.father.trim(), relation: a.relation, gender: a.gender,
             });
             accusedCount++;
           }

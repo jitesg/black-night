@@ -35,6 +35,9 @@ import { FormatKeyInput } from '@/components/ui/input';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
 import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
+import { FirPickBanner } from '@/components/formats/FirPickBanner';
+import { applyPickedFir, hasFirMarkers, resolveContextDefaults } from '@/lib/contextDefaultResolver';
+import type { FIR } from '@/lib/db/firRepo';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { nyayalayDraftStore } from '@/lib/nyayalayDraftStore';
 import {
@@ -54,6 +57,8 @@ export default function NyayalayFillFormatScreen() {
   const [dynamicKeys, setDynamicKeys] = useState<FormatKey[]>([]);
   const [values, setValues] = useState<Record<string, string>>({});
   const [initialValues, setInitialValues] = useState<Record<string, string>>({});
+  const [pickedFir, setPickedFir] = useState<FIR | null>(null);
+  const pickedValuesRef = useRef<Record<string, string>>({});
   const [autoValues, setAutoValues] = useState<Record<string, string>>({});
   const [nyayalayAutoValues, setNyayalayAutoValues] = useState<Record<string, string>>({});
   const [missingWorkspaceFields, setMissingWorkspaceFields] = useState<string[]>([]);
@@ -208,6 +213,19 @@ export default function NyayalayFillFormatScreen() {
         behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
+        {hasFirMarkers(dynamicKeys) ? (
+          <FirPickBanner
+            picked={pickedFir}
+            onPick={async (fir) => {
+              // "मुकदमा चुनें": the FIR's मु0अ0सं0 / धारा / अभियुक्त … fill the untouched fields
+              const ctx = await resolveContextDefaults(dynamicKeys, fir.id);
+              const r = applyPickedFir(values, ctx, initialValues, pickedValuesRef.current);
+              setValues(r.next);
+              pickedValuesRef.current = r.picked;
+              setPickedFir(fir);
+            }}
+          />
+        ) : null}
         {pendingDraft ? (
           <DraftResumeBanner
             onResume={() => { const d = pendingDraft; setPendingDraft(null); setValues((prev) => ({ ...prev, ...d })); }}
