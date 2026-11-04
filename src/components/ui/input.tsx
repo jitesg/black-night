@@ -548,6 +548,7 @@ function fieldTypeToInputType(ft: string | undefined): InputType {
   switch (ft) {
     case 'multiline': return 'multiline';
     case 'number':    return 'number';
+    case 'decimal':   return 'decimal';   // अक्षांश / देशान्तर — keeps the "."
     case 'date':      return 'date';
     default:          return 'text';
   }
@@ -673,7 +674,7 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
           errorText={error}
           required={required}
           // ✕ / 📋 in every typed format box (owner)
-          clearCopy={inputType === 'text' || inputType === 'multiline'}
+          clearCopy={inputType !== 'date'}
           {...(multilineLines !== undefined ? { numberOfLines: multilineLines } : {})}
         />
       </View>
