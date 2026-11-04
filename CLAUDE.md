@@ -301,11 +301,15 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end
   before start is allowed — past midnight).
-- केस डायरी A4 प्रीव्यू (owner): "A4" button in the view-case-diary header → `components/caseDiary/CaseDiaryA4Preview.tsx` (modal,
-  WebView / web iframe) showing `buildCaseDiaryPrintHtml` (`src/lib/caseDiaryPrint.ts`, pure; tests `scripts/test_case_diary_print.ts`):
-  title "केस डायरी संख्या – NN" (position by created_at), थाना/जनपद, bordered meta table (मु0अ0सं0 / धारा, वादी, दिनांक dd.mm.yyyy, समय,
-  भ्रमण स्थान), each entry = bold underlined "<कार्यवाही> –" + justified paragraphs (HTML / marks → plain), signature (workspace officer,
-  विवेचक, थाना); an inline script splits the blocks into 210×297 mm sheets with "पृष्ठ n / N". Word export unchanged.
+- केस डायरी Word export + A4 प्रीव्यू = owner's "पर्चा" layout (sample docx 297/2025): `src/lib/caseDiaryParcha.ts` (pure; tests
+  `scripts/test_case_diary_parcha.ts`) — per diary: yellow "पर्चा नं0 NN दिनाँक dd.mm.yyyy समय HH.MM से HH.MM बजे तक", "कार्यवाही- <names>"
+  (पर्चा 01 adds मुकदमा साराशं, विवेचना ग्रहण), "दौरा- <places व …> ।" (none → थाना कार्यालय), blank, red "मुकदमा साराशः- " + `mukadmaSaransh`
+  (FIR + accused: मु0अ0सं0, धारा, दिनाँक घटना/सूचना + समय, घटनास्थल, वमुदैय्यत श्री/श्रीमती/कुमारी वादी…, बनाम 1.… निवासीगण …), opening para
+  (01: "…मुझ उ0नि0 को आवंटित…"; later: "…पर्चा नं0 0n दिनाँक … को किता कर सेवा मे प्रेषित किया जा चुका है…"), each entry "<red name>.......... text",
+  closing "श्रीमान जी आज की कृत कार्यवाही का पर्चा किता कर सेवा मे प्रेषित है । विवेचना प्रचलित है ।" No signature (owner), colours kept (owner).
+  Word: `caseDiaryParchaDocx.ts` (Kokila 18pt, justified, single spacing, 1 inch margins, all diaries in one flow); data via
+  `loadParchaParas(firId, diaryId?)` in caseDiaryExport.ts. A4 button in view-case-diary → `CaseDiaryA4Preview` with `parchaHtml` (31px lines,
+  sheets cut on line boundaries, "पृष्ठ n / N").
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

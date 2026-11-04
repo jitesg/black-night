@@ -12,7 +12,7 @@ import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Clock, MapPin, BookOpen, CheckCircle2, FileText, CheckSquare, Download, Pencil, ListChecks } from 'lucide-react-native';
-import { exportCaseDiaryToDocx } from '@/lib/caseDiaryExport';
+import { exportCaseDiaryToDocx, loadParchaParas } from '@/lib/caseDiaryExport';
 import {
   getCaseDiaryById, getEntriesByDiary, deserializePlaces, getCaseDiariesByFIR,
   type CaseDiary, type CaseDiaryEntry,
@@ -20,8 +20,7 @@ import {
 import { getFIRById, type FIR } from '@/lib/db/firRepo';
 import { FirBasisCard } from '@/components/caseDiary/FirBasisCard';
 import { CaseDiaryA4Preview } from '@/components/caseDiary/CaseDiaryA4Preview';
-import { buildCaseDiaryPrintHtml } from '@/lib/caseDiaryPrint';
-import { useWorkspace } from '@/context/WorkspaceContext';
+import { parchaHtml } from '@/lib/caseDiaryParcha';
 
 const NAVY = '#6366F1';
 
@@ -126,14 +125,14 @@ export default function ViewCaseDiaryScreen() {
   const [exportError, setExportError] = useState('');
   const [diaryNo, setDiaryNo] = useState<number | null>(null);
   const [a4Html, setA4Html] = useState('');
-  const { workspace } = useWorkspace();
-  const openA4 = () => {
+  // A4 प्रीव्यू = the same पर्चा layout as the Word export (owner's sample)
+  const openA4 = async () => {
     if (!diary) return;
-    setA4Html(buildCaseDiaryPrintHtml({
-      diaryNumber: diaryNo, preparation_date: diary.preparation_date, start_time: diary.start_time, end_time: diary.end_time,
-      places: deserializePlaces(diary.places_visited), fir, entries,
-      policeStation: workspace.police_station, district: workspace.district, officerName: workspace.officer_name,
-    }));
+    try {
+      setA4Html(parchaHtml(await loadParchaParas(diary.fir_id, diary.id)));
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : 'A4 प्रीव्यू नहीं बन सका');
+    }
   };
 
   // useFocusEffect so data refreshes when returning from add-entry screen
