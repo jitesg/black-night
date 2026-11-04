@@ -110,7 +110,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Field type "item_group" = rows with format-defined columns (`src/components/ui/ItemGroupInput.tsx`, config in key
   dropdown_options `{"columns":[{key,label,type:text|choice|check,options,default}],"addLabel"}`; validation: one row typed).
   Template tokens `{{each:Key?flag|row|sep}}` ({#}, {col}, {text~col}), `{{count:Key?flag|one|many}}`, `{{any:Key?flag|text}}`
-  (`_applyItemTokens`, Step -3). Used by `sys-fmt-rto-dl-rc` "दुर्घटना — DL / RC की प्रमाणित प्रति हेतु पत्र (RTO)" (vehicles:
+  (`_applyItemTokens`, Step -3); also `{{none:Key?flag|text}}`, `{{sum:Key?flag|col}}` / `{{sum:…|col|00}}` (adds the column's numbers) and
+  in an each-row `{?col|yes|no}` (per-row tick → word, e.g. अभियुक्त / अभियुक्ता). Used by `sys-fmt-rto-dl-rc` "दुर्घटना — DL / RC की प्रमाणित प्रति हेतु पत्र (RTO)" (vehicles:
   भूमिका दुर्घटनाकारक/दुर्घटनाग्रस्त, driver, DL, ticks needDL/needRC → DL letter and/or RC letter; 1 row = owner wording).
 - GD `sys-gd-fmt-wapsi` "वापसी उ0नि0 / तस्करा (हैडिंग सहित)" (seed_version 4, owner): heading line + content. doWapsi tick (default on) →
   "वापसी उ0नि0 व …" + the old वापसी body; off → "तस्करा बावत …" + "इस समय मुझ … द्वारा तस्करा अंकित किया जाता है कि –". 9 heading ticks

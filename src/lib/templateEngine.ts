@@ -576,6 +576,9 @@ export function isTicked(v: string | undefined | null): boolean {
  *   {{count:Key?flag|one|many}} → "one" for a single item, "many" for 2+, nothing for none.
  *   {{any:Key?flag|text}}       → text when at least one item matches.
  *   {{cnt:Key?flag|}}           → number of matching items as two digits (01, 02 …).
+ *   {{none:Key?flag|text}}      → text when no item matches (e.g. no row ticked "महिला").
+ *   {{sum:Key?flag|col}}        → the column's numbers added up (10 + 2.5 → 12.5); {{sum:Key?flag|col|00}} → two digits (03).
+ *   in an each-row: {?col|yes|no} → "yes" when the row's column is ticked / filled, else "no".
  * Branch text may hold any other tokens; "|" inside nested {{…}} does not split.
  */
 type ItemRow = Record<string, unknown>;
@@ -609,9 +612,22 @@ function _splitTop(inner: string): string[] {
   return parts;
 }
 
+const DEV_DIGITS = '०१२३४५६७८९';
+/** Adds up the first number in each row's column ("10 लीटर", "२.५" …); 2 decimals at most. */
+function _sumColumn(rows: ItemRow[], col: string, twoDigits: boolean): string {
+  let total = 0;
+  for (const r of rows) {
+    const t = String(r[col] ?? '').replace(/[०-९]/g, (d) => String(DEV_DIGITS.indexOf(d)));
+    const n = /\d+(?:\.\d+)?/.exec(t);
+    if (n) total += Number(n[0]);
+  }
+  const s = String(Math.round(total * 100) / 100);
+  return twoDigits ? s.padStart(2, '0') : s;
+}
+
 function _applyItemTokens(template: string, values: Record<string, string>): string {
-  if (!/\{\{(each|count|any|cnt):/.test(template)) return template;
-  const open = /\{\{(each|count|any|cnt):([A-Za-z0-9_]+)(?:\?([A-Za-z0-9_]+))?\|/;
+  if (!/\{\{(each|count|any|cnt|none|sum):/.test(template)) return template;
+  const open = /\{\{(each|count|any|cnt|none|sum):([A-Za-z0-9_]+)(?:\?([A-Za-z0-9_]+))?\|/;
   let out = '';
   let rest = template;
   for (let m = open.exec(rest); m; m = open.exec(rest)) {
@@ -627,12 +643,15 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
     const rows = _itemRows(values, m[2], m[3]);
     let rep = '';
     if (m[1] === 'any') rep = rows.length ? parts.join('|') : '';
+    else if (m[1] === 'none') rep = rows.length ? '' : parts.join('|');
+    else if (m[1] === 'sum') rep = _sumColumn(rows, (parts[0] ?? '').trim(), (parts[1] ?? '').trim() === '00');
     else if (m[1] === 'cnt') rep = String(rows.length).padStart(2, '0');
     else if (m[1] === 'count') rep = rows.length === 0 ? '' : rows.length === 1 ? (parts[0] ?? '') : (parts[1] ?? parts[0] ?? '');
     else {
       const row = parts[0] ?? '';
       const sep = (parts[1] ?? ' ').replace(/\\n/g, '\n');
       rep = rows.map((r, n) => row
+        .replace(/\{\?([A-Za-z0-9_]+)\|([^{}|]*)\|([^{}|]*)\}/g, (_x, col: string, yes: string, no: string) => (isTicked(String(r[col] ?? '')) ? yes : no))
         .replace(/\{([^{}~]*)~([A-Za-z0-9_]+)(?:~([^{}~]*))?\}/g, (_x, pre: string, col: string, post?: string) => {
           const v = String(r[col] ?? '').trim();
           return v ? `${pre}${v}${post ?? ''}` : '';

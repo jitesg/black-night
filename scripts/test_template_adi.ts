@@ -480,3 +480,15 @@ test('126/135 + 170/135: the 135(3) report letters have no संलग्नक
     }
   }
 });
+
+test('item_group tokens: {{sum:…}}, {{none:…}}, row {?col|yes|no}', () => {
+  const keys = [{ key_name: 'A', field_type: 'item_group', label: 'A', is_required: 0, default_value: null }] as never;
+  const rows = JSON.stringify([
+    { name: 'रामू', mahila: '', cqty: '01', litre: '10' },
+    { name: 'सुमन', mahila: 'हाँ', cqty: '02', litre: '२.५ लीटर' },
+  ]);
+  const t = '{{sum:A|litre}} / {{sum:A|cqty|00}} / {{none:A?mahila|पुरुष ही}}{{any:A?mahila|महिला भी}} / {{each:A|{?mahila|अभियुक्ता|अभियुक्त} {name}| व }}';
+  assert.equal(generateReport(t, { A: rows }, keys), '12.5 / 03 / महिला भी / अभियुक्त रामू व अभियुक्ता सुमन');
+  const one = JSON.stringify([{ name: 'रामू', mahila: '', litre: '10' }]);
+  assert.equal(generateReport('{{none:A?mahila|अभियुक्त}}{{any:A?mahila|अभियुक्ता}}', { A: one }, keys), 'अभियुक्त');
+});
