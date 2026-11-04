@@ -280,7 +280,13 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   details edit tab; FIR columns complainant_name / _relation / _father / _gender / _age / _jati / _mobile / _address (+ separate alt mobile);
   new columns via _ensureColumn (firs.complainant_father / _relation / _gender). Convert with `src/lib/firComplainant.ts`
   (`complainantToGroup` / `groupToComplainant`; old "+91…" mobiles → 10 digits; tests `scripts/test_fir_complainant.ts`).
-  Next phases (agreed): @FIR.* resolvers for वादी + अभियुक्त → every format key, "मुकदमा चुनें" on formats opened outside a मुकदमा, one-tap buttons.
+  Phase 2 done: `src/lib/firFill.ts` (`firFillValue`, pure; tests `scripts/test_fir_fill.ts`) = the "@FIR.<field>" values used by
+  contextDefaultResolver (FIR + accused loaded once): complainant_name/_father/_relation/_gender/_age/_age_years/_mobile/_address/_full,
+  complainant_vadi (वादी/वादिनी), _peedit, _majroob_vadi, _mahila, _doctor_row (item_group row), fir_date / occurrence_date (dd.mm.yyyy),
+  accused_rows (item_group JSON; FIR accused have no father/gender → blank, templates use `{?father|{rel} {father} |}`), accused1_name/_mobile.
+  Fallback: `"@FIR.complainant_relation|पुत्री"` (used when empty / no FIR; screens without FIR context use `literalDefault`). Connected:
+  183 बयान, मेडिकल अवलोकन, डॉक्टर बयान, अभियुक्त बयान, निरीक्षण घटना स्थल, 35(3) नोटिस (seed_version +1).
+  Next phases (agreed): connect all other formats, "मुकदमा चुनें" on formats opened outside a मुकदमा, one-tap buttons.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

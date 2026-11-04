@@ -10,6 +10,7 @@
  *   docId     – the nyayalay document id (passed through for context)
  */
 import { isKeyVisible } from '@/lib/formatShowIf';
+import { literalDefault } from '@/lib/firFill';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -111,7 +112,7 @@ export default function NyayalayFillFormatScreen() {
 
       const defaults: Record<string, string> = {};
       for (const key of dynKeys) {
-        if (key.default_value) defaults[key.key_name] = key.default_value;
+        if (literalDefault(key.default_value)) defaults[key.key_name] = literalDefault(key.default_value);
       }
       // Merge order: defaults < workspace < nyayalay (most specific wins)
       const merged = { ...defaults, ...wsResolved, ...nylResolved };

@@ -21,6 +21,7 @@
  *   <Input               label="Name"   value={v} onChangeText={set} />  ← bare = text
  */
 
+import { isMarkerDefault } from '@/lib/firFill';
 import React, {
   forwardRef, memo, useRef, useState, useCallback, useImperativeHandle,
 } from 'react';
@@ -668,7 +669,7 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
         <Input
           type={inputType}
           label={displayLabel} // <Input> adds the red * for required fields
-          placeholder={keyPlaceholder(keyDef.dropdown_options) ?? keyDef.default_value ?? `Enter ${displayLabel}`}
+          placeholder={keyPlaceholder(keyDef.dropdown_options) ?? (isMarkerDefault(keyDef.default_value) ? undefined : keyDef.default_value) ?? `Enter ${displayLabel}`}
           value={value}
           onChangeText={(v) => onChange(keyDef.key_name, v)}
           errorText={error}

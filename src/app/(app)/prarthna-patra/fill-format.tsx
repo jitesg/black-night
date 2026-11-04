@@ -6,6 +6,7 @@
  *   - mode=report: generates text → ppReportDraftStore → back to report screen
  */
 import { isKeyVisible } from '@/lib/formatShowIf';
+import { literalDefault } from '@/lib/firFill';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -82,8 +83,8 @@ export default function PPFillFormatScreen() {
           defaults[key.key_name] = initAccusedGroup();
         } else if (key.field_type === 'person_group') {
           defaults[key.key_name] = initPersonGroup();
-        } else if (key.default_value) {
-          defaults[key.key_name] = key.default_value;
+        } else if (literalDefault(key.default_value)) {
+          defaults[key.key_name] = literalDefault(key.default_value);
         }
       }
       const merged = { ...defaults, ...resolved };

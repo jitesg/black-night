@@ -24,6 +24,8 @@
 
 import { getCaseDiariesByFIR, getNextDiaryNumber } from './db/caseDiaryRepo';
 import { getFIRById } from './db/firRepo';
+import { getAccusedByFIR } from './db/firAccusedRepo';
+import { firFillValue } from './firFill';
 
 // ── Utility ────────────────────────────────────────────────────────────────
 
@@ -132,17 +134,31 @@ export async function resolveContextDefaults(
   firId: string | undefined | null,
 ): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
+  // FIR + accused loaded once per call (many keys read them)
+  let firData: { fir: Awaited<ReturnType<typeof getFIRById>>; accused: Awaited<ReturnType<typeof getAccusedByFIR>> } | null = null;
+  const loadFir = async () => {
+    if (!firData && firId) {
+      const [fir, accused] = await Promise.all([getFIRById(firId), getAccusedByFIR(firId).catch(() => [])]);
+      firData = { fir, accused };
+    }
+    return firData;
+  };
 
   for (const key of keys) {
-    const raw = key.default_value;
-    if (!raw) continue;
+    const raw0 = key.default_value;
+    if (!raw0) continue;
 
     // Accept both "@PREFIX.field" and legacy "__FROM_*__" forms
-    const isAtMarker     = raw.startsWith('@');
-    const isLegacyMarker = raw.startsWith('__FROM_') && raw.endsWith('__');
+    const isAtMarker     = raw0.startsWith('@');
+    const isLegacyMarker = raw0.startsWith('__FROM_') && raw0.endsWith('__');
     if (!isAtMarker && !isLegacyMarker) continue;  // static default — skip
 
-    if (!firId) { result[key.key_name] = ''; continue; }
+    // "@FIR.field|fallback" → fallback when the value is empty / no FIR
+    const bar = isAtMarker ? raw0.indexOf('|') : -1;
+    const raw = bar === -1 ? raw0 : raw0.slice(0, bar);
+    const fallback = bar === -1 ? '' : raw0.slice(bar + 1);
+
+    if (!firId) { result[key.key_name] = fallback; continue; }
 
     // Normalise legacy "__FROM_*__" → "@PREFIX.field"
     const dv = _normaliseMarker(raw);
@@ -150,30 +166,30 @@ export async function resolveContextDefaults(
     // Parse "@PREFIX.field"
     const withoutAt = dv.slice(1);              // "LAST_CD.case_diary_number"
     const dot = withoutAt.indexOf('.');
-    if (dot === -1) { result[key.key_name] = ''; continue; }
+    if (dot === -1) { result[key.key_name] = fallback; continue; }
 
     const prefix = withoutAt.slice(0, dot);     // "LAST_CD"
     const field  = withoutAt.slice(dot + 1);    // "case_diary_number"
 
-    const prefixResolvers = CONTEXT_RESOLVERS[prefix];
-    if (!prefixResolvers) {
-      console.warn(`[contextDefaultResolver] Unknown marker prefix: @${prefix}`);
-      result[key.key_name] = '';
-      continue;
-    }
-
-    const fieldResolver = prefixResolvers[field];
-    if (!fieldResolver) {
-      console.warn(`[contextDefaultResolver] Unknown field "${field}" for prefix @${prefix}`);
-      result[key.key_name] = '';
-      continue;
-    }
-
     try {
-      result[key.key_name] = await fieldResolver(firId);
+      if (prefix === 'FIR' && !FIR_RESOLVERS[field]) {
+        const d = await loadFir();
+        const v = firFillValue(field, d?.fir ?? null, d?.accused ?? []);
+        if (v === null) console.warn(`[contextDefaultResolver] Unknown field "${field}" for prefix @FIR`);
+        result[key.key_name] = v || fallback;
+        continue;
+      }
+      const prefixResolvers = CONTEXT_RESOLVERS[prefix];
+      const fieldResolver = prefixResolvers?.[field];
+      if (!fieldResolver) {
+        console.warn(`[contextDefaultResolver] Unknown marker @${prefix}.${field}`);
+        result[key.key_name] = fallback;
+        continue;
+      }
+      result[key.key_name] = (await fieldResolver(firId)) || fallback;
     } catch (e) {
       console.warn(`[contextDefaultResolver] Failed to resolve @${prefix}.${field}:`, e);
-      result[key.key_name] = '';
+      result[key.key_name] = fallback;
     }
   }
 
