@@ -209,6 +209,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   sample): up to 2 doctors (d2On) — Hosp, Name, Post, Who chips, Search tick (तलाश… मौजूद मिले), Shown (what was shown), item_group dNPat
   (role, name, bharti tick → "…से … तक भर्ती कर दवा-इलाज" else "…का मेडिकल परीक्षण", from, to, inj), Extra, Close + "यही मेरा बयान है।";
   2nd doctor opens "तत्पश्चात मैं …".
+- `sys-fmt-cd-abhiyukt-bayan-35-3` "अभियुक्त का बयान — 07 वर्ष या उससे कम सजा (धारा 35(3) BNSS नोटिस तामील सहित)" (Case Diary, plain text, owner's
+  sample): item_group Accused (name, rel, father, addr, mobile, age, mahila, own) — one / woman / many wording like the 60(1) फर्द; Bailable
+  tick; per-row "बयान अभियुक्त(ा) — …" para, own text or default "जुर्म से इंकार… सफाई जरिये अधिवक्ता… बता रहे / रही हैं" (nested {?own|…{?mahila|…}…}).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use

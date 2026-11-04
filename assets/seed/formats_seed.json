@@ -8546,6 +8546,47 @@
           "sort_order": 19
         }
       ]
+    },
+    {
+      "id": "sys-fmt-cd-abhiyukt-bayan-35-3",
+      "title": "अभियुक्त का बयान — 07 वर्ष या उससे कम सजा (धारा 35(3) BNSS नोटिस तामील सहित)",
+      "format_type": "Case Diary",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "अभियुक्त",
+        "बयान",
+        "35(3)",
+        "नोटिस",
+        "07 वर्ष",
+        "केस डायरी"
+      ],
+      "last_updated": "2026-11-04",
+      "vivran": "तत्पश्चात रवाना होकर {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} की तलाश में {{count:Accused|{{any:Accused?mahila|उसके}}{{none:Accused?mahila|उसके}}|उनके}} अंकित पते पर आया। {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} की तलाश की गयी तो {{each:Accused|{name} {rel} {father} निवासी {addr}{ मो0 ~mobile~}{ उम्र करीब ~age~ वर्ष}| व }} मौजूद {{count:Accused|{{any:Accused?mahila|मिली}}{{none:Accused?mahila|मिला}}|मिले}}। {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} को {{count:Accused|{{any:Accused?mahila|उसके}}{{none:Accused?mahila|उसके}}|उनके}} अपराध से अवगत कराया गया। चूंकि मुकदमा उपरोक्त के अपराध में 07 वर्ष या उससे कम सजा का प्रावधान है{{if:Bailable| तथा अपराध जमानतीय है}}। अतः माननीय सर्वोच्च न्यायालय द्वारा निर्गत आदेश-निर्देशों का पालन करते हुए {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} को धारा 35(3) बीएनएसएस में निहित प्रावधानों से अवगत कराते हुए धारा 35(3) बीएनएसएस की नोटिस तामील करायी गयी। बाद तामीला नोटिस {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} से पूछताछ कर बयान अंकित {{count:Accused|{{any:Accused?mahila|किया जा रहा है}}{{none:Accused?mahila|किया जा रहा है}}|किये जा रहे हैं}}।\n\n{{each:Accused|बयान {?mahila|अभियुक्ता|अभियुक्त} — {name} {rel} {father} निवासी {addr}{ मो0 ~mobile~}{ उम्र करीब ~age~ वर्ष} {?own|{own}|पूछने पर जुर्म से इंकार करते हुए अपनी सफाई जरिये अधिवक्ता माननीय न्यायालय में देना {?mahila|बता रही हैं|बता रहे हैं}}।|\\n\\n}}\n",
+      "keys": [
+        {
+          "key_name": "Accused",
+          "label": "अभियुक्त / अभियुक्ता — हर एक की अलग पंक्ति",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: बबलू)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पत्नी\", \"पुत्री\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम (जैसे: रामलाल)\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: रिशालखेड़ा मजरे महेरी थाना बछरावां जनपद रायबरेली)\"}, {\"key\": \"mobile\", \"label\": \"मोबाइल (वैकल्पिक)\"}, {\"key\": \"age\", \"label\": \"उम्र करीब (वर्ष, वैकल्पिक)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"own\", \"label\": \"अपने शब्दों में बयान (वैकल्पिक — खाली = जुर्म से इंकार, सफाई अधिवक्ता के माध्यम से)\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\"}",
+          "sort_order": 0
+        },
+        {
+          "key_name": "Bailable",
+          "label": "अपराध जमानतीय है",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "sort_order": 1
+        }
+      ]
     }
   ]
 }
