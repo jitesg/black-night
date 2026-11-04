@@ -593,6 +593,16 @@ function _itemRows(values: Record<string, string>, key: string, flag?: string): 
   return flag ? rows.filter((r) => isTicked(String(r[flag] ?? ''))) : rows;
 }
 
+/** Index of the "}" closing the single "{" at i ({?col|… {name} …|…} may hold {col} inside). */
+function _closeSingle(s: string, i: number): number {
+  let d = 0;
+  for (let j = i; j < s.length; j++) {
+    if (s[j] === '{') d += 1;
+    else if (s[j] === '}') { d -= 1; if (d === 0) return j; }
+  }
+  return -1;
+}
+
 /** Split at "|" that are not inside nested {{…}}. */
 function _splitTop(inner: string): string[] {
   const parts: string[] = [];
@@ -601,8 +611,8 @@ function _splitTop(inner: string): string[] {
   for (let i = 0; i < inner.length; i++) {
     if (inner.startsWith('{{', i)) { depth += 1; cur += '{{'; i += 1; continue; }
     if (inner.startsWith('}}', i)) { depth -= 1; cur += '}}'; i += 1; continue; }
-    if (inner[i] === '{') { // row placeholder {col} / {text~col}
-      const end = inner.indexOf('}', i);
+    if (inner[i] === '{') { // row placeholder {col} / {text~col} / {?col|…|…}
+      const end = _closeSingle(inner, i);
       if (end > i) { cur += inner.slice(i, end + 1); i = end; continue; }
     }
     if (inner[i] === '|' && depth === 0) { parts.push(cur); cur = ''; continue; }
@@ -636,7 +646,7 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
     while (i < rest.length && depth > 0) {
       if (rest.startsWith('{{', i)) { depth += 1; i += 2; }
       else if (rest.startsWith('}}', i)) { depth -= 1; i += 2; }
-      else if (rest[i] === '{' && rest.indexOf('}', i) > i) i = rest.indexOf('}', i) + 1; // {col}
+      else if (rest[i] === '{' && _closeSingle(rest, i) > i) i = _closeSingle(rest, i) + 1; // {col} / {?col|…}
       else i += 1;
     }
     const parts = _splitTop(rest.slice(m.index + m[0].length, depth === 0 ? i - 2 : i));
@@ -651,12 +661,13 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
       const row = parts[0] ?? '';
       const sep = (parts[1] ?? ' ').replace(/\\n/g, '\n');
       rep = rows.map((r, n) => row
-        .replace(/\{\?([A-Za-z0-9_]+)\|([^{}|]*)\|([^{}|]*)\}/g, (_x, col: string, yes: string, no: string) => (isTicked(String(r[col] ?? '')) ? yes : no))
         .replace(/\{([^{}~]*)~([A-Za-z0-9_]+)(?:~([^{}~]*))?\}/g, (_x, pre: string, col: string, post?: string) => {
           const v = String(r[col] ?? '').trim();
           return v ? `${pre}${v}${post ?? ''}` : '';
         })
         .replace(/\{(#|[A-Za-z0-9_]+)\}/g, (_x, col: string) => (col === '#' ? String(n + 1) : String(r[col] ?? '').trim()))
+        // after the columns are filled, so yes / no may hold {col}
+        .replace(/\{\?([A-Za-z0-9_]+)\|([^{}|]*)\|([^{}|]*)\}/g, (_x, col: string, yes: string, no: string) => (isTicked(String(r[col] ?? '')) ? yes : no))
         .replace(/ {2,}/g, ' ')).join(sep);
     }
     // the chosen text may hold more list tokens

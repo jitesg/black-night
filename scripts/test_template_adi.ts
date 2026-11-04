@@ -492,3 +492,13 @@ test('item_group tokens: {{sum:…}}, {{none:…}}, row {?col|yes|no}', () => {
   const one = JSON.stringify([{ name: 'रामू', mahila: '', litre: '10' }]);
   assert.equal(generateReport('{{none:A?mahila|अभियुक्त}}{{any:A?mahila|अभियुक्ता}}', { A: one }, keys), 'अभियुक्त');
 });
+
+test('item_group row {?col|yes|no} may hold {col} / {text~col} inside', () => {
+  const keys = [{ key_name: 'A', field_type: 'item_group', label: 'A', is_required: 0, default_value: null }] as never;
+  const rows = JSON.stringify([
+    { name: 'अयूब', b: 'हाँ', from: '03.02', to: '13.02' },
+    { name: 'आदिल', b: '', from: '03.02', to: '' },
+  ]);
+  const t = '{{each:A|{?b|{name} भर्ती {from} से{ ~to~ तक}|{name} परीक्षण {from}}| / }}';
+  assert.equal(generateReport(t, { A: rows }, keys), 'अयूब भर्ती 03.02 से 13.02 तक / आदिल परीक्षण 03.02');
+});
