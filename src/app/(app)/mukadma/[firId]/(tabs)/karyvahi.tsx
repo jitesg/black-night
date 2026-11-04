@@ -1,4 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { newDiaryDefaultDate } from '@/lib/caseDiaryTime';
+import { getFIRById } from '@/lib/db/firRepo';
 import { logger } from '@/lib/logger';
 import { View, Text, Pressable, ActivityIndicator, TextInput, ScrollView, Modal, KeyboardAvoidingView } from 'react-native';
 import Svg, { Circle as SvgCircle } from 'react-native-svg';
@@ -703,9 +705,11 @@ function DiaryActionSheet({
         const day = String(d.getDate()).padStart(2, '0');
         return `${y}-${m}-${day}`;
       })();
+      // पहली केस डायरी: तारीख = FIR दर्ज होने की तारीख (owner)
+      const [firRow, existing] = await Promise.all([getFIRById(firId), getCaseDiariesByFIR(firId)]);
       const newDiary = await createCaseDiary({
         fir_id: firId,
-        preparation_date: today,
+        preparation_date: newDiaryDefaultDate(existing.length, firRow, today),
       });
       onClose();
       router.push({

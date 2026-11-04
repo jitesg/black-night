@@ -297,6 +297,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   formats/fill (no firId), nyayalay + prarthna-patra fill-format when `hasFirMarkers`; pick → `applyPickedFir` fills only untouched
   fields (empty / opening value / last pick). Tests in `scripts/test_*.ts` must treat "@…" defaults as empty.
   Next (agreed): one-tap buttons.
+- केस डायरी date/time (owner): `src/lib/caseDiaryTime.ts` (pure; tests `scripts/test_case_diary_time.ts`) — the FIRST diary opens with the FIR
+  सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
+  start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end
+  before start is allowed — past midnight).
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

@@ -13,6 +13,7 @@
  * correctly calls addExecution() and updates execution_count.
  * The old inline "Add Karyvahi" draft flow is removed (v250).
  */
+import { checkDiaryTime, newDiaryDefaultDate } from '@/lib/caseDiaryTime';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   BackHandler, View, Text, ScrollView, Pressable, KeyboardAvoidingView, ActivityIndicator,
@@ -149,6 +150,7 @@ export default function AddCaseDiaryScreen() {
   const [places, setPlaces]       = useState<string[]>([]);
   const [diaryNumber, setDiaryNumber] = useState<number | null>(null);
   const [fir, setFir] = useState<FIR | null>(null);
+  const [isFirstDiary, setIsFirstDiary] = useState(false);
 
   const [diary, setDiary]   = useState<CaseDiary | null>(null);
   const [loading, setLoading] = useState(isEdit);
@@ -197,6 +199,11 @@ export default function AddCaseDiaryScreen() {
           }
         } else {
           setDiaryNumber(allDiaries.length + 1);
+          // पहली केस डायरी: तारीख = FIR दर्ज होने (सूचना) की तारीख (owner)
+          if (allDiaries.length === 0 && !isDirty.current) {
+            setPrepDate((cur) => newDiaryDefaultDate(0, firRecord, cur));
+          }
+          setIsFirstDiary(allDiaries.length === 0);
         }
       } catch { /* ignore */ }
       finally { setLoading(false); }
@@ -226,6 +233,14 @@ export default function AddCaseDiaryScreen() {
           setSaving(false);
           return;
         }
+      }
+
+      // Check 1b: on the FIR date, the diary time must not be before the FIR time (owner)
+      const timeErr = checkDiaryTime(prepDate, startTime, endTime, fir);
+      if (timeErr) {
+        setError(timeErr);
+        setSaving(false);
+        return;
       }
 
       // Check 2: new CD must be >= last existing CD
@@ -379,6 +394,12 @@ export default function AddCaseDiaryScreen() {
           </View>
 
           <DateField label={t('fir.addCaseDiary.fieldPrepDate')} value={prepDate} onChange={(v) => { isDirty.current = true; setPrepDate(v); }} />
+          {!isEdit && isFirstDiary && fir?.date_of_information ? (
+            <Text className="text-xs text-muted-foreground -mt-2">
+              पहली केस डायरी — तारीख मुकदमा दर्ज होने की तारीख से भरी गयी
+              {fir.time_of_information ? ` (समय ${fir.time_of_information} से पहले का समय नहीं चलेगा)` : ''}
+            </Text>
+          ) : null}
 
           <View className="flex-row gap-3">
             <View className="flex-1">
