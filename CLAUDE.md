@@ -205,6 +205,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   pNMlc / pNEr / pNXray / pNBht open their boxes (showIf). Output grouped by document: MLCs (with "थाना कार्यालय से … प्राप्त हुआ है" intro,
   डॉक्टर की राय, MlcWeapon), इमरजेंसी रजिस्टर, एक्स-रे, then one BHT intro (मजरूब / मजरूबगणों by count via nested ifs) + BHT paras.
   Supplementary not yet (owner: later as a 5th tick).
+- `sys-fmt-cd-doctor-bayan` "चिकित्सक (डॉक्टर) का बयान — मजरूब / पीड़ित के मेडिकल / इलाज के सम्बन्ध में" (Case Diary, plain text, owner's
+  sample): up to 2 doctors (d2On) — Hosp, Name, Post, Who chips, Search tick (तलाश… मौजूद मिले), Shown (what was shown), item_group dNPat
+  (role, name, bharti tick → "…से … तक भर्ती कर दवा-इलाज" else "…का मेडिकल परीक्षण", from, to, inj), Extra, Close + "यही मेरा बयान है।";
+  2nd doctor opens "तत्पश्चात मैं …".
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use

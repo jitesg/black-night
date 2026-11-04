@@ -8344,6 +8344,208 @@
           "sort_order": 106
         }
       ]
+    },
+    {
+      "id": "sys-fmt-cd-doctor-bayan",
+      "title": "चिकित्सक (डॉक्टर) का बयान — मजरूब / पीड़ित के मेडिकल / इलाज के सम्बन्ध में",
+      "format_type": "Case Diary",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "डॉक्टर",
+        "चिकित्सक",
+        "बयान",
+        "मेडिकल",
+        "मजरूब",
+        "केस डायरी"
+      ],
+      "last_updated": "2026-11-04",
+      "vivran": "मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} थाना हाजा से रवाना होकर {{d1Hosp}} आया, जहाँ पर {{d1Who}} का मेडिकल करने वाले चिकित्सक डॉ0 {{d1Name}}{{if:d1Search| की तलाश की गयी, मौजूद मिले, जिनको {{if:d1Shown|{{d1Shown}} दिखाकर }}पूछताछ कर बयान अंकित किये जा रहे हैं।}}{{ifnot:d1Search| से मुलाकात कर {{if:d1Shown|उनको {{d1Shown}} दिखाकर पूछताछ कर }}बयान अंकित किये जा रहे हैं।}}\n\nबयान चिकित्सक — डॉ0 {{d1Name}}{{if:d1Post| {{d1Post}}}} {{d1Hosp}} ने मेडिकल प्रपत्रों का अवलोकन करते हुए बताया कि {{each:d1Pat|{?bharti|{role} {name} का दिनांक {from} से{ ~to~ तक} अस्पताल में भर्ती कर मेरे द्वारा दवा-इलाज किया गया था।|दिनांक {from} को {role} {name} का मेडिकल परीक्षण मेरे द्वारा किया गया था।}{ ~inj~।}| }}{{if:d1Extra| {{d1Extra}}।}} {{d1Close}}। यही मेरा बयान है।\n\n{{if:d2On|तत्पश्चात मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{d2Hosp}} आया, जहाँ पर {{d2Who}} का मेडिकल करने वाले चिकित्सक डॉ0 {{d2Name}}{{if:d2Search| की तलाश की गयी, मौजूद मिले, जिनको {{if:d2Shown|{{d2Shown}} दिखाकर }}पूछताछ कर बयान अंकित किये जा रहे हैं।}}{{ifnot:d2Search| से मुलाकात कर {{if:d2Shown|उनको {{d2Shown}} दिखाकर पूछताछ कर }}बयान अंकित किये जा रहे हैं।}}\n\nबयान चिकित्सक — डॉ0 {{d2Name}}{{if:d2Post| {{d2Post}}}} {{d2Hosp}} ने मेडिकल प्रपत्रों का अवलोकन करते हुए बताया कि {{each:d2Pat|{?bharti|{role} {name} का दिनांक {from} से{ ~to~ तक} अस्पताल में भर्ती कर मेरे द्वारा दवा-इलाज किया गया था।|दिनांक {from} को {role} {name} का मेडिकल परीक्षण मेरे द्वारा किया गया था।}{ ~inj~।}| }}{{if:d2Extra| {{d2Extra}}।}} {{d2Close}}। यही मेरा बयान है।\n}}",
+      "keys": [
+        {
+          "key_name": "d1Hosp",
+          "label": "चिकित्सक 1 — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\"}",
+          "sort_order": 0
+        },
+        {
+          "key_name": "d1Name",
+          "label": "चिकित्सक 1 — डॉक्टर का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: एमपी सिंह\"}",
+          "sort_order": 1
+        },
+        {
+          "key_name": "d1Post",
+          "label": "पद (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल ऑफिसर\"}",
+          "sort_order": 2
+        },
+        {
+          "key_name": "d1Who",
+          "label": "किनका मेडिकल किया था",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मजरूबगणों",
+          "dropdown_options": "{\"options\": [\"मजरूबगणों\", \"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"]}",
+          "sort_order": 3
+        },
+        {
+          "key_name": "d1Search",
+          "label": "डॉक्टर की तलाश की गयी, मौजूद मिले",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 4
+        },
+        {
+          "key_name": "d1Shown",
+          "label": "डॉक्टर को क्या दिखाकर पूछताछ की (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल रिपोर्ट\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "d1Pat",
+          "label": "चिकित्सक 1 — किस-किस का इलाज / परीक्षण (हर व्यक्ति की अलग पंक्ति)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"भूमिका\", \"type\": \"choice\", \"options\": [\"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"default\": \"मजरूब\"}, {\"key\": \"name\", \"label\": \"नाम, पिता / पति, पता, उम्र (जैसे: अयूब खान पुत्र फादिल खान निवासी रैन थाना बछरावाँ जनपद रायबरेली उम्र 55 वर्ष)\"}, {\"key\": \"bharti\", \"label\": \"अस्पताल में भर्ती कर इलाज हुआ (टिक न हो = सिर्फ़ मेडिकल परीक्षण)\", \"type\": \"check\"}, {\"key\": \"from\", \"label\": \"दिनांक (भर्ती / परीक्षण का)\"}, {\"key\": \"to\", \"label\": \"छुट्टी (डिस्चार्ज) दिनांक — भर्ती हो तो\"}, {\"key\": \"inj\", \"label\": \"क्या चोटें थीं / रेफर आदि (जैसे: मजरूब को हेड इन्जरी व बायें हाथ में चोट आयी थी)\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "d1Extra",
+          "label": "डॉक्टर ने और क्या बताया (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब, रफीका बानो व खुशबू को ज्यादा चोटें होने के कारण जिला अस्पताल रायबरेली रेफर कर दिया गया था\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "d1Close",
+          "label": "अंत की लाइन",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "मैं मेरे द्वारा तैयार की गयी मेडिकल रिपोर्ट का समर्थन करता हूँ",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेरे द्वारा मेडिकल रिपोर्ट तैयार की गयी थी\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "d2On",
+          "label": "दूसरे चिकित्सक का भी बयान (दूसरे अस्पताल में)",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "sort_order": 9
+        },
+        {
+          "key_name": "d2Hosp",
+          "label": "चिकित्सक 2 — अस्पताल",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"d2On\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "d2Name",
+          "label": "चिकित्सक 2 — डॉक्टर का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"d2On\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "d2Post",
+          "label": "पद (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल ऑफिसर\", \"showIf\": \"d2On\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "d2Who",
+          "label": "किनका मेडिकल किया था",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मजरूबगणों",
+          "dropdown_options": "{\"options\": [\"मजरूबगणों\", \"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"showIf\": \"d2On\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "d2Search",
+          "label": "डॉक्टर की तलाश की गयी, मौजूद मिले",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"showIf\": \"d2On\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "d2Shown",
+          "label": "डॉक्टर को क्या दिखाकर पूछताछ की (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: वादी का मेडिकल व इमरजेंसी रजिस्टर की प्रमाणित प्रति\", \"showIf\": \"d2On\"}",
+          "sort_order": 15
+        },
+        {
+          "key_name": "d2Pat",
+          "label": "चिकित्सक 2 — किस-किस का इलाज / परीक्षण (हर व्यक्ति की अलग पंक्ति)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"भूमिका\", \"type\": \"choice\", \"options\": [\"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"default\": \"मजरूब\"}, {\"key\": \"name\", \"label\": \"नाम, पिता / पति, पता, उम्र (जैसे: अयूब खान पुत्र फादिल खान निवासी रैन थाना बछरावाँ जनपद रायबरेली उम्र 55 वर्ष)\"}, {\"key\": \"bharti\", \"label\": \"अस्पताल में भर्ती कर इलाज हुआ (टिक न हो = सिर्फ़ मेडिकल परीक्षण)\", \"type\": \"check\"}, {\"key\": \"from\", \"label\": \"दिनांक (भर्ती / परीक्षण का)\"}, {\"key\": \"to\", \"label\": \"छुट्टी (डिस्चार्ज) दिनांक — भर्ती हो तो\"}, {\"key\": \"inj\", \"label\": \"क्या चोटें थीं / रेफर आदि (जैसे: मजरूब को हेड इन्जरी व बायें हाथ में चोट आयी थी)\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\", \"showIf\": \"d2On\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "d2Extra",
+          "label": "डॉक्टर ने और क्या बताया (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब, रफीका बानो व खुशबू को ज्यादा चोटें होने के कारण जिला अस्पताल रायबरेली रेफर कर दिया गया था\", \"showIf\": \"d2On\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "d2Close",
+          "label": "अंत की लाइन",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "मैं मेरे द्वारा तैयार की गयी मेडिकल रिपोर्ट का समर्थन करता हूँ",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेरे द्वारा मेडिकल रिपोर्ट तैयार की गयी थी\", \"showIf\": \"d2On\"}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 19
+        }
+      ]
     }
   ]
 }
