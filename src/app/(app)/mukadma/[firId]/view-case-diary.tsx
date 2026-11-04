@@ -52,7 +52,7 @@ function KaryvahiEntryCard({ entry, idx }: {
       className="bg-card border border-border rounded-2xl overflow-hidden mb-3"
       style={{ borderCurve: 'continuous' }}
     >
-      <View className="flex-row items-center gap-3 px-4 py-3" style={{ backgroundColor: '#F8F9FB' }}>
+      <View className="flex-row items-center gap-3 px-4 py-3 bg-secondary">
         <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: NAVY }}>
           <Text className="text-white text-xs font-bold">{idx + 1}</Text>
         </View>
@@ -63,7 +63,7 @@ function KaryvahiEntryCard({ entry, idx }: {
         <CheckCircle2 size={16} color="#16a34a" />
       </View>
       {entry.format_used ? (
-        <View className="px-4 py-2 border-b border-border bg-purple-50">
+        <View className="px-4 py-2 border-b border-border bg-purple-50 dark:bg-purple-500/15">
           <Text className="text-xs font-semibold" style={{ color: '#7C3AED' }}>{t('fir.viewCaseDiary.formatLabel', { title: entry.format_used })}</Text>
         </View>
       ) : null}
@@ -89,7 +89,7 @@ function NarrativeEntryCard({ entry, idx }: {
       className="bg-card border border-border rounded-2xl overflow-hidden mb-3"
       style={{ borderCurve: 'continuous' }}
     >
-      <View className="flex-row items-center gap-3 px-4 py-3" style={{ backgroundColor: '#FAFBFF' }}>
+      <View className="flex-row items-center gap-3 px-4 py-3 bg-secondary">
         <View className="w-6 h-6 rounded-full items-center justify-center bg-secondary">
           <Text className="text-foreground text-xs font-bold">{idx + 1}</Text>
         </View>
@@ -97,7 +97,7 @@ function NarrativeEntryCard({ entry, idx }: {
         <Text className="flex-1 text-sm font-semibold text-muted-foreground">{t('fir.viewCaseDiary.narrativeLabel')}</Text>
       </View>
       {entry.narrative_template ? (
-        <View className="px-4 py-2 border-b border-border bg-purple-50">
+        <View className="px-4 py-2 border-b border-border bg-purple-50 dark:bg-purple-500/15">
           <Text className="text-xs font-semibold" style={{ color: '#7C3AED' }}>{t('fir.viewCaseDiary.formatLabel', { title: entry.narrative_template })}</Text>
         </View>
       ) : null}
@@ -204,50 +204,49 @@ export default function ViewCaseDiaryScreen() {
         title={diary.preparation_date}
         subtitle={t('fir.viewCaseDiary.subtitle')}
         showBack
-        actions={
-          <View className="flex-row items-center gap-1.5">
-            {/* Edit diary metadata (date/time/places) */}
-            <Pressable
-              onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary' as never, params: { firId, diaryId } })}
-              className="flex-row items-center gap-1 rounded-lg px-2 py-1.5 active:opacity-70 border border-border bg-card"
-            >
-              <Pencil size={11} color="#6B7280" />
-              <Text className="text-[10px] font-bold text-muted-foreground">{t('fir.viewCaseDiary.editInfo')}</Text>
-            </Pressable>
-            {/* Edit entries */}
-            <Pressable
-              onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary-karyvahi' as never, params: { firId, diaryId } })}
-              className="flex-row items-center gap-1 rounded-lg px-2 py-1.5 active:opacity-70 border border-border bg-card"
-            >
-              <ListChecks size={11} color={NAVY} />
-              <Text className="text-[10px] font-bold" style={{ color: NAVY }}>{t('fir.viewCaseDiary.editEntries')}</Text>
-            </Pressable>
-            {/* A4 preview (owner) */}
-            <Pressable
-              onPress={openA4}
-              className="flex-row items-center gap-1 rounded-lg px-2 py-1.5 active:opacity-70 border border-border bg-card"
-            >
-              <FileText size={11} color="#B45309" />
-              <Text className="text-[10px] font-bold" style={{ color: '#B45309' }}>A4</Text>
-            </Pressable>
-            {/* Export DOCX */}
-            {entries.length > 0 && (
-              <Pressable
-                onPress={handleExport}
-                disabled={exporting}
-                className="flex-row items-center gap-1 rounded-lg px-2 py-1.5 active:opacity-70 border border-border bg-card"
-              >
-                {exporting
-                  ? <ActivityIndicator size="small" color={NAVY} />
-                  : <Download size={11} color="#059669" />}
-                <Text className="text-[10px] font-bold" style={{ color: '#059669' }}>
-                  {exporting ? t('fir.viewCaseDiary.exporting') : t('fir.viewCaseDiary.export')}
-                </Text>
-              </Pressable>
-            )}
-          </View>
-        }
       />
+      {/* Actions under the header (in the header they ran off the screen next to 🤖 / 🔔) */}
+      <View className="flex-row flex-wrap items-center gap-2 px-5 pt-3 pb-1">
+        {/* Edit diary metadata (date/time/places) */}
+        <Pressable
+          onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary' as never, params: { firId, diaryId } })}
+          className="flex-row items-center gap-1 rounded-lg px-3 py-2 active:opacity-70 border border-border bg-card"
+        >
+          <Pencil size={11} color="#6B7280" />
+          <Text className="text-xs font-bold text-muted-foreground">{t('fir.viewCaseDiary.editInfo')}</Text>
+        </Pressable>
+        {/* Edit entries */}
+        <Pressable
+          onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary-karyvahi' as never, params: { firId, diaryId } })}
+          className="flex-row items-center gap-1 rounded-lg px-3 py-2 active:opacity-70 border border-border bg-card"
+        >
+          <ListChecks size={11} color={NAVY} />
+          <Text className="text-xs font-bold" style={{ color: NAVY }}>{t('fir.viewCaseDiary.editEntries')}</Text>
+        </Pressable>
+        {/* A4 preview (owner) */}
+        <Pressable
+          onPress={openA4}
+          className="flex-row items-center gap-1 rounded-lg px-3 py-2 active:opacity-70 border border-border bg-card"
+        >
+          <FileText size={11} color="#B45309" />
+          <Text className="text-xs font-bold" style={{ color: '#B45309' }}>A4</Text>
+        </Pressable>
+        {/* Export DOCX */}
+        {entries.length > 0 && (
+          <Pressable
+            onPress={handleExport}
+            disabled={exporting}
+            className="flex-row items-center gap-1 rounded-lg px-3 py-2 active:opacity-70 border border-border bg-card"
+          >
+            {exporting
+              ? <ActivityIndicator size="small" color={NAVY} />
+              : <Download size={11} color="#059669" />}
+            <Text className="text-xs font-bold" style={{ color: '#059669' }}>
+              {exporting ? t('fir.viewCaseDiary.exporting') : t('fir.viewCaseDiary.export')}
+            </Text>
+          </Pressable>
+        )}
+      </View>
       <CaseDiaryA4Preview
         visible={!!a4Html}
         html={a4Html}

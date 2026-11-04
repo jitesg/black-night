@@ -147,8 +147,8 @@ function ActionMenu({
                       <Icon size={15} color={isDelete ? '#DC2626' : ACCENT} />
                     </View>
                     <Text
-                      className="text-sm font-medium"
-                      style={{ color: isDelete ? '#DC2626' : '#111827' }}
+                      className="text-sm font-medium text-foreground"
+                      style={{ color: isDelete ? '#DC2626' : undefined }}
                     >
                       {a.label}
                     </Text>

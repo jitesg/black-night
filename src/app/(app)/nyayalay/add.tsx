@@ -287,9 +287,9 @@ function ChecklistSection({
             ? <CheckSquare size={18} color={MODULE_COLOR_FORM} />
             : <Square size={18} color="#9CA3AF" />}
           <Text
-            className="flex-1 text-sm"
+            className="flex-1 text-sm text-foreground"
             style={{
-              color: item.is_checked ? '#6B7280' : '#111827',
+              color: item.is_checked ? '#6B7280' : undefined,
               textDecorationLine: item.is_checked ? 'line-through' : 'none',
             }}
           >

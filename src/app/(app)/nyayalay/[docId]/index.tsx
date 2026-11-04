@@ -199,8 +199,8 @@ function ChecklistSection({
             {item.is_done
               ? <CheckSquare size={18} color={MODULE_COLOR} />
               : <Square size={18} color="#9CA3AF" />}
-            <Text className="flex-1 text-sm"
-              style={{ color: item.is_done ? '#6B7280' : '#111827',
+            <Text className="flex-1 text-sm text-foreground"
+              style={{ color: item.is_done ? '#6B7280' : undefined,
                 textDecorationLine: item.is_done ? 'line-through' : 'none' }}>
               {displayLabel}
             </Text>

@@ -169,8 +169,8 @@ function SelectDropdown({
               onPress={() => { onSelect(opt); setOpen(false); }}
               className="px-4 py-3 border-b border-border active:bg-secondary"
             >
-              <Text className={`text-sm ${value === opt ? 'font-bold' : ''}`}
-                style={{ color: value === opt ? '#6366F1' : '#111827' }}
+              <Text className={`text-sm text-foreground ${value === opt ? 'font-bold' : ''}`}
+                style={{ color: value === opt ? '#6366F1' : undefined }}
               >{opt}</Text>
             </Pressable>
           ))}
@@ -269,8 +269,8 @@ function FlatCrimeTypeSelect({
                 </View>
                 <View className="flex-1" style={{ minWidth: 0 }}>
                   <Text
-                    className="text-sm"
-                    style={{ color: checked ? '#6366F1' : '#111827', fontWeight: checked ? '700' : '400' }}
+                    className="text-sm text-foreground"
+                    style={{ color: checked ? '#6366F1' : undefined, fontWeight: checked ? '700' : '400' }}
                     numberOfLines={1}
                   >
                     {opt.name_hi}

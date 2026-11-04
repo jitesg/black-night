@@ -46,7 +46,7 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
   return (
     <View style={{ flexDirection: 'row', paddingVertical: 5, gap: 8 }}>
       <Text style={{ fontSize: 12, color: '#6B7280', width: 110, flexShrink: 0 }}>{label}</Text>
-      <Text selectable style={{ fontSize: 12, color: '#111827', flex: 1, lineHeight: 18 }}>{value}</Text>
+      <Text selectable className="text-foreground" style={{ fontSize: 12, flex: 1, lineHeight: 18 }}>{value}</Text>
     </View>
   );
 }
@@ -290,8 +290,9 @@ export default function ReportScreen() {
                     onContentSizeChange={handleContentSizeChange}
                     placeholder={t('prarthnaPatra.report.contentPlaceholder')}
                     placeholderTextColor="#9CA3AF"
+                    className="text-foreground"
                     style={{
-                      fontSize: 14, color: '#111827', lineHeight: 21,
+                      fontSize: 14, lineHeight: 21,
                       paddingHorizontal: 14, paddingTop: 12, paddingBottom: 12,
                       height: editorHeight,
                       textAlignVertical: 'top',

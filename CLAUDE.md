@@ -270,6 +270,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   'simple' ('simple' splits a letter from its matra → "चकालस्ट", hidden 2nd line — build 21 regression), and
   Hindi text (Devanagari in children) gets lineHeight ≥ 1.5×fontSize (also when includeFontPadding is off);
   maxFontSizeMultiplier 1.2 by default. Never use textBreakStrategy "simple" on text that can wrap.
+- Dark mode: never hard-code a dark text colour ('#111827') on bg-card / bg-background — use className `text-foreground` and
+  `color: selected ? ACCENT : undefined` (fixed: crime-type + rank pickers in add-fir, karyvahi picker in add-case-diary-karyvahi,
+  न्यायालय checklists, sys-format menu, प्रार्थना पत्र report rows + editor); light header strips → `bg-secondary`. view-case-diary
+  actions (संपादित / Edit Entries / A4 / Export) sit in a wrapping row under the header (in the header they ran off-screen).
 - Pressable `style={({ pressed }) => …}` (function form) was ignored on the phone (सूचनाएँ card lost background, border and
   row layout, build 24) — use a plain style object (pressed look via onPressIn/onPressOut state) in new code.
 - ✕ / 📋 in name, father / husband name and address boxes (owner): `useClearCopy` (`components/common/ClearCopyTools.tsx`; icons only

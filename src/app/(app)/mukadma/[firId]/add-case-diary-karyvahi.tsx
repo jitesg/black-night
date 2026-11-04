@@ -500,9 +500,9 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
                     >
                       <View className="flex-row items-center justify-between">
                         <Text
-                          className="text-sm flex-1"
+                          className="text-sm flex-1 text-foreground"
                           style={{
-                            color: entry.firKaryvahiId === k.id ? INDIGO : '#111827',
+                            color: entry.firKaryvahiId === k.id ? INDIGO : undefined,
                             fontWeight: entry.firKaryvahiId === k.id ? '700' : '400',
                           }}
                         >
