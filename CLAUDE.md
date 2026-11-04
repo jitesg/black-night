@@ -301,6 +301,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end
   before start is allowed — past midnight).
+- केस डायरी A4 प्रीव्यू (owner): "A4" button in the view-case-diary header → `components/caseDiary/CaseDiaryA4Preview.tsx` (modal,
+  WebView / web iframe) showing `buildCaseDiaryPrintHtml` (`src/lib/caseDiaryPrint.ts`, pure; tests `scripts/test_case_diary_print.ts`):
+  title "केस डायरी संख्या – NN" (position by created_at), थाना/जनपद, bordered meta table (मु0अ0सं0 / धारा, वादी, दिनांक dd.mm.yyyy, समय,
+  भ्रमण स्थान), each entry = bold underlined "<कार्यवाही> –" + justified paragraphs (HTML / marks → plain), signature (workspace officer,
+  विवेचक, थाना); an inline script splits the blocks into 210×297 mm sheets with "पृष्ठ n / N". Word export unchanged.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

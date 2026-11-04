@@ -14,11 +14,14 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Clock, MapPin, BookOpen, CheckCircle2, FileText, CheckSquare, Download, Pencil, ListChecks } from 'lucide-react-native';
 import { exportCaseDiaryToDocx } from '@/lib/caseDiaryExport';
 import {
-  getCaseDiaryById, getEntriesByDiary, deserializePlaces,
+  getCaseDiaryById, getEntriesByDiary, deserializePlaces, getCaseDiariesByFIR,
   type CaseDiary, type CaseDiaryEntry,
 } from '@/lib/db/caseDiaryRepo';
 import { getFIRById, type FIR } from '@/lib/db/firRepo';
 import { FirBasisCard } from '@/components/caseDiary/FirBasisCard';
+import { CaseDiaryA4Preview } from '@/components/caseDiary/CaseDiaryA4Preview';
+import { buildCaseDiaryPrintHtml } from '@/lib/caseDiaryPrint';
+import { useWorkspace } from '@/context/WorkspaceContext';
 
 const NAVY = '#6366F1';
 
@@ -121,6 +124,17 @@ export default function ViewCaseDiaryScreen() {
   const [loading, setLoading]     = useState(true);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
+  const [diaryNo, setDiaryNo] = useState<number | null>(null);
+  const [a4Html, setA4Html] = useState('');
+  const { workspace } = useWorkspace();
+  const openA4 = () => {
+    if (!diary) return;
+    setA4Html(buildCaseDiaryPrintHtml({
+      diaryNumber: diaryNo, preparation_date: diary.preparation_date, start_time: diary.start_time, end_time: diary.end_time,
+      places: deserializePlaces(diary.places_visited), fir, entries,
+      policeStation: workspace.police_station, district: workspace.district, officerName: workspace.officer_name,
+    }));
+  };
 
   // useFocusEffect so data refreshes when returning from add-entry screen
   useFocusEffect(
@@ -129,11 +143,14 @@ export default function ViewCaseDiaryScreen() {
       setLoading(true);
       (async () => {
         try {
-          const [d, e, f] = await Promise.all([
+          const [d, e, f, all] = await Promise.all([
             getCaseDiaryById(diaryId),
             getEntriesByDiary(diaryId),
             firId ? getFIRById(firId) : Promise.resolve(null),
+            firId ? getCaseDiariesByFIR(firId) : Promise.resolve([]),
           ]);
+          const pos = [...all].sort((a, b) => a.created_at - b.created_at).findIndex((x) => x.id === diaryId);
+          setDiaryNo(pos >= 0 ? pos + 1 : null);
           setDiary(d);
           setEntries(e);
           if (f) setFir(f);
@@ -206,6 +223,14 @@ export default function ViewCaseDiaryScreen() {
               <ListChecks size={11} color={NAVY} />
               <Text className="text-[10px] font-bold" style={{ color: NAVY }}>{t('fir.viewCaseDiary.editEntries')}</Text>
             </Pressable>
+            {/* A4 preview (owner) */}
+            <Pressable
+              onPress={openA4}
+              className="flex-row items-center gap-1 rounded-lg px-2 py-1.5 active:opacity-70 border border-border bg-card"
+            >
+              <FileText size={11} color="#B45309" />
+              <Text className="text-[10px] font-bold" style={{ color: '#B45309' }}>A4</Text>
+            </Pressable>
             {/* Export DOCX */}
             {entries.length > 0 && (
               <Pressable
@@ -223,6 +248,12 @@ export default function ViewCaseDiaryScreen() {
             )}
           </View>
         }
+      />
+      <CaseDiaryA4Preview
+        visible={!!a4Html}
+        html={a4Html}
+        title={`केस डायरी${diaryNo ? ` संख्या ${String(diaryNo).padStart(2, '0')}` : ''} — A4 प्रीव्यू`}
+        onClose={() => setA4Html('')}
       />
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 60 }}
