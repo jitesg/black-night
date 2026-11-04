@@ -27,6 +27,8 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { FIRSectionAssistant, FIRSuggesterButton } from '@/components/law/FIRSectionAssistant';
+import { PersonGroupInput } from '@/components/ui/PersonGroupInput';
+import { complainantToGroup, groupToComplainant } from '@/lib/firComplainant';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -431,12 +433,13 @@ export default function AddFIRScreen() {
   const [section, setSection] = useState('');
   const [isSuggesterOpen, setIsSuggesterOpen] = useState(false);
   // Complainant
-  const [cName, setCName] = useState('');
-  const [cAddress, setCAddress] = useState('');
-  const [cMobile, setCMobile] = useState('');
+  // वादी = one person card (name, पुत्र/पुत्री/पत्नी, पिता/पति, पुरुष/महिला, उम्र, जाति, मोबाइल, पता)
+  const [cPerson, setCPerson] = useState(() => complainantToGroup({}));
   const [cAltMobile, setCAltMobile] = useState('');
-  const [cJati, setCJati] = useState('');
-  const [cAge, setCAge] = useState('');
+  const cFields = groupToComplainant(cPerson);
+  const cName = cFields.complainant_name;
+  const cAddress = cFields.complainant_address;
+  const cJati = cFields.complainant_jati;
   // Incident
   const [ghatnasthal, setGhatnasthal] = useState('');
   // selectedCrimeTypeIds: flat array of crime-type ids (v2)
@@ -471,9 +474,17 @@ export default function AddFIRScreen() {
     isDirty.current = true;
     if (extracted.fir_number) setFirNumber(extracted.fir_number);
     if (extracted.section) setSection(extracted.section);
-    if (extracted.complainant_name) setCName(extracted.complainant_name);
-    if (extracted.complainant_address) setCAddress(extracted.complainant_address);
-    if (extracted.complainant_mobile) setCMobile(extracted.complainant_mobile);
+    if (extracted.complainant_name || extracted.complainant_address || extracted.complainant_mobile) {
+      setCPerson((prev) => {
+        const cur = groupToComplainant(prev);
+        return complainantToGroup({
+          ...cur,
+          complainant_name: extracted.complainant_name || cur.complainant_name,
+          complainant_address: extracted.complainant_address || cur.complainant_address,
+          complainant_mobile: extracted.complainant_mobile || cur.complainant_mobile,
+        });
+      });
+    }
     if (extracted.ghatnasthal) setGhatnasthal(extracted.ghatnasthal);
     if (extracted.mukadma_saransh) setMukadmaSaransh(extracted.mukadma_saransh);
     if (extracted.accused_name && extracted.accused_name.trim()) {
@@ -596,12 +607,8 @@ export default function AddFIRScreen() {
         const fir = await createFIR({
           fir_number: firNumber.trim(),
           section: section.trim(),
-          complainant_name: cName.trim(),
-          complainant_address: cAddress,
-          complainant_mobile: cMobile,
+          ...cFields,
           complainant_alt_mobile: cAltMobile,
-          complainant_jati: cJati,
-          complainant_age: cAge,
           ghatnasthal,
           crime_type: encodedCrimeType,
           date_of_occurrence: dateOccurrence,
@@ -843,36 +850,16 @@ export default function AddFIRScreen() {
         <View>
           <SectionHeader title={t('fir.addFir.sectionComplainant')} />
           <View className="gap-4">
-            <Field label={t('fir.addFir.fieldName')}>
-              <Input clearCopy value={cName} onChangeText={(v) => { isDirty.current = true; setCName(v); }} placeholder={t('fir.addFir.namePlaceholder')} />
+            <PersonGroupInput
+              single
+              keyName="vadi"
+              label="वादी / वादिनी"
+              value={cPerson}
+              onChange={(_k, v) => { isDirty.current = true; setCPerson(v); }}
+            />
+            <Field label={t('fir.addFir.fieldAltMobile')}>
+              <Input type="mobile" value={cAltMobile} onChangeText={(v) => { isDirty.current = true; setCAltMobile(v); }} placeholder={t('fir.addFir.altMobilePlaceholder')} />
             </Field>
-            <Field label={t('fir.addFir.fieldAddress')}>
-              <Input clearCopy type="multiline" value={cAddress} onChangeText={(v) => { isDirty.current = true; setCAddress(v); }} placeholder={t('fir.addFir.addressPlaceholder')} numberOfLines={2} />
-            </Field>
-            <View className="flex-row gap-3">
-              <View className="flex-1">
-                <Field label={t('fir.addFir.fieldMobile')}>
-                  <Input type="mobile" value={cMobile} onChangeText={(v) => { isDirty.current = true; setCMobile(v); }} placeholder={t('fir.addFir.mobilePlaceholder')} />
-                </Field>
-              </View>
-              <View className="flex-1">
-                <Field label={t('fir.addFir.fieldAltMobile')}>
-                  <Input type="mobile" value={cAltMobile} onChangeText={(v) => { isDirty.current = true; setCAltMobile(v); }} placeholder={t('fir.addFir.altMobilePlaceholder')} />
-                </Field>
-              </View>
-            </View>
-            <View className="flex-row gap-3">
-              <View className="flex-1">
-                <Field label={t('fir.addFir.fieldJati')}>
-                  <Input value={cJati} onChangeText={(v) => { isDirty.current = true; setCJati(v); }} placeholder={t('fir.addFir.jatiPlaceholder')} />
-                </Field>
-              </View>
-              <View className="flex-1">
-                <Field label={t('fir.addFir.fieldAge')}>
-                  <Input type="age" value={cAge} onChangeText={(v) => { isDirty.current = true; setCAge(v); }} placeholder={t('fir.addFir.agePlaceholder')} />
-                </Field>
-              </View>
-            </View>
           </View>
         </View>
 

@@ -276,6 +276,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   when filled; clear → "मिटाया गया · वापस लाएँ" 5 s; copy → "कॉपी हुआ"). AutocompleteInput turns it on by default for FIELD_KEYS
   person_name / father_husband_name / address (person + accused group cards); `<Input clearCopy>` in प्रार्थना पत्र add and मुकदमा add-fir.
   Every typed format box too (owner): FormatKeyInput text/multiline → `clearCopy`, item_group text cells → `ItemTextCell` (ItemGroupInput).
+- FIR वादी = one person card (owner, phase 1 of "FIR data fills every format"): `PersonGroupInput single` on mukadma/add-fir and the FIR
+  details edit tab; FIR columns complainant_name / _relation / _father / _gender / _age / _jati / _mobile / _address (+ separate alt mobile);
+  new columns via _ensureColumn (firs.complainant_father / _relation / _gender). Convert with `src/lib/firComplainant.ts`
+  (`complainantToGroup` / `groupToComplainant`; old "+91…" mobiles → 10 digits; tests `scripts/test_fir_complainant.ts`).
+  Next phases (agreed): @FIR.* resolvers for वादी + अभियुक्त → every format key, "मुकदमा चुनें" on formats opened outside a मुकदमा, one-tap buttons.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

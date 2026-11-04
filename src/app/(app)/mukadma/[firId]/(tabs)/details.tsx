@@ -22,6 +22,8 @@ import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { Progress } from '@/components/ui/progress';
 import { matchesQuery } from '@/lib/searchUtils';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
+import { PersonGroupInput } from '@/components/ui/PersonGroupInput';
+import { complainantToGroup, groupToComplainant } from '@/lib/firComplainant';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -181,12 +183,10 @@ export default function FIRDetailsTab() {
   // Editable fields
   const [firNumber, setFirNumber] = useState('');
   const [section, setSection] = useState('');
-  const [cName, setCName] = useState('');
-  const [cAddress, setCAddress] = useState('');
-  const [cMobile, setCMobile] = useState('');
+  // वादी = one person card (same as the FIR create screen)
+  const [cPerson, setCPerson] = useState(() => complainantToGroup({}));
   const [cAltMobile, setCAltMobile] = useState('');
-  const [cJati, setCJati] = useState('');
-  const [cAge, setCAge] = useState('');
+  const cFields = groupToComplainant(cPerson);
   const [ghatnasthal, setGhatnasthal] = useState('');
   const [crimeType, setCrimeType] = useState('');
   const [dateOccurrence, setDateOccurrence] = useState('');
@@ -298,12 +298,9 @@ export default function FIRDetailsTab() {
           setFir(f);
           setFirNumber(f.fir_number);
           setSection(f.section);
-          setCName(f.complainant_name);
-          setCAddress(f.complainant_address ?? '');
-          setCMobile(f.complainant_mobile ?? '');
+          setCPerson(complainantToGroup(f));
           setCAltMobile(f.complainant_alt_mobile ?? '');
-          setCJati(f.complainant_jati ?? '');
-          setCAge(f.complainant_age ?? '');
+
           setGhatnasthal(f.ghatnasthal ?? '');
           setCrimeType(f.crime_type);
           setDateOccurrence(f.date_of_occurrence ?? '');
@@ -363,9 +360,7 @@ export default function FIRDetailsTab() {
     try {
       await updateFIR(stableFirId!, {
         fir_number: firNumber.trim(), section: section.trim(),
-        complainant_name: cName.trim(), complainant_address: cAddress,
-        complainant_mobile: cMobile, complainant_alt_mobile: cAltMobile,
-        complainant_jati: cJati, complainant_age: cAge,
+        ...cFields, complainant_alt_mobile: cAltMobile,
         ghatnasthal,
         date_of_occurrence: dateOccurrence, time_of_occurrence: timeOccurrence,
         date_of_information: dateInformation, time_of_information: timeInformation,
@@ -503,16 +498,8 @@ export default function FIRDetailsTab() {
         {/* Complainant */}
         <View className="gap-4">
           <Text className="text-base font-bold text-foreground border-b border-border pb-2">{t('fir.complainantDetails')}</Text>
-          <Field label={t('fir.name')}><Input value={cName} onChangeText={setCName} /></Field>
-          <Field label={t('fir.fullAddress')}><Input type="multiline" value={cAddress} onChangeText={setCAddress} numberOfLines={2} /></Field>
-          <View className="flex-row gap-3">
-            <View className="flex-1"><Field label={t('fir.mobile')}><Input type="mobile" value={cMobile} onChangeText={setCMobile} /></Field></View>
-            <View className="flex-1"><Field label={t('fir.altMobile')}><Input type="mobile" value={cAltMobile} onChangeText={setCAltMobile} /></Field></View>
-          </View>
-          <View className="flex-row gap-3">
-            <View className="flex-1"><Field label={t('fir.jati')}><Input value={cJati} onChangeText={setCJati} /></Field></View>
-            <View className="flex-1"><Field label={t('fir.age')}><Input type="age" value={cAge} onChangeText={setCAge} /></Field></View>
-          </View>
+          <PersonGroupInput single keyName="vadi" label="वादी / वादिनी" value={cPerson} onChange={(_k, v) => setCPerson(v)} />
+          <Field label={t('fir.altMobile')}><Input type="mobile" value={cAltMobile} onChangeText={setCAltMobile} /></Field>
         </View>
 
         {/* Incident */}

@@ -1098,6 +1098,10 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   // when a DEFAULT is supplied — NOT NULL is already enforced by the CREATE
   // TABLE on fresh installs and by app-level ? bindings on all installs.
   await _ensureColumn(database, 'fir_karyvahi', 'sort_order',  'INTEGER DEFAULT 0');
+  // FIR वादी card: पिता / पति, सम्बन्ध, पुरुष / महिला (fill formats from the FIR)
+  await _ensureColumn(database, 'firs', 'complainant_father',   'TEXT');
+  await _ensureColumn(database, 'firs', 'complainant_relation', 'TEXT');
+  await _ensureColumn(database, 'firs', 'complainant_gender',   'TEXT');
   await _ensureColumn(database, 'fir_karyvahi', 'deleted_at',  'INTEGER');
   await _ensureColumn(database, 'fir_karyvahi', 'precautions', 'TEXT');
   await _ensureColumn(database, 'knowledge_entries', 'crime_type', "TEXT DEFAULT ''");

@@ -570,10 +570,12 @@ export interface PersonGroupInputProps {
   onValidChange?: (keyName: string, isValid: boolean) => void;
   keyName: string;
   error?: string;
+  /** Exactly one person (FIR वादी): no count badge, no "+ add" button. */
+  single?: boolean;
 }
 
 export const PersonGroupInput = memo(({
-  label, value, onChange, onValidChange, keyName, error,
+  label, value, onChange, onValidChange, keyName, error, single,
 }: PersonGroupInputProps) => {
   const C = useGroupTokens();
   const { t } = useTranslation();
@@ -785,11 +787,13 @@ export const PersonGroupInput = memo(({
         <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>
           {resolvedLabel}
         </Text>
-        <View style={{ backgroundColor: '#F0F9FF', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 }}>
-          <Text style={{ fontSize: 11, color: '#0369A1', fontWeight: '500' }}>
-            {t('group.person.countBadge', { count: entries.length })}
-          </Text>
-        </View>
+        {single ? null : (
+          <View style={{ backgroundColor: '#F0F9FF', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 }}>
+            <Text style={{ fontSize: 11, color: '#0369A1', fontWeight: '500' }}>
+              {t('group.person.countBadge', { count: entries.length })}
+            </Text>
+          </View>
+        )}
       </View>
 
       {/* Toast / Snackbar banner */}
@@ -839,14 +843,16 @@ export const PersonGroupInput = memo(({
         />
       ))}
 
-      <Pressable onPress={handleAdd} style={{
-        flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
-        borderWidth: 1.5, borderColor: C.addBorder, borderStyle: 'dashed',
-        borderRadius: 12, paddingVertical: 12, backgroundColor: C.addBg,
-      }}>
-        <UserPlus size={15} color={C.addText} />
-        <Text style={{ fontSize: 14, fontWeight: '600', color: C.addText }}>{t('group.person.addBtn')}</Text>
-      </Pressable>
+      {single ? null : (
+        <Pressable onPress={handleAdd} style={{
+          flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
+          borderWidth: 1.5, borderColor: C.addBorder, borderStyle: 'dashed',
+          borderRadius: 12, paddingVertical: 12, backgroundColor: C.addBg,
+        }}>
+          <UserPlus size={15} color={C.addText} />
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.addText }}>{t('group.person.addBtn')}</Text>
+        </Pressable>
+      )}
 
       {error ? <Text style={{ fontSize: 12, color: C.accent }}>{error}</Text> : null}
 
