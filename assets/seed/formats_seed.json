@@ -7061,6 +7061,262 @@
           "sort_order": 20
         }
       ]
+    },
+    {
+      "id": "sys-fmt-bayan-183-patra",
+      "title": "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)",
+      "format_type": "Case Diary",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "183",
+        "164",
+        "बयान",
+        "पीड़िता",
+        "अवलोकन",
+        "न्यायालय",
+        "पॉक्सो",
+        "CWC",
+        "बाल कल्याण समिति",
+        "सुपुर्दगी"
+      ],
+      "last_updated": "2026-11-04",
+      "vivran": "{{if:doL1|[[पत्र]]\n[[सेवा में]] सेवा में,\nमाननीय न्यायालय {{CourtName}}\nजनपद {{District}}।\n[[विषय]] विषय – मु0अ0सं0 {{FIRNo}} धारा {{Sections}} थाना {{PoliceStation}} जनपद {{District}} से सम्बन्धित {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} {{VName}} का धारा {{if:Law=बीएनएसएस|183 बीएनएसएस}}{{if:Law=सीआरपीसी|164 सीआरपीसी}} के अन्तर्गत बयान दर्ज कराये जाने के सम्बन्ध में।\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि मु0अ0सं0 {{FIRNo}} धारा {{Sections}} थाना {{PoliceStation}} जनपद {{District}} से सम्बन्धित {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} {{VName}} {{Rel}} {{VFather}} {{if:Rel=पुत्र|निवासी}}{{ifnot:Rel=पुत्र|निवासिनी}} {{VAddr}}{{if:VAge| उम्र {{VAge}}}} का {{if:doMedical|मेडिकल परीक्षण व }}बयान अन्तर्गत धारा {{if:Law=बीएनएसएस|180 बीएनएसएस}}{{if:Law=सीआरपीसी|161 सीआरपीसी}} में दर्ज किया जा चुका है। विवेचना के क्रम में {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} का बयान अन्तर्गत धारा {{if:Law=बीएनएसएस|183 बीएनएसएस}}{{if:Law=सीआरपीसी|164 सीआरपीसी}} अंकित किया जाना आवश्यक है।\n\nअतः महोदय से निवेदन है कि मुकदमा उपरोक्त से सम्बन्धित {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} {{VName}} उपरोक्त का बयान अन्तर्गत धारा {{if:Law=बीएनएसएस|183 बीएनएसएस}}{{if:Law=सीआरपीसी|164 सीआरपीसी}} में दर्ज कराने हेतु अनुमति प्रदान करने की कृपा करें।{{if:doFirst| {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} का यह प्रथम बयान है।}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} / विवेचक\nथाना {{PoliceStation}} जनपद {{District}}\n}}{{if:doL2|[[पत्र]]\n[[सेवा में]] सेवा में,\nमाननीय न्यायालय {{CourtName}}\nजनपद {{District}}।\n[[विषय]] विषय – मु0अ0सं0 {{FIRNo}} धारा {{Sections}} थाना {{PoliceStation}} जनपद {{District}} से सम्बन्धित {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} {{VName}} का धारा {{if:Law=बीएनएसएस|183 बीएनएसएस}}{{if:Law=सीआरपीसी|164 सीआरपीसी}} के अन्तर्गत अंकित बयान का अवलोकन किये जाने की अनुमति के सम्बन्ध में।\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि मु0अ0सं0 {{FIRNo}} धारा {{Sections}} थाना {{PoliceStation}} जनपद {{District}} से सम्बन्धित {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} {{VName}} {{Rel}} {{VFather}} {{if:Rel=पुत्र|निवासी}}{{ifnot:Rel=पुत्र|निवासिनी}} {{VAddr}}{{if:VAge| उम्र {{VAge}}}} का बयान अन्तर्गत धारा {{if:Law=बीएनएसएस|183 बीएनएसएस}}{{if:Law=सीआरपीसी|164 सीआरपीसी}} मा0 न्यायालय के समक्ष {{if:StmtDate|दिनांक {{StmtDate}} को }}अंकित किया जा चुका है। विवेचना के क्रम में {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} के लेखबद्ध बयान का अवलोकन कर केस डायरी में अंकित किया जाना आवश्यक है।\n\nअतः महोदय से निवेदन है कि मुकदमा उपरोक्त से सम्बन्धित {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} {{VName}} उपरोक्त के धारा {{if:Law=बीएनएसएस|183 बीएनएसएस}}{{if:Law=सीआरपीसी|164 सीआरपीसी}} के अन्तर्गत अंकित बयान का अवलोकन करने की अनुमति प्रदान करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} / विवेचक\nथाना {{PoliceStation}} जनपद {{District}}\n}}{{if:doL3|[[पत्र]]\n[[सेवा में]] सेवा में,\nअध्यक्ष महोदय / महोदया,\nबाल कल्याण समिति (CWC),\nजनपद {{District}}।\n[[विषय]] विषय – {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} के सर्वोत्तम हित एवं कल्याण को दृष्टिगत रखते हुए नियमानुसार सुपुर्दगी आदेश पारित करने के सम्बन्ध में।\n[[महोदय]] महोदय / महोदया,\n[[विवरण]] सादर अवगत कराना है कि थाना {{PoliceStation}}, जनपद {{District}} पर पंजीकृत मु0अ0सं0 {{FIRNo}} धारा {{Sections}} से सम्बन्धित {{Minor}} {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} {{VName}} {{Rel}} {{VFather}} {{if:Rel=पुत्र|निवासी}}{{ifnot:Rel=पुत्र|निवासिनी}} {{VAddr}}{{if:VAge| उम्र {{VAge}}}} को आवश्यक विधिक कार्यवाही पूर्ण कर आपके समक्ष प्रस्तुत किया जा रहा है।{{if:Receiver=माता/पिता/रिश्तेदार/केयर टेकर|\n\nउक्त {{Minor}} {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} की सुपुर्दगी हेतु {{if:Receiver=रिश्तेदार|{{RecvRelation}}}}{{if:Receiver=माता/पिता/केयर टेकर|{{Receiver}}}} {{RecvName}}{{if:RecvFather| {{RecvRel}} {{RecvFather}}}} निवासी {{if:RecvAddr|{{RecvAddr}}}}{{ifnot:RecvAddr|{{VAddr}}}} द्वारा {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} को अपनी देखरेख एवं संरक्षण में लेने की इच्छा व्यक्त की गयी है तथा {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} की समुचित देखभाल, सुरक्षा, शिक्षा एवं भरण-पोषण करने का आश्वासन दिया गया है।}}\n\nअतः श्रीमान जी से अनुरोध है कि उक्त {{Minor}} {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} के सर्वोत्तम हित एवं कल्याण को दृष्टिगत रखते हुए {{if:Receiver=माता/पिता/रिश्तेदार/केयर टेकर|{{if:Receiver=रिश्तेदार|{{RecvRelation}}}}{{if:Receiver=माता/पिता/केयर टेकर|{{Receiver}}}} {{RecvName}} की उपयुक्तता तथा {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} की इच्छा का परीक्षण कर नियमानुसार आदेश पारित करते हुए {{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} को {{if:Receiver=रिश्तेदार|{{RecvRelation}}}}{{if:Receiver=माता/पिता/केयर टेकर|{{Receiver}}}} {{RecvName}} की सुपुर्दगी में दिये जाने की कृपा करें।}}{{ifnot:Receiver=माता/पिता/रिश्तेदार/केयर टेकर|नियमानुसार सुपुर्दगी आदेश पारित करने की कृपा करें।}}\n[[समापन]] सादर।\n{{if:Receiver=माता/पिता/रिश्तेदार/केयर टेकर|[[संलग्नक]] {{if:Receiver=रिश्तेदार|{{RecvRelation}}}}{{if:Receiver=माता/पिता/केयर टेकर|{{Receiver}}}} के आधार कार्ड की छायाप्रति। | ({{OfficerName}})\n{{if:Rel=पुत्र|पीड़ित}}{{ifnot:Rel=पुत्र|पीड़िता}} की आयु सम्बन्धी प्रमाण पत्र। | {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} / विवेचक\nअन्य सम्बन्धित अभिलेख। | थाना {{PoliceStation}} जनपद {{District}}\n}}{{ifnot:Receiver=माता/पिता/रिश्तेदार/केयर टेकर|[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} / विवेचक\nथाना {{PoliceStation}} जनपद {{District}}\n}}}}",
+      "keys": [
+        {
+          "key_name": "doL1",
+          "label": "पत्र 1: बयान दर्ज कराने हेतु (न्यायालय)",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "sort_order": 0
+        },
+        {
+          "key_name": "doL2",
+          "label": "पत्र 2: बयान अवलोकन हेतु (न्यायालय)",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "sort_order": 1
+        },
+        {
+          "key_name": "doL3",
+          "label": "पत्र 3: सुपुर्दगी हेतु बाल कल्याण समिति (CWC) को",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "sort_order": 2
+        },
+        {
+          "key_name": "Law",
+          "label": "कानून (पत्र 1, 2)",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "बीएनएसएस",
+          "dropdown_options": "[{\"value\": \"बीएनएसएस\", \"label\": \"BNSS (धारा 183 / 180)\"}, {\"value\": \"सीआरपीसी\", \"label\": \"CrPC (धारा 164 / 161) — पुराने मुकदमे\"}]",
+          "sort_order": 3
+        },
+        {
+          "key_name": "CourtName",
+          "label": "न्यायालय (माननीय न्यायालय …)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "श्रीमान मुख्य न्यायिक मजिस्ट्रेट महोदय",
+          "dropdown_options": "{\"placeholder\": \"जैसे: विशेष न्यायाधीश पॉक्सो महोदय / श्रीमान एसीजेएम प्रथम महोदय\"}",
+          "sort_order": 4
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "@FIR.fir_number",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 703/2024\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "@FIR.section",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 137(2), 87 बीएनएस व 7/8 पॉक्सो एक्ट\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "VName",
+          "label": "पीड़िता / पीड़ित का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: आरती\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "Rel",
+          "label": "सम्बन्ध",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पुत्री",
+          "dropdown_options": "[\"पुत्री\", \"पत्नी\", \"पुत्र\"]",
+          "sort_order": 8
+        },
+        {
+          "key_name": "VFather",
+          "label": "पिता / पति का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: राजबहादुर\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "VAddr",
+          "label": "पता",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "VAge",
+          "label": "उम्र (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 13 वर्ष 08 माह\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "doMedical",
+          "label": "मेडिकल परीक्षण भी हो चुका है",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"showIf\": \"doL1\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "doFirst",
+          "label": "अंत में लिखें: \"पीड़िता का यह प्रथम बयान है\"",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"showIf\": \"doL1\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "StmtDate",
+          "label": "बयान किस दिनांक को अंकित हुआ (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.07.2025\", \"showIf\": \"doL2\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "Minor",
+          "label": "नाबालिग / बालिग (पत्र 3)",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "नाबालिग",
+          "dropdown_options": "{\"options\": [\"नाबालिग\", \"बालिग\"], \"showIf\": \"doL3\"}",
+          "sort_order": 15
+        },
+        {
+          "key_name": "Receiver",
+          "label": "सुपुर्दगी किसे (वैकल्पिक — एक ही व्यक्ति)",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "समिति के आदेशानुसार",
+          "dropdown_options": "{\"options\": [{\"value\": \"समिति के आदेशानुसार\", \"label\": \"किसी का नाम नहीं (समिति के आदेशानुसार)\"}, \"माता\", \"पिता\", \"रिश्तेदार\", \"केयर टेकर\"], \"showIf\": \"doL3\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "RecvRelation",
+          "label": "रिश्ता क्या है",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चाचा / मौसी / नाना\", \"showIf\": \"doL3 & Receiver=रिश्तेदार\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "RecvName",
+          "label": "सुपुर्दगी लेने वाले का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमती सुनीता\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\"}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "RecvRel",
+          "label": "उनका सम्बन्ध (वैकल्पिक)",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "पत्नी",
+          "dropdown_options": "{\"options\": [\"पत्नी\", \"पुत्र\", \"पुत्री\"], \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\"}",
+          "sort_order": 19
+        },
+        {
+          "key_name": "RecvFather",
+          "label": "पिता / पति का नाम (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: राजबहादुर\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\"}",
+          "sort_order": 20
+        },
+        {
+          "key_name": "RecvAddr",
+          "label": "उनका पता (वैकल्पिक — खाली = पीड़िता वाला पता)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\"}",
+          "sort_order": 21
+        },
+        {
+          "key_name": "pad",
+          "label": "पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 22
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "विवेचक का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 23
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 24
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "sort_order": 25
+        }
+      ]
     }
   ]
 }

@@ -184,6 +184,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   default @FIR.*): one justified bold-label header paragraph, notice para (appear date/time bold), 10 शर्तें [[सूची]] (10th = OtherCond or
   "कोई नहीं।"), [[दाएँ]] officer block, पावती, [[दोनों ओर]] signatures; blank optional fields → ".........."; spacing by zero-width
   [[सूची]] lines (3 before the officer block, 1 before पावती, 3 before the last signature line — owner).
+- `sys-fmt-bayan-183-patra` "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)" (Case Diary, owner's docx +
+  text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
+  पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)
+  → custody paragraph + [[संलग्नक]] (3 items) with the signature; fixed subject "…सर्वोत्तम हित एवं कल्याण… सुपुर्दगी आदेश…" (owner).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
