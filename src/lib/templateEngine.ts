@@ -666,8 +666,13 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
           return v ? `${pre}${v}${post ?? ''}` : '';
         })
         .replace(/\{(#|[A-Za-z0-9_]+)\}/g, (_x, col: string) => (col === '#' ? String(n + 1) : String(r[col] ?? '').trim()))
-        // after the columns are filled, so yes / no may hold {col}
-        .replace(/\{\?([A-Za-z0-9_]+)\|([^{}|]*)\|([^{}|]*)\}/g, (_x, col: string, yes: string, no: string) => (isTicked(String(r[col] ?? '')) ? yes : no))
+        // after the columns are filled, so yes / no may hold {col}; innermost first (nested {?…} allowed)
+        .replace(/[\s\S]*/, (t) => {
+          for (let k = 0; k < 6 && /\{\?[A-Za-z0-9_]+\|/.test(t); k++) {
+            t = t.replace(/\{\?([A-Za-z0-9_]+)\|([^{}|]*)\|([^{}|]*)\}/g, (_x, col: string, yes: string, no: string) => (isTicked(String(r[col] ?? '')) ? yes : no));
+          }
+          return t;
+        })
         .replace(/ {2,}/g, ' ')).join(sep);
     }
     // the chosen text may hold more list tokens

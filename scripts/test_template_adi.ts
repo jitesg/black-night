@@ -502,3 +502,10 @@ test('item_group row {?col|yes|no} may hold {col} / {text~col} inside', () => {
   const t = '{{each:A|{?b|{name} भर्ती {from} से{ ~to~ तक}|{name} परीक्षण {from}}| / }}';
   assert.equal(generateReport(t, { A: rows }, keys), 'अयूब भर्ती 03.02 से 13.02 तक / आदिल परीक्षण 03.02');
 });
+
+test('item_group row: nested {?a|…{?b|x|y}…|…}', () => {
+  const keys = [{ key_name: 'A', field_type: 'item_group', label: 'A', is_required: 0, default_value: null }] as never;
+  const rows = JSON.stringify([{ name: 'बबलू', own: '', f: '' }, { name: 'सीता', own: '', f: 'हाँ' }, { name: 'राम', own: 'जुर्म स्वीकार', f: '' }]);
+  const t = '{{each:A|{name}: {?own|{own}|इंकार {?f|बता रही हैं|बता रहे हैं}}| / }}';
+  assert.equal(generateReport(t, { A: rows }, keys), 'बबलू: इंकार बता रहे हैं / सीता: इंकार बता रही हैं / राम: जुर्म स्वीकार');
+});
