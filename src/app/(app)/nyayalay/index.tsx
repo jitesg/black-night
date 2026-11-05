@@ -16,20 +16,7 @@ import {
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
-import {
-  getAllNyayalayDocuments,
-  deleteNyayalayDocument,
-  searchNyayalayDocuments,
-  computeAnalyticsFromDocs,
-  nylDaysUntilDeadline,
-  todayStr,
-  DOC_TYPES,
-  DOC_TYPE_LABELS,
-  type NyayalayDocument,
-  type NyayalayAnalytics,
-  type DocType,
-  type NyayalayStatus,
-} from '@/lib/db/nyayalayRepo';
+import { getAllNyayalayDocuments, deleteNyayalayDocument, searchNyayalayDocuments, computeAnalyticsFromDocs, nylDaysUntilDeadline, todayStr, DOC_TYPES, type NyayalayDocument, type NyayalayAnalytics, type DocType } from '@/lib/db/nyayalayRepo';
 import {
   AlertDialog,
   AlertDialogAction,

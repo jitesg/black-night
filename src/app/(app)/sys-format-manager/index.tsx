@@ -19,7 +19,7 @@ import {
   View, Text, Pressable, KeyboardAvoidingView, ScrollView, ActivityIndicator, TextInput,
 } from 'react-native';
 import { router } from 'expo-router';
-import { Shield, Lock, KeyRound } from 'lucide-react-native';
+import { Lock, KeyRound } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { AppHeader } from '@/components/ui/ds/AppHeader';

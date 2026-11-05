@@ -7,8 +7,7 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import {
   Edit2, Trash2,
   BookOpen, Rows3, Church, Building2, ShoppingBag, Users, FileWarning,

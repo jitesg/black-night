@@ -1,8 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View, ActivityIndicator,
-} from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, Text, View, ActivityIndicator } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Save, ChevronDown, Plus, Trash2 } from 'lucide-react-native';
@@ -12,7 +10,7 @@ import {
   type ShopStaff,
 } from '@/lib/db/liquorShopRepo';
 import { SHOP_TYPES } from '@/lib/db/schema';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,

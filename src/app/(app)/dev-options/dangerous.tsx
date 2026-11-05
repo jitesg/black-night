@@ -14,10 +14,9 @@ import { useCallback, useState } from 'react';
 import {
   View, Text, ScrollView, Pressable, TextInput,
 } from 'react-native';
-import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { AlertTriangle, Trash2, RotateCcw, RefreshCw } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { resetFlags, clearAuditLog, _addAudit } from '@/lib/devOptionsStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {

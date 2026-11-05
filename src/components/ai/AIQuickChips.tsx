@@ -7,11 +7,7 @@
 import React, { memo, useState } from 'react';
 import { ScrollView, Text, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import {
-  MessageCircle, ArrowRight, BookOpen, FileText, Bell, Scale,
-  CheckSquare, Clock, Search, Users, BarChart2, ListTodo, Activity,
-  Brain, Network, Layers, Gavel, TriangleAlert, MoreHorizontal, ChevronsLeft,
-} from 'lucide-react-native';
+import { MessageCircle, ArrowRight, BookOpen, FileText, Bell, CheckSquare, Clock, Search, Users, BarChart2, ListTodo, Activity, Brain, Network, Layers, Gavel, TriangleAlert, MoreHorizontal, ChevronsLeft } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { QUICK_ACTIONS } from '@/ai/AICopilotService';

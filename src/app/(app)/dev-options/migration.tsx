@@ -7,10 +7,9 @@ import { useCallback, useState } from 'react';
 import {
   View, Text, ScrollView, Pressable, ActivityIndicator,
 } from 'react-native';
-import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ChevronLeft, RefreshCw, Shield, Database, CheckCircle, XCircle } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { RefreshCw, Shield, Database, CheckCircle, XCircle } from 'lucide-react-native';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { _addAudit } from '@/lib/devOptionsStore';
 import {
   validateSchema, runIntegrityCheck, runForeignKeyCheck,

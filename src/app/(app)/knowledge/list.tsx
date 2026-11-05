@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
-import {
-  ActivityIndicator, FlatList, Pressable,
-  ScrollView, Share, Text, View,
-} from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  Edit2, Filter, Plus, Trash2, Copy, Shield, User, BookOpen, ChevronRight, Gavel,
-} from 'lucide-react-native';
+import { Edit2, Filter, Plus, Trash2, Shield, User, BookOpen, ChevronRight, Gavel } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';

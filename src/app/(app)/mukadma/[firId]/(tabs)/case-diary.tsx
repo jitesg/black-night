@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, useMemo, memo } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { logger } from '@/lib/logger';
 import { View, Text, FlatList, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { T } from '@/lib/typography';
@@ -14,7 +14,7 @@ import {
   type CaseDiary, type CaseDiaryEntry,
 } from '@/lib/db/caseDiaryRepo';
 import { exportCaseDiaryToDocx, exportAllCaseDiariesToDocx } from '@/lib/caseDiaryExport';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useFIRContext } from '@/context/FIRContext';
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────

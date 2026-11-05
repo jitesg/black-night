@@ -8,12 +8,7 @@
  */
 
 import type { InvestigationContext } from '../InvestigationContext';
-import type {
-  SmartRecommendation,
-  IntelligenceRecommendationReport,
-  IntelligenceHealthReport,
-  IntelGrade,
-} from './IntelligenceTypes';
+import type { SmartRecommendation, IntelligenceRecommendationReport, IntelGrade } from './IntelligenceTypes';
 
 // ── Explanation templates keyed by action ─────────────────────────────────────
 

@@ -7,7 +7,7 @@
  *
  * __DEV__ gate — renders nothing in production builds.
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   View, Text, Pressable, Animated, Vibration,
 } from 'react-native';

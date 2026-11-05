@@ -4,10 +4,7 @@ import { stripHtmlTags } from '@/lib/stringUtils';
 import { Pressable, ScrollView, Share, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  BookMarked, Calendar, Clock, Copy,
-  Edit2, LayoutTemplate, Share2, Star, Trash2,
-} from 'lucide-react-native';
+import { Calendar, Clock, Copy, Edit2, LayoutTemplate, Share2, Star, Trash2 } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
 import {
   getGdById, toggleGdFavorite, deleteGdEntry, type GdEntry,
@@ -16,7 +13,7 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 const GD_COLOR = '#D97706';
 

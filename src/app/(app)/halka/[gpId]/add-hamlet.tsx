@@ -7,7 +7,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Plus, Minus, Save } from 'lucide-react-native';
 import { createHamlet, updateHamlet, getHamletById } from '@/lib/db/hamletRepo';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,

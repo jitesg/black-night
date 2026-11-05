@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { ScrollView, Text, View, Pressable, KeyboardAvoidingView } from 'react-native';
-import { router } from 'expo-router';
-import {
-  Save, CheckCircle2, Building2, User, MapPin, Layout,
-} from 'lucide-react-native';
+import { Save, CheckCircle2, Building2, User, MapPin } from 'lucide-react-native';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { Input } from '@/components/ui/input';
 import { AppHeader } from '@/components/ui/ds/AppHeader';

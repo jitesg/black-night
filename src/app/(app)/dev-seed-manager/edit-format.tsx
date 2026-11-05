@@ -12,7 +12,7 @@ import {
   Save, Plus, Trash2, ChevronDown, ChevronUp,
 } from 'lucide-react-native';
 import { useDevSeedStore, type SeedFormatKey } from '@/lib/devSeedStore';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const FORMAT_TYPES = ['GD', 'Case Diary', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Any'];
@@ -361,7 +361,7 @@ export default function EditFormatScreen() {
           {keys.length === 0 && (
             <View className="border border-dashed border-border rounded-xl py-6 items-center gap-1">
               <Text className="text-sm text-muted-foreground">No keys yet</Text>
-              <Text className="text-xs text-muted-foreground">Tap "Add Key" to define form fields</Text>
+              <Text className="text-xs text-muted-foreground">Tap &quot;Add Key&quot; to define form fields</Text>
             </View>
           )}
 

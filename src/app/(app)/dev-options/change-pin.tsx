@@ -7,16 +7,13 @@
  * __DEV__ gate — renders nothing in production builds.
  */
 import { useCallback, useRef, useState } from 'react';
-import {
-  View, Text, Pressable, Animated, Vibration, ScrollView, TextInput,
-  KeyboardAvoidingView,
-} from 'react-native';
+import { View, Text, Pressable, Animated, Vibration, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { T } from '@/lib/typography';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Key, CheckCircle } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
-import { changePin, isDevSessionActive } from '@/lib/devOptionsAuth';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { changePin } from '@/lib/devOptionsAuth';
 import { _addAudit } from '@/lib/devOptionsStore';
 
 const GREEN = '#059669';

@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import {
   View, Text, ScrollView, Pressable, Modal, TextInput,
 } from 'react-native';
-import { Search, RefreshCw, X } from 'lucide-react-native';
+import { Search, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import type { NLQResult } from '../../../ai/level5/L5Types';

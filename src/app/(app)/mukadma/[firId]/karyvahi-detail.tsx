@@ -11,10 +11,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { persistPickedFile } from '@/lib/attachmentFiles';
-import {
-  View, Text, ScrollView, Pressable, ActivityIndicator,
-  TextInput, FlatList, KeyboardAvoidingView,
-} from 'react-native';
+import { View, Text, ScrollView, Pressable, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
 import { Image } from 'react-native';
 import { useLocalSearchParams, useFocusEffect, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';

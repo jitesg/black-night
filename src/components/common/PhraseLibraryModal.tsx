@@ -9,16 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {
-  BookMarked,
-  Check,
-  FolderPlus,
-  Pencil,
-  Plus,
-  Search,
-  Trash2,
-  X,
-} from 'lucide-react-native';
+import { BookMarked, Pencil, Plus, Search, Trash2, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { useTranslation } from 'react-i18next';

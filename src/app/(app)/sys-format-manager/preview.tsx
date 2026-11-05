@@ -4,9 +4,7 @@
  * Owner-only: always guarded by session check.
  */
 import { useCallback, useState } from 'react';
-import {
-  View, Text, ScrollView, Pressable, ActivityIndicator,
-} from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';

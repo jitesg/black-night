@@ -28,11 +28,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
-import {
-  useDevOptions, setFlag, _addAudit,
-  type FeatureFlags,
-} from '@/lib/devOptionsStore';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { useDevOptions, _addAudit, type FeatureFlags } from '@/lib/devOptionsStore';
 import { isDevSessionActive, clearDevSession } from '@/lib/devOptionsAuth';
 import {
   getDiagnosticsSnapshot, vacuumDatabase, optimizeDatabase,

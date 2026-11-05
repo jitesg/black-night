@@ -16,16 +16,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  Activity,
-  AlertTriangle,
-  BarChart2,
-  Brain,
-  CheckCircle,
-  GitBranch,
-  List,
-  X,
-} from 'lucide-react-native';
+import { Activity, AlertTriangle, Brain, CheckCircle, GitBranch, List, X } from 'lucide-react-native';
 import type { ReasoningReport } from '@/ai/reasoning/ReasoningTypes';
 import { DecisionCardView } from './DecisionCardView';
 import { FindingCard } from './FindingCard';

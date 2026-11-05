@@ -12,15 +12,10 @@ import {
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
-import {
-  Plus, Download, Trash2, Edit2,
-  FileText, BookOpen, AlertTriangle, Copy, Check, RotateCcw,
-  Search, SlidersHorizontal, ArrowUpDown, Shield, Tag,
-  Eye, Upload, RefreshCw,
-} from 'lucide-react-native';
+import { Download, Trash2, Edit2, FileText, BookOpen, AlertTriangle, Copy, Check, RotateCcw, Search, SlidersHorizontal, ArrowUpDown, Shield, Tag, Eye, Upload, RefreshCw } from 'lucide-react-native';
 import { useDevSeedStore, type SeedFormat, type SeedKnowledge } from '@/lib/devSeedStore';
 import { isDevSessionActive } from '@/lib/devOptionsAuth';
-import { getPerSeedFileStatus, type SeedFileStatus } from '@/lib/db/seedManager';
+import { getPerSeedFileStatus } from '@/lib/db/seedManager';
 import { runKnowledgeDiagnostics } from '@/lib/diagnostics/knowledgeDiagnostics';
 import { getKnowledgeAnalytics, type KnowledgeAnalytics } from '@/lib/db/knowledgeRepo';
 import {

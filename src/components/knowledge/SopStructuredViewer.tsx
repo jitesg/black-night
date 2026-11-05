@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
-import { ChevronDown, ChevronRight, AlertCircle, ArrowDown, CheckSquare, Square, ShieldAlert } from 'lucide-react-native';
+import { ChevronDown, ChevronRight, AlertCircle, ArrowDown, CheckSquare, Square } from 'lucide-react-native';
 import { SopStruct, SopBlock, SopFig } from '../../ai/sopStruct';
 import { SopImage } from './SopImage';
 

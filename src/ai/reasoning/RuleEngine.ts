@@ -9,7 +9,6 @@
 import type { InvestigationContext } from '../InvestigationContext';
 import type { Finding } from './ReasoningTypes';
 import { INVESTIGATION_RULES, getApplicableRules } from './rules';
-import type { InvestigationRule } from './ReasoningTypes';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

@@ -8,20 +8,7 @@
 
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import {
-  AlertTriangle,
-  ArrowRight,
-  BookOpen,
-  ChevronDown,
-  ChevronUp,
-  FileText,
-  Gavel,
-  Info,
-  ListChecks,
-  Lock,
-  Shield,
-  XCircle,
-} from 'lucide-react-native';
+import { AlertTriangle, ArrowRight, BookOpen, ChevronDown, ChevronUp, FileText, Gavel, Info, ListChecks, Lock, Shield } from 'lucide-react-native';
 import type { DecisionCard } from '@/ai/reasoning/ReasoningTypes';
 
 interface Props {

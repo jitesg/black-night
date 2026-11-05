@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { ShieldCheck, ShieldX, Info, ChevronDown, ChevronRight } from 'lucide-react-native';
+import { ShieldCheck, ShieldX, ChevronDown, ChevronRight } from 'lucide-react-native';
 import { L7PanelShell } from './L7PanelShell';
 import type { RuleEngineReport, RuleViolation } from '../../../ai/level7/L7Types';
 

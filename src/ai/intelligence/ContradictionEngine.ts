@@ -6,7 +6,7 @@
  */
 
 import type { InvestigationContext } from '../InvestigationContext';
-import type { ContradictionReport, Contradiction, ContradictionType } from './IntelligenceTypes';
+import type { ContradictionReport, Contradiction } from './IntelligenceTypes';
 import { evaluateFirBasis } from '@/lib/firBasis';
 
 let cid = 0;

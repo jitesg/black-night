@@ -12,10 +12,7 @@
 import React, { memo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import {
-  CheckSquare, Clock, AlertTriangle, Activity,
-  ChevronDown, ChevronUp, TrendingUp, CalendarClock, FileText,
-} from 'lucide-react-native';
+import { CheckSquare, AlertTriangle, Activity, ChevronDown, ChevronUp, TrendingUp, CalendarClock, FileText } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import type { InvestigationContext } from '@/ai/InvestigationContext';

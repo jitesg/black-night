@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator, BackHandler, Pressable, ScrollView,
   Text, View,
@@ -28,7 +28,7 @@ import {
   type NyayalayReport,
   type NyayalayChecklistItem,
 } from '@/lib/db/nyayalayRepo';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const MODULE_COLOR = '#1D4ED8';

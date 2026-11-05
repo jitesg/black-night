@@ -13,12 +13,10 @@ import type { InvestigationContext, NextAction } from './InvestigationContext';
 import { NextActionEngine } from './NextActionEngine';
 import type { PendingTaskOutput } from './tools/PendingTaskTool';
 import type { AnalyticsOutput } from './tools/AnalyticsTool';
-import type { TimelineOutput } from './tools/TimelineTool';
 import type { EvidenceSummary } from './tools/EvidenceTool';
 import type { SearchLawOutput } from './tools/SearchLawTool';
 import type { LawLookupOutput } from './tools/LawLookupTool';
 import type { GetFIROutput } from './tools/GetFIRTool';
-import { AIToolRegistry } from './AIToolRegistry';
 import { detectFardType, checkFard } from './fard/fardChecker';
 import { getFardEntry, getCommon } from '@/knowledge/fard/fardKb';
 import {
@@ -29,23 +27,10 @@ import {
   getLinks,
 } from '@/lib/law/lawLibrary';
 import { getSimple } from '@/lib/law/simpleExplain';
-import {
-  getDetailedExplain,
-  getAllDetailedExplainData,
-  suggestSections,
-  rankSectionSuggestions,
-  type DetailedExplainEntry,
-  type RankedSuggestionsResult,
-} from '@/lib/law/detailedAnalysis';
-import { getCasesForSection, type CaseLawItem } from '@/lib/law/casesData';
+import { getDetailedExplain, getAllDetailedExplainData, rankSectionSuggestions, type DetailedExplainEntry, type RankedSuggestionsResult } from '@/lib/law/detailedAnalysis';
+import { getCasesForSection } from '@/lib/law/casesData';
 import { buildFIRLawSummary } from '@/lib/law/firLawSummary';
-import {
-  getOldLawForNew,
-  getNewSectionsForOld,
-  parseOldLawQuery,
-  getLawMapData,
-  type OldActId,
-} from '@/lib/law/lawMapping';
+import { getOldLawForNew, getNewSectionsForOld, getLawMapData, type OldActId } from '@/lib/law/lawMapping';
 import type { ActId } from '@/lib/law/lawLibrary';
 
 import {

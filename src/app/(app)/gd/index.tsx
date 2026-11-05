@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
+import { useCallback, useEffect, useRef, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
@@ -12,10 +12,7 @@ import { useColorScheme } from 'nativewind';
 import { HighlightText } from '@/components/HighlightText';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
-import {
-  BookMarked, Calendar, ChevronDown,
-  Copy, Edit2, Filter, Plus, Share2, Star, Trash2, X,
-} from 'lucide-react-native';
+import { BookMarked, Calendar, Copy, Edit2, Filter, Plus, Share2, Star, Trash2 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
 import {
   getAllGdEntries, searchGdEntries, toggleGdFavorite,

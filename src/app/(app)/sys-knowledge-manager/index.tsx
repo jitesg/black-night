@@ -11,13 +11,10 @@ import { useCallback, useState } from 'react';
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  BookOpen, CheckCircle2, FileEdit, Archive, Plus, List,
-  FolderOpen, Clock, BarChart3, LogOut, Download, Upload,
-} from 'lucide-react-native';
+import { BookOpen, CheckCircle2, FileEdit, Archive, Plus, List, FolderOpen, BarChart3, LogOut, Download, Upload } from 'lucide-react-native';
 import { isDevSessionActive } from '@/lib/devOptionsAuth';
 import { getSysKnowledgeStats, type SysKnowledgeStats } from '@/lib/db/sysKnowledgeRepo';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { KNOWLEDGE_CATEGORIES } from '@/lib/knowledgeConstants';
 
 const GREEN   = '#059669';

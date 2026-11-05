@@ -8,14 +8,11 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  LayoutTemplate, CheckCircle2, FileEdit, Archive,
-  Clock, BarChart3, Plus, List, LogOut, Settings, RefreshCw,
-} from 'lucide-react-native';
+import { LayoutTemplate, CheckCircle2, FileEdit, Archive, Clock, BarChart3, Plus, List, LogOut, RefreshCw } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { getSysStats, type SysFormatStats } from '@/lib/db/sysFormatRepo';
-import { clearSession, isSessionActive, changePin } from '@/lib/sysFormatAuth';
+import { clearSession, isSessionActive } from '@/lib/sysFormatAuth';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,

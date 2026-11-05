@@ -20,7 +20,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Plus, X, AlertCircle, MapPin, Clock } from 'lucide-react-native';
+import { Plus, X, AlertCircle, MapPin } from 'lucide-react-native';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import {
   createCaseDiary, updateCaseDiary, getCaseDiaryById, getCaseDiariesByFIR,

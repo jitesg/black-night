@@ -1,17 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
-import {
-  BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, TextInput, View,
-} from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  BookMarked, Calendar, ChevronDown,
-  LayoutTemplate, Save, AlertCircle, Sparkles,
-} from 'lucide-react-native';
+import { Calendar, ChevronDown, Save, AlertCircle, Sparkles } from 'lucide-react-native';
 import { OcrScanModal } from '@/components/common/OcrScanModal';
-import { DatePickerModal, dateStrToObj, dateObjToStr } from '@/components/common/DatePickerModal';
+import { DatePickerModal, dateStrToObj } from '@/components/common/DatePickerModal';
 import {
   createGdEntry, updateGdEntry, getGdById, GD_TYPES, type GdType,
 } from '@/lib/db/gdRepo';
@@ -21,7 +16,7 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const GD_COLOR = '#D97706';

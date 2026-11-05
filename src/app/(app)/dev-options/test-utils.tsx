@@ -4,13 +4,12 @@
  */
 import { useCallback, useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
-import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import {
   Play, Bell, Search, Zap, LayoutTemplate,
   Database, Download, Upload, CheckCircle, XCircle,
 } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { _addAudit } from '@/lib/devOptionsStore';
 import { getDiagnosticsSnapshot } from '@/lib/db/devDiagnosticsRepo';
 

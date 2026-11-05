@@ -7,10 +7,9 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
-import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Cpu, RefreshCw, Zap, HardDrive, BarChart2 } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { Cpu, Zap, HardDrive, BarChart2 } from 'lucide-react-native';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { _addAudit } from '@/lib/devOptionsStore';
 
 if (!__DEV__) { /* production gate */ }

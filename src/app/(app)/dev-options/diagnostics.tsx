@@ -3,11 +3,11 @@
  * Section 7: Counts, DB size, integrity, schema validation.
  */
 import { useCallback, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, Pressable, FlatList } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
-import { BarChart2, RefreshCw, Database, Shield } from 'lucide-react-native';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from 'expo-router';
+import { Database, Shield } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import {
   getDiagnosticsSnapshot, getAllTableStats, validateSchema,
   type DiagnosticsSnapshot, type TableStat,

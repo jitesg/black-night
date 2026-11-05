@@ -4,7 +4,7 @@
  *   const { show } = useSnackbar();
  *   show({ message: 'Saved!', variant: 'success' });
  */
-import React, { createContext, memo, useCallback, useContext, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { Animated, Pressable, Text, View } from 'react-native';
 import { CheckCircle, AlertCircle, Info, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';

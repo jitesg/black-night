@@ -18,7 +18,7 @@ import {
   type SysKnowledgeVersion,
 } from '@/lib/db/sysKnowledgeRepo';
 import { isDevSessionActive } from '@/lib/devOptionsAuth';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,

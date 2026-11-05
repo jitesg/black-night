@@ -20,17 +20,11 @@ import {
 } from 'react-native';
 import { GeneratedReportView } from '@/components/common/GeneratedReportView';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
-import {
-  DatePickerModal,
-  dateStrToObj,
-  dateObjToStr,
-} from '@/components/common/DatePickerModal';
+import { DatePickerModal, dateStrToObj } from '@/components/common/DatePickerModal';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  Calendar, ChevronRight, LayoutTemplate,
-} from 'lucide-react-native';
+import { Calendar, LayoutTemplate } from 'lucide-react-native';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,

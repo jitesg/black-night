@@ -5,7 +5,6 @@
  */
 
 import type { InvestigationContext, NextAction, CaseHealth } from './InvestigationContext';
-import type { AIDraft } from './AITypes';
 
 export interface NextActionReport {
   primaryAction: NextAction | null;

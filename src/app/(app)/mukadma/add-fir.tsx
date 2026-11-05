@@ -20,7 +20,7 @@ import { AccusedIdentityFields } from '@/components/fir/AccusedIdentityFields';
 import { seedFIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
 import { getDatabase, getDbInstanceTag } from '@/lib/db/database';
 import { getFlatCrimeTypes, type CrimeTypeMeta } from '@/lib/db/checklistRepo';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import { recordFieldValue, FIELD_KEYS } from '@/lib/db/fieldValueHistoryRepo';
 import {

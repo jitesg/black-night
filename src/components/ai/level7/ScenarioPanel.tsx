@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { ChevronDown, ChevronRight, AlertTriangle, Info } from 'lucide-react-native';
 import { L7PanelShell } from './L7PanelShell';
 import type { ScenarioSimulatorReport, SimulationResult, L7Severity } from '../../../ai/level7/L7Types';

@@ -33,16 +33,7 @@ import {
   buildOfflineResponse,
   type Intent,
 } from './AIPromptEngine';
-import type {
-  AIMessage,
-  AIResponse,
-  AIToolCall,
-  AIToolName,
-  AIDraft,
-  QuickActionId,
-  QuickAction,
-  AIContextSnapshot,
-} from './AITypes';
+import type { AIResponse, AIToolCall, AIToolName, QuickActionId, QuickAction, AIContextSnapshot } from './AITypes';
 import type { InvestigationContext } from './InvestigationContext';
 
 // ── Level-7 imports ───────────────────────────────────────────────────────────

@@ -12,13 +12,9 @@ import { useCallback } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { stripHtmlTags } from '@/lib/stringUtils';
-import {
-  FileText, BookOpen, Tag, Shield, Hash,
-  AlignLeft, Calendar, Type, List, ToggleLeft, CheckSquare,
-  Eye,
-} from 'lucide-react-native';
+import { FileText, BookOpen, Tag, Shield, Hash, AlignLeft, Calendar, Type, List, CheckSquare } from 'lucide-react-native';
 import { useDevSeedStore, type SeedFormat, type SeedKnowledge } from '@/lib/devSeedStore';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const FIELD_TYPE_ICON: Record<string, React.ReactNode> = {

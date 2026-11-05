@@ -14,17 +14,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
-import {
-  BackHandler, KeyboardAvoidingView, Pressable, ScrollView,
-  Text, TextInput, View,
-} from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   FileWarning, Calendar, ChevronDown,
   LayoutTemplate, Save, AlertCircle, FileDown,
 } from 'lucide-react-native';
-import { DatePickerModal, dateStrToObj, dateObjToStr } from '@/components/common/DatePickerModal';
+import { DatePickerModal } from '@/components/common/DatePickerModal';
 import {
   createNirodhatmakKaryvahi, updateNirodhatmakKaryvahi,
   getNirodhatmakById, NIRODHATMAK_TYPES,

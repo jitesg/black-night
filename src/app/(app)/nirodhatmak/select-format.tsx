@@ -27,7 +27,7 @@ import {
 } from '@/lib/db/predefinedFormatRepo';
 import { getPublishedFormatsByType, mergeFormatsFirst, filterFormatsByQuery } from '@/lib/db/sysFormatRepo';
 import { nirodhatmakFormatBridge } from '@/lib/nirodhatmakFormatBridge';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 const MODULE_COLOR = '#DC2626';
 const NK_FORMAT_TYPE = 'BNSS Karyavahi' as const;

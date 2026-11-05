@@ -1,11 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { persistPickedFile } from '@/lib/attachmentFiles';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
-import {
-  ActivityIndicator, KeyboardAvoidingView, Modal, Pressable,
-  ScrollView, Text, TextInput, View,
-} from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';

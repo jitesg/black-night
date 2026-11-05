@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { View, Text } from 'react-native';
-import { TrendingUp, TrendingDown, Minus, AlertTriangle, Users } from 'lucide-react-native';
+import { TrendingUp, TrendingDown, Minus, AlertTriangle } from 'lucide-react-native';
 import { L7PanelShell } from './L7PanelShell';
 import type { SupervisorIntelligenceReport, L7Grade } from '../../../ai/level7/L7Types';
 

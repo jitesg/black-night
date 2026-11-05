@@ -1,23 +1,12 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
-import {
-  ActivityIndicator, FlatList, KeyboardAvoidingView, Pressable, ScrollView, Text, View,
-} from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  Plus,
-  Edit2, ChevronDown, ChevronRight, ChevronUp,
-  Edit, Trash2, User, Users, Building2, Church, ShoppingBag,
-  Home, Paperclip, Search, FileWarning,
-} from 'lucide-react-native';
+import { Plus, Edit2, ChevronDown, ChevronUp, Edit, Trash2, User, Users, Building2, Church, ShoppingBag, Home, Paperclip, FileWarning } from 'lucide-react-native';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
-import {
-  getGramPanchayatById,
-  deleteGramPanchayat,
-  type GramPanchayat,
-} from '@/lib/db/gramPanchayatRepo';
+import { getGramPanchayatById, type GramPanchayat } from '@/lib/db/gramPanchayatRepo';
 import { getHamletsByGP, deleteHamlet, type Hamlet } from '@/lib/db/hamletRepo';
 import {
   getPersonsByType, deletePerson, type Person,

@@ -4,7 +4,7 @@ import crimeTaxonomySeed from '../../../assets/seed/crime_taxonomy_seed.json';
 import { PLAYBOOKS } from './playbooks';
 import { PLAYBOOK_TEXTS } from './playbooks/playbookTexts';
 import { parseStepLines } from './playbooks/parse';
-import { resolveCrimeKey, resolveCrimeKeys } from './playbooks/crimeIds';
+import { resolveCrimeKeys } from './playbooks/crimeIds';
 import { CRIME_FILES, SHARED_FILES } from './playbooks/registry';
 import { SHARED_EXTRA } from './playbooks/sharedExtra';
 

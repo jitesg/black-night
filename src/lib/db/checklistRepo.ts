@@ -1,7 +1,6 @@
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 import { logger } from '../logger';
 import crimeTaxonomySeed from '../../../assets/seed/crime_taxonomy_seed.json';
-import checklistItemsSeed from '../../../assets/seed/checklist_items_seed.json';
 
 // ─── Flat taxonomy type (v2) ──────────────────────────────────────────────────
 export interface CrimeTypeMeta {

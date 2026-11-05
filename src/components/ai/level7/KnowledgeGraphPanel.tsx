@@ -4,8 +4,8 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, Pressable, FlatList } from 'react-native';
-import { Network, Layers } from 'lucide-react-native';
+import { View, Text, Pressable } from 'react-native';
+import { Layers } from 'lucide-react-native';
 import { L7PanelShell } from './L7PanelShell';
 import type { KnowledgeGraphReport, KGNode, KGNodeType } from '../../../ai/level7/L7Types';
 

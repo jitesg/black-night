@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import {
   Activity,
   AlertTriangle,

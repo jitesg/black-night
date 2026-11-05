@@ -14,7 +14,7 @@ import { createAccused, getAccusedByFIR, updateAccused, type FIRAccused } from '
 import { AccusedIdentityFields } from '@/components/fir/AccusedIdentityFields';
 import { getKaryvahiByFIR, type FIRKaryvahi, type KaryvahiStatus, type KaryvahiPriority } from '@/lib/db/firKaryvahiRepo';
 import { getCaseChecklists } from '@/lib/db/sopChecklistRepo';
-import { getAll as getAllSops, getById as getSopById, type SopIndexEntry } from '@/ai/sopIndex';
+import { getAll as getAllSops, getById as getSopById } from '@/ai/sopIndex';
 import { Modal } from 'react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useFIRContext } from '@/context/FIRContext';

@@ -12,12 +12,8 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Input } from '@/components/ui/input';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
-import {
-  Save, Plus, Trash2, ChevronDown, ChevronUp,
-  Zap, Tag, Key, FileText, Lock, CheckCircle2,
-  BookOpen, X, Eye,
-} from 'lucide-react-native';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { Save, Plus, Trash2, ChevronDown, ChevronUp, Zap, Tag, Key, Lock, CheckCircle2, BookOpen, X, Eye } from 'lucide-react-native';
 import {
   getFormatById, getFormatKeys, getFormatTags, checkTitleExists,
   type FormatKeyInput, type FormatType,

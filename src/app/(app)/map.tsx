@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { MapPin } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useTranslation } from 'react-i18next';

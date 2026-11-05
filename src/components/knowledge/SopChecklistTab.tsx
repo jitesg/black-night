@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { crimeTypeLabel } from '@/lib/db/checklistRepo';
 import { View, Text, ScrollView, Pressable, TextInput, Modal, ActivityIndicator } from 'react-native';
-import { CheckSquare, Square, AlertCircle, RotateCcw, FileText, ChevronDown, Check } from 'lucide-react-native';
+import { CheckSquare, Square, RotateCcw, FileText, ChevronDown, Check } from 'lucide-react-native';
 import { getById as getIndexById, type SopStep } from '../../ai/sopIndex';
 import { getExplain, phaseSteps } from '../../ai/sopExplain';
 import { getAllFIRs, type FIR } from '../../lib/db/firRepo';

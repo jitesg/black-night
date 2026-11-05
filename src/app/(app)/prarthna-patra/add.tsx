@@ -2,10 +2,7 @@
 // PPComplainant, PPAccused, HeaderIconBtn.
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  View, Text, ScrollView, Pressable, KeyboardAvoidingView,
-  BackHandler, Modal, FlatList,
-} from 'react-native';
+import { View, Text, ScrollView, Pressable, KeyboardAvoidingView, BackHandler } from 'react-native';
 import { T } from '@/lib/typography';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';

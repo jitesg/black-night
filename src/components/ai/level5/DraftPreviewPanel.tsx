@@ -8,9 +8,7 @@
  */
 
 import React, { useState } from 'react';
-import {
-  View, Text, ScrollView, Pressable, Modal, TextInput,
-} from 'react-native';
+import { View, Text, ScrollView, Pressable, Modal } from 'react-native';
 import {
   FileText, AlertCircle, CheckCircle, RefreshCw, Edit3,
 } from 'lucide-react-native';

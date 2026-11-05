@@ -12,7 +12,7 @@ import {
 } from 'lucide-react-native';
 import { getAnalytics, getAllGramPanchayats, type GramPanchayat } from '@/lib/db/gramPanchayatRepo';
 import { useWorkspace } from '@/context/WorkspaceContext';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 
 const STAT_CONFIG = [

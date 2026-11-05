@@ -5,7 +5,7 @@
  * Never blocks saving.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Info, X } from 'lucide-react-native';

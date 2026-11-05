@@ -223,7 +223,7 @@ export function CaseLawCard({ cases, isHi = true }: CaseLawCardProps) {
                   <View className="flex-row items-start gap-2 p-2.5 rounded-lg bg-muted/20 border-l-2 border-primary/60">
                     <Quote size={13} color={C.primary} className="mt-0.5" />
                     <Text className="text-xs italic text-foreground/80 leading-5 flex-1">
-                      "{c.quote}"
+                      &quot;{c.quote}&quot;
                     </Text>
                   </View>
                 )}

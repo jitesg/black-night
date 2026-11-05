@@ -7,7 +7,7 @@ import {
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { router, useLocalSearchParams } from 'expo-router';
-import { CalendarDays, CheckSquare, ChevronDown, Plus, Square, Trash2, X } from 'lucide-react-native';
+import { CalendarDays, CheckSquare, ChevronDown, Plus, Square, Trash2 } from 'lucide-react-native';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import {
   AlertDialog,
@@ -17,21 +17,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import {
-  addDaysNyl,
-  createNyayalayDocument,
-  getNyayalayDocWithDetails,
-  todayStr,
-  updateNyayalayDocument,
-  DOC_TYPES,
-  DOC_TYPE_LABELS,
-  WRIT_TYPES,
-  type DocType,
-  type NyayalayPerson,
-  type SubType,
-  type WritType,
-} from '@/lib/db/nyayalayRepo';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { addDaysNyl, createNyayalayDocument, getNyayalayDocWithDetails, todayStr, updateNyayalayDocument, DOC_TYPES, WRIT_TYPES, type DocType, type SubType, type WritType } from '@/lib/db/nyayalayRepo';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 
 // ── Shared form primitives ─────────────────────────────────────────────────

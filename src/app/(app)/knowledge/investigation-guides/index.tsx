@@ -3,14 +3,11 @@ import { logger } from '@/lib/logger';
 import { Pressable, ScrollView, Text, View, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  BookOpen, ChevronRight,
-  FileText, Search, Shield, Users,
-} from 'lucide-react-native';
+import { BookOpen, ChevronRight, FileText, Search, Users } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { getDatabase } from '@/lib/db/database';
 
 const COLOR = '#0891B2';

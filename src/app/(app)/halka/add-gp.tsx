@@ -13,7 +13,7 @@ import {
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 
 export default function AddGramPanchayatScreen() {

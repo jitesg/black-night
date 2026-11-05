@@ -5,7 +5,7 @@
  * Part of Task L29 (SOP Library Part 1).
  */
 
-import { search as searchSopIndex, getAll as getAllSops, getById as getSopById, type SopIndexEntry, type SopStep } from './sopIndex';
+import { search as searchSopIndex, getAll as getAllSops, type SopIndexEntry } from './sopIndex';
 import { getExplain, memParts, type SopExplain } from './sopExplain';
 
 export interface SopLookupResult {

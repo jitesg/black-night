@@ -1,15 +1,7 @@
 import { getDatabase, generateUUID, nowTimestamp, isFirKaryvahiSortOrderAvailable, getDbInstanceTag } from './database';
 import { saveSnapshot } from './checklistSnapshotRepo';
 import { updateFIRStatus } from './firRepo';
-import {
-  getChecklistItemsForPairs,
-  getChecklistItemsForCrimeTypes,
-  getChecklistsByCrimeType,
-  getItemsByChecklist,
-  parseCrimeTypePairs,
-  type SubtypePair,
-  type ChecklistItem,
-} from './checklistRepo';
+import { getChecklistItemsForPairs, getChecklistItemsForCrimeTypes, getChecklistsByCrimeType, getItemsByChecklist, parseCrimeTypePairs, type ChecklistItem } from './checklistRepo';
 import { logger } from '../logger';
 import { unlockDependentsOf } from './actionConditionsRepo';
 

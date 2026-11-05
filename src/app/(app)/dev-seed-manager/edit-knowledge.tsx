@@ -10,7 +10,7 @@ import {
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Save } from 'lucide-react-native';
 import { useDevSeedStore } from '@/lib/devSeedStore';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const CONTENT_TYPES = [

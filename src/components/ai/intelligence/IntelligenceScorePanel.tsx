@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import type { InvestigationScoreReport, ScoreDimension, IntelGrade } from '@/ai/intelligence/IntelligenceTypes';

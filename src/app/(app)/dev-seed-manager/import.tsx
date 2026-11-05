@@ -25,7 +25,7 @@ import {
   ChevronDown, ChevronUp,
 } from 'lucide-react-native';
 import { useDevSeedStore, type ImportResult } from '@/lib/devSeedStore';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ─── Step type ────────────────────────────────────────────────────────────────
 type Step = 'paste' | 'preview' | 'done';

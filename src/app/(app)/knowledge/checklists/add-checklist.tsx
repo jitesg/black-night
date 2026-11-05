@@ -7,7 +7,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { AlertCircle, ChevronDown, Plus, Save, Trash2 } from 'lucide-react-native';
+import { AlertCircle, ChevronDown, Plus, Save } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import {

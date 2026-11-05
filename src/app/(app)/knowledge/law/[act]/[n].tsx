@@ -14,11 +14,7 @@ import {
 } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { THEME } from '@/lib/theme';
-import {
-  ACTS, getSection, getOffenceClassification,
-  getLinks, getLinkCounts,
-  type ActId, type ClassificationRow, type LawLinkItem,
-} from '@/lib/law/lawLibrary';
+import { ACTS, getSection, getOffenceClassification, getLinks, getLinkCounts, type ActId, type ClassificationRow } from '@/lib/law/lawLibrary';
 import { getSimple, type SimpleExplainEntry } from '@/lib/law/simpleExplain';
 import { getDetailedExplain, type DetailedExplainEntry } from '@/lib/law/detailedAnalysis';
 import { getCasesForSection, type CaseLawItem } from '@/lib/law/casesData';
@@ -27,11 +23,7 @@ import { CaseLawCard } from '@/components/law/CaseLawCard';
 import { openSection } from '@/lib/law/openLaw';
 import { formatSectionSafe } from '@/lib/law/formatSection';
 import { SectionBody } from '@/components/law/SectionBody';
-import {
-  getOldLawForNew,
-  getNewSectionsForOld,
-  type OldLawReference,
-} from '@/lib/law/lawMapping';
+import { getOldLawForNew, getNewSectionsForOld } from '@/lib/law/lawMapping';
 import {
   getReaderFontSize,
   saveReaderFontSize,

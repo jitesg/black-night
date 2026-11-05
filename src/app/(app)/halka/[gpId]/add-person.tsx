@@ -9,7 +9,7 @@ import { Save, ChevronDown } from 'lucide-react-native';
 import { createPerson, updatePerson, getPersonsByType } from '@/lib/db/personRepo';
 import { PERSON_TYPES, IMPORTANT_PERSON_CATEGORIES } from '@/lib/db/schema';
 import { Input } from '@/components/ui/input';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,

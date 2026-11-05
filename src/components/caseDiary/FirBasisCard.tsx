@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, ChevronDown, ChevronUp, Check, X, ShieldAlert } from 'lucide-react-native';
+import { BookOpen, ChevronDown, ChevronUp, Check, X } from 'lucide-react-native';
 import type { FIR } from '@/lib/db/firRepo';
 import { getFirBasis } from '@/lib/firBasis';
 

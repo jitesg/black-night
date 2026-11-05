@@ -9,9 +9,7 @@ import React, { useState } from 'react';
 import {
   View, Text, ScrollView, Pressable, Modal,
 } from 'react-native';
-import {
-  BarChart2, AlertTriangle, Users, FileText, RefreshCw,
-} from 'lucide-react-native';
+import { BarChart2, Users, RefreshCw } from 'lucide-react-native';
 import type { MultiFIRIntelligenceReport, FIRSummaryItem, OfficerWorkloadItem, CrimeTrendItem } from '../../../ai/level5/L5Types';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 

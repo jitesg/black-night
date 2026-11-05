@@ -6,12 +6,10 @@
  * Auto-saves change_notes and version on save.
  * Publish / archive shortcuts in header.
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  View, Text, ScrollView, Pressable, TextInput,  KeyboardAvoidingView, ActivityIndicator, Modal,
-} from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, ScrollView, Pressable, KeyboardAvoidingView, ActivityIndicator, Modal } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {

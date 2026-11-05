@@ -4,9 +4,9 @@
  */
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
-import { getDatabase, getIsUsingStub, dbGetAllAsync, dbGetFirstAsync, dbRunAsync } from '@/lib/db/database';
-import { getKnowledgeAnalytics, searchKnowledge, type KnowledgeAnalytics } from '@/lib/db/knowledgeRepo';
-import { getCategoryLabel, getCanonicalCategory } from '@/lib/knowledgeConstants';
+import { getIsUsingStub, dbGetAllAsync, dbGetFirstAsync, dbRunAsync } from '@/lib/db/database';
+import { getKnowledgeAnalytics, searchKnowledge } from '@/lib/db/knowledgeRepo';
+import { getCanonicalCategory } from '@/lib/knowledgeConstants';
 import circularsSeedData from '../../../assets/seed/circulars_seed.json';
 import circularsSeed2Data from '../../../assets/seed/circulars_seed_2.json';
 import circularsSeed3Data from '../../../assets/seed/circulars_seed_3.json';

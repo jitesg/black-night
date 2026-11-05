@@ -33,7 +33,7 @@ import { Calendar, ChevronDown, Eye, EyeOff, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
-import { DatePickerModal, dateStrToObj } from '@/components/common/DatePickerModal';
+import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { ItemGroupInput, parseItemGroupConfig } from './ItemGroupInput';
 import { useClearCopy } from '@/components/common/ClearCopyTools';
 import { SentenceFieldInput } from './SentenceFieldInput';

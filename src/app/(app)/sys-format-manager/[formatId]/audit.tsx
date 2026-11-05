@@ -3,9 +3,7 @@
  * Complete action history for a single format.
  */
 import { useCallback, useState } from 'react';
-import {
-  View, Text, FlatList, Pressable, ActivityIndicator,
-} from 'react-native';
+import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';

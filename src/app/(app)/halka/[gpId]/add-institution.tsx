@@ -6,14 +6,9 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Save, ChevronDown, Plus, Trash2 } from 'lucide-react-native';
-import {
-  createInstitution, getInstitutionById, updateInstitution,
-  getHeadByInstitution, upsertInstitutionHead,
-  getStaffByInstitution, createInstitutionStaff, deleteInstitutionStaff,
-  type SocialInstitution, type InstitutionStaff,
-} from '@/lib/db/institutionRepo';
+import { createInstitution, getInstitutionById, updateInstitution, getHeadByInstitution, upsertInstitutionHead, getStaffByInstitution, createInstitutionStaff, deleteInstitutionStaff, type InstitutionStaff } from '@/lib/db/institutionRepo';
 import { INSTITUTION_CATEGORIES } from '@/lib/db/schema';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,

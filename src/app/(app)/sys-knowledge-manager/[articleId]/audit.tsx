@@ -17,7 +17,7 @@ import {
   getSysKnowledgeAudit, type SysKnowledgeAudit,
 } from '@/lib/db/sysKnowledgeRepo';
 import { isDevSessionActive } from '@/lib/devOptionsAuth';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 const GREEN   = '#059669';
 const RED     = '#DC2626';

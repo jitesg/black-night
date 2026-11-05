@@ -23,14 +23,7 @@ import {
 } from 'react-native';
 import { Sparkles, CheckSquare, X, Plus, Search, Check, AlertCircle, ChevronDown, BookOpen } from 'lucide-react-native';
 import { THEME } from '@/lib/theme';
-import {
-  suggestSections,
-  rankSectionSuggestions,
-  getDetailedExplain,
-  type SectionSuggestion,
-  type DetailedExplainEntry,
-  type RankedSuggestionsResult,
-} from '@/lib/law/detailedAnalysis';
+import { rankSectionSuggestions, getDetailedExplain, type SectionSuggestion, type DetailedExplainEntry, type RankedSuggestionsResult } from '@/lib/law/detailedAnalysis';
 import { extractRefs, getSection, parseSectionRef, type ActId } from '@/lib/law/lawLibrary';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 

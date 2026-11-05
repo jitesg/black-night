@@ -29,8 +29,8 @@ import {
   Search, Trash2, Copy, X, Bug, ChevronDown, ChevronRight,
   Download, FileText,
 } from 'lucide-react-native';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
-import { useAppLogs, clearAppLogs, getAppLogSnapshot, type AppLogEntry, type LogCategory } from '@/lib/appLogger';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { useAppLogs, clearAppLogs, type AppLogEntry, type LogCategory } from '@/lib/appLogger';
 import { generateDebugReport } from '@/lib/debugReport';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,

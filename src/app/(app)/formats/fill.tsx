@@ -6,7 +6,7 @@ import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
 import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
 import { FirPickBanner } from '@/components/formats/FirPickBanner';
 import type { FIR } from '@/lib/db/firRepo';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   BackHandler, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View,
@@ -37,15 +37,12 @@ import { validateRequiredFields, clearFieldError } from '@/lib/templateValidatio
 import { FormatKeyInput } from '@/components/ui/input';
 import { AccusedGroupInput, initAccusedGroup, parseAccusedGroup } from '@/components/ui/AccusedGroupInput';
 import { PersonGroupInput, initPersonGroup, parsePersonGroup } from '@/components/ui/PersonGroupInput';
-import { Button } from '@/components/ui/button';
 // Button kept for other potential uses; generate CTA uses Pressable directly
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import {
-  recordFieldValue, recordFieldValues, FIELD_KEYS,
-} from '@/lib/db/fieldValueHistoryRepo';
+import { recordFieldValue, FIELD_KEYS } from '@/lib/db/fieldValueHistoryRepo';
 
 const FORMAT_TYPE_COLORS: Record<string, string> = {
   'GD':              '#6366F1',

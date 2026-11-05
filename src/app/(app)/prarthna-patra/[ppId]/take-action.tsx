@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { LayoutTemplate, ChevronDown } from 'lucide-react-native';
+import { ChevronDown } from 'lucide-react-native';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,

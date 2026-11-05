@@ -57,7 +57,6 @@ import { AIQuickChips } from './AIQuickChips';
 import { AIContextBar } from './AIContextBar';
 import { AISuggestedActions } from './AISuggestedActions';
 import { AISuggestedPrompts } from './AISuggestedPrompts';
-import { InvestigationSummaryCard } from './InvestigationSummaryCard';
 import { InvestigationDashboard } from './InvestigationDashboard';
 import { ReasoningModal } from './reasoning/ReasoningModal';
 import { IntelligenceModal } from './intelligence/IntelligenceModal';

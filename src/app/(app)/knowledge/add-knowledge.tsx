@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
-import {
-  BackHandler, KeyboardAvoidingView, Pressable, ScrollView,
-  Text, TextInput, View,
-} from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -22,7 +19,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 

@@ -15,11 +15,10 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   View, Text, Pressable, TextInput, FlatList,
 } from 'react-native';
-import { T } from '@/lib/typography';
 import { StatusBar } from 'expo-status-bar';
 import { Search, Trash2, Copy, X, Terminal } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import {
   useDebugLogs, clearDebugLogs, getDebugLogSnapshot,
   type DebugLogEntry,

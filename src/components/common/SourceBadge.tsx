@@ -9,7 +9,6 @@
 import { View, Text } from 'react-native';
 import { Shield, User } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
-import { THEME } from '@/lib/theme';
 import { useTranslation } from 'react-i18next';
 
 interface Props {

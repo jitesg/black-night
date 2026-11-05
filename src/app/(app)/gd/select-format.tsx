@@ -33,7 +33,7 @@ import {
 } from '@/lib/db/predefinedFormatRepo';
 import { getPublishedFormatsByType, searchPublishedFormatsByTypes } from '@/lib/db/sysFormatRepo';
 import { gdFormatBridge } from '@/lib/gdFormatBridge';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ─── Constants ────────────────────────────────────────────────────────────
 const GD_COLOR = '#D97706';

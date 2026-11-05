@@ -19,7 +19,7 @@
  */
 
 import { getKnowledgeByCategory, type KnowledgeEntry } from '@/lib/db/knowledgeRepo';
-import { getKnowledgeNote, getAllKnowledgeNotesMap } from '@/lib/db/knowledgeNotesRepo';
+import { getKnowledgeNote } from '@/lib/db/knowledgeNotesRepo';
 import { STOP_WORDS, normalizeHinglishToken } from '@/lib/law/detailedAnalysis';
 import { getDisplayShortTitle, parseSadharanBlock, stripSadharanMarkers } from '@/lib/knowledge/knowledgeDisplay';
 import circularsSeedData from '../../assets/seed/circulars_seed.json';

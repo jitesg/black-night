@@ -17,7 +17,7 @@ import {
   deleteCustomCategory, type SysCustomCategory,
 } from '@/lib/db/sysKnowledgeRepo';
 import { isDevSessionActive } from '@/lib/devOptionsAuth';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import { KNOWLEDGE_CATEGORIES } from '@/lib/knowledgeConstants';
 import {

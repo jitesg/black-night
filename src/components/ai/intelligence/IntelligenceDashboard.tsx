@@ -6,21 +6,8 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  ActivityIndicator,
-} from 'react-native';
-import {
-  Shield,
-  AlertTriangle,
-  ListChecks,
-  GitBranch,
-  TrendingUp,
-  FileWarning,
-} from 'lucide-react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
+import { AlertTriangle } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import type { InvestigationIntelligenceReport, HealthStatus } from '@/ai/intelligence/IntelligenceTypes';

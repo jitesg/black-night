@@ -33,10 +33,7 @@ import Constants from 'expo-constants';
 import formatsSeedData from '../../assets/seed/formats_seed.json';
 import knowledgeSeedData from '../../assets/seed/knowledge_seed.json';
 import circularsSeedData from '../../assets/seed/circulars_seed.json';
-import {
-  dcGet, dcSet, dcRemove, dcClearAll,
-  DC_KEY_FORMATS, DC_KEY_KNOWLEDGE, DC_KEY_LAST_EXPORT,
-} from './devContentPersistence';
+import { dcGet, dcSet, dcClearAll, DC_KEY_FORMATS, DC_KEY_KNOWLEDGE, DC_KEY_LAST_EXPORT } from './devContentPersistence';
 // DB upsert helpers — used to write developer content into the live DB
 // immediately so all screens reflect changes without a restart.
 import { upsertDevFormat, deleteDevFormat } from './db/predefinedFormatRepo';

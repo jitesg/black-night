@@ -34,7 +34,7 @@ import { ppReportDraftStore } from '@/lib/ppReportDraftStore';
 import { htmlToPlainText } from '@/lib/stringUtils';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
-import { FileText, Plus } from 'lucide-react-native';
+import { FileText } from 'lucide-react-native';
 
 /** Petition types that use the inline report-attach flow */
 // थाना प्रार्थना पत्र / RTI / अन्य added (owner): same screen with "प्रारूप से जोड़ें" for every petition except बीट सूचना / NCR.

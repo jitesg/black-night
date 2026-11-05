@@ -6,16 +6,11 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Save, ChevronDown, Plus, Trash2 } from 'lucide-react-native';
-import {
-  createReligiousPlace, getReligiousPlaceById, updateReligiousPlace,
-  getAuthorityByPlace, upsertAuthority,
-  getEventsByPlace, createReligiousEvent, deleteReligiousEvent,
-  type ReligiousPlace, type ReligiousAuthority, type ReligiousEvent,
-} from '@/lib/db/religiousRepo';
+import { createReligiousPlace, getReligiousPlaceById, updateReligiousPlace, getAuthorityByPlace, upsertAuthority, getEventsByPlace, createReligiousEvent, deleteReligiousEvent, type ReligiousEvent } from '@/lib/db/religiousRepo';
 import {
   RELIGIOUS_CATEGORIES, AUTHORITY_LABELS, EVENT_TYPES,
 } from '@/lib/db/schema';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,

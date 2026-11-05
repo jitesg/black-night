@@ -11,19 +11,10 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  Plus, Search, X, Filter, ChevronDown, MoreVertical,
-  Edit2, Copy, Archive, RotateCcw, Trash2, CheckCircle2,
-  FileEdit, History, Download, Upload, ChevronRight,
-} from 'lucide-react-native';
-import {
-  getSysKnowledgeList, publishSysKnowledge, unpublishSysKnowledge,
-  archiveSysKnowledge, restoreSysKnowledge, deleteSysKnowledge,
-  duplicateSysKnowledge, exportSysKnowledgeJSON, importSysKnowledgeJSON,
-  type SysKnowledgeArticle, type KnowledgeStatus,
-} from '@/lib/db/sysKnowledgeRepo';
+import { Plus, Search, Filter, ChevronDown, MoreVertical, Edit2, Copy, Archive, RotateCcw, Trash2, CheckCircle2, FileEdit, History, Download } from 'lucide-react-native';
+import { getSysKnowledgeList, publishSysKnowledge, unpublishSysKnowledge, archiveSysKnowledge, restoreSysKnowledge, deleteSysKnowledge, duplicateSysKnowledge, exportSysKnowledgeJSON, type SysKnowledgeArticle, type KnowledgeStatus } from '@/lib/db/sysKnowledgeRepo';
 import { isDevSessionActive } from '@/lib/devOptionsAuth';
-import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
+import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import { KNOWLEDGE_CATEGORIES } from '@/lib/knowledgeConstants';
 import { HighlightText } from '@/components/HighlightText';
