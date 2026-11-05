@@ -13,12 +13,18 @@ import { THEME } from '@/lib/theme';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 
 export interface FilterOption { value: string; label: string }
-export interface FilterGroupDef { key: string; label: string; options: FilterOption[] }
+export interface FilterGroupDef {
+  key: string; label: string; options: FilterOption[];
+  /** A choice that is always set (e.g. sort order): no "सभी" chip, never counted / shown as a chip while it is `defaultValue`. */
+  noAll?: boolean;
+  defaultValue?: string;
+}
 /** group key → chosen value (null / missing = सभी). */
 export type FilterValues = Record<string, string | null | undefined>;
 
-export function activeFilterCount(values: FilterValues): number {
-  return Object.values(values).filter((v) => v != null && v !== '').length;
+export function activeFilterCount(values: FilterValues, groups?: FilterGroupDef[]): number {
+  const def = new Map((groups ?? []).map((g) => [g.key, g.defaultValue]));
+  return Object.entries(values).filter(([k, v]) => v != null && v !== '' && v !== def.get(k)).length;
 }
 
 function usePalette() {
@@ -56,7 +62,7 @@ export function ActiveFilterChips({
   groups, values, onRemove, accent,
 }: { groups: FilterGroupDef[]; values: FilterValues; onRemove: (key: string) => void; accent: string }) {
   const on = groups
-    .map((g) => ({ g, opt: g.options.find((o) => o.value === values[g.key]) }))
+    .map((g) => ({ g, opt: values[g.key] === g.defaultValue ? undefined : g.options.find((o) => o.value === values[g.key]) }))
     .filter((x): x is { g: FilterGroupDef; opt: FilterOption } => !!x.opt);
   if (!on.length) return null;
   return (
@@ -120,15 +126,17 @@ export function FilterSheet({
               <View key={g.key} style={{ marginTop: 12 }}>
                 <Text style={{ fontSize: 12, fontWeight: '700', color: C.mutedForeground, marginBottom: 8 }}>{g.label}</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                  <Pressable onPress={() => setDraft((d) => ({ ...d, [g.key]: null }))} style={chip(cur == null)}>
-                    <Text style={{ fontSize: 13.5, fontWeight: cur == null ? '700' : '500', color: cur == null ? '#FFFFFF' : C.foreground }}>
-                      {t('common.all', 'सभी')}
-                    </Text>
-                  </Pressable>
+                  {g.noAll ? null : (
+                    <Pressable onPress={() => setDraft((d) => ({ ...d, [g.key]: null }))} style={chip(cur == null)}>
+                      <Text style={{ fontSize: 13.5, fontWeight: cur == null ? '700' : '500', color: cur == null ? '#FFFFFF' : C.foreground }}>
+                        {t('common.all', 'सभी')}
+                      </Text>
+                    </Pressable>
+                  )}
                   {g.options.map((o) => {
                     const sel = cur === o.value;
                     return (
-                      <Pressable key={o.value} onPress={() => setDraft((d) => ({ ...d, [g.key]: sel ? null : o.value }))} style={chip(sel)}>
+                      <Pressable key={o.value} onPress={() => setDraft((d) => ({ ...d, [g.key]: sel && !g.noAll ? null : o.value }))} style={chip(sel)}>
                         <Text style={{ fontSize: 13.5, fontWeight: sel ? '700' : '500', color: sel ? '#FFFFFF' : C.foreground }}>{o.label}</Text>
                       </Pressable>
                     );
@@ -140,7 +148,7 @@ export function FilterSheet({
         </ScrollView>
         <View style={{ flexDirection: 'row', gap: 10, marginTop: 18 }}>
           <Pressable
-            onPress={() => setDraft({})}
+            onPress={() => setDraft(Object.fromEntries(groups.filter((g) => g.defaultValue != null).map((g) => [g.key, g.defaultValue])))}
             style={{ flex: 1, height: 46, borderRadius: 12, borderWidth: 1, borderColor: C.border, alignItems: 'center', justifyContent: 'center' }}
           >
             <Text style={{ fontSize: 14, fontWeight: '700', color: C.foreground }}>{t('filter.clearAll', 'सब हटाएँ')}</Text>

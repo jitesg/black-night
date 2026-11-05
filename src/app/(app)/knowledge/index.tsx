@@ -315,7 +315,6 @@ export default function KnowledgeHomeScreen() {
           variant="light"
           returnKeyType="search"
           accessibilityLabel={t('knowledge.searchAccessibility')}
-          collapsible
         />
       </View>
 

@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useRef, useState, memo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
 import {
-  ActivityIndicator, BackHandler, FlatList, Pressable, ScrollView,
-  Share, Text, View,
+  ActivityIndicator, BackHandler, FlatList, Pressable, Share, Text, View,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -12,8 +11,9 @@ import { useColorScheme } from 'nativewind';
 import { HighlightText } from '@/components/HighlightText';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
-import { BookMarked, Calendar, Copy, Edit2, Filter, Plus, Share2, Star, Trash2 } from 'lucide-react-native';
+import { BookMarked, Calendar, Copy, Edit2, Plus, Share2, Star, Trash2 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import {
   getAllGdEntries, searchGdEntries, toggleGdFavorite,
   duplicateGdEntry, deleteGdEntry, type GdEntry,
@@ -40,9 +40,6 @@ const TYPE_COLORS: Record<string, string> = {
 // ─── Chip theme tokens (inactive state — must be readable on bg-background) ──
 // Light: #F1F5F9 bg (4.5:1 on #F4F7FE) + #475569 text (7.0:1 on #F1F5F9) ✓
 // Dark:  #334155 bg (3.5:1 on #0F172A) + #CBD5E1 text (7.1:1 on #334155)  ✓
-const CHIP_INACTIVE_BG   = { light: '#F1F5F9', dark: '#334155' } as const;
-const CHIP_INACTIVE_TEXT = { light: '#475569', dark: '#CBD5E1' } as const;
-const CHIP_BORDER        = { light: '#CBD5E1', dark: '#475569' } as const;
 
 const GD_TYPE_KEYS: Record<string, string> = {
   'रवानगी': 'departure',
@@ -64,10 +61,6 @@ const FILTER_OPTIONS: { value: string; labelKey: string }[] = [
   { value: 'Recently Added', labelKey: 'filters.recentlyAdded' },
 ];
 
-const getFilterLabel = (val: string, t: (key: string) => string): string => {
-  const item = FILTER_OPTIONS.find((f) => f.value === val);
-  return item ? t(item.labelKey) : val;
-};
 
 function fmtDate(str: string): string {
   if (!str) return '';
@@ -231,9 +224,6 @@ export default function GdScreen() {
   const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
   const palette = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
-  const chipInactiveBg   = CHIP_INACTIVE_BG[colorScheme === 'dark' ? 'dark' : 'light'];
-  const chipInactiveText = CHIP_INACTIVE_TEXT[colorScheme === 'dark' ? 'dark' : 'light'];
-  const chipBorder       = CHIP_BORDER[colorScheme === 'dark' ? 'dark' : 'light'];
   const listPaddingBottom = useListBottomPadding();
   const { settings } = useSettingsStore();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -320,6 +310,13 @@ export default function GdScreen() {
     loadData(query, f);
   };
 
+  // Design C (owner): the same single filter (one choice at a time) in the filter sheet.
+  const filterGroups = useMemo<FilterGroupDef[]>(() => [{
+    key: 'f', label: t('common.filter'),
+    options: FILTER_OPTIONS.filter((o) => o.value !== 'All').map((o) => ({ value: o.value, label: t(o.labelKey) })),
+  }], [t]);
+  const filterValues = useMemo<FilterValues>(() => ({ f: activeFilter === 'All' ? null : activeFilter }), [activeFilter]);
+
   const handleFavorite = async (entry: GdEntry) => {
     await toggleGdFavorite(entry.id, entry.is_favorite);
     setEntries((prev) =>
@@ -384,55 +381,28 @@ export default function GdScreen() {
 
       {/* Toolbar */}
       <View className="px-4 pt-3 pb-2 gap-2 bg-background border-b border-border">
-        <View className="flex-row gap-2">
-          <SearchBar
-            value={query}
-            noResults={!loading && !!query.trim() && entries.length === 0}
-            onChangeText={handleSearch}
-            onSubmitEditing={handleSearchSubmit}
-            placeholder={t('gd.list.searchPlaceholder')}
-            variant="light"
-            returnKeyType="search"
-            containerStyle={{ flex: 1 }}
-            accessibilityLabel={t('gd.list.searchAccessibility')}
-            collapsible
-          />
-          {/* Filter button: h-12 (48dp) to match SearchBar; solid themed inactive bg */}
-          <Pressable
-            onPress={() => setShowFilters(!showFilters)}
-            className="flex-row items-center gap-1.5 px-3 rounded-xl border active:opacity-70"
-            style={{
-              height: 48,
-              backgroundColor: activeFilter !== 'All' ? `${GD_COLOR}18` : chipInactiveBg,
-              borderColor: activeFilter !== 'All' ? GD_COLOR : chipBorder,
-            }}
-          >
-            <Filter size={13} color={activeFilter !== 'All' ? GD_COLOR : chipInactiveText} />
-            <Text className="text-xs font-semibold" style={{ color: activeFilter !== 'All' ? GD_COLOR : chipInactiveText }}>
-              {activeFilter !== 'All' ? getFilterLabel(activeFilter, t) : t('common.filter')}
-            </Text>
-          </Pressable>
-        </View>
-        {showFilters && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {FILTER_OPTIONS.map((f) => (
-              <Pressable
-                key={f.value}
-                onPress={() => handleFilter(f.value)}
-                className="mr-2 rounded-full border active:opacity-70 px-3 py-1.5"
-                style={{
-                  backgroundColor: activeFilter === f.value ? GD_COLOR : chipInactiveBg,
-                  borderColor: activeFilter === f.value ? GD_COLOR : chipBorder,
-                }}
-              >
-                <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: activeFilter === f.value ? '#fff' : chipInactiveText }}>
-                  {t(f.labelKey)}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        )}
+        <SearchBar
+          value={query}
+          noResults={!loading && !!query.trim() && entries.length === 0}
+          onChangeText={handleSearch}
+          onSubmitEditing={handleSearchSubmit}
+          placeholder={t('gd.list.searchPlaceholder')}
+          variant="light"
+          returnKeyType="search"
+          accessibilityLabel={t('gd.list.searchAccessibility')}
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilters(true)} accent={GD_COLOR} />}
+        />
+        <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={() => handleFilter('All')} accent={GD_COLOR} />
       </View>
+
+      <FilterSheet
+        visible={showFilters}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={(v) => handleFilter((v.f as string | null) ?? 'All')}
+        onClose={() => setShowFilters(false)}
+        accent={GD_COLOR}
+      />
 
       {loading ? (
         <View className="flex-1 items-center justify-center">

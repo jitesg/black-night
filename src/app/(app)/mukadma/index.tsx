@@ -1,10 +1,9 @@
-import { useState, useCallback, useEffect, useRef, memo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef, memo } from 'react';
 import { logger } from '@/lib/logger';
 import {
-  BackHandler, View, Text, FlatList, Pressable, ActivityIndicator, useWindowDimensions,
+  BackHandler, View, Text, FlatList, Pressable, ActivityIndicator,
   Share,
 } from 'react-native';
-import Animated, { LinearTransition } from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -12,9 +11,10 @@ import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
-  Plus, Filter, ChevronDown, Pencil, Trash2, FileText, Sparkles, NotebookPen,
+  Plus, Pencil, Trash2, FileText, Sparkles, NotebookPen,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import { matchesQuery, fuzzyMatch } from '@/lib/searchUtils';
 import { HighlightText } from '@/components/HighlightText';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -29,13 +29,6 @@ import { crimeTypeLabel } from '@/lib/db/checklistRepo';
 const ACCENT = '#6366F1';
 const STATUS_FILTER_KEYS = ['All', 'Pending', 'Finished'] as const;
 type StatusFilter = (typeof STATUS_FILTER_KEYS)[number];
-
-// Chip inactive tokens — readable on bg-background in both themes
-// Light: #F1F5F9 bg + #475569 text (7.0:1 on #F1F5F9) ✓
-// Dark:  #334155 bg + #CBD5E1 text (7.1:1 on #334155) ✓
-const CHIP_INACTIVE_BG   = { light: '#F1F5F9', dark: '#334155' } as const;
-const CHIP_INACTIVE_TEXT = { light: '#475569', dark: '#CBD5E1' } as const;
-const CHIP_BORDER        = { light: '#CBD5E1', dark: '#475569' } as const;
 
 // Status badge — semantic tokens (theme-aware Pending/Finished palette)
 // Using accent + accentForeground from THEME so both light/dark render clearly.
@@ -210,15 +203,6 @@ export default function MukadmaHomeScreen() {
   const { colorScheme } = useColorScheme();
   const scheme = colorScheme === 'dark' ? 'dark' : 'light';
   const palette = THEME[scheme];
-  const { width: screenWidth } = useWindowDimensions();
-  const chipSize = screenWidth < 360
-    ? { paddingHorizontal: 8,  paddingVertical: 4, fontSize: 10, gap: 4 }
-    : screenWidth < 400
-    ? { paddingHorizontal: 10, paddingVertical: 5, fontSize: 11, gap: 6 }
-    : { paddingHorizontal: 12, paddingVertical: 6, fontSize: 12, gap: 8 };
-  const chipInactiveBg   = CHIP_INACTIVE_BG[scheme];
-  const chipInactiveText = CHIP_INACTIVE_TEXT[scheme];
-  const chipBorder       = CHIP_BORDER[scheme];
   const listPaddingBottom = useListBottomPadding();
   const { settings } = useSettingsStore();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -229,6 +213,19 @@ export default function MukadmaHomeScreen() {
   const [sort, setSort] = useState<SortOption>('newest');
   const [showFilter, setShowFilter] = useState(false);
   const [showSort, setShowSort] = useState(false);
+  // Design C (owner): स्थिति + क्रम in the filter sheet (same rules as the old chips / sort menu).
+  const filterGroups = useMemo<FilterGroupDef[]>(() => [
+    { key: 'status', label: t('filter.status', 'स्थिति'), options: [
+      { value: 'Pending', label: t('fir.list.filterPending') }, { value: 'Finished', label: t('fir.list.filterFinished') },
+    ] },
+    { key: 'sort', label: t('fir.list.sortBtn'), noAll: true, defaultValue: 'newest', options: SORT_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
+  ], [t]);
+  const filterValues = useMemo<FilterValues>(() => ({ status: statusFilter === 'All' ? null : statusFilter, sort }), [statusFilter, sort]);
+  const applyFilters = (v: FilterValues) => {
+    setStatusFilter(((v.status as StatusFilter | null) ?? 'All'));
+    setSort(((v.sort as SortOption | null) ?? 'newest'));
+  };
+  const removeFilter = (key: string) => { if (key === 'status') setStatusFilter('All'); else setSort('newest'); };
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   // hasLoadedRef: true once data has been fetched at least once.
@@ -348,87 +345,26 @@ export default function MukadmaHomeScreen() {
       />
 
       {/* Search + filter toolbar */}
-      <Animated.View
-        className="px-4 pt-3 pb-2 gap-2 bg-background border-b border-border"
-        layout={LinearTransition.duration(220)}
-      >
-        <View className="flex-row flex-wrap items-center" style={{ gap: chipSize.gap }}>
-          <SearchBar
-            value={query}
-            noResults={!loading && !!query.trim() && filtered.length === 0}
-            onChangeText={setQuery}
-            placeholder={t('fir.list.searchPlaceholder')}
-            variant="light"
-            accessibilityLabel={t('fir.list.searchAccessibility')}
-            collapsible
-            containerStyle={{ flexGrow: 1, flexShrink: 1, minWidth: 200 }}
-          />
-          <View className="flex-row flex-shrink-0" style={{ gap: chipSize.gap }}>
-            {STATUS_FILTER_KEYS.map((s) => (
-              <Pressable
-                key={s}
-                onPress={() => setStatusFilter(s)}
-                className="rounded-full border active:opacity-70"
-                style={{
-                  paddingHorizontal: chipSize.paddingHorizontal,
-                  paddingVertical: chipSize.paddingVertical,
-                  backgroundColor: statusFilter === s ? ACCENT : chipInactiveBg,
-                  borderColor:     statusFilter === s ? ACCENT : chipBorder,
-                }}
-              >
-                <Text
-                  className="font-semibold"
-                  style={{
-                    fontSize: chipSize.fontSize,
-                    color: statusFilter === s ? '#fff' : chipInactiveText,
-                  }}
-                >
-                  {s === 'All' ? t('fir.list.filterAll') : s === 'Pending' ? t('fir.list.filterPending') : t('fir.list.filterFinished')}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-          <Pressable
-            onPress={() => setShowSort(!showSort)}
-            className="flex-row items-center rounded-full border active:opacity-70"
-            style={{
-              gap: chipSize.gap > 4 ? 6 : 4,
-              paddingHorizontal: chipSize.paddingHorizontal,
-              paddingVertical: chipSize.paddingVertical,
-              borderColor: chipBorder,
-              backgroundColor: chipInactiveBg,
-            }}
-          >
-            <Filter size={11} color={chipInactiveText} />
-            <Text
-              className="font-semibold"
-              style={{
-                fontSize: chipSize.fontSize,
-                color: chipInactiveText,
-              }}
-            >
-              {t('fir.list.sortBtn')}
-            </Text>
-            <ChevronDown size={10} color={chipInactiveText} />
-          </Pressable>
-        </View>
-        {showSort && (
-          <View className="bg-card border border-border rounded-2xl overflow-hidden" style={{ borderCurve: 'continuous' }}>
-            {SORT_OPTIONS.map((opt) => (
-              <Pressable
-                key={opt.value}
-                onPress={() => { setSort(opt.value); setShowSort(false); }}
-                className="px-4 py-3 active:bg-secondary"
-                style={{ borderBottomWidth: opt.value === SORT_OPTIONS[SORT_OPTIONS.length - 1].value ? 0 : 1, borderBottomColor: palette.border }}
-              >
-                <Text className="text-sm" style={{ color: sort === opt.value ? ACCENT : palette.cardForeground, fontWeight: sort === opt.value ? '700' : '400' }}>
-                  {opt.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        )}
-      </Animated.View>
+      <View className="px-4 pt-3 pb-2 gap-2 bg-background border-b border-border">
+        <SearchBar
+          value={query}
+          noResults={!loading && !!query.trim() && filtered.length === 0}
+          onChangeText={setQuery}
+          placeholder={t('fir.list.searchPlaceholder')}
+          variant="light"
+          accessibilityLabel={t('fir.list.searchAccessibility')}
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues, filterGroups)} onPress={() => setShowSort(true)} accent={ACCENT} />}
+        />
+        <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={removeFilter} accent={ACCENT} />
+      </View>
+      <FilterSheet
+        visible={showSort}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={applyFilters}
+        onClose={() => setShowSort(false)}
+        accent={ACCENT}
+      />
 
       {/* List */}
       {loading ? (

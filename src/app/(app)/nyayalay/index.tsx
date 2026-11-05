@@ -15,6 +15,7 @@ import {
   Plus, Scale, ChevronRight, Trash2, Edit3, ChevronDown, X,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import { HighlightText } from '@/components/HighlightText';
 import { getAllNyayalayDocuments, deleteNyayalayDocument, searchNyayalayDocuments, computeAnalyticsFromDocs, nylDaysUntilDeadline, todayStr, DOC_TYPES, type NyayalayDocument, type NyayalayAnalytics, type DocType } from '@/lib/db/nyayalayRepo';
 import {
@@ -39,9 +40,6 @@ import Animated, {
 const NYL_COLOR = '#1D4ED8';
 
 // Chip inactive tokens — readable on bg-background in both themes
-const CHIP_INACTIVE_BG   = { light: '#F1F5F9', dark: '#334155' } as const;
-const CHIP_INACTIVE_TEXT = { light: '#475569', dark: '#CBD5E1' } as const;
-const CHIP_BORDER        = { light: '#CBD5E1', dark: '#475569' } as const;
 
 // Status badge tokens — theme-aware
 const STATUS_BG   = { light: { Finished: '#D1FAE5', Overdue: '#FEE2E2', Pending: '#FEF3C7' }, dark: { Finished: '#052E16', Overdue: '#450A0A', Pending: '#451A03' } } as const;
@@ -106,23 +104,6 @@ function AnalyticsCard({
           <Text className="text-xs text-muted-foreground">O</Text>
         </View>
       </View>
-    </Pressable>
-  );
-}
-
-function FilterChip({
-  label, active, onPress, scheme,
-}: { label: string; active: boolean; onPress: () => void; scheme: 'light' | 'dark' }) {
-  const chipBg   = active ? NYL_COLOR : CHIP_INACTIVE_BG[scheme];
-  const chipText = active ? '#fff'     : CHIP_INACTIVE_TEXT[scheme];
-  const chipBorder = active ? NYL_COLOR  : CHIP_BORDER[scheme];
-  return (
-    <Pressable
-      onPress={onPress}
-      className="mr-2 mb-2 rounded-full active:opacity-70 border px-3 py-1.5"
-      style={{ backgroundColor: chipBg, borderColor: chipBorder }}
-    >
-      <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: chipText }}>{label}</Text>
     </Pressable>
   );
 }
@@ -268,6 +249,31 @@ export default function NyayalayScreen() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>(null);
   const [typeFilter, setTypeFilter] = useState<DocType | null>(null);
   const [analyticsExpanded, setAnalyticsExpanded] = useState(false);
+  // Design C (owner): स्थिति, समय सीमा, प्रकार — the same three filters as the old chips, now in the filter sheet.
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
+  const filterGroups = useMemo<FilterGroupDef[]>(() => [
+    { key: 'status', label: t('filter.status', 'स्थिति'), options: [
+      { value: 'Pending', label: t('fir.list.filterPending') }, { value: 'Finished', label: t('fir.list.filterFinished') },
+    ] },
+    { key: 'time', label: t('filter.date', 'तारीख'), options: [
+      { value: 'Due Today', label: t('nyayalay.filterDueToday') }, { value: 'Overdue', label: t('nyayalay.status.overdue') },
+    ] },
+    { key: 'type', label: t('filter.type', 'प्रकार'), options: DOC_TYPES.map((d) => ({ value: d, label: t(DOC_TYPE_I18N_KEYS[d]) })) },
+  ], [t]);
+  const filterValues = useMemo<FilterValues>(
+    () => ({ status: statusFilter === 'All' ? null : statusFilter, time: timeFilter, type: typeFilter }),
+    [statusFilter, timeFilter, typeFilter],
+  );
+  const applyFilters = (v: FilterValues) => {
+    setStatusFilter(((v.status as StatusFilter | null) ?? 'All'));
+    setTimeFilter(((v.time ?? null) as TimeFilter));
+    setTypeFilter(((v.type ?? null) as DocType | null));
+  };
+  const removeFilter = (key: string) => {
+    if (key === 'status') setStatusFilter('All');
+    else if (key === 'time') setTimeFilter(null);
+    else setTypeFilter(null);
+  };
 
   const progress = useSharedValue(analyticsExpanded ? 1 : 0);
   useEffect(() => {
@@ -419,53 +425,19 @@ export default function NyayalayScreen() {
           variant="light"
           returnKeyType="search"
           accessibilityLabel={t('nyayalay.searchAccessibility')}
-          collapsible
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilterSheet(true)} accent={NYL_COLOR} />}
         />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <FilterChip
-            key="All"
-            label={t('common.all')}
-            active={statusFilter === 'All'}
-            scheme={scheme}
-            onPress={() => setStatusFilter('All')}
-          />
-          <FilterChip
-            key="Pending"
-            label={t('fir.list.filterPending')}
-            active={statusFilter === 'Pending'}
-            scheme={scheme}
-            onPress={() => setStatusFilter('Pending')}
-          />
-          <FilterChip
-            key="Finished"
-            label={t('fir.list.filterFinished')}
-            active={statusFilter === 'Finished'}
-            scheme={scheme}
-            onPress={() => setStatusFilter('Finished')}
-          />
-          <FilterChip
-            label={t('nyayalay.filterDueToday')}
-            active={timeFilter === 'Due Today'}
-            scheme={scheme}
-            onPress={() => setTimeFilter((p) => p === 'Due Today' ? null : 'Due Today')}
-          />
-          <FilterChip
-            label={t('nyayalay.status.overdue')}
-            active={timeFilter === 'Overdue'}
-            scheme={scheme}
-            onPress={() => setTimeFilter((p) => p === 'Overdue' ? null : 'Overdue')}
-          />
-          {DOC_TYPES.map((type) => (
-            <FilterChip
-              key={type}
-              label={t(DOC_TYPE_I18N_KEYS[type])}
-              scheme={scheme}
-              active={typeFilter === type}
-              onPress={() => setTypeFilter((p) => p === type ? null : type)}
-            />
-          ))}
-        </ScrollView>
+        <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={removeFilter} accent={NYL_COLOR} />
       </View>
+
+      <FilterSheet
+        visible={showFilterSheet}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={applyFilters}
+        onClose={() => setShowFilterSheet(false)}
+        accent={NYL_COLOR}
+      />
 
       <FlatList
         data={filtered}

@@ -19,6 +19,7 @@ import {
   Plus, FileText, ChevronDown, X,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import { HighlightText } from '@/components/HighlightText';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import {
@@ -38,6 +39,8 @@ import { useSettingsStore } from '@/hooks/useSettingsStore';
 
 // ── Filter types ─────────────────────────────────────────────────────────
 const ACCENT = '#1E3A5F';
+/** Active filter colour — same blue as the old प्रार्थना पत्र filter chips. */
+const PP_FILTER_ACCENT = '#2D52B8';
 type StatusFilter = 'All' | 'Pending' | 'Nistarit' | 'Finished';
 type TimeFilter = 'Today' | 'This Week' | 'Overdue' | null;
 
@@ -286,6 +289,27 @@ export default function PrarthnaPatraScreen() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>(null);
   const [categoryFilter, setCategoryFilter] = useState<PetitionType | null>(null);
   const [analyticsExpanded, setAnalyticsExpanded] = useState(false);
+  // Design C (owner): स्थिति, तारीख, प्रकार — the same filters as the old chip row, now in the filter sheet.
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
+  const filterGroups = useMemo<FilterGroupDef[]>(() => [
+    { key: 'status', label: t('filter.status', 'स्थिति'), options: (['Pending', 'Nistarit', 'Finished'] as StatusFilter[]).map((f) => ({ value: f, label: t(STATUS_LABEL_KEY[f]) })) },
+    { key: 'time', label: t('filter.date', 'तारीख'), options: (['Today', 'This Week', 'Overdue'] as NonNullable<TimeFilter>[]).map((v) => ({ value: v, label: t(TIME_FILTER_KEYS[v]) })) },
+    { key: 'type', label: t('filter.type', 'प्रकार'), options: PETITION_TYPES.map((v) => ({ value: v, label: v })) },
+  ], [t]);
+  const filterValues = useMemo<FilterValues>(
+    () => ({ status: statusFilter === 'All' ? null : statusFilter, time: timeFilter, type: categoryFilter }),
+    [statusFilter, timeFilter, categoryFilter],
+  );
+  const applyFilters = (v: FilterValues) => {
+    setStatusFilter(((v.status as StatusFilter | null) ?? 'All'));
+    setTimeFilter(((v.time ?? null) as TimeFilter));
+    setCategoryFilter(((v.type ?? null) as PetitionType | null));
+  };
+  const removeFilter = (key: string) => {
+    if (key === 'status') setStatusFilter('All');
+    else if (key === 'time') setTimeFilter(null);
+    else setCategoryFilter(null);
+  };
 
   const progress = useSharedValue(analyticsExpanded ? 1 : 0);
   useEffect(() => {
@@ -405,26 +429,17 @@ export default function PrarthnaPatraScreen() {
     return list;
   }, [searchResults, items, statusFilter, timeFilter, categoryFilter, today, weekStart]);
 
-  const FilterChip = ({
-    label, active, onPress,
-  }: { label: string; active: boolean; onPress: () => void }) => (
-    <Pressable
-      onPress={onPress}
-      className="rounded-full mr-2 active:opacity-70 border px-3 py-1.5"
-      style={{
-        backgroundColor: active ? '#2D52B8' : 'transparent',
-        borderColor: active ? '#2D52B8' : '#94A3B855',
-      }}
-    >
-      <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: active ? '#fff' : '#6B7280' }}>
-        {label}
-      </Text>
-    </Pressable>
-  );
-
   return (
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <FilterSheet
+        visible={showFilterSheet}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={applyFilters}
+        onClose={() => setShowFilterSheet(false)}
+        accent={PP_FILTER_ACCENT}
+      />
       <AppHeader
         title={t('prarthnaPatra.title')}
         subtitle={t('prarthnaPatra.list.count', { count: filtered.length })}
@@ -582,7 +597,7 @@ export default function PrarthnaPatraScreen() {
               </Animated.View>
             )}
 
-            {/* ── Search ── */}
+            {/* ── Search + filter (design C, owner): ⚙︎ in the box, chosen filters as chips, sheet ── */}
             <SearchBar
               value={query}
               noResults={!loading && !!query.trim() && filtered.length === 0}
@@ -593,26 +608,13 @@ export default function PrarthnaPatraScreen() {
               returnKeyType="search"
               containerStyle={{ marginBottom: T.space.sm }}
               accessibilityLabel={t('prarthnaPatra.list.searchAccessibility')}
-              collapsible
+              trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilterSheet(true)} accent={PP_FILTER_ACCENT} />}
             />
-
-            {/* ── Filters: status + time + type chips in one scrollable row ── */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginBottom: T.space.sm }}
-              contentContainerStyle={{ paddingRight: T.space.sm, paddingVertical: 2 }}
-            >
-              {(['All', 'Pending', 'Nistarit', 'Finished'] as StatusFilter[]).map((f) => (
-                <FilterChip key={f} label={t(STATUS_LABEL_KEY[f])} active={statusFilter === f} onPress={() => setStatusFilter(f)} />
-              ))}
-              {(['Today', 'This Week', 'Overdue'] as NonNullable<TimeFilter>[]).map((val) => (
-                <FilterChip key={val} label={t(TIME_FILTER_KEYS[val])} active={timeFilter === val} onPress={() => setTimeFilter((p) => p === val ? null : val)} />
-              ))}
-              {PETITION_TYPES.map((type) => (
-                <FilterChip key={type} label={type} active={categoryFilter === type} onPress={() => setCategoryFilter((p) => p === type ? null : type)} />
-              ))}
-            </ScrollView>
+            {activeFilterCount(filterValues) > 0 ? (
+              <View style={{ marginBottom: T.space.sm }}>
+                <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={removeFilter} accent={PP_FILTER_ACCENT} />
+              </View>
+            ) : null}
 
             {/* List count label */}
             <Text className="text-xs text-muted-foreground font-medium tracking-widest uppercase mt-1 mb-2">

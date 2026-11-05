@@ -1,19 +1,20 @@
 import { useCallback, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, FlatList, Pressable, ScrollView,
+  ActivityIndicator, FlatList, Pressable,
   Text, View,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  BookOpen, Edit2, FileText, Filter,
+  BookOpen, Edit2, FileText,
   Plus, Search, Trash2, Users,
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import {
   searchKnowledge, deleteKnowledgeEntry, type KnowledgeEntry,
 } from '@/lib/db/knowledgeRepo';
@@ -235,6 +236,13 @@ export default function GuideListScreen() {
     loadData(query, ct);
   };
 
+  // Design C filter sheet: अपराध प्रकार (same options as the old chips).
+  const filterGroups: FilterGroupDef[] = [{
+    key: 'ct', label: t('knowledge.guide.filter'),
+    options: crimeTypeOptions.map((ct) => ({ value: ct, label: t('knowledge.guide.crimeType.' + ct, { defaultValue: ct }) })),
+  }];
+  const filterValues: FilterValues = { ct: activeCrimeType === 'All' ? null : activeCrimeType };
+
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
     await deleteKnowledgeEntry(deleteTarget.id);
@@ -252,56 +260,26 @@ export default function GuideListScreen() {
         }
       />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
-        {/* Search + Filter */}
-        <View className="flex-row gap-2">
-          <SearchBar
-            value={query}
-            onChangeText={handleSearch}
-            placeholder={t('knowledge.guide.searchPlaceholder')}
-            variant="light"
-            containerStyle={{ flex: 1 }}
-            accessibilityLabel={t('knowledge.guide.searchAccessibility')}
-            collapsible
-          />
-          <Pressable
-            onPress={() => setShowFilter(!showFilter)}
-            className="flex-row items-center gap-1.5 px-3 rounded-xl bg-secondary active:opacity-70"
-            style={{ borderCurve: 'continuous' }}
-          >
-            <Filter size={14} color={activeCrimeType !== 'All' ? COLOR : C.mutedForeground} />
-            <Text
-              className="text-xs font-medium"
-              numberOfLines={1}
-              style={{ color: activeCrimeType !== 'All' ? COLOR : C.mutedForeground, maxWidth: 72 }}
-            >
-              {activeCrimeType !== 'All'
-                ? t('knowledge.guide.crimeType.' + activeCrimeType, { defaultValue: activeCrimeType })
-                : t('knowledge.guide.filter')}
-            </Text>
-          </Pressable>
-        </View>
-
-        {/* Crime type filter chips */}
-        {showFilter && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
-            {['All', ...crimeTypeOptions].map((ct) => (
-              <Pressable
-                key={ct}
-                onPress={() => handleFilterSelect(ct)}
-                className="mx-1 rounded-full active:opacity-70 px-3 py-1.5"
-                style={{ backgroundColor: activeCrimeType === ct ? COLOR : C.muted }}
-              >
-                <Text textBreakStrategy="simple"
-                  className="text-xs font-medium"
-                  style={{ color: activeCrimeType === ct ? '#fff' : C.foreground }}
-                >
-                  {ct === 'All' ? t('knowledge.guide.all') : t('knowledge.guide.crimeType.' + ct, { defaultValue: ct })}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        )}
+        {/* Search + filter (design C, owner) */}
+        <SearchBar
+          value={query}
+          onChangeText={handleSearch}
+          placeholder={t('knowledge.guide.searchPlaceholder')}
+          variant="light"
+          accessibilityLabel={t('knowledge.guide.searchAccessibility')}
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilter(true)} accent={COLOR} />}
+        />
+        <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={() => handleFilterSelect('All')} accent={COLOR} />
       </View>
+
+      <FilterSheet
+        visible={showFilter}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={(v) => handleFilterSelect((v.ct as string | null) ?? 'All')}
+        onClose={() => setShowFilter(false)}
+        accent={COLOR}
+      />
 
       {loading ? (
         <View className="flex-1 items-center justify-center">

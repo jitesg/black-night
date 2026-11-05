@@ -42,7 +42,6 @@ export default function FardListScreen() {
           variant="light"
           returnKeyType="search"
           accessibilityLabel={t('fard.searchAccessibility', 'फर्द खोजें')}
-          collapsible
         />
       </View>
 

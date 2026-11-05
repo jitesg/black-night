@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
-import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { Edit2, Filter, Plus, Trash2, Shield, User, BookOpen, ChevronRight, Gavel } from 'lucide-react-native';
+import { Edit2, Plus, Trash2, BookOpen, ChevronRight, Gavel } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import { HighlightText } from '@/components/HighlightText';
 import {
   searchKnowledge, deleteKnowledgeEntry, getKnowledgeAnalytics, type KnowledgeEntry,
@@ -484,6 +485,37 @@ export default function KnowledgeListScreen() {
     setEntries(applySourceFilter(onlyRefIfChip(allEntries, activeSubcatRef.current), sf, notesMapRef.current));
   };
 
+  // ── Design C filter sheet: उप-श्रेणी (with counts for SOP, as before) + System / User ──
+  const filterGroups = useMemo<FilterGroupDef[]>(() => [
+    {
+      key: 'sub', label: t('knowledge.list.filterBtn'),
+      options: subcategories.map((sub) => {
+        const count = TYPE_CHIPS[sub] ? allEntries.filter((e) => e.content_type === TYPE_CHIPS[sub]).length
+          : allEntries.filter((e) => e.subcategory === sub).length;
+        return { value: sub, label: isSopCategory ? `${sub} (${count})` : sub };
+      }),
+    },
+    {
+      key: 'source', label: t('filter.type', 'प्रकार'),
+      options: [{ value: 'System', label: t('knowledge.list.filterSystem') }, { value: 'User', label: t('knowledge.list.filterUser') }],
+    },
+  ], [t, subcategories, allEntries, isSopCategory]);
+  const filterValues = useMemo<FilterValues>(
+    () => ({ sub: activeSubcat === 'All' ? null : activeSubcat, source: sourceFilter === 'All' ? null : sourceFilter }),
+    [activeSubcat, sourceFilter],
+  );
+  const applyFilters = (v: FilterValues) => {
+    const sub = (v.sub as string | null) ?? 'All';
+    const sf = ((v.source as SourceFilter | null) ?? 'All');
+    setActiveSubcat(sub);
+    setSourceFilter(sf);
+    loadData(undefined, sub, sf);
+  };
+  const removeFilter = (key: string) => {
+    if (key === 'sub') handleSubcat('All');
+    else handleSourceFilter('All');
+  };
+
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
     await deleteKnowledgeEntry(deleteTarget.id);
@@ -504,110 +536,29 @@ export default function KnowledgeListScreen() {
         }
       />
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
-        {/* Search + Filter */}
-        <View className="flex-row gap-2">
-          <SearchBar
-            value={query}
-            noResults={!loading && !!query.trim() && entries.length === 0}
-            onChangeText={handleSearch}
-            onSubmitEditing={handleSearchSubmit}
-            placeholder={t('knowledge.list.searchPlaceholder')}
-            variant="light"
-            returnKeyType="search"
-            containerStyle={{ flex: 1 }}
-            accessibilityLabel={t('knowledge.list.searchAccessibility')}
-            collapsible
-          />
-          <Pressable
-            onPress={() => setShowFilter(!showFilter)}
-            className="flex-row items-center gap-1.5 px-3 rounded-xl bg-secondary active:opacity-70"
-            style={{ borderCurve: 'continuous' }}
-          >
-            <Filter size={14} color={activeSubcat !== 'All' ? color : C.mutedForeground} />
-            <Text
-              className="text-xs font-medium"
-              style={{ color: activeSubcat !== 'All' ? color : C.mutedForeground }}
-              numberOfLines={1}
-            >
-              {activeSubcat !== 'All' ? activeSubcat : t('knowledge.list.filterBtn')}
-            </Text>
-          </Pressable>
-        </View>
-
-        {/* Subcategory chips — always visible for SOP or when showFilter is toggled */}
-        {(isSopCategory || showFilter) && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1 py-0.5">
-            {['All', ...subcategories].map((sub) => {
-              const count = sub === 'All' ? allEntries.length
-                : TYPE_CHIPS[sub] ? allEntries.filter((e) => e.content_type === TYPE_CHIPS[sub]).length
-                : allEntries.filter((e) => e.subcategory === sub).length;
-              const isSelected = activeSubcat === sub;
-              const displayLabel = sub === 'All' ? (isSopCategory ? 'सभी' : t('knowledge.list.filterAll')) : sub;
-
-              return (
-                <Pressable
-                  key={sub}
-                  onPress={() => handleSubcat(sub)}
-                  className="mx-1 rounded-full flex-row items-center gap-1.5 active:opacity-70 px-3 py-1.5"
-                  style={{
-                    backgroundColor: isSelected ? color : `${color}15`,
-                    borderCurve: 'continuous',
-                  }}
-                >
-                  <Text textBreakStrategy="simple"
-                    className="text-xs font-semibold"
-                    style={{ color: isSelected ? '#fff' : color }}
-                  >
-                    {displayLabel}
-                  </Text>
-                  {isSopCategory && (
-                    <View
-                      className="rounded-full px-2.5 py-1"
-                      style={{
-                        backgroundColor: isSelected ? 'rgba(255,255,255,0.25)' : `${color}25`,
-                      }}
-                    >
-                      <Text textBreakStrategy="simple"
-                        className="text-[10px] font-bold"
-                        style={{ color: isSelected ? '#fff' : color }}
-                      >
-                        {count}
-                      </Text>
-                    </View>
-                  )}
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        )}
-
-        {/* Source filter tabs: All / System / User */}
-        <View className="flex-row gap-1.5">
-          {SOURCE_FILTERS.map((sf) => (
-            <Pressable
-              key={sf}
-              onPress={() => handleSourceFilter(sf)}
-              className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
-              style={{
-                backgroundColor: sourceFilter === sf ? color : `${color}15`,
-                borderCurve: 'continuous',
-              }}
-            >
-              {sf !== 'All' && (sf === 'System'
-                ? <Shield size={11} color={sourceFilter === sf ? '#fff' : color} />
-                : <User size={11} color={sourceFilter === sf ? '#fff' : color} />)}
-              <Text textBreakStrategy="simple"
-                className="text-xs font-semibold"
-                style={{ color: sourceFilter === sf ? '#fff' : color }}
-              >
-                {sf === 'System' ? t('knowledge.list.filterSystem') : sf === 'User' ? t('knowledge.list.filterUser') : t('knowledge.list.filterAll')}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+        {/* Search + filter (design C, owner): ⚙︎ in the box, chosen filters as chips, sheet from the bottom */}
+        <SearchBar
+          value={query}
+          noResults={!loading && !!query.trim() && entries.length === 0}
+          onChangeText={handleSearch}
+          onSubmitEditing={handleSearchSubmit}
+          placeholder={t('knowledge.list.searchPlaceholder')}
+          variant="light"
+          returnKeyType="search"
+          accessibilityLabel={t('knowledge.list.searchAccessibility')}
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilter(true)} accent={color} />}
+        />
+        <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={removeFilter} accent={color} />
       </View>
 
-
+      <FilterSheet
+        visible={showFilter}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={applyFilters}
+        onClose={() => setShowFilter(false)}
+        accent={color}
+      />
 
       {loading ? (
         <View className="flex-1 items-center justify-center">

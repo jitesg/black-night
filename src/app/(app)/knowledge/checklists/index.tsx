@@ -5,10 +5,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { ClipboardList, Edit2, Plus, Shield, Trash2, User } from 'lucide-react-native';
+import { ClipboardList, Edit2, Plus, Trash2 } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import { HighlightText } from '@/components/HighlightText';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import {
@@ -183,6 +184,14 @@ export default function ChecklistsIndexScreen() {
     setFiltered(applyFilters(allItems, query, sf));
   };
 
+  // Design C filter sheet: System / User (same rule as the old chips).
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
+  const filterGroups: FilterGroupDef[] = [{
+    key: 'source', label: t('filter.type', 'प्रकार'),
+    options: [{ value: 'System', label: t('knowledge.checklist.filterSystem') }, { value: 'User', label: t('knowledge.checklist.filterUser') }],
+  }];
+  const filterValues: FilterValues = { source: sourceFilter === 'All' ? null : sourceFilter };
+
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
     await deleteChecklistItemM2M(deleteTarget.id);
@@ -221,35 +230,26 @@ export default function ChecklistsIndexScreen() {
       />
 
       <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
+        {/* Search + filter (design C, owner) */}
         <SearchBar
           value={query}
           onChangeText={handleSearch}
           placeholder={t('knowledge.checklist.searchPlaceholder')}
           variant="navy"
           accessibilityLabel={t('knowledge.checklist.searchAccessibility')}
-          collapsible
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilterSheet(true)} accent={COLOR} />}
         />
-        <View className="flex-row gap-1.5">
-          {SOURCE_FILTERS.map((sf) => (
-            <Pressable
-              key={sf}
-              onPress={() => handleSourceFilter(sf)}
-              className="flex-row items-center gap-1 rounded-full active:opacity-70 px-2.5 py-1"
-              style={{
-                backgroundColor: sourceFilter === sf ? COLOR : `${COLOR}15`,
-                borderCurve: 'continuous',
-              }}
-            >
-              {sf !== 'All' && (sf === 'System'
-                ? <Shield size={11} color={sourceFilter === sf ? '#fff' : COLOR} />
-                : <User size={11} color={sourceFilter === sf ? '#fff' : COLOR} />)}
-              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: sourceFilter === sf ? '#fff' : COLOR }}>
-                {sf === 'System' ? t('knowledge.checklist.filterSystem') : sf === 'User' ? t('knowledge.checklist.filterUser') : t('knowledge.checklist.filterAll')}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+        <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={() => handleSourceFilter('All')} accent={COLOR} />
       </View>
+
+      <FilterSheet
+        visible={showFilterSheet}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={(v) => handleSourceFilter(((v.source as SourceFilter | null) ?? 'All'))}
+        onClose={() => setShowFilterSheet(false)}
+        accent={COLOR}
+      />
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
