@@ -103,17 +103,19 @@ function ActionMenu({
 }
 
 // ─── Record Card ──────────────────────────────────────────────────────────
-// Village headline (pin + "गाँव का नाम" label), dispute line in a serif Hindi face
-// with an opening quote, then a footer: date (left) and the section badge (right).
+// Same look as the home dashboard tiles (owner): theme card surface, no border, soft shadow, rounded 16,
+// the headline (village) big and bold in the accent green, small muted labels. Content is unchanged:
+// village (pin + "गाँव का नाम"), कार्यवाही type, dispute in a serif Hindi face with an opening quote,
+// checklist, then date (left) and the section badge (right).
 // Village / dispute / sections are read from the editor text (fallbacks: saved fields).
 const CARD_COLORS = {
   dark: {
-    bg: '#111827', border: '#1E293B', pinBg: '#7F1D1D', pin: '#FCA5A5', muted: '#94A3B8',
-    village: '#4ADE80', type: '#FBBF24', dispute: '#F87171', divider: 'rgba(31,41,55,0.5)', badgeBg: '#1E3A8A', badgeFg: '#DBEAFE',
+    bg: THEME.dark.card, border: THEME.dark.border, pinBg: '#DC262626', pin: '#F87171', muted: THEME.dark.mutedForeground,
+    village: '#16A34A', type: '#D97706', dispute: '#EF4444', divider: THEME.dark.border, badgeBg: '#0F766E33', badgeFg: '#5EEAD4',
   },
   light: {
-    bg: '#FFFFFF', border: '#E5E7EB', pinBg: '#FEE2E2', pin: '#B91C1C', muted: '#64748B',
-    village: '#15803D', type: '#B45309', dispute: '#DC2626', divider: '#E5E7EB', badgeBg: '#1E3A8A', badgeFg: '#FFFFFF',
+    bg: THEME.light.card, border: THEME.light.border, pinBg: '#DC26261A', pin: '#DC2626', muted: THEME.light.mutedForeground,
+    village: '#16A34A', type: '#D97706', dispute: '#DC2626', divider: THEME.light.border, badgeBg: '#0F766E1A', badgeFg: '#0F766E',
   },
 } as const;
 // "Kokila" is not on phones; Android's serif face carries Noto Serif Devanagari.
@@ -154,7 +156,6 @@ const KaryvahiCard = memo(function KaryvahiCard({
 }) {
   const { t } = useTranslation();
   const c = CARD_COLORS[scheme];
-  const isDark = scheme === 'dark';
   const dateStr = cardDate(item);
   const menuBtnRef = useRef<View>(null);
   const facts = useMemo(
@@ -183,12 +184,11 @@ const KaryvahiCard = memo(function KaryvahiCard({
       onPress={onPress}
       onLongPress={onLongPress}
       delayLongPress={350}
-      className="active:opacity-80"
+      className="shadow-sm shadow-black/5 active:opacity-70"
       style={{
-        borderCurve: 'continuous', borderRadius: 16, padding: 20, backgroundColor: c.bg,
-        borderWidth: selected ? 2 : 1, borderColor: selected ? MODULE_COLOR : c.border,
-        shadowColor: '#000', shadowOpacity: isDark ? 0.35 : 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 6 },
-        elevation: 4,
+        borderCurve: 'continuous', borderRadius: 16, padding: 16, backgroundColor: c.bg,
+        // no border like the dashboard tiles; a red ring only while selected (width kept so nothing jumps)
+        borderWidth: 2, borderColor: selected ? MODULE_COLOR : 'transparent',
       }}
       accessibilityRole="button"
       accessibilityLabel={[village, typeLabel, dispute, dateStr, sections.join(', ')].filter(Boolean).join(', ')}
@@ -204,11 +204,11 @@ const KaryvahiCard = memo(function KaryvahiCard({
             <HighlightText
               text={village}
               query={query}
-              style={{ fontSize: 16, lineHeight: 24, fontWeight: '700', color: c.village }}
+              style={{ fontSize: 20, lineHeight: 30, fontWeight: '700', color: c.village }}
               numberOfLines={2}
             />
           ) : (
-            <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: '700', color: c.muted }} numberOfLines={1}>
+            <Text style={{ fontSize: 20, lineHeight: 30, fontWeight: '700', color: c.muted }} numberOfLines={1}>
               {t('nirodhatmak.card.defaultTitle')}
             </Text>
           )}
@@ -264,7 +264,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
           <Text style={{ fontSize: 12.5, color: c.muted }}>{dateStr}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1 }}>
-          <View style={{ backgroundColor: c.badgeBg, borderRadius: 4, paddingVertical: 4, paddingHorizontal: 10, flexShrink: 1 }}>
+          <View style={{ backgroundColor: c.badgeBg, borderRadius: 8, paddingVertical: 4, paddingHorizontal: 10, flexShrink: 1 }}>
             <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 11.5, fontWeight: '700', color: c.badgeFg }}>{sections[0]}</Text>
           </View>
           {sections.length > 1 ? (

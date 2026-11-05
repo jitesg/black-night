@@ -250,6 +250,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   9 AM summary alert per day from the day after the karyvahi date — rules `src/lib/nkChalani.ts` (tests
   `scripts/test_nk_chalani.ts`), scheduler `nkChalaniService.ts` (`kind: nk_chalani`, route /(app)/nirodhatmak; setting
   notifNkChalani; resync from repo create/delete/tick + syncAppNotifications).
+  Card look = the home dashboard tiles (owner): THEME card surface, no border (red ring only when selected), `shadow-sm shadow-black/5`,
+  radius 16, padding 16; village 20px bold green #16A34A, type amber #D97706, dispute red, muted labels = mutedForeground, teal tinted badge.
   Card ⋮ = small floating popup (Modal at the button, opens upwards near the bottom) संपादित/Word/हटाएं; press-and-hold = selection mode (header: सभी चुनें, batch Word export via
   `exportKaryvahisDocx` — one file, each report on a new page — and batch delete); back clears the selection.
 - AI Copilot: no floating button any more. 🤖 header button — `CopilotHeaderBtn` auto-added by `AppHeader` on main
