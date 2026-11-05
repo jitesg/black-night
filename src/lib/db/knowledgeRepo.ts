@@ -375,6 +375,57 @@ export async function getMergedKnowledgeList(category?: string): Promise<Knowled
   }
 }
 
+// ─── Search copy of the merged list (owner: faster search) ────────────────
+// The whole knowledge module is ~5.5 MB of text; reading it from SQLite on every keystroke was the slow part.
+// Search keeps one copy in memory and re-reads only when the table changed — checked with a cheap
+// signature (row count, newest updated_at, length of the searched text, hidden ids). Other screens keep
+// calling getMergedKnowledgeList() directly.
+let _searchList: { sig: string; rows: KnowledgeEntry[] } | null = null;
+let _searchListLoading: Promise<KnowledgeEntry[]> | null = null;
+async function knowledgeSearchSignature(): Promise<string> {
+  const db = await getDatabase();
+  const r = await db.getFirstAsync<{ c: number; m: number | null; l: number | null; d: number | null }>(
+    `SELECT COUNT(*) AS c, MAX(updated_at) AS m, TOTAL(deleted_at) AS d,
+            TOTAL(LENGTH(COALESCE(title,'')) + LENGTH(COALESCE(tags,'')) + LENGTH(COALESCE(description,'')) + LENGTH(COALESCE(crime_type,''))) AS l
+       FROM knowledge_entries`,
+  );
+  const hidden = await getHiddenSystemKnowledgeIds();
+  return `${r?.c ?? 0}|${r?.m ?? 0}|${r?.l ?? 0}|${r?.d ?? 0}|${hidden.size}|${[...hidden].sort().join(',').length}`;
+}
+export async function getKnowledgeListForSearch(): Promise<KnowledgeEntry[]> {
+  let sig = '';
+  try { sig = await knowledgeSearchSignature(); } catch { return getMergedKnowledgeList(); }
+  if (_searchList && _searchList.sig === sig) return _searchList.rows;
+  if (_searchListLoading) return _searchListLoading;
+  _searchListLoading = getMergedKnowledgeList()
+    .then((rows) => { _searchList = { sig, rows }; return rows; })
+    .finally(() => { _searchListLoading = null; });
+  return _searchListLoading;
+}
+
+/**
+ * Prepare search after app start (owner): load the list and normalise every entry in small batches
+ * while the officer is not typing, so even the first search is quick. Safe to call more than once.
+ */
+let _warmed = false;
+export async function warmKnowledgeSearch(): Promise<void> {
+  if (_warmed) return;
+  _warmed = true;
+  try {
+    const [items, notesMap] = await Promise.all([getKnowledgeListForSearch(), getAllKnowledgeNotesMap()]);
+    for (let i = 0; i < items.length; i += 40) {
+      for (const r of items.slice(i, i + 40)) {
+        const c = knowledgeEntryCache(r, notesMap.get(r.id) ?? '');
+        c.sound ??= soundHayOf(c.hay); // English-letter (Hinglish) searches are quick from the first try too
+      }
+      await new Promise((res) => setTimeout(res, 0)); // let taps / typing through between batches
+    }
+  } catch (err) {
+    _warmed = false;
+    logger.warn('[knowledgeRepo] warmKnowledgeSearch failed:', err);
+  }
+}
+
 // ─── Create ───────────────────────────────────────────────────────────────
 export async function createKnowledgeEntry(
   data: Pick<KnowledgeEntry, 'title' | 'category' | 'subcategory' | 'crime_type' | 'description' | 'tags' | 'attachment_uris'>
@@ -547,11 +598,10 @@ export async function searchKnowledgeAll(
   opts?: KnowledgeSearchOpts,
 ): Promise<KnowledgeEntry[]> {
   try {
-    const items = await getMergedKnowledgeList();
-    const notesMap = await getAllKnowledgeNotesMap();
+    const [items, notesMap] = await Promise.all([getKnowledgeListForSearch(), getAllKnowledgeNotesMap()]);
     const trimmed = query.trim().toLowerCase();
 
-    let filtered = items;
+    let filtered = items.slice(); // the search copy is shared — never sort it in place
     if (trimmed) {
       const typo = opts?.typoTolerance ?? isTypoTolerant();
       filtered = filtered.filter((r) => knowledgeMatches(trimmed, r, notesMap.get(r.id) ?? '', typo));
@@ -582,8 +632,7 @@ export async function searchKnowledgeSmart(
     ));
     if (words.length === 0) return [];
 
-    const items = await getMergedKnowledgeList();
-    const notesMap = await getAllKnowledgeNotesMap();
+    const [items, notesMap] = await Promise.all([getKnowledgeListForSearch(), getAllKnowledgeNotesMap()]);
     const scored = items.map((r) => {
       const note = notesMap.get(r.id) ?? '';
       const hay = `${r.title} ${r.tags} ${r.description ?? ''} ${r.crime_type ?? ''} ${note}`.toLowerCase();

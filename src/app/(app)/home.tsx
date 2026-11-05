@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { clearAppLockSession } from '@/lib/appLockAuth';
 import { T } from '@/lib/typography';
 import {
@@ -30,6 +30,7 @@ import { DashboardHeader } from '@/components/common/DashboardHeader';
 import { loadNoticeCards } from '@/lib/db/noticeRepo';
 import { noticeBadgeCount } from '@/lib/noticeCards';
 import { reportRecordCounts } from '@/lib/db/reportRecordRepo';
+import { warmKnowledgeSearch } from '@/lib/db/knowledgeRepo';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
@@ -368,23 +369,33 @@ export default function HomeScreen() {
     return () => { cancelled = true; };
   }, []));
 
+  const searchSeqRef = useRef(0);
+  // Prepare the knowledge search once, a little after the dashboard opens (first search is then quick).
+  useEffect(() => {
+    const id = setTimeout(() => { warmKnowledgeSearch().catch(() => {}); }, 2500);
+    return () => clearTimeout(id);
+  }, []);
+
   const handleSearchChange = useCallback((text: string) => {
     setSearchQuery(text);
     if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
     setExpandedModules(new Set());
-    if (!text.trim()) { setSearchResults([]); setSearchModule('all'); return; }
+    const seq = ++searchSeqRef.current; // also cancels a search still running when the box is cleared
+    if (!text.trim()) { setSearchResults([]); setSearchModule('all'); setSearchLoading(false); return; }
     searchTimerRef.current = setTimeout(async () => {
       setSearchLoading(true);
       try {
         const results = await universalSearch(text);
-        setSearchResults(results);
+        // A slower, older search must not overwrite the newer one (list jumped while typing fast).
+        if (seq === searchSeqRef.current) setSearchResults(results);
       } finally {
-        setSearchLoading(false);
+        if (seq === searchSeqRef.current) setSearchLoading(false);
       }
     }, 350);
   }, []);
 
   const clearSearch = useCallback(() => {
+    searchSeqRef.current += 1;
     setSearchQuery('');
     setSearchResults([]);
   }, []);

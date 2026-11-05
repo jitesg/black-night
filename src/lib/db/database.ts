@@ -1699,6 +1699,9 @@ async function _ensureIndexes(database: SQLite.SQLiteDatabase): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_fir_karyvahi_fir_id ON fir_karyvahi(fir_id)`,
     // Case diaries — lookup by fir_id
     `CREATE INDEX IF NOT EXISTS idx_case_diaries_fir_id ON case_diaries(fir_id)`,
+    // FIR search reads each मुकदमा's अभियुक्त + case diary text (correlated sub-queries)
+    `CREATE INDEX IF NOT EXISTS idx_fir_accused_fir_id ON fir_accused(fir_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_cd_karyvahi_diary_id ON case_diary_karyvahi(diary_id)`,
     // GD — filter by date, sort
     `CREATE INDEX IF NOT EXISTS idx_gd_prep_date ON gd_entries(preparation_date)`,
     `CREATE INDEX IF NOT EXISTS idx_gd_deleted_created ON gd_entries(deleted_at, created_at)`,

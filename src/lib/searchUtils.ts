@@ -142,7 +142,8 @@ export function smartMatch(query: string, fields: (string | null | undefined)[],
 export function matchNormalized(query: string, normalizedHay: string, typo: boolean = _typoTolerance, soundHay?: () => string): boolean {
   const tokens = queryTokens(query);
   if (!tokens.length) return true;
-  if (tokens.every((t) => normalizedHay.includes(t) || soundMatch(t, normalizedHay, soundHay?.()))) return true;
+  // Sound keys only for English-letter words: building them for every entry on a Hindi query cost ~400 ms (owner: faster search).
+  if (tokens.every((t) => normalizedHay.includes(t) || (LATIN_WORD.test(t) && soundMatch(t, normalizedHay, soundHay?.())))) return true;
   if (!typo) return false;
   const words = normalizedHay.split(' ');
   return tokens.every((t) => normalizedHay.includes(t) || (t.length >= 4 && words.some((w) => levenshtein(t, w) <= 1)));
