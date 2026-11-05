@@ -1,3 +1,4 @@
+import { sqlIdent } from './sqlIdent';
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 
 export interface Person {
@@ -54,7 +55,7 @@ export async function createPerson(input: PersonInput): Promise<Person> {
 export async function updatePerson(id: string, input: Partial<PersonInput>): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
-  const fields = Object.entries(input).map(([k]) => `${k} = ?`).join(', ');
+  const fields = Object.entries(input).map(([k]) => `${sqlIdent(k)} = ?`).join(', ');
   const values = [...Object.values(input), now, id];
   await db.runAsync(`UPDATE persons SET ${fields}, updated_at = ? WHERE id = ?`, values);
 }

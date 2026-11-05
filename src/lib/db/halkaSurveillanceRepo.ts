@@ -1,3 +1,4 @@
+import { sqlIdent } from './sqlIdent';
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 
 export const CRIMINAL_ACTIVITIES = [
@@ -47,7 +48,7 @@ export async function updateSurveillanceTarget(id: string, input: Partial<Survei
   const db = await getDatabase();
   const entries = Object.entries(input).filter(([, v]) => v !== undefined);
   if (entries.length === 0) return;
-  const setClause = entries.map(([k]) => `${k} = ?`).join(', ');
+  const setClause = entries.map(([k]) => `${sqlIdent(k)} = ?`).join(', ');
   const values = [...entries.map(([, v]) => v), id];
   await db.runAsync(
     `UPDATE surveillance_targets SET ${setClause} WHERE id = ?`,

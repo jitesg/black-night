@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { onlyLocalWebViewNav } from '@/lib/webviewSafety';
 import { useTranslation } from 'react-i18next';
 import {
   Modal, Pressable, ScrollView, Text, View,
@@ -63,6 +64,7 @@ function PrintPreviewModal({
             source={{ html }}
             style={{ flex: 1 }}
             originWhitelist={['*']}
+            onShouldStartLoadWithRequest={onlyLocalWebViewNav}
           />
         )}
       </View>

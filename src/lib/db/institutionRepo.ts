@@ -1,3 +1,4 @@
+import { sqlIdent } from './sqlIdent';
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 
 export interface SocialInstitution {
@@ -75,7 +76,7 @@ export async function createInstitution(input: SocialInstitutionInput): Promise<
 export async function updateInstitution(id: string, input: Partial<SocialInstitutionInput>): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
-  const fields = Object.entries(input).map(([k]) => `${k} = ?`).join(', ');
+  const fields = Object.entries(input).map(([k]) => `${sqlIdent(k)} = ?`).join(', ');
   await db.runAsync(`UPDATE social_institutions SET ${fields}, updated_at = ? WHERE id = ?`, [...Object.values(input), now, id]);
 }
 
@@ -151,7 +152,7 @@ export async function createInstitutionStaff(input: InstitutionStaffInput): Prom
 export async function updateInstitutionStaff(id: string, input: Partial<InstitutionStaffInput>): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
-  const fields = Object.entries(input).map(([k]) => `${k} = ?`).join(', ');
+  const fields = Object.entries(input).map(([k]) => `${sqlIdent(k)} = ?`).join(', ');
   await db.runAsync(`UPDATE institution_staff SET ${fields}, updated_at = ? WHERE id = ?`, [...Object.values(input), now, id]);
 }
 

@@ -25,6 +25,7 @@
  *     title="Beat Book Entry"
  *   />
  */
+import { onlyLocalWebViewNav } from '@/lib/webviewSafety';
 import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
@@ -403,6 +404,7 @@ function NativeWebView({ html }: { html: string }) {
       source={{ html }}
       style={{ flex: 1 }}
       originWhitelist={['*']}
+      onShouldStartLoadWithRequest={onlyLocalWebViewNav}
     />
   );
 }

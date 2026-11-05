@@ -1,4 +1,5 @@
 /** केस डायरी का A4 प्रीव्यू (owner) — full-screen modal showing `buildCaseDiaryPrintHtml` sheets. */
+import { onlyLocalWebViewNav } from '@/lib/webviewSafety';
 import { Modal, Pressable, Text, View } from 'react-native';
 import WebView from 'react-native-webview';
 import { ArrowLeft } from 'lucide-react-native';
@@ -22,7 +23,7 @@ export function CaseDiaryA4Preview({ visible, html, title, onClose }: { visible:
             <iframe srcDoc={html} style={{ flex: 1, border: 'none', width: '100%', height: '100%' }} title="A4" />
           </View>
         ) : (
-          <WebView source={{ html }} style={{ flex: 1 }} originWhitelist={['*']} />
+          <WebView source={{ html }} style={{ flex: 1 }} originWhitelist={['*']} onShouldStartLoadWithRequest={onlyLocalWebViewNav} />
         )}
       </View>
     </Modal>

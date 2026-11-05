@@ -10,6 +10,7 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { hasAppLockPinSet, touchAppLockSession } from '@/lib/appLockAuth';
 import { router } from 'expo-router';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
+import { SecurityCheckCard } from '@/components/settings/SecurityCheckCard';
 
 export type TimeoutVal = SettingsState['autoLockTimeout'];
 export const TIMEOUT_OPTIONS: { value: TimeoutVal; labelKey: string }[] = [
@@ -165,6 +166,9 @@ export default function SecurityScreen() {
             />
           </View>
         </View>
+
+        <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">सुरक्षा जाँच</Text>
+        <SecurityCheckCard />
 
         <View className="bg-muted/50 rounded-2xl p-4" style={{ borderCurve: 'continuous' }}>
           <Text className="text-xs text-muted-foreground leading-5">

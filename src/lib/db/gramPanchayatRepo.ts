@@ -1,3 +1,4 @@
+import { sqlIdent } from './sqlIdent';
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 
 export interface GramPanchayat {
@@ -47,7 +48,7 @@ export async function updateGramPanchayat(id: string, input: Partial<GramPanchay
   const db = await getDatabase();
   const now = nowTimestamp();
   const fields = Object.entries(input)
-    .map(([k]) => `${k} = ?`)
+    .map(([k]) => `${sqlIdent(k)} = ?`)
     .join(', ');
   const values = [...Object.values(input), now, id];
   await db.runAsync(

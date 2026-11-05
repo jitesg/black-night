@@ -1,3 +1,4 @@
+import { sqlIdent } from './sqlIdent';
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 
 export interface Hamlet {
@@ -43,7 +44,7 @@ export async function createHamlet(input: HamletInput): Promise<Hamlet> {
 export async function updateHamlet(id: string, input: Partial<HamletInput>): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
-  const fields = Object.entries(input).map(([k]) => `${k} = ?`).join(', ');
+  const fields = Object.entries(input).map(([k]) => `${sqlIdent(k)} = ?`).join(', ');
   const values = [...Object.values(input), now, id];
   await db.runAsync(`UPDATE hamlets SET ${fields}, updated_at = ? WHERE id = ?`, values);
 }

@@ -1,3 +1,4 @@
+import { sqlIdent } from './sqlIdent';
 import { getDatabase, generateUUID, nowTimestamp } from './database';
 
 export interface LiquorShop {
@@ -63,7 +64,7 @@ export async function createShop(input: LiquorShopInput): Promise<LiquorShop> {
 export async function updateShop(id: string, input: Partial<LiquorShopInput>): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
-  const fields = Object.entries(input).map(([k]) => `${k} = ?`).join(', ');
+  const fields = Object.entries(input).map(([k]) => `${sqlIdent(k)} = ?`).join(', ');
   await db.runAsync(`UPDATE liquor_shops SET ${fields}, updated_at = ? WHERE id = ?`, [...Object.values(input), now, id]);
 }
 
