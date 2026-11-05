@@ -257,6 +257,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   notifNkChalani; resync from repo create/delete/tick + syncAppNotifications).
   Card look = the home dashboard tiles (owner): THEME card surface, no border (red ring only when selected), `shadow-sm shadow-black/5`,
   radius 16, padding 16; village 20px bold green #16A34A, type amber #D97706, dispute red, muted labels = mutedForeground, teal tinted badge.
+  Search / Filter = design C (owner; same in हल्का): shared `components/common/FilterSheet.tsx` — `FilterSearchButton` (⚙︎ as SearchBar
+  `trailing`, count badge), `ActiveFilterChips` (accent chips with ✕), `FilterSheet` (bottom sheet, one choice per group + सभी, सब हटाएँ /
+  लागू करें (n)); THEME colours, accent = module colour (NK #DC2626, हल्का #0F766E). NK groups: प्रकार (DB query as before), तारीख आज/इस
+  हफ़्ते/इस महीने + स्थिति चलानी लंबित/चेकलिस्ट अधूरी/पूरी (client side, `src/lib/nirodhatmak/nkFilter.ts`, tests `scripts/test_nk_filter.ts`);
+  NK search box no longer collapsible. हल्का search (`halka/search.tsx`): प्रकार (6 types) filters the results (old quick chips that typed
+  the type name removed); हल्का lists (`halka/analytics`): ग्राम पंचायत + प्रकार (badge) groups built from the rows.
   Card ⋮ = small floating popup (Modal at the button, opens upwards near the bottom) संपादित/Word/हटाएं; press-and-hold = selection mode (header: सभी चुनें, batch Word export via
   `exportKaryvahisDocx` — one file, each report on a new page — and batch delete); back clears the selection.
 - AI Copilot: no floating button any more. 🤖 header button — `CopilotHeaderBtn` auto-added by `AppHeader` on main

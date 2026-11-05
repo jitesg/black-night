@@ -9,6 +9,7 @@ import {
   BookOpen, Home, User, Church, Building2, ShoppingBag, Search, Clock, X,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import { HighlightText } from '@/components/HighlightText';
 import { scoredFuzzyMatch } from '@/lib/searchUtils';
 import {
@@ -18,6 +19,9 @@ import {
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
+
+/** हल्का module colour (home MC.Halka) — accent of the design-C filter UI (same as the हल्का lists). */
+const HALKA_ACCENT = '#0F766E';
 
 const TYPE_CONFIG: Record<
   SearchResult['type'],
@@ -90,6 +94,9 @@ export default function SearchScreen() {
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
+  // Design C (owner): ⚙︎ in the search box → प्रकार filter sheet; chosen filter as a chip.
+  const [filterValues, setFilterValues] = useState<FilterValues>({});
+  const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
@@ -189,8 +196,15 @@ export default function SearchScreen() {
     if (autoRef.current) clearTimeout(autoRef.current);
   };
 
+  const filterGroups = useMemo<FilterGroupDef[]>(() => [{
+    key: 'type', label: t('filter.type', 'प्रकार'),
+    options: Object.entries(TYPE_CONFIG).map(([type, cfg]) => ({ value: type, label: t(cfg.labelKey) })),
+  }], [t]);
+  const shownResults = filterValues.type ? results.filter((r) => r.type === filterValues.type) : results;
+  const previewCount = useCallback((f: FilterValues) => (f.type ? results.filter((r) => r.type === f.type).length : results.length), [results]);
+
   // Group results by type
-  const grouped = results.reduce<Record<string, SearchResult[]>>((acc, r) => {
+  const grouped = shownResults.reduce<Record<string, SearchResult[]>>((acc, r) => {
     const key = t(TYPE_CONFIG[r.type].labelKey);
     if (!acc[key]) acc[key] = [];
     acc[key].push(r);
@@ -252,26 +266,31 @@ export default function SearchScreen() {
           autoFocus
           returnKeyType="search"
           accessibilityLabel={t('halka.search.accessibilityLabel')}
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => { Keyboard.dismiss(); setShowFilters(true); }} accent={HALKA_ACCENT} />}
         />
 
-        {/* Quick filter chips */}
-        <View className="flex-row flex-wrap gap-2 mt-3">
-          {Object.entries(TYPE_CONFIG).map(([type, cfg]) => {
-            const Icon = cfg.icon;
-            const label = t(cfg.labelKey);
-            return (
-              <Pressable
-                key={type}
-                onPress={() => { setQuery(label); runSearch(label); Keyboard.dismiss(); }}
-                className="flex-row items-center gap-1.5 rounded-full border border-border bg-card active:opacity-70 px-3 py-1.5"
-              >
-                <Icon size={12} color={cfg.color} />
-                <Text textBreakStrategy="simple" className="text-xs text-foreground">{label}</Text>
-              </Pressable>
-            );
-          })}
+        {/* Chosen filter (design C) */}
+        {activeFilterCount(filterValues) > 0 ? (
+        <View className="mt-3">
+          <ActiveFilterChips
+            groups={filterGroups}
+            values={filterValues}
+            onRemove={(k) => setFilterValues((v) => ({ ...v, [k]: null }))}
+            accent={HALKA_ACCENT}
+          />
         </View>
+        ) : null}
       </View>
+
+      <FilterSheet
+        visible={showFilters}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={setFilterValues}
+        onClose={() => setShowFilters(false)}
+        accent={HALKA_ACCENT}
+        previewCount={searched ? previewCount : undefined}
+      />
 
       {/* Autocomplete dropdown */}
       {autoSuggestions.length > 0 && (
@@ -374,7 +393,7 @@ export default function SearchScreen() {
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#2D52B8" />
         </View>
-      ) : searched && results.length === 0 ? (
+      ) : searched && shownResults.length === 0 ? (
         <View className="flex-1 items-center justify-center px-8 gap-3">
           <View className="w-14 h-14 rounded-2xl bg-secondary items-center justify-center">
             <Search size={24} color="#9CA3AF" />
@@ -404,7 +423,7 @@ export default function SearchScreen() {
           contentInsetAdjustmentBehavior="automatic"
           ListHeaderComponent={
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-widest py-3">
-              {t('halka.search.resultsCount', { count: results.length })}
+              {t('halka.search.resultsCount', { count: shownResults.length })}
             </Text>
           }
           renderSectionHeader={({ section: { title } }) => (

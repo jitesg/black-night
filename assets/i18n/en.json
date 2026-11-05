@@ -3160,5 +3160,12 @@
       "court": "Points of Court Scrutiny",
       "docs": "Related Documents"
     }
+  },
+  "filter": {
+    "apply": "Apply",
+    "clearAll": "Clear all",
+    "date": "Date",
+    "status": "Status",
+    "type": "Type"
   }
 }

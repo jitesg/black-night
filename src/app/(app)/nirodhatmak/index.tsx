@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, memo } from '
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import {
-  ActivityIndicator, BackHandler, Dimensions, FlatList, LayoutAnimation, Modal, Platform, Pressable, ScrollView,
+  ActivityIndicator, BackHandler, Dimensions, FlatList, LayoutAnimation, Modal, Platform, Pressable,
   Text, View,
 } from 'react-native';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
@@ -11,11 +11,13 @@ import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
-  FileWarning, Plus, Filter, ChevronDown,
+  FileWarning, Plus, ChevronDown,
   Edit2, Trash2, MapPin, Calendar, FileDown, Check, Clock, MoreVertical, CheckCheck, ChevronUp,
 } from 'lucide-react-native';
 import { exportKaryvahiDocx, exportKaryvahisDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
+import { nkMatchesFilters } from '@/lib/nirodhatmak/nkFilter';
 import { HighlightText } from '@/components/HighlightText';
 import {
   getAllNirodhatmakKaryvahi, searchNirodhatmakKaryvahi, deleteNirodhatmakKaryvahi,
@@ -34,9 +36,6 @@ import { extractKaryvahiFacts } from '@/lib/nirodhatmak/extractKaryvahi';
 const MODULE_COLOR = '#DC2626';
 
 // Chip inactive tokens — readable on bg-background in both themes
-const CHIP_INACTIVE_BG   = { light: '#F1F5F9', dark: '#334155' } as const;
-const CHIP_INACTIVE_TEXT = { light: '#475569', dark: '#CBD5E1' } as const;
-const CHIP_BORDER        = { light: '#CBD5E1', dark: '#475569' } as const;
 
 
 
@@ -361,15 +360,14 @@ export default function NirodhatmakHomeScreen() {
   const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
   const scheme = colorScheme === 'dark' ? 'dark' : 'light';
-  const chipInactiveBg   = CHIP_INACTIVE_BG[scheme];
-  const chipInactiveText = CHIP_INACTIVE_TEXT[scheme];
-  const chipBorder       = CHIP_BORDER[scheme];
   const listPaddingBottom = useListBottomPadding();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [records, setRecords] = useState<NirodhatmakKaryvahi[]>([]);
   const [query, setQuery] = useState('');
   const [activeType, setActiveType] = useState<NirodhatmakType | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  // Design C (owner): प्रकार filters in the DB query as before; तारीख / स्थिति on the loaded list.
+  const [extraFilters, setExtraFilters] = useState<{ date?: string | null; status?: string | null }>({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<NirodhatmakKaryvahi | null>(null);
@@ -443,6 +441,45 @@ export default function NirodhatmakHomeScreen() {
     loadData(query, type);
   };
 
+  // ── Filters (design C sheet) ────────────────────────────────────────────
+  const filterGroups = useMemo<FilterGroupDef[]>(() => [
+    {
+      key: 'type', label: t('filter.type', 'प्रकार'),
+      options: NIRODHATMAK_TYPES.map((v) => ({ value: v, label: NIRODHATMAK_TYPE_KEYS[v] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[v]) : v })),
+    },
+    {
+      key: 'date', label: t('filter.date', 'तारीख'),
+      options: [{ value: 'today', label: 'आज' }, { value: 'week', label: 'इस हफ़्ते' }, { value: 'month', label: 'इस महीने' }],
+    },
+    {
+      key: 'status', label: t('filter.status', 'स्थिति'),
+      options: [{ value: 'pending', label: 'चलानी लंबित' }, { value: 'incomplete', label: 'चेकलिस्ट अधूरी' }, { value: 'done', label: 'पूरी' }],
+    },
+  ], [t]);
+  const filterValues = useMemo<FilterValues>(
+    () => ({ type: activeType, date: extraFilters.date ?? null, status: extraFilters.status ?? null }),
+    [activeType, extraFilters],
+  );
+  const shownRecords = useMemo(
+    () => records.filter((r) => nkMatchesFilters(r, { date: extraFilters.date, status: extraFilters.status })),
+    [records, extraFilters],
+  );
+  // "लागू करें (n)": the type part needs a DB query, so the count is shown only when the type is unchanged.
+  const previewCount = useCallback((v: FilterValues): number => (
+    (v.type ?? null) === activeType
+      ? records.filter((r) => nkMatchesFilters(r, { date: v.date, status: v.status })).length
+      : NaN
+  ), [records, activeType]);
+  const applyFilters = (v: FilterValues) => {
+    setExtraFilters({ date: v.date ?? null, status: v.status ?? null });
+    const type = (v.type ?? null) as NirodhatmakType | null;
+    if (type !== activeType) handleTypeFilter(type);
+  };
+  const removeFilter = (key: string) => {
+    if (key === 'type') handleTypeFilter(null);
+    else setExtraFilters((f) => ({ ...f, [key]: null }));
+  };
+
   const handleBatchDelete = useCallback(async () => {
     const ids = [...selectedIds];
     for (const id of ids) {
@@ -514,9 +551,9 @@ export default function NirodhatmakHomeScreen() {
               <HeaderIconBtn
                 icon={CheckCheck}
                 onPress={() => setSelectedIds(
-                  selectedIds.size === records.length ? new Set() : new Set(records.map((r) => r.id)),
+                  selectedIds.size === shownRecords.length ? new Set() : new Set(shownRecords.map((r) => r.id)),
                 )}
-                label={selectedIds.size === records.length ? 'सभी हटाएँ (चयन)' : 'सभी चुनें'}
+                label={selectedIds.size === shownRecords.length ? 'सभी हटाएँ (चयन)' : 'सभी चुनें'}
               />
               <HeaderIconBtn icon={FileDown} onPress={handleBatchExport} label="चुनी गई कार्यवाहियाँ Word में export करें" />
               <HeaderIconBtn icon={Trash2} onPress={() => setBatchDeleteOpen(true)} label="चुनी गई कार्यवाहियाँ हटाएं" color={MODULE_COLOR} />
@@ -526,7 +563,7 @@ export default function NirodhatmakHomeScreen() {
       ) : (
         <AppHeader
           title={t('nirodhatmak.list.title')}
-          subtitle={loading ? t('common.loading') : t('nirodhatmak.list.proceedingCount', { count: records.length })}
+          subtitle={loading ? t('common.loading') : t('nirodhatmak.list.proceedingCount', { count: shownRecords.length })}
           onMenuPress={() => setDrawerOpen(true)}
           actions={
             <HeaderIconBtn
@@ -539,66 +576,28 @@ export default function NirodhatmakHomeScreen() {
         />
       )}
 
-      {/* Toolbar */}
+      {/* Toolbar — design C: ⚙︎ inside the search box, chosen filters as chips, sheet from the bottom */}
       <View className="px-4 pt-3 pb-2 gap-2 bg-background border-b border-border">
-        <View className="flex-row gap-2">
-          <SearchBar
-            value={query}
-            noResults={!loading && !!query.trim() && records.length === 0}
-            onChangeText={handleSearch}
-            placeholder={t('nirodhatmak.list.searchPlaceholder')}
-            variant="light"
-            containerStyle={{ flex: 1 }}
-            accessibilityLabel={t('nirodhatmak.list.searchAccessibility')}
-            collapsible
-          />
-          {/* Filter button: h-12 (48dp) to match SearchBar; solid themed inactive bg */}
-          <Pressable
-            onPress={() => setShowFilters(!showFilters)}
-            className="flex-row items-center gap-1.5 px-3 rounded-xl border active:opacity-70"
-            style={{
-              height: 48,
-              backgroundColor: activeType ? `${MODULE_COLOR}18` : chipInactiveBg,
-              borderColor: activeType ? MODULE_COLOR : chipBorder,
-            }}
-          >
-            <Filter size={13} color={activeType ? MODULE_COLOR : chipInactiveText} />
-            <Text className="text-xs font-semibold" style={{ color: activeType ? MODULE_COLOR : chipInactiveText }}>
-              {activeType ? (NIRODHATMAK_TYPE_KEYS[activeType] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[activeType]) : activeType) : t('common.filter')}
-            </Text>
-          </Pressable>
-        </View>
-        {showFilters && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <Pressable
-              key="all"
-              onPress={() => handleTypeFilter(null)}
-              className="mr-2 rounded-full border active:opacity-70 px-3 py-1.5"
-              style={{
-                backgroundColor: activeType === null ? MODULE_COLOR : chipInactiveBg,
-                borderColor:     activeType === null ? MODULE_COLOR : chipBorder,
-              }}
-            >
-              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: activeType === null ? '#fff' : chipInactiveText }}>{t('common.all')}</Text>
-            </Pressable>
-            {NIRODHATMAK_TYPES.map((tVal) => (
-              <Pressable
-                key={tVal}
-                onPress={() => handleTypeFilter(tVal)}
-                className="mr-2 rounded-full border active:opacity-70 px-3 py-1.5"
-                style={{
-                  backgroundColor: activeType === tVal ? MODULE_COLOR : chipInactiveBg,
-                  borderColor:     activeType === tVal ? MODULE_COLOR : chipBorder,
-                }}
-              >
-                <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: activeType === tVal ? '#fff' : chipInactiveText }}>
-                  {NIRODHATMAK_TYPE_KEYS[tVal] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[tVal]) : tVal}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        )}
+        <SearchBar
+          value={query}
+          noResults={!loading && !!query.trim() && shownRecords.length === 0}
+          onChangeText={handleSearch}
+          placeholder={t('nirodhatmak.list.searchPlaceholder')}
+          variant="light"
+          accessibilityLabel={t('nirodhatmak.list.searchAccessibility')}
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilters(true)} accent={MODULE_COLOR} />}
+        />
+        <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={removeFilter} accent={MODULE_COLOR} />
       </View>
+      <FilterSheet
+        visible={showFilters}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={applyFilters}
+        onClose={() => setShowFilters(false)}
+        accent={MODULE_COLOR}
+        previewCount={previewCount}
+      />
 
       {/* ── List ───────────────────────────────────────────────── */}
       {loading ? (
@@ -611,7 +610,7 @@ export default function NirodhatmakHomeScreen() {
           initialNumToRender={8}
           maxToRenderPerBatch={5}
           windowSize={5}
-          data={records}
+          data={shownRecords}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: listPaddingBottom }}
           contentContainerClassName="px-6 py-4 gap-3"

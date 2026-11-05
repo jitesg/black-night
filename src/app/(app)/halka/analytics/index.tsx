@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import { logger } from '@/lib/logger';
@@ -14,6 +14,8 @@ import {
   BookOpen, Rows3, Church, Building2, ShoppingBag, Users, FileWarning,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
+import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
+
 
 import { getAllGramPanchayats, type GramPanchayat } from '@/lib/db/gramPanchayatRepo';
 import { getAllHamlets, type HamletWithGP } from '@/lib/db/hamletRepo';
@@ -30,6 +32,11 @@ import {
 import { matchesQuery } from '@/lib/searchUtils';
 
 // ─── unified list item shape ───────────────────────────────────────────────
+/** हल्का module colour (home MC.Halka) — accent of the design-C filter UI. */
+const HALKA_ACCENT = '#0F766E';
+/** Lists whose badge is a real type (category / shop type / person type) — filterable as "प्रकार". */
+const TYPE_FILTER_CATEGORIES = new Set(['religiousPlaces', 'socialInstitutions', 'liquorShops', 'importantPersons']);
+
 interface ListItem {
   id: string;
   title: string;
@@ -39,6 +46,8 @@ interface ListItem {
   gpId?: string;
   personType?: string;
   extra?: string; // hamlet/majra, hs number etc.
+  /** ग्राम पंचायत name — for the design-C filter sheet. */
+  gpName?: string;
 }
 
 // ─── category config ────────────────────────────────────────────────────────
@@ -82,21 +91,21 @@ async function loadItems(category: Category): Promise<ListItem[]> {
       return rows.map((r) => ({
         id: r.id, title: r.name, subtitle: r.gp_name,
         badge: r.population ? i18n.t('halka.analytics.popBadge', { count: r.population }) : undefined,
-        badgeColor: '#7C3AED', gpId: r.gp_id,
+        badgeColor: '#7C3AED', gpId: r.gp_id, gpName: r.gp_name,
       }));
     }
     case 'religiousPlaces': {
       const rows: ReligiousPlaceWithGP[] = await getAllReligiousPlaces();
       return rows.map((r) => ({
         id: r.id, title: r.name, subtitle: r.gp_name,
-        badge: r.category, badgeColor: '#D97706', gpId: r.gp_id,
+        badge: r.category, badgeColor: '#D97706', gpId: r.gp_id, gpName: r.gp_name,
       }));
     }
     case 'socialInstitutions': {
       const rows: SocialInstitutionWithGP[] = await getAllInstitutions();
       return rows.map((r) => ({
         id: r.id, title: r.name, subtitle: r.gp_name,
-        badge: r.category, badgeColor: '#059669', gpId: r.gp_id,
+        badge: r.category, badgeColor: '#059669', gpId: r.gp_id, gpName: r.gp_name,
       }));
     }
     case 'liquorShops': {
@@ -104,7 +113,7 @@ async function loadItems(category: Category): Promise<ListItem[]> {
       return rows.map((r) => ({
         id: r.id, title: r.shop_name,
         subtitle: `${r.owner_name} · ${r.gp_name}`,
-        badge: r.shop_type, badgeColor: '#DC2626', gpId: r.gp_id,
+        badge: r.shop_type, badgeColor: '#DC2626', gpId: r.gp_id, gpName: r.gp_name,
       }));
     }
     case 'importantPersons': {
@@ -112,7 +121,7 @@ async function loadItems(category: Category): Promise<ListItem[]> {
       return rows.map((r) => ({
         id: r.id, title: r.name, subtitle: r.gp_name,
         badge: r.person_type.replace(/_/g, ' '), badgeColor: '#0891B2',
-        gpId: r.gp_id, personType: r.person_type,
+        gpId: r.gp_id, personType: r.person_type, gpName: r.gp_name,
       }));
     }
     case 'historySheeters': {
@@ -123,6 +132,7 @@ async function loadItems(category: Category): Promise<ListItem[]> {
         badge: r.category ? `HS# ${r.category}` : undefined,
         badgeColor: '#B91C1C',
         gpId: r.gp_id,
+        gpName: r.gp_name,
         personType: r.person_type,
         extra: r.designation ?? undefined,
       }));
@@ -205,6 +215,8 @@ export default function AnalyticsListScreen() {
 
   const [allItems, setAllItems] = useState<ListItem[]>([]);
   const [query, setQuery] = useState('');
+  const [filterValues, setFilterValues] = useState<FilterValues>({});
+  const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -270,9 +282,23 @@ export default function AnalyticsListScreen() {
   };
 
   // ── filtered list ─────────────────────────────────────────────────────────
-  const filtered = query.trim()
-    ? allItems.filter((i) => matchesQuery(query, i.title, i.subtitle, i.badge, i.extra))
-    : allItems;
+  // ── design C filters: ग्राम पंचायत + प्रकार (badge), built from the loaded rows ──
+  const filterGroups = useMemo<FilterGroupDef[]>(() => {
+    const uniq = (xs: (string | undefined)[]) => Array.from(new Set(xs.filter((x): x is string => !!x && !!x.trim()))).sort((a, b) => a.localeCompare(b));
+    const groups: FilterGroupDef[] = [];
+    const gps = uniq(allItems.map((i) => i.gpName));
+    if (gps.length > 1) groups.push({ key: 'gp', label: t('halka.types.gramPanchayat', 'ग्राम पंचायत'), options: gps.map((g) => ({ value: g, label: g })) });
+    const types = TYPE_FILTER_CATEGORIES.has(cat) ? uniq(allItems.map((i) => i.badge)) : [];
+    if (types.length > 1) groups.push({ key: 'type', label: t('filter.type', 'प्रकार'), options: types.map((v) => ({ value: v, label: v })) });
+    return groups;
+  }, [allItems, cat, t]);
+  const passes = useCallback((i: ListItem, f: FilterValues) =>
+    (!f.gp || i.gpName === f.gp) && (!f.type || i.badge === f.type), []);
+  const filtered = allItems.filter((i) =>
+    passes(i, filterValues) && (!query.trim() || matchesQuery(query, i.title, i.subtitle, i.badge, i.extra)));
+  const previewCount = useCallback((f: FilterValues) =>
+    allItems.filter((i) => passes(i, f) && (!query.trim() || matchesQuery(query, i.title, i.subtitle, i.badge, i.extra))).length,
+  [allItems, passes, query]);
 
   // ── row tap → view/edit ───────────────────────────────────────────────────
   const handleRowPress = (item: ListItem) => {
@@ -313,8 +339,26 @@ export default function AnalyticsListScreen() {
           placeholder={t('halka.analytics.searchPlaceholder', { title: title.toLowerCase() })}
           variant="navy"
           accessibilityLabel={t('halka.analytics.searchAccessibility', { title })}
+          trailing={filterGroups.length > 0
+            ? <FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilters(true)} accent={HALKA_ACCENT} />
+            : undefined}
+        />
+        <ActiveFilterChips
+          groups={filterGroups}
+          values={filterValues}
+          onRemove={(k) => setFilterValues((v) => ({ ...v, [k]: null }))}
+          accent={HALKA_ACCENT}
         />
       </View>
+      <FilterSheet
+        visible={showFilters}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={setFilterValues}
+        onClose={() => setShowFilters(false)}
+        accent={HALKA_ACCENT}
+        previewCount={previewCount}
+      />
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
