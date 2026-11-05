@@ -5,6 +5,7 @@
  * expose real query timing via PRAGMA. A real APM would need a custom
  * instrumentation layer. This screen provides a live-updating dashboard.
  */
+import { RealPerfCard } from '@/components/settings/RealPerfCard';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -113,6 +114,7 @@ export default function PerformanceScreen() {
       />
 
       <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 40 }}>
+        <RealPerfCard />
         <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Rendering</Text>
         <View className="flex-row flex-wrap gap-3">
           <MetricCard label="Render Time" value={perf.renderTime} unit="ms" warn={20} bad={50} icon={Cpu} />

@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { newDiaryDefaultDate } from '@/lib/caseDiaryTime';
 import { getFIRById } from '@/lib/db/firRepo';
 import { logger } from '@/lib/logger';
@@ -1000,7 +1001,7 @@ function DiaryView({
 }
 
 // ── Main Tab ──────────────────────────────────────────────────────────────────
-export default function KaryvahiTab() {
+function KaryvahiTab() {
   const params = useLocalSearchParams<{ firId: string }>();
   const { activeFirId } = useFIRContext();
   const { t } = useTranslation();
@@ -1505,5 +1506,14 @@ export default function KaryvahiTab() {
         onClose={() => setDiarySheetItem(null)}
       />
     </View>
+  );
+}
+
+// One bad row / sidecar field must not take the whole app down (optimisation pass): this screen gets its own boundary.
+export default function KaryvahiTabWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <KaryvahiTab />
+    </ErrorBoundary>
   );
 }

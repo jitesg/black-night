@@ -31,6 +31,7 @@ import { loadNoticeCards } from '@/lib/db/noticeRepo';
 import { noticeBadgeCount } from '@/lib/noticeCards';
 import { reportRecordCounts } from '@/lib/db/reportRecordRepo';
 import { warmKnowledgeSearch } from '@/lib/db/knowledgeRepo';
+import { perfMarkOnce, perfSet } from '@/lib/perfLog';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
@@ -370,6 +371,7 @@ export default function HomeScreen() {
   }, []));
 
   const searchSeqRef = useRef(0);
+  useEffect(() => { perfMarkOnce('firstScreenMs'); }, []);
   // Prepare the knowledge search once, a little after the dashboard opens (first search is then quick).
   useEffect(() => {
     const id = setTimeout(() => { warmKnowledgeSearch().catch(() => {}); }, 2500);
@@ -385,7 +387,9 @@ export default function HomeScreen() {
     searchTimerRef.current = setTimeout(async () => {
       setSearchLoading(true);
       try {
+        const t0 = Date.now();
         const results = await universalSearch(text);
+        perfSet('lastSearchMs', Date.now() - t0);
         // A slower, older search must not overwrite the newer one (list jumped while typing fast).
         if (seq === searchSeqRef.current) setSearchResults(results);
       } finally {

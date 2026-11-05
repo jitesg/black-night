@@ -330,6 +330,15 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Word: `caseDiaryParchaDocx.ts` (Kokila 18pt, justified, single spacing, 1 inch margins, all diaries in one flow); data via
   `loadParchaParas(firId, diaryId?)` in caseDiaryExport.ts. A4 button in view-case-diary → `CaseDiaryA4Preview` with `parchaHtml` (31px lines,
   sheets cut on line boundaries, "पृष्ठ n / N").
+- Optimisation pass (owner, no behaviour change): 30 unreferenced files removed (unused rn-reusables `components/ui/*` like card/dialog/
+  select/tabs…, ModuleHeader, ScreenHeader, ctx.tsx, formatColors, assertUniqueKeys, withRepoLogger, ConversationMemoryEngine) +
+  186 unused import bindings (bundle module list checked identical via source map). Kept on purpose: `*Types.ts` (type-only), the
+  @rn-primitives / react-native-ui-datepicker / @sentry/react-native deps (pnpm remove re-resolved other versions — needs a separate
+  validated build). Indexes knowledge_entries(content_type, source). `src/lib/db/sqlIdent.ts` guards dynamic UPDATE column names
+  (हल्का repos); `src/lib/webviewSafety.ts` (`onlyLocalWebViewNav`) on the print / A4 WebViews. Settings → सुरक्षा → "सुरक्षा जाँच"
+  (`components/settings/SecurityCheckCard.tsx`, read-only). Per-screen ErrorBoundary on the 3 FIR tabs + knowledge note viewer
+  (`<Name>WithBoundary` default exports). `src/lib/perfLog.ts` (first import in index.ts) → Dev options → Performance "Measured (real)"
+  (`components/settings/RealPerfCard.tsx`: first screen ms, seed ms, last search ms, DB size, rows by content_type).
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
 ## SOP library

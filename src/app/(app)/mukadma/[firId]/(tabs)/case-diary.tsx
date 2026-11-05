@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { logger } from '@/lib/logger';
 import { View, Text, FlatList, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { T } from '@/lib/typography';
@@ -143,7 +144,7 @@ function DiaryCard({
 
 // ─── Main Tab Screen ──────────────────────────────────────────────────────────
 
-export default function CaseDiaryTab() {
+function CaseDiaryTab() {
   const fabBottom = 24; // root view already sits above the navigation bar
   const params = useLocalSearchParams<{ firId: string }>();
   const { activeFirId } = useFIRContext();
@@ -382,5 +383,14 @@ export default function CaseDiaryTab() {
         </AlertDialogContent>
       </AlertDialog>
     </View>
+  );
+}
+
+// One bad row / sidecar field must not take the whole app down (optimisation pass): this screen gets its own boundary.
+export default function CaseDiaryTabWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <CaseDiaryTab />
+    </ErrorBoundary>
   );
 }

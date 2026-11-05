@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { crimeTypeLabel } from '@/lib/db/checklistRepo';
 import { logger } from '@/lib/logger';
 import {
@@ -173,7 +174,7 @@ function AccusedRow({
   );
 }
 
-export default function FIRDetailsTab() {
+function FIRDetailsTab() {
   const params = useLocalSearchParams<{ firId: string }>();
   const { activeFirId } = useFIRContext();
   const { t } = useTranslation();
@@ -852,5 +853,14 @@ export default function FIRDetailsTab() {
         </Pressable>
       </Modal>
     </KeyboardAvoidingView>
+  );
+}
+
+// One bad row / sidecar field must not take the whole app down (optimisation pass): this screen gets its own boundary.
+export default function FIRDetailsTabWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <FIRDetailsTab />
+    </ErrorBoundary>
   );
 }

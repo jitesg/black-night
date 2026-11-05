@@ -1,4 +1,5 @@
 import React, { Component, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { logger } from '@/lib/logger';
 import {
   ActivityIndicator, Alert, Pressable, ScrollView, Share, Text, TextInput, View,
@@ -2446,7 +2447,7 @@ export function DefaultDetail({ entry }: { entry: KnowledgeEntry }) {
 // ═════════════════════════════════════════════════════════════════════════════
 // 5. Main Knowledge Detail Screen (<KnowledgeDetailScreen />)
 // ═════════════════════════════════════════════════════════════════════════════
-export default function KnowledgeDetailScreen() {
+function KnowledgeDetailScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { knowledgeId, tab: routeTab, caseId: routeCaseId } = useLocalSearchParams<{
@@ -2580,5 +2581,14 @@ export default function KnowledgeDetailScreen() {
       key={entry.id}
       entry={entry}
     />
+  );
+}
+
+// One bad row / sidecar field must not take the whole app down (optimisation pass): this screen gets its own boundary.
+export default function KnowledgeDetailScreenWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <KnowledgeDetailScreen />
+    </ErrorBoundary>
   );
 }

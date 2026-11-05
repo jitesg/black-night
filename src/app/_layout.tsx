@@ -2,6 +2,7 @@
 // Install console interceptor FIRST — must precede all other imports so that
 // any console.log/warn/error emitted during module initialisation is captured.
 // This is a side-effect-only import; the module overrides console.* globally.
+import { perfSet } from '@/lib/perfLog';
 import '@/lib/debugLogStore';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, type AppStateStatus, View, StyleSheet, Platform } from 'react-native';
@@ -459,6 +460,7 @@ export default function RootLayout() {
         AppLogger.sync('System Content Update', {
           added: result.added, updated: result.updated, skipped: result.skipped,
         });
+        perfSet('seedMs', Date.now() - t1);
         console.info(
           `[AppStart] seedSystemContent complete in ${Date.now() - t1}ms — ` +
           `Added: ${result.added}, Updated: ${result.updated}, Skipped: ${result.skipped}`
