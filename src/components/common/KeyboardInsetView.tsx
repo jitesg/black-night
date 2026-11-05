@@ -20,6 +20,22 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 
+// A full-screen editor Modal handles the keyboard itself. While it is open the screen underneath must
+// not re-pad on every keyboard change: that re-laid out the whole (hidden) FIR screen at the same moment
+// as the editor, and the editor flickered when the keyboard opened / closed (owner).
+let suspendCount = 0;
+const resumeListeners = new Set<() => void>();
+export function suspendKeyboardInset(): () => void {
+  suspendCount += 1;
+  let done = false;
+  return () => {
+    if (done) return;
+    done = true;
+    suspendCount = Math.max(0, suspendCount - 1);
+    if (suspendCount === 0) resumeListeners.forEach((f) => f());
+  };
+}
+
 export function KeyboardInsetView({ children }: { children: ReactNode }) {
   const insets = useSafeAreaInsets();
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -27,12 +43,17 @@ export function KeyboardInsetView({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (Platform.OS !== 'android') return;
     const show = Keyboard.addListener('keyboardDidShow', (e) => {
+      if (suspendCount > 0) return;
       setKeyboardHeight(e.endCoordinates?.height ?? 0);
     });
     const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardHeight(0));
+    // Back from a Modal: the keyboard is closed by then (or was the Modal's) — start clean.
+    const resume = () => setKeyboardHeight(Keyboard.isVisible() ? (Keyboard.metrics()?.height ?? 0) : 0);
+    resumeListeners.add(resume);
     return () => {
       show.remove();
       hide.remove();
+      resumeListeners.delete(resume);
     };
   }, []);
 

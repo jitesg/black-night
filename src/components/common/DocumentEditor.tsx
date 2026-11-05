@@ -64,6 +64,32 @@ import { incrementUsage } from '@/lib/db/phraseLibraryRepo';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useTranslation } from 'react-i18next';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
+import { suspendKeyboardInset } from './KeyboardInsetView';
+
+/**
+ * Keyboard room for the full-screen editor on Android (owner: it flickered when the keyboard opened / closed).
+ * KeyboardAvoidingView re-measured on every keyboard event — the keyboard's suggestion strip coming and going
+ * fires them while typing — and each resize of the WebView flashes it. Here the editor is resized only when the
+ * keyboard opens or closes (and once more if it grows, e.g. its suggestion strip appears), never shrinks while
+ * open. The screen underneath stops reacting to the keyboard meanwhile.
+ */
+function useEditorKeyboardPadding(visible: boolean): number {
+  const [kb, setKb] = useState(0);
+  const kbRef = useRef(0);
+  useEffect(() => {
+    if (process.env.EXPO_OS !== 'android' || !visible) return;
+    const resume = suspendKeyboardInset();
+    const set = (h: number) => { kbRef.current = h; setKb(h); };
+    const show = Keyboard.addListener('keyboardDidShow', (e) => {
+      // grow only: the suggestion strip hiding again must not shrink-and-regrow the editor on every word
+      const h = Math.round(e.endCoordinates?.height ?? 0);
+      if (h > kbRef.current) set(h);
+    });
+    const hide = Keyboard.addListener('keyboardDidHide', () => set(0));
+    return () => { show.remove(); hide.remove(); set(0); resume(); };
+  }, [visible]);
+  return kb;
+}
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const NAVY   = '#1E3A5F';
@@ -424,6 +450,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
   const colors = THEME[colorScheme ?? 'light'];
   // keyboardVerticalOffset = status-bar inset + fixed header height (56 px)
   const HEADER_HEIGHT = insets.top + 56;
+  const keyboardPad = useEditorKeyboardPadding(visible);
 
   // ── pell-rich-editor ref ─────────────────────────────────────────────────
   const editorRef = useRef<RichEditor>(null);
@@ -685,9 +712,11 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
         onRequestClose={isWeb ? handleWebSave : onClose}
       >
         <KeyboardAvoidingView
-          behavior={process.env.EXPO_OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={process.env.EXPO_OS === 'ios' ? HEADER_HEIGHT : 0}
-          style={{ flex: 1, backgroundColor: colors.card, paddingBottom: NAV_BAR_INSET }}
+          // Android: no KeyboardAvoidingView resizing (it flickered) — padding from useEditorKeyboardPadding
+          enabled={process.env.EXPO_OS === 'ios'}
+          behavior="padding"
+          keyboardVerticalOffset={HEADER_HEIGHT}
+          style={{ flex: 1, backgroundColor: colors.card, paddingBottom: NAV_BAR_INSET + keyboardPad }}
         >
           {/* ── Header ── */}
           <View style={{

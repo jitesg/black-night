@@ -274,6 +274,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `color: selected ? ACCENT : undefined` (fixed: crime-type + rank pickers in add-fir, karyvahi picker in add-case-diary-karyvahi,
   न्यायालय checklists, sys-format menu, प्रार्थना पत्र report rows + editor); light header strips → `bg-secondary`. view-case-diary
   actions (संपादित / Edit Entries / A4 / Export) sit in a wrapping row under the header (in the header they ran off-screen).
+- Full-screen editor (DocumentEditor FullScreenModal) keyboard: on Android NO KeyboardAvoidingView resizing (it flickered when the keyboard
+  opened / closed — owner) — `useEditorKeyboardPadding` pads by the keyboard height (grow-only while open, 0 on hide) and
+  `suspendKeyboardInset()` stops the root KeyboardInsetView re-padding the hidden screen underneath while the editor is open. iOS keeps KAV.
 - Pressable `style={({ pressed }) => …}` (function form) was ignored on the phone (सूचनाएँ card lost background, border and
   row layout, build 24) — use a plain style object (pressed look via onPressIn/onPressOut state) in new code.
 - ✕ / 📋 in name, father / husband name and address boxes (owner): `useClearCopy` (`components/common/ClearCopyTools.tsx`; icons only
