@@ -1716,6 +1716,8 @@ async function _ensureIndexes(database: SQLite.SQLiteDatabase): Promise<void> {
     // Knowledge — filter by category
     `CREATE INDEX IF NOT EXISTS idx_knowledge_category ON knowledge_entries(category)`,
     `CREATE INDEX IF NOT EXISTS idx_knowledge_deleted ON knowledge_entries(deleted_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_knowledge_content_type ON knowledge_entries(content_type)`,
+    `CREATE INDEX IF NOT EXISTS idx_knowledge_source ON knowledge_entries(source)`,
     // Halka — GP / person lookups
     `CREATE INDEX IF NOT EXISTS idx_hamlets_gp_id ON hamlets(gp_id)`,
     `CREATE INDEX IF NOT EXISTS idx_persons_gp_id ON persons(gp_id)`,
