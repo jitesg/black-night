@@ -392,9 +392,23 @@ async function knowledgeSearchSignature(): Promise<string> {
   const hidden = await getHiddenSystemKnowledgeIds();
   return `${r?.c ?? 0}|${r?.m ?? 0}|${r?.l ?? 0}|${r?.d ?? 0}|${hidden.size}|${[...hidden].sort().join(',').length}`;
 }
+// Quick "did anything at all change?" check before the full signature (owner: speed): SQLite's
+// total_changes() (writes on this connection, any table) + data_version (writes by another connection).
+// Same → nothing was written since the last check, so the copy is still right and the full scan is skipped.
+let _lastChangeKey = '';
+async function knowledgeChangeKey(): Promise<string> {
+  const db = await getDatabase();
+  const r = await db.getFirstAsync<{ t: number }>(`SELECT total_changes() AS t`);
+  const v = await db.getFirstAsync<{ data_version: number }>(`PRAGMA data_version`);
+  return `${r?.t ?? ''}|${v?.data_version ?? ''}`;
+}
 export async function getKnowledgeListForSearch(): Promise<KnowledgeEntry[]> {
+  let changeKey = '';
+  try { changeKey = await knowledgeChangeKey(); } catch { changeKey = ''; }
+  if (changeKey && _searchList && changeKey === _lastChangeKey) return _searchList.rows;
   let sig = '';
   try { sig = await knowledgeSearchSignature(); } catch { return getMergedKnowledgeList(); }
+  _lastChangeKey = changeKey;
   if (_searchList && _searchList.sig === sig) return _searchList.rows;
   if (_searchListLoading) return _searchListLoading;
   _searchListLoading = getMergedKnowledgeList()
@@ -404,8 +418,9 @@ export async function getKnowledgeListForSearch(): Promise<KnowledgeEntry[]> {
 }
 
 /**
- * Prepare search after app start (owner): load the list and normalise every entry in small batches
- * while the officer is not typing, so even the first search is quick. Safe to call more than once.
+ * Prepare search (owner): load the list and normalise every entry in small batches so the first search
+ * is quick. Called when a search box is first touched (not at app start — that slowed the phone), and
+ * without Hinglish sound keys (built only when an English-letter word is searched). Safe to call more than once.
  */
 let _warmed = false;
 export async function warmKnowledgeSearch(): Promise<void> {
@@ -413,11 +428,8 @@ export async function warmKnowledgeSearch(): Promise<void> {
   _warmed = true;
   try {
     const [items, notesMap] = await Promise.all([getKnowledgeListForSearch(), getAllKnowledgeNotesMap()]);
-    for (let i = 0; i < items.length; i += 40) {
-      for (const r of items.slice(i, i + 40)) {
-        const c = knowledgeEntryCache(r, notesMap.get(r.id) ?? '');
-        c.sound ??= soundHayOf(c.hay); // English-letter (Hinglish) searches are quick from the first try too
-      }
+    for (let i = 0; i < items.length; i += 10) {
+      for (const r of items.slice(i, i + 10)) knowledgeEntryCache(r, notesMap.get(r.id) ?? '');
       await new Promise((res) => setTimeout(res, 0)); // let taps / typing through between batches
     }
   } catch (err) {

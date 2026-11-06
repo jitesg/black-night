@@ -71,8 +71,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   न्यायालय reports, प्रार्थना पत्र आख्या + कार्यवाही.
 - Search speed (owner): `matchNormalized` builds Hinglish sound keys only for English-letter words (Hindi queries were paying ~400 ms
   for them); knowledge search reads `getKnowledgeListForSearch()` (in-memory copy, re-read only when a cheap signature — row count,
-  max updated_at, searched-text length, hidden ids — changes; never sort it in place); `warmKnowledgeSearch()` (home, 2.5 s after open)
-  normalises + sound-keys every entry in batches of 40; home `universalSearch` ignores stale results (`searchSeqRef`); indexes
+  max updated_at, searched-text length, hidden ids — changes; skipped while SQLite `total_changes()` + `PRAGMA data_version` are unchanged;
+  never sort it in place); `warmKnowledgeSearch()` runs on the first focus of the home / ज्ञानकोष search box (NOT at app start — that made the
+  phone slow, owner) and only normalises (no sound keys), batches of 10; home `universalSearch` ignores stale results (`searchSeqRef`); indexes
   fir_accused(fir_id), case_diary_karyvahi(diary_id) in `_ensureIndexes`.
 - Knowledge search = `src/lib/knowledgeSearchAll.ts` (`searchAllKnowledge`): knowledge entries + BNS/BNSS/BSA sections
   (`searchLaw`, section-like queries first) + फर्द + checklists + BNS संदर्भ rows; used by knowledge index and home.

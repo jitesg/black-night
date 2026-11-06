@@ -372,11 +372,6 @@ export default function HomeScreen() {
 
   const searchSeqRef = useRef(0);
   useEffect(() => { perfMarkOnce('firstScreenMs'); }, []);
-  // Prepare the knowledge search once, a little after the dashboard opens (first search is then quick).
-  useEffect(() => {
-    const id = setTimeout(() => { warmKnowledgeSearch().catch(() => {}); }, 2500);
-    return () => clearTimeout(id);
-  }, []);
 
   const handleSearchChange = useCallback((text: string) => {
     setSearchQuery(text);
@@ -481,6 +476,7 @@ export default function HomeScreen() {
           value={searchQuery}
           noResults={!searchLoading && !!searchQuery.trim() && searchResults.length === 0}
           onChangeText={handleSearchChange}
+          onFocus={() => { warmKnowledgeSearch().catch(() => {}); }}
           placeholder={t('home.searchPlaceholder')}
           variant="light"
         />

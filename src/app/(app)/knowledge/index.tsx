@@ -15,7 +15,7 @@ import { AppDrawer } from '@/components/common/AppDrawer';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
 import {
-  getKnowledgeAnalytics,
+  getKnowledgeAnalytics, warmKnowledgeSearch,
   type KnowledgeAnalytics, type KnowledgeEntry,
 } from '@/lib/db/knowledgeRepo';
 import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
@@ -311,6 +311,7 @@ export default function KnowledgeHomeScreen() {
           noResults={!searching && !!query.trim() && searchResults.length === 0}
           onChangeText={handleSearch}
           onSubmitEditing={handleSearchSubmit}
+          onFocus={() => { warmKnowledgeSearch().catch(() => {}); }}
           placeholder={t('knowledge.searchPlaceholder')}
           variant="light"
           returnKeyType="search"
