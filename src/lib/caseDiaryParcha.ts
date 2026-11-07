@@ -49,6 +49,13 @@ export function textParas(raw: string | null | undefined): string[] {
 
 const line = (...runs: ParchaRun[]): ParchaPara => ({ runs });
 
+/** The opening line old diaries got as their first entry (exact app wording; an edited line is kept). */
+export function isAutoOpening(s: string): boolean {
+  const x = s.replace(/\s+/g, ' ').trim();
+  return x === 'श्रीमान जी मुकदमा उपरोक्त थाना स्थानीय पर पंजीकृत होकर विवेचना हस्वादेश प्रभारी निरीक्षक महोदय के मुझ उपनिरीक्षक को सुपुर्द हुई है। थाना कार्यालय से नकल चिक, नकल रपट प्राप्त हुई है । विवेचना ग्रहण कर मशरूफ विवेचना हुआ। प्राप्त प्रपत्रो का अवलोकन किया जा रहा है।'
+    || /^श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 \d+ दिनांक .+? को किता कर सेवा मे प्रेषित किया जा चुका है। आज मै विवेचक दीगर कार्यसरकार से फुरसत पाकर मुकदमा उपरोक्त की विवेचना मे मशरूफ हुआ।$/.test(x);
+}
+
 /** One पर्चा as paragraphs. `saransh` = the FIR's मुकदमा सारांश box (same for every पर्चा; empty → no सारांश line). */
 export function buildParcha(p: ParchaInput, saransh: string): ParchaPara[] {
   const out: ParchaPara[] = [];
@@ -75,6 +82,8 @@ export function buildParcha(p: ParchaInput, saransh: string): ParchaPara[] {
     if (!paras.length) continue;
     // Old diaries got an automatic "मुकदमा सारांश:" note as their first entry — the सारांश is printed above already.
     if (!isK && /^मुकदमा\s*सारांश\s*:/.test(paras[0])) continue;
+    // …and the automatic opening line (the पर्चा writes its own) — only when left exactly as the app wrote it.
+    if (!isK && paras.length === 1 && isAutoOpening(paras[0])) continue;
     paras.forEach((para, i) => {
       const pp = i === 0 && label && isK ? line({ text: `${label}.......... `, red: true }, { text: para }) : line({ text: para });
       if (i === 0 && shown > 0) (pp as { gapBefore?: number }).gapBefore = 1.5; // 1.5 lines between two entries (owner)

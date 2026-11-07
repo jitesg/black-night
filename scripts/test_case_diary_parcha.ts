@@ -40,3 +40,16 @@ test('1.5 line gap between entries (owner)', () => {
   const gaps = paras.filter((p) => p.gapBefore).map((p) => p.runs?.map((r) => r.text).join(''));
   assert.deepEqual(gaps, ['तीन']);
 });
+test('old automatic opening entry is not printed twice (owner)', () => {
+  const auto1 = 'श्रीमान जी मुकदमा उपरोक्त थाना स्थानीय पर पंजीकृत होकर विवेचना हस्वादेश प्रभारी निरीक्षक महोदय के मुझ उपनिरीक्षक को सुपुर्द हुई है। थाना कार्यालय से नकल चिक, नकल रपट प्राप्त हुई है । विवेचना ग्रहण कर मशरूफ विवेचना हुआ। प्राप्त प्रपत्रो का अवलोकन किया जा रहा है।';
+  const auto2 = 'श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 01 दिनांक अज्ञात तिथि को किता कर सेवा मे प्रेषित किया जा चुका है। आज मै विवेचक दीगर कार्यसरकार से फुरसत पाकर मुकदमा उपरोक्त की विवेचना मे मशरूफ हुआ।';
+  assert.equal(P.isAutoOpening(auto1), true);
+  assert.equal(P.isAutoOpening(auto2), true);
+  assert.equal(P.isAutoOpening(auto2.replace('2025-07-08', 'x').replace('अज्ञात तिथि', '2025-07-08')), true);
+  assert.equal(P.isAutoOpening(auto1 + ' मेरा जोड़ा हुआ'), false);
+  const ps = txt(P.buildParcha({ no: 1, date: '2025-07-08', places: [], entries: [
+    { entry_type: 'narrative', narrative_text: auto1 },
+    { entry_type: 'narrative', narrative_text: auto1 + ' मेरा जोड़ा हुआ' }] }, '') as never);
+  assert.equal(ps.split('थाना स्थानीय पर पंजीकृत').length, 2); // only the edited one
+  assert.match(ps, /मेरा जोड़ा हुआ/);
+});

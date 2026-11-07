@@ -29,7 +29,7 @@ import { Plus, X, ChevronDown, LayoutTemplate, Zap, AlertCircle, FileText, Check
 import {
   getCaseDiaryById, addEntry, updateEntry as updateEntryInDB, deleteEntry as deleteEntryInDB,
   getNextSequenceOrder, getEntriesByDiary,
-  getCaseDiariesByFIR, type CaseDiary,
+  type CaseDiary,
 } from '@/lib/db/caseDiaryRepo';
 import { getKaryvahiByFIR, addExecution, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
 import { getFIRById, type FIR } from '@/lib/db/firRepo';
@@ -674,14 +674,13 @@ export default function AddCaseDiaryKaryvahiScreen() {
     if (!firId || !diaryId) return;
     let isMounted = true;
     (async () => {
-      const [f, d, k, cdFmts, narFmts, existingEntries, allDiaries] = await Promise.all([
+      const [f, d, k, cdFmts, narFmts, existingEntries] = await Promise.all([
         getFIRById(firId),
         getCaseDiaryById(diaryId),
         getKaryvahiByFIR(firId),
         getPublishedFormatsByType('Case Diary'),
         getPublishedFormatsByType('Narrative'),
         getEntriesByDiary(diaryId),
-        getCaseDiariesByFIR(firId),
       ]);
       if (isMounted) {
         setDiary(d);
@@ -691,24 +690,8 @@ export default function AddCaseDiaryKaryvahiScreen() {
         setNarrativeFormats(narFmts);
 
         if (existingEntries.length === 0) {
-          // Sort oldest→newest to determine this diary's sequence number
-          const sortedDiaries = [...allDiaries].sort((a, b) => a.created_at - b.created_at);
-          const currentIndex  = sortedDiaries.findIndex((diary) => diary.id === diaryId);
-          const cdNumber      = currentIndex >= 0 ? currentIndex + 1 : 1;
-
-          let introText = '';
-          if (cdNumber === 1) {
-            introText =
-              'श्रीमान जी मुकदमा उपरोक्त थाना स्थानीय पर पंजीकृत होकर विवेचना हस्वादेश प्रभारी निरीक्षक महोदय के मुझ उपनिरीक्षक को सुपुर्द हुई है। थाना कार्यालय से नकल चिक, नकल रपट प्राप्त हुई है । विवेचना ग्रहण कर मशरूफ विवेचना हुआ। प्राप्त प्रपत्रो का अवलोकन किया जा रहा है।';
-          } else {
-            const prevDiary  = sortedDiaries[currentIndex - 1];
-            const prevCdNo   = String(currentIndex).padStart(2, '0');
-            const prevCdDate = prevDiary?.preparation_date ?? 'अज्ञात तिथि';
-            introText =
-              `श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 ${prevCdNo} दिनांक ${prevCdDate} को किता कर सेवा मे प्रेषित किया जा चुका है। आज मै विवेचक दीगर कार्यसरकार से फुरसत पाकर मुकदमा उपरोक्त की विवेचना मे मशरूफ हुआ।`;
-          }
-
-          // No "मुकदमा सारांश" entry any more: the पर्चा prints the FIR's सारांश box itself (owner).
+          // No automatic "मुकदमा सारांश" / "श्रीमान जी मुकदमा उपरोक्त…" entries any more: the पर्चा prints the
+          // FIR's सारांश box and the opening line itself (owner — they were printed twice).
 
           // If a specific karyvahi was pre-selected (from Diary tab queue), inject it
           // as the focused entry instead of the generic blank karyvahi slot.
@@ -717,15 +700,9 @@ export default function AddCaseDiaryKaryvahiScreen() {
             const preFilledKaryvahi: DiaryEntry = matched
               ? { ...mkEntry('karyvahi'), firKaryvahiId: matched.id, karyvahiName: matched.name, isExpanded: true }
               : { ...mkEntry('karyvahi'), isExpanded: true };
-            setEntries([
-              { ...mkEntry('narrative'), narrativeText: introText, isExpanded: false },
-              preFilledKaryvahi,
-            ]);
+            setEntries([preFilledKaryvahi]);
           } else {
-            setEntries([
-              { ...mkEntry('narrative'), narrativeText: introText, isExpanded: false },
-              { ...mkEntry('karyvahi'),  isExpanded: true },
-            ]);
+            setEntries([{ ...mkEntry('karyvahi'), isExpanded: true }]);
           }
         } else {
           // Load existing entries for editing — map DB rows into local DiaryEntry state
