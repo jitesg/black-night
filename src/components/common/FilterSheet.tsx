@@ -4,7 +4,7 @@
  * (one choice per group, "सभी" = off) and "सब हटाएँ" / "लागू करें (n)". Same look in every module
  * (निरोधात्मक, हल्का); colours from THEME so light and dark both work, accent = the module colour.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { SlidersHorizontal, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
@@ -18,13 +18,16 @@ export interface FilterGroupDef {
   /** A choice that is always set (e.g. sort order): no "सभी" chip, never counted / shown as a chip while it is `defaultValue`. */
   noAll?: boolean;
   defaultValue?: string;
+  /** Text of the ✕ chip when it is more than the option label (e.g. a chosen date range). */
+  chipLabel?: (values: FilterValues) => string | null;
 }
 /** group key → chosen value (null / missing = सभी). */
 export type FilterValues = Record<string, string | null | undefined>;
 
 export function activeFilterCount(values: FilterValues, groups?: FilterGroupDef[]): number {
   const def = new Map((groups ?? []).map((g) => [g.key, g.defaultValue]));
-  return Object.entries(values).filter(([k, v]) => v != null && v !== '' && v !== def.get(k)).length;
+  // With groups: only the groups' own keys count (helper values like a date range's से / तक do not).
+  return Object.entries(values).filter(([k, v]) => v != null && v !== '' && v !== def.get(k) && (!groups || def.has(k))).length;
 }
 
 function usePalette() {
@@ -78,7 +81,7 @@ export function ActiveFilterChips({
             backgroundColor: accent,
           }}
         >
-          <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: '700', color: '#FFFFFF', maxWidth: 200 }}>{opt.label}</Text>
+          <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: '700', color: '#FFFFFF', maxWidth: 220 }}>{g.chipLabel?.(values) || opt.label}</Text>
           <X size={13} color="#FFFFFF" strokeWidth={2.5} />
         </Pressable>
       ))}
@@ -88,7 +91,7 @@ export function ActiveFilterChips({
 
 /** Bottom sheet with the filter groups; changes apply only with "लागू करें". */
 export function FilterSheet({
-  visible, groups, values, onApply, onClose, accent, previewCount,
+  visible, groups, values, onApply, onClose, accent, previewCount, renderExtra,
 }: {
   visible: boolean;
   groups: FilterGroupDef[];
@@ -98,6 +101,8 @@ export function FilterSheet({
   accent: string;
   /** How many items the draft would show — for "लागू करें (n)". */
   previewCount?: (values: FilterValues) => number;
+  /** Extra controls under a group's chips (e.g. से / तक boxes), working on the draft. */
+  renderExtra?: (groupKey: string, draft: FilterValues, setDraft: (v: FilterValues) => void) => ReactNode;
 }) {
   const C = usePalette();
   const { t } = useTranslation();
@@ -142,6 +147,7 @@ export function FilterSheet({
                     );
                   })}
                 </View>
+                {renderExtra?.(g.key, draft, setDraft)}
               </View>
             );
           })}

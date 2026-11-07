@@ -12,12 +12,13 @@ import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
   FileWarning, Plus, ChevronDown,
-  Edit2, Trash2, MapPin, Calendar, FileDown, Check, Clock, MoreVertical, CheckCheck, ChevronUp,
+  Edit2, Trash2, MapPin, Calendar, CalendarDays, FileDown, Check, Clock, MoreVertical, CheckCheck, ChevronUp, X,
 } from 'lucide-react-native';
 import { exportKaryvahiDocx, exportKaryvahisDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { SearchBar } from '@/components/SearchBar';
 import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
 import { nkMatchesFilters } from '@/lib/nirodhatmak/nkFilter';
+import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { HighlightText } from '@/components/HighlightText';
 import {
   getAllNirodhatmakKaryvahi, searchNirodhatmakKaryvahi, deleteNirodhatmakKaryvahi,
@@ -281,6 +282,71 @@ const KaryvahiCard = memo(function KaryvahiCard({
   );
 });
 
+// ─── Date filter "से – तक" (owner) ─────────────────────────────────────────
+function shortDate(s: string | null | undefined, withYear: boolean): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s ?? '');
+  return m ? `${+m[3]} ${MONTHS[+m[2] - 1]}${withYear ? ` ${m[1]}` : ''}` : '';
+}
+function rangeChipLabel(from: string | null | undefined, to: string | null | undefined): string | null {
+  if (from && to) {
+    const [a, b] = from <= to ? [from, to] : [to, from];
+    return `${shortDate(a, a.slice(0, 4) !== b.slice(0, 4))} – ${shortDate(b, true)}`;
+  }
+  if (from) return `${shortDate(from, true)} से`;
+  if (to) return `${shortDate(to, true)} तक`;
+  return null;
+}
+function DateRangeBoxes({ draft, setDraft, scheme }: {
+  draft: FilterValues; setDraft: (v: FilterValues) => void; scheme: 'light' | 'dark';
+}) {
+  const P = THEME[scheme];
+  const [pick, setPick] = useState<'from' | 'to' | null>(null);
+  const box = (which: 'from' | 'to', label: string) => {
+    const v = draft[which];
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v ?? '');
+    return (
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 12, color: P.mutedForeground, marginBottom: 4 }}>{label}</Text>
+        <Pressable
+          onPress={() => setPick(which)}
+          accessibilityRole="button"
+          accessibilityLabel={`${label} तारीख`}
+          style={{
+            height: 44, borderRadius: 10, borderWidth: 1, borderColor: m ? MODULE_COLOR : P.border, backgroundColor: P.background,
+            flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12,
+          }}
+        >
+          <Text style={{ fontSize: 14, color: m ? P.foreground : P.mutedForeground }}>{m ? `${m[3]}.${m[2]}.${m[1]}` : 'तारीख चुनें'}</Text>
+          {m ? (
+            <Pressable onPress={() => setDraft({ ...draft, [which]: null })} hitSlop={8} accessibilityLabel={`${label} हटाएँ`}>
+              <X size={15} color={P.mutedForeground} />
+            </Pressable>
+          ) : <CalendarDays size={16} color={P.mutedForeground} />}
+        </Pressable>
+      </View>
+    );
+  };
+  return (
+    <View style={{ marginTop: 12 }}>
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        {box('from', 'से')}
+        {box('to', 'तक')}
+      </View>
+      <Text style={{ fontSize: 11.5, color: P.mutedForeground, marginTop: 6 }}>
+        सिर्फ़ &quot;से&quot; भरें = उस दिन से आज तक · सिर्फ़ &quot;तक&quot; भरें = उस दिन तक की सभी
+      </Text>
+      <DatePickerModal
+        visible={pick != null}
+        value={(pick && draft[pick]) || ''}
+        label={pick === 'to' ? 'तक — तारीख' : 'से — तारीख'}
+        accentColor={MODULE_COLOR}
+        onConfirm={(v) => { if (pick) setDraft({ ...draft, [pick]: v }); setPick(null); }}
+        onClose={() => setPick(null)}
+      />
+    </View>
+  );
+}
+
 // ─── Checklist rows on the card ───────────────────────────────────────────
 function KaryvahiChecklistRows({ itemId, json, scheme, onPrashit }: {
   itemId: string; json?: string; scheme: 'light' | 'dark'; onPrashit?: (on: boolean) => void;
@@ -376,7 +442,7 @@ export default function NirodhatmakHomeScreen() {
   const [activeType, setActiveType] = useState<NirodhatmakType | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   // Design C (owner): प्रकार filters in the DB query as before; तारीख / स्थिति on the loaded list.
-  const [extraFilters, setExtraFilters] = useState<{ date?: string | null; status?: string | null }>({});
+  const [extraFilters, setExtraFilters] = useState<{ date?: string | null; status?: string | null; from?: string | null; to?: string | null }>({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<NirodhatmakKaryvahi | null>(null);
@@ -458,7 +524,9 @@ export default function NirodhatmakHomeScreen() {
     },
     {
       key: 'date', label: t('filter.date', 'तारीख'),
-      options: [{ value: 'today', label: 'आज' }, { value: 'week', label: 'इस हफ़्ते' }, { value: 'month', label: 'इस महीने' }],
+      options: [{ value: 'today', label: 'आज' }, { value: 'week', label: 'इस हफ़्ते' }, { value: 'month', label: 'इस महीने' },
+        { value: 'range', label: '📅 तारीख चुनें' }],
+      chipLabel: (v) => (v.date === 'range' ? rangeChipLabel(v.from, v.to) : null),
     },
     {
       key: 'status', label: t('filter.status', 'स्थिति'),
@@ -466,26 +534,34 @@ export default function NirodhatmakHomeScreen() {
     },
   ], [t]);
   const filterValues = useMemo<FilterValues>(
-    () => ({ type: activeType, date: extraFilters.date ?? null, status: extraFilters.status ?? null }),
+    () => ({ type: activeType, date: extraFilters.date ?? null, status: extraFilters.status ?? null,
+      from: extraFilters.from ?? null, to: extraFilters.to ?? null }),
     [activeType, extraFilters],
   );
   const shownRecords = useMemo(
-    () => records.filter((r) => nkMatchesFilters(r, { date: extraFilters.date, status: extraFilters.status })),
+    () => records.filter((r) => nkMatchesFilters(r, extraFilters)),
     [records, extraFilters],
   );
   // "लागू करें (n)": the type part needs a DB query, so the count is shown only when the type is unchanged.
   const previewCount = useCallback((v: FilterValues): number => (
     (v.type ?? null) === activeType
-      ? records.filter((r) => nkMatchesFilters(r, { date: v.date, status: v.status })).length
+      ? records.filter((r) => nkMatchesFilters(r, { date: v.date, status: v.status, from: v.from, to: v.to })).length
       : NaN
   ), [records, activeType]);
   const applyFilters = (v: FilterValues) => {
-    setExtraFilters({ date: v.date ?? null, status: v.status ?? null });
+    // "तारीख चुनें" with neither से nor तक = no date filter
+    const range = v.date === 'range';
+    const empty = range && !v.from && !v.to;
+    setExtraFilters({
+      date: empty ? null : (v.date ?? null), status: v.status ?? null,
+      from: range && !empty ? (v.from ?? null) : null, to: range && !empty ? (v.to ?? null) : null,
+    });
     const type = (v.type ?? null) as NirodhatmakType | null;
     if (type !== activeType) handleTypeFilter(type);
   };
   const removeFilter = (key: string) => {
     if (key === 'type') handleTypeFilter(null);
+    else if (key === 'date') setExtraFilters((f) => ({ ...f, date: null, from: null, to: null }));
     else setExtraFilters((f) => ({ ...f, [key]: null }));
   };
 
@@ -594,7 +670,7 @@ export default function NirodhatmakHomeScreen() {
           placeholder={t('nirodhatmak.list.searchPlaceholder')}
           variant="light"
           accessibilityLabel={t('nirodhatmak.list.searchAccessibility')}
-          trailing={<FilterSearchButton count={activeFilterCount(filterValues)} onPress={() => setShowFilters(true)} accent={MODULE_COLOR} />}
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues, filterGroups)} onPress={() => setShowFilters(true)} accent={MODULE_COLOR} />}
         />
         <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={removeFilter} accent={MODULE_COLOR} />
       </View>
@@ -606,6 +682,8 @@ export default function NirodhatmakHomeScreen() {
         onClose={() => setShowFilters(false)}
         accent={MODULE_COLOR}
         previewCount={previewCount}
+        renderExtra={(key, draft, setDraft) => (key === 'date' && draft.date === 'range'
+          ? <DateRangeBoxes draft={draft} setDraft={setDraft} scheme={scheme} /> : null)}
       />
 
       {/* ── List ───────────────────────────────────────────────── */}

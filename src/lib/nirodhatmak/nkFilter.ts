@@ -1,5 +1,5 @@
 /**
- * निरोधात्मक list filters (design C sheet): प्रकार, तारीख (आज / इस हफ़्ते / इस महीने), स्थिति (चलानी लंबित /
+ * निरोधात्मक list filters (design C sheet): प्रकार, तारीख (आज / इस हफ़्ते / इस महीने / से – तक), स्थिति (चलानी लंबित /
  * चेकलिस्ट अधूरी / पूरी). Pure — tests: scripts/test_nk_filter.ts
  */
 export interface NkFilterRow {
@@ -8,7 +8,15 @@ export interface NkFilterRow {
   created_at?: number | null;
   checklist_json?: string | null;
 }
-export interface NkFilterValues { type?: string | null; date?: string | null; status?: string | null }
+export interface NkFilterValues {
+  type?: string | null; date?: string | null; status?: string | null;
+  /** date 'range': YYYY-MM-DD; only से = that day up to today, only तक = everything up to that day. */
+  from?: string | null; to?: string | null;
+}
+function ymd(s: string | null | undefined): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s ?? '');
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+}
 
 function rowDate(r: NkFilterRow): Date | null {
   const raw = (r.proceeding_date ?? '').trim();
@@ -41,6 +49,13 @@ export function nkMatchesFilters(r: NkFilterRow, f: NkFilterValues, now: Date = 
       if (d < from || d > today) return false;
     }
     if (f.date === 'month' && (d.getFullYear() !== today.getFullYear() || d.getMonth() !== today.getMonth())) return false;
+    if (f.date === 'range') {
+      let from = ymd(f.from); let to = ymd(f.to);
+      if (from && to && from > to) [from, to] = [to, from];
+      if (from && !to) to = today;
+      if (from && d < from) return false;
+      if (to && d > to) return false;
+    }
   }
   if (f.status) {
     const t = ticks(r.checklist_json);

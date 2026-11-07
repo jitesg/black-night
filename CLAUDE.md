@@ -263,7 +263,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Search / Filter = design C (owner; same in हल्का): shared `components/common/FilterSheet.tsx` — `FilterSearchButton` (⚙︎ as SearchBar
   `trailing`, count badge), `ActiveFilterChips` (accent chips with ✕), `FilterSheet` (bottom sheet, one choice per group + सभी, सब हटाएँ /
   लागू करें (n)); THEME colours, accent = module colour (NK #DC2626, हल्का #0F766E). NK groups: प्रकार (DB query as before), तारीख आज/इस
-  हफ़्ते/इस महीने + स्थिति चलानी लंबित/चेकलिस्ट अधूरी/पूरी (client side, `src/lib/nirodhatmak/nkFilter.ts`, tests `scripts/test_nk_filter.ts`);
+  हफ़्ते/इस महीने/📅 तारीख चुनें (`range` + values from/to YYYY-MM-DD; से / तक boxes via FilterSheet `renderExtra` → `DateRangeBoxes` +
+  DatePickerModal; only से = up to today, only तक = everything before; chip text via group `chipLabel`; `activeFilterCount(values, groups)`
+  counts only group keys) + स्थिति चलानी लंबित/चेकलिस्ट अधूरी/पूरी (client side, `src/lib/nirodhatmak/nkFilter.ts`, tests `scripts/test_nk_filter.ts`);
   NK search box no longer collapsible. हल्का search (`halka/search.tsx`): प्रकार (6 types) filters the results (old quick chips that typed
   the type name removed); हल्का lists (`halka/analytics`): ग्राम पंचायत + प्रकार (badge) groups built from the rows.
   Design C everywhere (owner): मुकदमा (स्थिति + क्रम — sort is a `noAll` group with `defaultValue: 'newest'`), GD (one group = the old
