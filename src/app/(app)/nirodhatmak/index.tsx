@@ -111,10 +111,13 @@ const CARD_COLORS = {
   dark: {
     bg: THEME.dark.card, border: THEME.dark.border, pinBg: '#DC262626', pin: '#F87171', muted: THEME.dark.mutedForeground,
     village: '#16A34A', type: '#D97706', dispute: '#EF4444', divider: THEME.dark.border, badgeBg: '#0F766E33', badgeFg: '#5EEAD4',
+    // चलानी लंबित = light red line + faint red card, प्रेषित = light green (owner, design "C"; tint = 6% over the card)
+    pendLine: '#F8717199', pendBg: '#292D24', doneLine: '#4ADE8099', doneBg: '#1C3526',
   },
   light: {
     bg: THEME.light.card, border: THEME.light.border, pinBg: '#DC26261A', pin: '#DC2626', muted: THEME.light.mutedForeground,
     village: '#16A34A', type: '#D97706', dispute: '#DC2626', divider: THEME.light.border, badgeBg: '#0F766E1A', badgeFg: '#0F766E',
+    pendLine: '#F87171', pendBg: '#FEF3F3', doneLine: '#4ADE80', doneBg: '#F1FBF5',
   },
 } as const;
 // "Kokila" is not on phones; Android's serif face carries Noto Serif Devanagari.
@@ -177,6 +180,9 @@ const KaryvahiCard = memo(function KaryvahiCard({
     ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[item.proceeding_type])
     : (item.proceeding_type || t('nirodhatmak.type.other'));
   const sections = facts.sections.length ? facts.sections : [typeLabel];
+  // Card colour follows the "चलानी प्रेषित" tick (updated at once when it is ticked on the card).
+  const [prashit, setPrashit] = useState(() => !!parseKaryvahiChecklist(item.checklist_json).prashit);
+  useEffect(() => { setPrashit(!!parseKaryvahiChecklist(item.checklist_json).prashit); }, [item.checklist_json]);
 
   return (
     <Pressable
@@ -185,9 +191,9 @@ const KaryvahiCard = memo(function KaryvahiCard({
       delayLongPress={350}
       className="shadow-sm shadow-black/5 active:opacity-70"
       style={{
-        borderCurve: 'continuous', borderRadius: 16, padding: 16, backgroundColor: c.bg,
-        // no border like the dashboard tiles; a red ring only while selected (width kept so nothing jumps)
-        borderWidth: 2, borderColor: selected ? MODULE_COLOR : 'transparent',
+        borderCurve: 'continuous', borderRadius: 16, padding: 16, backgroundColor: prashit ? c.doneBg : c.pendBg,
+        // light red (चलानी लंबित) / light green (प्रेषित) line; the red module ring while selected
+        borderWidth: 2, borderColor: selected ? MODULE_COLOR : (prashit ? c.doneLine : c.pendLine),
       }}
       accessibilityRole="button"
       accessibilityLabel={[village, typeLabel, dispute, dateStr, sections.join(', ')].filter(Boolean).join(', ')}
@@ -251,7 +257,7 @@ const KaryvahiCard = memo(function KaryvahiCard({
       ) : null}
 
       {/* 3. Checklist: चलानी प्रेषित → नोटिस प्राप्त → तामील */}
-      <KaryvahiChecklistRows itemId={item.id} json={item.checklist_json} scheme={scheme} />
+      <KaryvahiChecklistRows itemId={item.id} json={item.checklist_json} scheme={scheme} onPrashit={setPrashit} />
 
       {/* 4. Footer: date + section badge */}
       <View style={{
@@ -276,7 +282,9 @@ const KaryvahiCard = memo(function KaryvahiCard({
 });
 
 // ─── Checklist rows on the card ───────────────────────────────────────────
-function KaryvahiChecklistRows({ itemId, json, scheme }: { itemId: string; json?: string; scheme: 'light' | 'dark' }) {
+function KaryvahiChecklistRows({ itemId, json, scheme, onPrashit }: {
+  itemId: string; json?: string; scheme: 'light' | 'dark'; onPrashit?: (on: boolean) => void;
+}) {
   const [ticks, setTicks] = useState<KaryvahiChecklist>(() => parseKaryvahiChecklist(json));
   useEffect(() => { setTicks(parseKaryvahiChecklist(json)); }, [json]);
   const c = CARD_COLORS[scheme];
@@ -285,7 +293,8 @@ function KaryvahiChecklistRows({ itemId, json, scheme }: { itemId: string; json?
   const toggle = (key: keyof KaryvahiChecklist) => {
     const next = { ...ticks, [key]: !ticks[key] };
     setTicks(next);
-    setKaryvahiChecklist(itemId, next).catch(() => setTicks(ticks));
+    onPrashit?.(!!next.prashit);
+    setKaryvahiChecklist(itemId, next).catch(() => { setTicks(ticks); onPrashit?.(!!ticks.prashit); });
   };
 
   const amber = scheme === 'dark' ? '#FBBF24' : '#B45309';

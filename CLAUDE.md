@@ -256,7 +256,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   9 AM summary alert per day from the day after the karyvahi date — rules `src/lib/nkChalani.ts` (tests
   `scripts/test_nk_chalani.ts`), scheduler `nkChalaniService.ts` (`kind: nk_chalani`, route /(app)/nirodhatmak; setting
   notifNkChalani; resync from repo create/delete/tick + syncAppNotifications).
-  Card look = the home dashboard tiles (owner): THEME card surface, no border (red ring only when selected), `shadow-sm shadow-black/5`,
+  Card look = the home dashboard tiles (owner): THEME card surface; 2px line + faint tint by चलानी state (owner, design C): लंबित
+  light red (#F87171 / #FEF3F3, dark #F8717199 / #292D24), प्रेषित light green (#4ADE80 / #F1FBF5, dark #4ADE8099 / #1C3526), follows the
+  prashit tick at once (`onPrashit`); red module ring when selected, `shadow-sm shadow-black/5`,
   radius 16, padding 16; village 20px bold green #16A34A, type amber #D97706, dispute red, muted labels = mutedForeground, teal tinted badge.
   Search / Filter = design C (owner; same in हल्का): shared `components/common/FilterSheet.tsx` — `FilterSearchButton` (⚙︎ as SearchBar
   `trailing`, count badge), `ActiveFilterChips` (accent chips with ✕), `FilterSheet` (bottom sheet, one choice per group + सभी, सब हटाएँ /
