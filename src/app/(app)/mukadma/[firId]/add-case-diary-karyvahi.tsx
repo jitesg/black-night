@@ -708,13 +708,7 @@ export default function AddCaseDiaryKaryvahiScreen() {
               `श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 ${prevCdNo} दिनांक ${prevCdDate} को किता कर सेवा मे प्रेषित किया जा चुका है। आज मै विवेचक दीगर कार्यसरकार से फुरसत पाकर मुकदमा उपरोक्त की विवेचना मे मशरूफ हुआ।`;
           }
 
-          const saransh  = f?.mukadma_saransh?.trim();
-          const saranshText = saransh ? `मुकदमा सारांश:\n${saransh}` : '';
-          const saranshEntry: DiaryEntry = {
-            ...mkEntry('narrative'),
-            narrativeText: saranshText,
-            isExpanded: false,
-          };
+          // No "मुकदमा सारांश" entry any more: the पर्चा prints the FIR's सारांश box itself (owner).
 
           // If a specific karyvahi was pre-selected (from Diary tab queue), inject it
           // as the focused entry instead of the generic blank karyvahi slot.
@@ -724,13 +718,11 @@ export default function AddCaseDiaryKaryvahiScreen() {
               ? { ...mkEntry('karyvahi'), firKaryvahiId: matched.id, karyvahiName: matched.name, isExpanded: true }
               : { ...mkEntry('karyvahi'), isExpanded: true };
             setEntries([
-              ...(saranshText ? [saranshEntry] : []),
               { ...mkEntry('narrative'), narrativeText: introText, isExpanded: false },
               preFilledKaryvahi,
             ]);
           } else {
             setEntries([
-              ...(saranshText ? [saranshEntry] : []),
               { ...mkEntry('narrative'), narrativeText: introText, isExpanded: false },
               { ...mkEntry('karyvahi'),  isExpanded: true },
             ]);

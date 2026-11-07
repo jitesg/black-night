@@ -332,8 +332,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   before start is allowed — past midnight).
 - केस डायरी Word export + A4 प्रीव्यू = owner's "पर्चा" layout (sample docx 297/2025): `src/lib/caseDiaryParcha.ts` (pure; tests
   `scripts/test_case_diary_parcha.ts`) — per diary: yellow "पर्चा नं0 NN दिनाँक dd.mm.yyyy समय HH.MM से HH.MM बजे तक", "कार्यवाही- <names>"
-  (पर्चा 01 adds मुकदमा साराशं, विवेचना ग्रहण), "दौरा- <places व …> ।" (none → थाना कार्यालय), blank, red "मुकदमा साराशः- " + `mukadmaSaransh`
-  (FIR + accused: मु0अ0सं0, धारा, दिनाँक घटना/सूचना + समय, घटनास्थल, वमुदैय्यत श्री/श्रीमती/कुमारी वादी…, बनाम 1.… निवासीगण …), opening para
+  (पर्चा 01 adds मुकदमा साराशं, विवेचना ग्रहण), "दौरा- <places व …> ।" (none → थाना कार्यालय), blank, red "मुकदमा साराशः- " + the FIR's
+  मुकदमा सारांश box exactly as typed (owner: the app builds nothing; empty box → no line and no "मुकदमा साराशं" in कार्यवाही-; old
+  auto "मुकदमा सारांश:" narrative entries are skipped; new diaries no longer get that entry), opening para
   (01: "…मुझ उ0नि0 को आवंटित…"; later: "…पर्चा नं0 0n दिनाँक … को किता कर सेवा मे प्रेषित किया जा चुका है…"), each entry "<red name>.......... text",
   closing "श्रीमान जी आज की कृत कार्यवाही का पर्चा किता कर सेवा मे प्रेषित है । विवेचना प्रचलित है ।" No signature (owner), colours kept (owner).
   1.5 lines of space between two कार्यवाही / नैरेटिव entries (owner; para `gapBefore` → Word: empty Kokila para at 1.5 spacing, A4:

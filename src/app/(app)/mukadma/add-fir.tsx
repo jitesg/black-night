@@ -985,7 +985,7 @@ export default function AddFIRScreen() {
         <View>
           <SectionHeader title="मुकदमा सारांश" />
           <Text className="text-xs text-muted-foreground mb-3 -mt-1">
-            यह सारांश केस डायरी की पहली प्रविष्टि में स्वतः जुड़ जाएगा।
+            यही सारांश केस डायरी के हर पर्चा में &quot;मुकदमा साराशः-&quot; के बाद छपेगा।
           </Text>
           <CollapsibleDocumentBox
             label="मुकदमा सारांश (Case Summary)"

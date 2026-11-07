@@ -5,7 +5,7 @@
  *   कार्यवाही- बयान वादी, निरीक्षण घटना स्थल
  *   दौरा- ठकुराईनखेड़ा ।
  *   (blank)
- *   मुकदमा साराशः- मु0अ0सं0 … धारा …,दिनाँक घटना … ,वमुदैय्यत श्री … बनाम 1.… निवासीगण …।   (label red)
+ *   मुकदमा साराशः- <the FIR's मुकदमा सारांश box, as typed — the app writes nothing itself (owner)>   (label red)
  *   श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 01 दिनाँक … को किता कर सेवा मे प्रेषित किया जा चुका है। …
  *   बयान वादी मुकदमा.......... <text>                                   (label red)
  *   …
@@ -20,15 +20,6 @@ export interface ParchaRun { text: string; red?: boolean; highlight?: boolean }
 /** `gapBefore` = empty space above the paragraph in lines (1.5 between two कार्यवाही / नैरेटिव — owner). */
 export type ParchaPara = { runs: ParchaRun[]; gapBefore?: number } | { blank: true };
 
-export interface ParchaFir {
-  fir_number?: string | null; section?: string | null; ghatnasthal?: string | null;
-  date_of_occurrence?: string | null; time_of_occurrence?: string | null;
-  date_of_information?: string | null; time_of_information?: string | null;
-  complainant_name?: string | null; complainant_father?: string | null; complainant_relation?: string | null;
-  complainant_gender?: string | null; complainant_address?: string | null; complainant_mobile?: string | null;
-  complainant_age?: string | null;
-}
-export interface ParchaAccused { is_known?: number | null; name?: string | null; father?: string | null; relation?: string | null; address?: string | null; deleted_at?: number | null }
 export interface ParchaEntry { entry_type: string; karyvahi_name?: string | null; vivran?: string | null; narrative_text?: string | null; narrative_template?: string | null }
 export interface ParchaInput {
   no: number;
@@ -56,73 +47,21 @@ export function textParas(raw: string | null | undefined): string[] {
   return stripFormatMarkers(plain).split(/\n+/).map((l) => l.trim()).filter(Boolean);
 }
 
-function personTitle(f: ParchaFir): string {
-  const rel = t(f.complainant_relation);
-  if (rel === 'पत्नी') return 'श्रीमती ';
-  if (rel === 'पुत्री') return 'कुमारी ';
-  return t(f.complainant_gender) === 'महिला' ? 'श्रीमती ' : 'श्री ';
-}
-
-/** "1.रामलाल पुत्र सुखई, 2.नीरज पुत्र राजाराम निवासीगण ग्राम …" (shared address once) */
-export function accusedLine(list: ParchaAccused[], unknownCount = 0): string {
-  const known = list.filter((a) => !a.deleted_at && a.is_known !== 0 && t(a.name));
-  const who = (a: ParchaAccused) => [t(a.name), t(a.father) ? `${t(a.relation) || 'पुत्र'} ${t(a.father)}` : ''].filter(Boolean).join(' ');
-  let s = '';
-  if (known.length === 1) {
-    const a = known[0];
-    s = [who(a), t(a.address) ? `निवासी ${t(a.address)}` : ''].filter(Boolean).join(' ');
-  } else if (known.length > 1) {
-    const addrs = Array.from(new Set(known.map((a) => t(a.address))));
-    if (addrs.length === 1) {
-      s = known.map((a, i) => `${i + 1}.${who(a)}`).join(', ') + (addrs[0] ? ` निवासीगण ${addrs[0]}` : '');
-    } else {
-      s = known.map((a, i) => `${i + 1}.${who(a)}${t(a.address) ? ` निवासी ${t(a.address)}` : ''}`).join(', ');
-    }
-  }
-  const unk = unknownCount > 0 ? `${pad2(unknownCount)} अज्ञात` : '';
-  return [s, unk].filter(Boolean).join(' व ') || 'अज्ञात';
-}
-
-/** The "मुकदमा साराशः-" text (after the label). */
-export function mukadmaSaransh(f: ParchaFir | null, accused: ParchaAccused[], unknownCount = 0): string {
-  if (!f) return '';
-  const parts: string[] = [];
-  const first = [t(f.fir_number) ? `मु0अ0सं0 ${t(f.fir_number)}` : '', t(f.section) ? `धारा ${t(f.section)}` : ''].filter(Boolean).join(' ');
-  if (first) parts.push(first);
-  const when = (label: string, d?: string | null, tm?: string | null) =>
-    pDate(d) ? `${label} ${pDate(d)}${pTime(tm) ? ` समय ${pTime(tm)} बजे` : ''}` : '';
-  const occ = when('दिनाँक घटना', f.date_of_occurrence, f.time_of_occurrence);
-  if (occ) parts.push(occ);
-  const inf = when('दिनाँक सूचना', f.date_of_information, f.time_of_information);
-  if (inf) parts.push(inf);
-  if (t(f.ghatnasthal)) parts.push(`घटनास्थल ${t(f.ghatnasthal)}`);
-  let vadi = '';
-  if (t(f.complainant_name)) {
-    const mob = t(f.complainant_mobile).replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '');
-    vadi = `वमुदैय्यत ${personTitle(f)}${t(f.complainant_name)}`
-      + (t(f.complainant_father) ? ` ${t(f.complainant_relation) || 'पुत्र'} ${t(f.complainant_father)}` : '')
-      + (t(f.complainant_address) ? ` निवासी ${t(f.complainant_address)}` : '')
-      + (mob ? ` मो0नं0 ${mob}` : '');
-  }
-  const against = `बनाम ${accusedLine(accused, unknownCount)}`;
-  parts.push([vadi, against].filter(Boolean).join(' '));
-  return parts.join(', ') + '।';
-}
-
 const line = (...runs: ParchaRun[]): ParchaPara => ({ runs });
 
-/** One पर्चा as paragraphs. `saransh` = mukadmaSaransh(…) (same for every पर्चा of a मुकदमा). */
+/** One पर्चा as paragraphs. `saransh` = the FIR's मुकदमा सारांश box (same for every पर्चा; empty → no सारांश line). */
 export function buildParcha(p: ParchaInput, saransh: string): ParchaPara[] {
   const out: ParchaPara[] = [];
   const time = pTime(p.start) && pTime(p.end) ? ` समय ${pTime(p.start)} से ${pTime(p.end)} बजे तक`
     : pTime(p.start) ? ` समय ${pTime(p.start)} बजे से` : '';
   out.push(line({ text: `पर्चा नं0 ${pad2(p.no)} दिनाँक ${pDate(p.date) || '..........'}${time}`, highlight: true }));
   const names = p.entries.filter((e) => e.entry_type === 'karyvahi').map((e) => t(e.karyvahi_name)).filter(Boolean);
-  const kary = p.no === 1 ? ['मुकदमा साराशं', 'विवेचना ग्रहण', ...names] : names;
+  const sar = textParas(saransh);
+  const kary = p.no === 1 ? [...(sar.length ? ['मुकदमा साराशं'] : []), 'विवेचना ग्रहण', ...names] : names;
   if (kary.length) out.push(line({ text: `कार्यवाही- ${Array.from(new Set(kary)).join(', ')}` }));
   out.push(line({ text: `दौरा- ${(p.places ?? []).filter(Boolean).join(' व ') || 'थाना कार्यालय'} ।` }));
   out.push({ blank: true });
-  if (saransh) out.push(line({ text: 'मुकदमा साराशः- ', red: true }, { text: saransh }));
+  sar.forEach((s, i) => out.push(i === 0 ? line({ text: 'मुकदमा साराशः- ', red: true }, { text: s }) : line({ text: s })));
   out.push(line({
     text: p.no === 1 || !p.prev
       ? 'श्रीमान जी मुकदमा उपरोक्त थाना हाजा पर पंजीकृत होकर विवेचना हस्व आदेश SHO महोदय के मुझ उ0नि0 को आवंटित होकर थाना कार्यालय से नकल चिक, नकल रपट प्राप्त हुए। मुकदमा उपरोक्त की विवेचना ग्रहण कर मशरूफ विवेचना हो रहा हूँ।'
@@ -134,6 +73,8 @@ export function buildParcha(p: ParchaInput, saransh: string): ParchaPara[] {
     const label = t(isK ? e.karyvahi_name : e.narrative_template);
     const paras = textParas(isK ? e.vivran : e.narrative_text);
     if (!paras.length) continue;
+    // Old diaries got an automatic "मुकदमा सारांश:" note as their first entry — the सारांश is printed above already.
+    if (!isK && /^मुकदमा\s*सारांश\s*:/.test(paras[0])) continue;
     paras.forEach((para, i) => {
       const pp = i === 0 && label && isK ? line({ text: `${label}.......... `, red: true }, { text: para }) : line({ text: para });
       if (i === 0 && shown > 0) (pp as { gapBefore?: number }).gapBefore = 1.5; // 1.5 lines between two entries (owner)

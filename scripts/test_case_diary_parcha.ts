@@ -5,19 +5,17 @@ const { test } = await import('node:test');
 const assert = (await import('node:assert/strict')).default;
 const P = await import('../src/lib/caseDiaryParcha.ts');
 
-const fir = { fir_number: '297/2025', section: '115(2)/352 बीएनएस', ghatnasthal: 'खेत वादी', date_of_occurrence: '2025-07-08', time_of_occurrence: '17:30',
-  date_of_information: '2025-07-08', time_of_information: '18:36', complainant_name: 'नमन सिंह', complainant_father: 'राजीव कुमार सिंह',
-  complainant_relation: 'पुत्र', complainant_address: 'ग्राम ठकुराइनखेड़ा', complainant_mobile: '+918429836065' };
-const acc = [{ is_known: 1, name: 'रामलाल', father: 'सुखई', address: 'रिशालखेड़ा' }, { is_known: 1, name: 'नीरज', father: 'राजाराम', address: 'रिशालखेड़ा' }];
 const txt = (ps: { runs?: { text: string }[] }[]) => ps.map((p) => (p.runs ?? []).map((r) => r.text).join('')).join('\n');
 
-test('मुकदमा साराशः', () => {
-  const s = P.mukadmaSaransh(fir, acc);
-  assert.match(s, /^मु0अ0सं0 297\/2025 धारा 115\(2\)\/352 बीएनएस, दिनाँक घटना 08\.07\.2025 समय 17\.30 बजे, दिनाँक सूचना 08\.07\.2025 समय 18\.36 बजे, घटनास्थल खेत वादी, /);
-  assert.match(s, /वमुदैय्यत श्री नमन सिंह पुत्र राजीव कुमार सिंह निवासी ग्राम ठकुराइनखेड़ा मो0नं0 8429836065 बनाम 1\.रामलाल पुत्र सुखई, 2\.नीरज पुत्र राजाराम निवासीगण रिशालखेड़ा।$/);
-  assert.equal(P.accusedLine([], 2), '02 अज्ञात');
-  assert.equal(P.accusedLine([{ name: 'बबलू', address: 'क' }]), 'बबलू निवासी क');
-  assert.match(P.mukadmaSaransh({ ...fir, complainant_relation: 'पत्नी' }, acc), /वमुदैय्यत श्रीमती नमन/);
+test('मुकदमा साराशः = FIR box as typed (owner)', () => {
+  const ps = txt(P.buildParcha({ no: 1, date: '2025-07-08', places: [], entries: [
+    { entry_type: 'narrative', narrative_text: 'मुकदमा सारांश:\nपुरानी अपने-आप वाली entry' },
+    { entry_type: 'karyvahi', karyvahi_name: 'क', vivran: 'एक' }] }, '<p>पहली लाइन</p><p>दूसरी लाइन</p>') as never);
+  assert.match(ps, /\nमुकदमा साराशः- पहली लाइन\nदूसरी लाइन\nश्रीमान जी/);
+  assert.doesNotMatch(ps, /पुरानी अपने-आप/);
+  const none = txt(P.buildParcha({ no: 1, date: '2025-07-08', places: [], entries: [] }, '') as never);
+  assert.doesNotMatch(none, /साराश/);
+  assert.match(none, /कार्यवाही- विवेचना ग्रहण\n/);
 });
 test('पर्चा 01 / 02', () => {
   const one = P.buildParcha({ no: 1, date: '2025-07-08', start: '18:50', end: '19:50', places: [], entries: [

@@ -9,8 +9,7 @@ import * as Sharing from 'expo-sharing';
 
 import { getCaseDiaryById, getCaseDiariesByFIR, getEntriesByDiary, deserializePlaces } from '@/lib/db/caseDiaryRepo';
 import { getFIRById } from '@/lib/db/firRepo';
-import { getAccusedByFIR } from '@/lib/db/firAccusedRepo';
-import { buildParcha, mukadmaSaransh, type ParchaPara } from '@/lib/caseDiaryParcha';
+import { buildParcha, type ParchaPara } from '@/lib/caseDiaryParcha';
 import { parchaDocument } from '@/lib/caseDiaryParchaDocx';
 
 /**
@@ -18,11 +17,10 @@ import { parchaDocument } from '@/lib/caseDiaryParchaDocx';
  * or only `onlyDiaryId` (still numbered by its place, "पर्चा नं0 0n … प्रेषित" pointing at the one before).
  */
 export async function loadParchaParas(firId: string, onlyDiaryId?: string): Promise<ParchaPara[]> {
-  const [diaries, fir, accused] = await Promise.all([
-    getCaseDiariesByFIR(firId), getFIRById(firId), getAccusedByFIR(firId).catch(() => []),
-  ]);
+  const [diaries, fir] = await Promise.all([getCaseDiariesByFIR(firId), getFIRById(firId)]);
   const ordered = [...diaries].sort((a, b) => a.created_at - b.created_at);
-  const saransh = mukadmaSaransh(fir, accused, fir?.unknown_accused_count ?? 0);
+  // मुकदमा सारांश = exactly what the officer typed in the FIR's सारांश box (owner: the app builds nothing).
+  const saransh = fir?.mukadma_saransh ?? '';
   const out: ParchaPara[] = [];
   for (let i = 0; i < ordered.length; i++) {
     const d = ordered[i];
