@@ -758,6 +758,20 @@ export default function AddCaseDiaryKaryvahiScreen() {
     if (showFormatList === uid) setShowFormatList(null);
     if (activeFillPanel?.uid === uid) setActiveFillPanel(null);
   };
+  // ✕ on an entry (owner): an empty entry goes at once, a filled one only after "हाँ, हटाएँ".
+  const [confirmRemoveUid, setConfirmRemoveUid] = useState<string | null>(null);
+  const askRemoveEntry = (uid: string) => {
+    const e = entries.find((x) => x.uid === uid);
+    const filled = !!e && (e.kind === 'karyvahi'
+      ? !!(e.karyvahiName.trim() || stripHtmlTags(e.vivran).trim())
+      : !!stripHtmlTags(e.narrativeText).trim());
+    if (filled) setConfirmRemoveUid(uid); else removeEntry(uid);
+  };
+  const confirmIdx = confirmRemoveUid ? entries.findIndex((x) => x.uid === confirmRemoveUid) : -1;
+  const confirmEntry = confirmIdx >= 0 ? entries[confirmIdx] : null;
+  const confirmName = confirmEntry
+    ? (confirmEntry.kind === 'karyvahi' ? (confirmEntry.karyvahiName.trim() || 'कार्यवाही') : (confirmEntry.narrativeTemplate.trim() || 'नैरेटिव'))
+    : '';
 
   const handleSave = async () => {
     // Validate entries — never silently discard filled-but-incomplete ones
@@ -899,6 +913,29 @@ export default function AddCaseDiaryKaryvahiScreen() {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* ── ✕ on a filled entry: confirm first (owner) ──────────────────── */}
+      <AlertDialog open={confirmRemoveUid != null} onOpenChange={(o) => { if (!o) setConfirmRemoveUid(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>प्रविष्टि हटाएँ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {`प्रविष्टि #${confirmIdx + 1} — "${confirmName}" हटा दी जाएगी।\nसेव करने के बाद यह वापस नहीं आएगी।`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row gap-2">
+            <AlertDialogCancel className="flex-1" onPress={() => setConfirmRemoveUid(null)}>
+              <Text className="font-semibold text-sm">रद्द करें</Text>
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="flex-1 bg-destructive"
+              onPress={() => { if (confirmRemoveUid) removeEntry(confirmRemoveUid); setConfirmRemoveUid(null); }}
+            >
+              <Text className="text-white font-semibold text-sm">हाँ, हटाएँ</Text>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AppHeader
         title={t('fir.addCaseDiaryEntry.title')}
         subtitle={diary ? diary.preparation_date : undefined}
@@ -976,7 +1013,7 @@ export default function AddCaseDiaryKaryvahiScreen() {
             workspace={workspace}
             draftFormats={draftFormats}
             updateEntry={updateEntry}
-            removeEntry={removeEntry}
+            removeEntry={askRemoveEntry}
             setShowKaryvahiDropdown={setShowKaryvahiDropdown}
             setShowFormatList={setShowFormatList}
             setActiveFillPanel={setActiveFillPanel}

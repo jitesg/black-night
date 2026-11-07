@@ -330,6 +330,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end
   before start is allowed — past midnight).
+- केस डायरी कार्यवाही screen (`add-case-diary-karyvahi.tsx`): ✕ on an entry (collapsed card or open form) → `askRemoveEntry`: empty entry removed at once,
+  a filled one only after the "प्रविष्टि हटाएँ?" dialog (रद्द करें / हाँ, हटाएँ) — owner.
 - केस डायरी Word export + A4 प्रीव्यू = owner's "पर्चा" layout (sample docx 297/2025): `src/lib/caseDiaryParcha.ts` (pure; tests
   `scripts/test_case_diary_parcha.ts`) — per diary: yellow "पर्चा नं0 NN दिनाँक dd.mm.yyyy समय HH.MM से HH.MM बजे तक", "कार्यवाही- <names>"
   (पर्चा 01 adds मुकदमा साराशं, विवेचना ग्रहण), "दौरा- <places व …> ।" (none → थाना कार्यालय), blank, red "मुकदमा साराशः- " + the FIR's
