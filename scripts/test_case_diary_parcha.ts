@@ -33,3 +33,12 @@ test('पर्चा 01 / 02', () => {
   assert.doesNotMatch(two, /कार्यवाही-|मुकदमा साराशः/);
   assert.match(P.parchaHtml(one), /<span class="hl">पर्चा नं0 01/);
 });
+test('1.5 line gap between entries (owner)', () => {
+  const paras = P.buildParcha({ no: 2, date: '2025-07-15', places: [], prev: { no: 1, date: '2025-07-08' }, entries: [
+    { entry_type: 'karyvahi', karyvahi_name: 'क', vivran: 'एक\nदो' },
+    { entry_type: 'karyvahi', karyvahi_name: 'ख', vivran: '' },
+    { entry_type: 'narrative', narrative_text: 'तीन' },
+  ] } as never, '') as Array<{ gapBefore?: number; runs?: Array<{ text: string }> }>;
+  const gaps = paras.filter((p) => p.gapBefore).map((p) => p.runs?.map((r) => r.text).join(''));
+  assert.deepEqual(gaps, ['तीन']);
+});

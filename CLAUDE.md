@@ -336,6 +336,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (FIR + accused: मु0अ0सं0, धारा, दिनाँक घटना/सूचना + समय, घटनास्थल, वमुदैय्यत श्री/श्रीमती/कुमारी वादी…, बनाम 1.… निवासीगण …), opening para
   (01: "…मुझ उ0नि0 को आवंटित…"; later: "…पर्चा नं0 0n दिनाँक … को किता कर सेवा मे प्रेषित किया जा चुका है…"), each entry "<red name>.......... text",
   closing "श्रीमान जी आज की कृत कार्यवाही का पर्चा किता कर सेवा मे प्रेषित है । विवेचना प्रचलित है ।" No signature (owner), colours kept (owner).
+  1.5 lines of space between two कार्यवाही / नैरेटिव entries (owner; para `gapBefore` → Word: empty Kokila para at 1.5 spacing, A4:
+  margin-top 46.5px; A4 sheets cut after the last whole line of each paragraph so a gap never splits a line).
   Word: `caseDiaryParchaDocx.ts` (Kokila 18pt, justified, single spacing, 1 inch margins, all diaries in one flow); data via
   `loadParchaParas(firId, diaryId?)` in caseDiaryExport.ts. A4 button in view-case-diary → `CaseDiaryA4Preview` with `parchaHtml` (31px lines,
   sheets cut on line boundaries, "पृष्ठ n / N").
