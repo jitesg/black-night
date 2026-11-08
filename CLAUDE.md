@@ -220,6 +220,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   tick; per-row "बयान अभियुक्त(ा) — …" para, own text or default "जुर्म से इंकार… सफाई जरिये अधिवक्ता… बता रहे / रही हैं" (nested {?own|…{?mahila|…}…}).
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
+- Every धारा / Sections key in the predefined formats (SECTION / Sections / Section / hNSec / hNDhara / BadhSection / GhatSection /
+  NewSections, 37 keys in 25 formats) is field_type "multiline" (owner; seed_version +1 each). New धारा keys: multiline too.
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use
   it for lat/long. ✕ / 📋 on every typed format box except date.
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
