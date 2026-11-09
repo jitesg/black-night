@@ -334,6 +334,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   before start is allowed — past midnight).
 - केस डायरी कार्यवाही screen (`add-case-diary-karyvahi.tsx`): ✕ on an entry (collapsed card or open form) → `askRemoveEntry`: empty entry removed at once,
   a filled one only after the "प्रविष्टि हटाएँ?" dialog (रद्द करें / हाँ, हटाएँ) — owner.
+  Entry editors there and in edit-case-diary-entry pass `DocumentEditor noIndent` → print preview without the first-line paragraph indent
+  (owner; other modules keep the indent).
 - केस डायरी Word export + A4 प्रीव्यू = owner's "पर्चा" layout (sample docx 297/2025): `src/lib/caseDiaryParcha.ts` (pure; tests
   `scripts/test_case_diary_parcha.ts`) — per diary: yellow "पर्चा नं0 NN दिनाँक dd.mm.yyyy समय HH.MM से HH.MM बजे तक", "कार्यवाही- <names>"
   (पर्चा 01 adds मुकदमा साराशं, विवेचना ग्रहण), "दौरा- <places व …> ।" (none → थाना कार्यालय), blank, red "मुकदमा साराशः- " + the FIR's

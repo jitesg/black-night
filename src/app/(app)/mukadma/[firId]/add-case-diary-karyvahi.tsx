@@ -595,6 +595,7 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
           }
           minHeight={96}
           accessibilityLabel={entry.kind === 'karyvahi' ? t('fir.addCaseDiaryEntry.vivranAccessibility') : t('fir.addCaseDiaryEntry.narrativeAccessibility')}
+          noIndent
         />
         {/* FIR Basis Non-blocking Hints */}
         <FirBasisHintsView

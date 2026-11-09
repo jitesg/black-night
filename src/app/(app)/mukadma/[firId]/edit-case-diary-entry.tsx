@@ -252,6 +252,7 @@ export default function EditCaseDiaryEntryScreen() {
               title={t('fir.editCaseDiaryEntry.vivranEditorTitle')}
               placeholder={t('fir.editCaseDiaryEntry.vivranPlaceholder')}
               accessibilityLabel={t('fir.editCaseDiaryEntry.vivranAccessibility')}
+              noIndent
             />
           ) : (
             <DocumentEditor
@@ -260,6 +261,7 @@ export default function EditCaseDiaryEntryScreen() {
               title={t('fir.editCaseDiaryEntry.narrativeEditorTitle')}
               placeholder={t('fir.editCaseDiaryEntry.narrativePlaceholder')}
               accessibilityLabel={t('fir.editCaseDiaryEntry.narrativeAccessibility')}
+              noIndent
             />
           )}
 

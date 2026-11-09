@@ -348,9 +348,14 @@ interface PrintPreviewProps {
   onClose: () => void;
   value: string;
   title: string;
+  /** No first-line indent on paragraphs (केस डायरी entries — owner). */
+  noIndent?: boolean;
 }
 
-function PrintPreviewModal({ visible, onClose, value, title }: PrintPreviewProps) {
+/** Paragraphs start at the left edge, first line too. */
+const NO_INDENT_CSS = '<style>.doc-body p { text-indent: 0 !important; }</style>';
+
+function PrintPreviewModal({ visible, onClose, value, title, noIndent }: PrintPreviewProps) {
   const { t } = useTranslation();
   const html = useMemo(() => {
     // Every report prints in the fixed A4 layout (letters: one sheet each).
@@ -358,8 +363,9 @@ function PrintPreviewModal({ visible, onClose, value, title }: PrintPreviewProps
     // Reports made from a marked format keep its layout (hidden data-fmt marks).
     const plain = hasEditorMarks(src) ? editorHtmlToMarkedText(src) : htmlToPlainText(src);
     if (!plain.trim()) return buildPrintHtml('', title);
-    return fixFormat(buildPrintHtml(renderTextForPrint(plain), title), DEFAULT_LAYOUT_PROFILE, title).html;
-  }, [value, title]);
+    const out = fixFormat(buildPrintHtml(renderTextForPrint(plain), title), DEFAULT_LAYOUT_PROFILE, title).html;
+    return noIndent ? out.replace('</head>', `${NO_INDENT_CSS}</head>`) : out;
+  }, [value, title, noIndent]);
   const isWeb = process.env.EXPO_OS === 'web';
   const { colorScheme } = useColorScheme();
   const colors = THEME[colorScheme ?? 'light'];
@@ -417,6 +423,7 @@ interface FullScreenProps {
   onChange: (v: string) => void;
   title: string;
   placeholder: string;
+  noIndent?: boolean;
 }
 
 // Stable objects per theme: a new one each render made the editor re-apply its style.
@@ -439,7 +446,7 @@ const RICH_EDITOR_STYLE = {
   dark: { backgroundColor: '#1E293B', color: '#F1F5F9', placeholderColor: '#64748B', caretColor: '#93C5FD', contentCSSText: `${EDITOR_CSS} color: #F1F5F9;`, cssText: PAGE_SCROLL_CSS },
 } as const;
 
-function FullScreenModal({ visible, onClose, value, onChange, title, placeholder }: FullScreenProps) {
+function FullScreenModal({ visible, onClose, value, onChange, title, placeholder, noIndent }: FullScreenProps) {
   const { t } = useTranslation();
   const { settings } = useSettingsStore();
 
@@ -901,6 +908,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
           onClose={() => setShowPreview(false)}
           value={editorHtmlRef.current || initialHtml}
           title={title}
+          noIndent={noIndent}
         />
       )}
 
@@ -1104,6 +1112,8 @@ export interface DocumentEditorProps {
   error?: boolean;
   /** Accessibility label */
   accessibilityLabel?: string;
+  /** Print preview without the first-line paragraph indent (केस डायरी entries — owner). */
+  noIndent?: boolean;
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -1115,6 +1125,7 @@ export function DocumentEditor({
   minHeight = 250,
   error = false,
   accessibilityLabel,
+  noIndent,
 }: DocumentEditorProps) {
   const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
@@ -1210,6 +1221,7 @@ export function DocumentEditor({
         onChange={onChangeText}
         title={title}
         placeholder={placeholder}
+        noIndent={noIndent}
       />
 
       {/* Print Preview (from compact card) */}
@@ -1218,6 +1230,7 @@ export function DocumentEditor({
         onClose={() => setPrintPreview(false)}
         value={value}
         title={title}
+        noIndent={noIndent}
       />
     </>
   );
