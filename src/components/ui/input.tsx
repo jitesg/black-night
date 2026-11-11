@@ -35,6 +35,7 @@ import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { ItemGroupInput, parseItemGroupConfig } from './ItemGroupInput';
+import { PAHAR_AUTO, paharFromTime, paharSource } from '@/lib/formatDerived';
 import { useClearCopy } from '@/components/common/ClearCopyTools';
 import { SentenceFieldInput } from './SentenceFieldInput';
 import type { KeyDefForRender } from '@/lib/templateEngine';
@@ -606,6 +607,7 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
           displayLabel={displayLabel}
           required={required}
           error={error}
+          allValues={allValues}
         />
       );
     }
@@ -646,7 +648,7 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
     if (fieldType === 'dropdown') {
       const options = parseDropdownOptions(keyDef.dropdown_options);
       if (options.length) {
-        return (
+        const dd = (
           <FormatKeyDropdownInput
             ref={ref}
             keyName={keyDef.key_name}
@@ -657,6 +659,22 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
             displayLabel={displayLabel}
             required={required}
           />
+        );
+        // पहर worked out from a time (formatDerived.ts): say what "समय से" will print
+        const paharFrom = paharSource(keyDef.dropdown_options);
+        if (!paharFrom) return dd;
+        const auto = !value?.trim() || value.trim() === PAHAR_AUTO;
+        const time = allValues?.[paharFrom] ?? '';
+        const p = paharFromTime(time);
+        return (
+          <View style={{ gap: 4 }}>
+            {dd}
+            {auto ? (
+              <Text className="text-xs" style={{ color: p ? '#15803D' : undefined }}>
+                {p ? `अपने आप: ${p} (समय ${time.trim()} से)` : 'समय भरने पर पहर अपने आप लगेगा'}
+              </Text>
+            ) : null}
+          </View>
         );
       }
     }

@@ -197,7 +197,13 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   → custody paragraph + [[संलग्नक]] (3 items) with the signature; fixed subject "…सर्वोत्तम हित एवं कल्याण… सुपुर्दगी आदेश…" (owner).
 - Format type "Fard" (फर्द, owner): FormatType union, every FORMAT_TYPES list, SYS_CATEGORIES, colours (brown #92400E / #FBBF24),
   i18n format.type.fard, moduleLabel → फर्द. NK / प्रार्थना पत्र pickers still load only 'BNSS Karyavahi'.
-- `sys-fmt-fard-60-1-daru` "60(1) आबकारी अधिनियम फर्द बरामदगी व गिरफ्तारी (एक या अधिक अभियुक्त / अभियुक्ता)" v5 (type Fard — was BNSS Karyavahi, owner's docx) —
+- 60(1) फर्द v6 (owner, the फर्द steps): one paragraph per step — 1 मौजूदगी, 2 मुखबिर की सूचना, 3 चल देना, 4 स्थान पर आना, 5 पहचान,
+  6 पकड़ना, 7 नाम पता, 8 जामा तलाशी, 9 लाइसेन्स तलब, 10 गिरफ्तारी, 11 सूचना, अंत; field labels start with the step number. New keys:
+  `JamaTalashi` (item_group, startEmpty: by / who = type 'ref' → Accused names as chips / how = multiline, endWith "।") → "अभियुक्त(ा) X की
+  जामा तलाशी Y द्वारा ली गयी तो …", none → the old plain line; `ArrestPahar` (dropdown समय से/सुबह/दिन/शाम/रात, paharFrom ArrestTime;
+  hint "अपने आप: रात (समय 21.30 से)") → "… बजे रात में"; रात → "टार्च की रोशनी में" in steps 5 and 6. Engine: `src/lib/formatDerived.ts`
+  (`deriveFormatValues` first thing in generateReport; tests `scripts/test_format_derived.ts`). Times are 24-hour. v5 in docs/format-backups/.
+- `sys-fmt-fard-60-1-daru` "60(1) आबकारी अधिनियम फर्द बरामदगी व गिरफ्तारी (एक या अधिक अभियुक्त / अभियुक्ता)" v6 (type Fard — was BNSS Karyavahi, owner's docx) —
   **the base pattern for all future फर्द (owner)**: item_group `Accused` (name, rel, father, addr, age, mahila tick, cqty, ctype, litre,
   carry = choice हाथ / पैंट-लोअर-जीन्स की दाहिनी-बायीं जेब / शर्ट / पीछे की जेब / बगल, inform); one man / one woman / many wording via
   `{{count:…|{{any:…?mahila|F}}{{none:…?mahila|M}}|MANY}}`; heading containers `{{each}}` + `{{sum:Accused|litre}}`; per-row

@@ -1,0 +1,173 @@
+{
+  "id": "sys-fmt-fard-60-1-daru",
+  "title": "60(1) आबकारी अधिनियम फर्द बरामदगी व गिरफ्तारी (एक या अधिक अभियुक्त / अभियुक्ता)",
+  "format_type": "Fard",
+  "is_favorite": 0,
+  "created_by": "system",
+  "source": "system",
+  "editable": 1,
+  "content_type": "format",
+  "seed_version": 5,
+  "app_version": "1.0.0",
+  "tags": [
+    "60(1)",
+    "आबकारी",
+    "फर्द",
+    "बरामदगी",
+    "कच्ची शराब",
+    "गिरफ्तारी"
+  ],
+  "last_updated": "2026-11-04",
+  "vivran": "[[पत्र]]\n[[सूची]] **फर्द बरामदगी {{each:Accused|{cqty} {ctype}| व }} में {{count:Accused|करीब|कुल}} {{sum:Accused|litre}} लीटर {{LiquorType}} व गिरफ्तारी {{cnt:Accused|}} नफर {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} अन्तर्गत धारा 60(1) आबकारी अधिनियम थाना {{PoliceStation}} जनपद {{District}}**\n[[विवरण]] आज दिनांक {{RecoveryDate}} को मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{any:Accused?mahila| मय हमराह महिला आरक्षी {{LadyConstable}}}}{{if:TeamMembers| मय तलविदा हमराहियान {{TeamMembers}}}} थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम जुर्म जरायम, शान्ति व्यवस्था, जांच अहकामात प्रार्थना पत्र, पेण्डिंग विवेचना{{if:doFestival| व आगामी त्यौहार के दृष्टिगत अवैध शराब की रोकथाम}} में मामूर होकर {{PatrolVillage}} में मौजूद था कि तभी मुखबिर खास ने आकर सूचना दी कि {{IncidentVillage}} में {{count:Accused|{{any:Accused?mahila|एक महिला}}{{none:Accused?mahila|एक व्यक्ति}}|{{cnt:Accused|}} व्यक्ति}} अवैध शराब लिये {{count:Accused|{{any:Accused?mahila|खड़ी है}}{{none:Accused?mahila|खड़ा है}}|खड़े हैं}}, जो कहीं बेचने जाने की फिराक में {{count:Accused|{{any:Accused?mahila|है}}{{none:Accused?mahila|है}}|हैं}}, यदि जल्दी किया जाये तो {{count:Accused|{{any:Accused?mahila|पकड़ी जा सकती है}}{{none:Accused?mahila|पकड़ा जा सकता है}}|पकड़े जा सकते हैं}}। मुखबिर की इस सूचना पर विश्वास करके हम पुलिस वालों द्वारा गवाह तलाश किये गये तो लोग भलाई-बुराई का बहाना बनाकर मौके से हट-बढ़ गये तथा नाम पता नहीं बताये। मजबूरीवश हम पुलिस वालों द्वारा एक-दूसरे की जामा तलाशी ले-देकर इत्मीनान किया गया कि किसी के पास अपराध से सम्बन्धित कोई वस्तु नहीं है। तत्पश्चात हम पुलिस वाले मय मुखबिर के, मुखबिर द्वारा बताये गये स्थान की ओर {{GoBy}} चल दिये। जैसे ही हम लोग {{IncidentVillage}} में मुखबिर द्वारा बताये स्थान से कुछ दूर पहले पहुँचे तो मुखबिर ने रुककर इशारे से {{SpotPlace}} {{count:Accused|{{any:Accused?mahila|खड़ी एक महिला}}{{none:Accused?mahila|खड़े एक व्यक्ति}}|खड़े {{cnt:Accused|}} व्यक्तियों}} की ओर इशारा करके बताया कि {{count:Accused|{{any:Accused?mahila|वही महिला है}}{{none:Accused?mahila|वही व्यक्ति है}}|वही लोग हैं}} और पीछे मुड़कर चला गया। हम पुलिस वाले छिपते-छिपाते {{count:Accused|{{any:Accused?mahila|उस महिला}}{{none:Accused?mahila|उस व्यक्ति}}|उन व्यक्तियों}} के पास पहुँचे तो {{count:Accused|{{any:Accused?mahila|वह महिला}}{{none:Accused?mahila|वह व्यक्ति}}|वे लोग}} हम पुलिस वालों को देखकर {{count:Accused|{{any:Accused?mahila|सकपका गयी}}{{none:Accused?mahila|सकपका गया}}|सकपका गये}} और भागने का प्रयास किया कि {{count:Accused|{{any:Accused?mahila|महिला आरक्षी {{LadyConstable}}}}{{none:Accused?mahila|हम पुलिस वालों}}|हम पुलिस वालों{{any:Accused?mahila| व महिला आरक्षी {{LadyConstable}}}}}} द्वारा घेरकर मौके पर ही पकड़ लिया गया। {{count:Accused|{{any:Accused?mahila|पकड़ी गयी महिला}}{{none:Accused?mahila|पकड़े गये व्यक्ति}}|पकड़े गये व्यक्तियों}} से नाम पता पूछते हुए {{count:Accused|{{any:Accused?mahila|महिला आरक्षी {{LadyConstable}} द्वारा जामा तलाशी ली गयी}}{{none:Accused?mahila|जामा तलाशी ली गयी}}|जामा तलाशी ली गयी{{any:Accused?mahila| (अभियुक्ता की जामा तलाशी महिला आरक्षी {{LadyConstable}} द्वारा ली गयी)}}}} तो {{count:Accused|{{any:Accused?mahila|उसने}}{{none:Accused?mahila|उसने}}|उन्होंने क्रमशः}} अपना नाम {{count:Accused|{{each:Accused|{name} {rel} {father} निवासी {addr}{ उम्र करीब ~age~ वर्ष}|}}|{{each:Accused|{#}. {name} {rel} {father} निवासी {addr}{ उम्र करीब ~age~ वर्ष}| }}}} बताया। {{count:Accused|जामा तलाशी में {{each:Accused|{carry} से {cqty} {ctype}|}} बरामद हुयी। बरामद {{each:Accused|{cqty} {ctype}|}} का ढक्कन खोलकर सूंघा व देखा गया तो उसमें करीब {{each:Accused|{litre}|}} लीटर तरल पदार्थ भरा है|{{each:Accused|{?mahila|अभियुक्ता|अभियुक्त} {name} की जामा तलाशी में {carry} से {cqty} {ctype} में करीब {litre} लीटर| तथा }} तरल पदार्थ बरामद हुआ (कुल {{sum:Accused|litre}} लीटर)। बरामद पात्रों का ढक्कन खोलकर सूंघा व देखा गया}} तथा हमराहियान को सुंघाया गया तो {{LiquorType}} की तीक्ष्ण गन्ध आ रही है। {{count:Accused|{{any:Accused?mahila|पकड़ी गयी महिला}}{{none:Accused?mahila|पकड़े गये व्यक्ति}}|पकड़े गये व्यक्तियों}} से लाइसेन्स तलब किया गया तो दिखाने से {{count:Accused|{{any:Accused?mahila|कासिर रही}}{{none:Accused?mahila|कासिर रहा}}|कासिर रहे}} और गलती की माफी माँगने {{count:Accused|{{any:Accused?mahila|लगी}}{{none:Accused?mahila|लगा}}|लगे}}। {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} को {{count:Accused|{{any:Accused?mahila|उसके}}{{none:Accused?mahila|उसके}}|उनके}} जुर्म धारा 60(1) आबकारी अधिनियम से अवगत कराते हुए समय करीब {{ArrestTime}} बजे हिरासत पुलिस में लिया गया। बरामद {{count:Accused|पात्र|पात्रों}} को कब्जे पुलिस में लेकर ढक्कन बन्द कर मुँह पर कपड़ा बाँधकर मौके पर सील सर्व मुहर कर नमूना मुहर बनाया गया। गिरफ्तारी मेमो मौके पर तैयार किया गया। गिरफ्तारी / बरामदगी के समय जनता के कुछ लोग एकत्र हो गये, जिनसे गवाही हेतु कहा गया तो आपसी भलाई-बुराई का डर बताते हुए बिना नाम पता बताये चले गये। दौराने गिरफ्तारी माननीय सर्वोच्च न्यायालय व राष्ट्रीय मानवाधिकार आयोग के आदेश-निर्देशों का अक्षरशः पालन किया गया। गिरफ्तारी की सूचना {{if:InformHow=मौके पर|मौके पर }}{{if:InformHow=फोन द्वारा|फोन द्वारा }}{{count:Accused|{{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} के {{each:Accused|{inform}|}}|{{each:Accused|{?mahila|अभियुक्ता|अभियुक्त} {name} के {inform}|, }}}} को {{if:InformHow=थाने पहुँचकर दी जायेगी|थाने पहुँचकर दी जायेगी।}}{{ifnot:InformHow=थाने पहुँचकर दी जायेगी|दी गयी।}} फर्द मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा अपने मोबाइल पर गूगल डॉक्स एप्प पर बोल-बोलकर टाइप कर का0 {{Typist}} को भेजकर प्रिन्ट मंगवाकर सर्व सम्बन्धित के अलामात बनवाये जा रहे हैं। फर्द की {{count:Accused|एक प्रति {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} को|एक-एक प्रति प्रत्येक अभियुक्त को}} दी जा रही है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}\n",
+  "keys": [
+    {
+      "key_name": "RecoveryDate",
+      "label": "दिनांक",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: 05.03.2025\"}",
+      "sort_order": 0
+    },
+    {
+      "key_name": "Accused",
+      "label": "अभियुक्त / अभियुक्ता — हर एक की अलग पंक्ति (उसके पास मिली शराब सहित)",
+      "field_type": "item_group",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: सुमन पासी)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पत्नी\", \"पुत्री\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: ग्राम उफरापुर थाना बछरावां जनपद रायबरेली)\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक, जैसे: 45)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"cqty\", \"label\": \"पात्र संख्या (जैसे: 01)\", \"default\": \"01\"}, {\"key\": \"ctype\", \"label\": \"पात्र (जैसे: प्लास्टिक की पिपिया / प्लास्टिक का केन)\", \"default\": \"प्लास्टिक की पिपिया\"}, {\"key\": \"litre\", \"label\": \"शराब कितने लीटर (जैसे: 10)\"}, {\"key\": \"carry\", \"label\": \"जामा तलाशी में कहाँ से बरामद\", \"type\": \"choice\", \"options\": [\"दाहिने हाथ\", \"बायें हाथ\", \"पैंट की दाहिनी जेब\", \"पैंट की बायीं जेब\", \"लोअर की दाहिनी जेब\", \"लोअर की बायीं जेब\", \"जीन्स की दाहिनी जेब\", \"जीन्स की बायीं जेब\", \"शर्ट की जेब\", \"पीछे की जेब\", \"बगल\"], \"default\": \"दाहिने हाथ\"}, {\"key\": \"inform\", \"label\": \"गिरफ्तारी की सूचना किसे (जैसे: पति सज्जनलाल)\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\"}",
+      "sort_order": 1
+    },
+    {
+      "key_name": "LadyConstable",
+      "label": "हमराह महिला आरक्षी का नाम (कोई अभियुक्ता हो तो)",
+      "field_type": "text",
+      "is_required": 0,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: राखी\"}",
+      "sort_order": 2
+    },
+    {
+      "key_name": "TeamMembers",
+      "label": "हमराहियान (वैकल्पिक)",
+      "field_type": "text",
+      "is_required": 0,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार सोनकर\"}",
+      "sort_order": 3
+    },
+    {
+      "key_name": "doFestival",
+      "label": "\"व आगामी त्यौहार के दृष्टिगत अवैध शराब की रोकथाम\" भी लिखें",
+      "field_type": "checkbox",
+      "is_required": 0,
+      "default_value": "",
+      "sort_order": 4
+    },
+    {
+      "key_name": "PatrolVillage",
+      "label": "कहाँ मौजूद थे (मुखबिर की सूचना के समय)",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम नन्दाखेड़ा\"}",
+      "sort_order": 5
+    },
+    {
+      "key_name": "IncidentVillage",
+      "label": "शराब कहाँ (गाँव / जगह)",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम बरौला\"}",
+      "sort_order": 6
+    },
+    {
+      "key_name": "SpotPlace",
+      "label": "अभियुक्त कहाँ खड़े थे",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: अम्बेडकर मूर्ति के पास\"}",
+      "sort_order": 7
+    },
+    {
+      "key_name": "GoBy",
+      "label": "किससे गये",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "अपनी-अपनी मोटरसाइकिल से",
+      "dropdown_options": "{\"placeholder\": \"जैसे: अपनी-अपनी मोटरसाइकिल से / सरकारी वाहन से / पैदल\"}",
+      "sort_order": 8
+    },
+    {
+      "key_name": "LiquorType",
+      "label": "कौन सी शराब",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "कच्ची शराब",
+      "dropdown_options": "{\"placeholder\": \"जैसे: कच्ची शराब / देशी शराब\"}",
+      "sort_order": 9
+    },
+    {
+      "key_name": "ArrestTime",
+      "label": "गिरफ्तारी का समय",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: 18.05\"}",
+      "sort_order": 10
+    },
+    {
+      "key_name": "InformHow",
+      "label": "सूचना कैसे दी",
+      "field_type": "dropdown",
+      "is_required": 1,
+      "default_value": "मौके पर",
+      "dropdown_options": "[\"मौके पर\", \"फोन द्वारा\", \"थाने पहुँचकर दी जायेगी\"]",
+      "sort_order": 11
+    },
+    {
+      "key_name": "Typist",
+      "label": "फर्द किसे भेजकर प्रिन्ट कराई (आरक्षी का नाम)",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: मनोज सोनकर\"}",
+      "sort_order": 12
+    },
+    {
+      "key_name": "pad",
+      "label": "पद/रैंक",
+      "field_type": "dropdown",
+      "is_required": 1,
+      "default_value": "उपनिरीक्षक",
+      "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+      "sort_order": 13
+    },
+    {
+      "key_name": "OfficerName",
+      "label": "अधिकारी का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+      "sort_order": 14
+    },
+    {
+      "key_name": "PoliceStation",
+      "label": "थाना",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+      "sort_order": 15
+    },
+    {
+      "key_name": "District",
+      "label": "जनपद",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+      "sort_order": 16
+    }
+  ]
+}
