@@ -242,6 +242,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - `sys-fmt-cd-abhiyukt-bayan-35-3` "अभियुक्त का बयान — 07 वर्ष या उससे कम सजा (धारा 35(3) BNSS नोटिस तामील सहित)" (Case Diary, plain text, owner's
   sample): item_group Accused (name, rel, father, addr, mobile, age, mahila, own) — one / woman / many wording like the 60(1) फर्द; Bailable
   tick; per-row "बयान अभियुक्त(ा) — …" para, own text or default "जुर्म से इंकार… सफाई जरिये अधिवक्ता… बता रहे / रही हैं" (nested {?own|…{?mahila|…}…}).
+- `sys-fmt-cd-vahan-prapatra-avlokan` "वाहन प्रपत्र अवलोकन — आरसी / परमिट / इंश्योरेन्स / फिटनेस / प्रदूषण" (Case Diary, plain text, owner's lines):
+  vehicle + owner typed once (VehNo, Chassis, Engine, OwnerName, s/o w/o d/o, father, address), one tick per document (doRC default on) opening
+  its boxes; each document = its own line "अवलोकन आरसी.......... Reg No … ।" (+ " बाद अवलोकन संलग्न सीडी है।" by doCD); blank parts left out.
 - `sys-fmt-bnss126-prarthna` "प्रार्थना पत्र जांच में 126/135 की कार्यवाही" = the मुकदमा one with आवेदक / नाम-पता / प्रा0 पत्र तिथि
   instead of FIRNO/SECTION (seed_version 1).
 - Every धारा / Sections key in the predefined formats (SECTION / Sections / Section / hNSec / hNDhara / BadhSection / GhatSection /
