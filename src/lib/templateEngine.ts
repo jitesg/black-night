@@ -19,6 +19,7 @@
  * (e.g. "yes"/"no"), not by display label.  Nested plain-key references inside
  * the selected branch are resolved against `values` before output.
  */
+import { deriveFormatValues } from './formatDerived';
 import { stripFormatMarkers } from './formatMarkers';
 import { composeSentence, parseSentenceConfig } from './sentenceField';
 import { joinDhara, minusDhara } from './dharaMath';
@@ -1092,6 +1093,7 @@ export function generateReport(
 ): string {
   // Layout marks ([[शीर्षक]] …) are only for the print pipeline (formats/fill).
   if (!opts?.keepMarkers) return stripFormatMarkers(generateReport(template, values, keyDefs, { keepMarkers: true }));
+  values = deriveFormatValues(values, keyDefs); // पहर from a time, picked-person fields (src/lib/formatDerived.ts)
   let processed = _applySeqTokens(_applyDharaTokens(_applyIfTokens(_applyItemTokens(_applySentenceFields(template, values, keyDefs), values), values), values)); // Step -3/-2 (item lists, {{if:Key|…}}, {{seq|…}})
   if (keyDefs && keyDefs.length > 0) {
     processed = _applyGroupStatus(processed, values, keyDefs);            // Step -1 (accused status)
