@@ -75,3 +75,16 @@ test('flags, fallback, groupInto', () => {
   assert.equal(acc[0].found, 'जेब से बिछिया व हाथ से मोबाइल');
   assert.equal(acc[1].found, 'झोला से टैबलेट');
 });
+
+test('weight + copy', async () => {
+  const { kgText } = await import('../src/lib/formatDerived.ts');
+  assert.equal(kgText(1200), '01 किलो 200 ग्राम');
+  assert.equal(kgText(250), '250 ग्राम');
+  assert.equal(kgText(2000), '02 किलो');
+  assert.equal(kgText(0), '');
+  const k = [{ key_name: 'Acc', field_type: 'item_group', dropdown_options: JSON.stringify({ columns: [{ key: 'name' }, { key: 'kg' }, { key: 'gm' }], copy: ['Drug'], weight: { kg: 'kg', gm: 'gm', rowField: 'wt', total: 'TotalWt' } }) }];
+  const v = deriveFormatValues({ Drug: 'गांजा', Acc: JSON.stringify([{ name: 'अ', kg: '1', gm: '200' }, { name: 'ब', kg: '', gm: '850' }]) }, k);
+  const rows = JSON.parse(v.Acc);
+  assert.equal(rows[0].wt, '01 किलो 200 ग्राम'); assert.equal(rows[1].wt, '850 ग्राम'); assert.equal(rows[0].Drug, 'गांजा');
+  assert.equal(v.TotalWt, '02 किलो 50 ग्राम');
+});

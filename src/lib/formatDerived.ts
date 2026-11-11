@@ -10,6 +10,8 @@
  *  • `"endWith": "।"` on an item_group column: a filled cell always ends with it.
  *  • `"flags": {"isCase": "मुकदमे का माल"}` on a choice column → tick flag per row; `"fallback": "FIRNo"` → empty cell
  *    takes that form value; group `"groupInto"` → this list's rows written into a field of another list (see below).
+ *  • group `"copy": ["Drug"]` → that form value in every row; `"weight": {kg, gm, rowField, total}` → per-row
+ *    "01 किलो 200 ग्राम" and the total of all rows into the form value `total`.
  */
 
 export interface DerivedKeyDef { key_name: string; field_type?: string | null; dropdown_options?: string | null }
@@ -51,6 +53,16 @@ type ColCfg = {
   /** empty cell → this top-level value (e.g. the main मुकदमा "FIRNo") */
   fallback?: string;
 };
+/** Grams → "01 किलो 200 ग्राम" / "250 ग्राम" ('' for 0). */
+export function kgText(grams: number): string {
+  if (!Number.isFinite(grams) || grams <= 0) return '';
+  const g = Math.round(grams);
+  const kg = Math.floor(g / 1000);
+  const gm = g % 1000;
+  return [kg ? `${String(kg).padStart(2, '0')} किलो` : '', gm ? `${gm} ग्राम` : ''].filter(Boolean).join(' ');
+}
+const num = (v: unknown) => { const n = Number(String(v ?? '').replace(/[^\d.]/g, '')); return Number.isFinite(n) ? n : 0; };
+type Weight = { kg?: string; gm?: string; rowField?: string; total?: string };
 type GroupInto = { key?: string; match?: string; by?: string; field?: string; row?: string; sep?: string };
 
 /** Copy of `values` with the worked-out values added (the input object is not changed). */
@@ -68,13 +80,15 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
       if (!v || v === PAHAR_AUTO) set(kd.key_name, paharFromTime(values[src]));
     }
     if (kd.field_type === 'item_group') {
-      const cfg = parseJson(kd.dropdown_options) as { columns?: ColCfg[]; groupInto?: GroupInto } | null;
+      const cfg = parseJson(kd.dropdown_options) as { columns?: ColCfg[]; groupInto?: GroupInto; copy?: string[]; weight?: Weight } | null;
       const cols = cfg?.columns ?? [];
       const refs = cols.filter((c) => c?.type === 'ref' && c.key && c.ref);
       const ends = cols.filter((c) => c?.key && c.endWith);
       const flags = cols.filter((c) => c?.key && c.flags && typeof c.flags === 'object');
       const falls = cols.filter((c) => c?.key && c.fallback);
-      if (!refs.length && !ends.length && !flags.length && !falls.length && !cfg?.groupInto) continue;
+      const copy = Array.isArray(cfg?.copy) ? cfg!.copy.filter((k) => typeof k === 'string') : [];
+      const wt = cfg?.weight && cfg.weight.rowField ? cfg.weight : null;
+      if (!refs.length && !ends.length && !flags.length && !falls.length && !cfg?.groupInto && !copy.length && !wt) continue;
       const rows = rowsOf(values[kd.key_name]);
       if (!rows.length) continue;
       const next = rows.map((r) => {
@@ -97,9 +111,14 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
         for (const c of falls) {
           if (!String(row[c.key!] ?? '').trim()) row[c.key!] = String(values[c.fallback!] ?? '').trim();
         }
+        // "copy": ["Drug"] — form values the row text needs (a row can't hold {{Drug}} itself)
+        for (const k of copy) row[k] = String(values[k] ?? '');
+        // "weight": kg + gm cells → row text "01 किलो 200 ग्राम"
+        if (wt) row[wt.rowField!] = kgText(num(row[wt.kg || 'kg']) * 1000 + num(row[wt.gm || 'gm']));
         return row;
       });
       set(kd.key_name, JSON.stringify(next));
+      if (wt?.total) set(wt.total, kgText(next.reduce((a, r) => a + num(r[wt.kg || 'kg']) * 1000 + num(r[wt.gm || 'gm']), 0)));
       if (cfg?.groupInto?.key && cfg.groupInto.field) groupings.push({ rows: next, g: cfg.groupInto });
     }
   }
