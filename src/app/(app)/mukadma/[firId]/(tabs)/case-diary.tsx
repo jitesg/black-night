@@ -278,26 +278,30 @@ function CaseDiaryTab() {
         title={t('fir.caseDiary.title')}
         countLabel={diaries.length > 0 ? t('fir.caseDiary.entryCount_other', { count: diaries.length }) : undefined}
         rightActions={
+          // Icon-only (owner): the wide "Export All" / "Add Diary" pills cut the tab title.
           <View className="flex-row items-center gap-2">
             {diaries.length > 0 && (
               <Pressable
                 onPress={handleExportAll}
                 disabled={!!exporting}
+                accessibilityRole="button"
                 accessibilityLabel={t('fir.caseDiary.exportAll')}
-                className="flex-row items-center gap-1.5 rounded-xl px-3 py-2 active:opacity-70"
-                style={{ backgroundColor: '#059669' }}
+                hitSlop={6}
+                className="items-center justify-center rounded-xl active:opacity-70"
+                style={{ width: 38, height: 38, backgroundColor: '#059669' }}
               >
-                <Download size={14} color="#fff" />
-                <Text className="text-xs font-bold text-white">{t('fir.caseDiary.exportAll')}</Text>
+                <Download size={18} color="#fff" />
               </Pressable>
             )}
             <Pressable
               onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary' as never, params: { firId: stableFirId } })}
-              className="flex-row items-center gap-1.5 rounded-xl px-3 py-2 active:opacity-70"
-              style={{ backgroundColor: INDIGO }}
+              accessibilityRole="button"
+              accessibilityLabel={t('fir.caseDiary.addDiary')}
+              hitSlop={6}
+              className="items-center justify-center rounded-xl active:opacity-70"
+              style={{ width: 38, height: 38, backgroundColor: INDIGO }}
             >
-              <Plus size={14} color="#fff" />
-              <Text className="text-xs font-bold text-white">{t('fir.caseDiary.addDiary')}</Text>
+              <Plus size={20} color="#fff" />
             </Pressable>
           </View>
         }

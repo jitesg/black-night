@@ -332,6 +332,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end
   before start is allowed — past midnight).
+- FIR Case Diary tab header (`(tabs)/case-diary.tsx`): Export All / Add Diary are 38px icon-only buttons (green ⬇ / indigo +, labels in
+  accessibilityLabel) — the text pills cut the tab title (owner).
 - केस डायरी कार्यवाही screen (`add-case-diary-karyvahi.tsx`): ✕ on an entry (collapsed card or open form) → `askRemoveEntry`: empty entry removed at once,
   a filled one only after the "प्रविष्टि हटाएँ?" dialog (रद्द करें / हाँ, हटाएँ) — owner.
   Entry editors there and in edit-case-diary-entry pass `DocumentEditor noIndent` → print preview without the first-line paragraph indent
