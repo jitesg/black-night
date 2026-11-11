@@ -213,6 +213,18 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   step-per-paragraph pattern as 60(1) v6): VictimType लड़की / लड़का switches every word (पीड़िता/पीड़ित, खड़ी/खड़ा, पुत्री-पत्नी chips or पुत्र;
   लड़का hides LadyConstable — नाम पता by the officer, "पुलिस अभिरक्षा"); MatchBy (फोटो / परिजनों से पहचान / नाम पता); Pahar from RecoveryTime
   (टार्च at night); सूचना InformRel + "वादी मुकदमा" tick + name / mobile (@FIR complainant). FIRNo / Sections from @FIR.
+- फर्द rule (owner): a फर्द can have several accused, each with their own recovered things; a thing is मुकदमे का माल (its own
+  मु0अ0सं0 / धारा), अवैध शस्त्र, or अभियुक्त की अपनी चीज़ (→ "निजी वस्तु है, जिसे कब्जे पुलिस में लिया गया"). Engine pieces
+  (formatDerived.ts + templateEngine): item_group column `flags` (choice → isCase/isArms/isOwn), `fallback` (empty → form value),
+  per-row column `showIf` (ItemGroupInput), group `groupInto` (items joined into Accused[].found), `copy` (form values into rows — a row
+  can't hold {{Key}}: "{Key}" inside "{{Key}}" is eaten by the row filler), `weight` (kg + gm → "01 किलो 200 ग्राम" + total), token
+  `{{uniq:…}}` (each, duplicates once).
+- `sys-fmt-fard-maal-masruka-shastra` "फर्द बरामदगी माल मसरुका / अवैध शस्त्र व गिरफ्तारी (एक या अधिक अभियुक्त)" (Fard, owner's 37/24 sample):
+  Accused cards (+ say) and Items cards (who chip, what, from, kind; case/dhara fallback FIRNo/Sections; arms, said, chamber, huliya,
+  source); heading lists case + arms items and each मु0अ0सं0 once (uniq) + arms धारा; per-accused जामा तलाशी line; licence line per weapon.
+- `sys-fmt-fard-ndps` "फर्द बरामदगी अवैध मादक पदार्थ … NDPS एक्ट (धारा 50 सहित)" (Fard, owner's 8/20 sample): Drug dropdown (गांजा →
+  oblique गांजे via if) + Dhara; Accused cards with look / where / carry / plan / extra / kg / gm / source; TotalWt from `weight`; धारा 50
+  consent + GazOfficer / GazMobile / GazResult; रात → "व रात्रि का वक्त होने की वजह से"; ArrestDate for after midnight; ई-साक्ष्य / Light.
 - केस डायरी formats (owner, started): `sys-fmt-cd-nirikshan-ghatnasthal` "निरीक्षण घटना स्थल (नक्शा नजरी व ई-साक्ष्य वीडियोग्राफी)" v2 (Case Diary,
   plain text — no layout marks): Pointer वादी / अन्य (OtherName + optional OtherDetail → first mention full, later "<name> उपरोक्त"),
   Where साथ लेकर गये / घटना स्थल पर मौजूद (only the first adds "…को साथ लेकर घटना स्थल आया।"), PLACEOFINCIDENT (@FIR.ghatnasthal), Mark (A),

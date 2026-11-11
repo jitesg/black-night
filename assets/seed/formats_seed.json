@@ -451,6 +451,597 @@
       ]
     },
     {
+      "id": "sys-fmt-fard-maal-masruka-shastra",
+      "title": "फर्द बरामदगी माल मसरुका / अवैध शस्त्र व गिरफ्तारी (एक या अधिक अभियुक्त — मुखबिर की सूचना पर)",
+      "format_type": "Fard",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "फर्द",
+        "बरामदगी",
+        "माल मसरुका",
+        "चोरी",
+        "तमंचा",
+        "3/25 आर्म्स एक्ट",
+        "गिरफ्तारी"
+      ],
+      "last_updated": "2026-11-11",
+      "vivran": "[[पत्र]]\n[[सूची]] **फर्द बरामदगी {{any:Items?isCase|{{seq:hd|| व }}माल मसरुका {{each:Items?isCase|{what}| व }}}}{{any:Items?isArms|{{seq:hd|| व }}{{each:Items?isArms|{what}| व }}}} व गिरफ्तारी {{cnt:Accused|}} नफर {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} सम्बन्धित {{any:Items?isCase|{{seq:hc|| व }}{{uniq:Items?isCase|मु0अ0सं0 {case} धारा {dhara}| व }}}}{{any:Items?isArms|{{seq:hc|| व }}{{uniq:Items?isArms|{arms}| व }}}} थाना {{PoliceStation}} जनपद {{District}}**\n[[विवरण]] आज दिनांक {{RecoveryDate}} को मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय {{Hamrah}}}}{{any:Accused?mahila|{{if:LadyConstable| मय महिला आरक्षी {{LadyConstable}}}}}}{{if:Vehicle| मय {{Vehicle}}}} रवानाशुदा तारीखी दिरोजा बहवाले रपट संख्या {{if:RapatNo|{{RapatNo}}}}{{ifnot:RapatNo|..........}} समय {{if:RapatTime|{{RapatTime}}}}{{ifnot:RapatTime|..........}} बजे पर थाना हाजा से रवाना होकर देखभाल क्षेत्र, चेकिंग संदिग्ध व्यक्ति / वाहन, गश्त इलाका, तलाश वांछित वारंटी में मामूर होते हुए मु0अ0सं0 {{FIRNo}} धारा {{Sections}} के माल मसरुका व मुल्जिमान की तलाश में {{PatrolPlace}} के पास मौजूद थे।\n\nतभी जरिए मुखबिर खास सूचना मिली कि साहब {{IncidentBrief}} वांछित अपराधियों में से {{count:Accused|{{any:Accused?mahila|आरोपिया {{each:Accused|{name} {rel} {father} निवासी {addr}|}} जिसकी}}{{none:Accused?mahila|आरोपी {{each:Accused|{name} {rel} {father} निवासी {addr}|}} जिसकी}}|आरोपीगण {{each:Accused|{#}. {name} {rel} {father} निवासी {addr}| }} जिनकी}} आपको तलाश है, इस समय {{SpotPlace}} के पास मौजूद {{count:Accused|{{any:Accused?mahila|है}}{{none:Accused?mahila|है}}|हैं}}, शायद फिर कहीं फरार होने की फिराक में {{count:Accused|{{any:Accused?mahila|है}}{{none:Accused?mahila|है}}|हैं}}। यदि जल्दी की जाये तो मौके पर मिल {{count:Accused|{{any:Accused?mahila|सकती है}}{{none:Accused?mahila|सकता है}}|सकते हैं}}।\n\nइस सूचना पर विश्वास करके हम पुलिस वालों ने एक दूसरे की जामा तलाशी ले-देकर इत्मीनान किया कि किसी के पास कोई जुर्म / जरायम से सम्बन्धित वस्तु तो नहीं है। इत्मीनान हो जाने पर हम पुलिस वाले आपस में सलाह मशविरा करके मुखबिर को साथ लेकर मुखबिर के बताये हुए स्थान {{SpotPlace}} की ओर {{GoBy}} चल दिये।\n\n{{SpotPlace}} से पहले {{if:StopPlace|{{StopPlace}} पर }}मुखबिर ने रुकने का इशारा किया। मुखबिर के इशारे पर हम पुलिस वाले मय मुखबिर के {{if:Vehicle|वाहन से उतरे और }}दबे पाँव मुखबिर के बताये स्थान की ओर चल दिये।\n\n{{SpotPlace}} से थोड़ी दूर पहले आड़ लेते हुए हम पुलिस वालों को मुखबिर ने {{if:Pahar=रात|टार्च की रोशनी में }}दूर से {{SpotPlace}} पर {{count:Accused|{{any:Accused?mahila|खड़ी एक महिला}}{{none:Accused?mahila|खड़े एक व्यक्ति}}|खड़े {{cnt:Accused|}} व्यक्तियों}} की ओर इशारा कर बताया कि साहब {{count:Accused|{{any:Accused?mahila|यही वह आरोपिया है जिसकी}}{{none:Accused?mahila|यही वह आरोपी है जिसकी}}|यही वे आरोपीगण हैं जिनकी}} आपको तलाश है।\n\nइस पर हम पुलिस वाले आपस में सलाह मशविरा कर दबे पाँव लुकते-छिपते {{count:Accused|{{any:Accused?mahila|खड़ी महिला}}{{none:Accused?mahila|खड़े व्यक्ति}}|खड़े व्यक्तियों}} की ओर आगे बढ़े कि हम पुलिस वालों को अचानक बावर्दी अपनी ओर आता देख {{count:Accused|{{any:Accused?mahila|उक्त महिला सकपकायी}}{{none:Accused?mahila|उक्त व्यक्ति सकपकाया}}|उक्त व्यक्ति सकपकाये}} और वापस मुड़कर{{if:RunToward| {{RunToward}} की ओर}} दौड़ने {{count:Accused|{{any:Accused?mahila|लगी}}{{none:Accused?mahila|लगा}}|लगे}} कि हम पुलिस वालों{{any:Accused?mahila| व महिला आरक्षी}} ने {{if:Pahar=रात|टार्च की रोशनी में }}एकबारगी घेरकर {{count:Accused|{{any:Accused?mahila|उक्त महिला}}{{none:Accused?mahila|उक्त व्यक्ति}}|उक्त व्यक्तियों}} को{{if:CatchAt| {{CatchAt}}}} पकड़ लिया।\n\n{{count:Accused|{{any:Accused?mahila|पकड़ी गयी महिला}}{{none:Accused?mahila|पकड़े गये व्यक्ति}}|पकड़े गये व्यक्तियों}} से नाम पता पूछा गया तो {{count:Accused|{{any:Accused?mahila|उसने}}{{none:Accused?mahila|उसने}}|उन्होंने क्रमशः}} अपना नाम {{count:Accused|{{each:Accused|{name} {rel} {father} निवासी {addr}{ उम्र करीब ~age~ वर्ष}|}}|{{each:Accused|{#}. {name} {rel} {father} निवासी {addr}{ उम्र करीब ~age~ वर्ष}| }}}} बताया।\n\n{{each:Accused|{?mahila|अभियुक्ता|अभियुक्त} {name} की जामा तलाशी {?mahila|महिला आरक्षी द्वारा |}ली गयी तो {?found|{found} बरामद हुआ।|कोई वस्तु बरामद नहीं हुई।}| }}{{any:Items?isArms|{{each:Items?isArms|{?chamber|बरामद {what} को खोलकर देखा गया तो चैम्बर में कारतूस मौजूद है, जिसे सावधानी पूर्वक चैम्बर से अलग किया गया।|}| }}}}\n\n{{any:Items?isArms|{{each:Items?isArms|{?who_mahila|अभियुक्ता|अभियुक्त} {who} से बरामद {what} रखने के बारे में अधिकार पत्र माँगा गया तो दिखाने से कासिर {?who_mahila|रही|रहा}{?said| और {?who_mahila|बोली|बोला} कि साहब {said}|।}{?huliya| बरामद {what} का हुलिया — {huliya}|}{?source| {?who_mahila|अभियुक्ता|अभियुक्त} {who} से बरामद {what} के स्रोत के बारे में पूछा गया तो बताया कि {source}|}| }}}}\n\n{{each:Accused|{?say|{?mahila|अभियुक्ता|अभियुक्त} {name} से बरामद माल के बारे में कड़ाई से पूछने पर {?mahila|बता रही है|बता रहा है} कि {say}|}| }} {{any:Items?isCase|{{each:Items?isCase|{?who_mahila|अभियुक्ता|अभियुक्त} {who} के कब्जे से बरामद {what} थाना स्थानीय पर पंजीकृत मु0अ0सं0 {case} अन्तर्गत धारा {dhara} से सम्बन्धित माल मसरुका है| तथा }}।}} {{any:Items?isArms|{{each:Items?isArms|{?who_mahila|अभियुक्ता|अभियुक्त} {who} के कब्जे से {what}| व }} बरामद होना धारा {{uniq:Items?isArms|{arms}| व }} का दण्डनीय अपराध है।}} {{any:Items?isOwn|{{each:Items?isOwn|{?who_mahila|अभियुक्ता|अभियुक्त} {who} के पास से बरामद {what}| तथा }} {{count:Items?isOwn|अभियुक्त की निजी वस्तु है, जिसे|अभियुक्तगण की निजी वस्तुएँ हैं, जिन्हें}} कब्जे पुलिस में लिया गया।}}\n\nकारण गिरफ्तारी बताते हुए {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} को समय करीब {{ArrestTime}} बजे{{if:Pahar| {{Pahar}} में}} हिरासत पुलिस में लिया गया।{{any:Items?isArms| बरामद शस्त्र व कारतूस को एक सफेद कपड़े में रखकर सिलकर सील सर्व मुहर कर नमूना मुहर तैयार किया गया।}}{{any:Items?isCase| {{if:BoxFetcher|का0 {{BoxFetcher}} को नजदीकी बाजार में भेजकर पारदर्शी डिब्बे मंगाकर }}बरामद {{each:Items?isCase|{what}| व }} को प्लास्टिक के पारदर्शी सफेद डिब्बे में रखकर सील सर्व मुहर कर नमूना मुहर मौके पर तैयार किया गया।}} दौराने गिरफ्तारी व बरामदगी मौके से कुछ राहगीर आ-जा रहे थे, जिन्हें गवाहान फराहम करने का प्रयास किया गया तो आपसी भलाई-बुराई का हवाला देते हुए बिना नाम पता बताये मौके से हट-बढ़ गये। दौराने कार्यवाही माननीय सर्वोच्च न्यायालय व मानवाधिकार आयोग के आदेशों एवं निर्देशों का पालन किया गया।\n\nगिरफ्तारी की सूचना {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} के {{InformTo}} को {{if:InformHow=मौके पर दी गयी|मौके पर दी गयी।}}{{if:InformHow=फोन द्वारा दी गयी|फोन द्वारा दी गयी।}}{{if:InformHow=अकब से दी जा रही है|अकब से दी जा रही है।}}\n\nफर्द मौके पर मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा {{if:TypeHow=लैपटॉप पर|विवेचना किट से अपना लैपटॉप निकालकर लैपटॉप पर टंकित की गयी व जरिए पैनड्राइव का0 {{Typist}} को पास के बाजार भेजकर प्रिन्ट आउट निकलवाकर मंगवाया गया।}}{{if:TypeHow=मोबाइल पर|अपने मोबाइल पर गूगल डॉक्स एप्प पर बोल-बोलकर टाइप कर का0 {{Typist}} को भेजकर प्रिन्ट मंगवाया गया।}} फर्द व गिरफ्तारी मेमो पर सर्व सम्बन्धित के अलामात बनवाये जा रहे हैं। फर्द की {{count:Accused|एक प्रति {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} को|एक-एक प्रति प्रत्येक अभियुक्त को}} दी गयी।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}",
+      "keys": [
+        {
+          "key_name": "RecoveryDate",
+          "label": "1. मौजूदगी — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 25.01.2024\"}",
+          "sort_order": 0
+        },
+        {
+          "key_name": "pad",
+          "label": "1. मौजूदगी — पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 1
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "1. मौजूदगी — अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "dropdown_options": null,
+          "sort_order": 2
+        },
+        {
+          "key_name": "Hamrah",
+          "label": "1. मौजूदगी — हमराह (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: का0 अभिषेक\"}",
+          "sort_order": 3
+        },
+        {
+          "key_name": "LadyConstable",
+          "label": "1. मौजूदगी — महिला आरक्षी (कोई अभियुक्ता हो तो)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: राखी\"}",
+          "sort_order": 4
+        },
+        {
+          "key_name": "Vehicle",
+          "label": "1. मौजूदगी — वाहन (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सरकारी वाहन संख्या UP33AG0496 टाटा सूमो\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "RapatNo",
+          "label": "1. मौजूदगी — रवानगी रपट संख्या (खाली = ……)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 45\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "RapatTime",
+          "label": "1. मौजूदगी — रवानगी समय (खाली = ……)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 23.00\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "1. मौजूदगी — मु0अ0सं0 (जिसकी तलाश में थे)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "@FIR.fir_number",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 37/24\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "Sections",
+          "label": "1. मौजूदगी — धारा",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "@FIR.section",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 457/380 भादवि0\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "PatrolPlace",
+          "label": "1. मौजूदगी — कहाँ मौजूद थे",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: डेपारमऊ चौराहे\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "IncidentBrief",
+          "label": "2. मुखबिर की सूचना — घटना (… वांछित अपराधियों में से)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम हिलहा में एक माह पहले एक घर में घुसकर चोरी की घटना को अंजाम देने वाले\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "SpotPlace",
+          "label": "2. मुखबिर की सूचना — अभियुक्त कहाँ है",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोप सिंह का पुरवा मोड़\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "GoBy",
+          "label": "3. वहाँ से चल देना — किससे गये",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "सरकारी वाहन से",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सरकारी वाहन से / अपनी-अपनी मोटरसाइकिल से\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "StopPlace",
+          "label": "4. स्थान पर आना — मुखबिर ने कहाँ रुकवाया (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: मऊ नहर पुलिया\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "RunToward",
+          "label": "6. पकड़ना — किस ओर भागे (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोप सिंह का पुरवा\"}",
+          "sort_order": 15
+        },
+        {
+          "key_name": "CatchAt",
+          "label": "6. पकड़ना — कहाँ पकड़ा (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: मोड़ से करीब 20 कदम पर\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "Accused",
+          "label": "7. नाम पता — अभियुक्त / अभियुक्ता (हर एक का card)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: रौनक सिंह)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: हिलहा थाना महराजगंज जनपद रायबरेली)\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"say\", \"label\": \"10. बरामद माल के बारे में अभियुक्त ने क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "Items",
+          "label": "8. जामा तलाशी — बरामदगी (हर चीज़ का card)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"किस अभियुक्त / अभियुक्ता से बरामद\", \"type\": \"ref\", \"ref\": \"Accused\"}, {\"key\": \"what\", \"label\": \"क्या बरामद (जैसे: 07 अदद बिछिया सफेद धातु / एक अदद तमंचा नाजायज 12 बोर व 01 जिन्दा कारतूस 12 बोर)\"}, {\"key\": \"from\", \"label\": \"कहाँ से (जैसे: पहनी पैंट की आगे की दाहिनी जेब)\"}, {\"key\": \"kind\", \"label\": \"किस तरह की चीज़\", \"type\": \"choice\", \"options\": [\"मुकदमे का माल\", \"अवैध शस्त्र\", \"अपनी चीज़\"], \"default\": \"मुकदमे का माल\", \"flags\": {\"isCase\": \"मुकदमे का माल\", \"isArms\": \"अवैध शस्त्र\", \"isOwn\": \"अपनी चीज़\"}}, {\"key\": \"case\", \"label\": \"मु0अ0सं0 (खाली = ऊपर वाला मुकदमा)\", \"showIf\": \"kind=मुकदमे का माल\", \"fallback\": \"FIRNo\"}, {\"key\": \"dhara\", \"label\": \"धारा (खाली = ऊपर वाली धारा)\", \"showIf\": \"kind=मुकदमे का माल\", \"fallback\": \"Sections\"}, {\"key\": \"arms\", \"label\": \"आर्म्स एक्ट धारा\", \"showIf\": \"kind=अवैध शस्त्र\", \"default\": \"3/25 आर्म्स एक्ट\"}, {\"key\": \"said\", \"label\": \"अधिकार पत्र माँगने पर अभियुक्त ने क्या कहा (वैकल्पिक)\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}, {\"key\": \"chamber\", \"label\": \"कारतूस चैम्बर में था (अलग किया गया)\", \"type\": \"check\", \"showIf\": \"kind=अवैध शस्त्र\"}, {\"key\": \"huliya\", \"label\": \"हुलिया (वैकल्पिक)\", \"type\": \"multiline\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}, {\"key\": \"source\", \"label\": \"स्रोत — अभियुक्त ने क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}], \"addLabel\": \"+ बरामदगी जोड़ें\", \"itemLabel\": \"बरामदगी\", \"groupInto\": {\"key\": \"Accused\", \"match\": \"who\", \"by\": \"name\", \"field\": \"found\", \"row\": \"{from} से {what}\", \"sep\": \" व \"}}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "ArrestTime",
+          "label": "11. गिरफ्तारी — समय",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 23.50\"}",
+          "sort_order": 19
+        },
+        {
+          "key_name": "Pahar",
+          "label": "11. गिरफ्तारी — पहर (समय से अपने आप; बदलना हो तो चुनें)",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "समय से",
+          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"ArrestTime\"}",
+          "sort_order": 20
+        },
+        {
+          "key_name": "BoxFetcher",
+          "label": "11. डिब्बे किस आरक्षी से मंगाये (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: संदीप यादव\"}",
+          "sort_order": 21
+        },
+        {
+          "key_name": "InformTo",
+          "label": "12. सूचना — किसे",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "परिजनों",
+          "dropdown_options": "{\"placeholder\": \"जैसे: परिजनों / पिता रामकरन सिंह\"}",
+          "sort_order": 22
+        },
+        {
+          "key_name": "InformHow",
+          "label": "12. सूचना — कैसे",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "अकब से दी जा रही है",
+          "dropdown_options": "[\"मौके पर दी गयी\", \"फोन द्वारा दी गयी\", \"अकब से दी जा रही है\"]",
+          "sort_order": 23
+        },
+        {
+          "key_name": "TypeHow",
+          "label": "अंत — फर्द कैसे टाइप हुई",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "लैपटॉप पर",
+          "dropdown_options": "[\"लैपटॉप पर\", \"मोबाइल पर\"]",
+          "sort_order": 24
+        },
+        {
+          "key_name": "Typist",
+          "label": "अंत — प्रिन्ट किस आरक्षी से मंगाया",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: संदीप\"}",
+          "sort_order": 25
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "dropdown_options": null,
+          "sort_order": 26
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "dropdown_options": null,
+          "sort_order": 27
+        }
+      ]
+    },
+    {
+      "id": "sys-fmt-fard-ndps",
+      "title": "फर्द बरामदगी अवैध मादक पदार्थ (गांजा / चरस / स्मैक…) व गिरफ्तारी — NDPS एक्ट (धारा 50 सहित, एक या अधिक अभियुक्त)",
+      "format_type": "Fard",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "फर्द",
+        "NDPS",
+        "गांजा",
+        "चरस",
+        "स्मैक",
+        "8/20",
+        "धारा 50",
+        "मादक पदार्थ"
+      ],
+      "last_updated": "2026-11-11",
+      "vivran": "[[पत्र]]\n[[सूची]] **फर्द बरामदगी अवैध {{Drug}} {{TotalWt}} व गिरफ्तारी {{cnt:Accused|}} नफर {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} अन्तर्गत धारा {{Dhara}} थाना {{PoliceStation}} जनपद {{District}}**\n[[विवरण]] दिनांक {{RecoveryDate}} को मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय हमराही {{Hamrah}}}}{{any:Accused?mahila|{{if:LadyConstable| व महिला आरक्षी {{LadyConstable}}}}}} के थाना हाजा से रवानगी रपट न0 {{if:RapatNo|{{RapatNo}}}}{{ifnot:RapatNo|..........}} समय {{if:RapatTime|{{RapatTime}}}}{{ifnot:RapatTime|..........}} बजे रवाना होकर वास्ते देखरेख शांति व्यवस्था, चैकिंग संदिग्ध व्यक्ति / वस्तु / वाहन, रोकथाम जुर्म जरायम, तलाश वांछित / वारंटी अभियुक्त, गश्त में मामूर होकर {{PatrolPlace}} पर चैकिंग कर रहे थे।\n\nतभी मुखबिर खास ने आकर सूचना दी कि साहब {{count:Accused|{{any:Accused?mahila|एक महिला}}{{none:Accused?mahila|एक व्यक्ति}}|{{cnt:Accused|}} व्यक्ति}} {{ComingFrom}} अवैध {{Drug}} लेकर {{count:Accused|{{any:Accused?mahila|आ रही है}}{{none:Accused?mahila|आ रहा है}}|आ रहे हैं}}, यदि जल्दी की जाये तो {{count:Accused|{{any:Accused?mahila|पकड़ी जा सकती है}}{{none:Accused?mahila|पकड़ा जा सकता है}}|पकड़े जा सकते हैं}}।\n\nमुखबिर की इस सूचना पर भरोसा कर हम पुलिस वालों एवं मुखबिर की एक दूसरे की जामा तलाशी ले-देकर विश्वास किया कि किसी के पास जुर्म से सम्बन्धित कोई वस्तु नहीं है। तत्पश्चात मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} मय हमराहियान उपरोक्त के मुखबिर को साथ लेकर {{GoBy}} चल दिया तथा रास्ते में आने-जाने वाले लोगों को मकसद बताते हुए गवाही हेतु कहा गया तो भलाई-बुराई के कारण बिना नाम पता बताये चले गये।\n\nतब हम लोग मुखबिर के बताये अनुसार {{WaitPlace}} पहुँचे तथा {{if:Cover|{{Cover}} की आड़ लेकर }}इन्तजार करने लगे।\n\nकि तभी कुछ देर बाद {{if:LightBy|{{LightBy}} में }}{{ComingFrom}} {{each:Accused|{look}{, जिसके ~where~}{ एक ~carry~ है}| तथा }} पैदल-पैदल {{count:Accused|{{any:Accused?mahila|आती दिखाई दी}}{{none:Accused?mahila|आता दिखाई दिया}}|आते दिखाई दिये}}। {{count:Accused|{{any:Accused?mahila|इस महिला}}{{none:Accused?mahila|इस व्यक्ति}}|इन व्यक्तियों}} की तरफ इशारा करके मुखबिर ने बताया कि साहब {{count:Accused|{{any:Accused?mahila|यही वह महिला है, जिसके}}{{none:Accused?mahila|यही वह व्यक्ति है, जिसके}}|यही वे लोग हैं, जिनके}} पास अवैध {{Drug}} है और इतना कहकर मुखबिर वापस चला गया।\n\nतब हम पुलिस वालों ने{{any:Accused?mahila| महिला आरक्षी की सहायता से}} बिना वक्त गँवाये {{count:Accused|{{any:Accused?mahila|उक्त महिला}}{{none:Accused?mahila|उक्त व्यक्ति}}|उक्त व्यक्तियों}} को घेर-घोट कर{{if:Force| आवश्यक बल प्रयोग कर}} {{if:CatchAt|{{CatchAt}}}}{{ifnot:CatchAt|मौके पर ही}} पकड़ लिया।\n\n{{count:Accused|{{any:Accused?mahila|पकड़ी गयी महिला}}{{none:Accused?mahila|पकड़े गये व्यक्ति}}|पकड़े गये व्यक्तियों}} से नाम पता पूछा गया तो {{count:Accused|{{any:Accused?mahila|उसने}}{{none:Accused?mahila|उसने}}|उन्होंने क्रमशः}} अपना नाम {{count:Accused|{{each:Accused|{name} {rel} {father} निवासी {addr}{ उम्र ~age~ वर्ष}|}}|{{each:Accused|{#}. {name} {rel} {father} निवासी {addr}{ उम्र ~age~ वर्ष}| }}}} बताया। {{each:Accused|{?mahila|अभियुक्ता|अभियुक्त} {name} से {carry} में रखे सामान के बारे में पूछा गया तो बताया कि साहब इसमें {Drug} भरा है।{?plan| {plan}|}| }}\n\nइस पर मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा {{count:Accused|{{any:Accused?mahila|उक्त महिला}}{{none:Accused?mahila|उक्त व्यक्ति}}|उक्त व्यक्तियों}} से {{Drug}} रखने का लाइसेन्स दिखाने को कहा गया तो लाइसेन्स दिखाने से {{count:Accused|{{any:Accused?mahila|कासिर रही}}{{none:Accused?mahila|कासिर रहा}}|कासिर रहे}} तथा बताया कि {{count:Accused|{{any:Accused?mahila|मेरे}}{{none:Accused?mahila|मेरे}}|हमारे}} पास कोई लाइसेन्स नहीं है।\n\nइसके पश्चात मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा {{count:Accused|{{any:Accused?mahila|पकड़ी गयी महिला}}{{none:Accused?mahila|पकड़े गये व्यक्ति}}|पकड़े गये व्यक्तियों}} को धारा 50 NDPS एक्ट के प्रावधानों के अन्तर्गत नियमानुसार जामा तलाशी सम्बन्धित राजपत्रित अधिकारी या मजिस्ट्रेट के समक्ष देने के अधिकार से भलीभाँति अवगत कराकर जामा तलाशी लिवाने हेतु कहा गया तो {{count:Accused|{{any:Accused?mahila|पकड़ी गयी महिला ने माफी माँगते हुए कहा कि साहब अब तो मैं पकड़ी ही गयी हूँ और मुझसे}}{{none:Accused?mahila|पकड़े गये व्यक्ति ने माफी माँगते हुए कहा कि साहब अब तो मैं पकड़ा ही गया हूँ और मुझसे}}|पकड़े गये व्यक्तियों ने माफी माँगते हुए कहा कि साहब अब तो हम पकड़े ही गये हैं और हमसे}} अवैध {{Drug}} बरामद हुआ ही है, {{count:Accused|{{any:Accused?mahila|मुझे}}{{none:Accused?mahila|मुझे}}|हमें}} आप पर पूरा भरोसा है, {{count:Accused|{{any:Accused?mahila|मैं}}{{none:Accused?mahila|मैं}}|हम}} अन्य किसी अधिकारी को गवाह बनाना नहीं {{count:Accused|{{any:Accused?mahila|चाहती}}{{none:Accused?mahila|चाहता}}|चाहते}}, आप ही {{count:Accused|{{any:Accused?mahila|मेरी}}{{none:Accused?mahila|मेरी}}|हमारी}} तलाशी ले लो।{{if:GazOfficer| इसके बाद मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा {{GazOfficer}} को सूचनार्थ व आवश्यक कार्यवाही हेतु{{if:GazMobile| उनके सी0यू0जी0 मोबाइल नम्बर {{GazMobile}} पर}} काल किया गया परन्तु {{GazResult}}।}} इसके पश्चात मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} के द्वारा {{count:Accused|{{any:Accused?mahila|पकड़ी गयी महिला}}{{none:Accused?mahila|पकड़े गये व्यक्ति}}|पकड़े गये व्यक्तियों}} से मौके पर ही धारा 50 NDPS एक्ट के जामा तलाशी फार्म पर हस्ताक्षर कराकर तलाशी ली गयी।\n\n{{each:Accused|{?mahila|अभियुक्ता|अभियुक्त} {name} की तलाशी{?mahila| महिला आरक्षी द्वारा|} ली गयी तो {carry} खोलकर देखा गया तो इसमें {Drug} नुमा पदार्थ भरा है{, ~extra~}, जिसको हमराही कर्मचारीगण को सुंघाया एवं सूंघा गया तो {Drug} जैसी गन्ध आ रही है।| }} विवेचना किट से काँटा निकालकर वजन किया गया तो {{count:Accused|कुल बरामद {{if:Drug=गांजा|गांजे}}{{ifnot:Drug=गांजा|{{Drug}}}} का वजन {{TotalWt}} है।|{{each:Accused|{?mahila|अभियुक्ता|अभियुक्त} {name} से बरामद मादक पदार्थ का वजन {wt}| तथा }} अर्थात कुल बरामद {{if:Drug=गांजा|गांजे}}{{ifnot:Drug=गांजा|{{Drug}}}} का वजन {{TotalWt}} है।}}\n\nबरामद {{if:Drug=गांजा|गांजे}}{{ifnot:Drug=गांजा|{{Drug}}}} को {{count:Accused|उसी {{each:Accused|{carry}|}} में|उन्हीं पात्रों में अलग-अलग}} रखकर एक सफेद कपड़े में बन्द कर सीलकर सील सर्व मुहर किया गया। बरामद कुल {{if:Drug=गांजा|गांजे}}{{ifnot:Drug=गांजा|{{Drug}}}} में से बतौर नमूना की कार्यवाही सक्षम अधिकारी द्वारा माननीय न्यायालय से अनुमति प्राप्त कर माननीय न्यायालय के समक्ष की जायेगी। गिरफ्तारी व बरामदगी के समय जनता के गवाहान फराहम करने का प्रयास किया गया परन्तु भलाई-बुराई के डर से{{if:Pahar=रात| व रात्रि का वक्त होने की वजह से}} कोई तैयार नहीं हुआ।\n\n{{count:Accused|{{any:Accused?mahila|पकड़ी गयी अभियुक्ता}}{{none:Accused?mahila|पकड़े गये अभियुक्त}}|पकड़े गये अभियुक्तगण}} {{each:Accused|{name}| व }} उपरोक्त को {{count:Accused|{{any:Accused?mahila|इसके}}{{none:Accused?mahila|इसके}}|इनके}} जुर्म धारा {{Dhara}} से अवगत कराते हुए {{if:ArrestDate|दिनाँक {{ArrestDate}} को }}समय करीब {{ArrestTime}} बजे{{if:Pahar| {{Pahar}} में}} नियमानुसार हिरासत पुलिस में लिया गया। {{each:Accused|{?source|{?mahila|अभियुक्ता|अभियुक्त} {name} से बरामद मादक पदार्थ के सम्बन्ध में पूछा गया तो बताया कि {source}|}| }}\n\n{{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|अभियुक्तगण}} की गिरफ्तारी की सूचना परिजनों को {{InformHow}}। दौराने गिरफ्तारी व बरामदगी माननीय सर्वोच्च न्यायालय व मानवाधिकार आयोग के आदेश-निर्देशों का पूर्णतः पालन किया गया।\n\nगिरफ्तारी मेमो मौके पर मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} के द्वारा तैयार किया गया। फर्द मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} के द्वारा {{if:TypeHow=लैपटॉप पर|विवेचना किट में रखे अपने लैपटॉप पर टंकित कर डाटा पैन ड्राइव में संरक्षित कर पैन ड्राइव का0 {{Typist}} को देकर{{if:PrintPlace| {{PrintPlace}} से}} दो प्रतियों में प्रिन्ट आउट निकलवाकर मौके पर मँगवायी गयी।}}{{if:TypeHow=मोबाइल पर|अपने मोबाइल पर गूगल डॉक्स एप्प पर बोल-बोलकर टाइप कर का0 {{Typist}} को भेजकर{{if:PrintPlace| {{PrintPlace}} से}} प्रिन्ट मँगवायी गयी।}}{{if:ESakshya| मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा अपने मोबाइल से गिरफ्तारी व बरामदगी की कार्यवाही की वीडियोग्राफी ई-साक्ष्य एप में अपलोड की गयी।}}{{if:Light| समस्त कार्यवाही {{Light}} में की गयी।}} फर्द पढ़कर सुनाकर अलामात बनवाये गये। फर्द की {{count:Accused|एक प्रति {{count:Accused|{{any:Accused?mahila|अभियुक्ता}}{{none:Accused?mahila|अभियुक्त}}|}} {{each:Accused|{name}|}} उपरोक्त को|एक-एक प्रति प्रत्येक अभियुक्त को}} दी गयी।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}",
+      "keys": [
+        {
+          "key_name": "Drug",
+          "label": "मादक पदार्थ",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "गांजा",
+          "dropdown_options": "[\"गांजा\", \"चरस\", \"स्मैक\", \"हेरोइन\", \"अफीम\", \"डोडा पोस्त\"]",
+          "sort_order": 0
+        },
+        {
+          "key_name": "Dhara",
+          "label": "धारा",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "8/20 NDPS एक्ट",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 8/20 NDPS एक्ट (गांजा / चरस) · 8/21 (स्मैक / हेरोइन) · 8/18 (अफीम) · 8/15 (डोडा पोस्त)\"}",
+          "sort_order": 1
+        },
+        {
+          "key_name": "RecoveryDate",
+          "label": "1. मौजूदगी — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 08.06.2026\"}",
+          "sort_order": 2
+        },
+        {
+          "key_name": "pad",
+          "label": "1. मौजूदगी — पद/रैंक",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "sort_order": 3
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "1. मौजूदगी — अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "dropdown_options": null,
+          "sort_order": 4
+        },
+        {
+          "key_name": "Hamrah",
+          "label": "1. मौजूदगी — हमराही (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: कां0 3880 शिवम सिंह, कां0 242 भोलाराम व रि0कां0 2150 कृष्ण कुमार\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "LadyConstable",
+          "label": "1. मौजूदगी — महिला आरक्षी (कोई अभियुक्ता हो तो)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: राखी\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "RapatNo",
+          "label": "1. मौजूदगी — रवानगी रपट न0 (खाली = ……)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 66\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "RapatTime",
+          "label": "1. मौजूदगी — रवानगी समय (खाली = ……)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 22.58\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "PatrolPlace",
+          "label": "1. मौजूदगी — कहाँ चैकिंग कर रहे थे",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चौकी क्षेत्र पुस्ता तिराहा\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "ComingFrom",
+          "label": "2. मुखबिर की सूचना — किस तरफ से आ रहा है",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अल्फला मस्जिद की तरफ से\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "GoBy",
+          "label": "3. वहाँ से चल देना — किससे गये",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "प्राइवेट वाहन से",
+          "dropdown_options": "{\"placeholder\": \"जैसे: प्राइवेट वाहन से / सरकारी वाहन से\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "WaitPlace",
+          "label": "4. स्थान पर आना — कहाँ पहुँचे",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: प्राचीन हनुमान मन्दिर आजाद इन्कलेव के सामने\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "Cover",
+          "label": "4. किसकी आड़ ली (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": "रोड के किनारे खड़े वाहनों",
+          "dropdown_options": "{\"placeholder\": \"जैसे: रोड के किनारे खड़े वाहनों\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "LightBy",
+          "label": "5. पहचान — किसकी रोशनी में दिखा (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: रोड पर चलने वाले वाहनों की रोशनी\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "Accused",
+          "label": "7. नाम पता — अभियुक्त / अभियुक्ता (हर एक का card, उसके पास मिला मादक पदार्थ व वजन सहित)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: सुल्तान)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम (जैसे: मो0 मेहराज)\"}, {\"key\": \"addr\", \"label\": \"पता\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक, जैसे: 19)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"look\", \"label\": \"5. पहचान — कैसा दिखा (जैसे: एक जवान उम्र का लड़का जिसने पीले रंग की हाफ टीशर्ट पहने है)\"}, {\"key\": \"where\", \"label\": \"5. कहाँ लिये था\", \"default\": \"हाथ में\"}, {\"key\": \"carry\", \"label\": \"5. किसमें लिये था (जैसे: हरे रंग की पोलीथीन / काले रंग का थैला)\"}, {\"key\": \"plan\", \"label\": \"7. सामान के बारे में और क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}, {\"key\": \"extra\", \"label\": \"10. पोलीथीन / थैले में और क्या मिला (वैकल्पिक)\", \"type\": \"multiline\"}, {\"key\": \"kg\", \"label\": \"10. वजन — किलो (जैसे: 1)\"}, {\"key\": \"gm\", \"label\": \"10. वजन — ग्राम (जैसे: 200)\"}, {\"key\": \"source\", \"label\": \"12. मादक पदार्थ कहाँ से लाया — क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\", \"copy\": [\"Drug\"], \"weight\": {\"kg\": \"kg\", \"gm\": \"gm\", \"rowField\": \"wt\", \"total\": \"TotalWt\"}}",
+          "sort_order": 15
+        },
+        {
+          "key_name": "Force",
+          "label": "6. पकड़ना — आवश्यक बल प्रयोग किया",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": null,
+          "sort_order": 16
+        },
+        {
+          "key_name": "CatchAt",
+          "label": "6. पकड़ना — कहाँ पकड़ा (खाली = मौके पर ही)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: प्राचीन हनुमान मन्दिर आजाद इन्कलेव के सामने रोड पर ही\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "GazOfficer",
+          "label": "9. धारा 50 — किस राजपत्रित अधिकारी को काल किया (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमान सहायक पुलिस आयुक्त लोनी\"}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "GazMobile",
+          "label": "9. उनका सी0यू0जी0 नम्बर (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9643322910\", \"showIf\": \"GazOfficer\"}",
+          "sort_order": 19
+        },
+        {
+          "key_name": "GazResult",
+          "label": "9. काल का नतीजा",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है",
+          "dropdown_options": "{\"options\": [\"नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है\", \"काल रिसीव नहीं हुई\", \"नम्बर व्यस्त बता रहा है\"], \"showIf\": \"GazOfficer\"}",
+          "sort_order": 20
+        },
+        {
+          "key_name": "ArrestDate",
+          "label": "12. गिरफ्तारी — दिनांक (रात 12 के बाद हो तो)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 09.06.2026\"}",
+          "sort_order": 21
+        },
+        {
+          "key_name": "ArrestTime",
+          "label": "12. गिरफ्तारी — समय",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 00.10\"}",
+          "sort_order": 22
+        },
+        {
+          "key_name": "Pahar",
+          "label": "12. गिरफ्तारी — पहर (समय से अपने आप; बदलना हो तो चुनें)",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "समय से",
+          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"ArrestTime\"}",
+          "sort_order": 23
+        },
+        {
+          "key_name": "InformHow",
+          "label": "13. सूचना — परिजनों को कैसे",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "थाने पहुँचकर उचित माध्यम से दी जायेगी",
+          "dropdown_options": "[\"थाने पहुँचकर उचित माध्यम से दी जायेगी\", \"मौके पर फोन द्वारा दी गयी\", \"मौके पर दी गयी\"]",
+          "sort_order": 24
+        },
+        {
+          "key_name": "TypeHow",
+          "label": "अंत — फर्द कैसे टाइप हुई",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "लैपटॉप पर",
+          "dropdown_options": "[\"लैपटॉप पर\", \"मोबाइल पर\"]",
+          "sort_order": 25
+        },
+        {
+          "key_name": "Typist",
+          "label": "अंत — प्रिन्ट किस आरक्षी से मँगवाया",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 3880 शिवम सिंह\"}",
+          "sort_order": 26
+        },
+        {
+          "key_name": "PrintPlace",
+          "label": "अंत — प्रिन्ट कहाँ से (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: चौकी पुस्ता\"}",
+          "sort_order": 27
+        },
+        {
+          "key_name": "ESakshya",
+          "label": "अंत — ई-साक्ष्य पर वीडियोग्राफी अपलोड की",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": null,
+          "sort_order": 28
+        },
+        {
+          "key_name": "Light",
+          "label": "अंत — कार्यवाही किसकी रोशनी में (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: स्ट्रीट लाइट व मोबाइल फोन एवं टार्च की रोशनी\"}",
+          "sort_order": 29
+        },
+        {
+          "key_name": "PoliceStation",
+          "label": "थाना",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "dropdown_options": null,
+          "sort_order": 30
+        },
+        {
+          "key_name": "District",
+          "label": "जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "dropdown_options": null,
+          "sort_order": 31
+        }
+      ]
+    },
+    {
       "id": "sys-fmt-bnss126-beat",
       "title": "बीट सूचना 126/135 की कार्यवाही",
       "format_type": "BNSS Karyavahi",
