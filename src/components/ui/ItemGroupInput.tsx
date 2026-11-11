@@ -15,6 +15,7 @@ import { useColorScheme } from 'nativewind';
 import { T } from '@/lib/typography';
 import { useClearCopy } from '@/components/common/ClearCopyTools';
 import { THEME } from '@/lib/theme';
+import { evalShowIf } from '@/lib/formatShowIf';
 
 export interface ItemColumn {
   key: string;
@@ -25,6 +26,8 @@ export interface ItemColumn {
   /** type 'ref': the other item_group key, and its column shown on the chips (default 'name'). */
   ref?: string;
   refLabel?: string;
+  /** Shown only when the condition holds for THIS row, e.g. "kind=मुकदमे का माल" (formatShowIf syntax). */
+  showIf?: string;
 }
 
 export interface ItemGroupConfig { columns: ItemColumn[]; addLabel?: string; itemLabel?: string; startEmpty?: boolean }
@@ -120,6 +123,7 @@ export const ItemGroupInput = forwardRef<View, {
           </View>
 
           {cols.map((col) => {
+            if (col.showIf && !evalShowIf(col.showIf, row)) return null;
             const v = row[col.key] ?? '';
             if (col.type === 'check') {
               const on = isOn(v);

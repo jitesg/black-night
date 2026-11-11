@@ -509,3 +509,8 @@ test('item_group row: nested {?a|…{?b|x|y}…|…}', () => {
   const t = '{{each:A|{name}: {?own|{own}|इंकार {?f|बता रही हैं|बता रहे हैं}}| / }}';
   assert.equal(generateReport(t, { A: rows }, keys), 'बबलू: इंकार बता रहे हैं / सीता: इंकार बता रही हैं / राम: जुर्म स्वीकार');
 });
+
+test('{{uniq:…}} — same text once (one मु0अ0सं0 for several items)', () => {
+  const v = { Items: JSON.stringify([{ c: '37/24', isCase: 'हाँ' }, { c: '37/24', isCase: 'हाँ' }, { c: '45/24', isCase: 'हाँ' }, { c: 'x', isCase: '' }]) };
+  assert.equal(generateReport('[{{uniq:Items?isCase|मु0अ0सं0 {c}| व }}]', v), '[मु0अ0सं0 37/24 व मु0अ0सं0 45/24]');
+});

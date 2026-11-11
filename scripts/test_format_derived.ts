@@ -51,3 +51,27 @@ test('endWith adds the danda once', () => {
   const rows = JSON.parse(deriveFormatValues({ JT: JSON.stringify([{ how: 'नोट मिले' }, { how: 'नोट मिले। ' }, { how: 'x.' }, { how: '' }]) }, k).JT);
   assert.deepEqual(rows.map((r: { how: string }) => r.how), ['नोट मिले।', 'नोट मिले।', 'x।', '']);
 });
+
+test('flags, fallback, groupInto', () => {
+  const k = [
+    { key_name: 'Accused', field_type: 'item_group', dropdown_options: '{"columns":[{"key":"name"}]}' },
+    { key_name: 'Items', field_type: 'item_group', dropdown_options: JSON.stringify({
+      columns: [{ key: 'who', type: 'ref', ref: 'Accused' }, { key: 'what' }, { key: 'from' },
+        { key: 'kind', type: 'choice', flags: { isCase: 'मुकदमे का माल', isOwn: 'अपनी चीज़' } }, { key: 'case', fallback: 'FIRNo' }],
+      groupInto: { key: 'Accused', match: 'who', by: 'name', field: 'found', row: '{from} से {what}', sep: ' व ' } }) },
+  ];
+  const v = deriveFormatValues({
+    FIRNo: '37/24',
+    Accused: JSON.stringify([{ name: 'रौनक' }, { name: 'लखन' }]),
+    Items: JSON.stringify([
+      { who: 'रौनक', what: 'बिछिया', from: 'जेब', kind: 'मुकदमे का माल', case: '' },
+      { who: 'रौनक', what: 'मोबाइल', from: 'हाथ', kind: 'अपनी चीज़', case: '' },
+      { who: 'लखन', what: 'टैबलेट', from: 'झोला', kind: 'मुकदमे का माल', case: '45/24' }]),
+  }, k);
+  const items = JSON.parse(v.Items);
+  assert.equal(items[0].isCase, 'हाँ'); assert.equal(items[1].isCase, ''); assert.equal(items[1].isOwn, 'हाँ');
+  assert.equal(items[0].case, '37/24'); assert.equal(items[2].case, '45/24');
+  const acc = JSON.parse(v.Accused);
+  assert.equal(acc[0].found, 'जेब से बिछिया व हाथ से मोबाइल');
+  assert.equal(acc[1].found, 'झोला से टैबलेट');
+});

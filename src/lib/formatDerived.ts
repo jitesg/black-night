@@ -8,6 +8,8 @@
  *    row of the other list; every field of that row is copied into the row as `<col>_<field>` (e.g. who_mahila),
  *    so the template can say अभियुक्त / अभियुक्ता for the picked person.
  *  • `"endWith": "।"` on an item_group column: a filled cell always ends with it.
+ *  • `"flags": {"isCase": "मुकदमे का माल"}` on a choice column → tick flag per row; `"fallback": "FIRNo"` → empty cell
+ *    takes that form value; group `"groupInto"` → this list's rows written into a field of another list (see below).
  */
 
 export interface DerivedKeyDef { key_name: string; field_type?: string | null; dropdown_options?: string | null }
@@ -42,25 +44,37 @@ export function paharSource(dropdownOptions: string | null | undefined): string 
   return v && typeof v === 'object' && typeof v.paharFrom === 'string' ? v.paharFrom : null;
 }
 
+type ColCfg = {
+  key?: string; type?: string; ref?: string; refLabel?: string; endWith?: string;
+  /** choice column: value → tick flag on the row, e.g. {"isCase": "मुकदमे का माल"} (for {{each:Key?isCase|…}}) */
+  flags?: Record<string, string>;
+  /** empty cell → this top-level value (e.g. the main मुकदमा "FIRNo") */
+  fallback?: string;
+};
+type GroupInto = { key?: string; match?: string; by?: string; field?: string; row?: string; sep?: string };
+
 /** Copy of `values` with the worked-out values added (the input object is not changed). */
 export function deriveFormatValues(values: Record<string, string>, keyDefs?: DerivedKeyDef[]): Record<string, string> {
   if (!keyDefs?.length) return values;
   let out: Record<string, string> | null = null;
   const set = (k: string, v: string) => { out ??= { ...values }; out[k] = v; };
+  const cur = (k: string) => (out ?? values)[k];
+  const groupings: { rows: Record<string, string>[]; g: GroupInto }[] = [];
 
   for (const kd of keyDefs) {
     const src = paharSource(kd.dropdown_options);
     if (src) {
-      const cur = String(values[kd.key_name] ?? '').trim();
-      if (!cur || cur === PAHAR_AUTO) set(kd.key_name, paharFromTime(values[src]));
+      const v = String(values[kd.key_name] ?? '').trim();
+      if (!v || v === PAHAR_AUTO) set(kd.key_name, paharFromTime(values[src]));
     }
     if (kd.field_type === 'item_group') {
-      const cfg = parseJson(kd.dropdown_options) as {
-        columns?: { key?: string; type?: string; ref?: string; refLabel?: string; endWith?: string }[];
-      } | null;
-      const refs = (cfg?.columns ?? []).filter((c) => c?.type === 'ref' && c.key && c.ref);
-      const ends = (cfg?.columns ?? []).filter((c) => c?.key && c.endWith);
-      if (!refs.length && !ends.length) continue;
+      const cfg = parseJson(kd.dropdown_options) as { columns?: ColCfg[]; groupInto?: GroupInto } | null;
+      const cols = cfg?.columns ?? [];
+      const refs = cols.filter((c) => c?.type === 'ref' && c.key && c.ref);
+      const ends = cols.filter((c) => c?.key && c.endWith);
+      const flags = cols.filter((c) => c?.key && c.flags && typeof c.flags === 'object');
+      const falls = cols.filter((c) => c?.key && c.fallback);
+      if (!refs.length && !ends.length && !flags.length && !falls.length && !cfg?.groupInto) continue;
       const rows = rowsOf(values[kd.key_name]);
       if (!rows.length) continue;
       const next = rows.map((r) => {
@@ -76,10 +90,37 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
           const t = String(row[c.key!] ?? '').replace(/\s+$/, '');
           if (t) row[c.key!] = t.endsWith(c.endWith!) ? t : t.replace(/[.|]$/, '') + c.endWith;
         }
+        for (const c of flags) {
+          const v = String(row[c.key!] ?? '').trim();
+          for (const [flag, want] of Object.entries(c.flags!)) row[flag] = v === want ? 'हाँ' : '';
+        }
+        for (const c of falls) {
+          if (!String(row[c.key!] ?? '').trim()) row[c.key!] = String(values[c.fallback!] ?? '').trim();
+        }
         return row;
       });
       set(kd.key_name, JSON.stringify(next));
+      if (cfg?.groupInto?.key && cfg.groupInto.field) groupings.push({ rows: next, g: cfg.groupInto });
     }
+  }
+
+  // "groupInto": this list's rows written into a field of another list's rows, e.g. every बरामद चीज़ of an अभियुक्त
+  // into Accused[].found = "पैंट की जेब से 07 अदद बिछिया व कमर से एक तमंचा" (rows matched by who == name).
+  for (const { rows, g } of groupings) {
+    const target = rowsOf(cur(g.key!));
+    if (!target.length) continue;
+    const match = g.match || 'who';
+    const by = g.by || 'name';
+    const tmpl = g.row || '';
+    const filled = target.map((t) => {
+      const mine = rows.filter((r) => String(r[match] ?? '').trim() && String(r[match]).trim() === String(t[by] ?? '').trim());
+      const text = mine
+        .map((r) => tmpl.replace(/\{([A-Za-z0-9_]+)\}/g, (_m, c: string) => String(r[c] ?? '').trim()).replace(/ {2,}/g, ' ').trim())
+        .filter(Boolean)
+        .join(g.sep ?? ' व ');
+      return { ...t, [g.field!]: text };
+    });
+    set(g.key!, JSON.stringify(filled));
   }
   return out ?? values;
 }

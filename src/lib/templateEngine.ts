@@ -637,8 +637,8 @@ function _sumColumn(rows: ItemRow[], col: string, twoDigits: boolean): string {
 }
 
 function _applyItemTokens(template: string, values: Record<string, string>): string {
-  if (!/\{\{(each|count|any|cnt|none|sum):/.test(template)) return template;
-  const open = /\{\{(each|count|any|cnt|none|sum):([A-Za-z0-9_]+)(?:\?([A-Za-z0-9_]+))?\|/;
+  if (!/\{\{(each|uniq|count|any|cnt|none|sum):/.test(template)) return template;
+  const open = /\{\{(each|uniq|count|any|cnt|none|sum):([A-Za-z0-9_]+)(?:\?([A-Za-z0-9_]+))?\|/;
   let out = '';
   let rest = template;
   for (let m = open.exec(rest); m; m = open.exec(rest)) {
@@ -661,7 +661,7 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
     else {
       const row = parts[0] ?? '';
       const sep = (parts[1] ?? ' ').replace(/\\n/g, '\n');
-      rep = rows.map((r, n) => row
+      const rendered = rows.map((r, n) => row
         .replace(/\{([^{}~]*)~([A-Za-z0-9_]+)(?:~([^{}~]*))?\}/g, (_x, pre: string, col: string, post?: string) => {
           const v = String(r[col] ?? '').trim();
           return v ? `${pre}${v}${post ?? ''}` : '';
@@ -674,7 +674,9 @@ function _applyItemTokens(template: string, values: Record<string, string>): str
           }
           return t;
         })
-        .replace(/ {2,}/g, ' ')).join(sep);
+        .replace(/ {2,}/g, ' '));
+      // {{uniq:…}} = like each, but the same text only once (e.g. one मु0अ0सं0 for several items)
+      rep = (m[1] === 'uniq' ? rendered.filter((t, n) => t.trim() && rendered.indexOf(t) === n) : rendered).join(sep);
     }
     // the chosen text may hold more list tokens
     out += rest.slice(0, m.index) + _applyItemTokens(rep, values);
