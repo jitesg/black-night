@@ -30,7 +30,7 @@ import { useTranslation } from 'react-i18next';
 import { isSessionActive, touchSession } from '@/lib/sysFormatAuth';
 
 const FORMAT_TYPES: FormatType[] = [
-  'GD', 'Case Diary', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Any',
+  'GD', 'Case Diary', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Fard', 'Any',
 ];
 
 const AVAILABLE_TAGS = [

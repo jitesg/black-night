@@ -50,6 +50,7 @@ export type FormatType =
   | 'Nyayalay'
   | 'Prarthna Patra'
   | 'BNSS Karyavahi'
+  | 'Fard'
   | 'Any';
 
 export interface PredefinedFormat {
@@ -206,7 +207,7 @@ function applyFilter(
   createdBy?: string,
 ): { sql: string; params: (string | number)[]; orderBy: string } {
   let orderBy = 'f.created_at DESC';
-  const FORMAT_TYPES = ['GD', 'Case Diary', 'Narrative', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Any'];
+  const FORMAT_TYPES = ['GD', 'Case Diary', 'Narrative', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Fard', 'Any'];
 
   if (filter === 'Favorites') {
     sql += ` AND f.is_favorite = 1`;

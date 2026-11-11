@@ -43,7 +43,7 @@ const INDIGO = '#6366F1';
 // ─── Constants ────────────────────────────────────────────────────────────
 
 const FILTER_OPTIONS = [
-  'All', 'GD', 'Case Diary', 'Narrative', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Any',
+  'All', 'GD', 'Case Diary', 'Narrative', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Fard', 'Any',
   'Favorites', 'Recently Used', 'Recently Added', 'Created By Me',
 ];
 
@@ -60,6 +60,7 @@ function getFilterOptionLabel(filter: string, t: (k: string) => string): string 
     case 'Nyayalay': return t('format.type.nyayalay');
     case 'Prarthna Patra': return t('format.type.prarthnaPatra');
     case 'BNSS Karyavahi': return t('format.type.bnssKaryavahi');
+    case 'Fard': return t('format.type.fard');
     case 'Any': return t('format.type.any');
     case 'Favorites': return t('format.filter.favorites');
     case 'Recently Used': return t('format.filter.recentlyUsed');

@@ -50,6 +50,7 @@ const FORMAT_TYPE_COLORS: Record<string, string> = {
   'Nyayalay':        '#D97706',
   'Prarthna Patra':  '#059669',
   'BNSS Karyavahi':  '#DC2626',
+  'Fard':            '#92400E',
   'Any':             '#6B7280',
 };
 
@@ -61,6 +62,7 @@ function getFormatTypeLabel(type: string, t: (k: string) => string): string {
     case 'Nyayalay': return t('format.type.nyayalay');
     case 'Prarthna Patra': return t('format.type.prarthnaPatra');
     case 'BNSS Karyavahi': return t('format.type.bnssKaryavahi');
+    case 'Fard': return t('format.type.fard');
     case 'Any': return t('format.type.any');
     default: return type;
   }

@@ -41,7 +41,7 @@ const FIELD_TEXT    = '#374151';
 
 // ─── Constants ────────────────────────────────────────────────────────────
 const FORMAT_TYPES: FormatType[] = [
-  'GD', 'Case Diary', 'Narrative', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Any',
+  'GD', 'Case Diary', 'Narrative', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Fard', 'Any',
 ];
 
 const AVAILABLE_TAGS = [

@@ -32,6 +32,7 @@ export function moduleLabel(module: string | null | undefined): string {
     case 'Prarthna Patra': return 'प्रार्थना पत्र';
     case 'Case Diary': return 'केस डायरी';
     case 'Narrative': return 'विवरण';
+    case 'Fard': return 'फर्द';
     default: return 'प्रारूप';
   }
 }

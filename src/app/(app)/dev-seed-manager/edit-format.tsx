@@ -15,7 +15,7 @@ import { useDevSeedStore, type SeedFormatKey } from '@/lib/devSeedStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const FORMAT_TYPES = ['GD', 'Case Diary', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Any'];
+const FORMAT_TYPES = ['GD', 'Case Diary', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Fard', 'Any'];
 
 const CONTENT_TYPES = [
   { value: 'format',    label: 'Format'           },

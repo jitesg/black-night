@@ -195,7 +195,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
   पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)
   → custody paragraph + [[संलग्नक]] (3 items) with the signature; fixed subject "…सर्वोत्तम हित एवं कल्याण… सुपुर्दगी आदेश…" (owner).
-- `sys-fmt-fard-60-1-daru` "60(1) आबकारी अधिनियम फर्द बरामदगी व गिरफ्तारी (एक या अधिक अभियुक्त / अभियुक्ता)" v4 (BNSS Karyavahi, owner's docx) —
+- Format type "Fard" (फर्द, owner): FormatType union, every FORMAT_TYPES list, SYS_CATEGORIES, colours (brown #92400E / #FBBF24),
+  i18n format.type.fard, moduleLabel → फर्द. NK / प्रार्थना पत्र pickers still load only 'BNSS Karyavahi'.
+- `sys-fmt-fard-60-1-daru` "60(1) आबकारी अधिनियम फर्द बरामदगी व गिरफ्तारी (एक या अधिक अभियुक्त / अभियुक्ता)" v5 (type Fard — was BNSS Karyavahi, owner's docx) —
   **the base pattern for all future फर्द (owner)**: item_group `Accused` (name, rel, father, addr, age, mahila tick, cqty, ctype, litre,
   carry = choice हाथ / पैंट-लोअर-जीन्स की दाहिनी-बायीं जेब / शर्ट / पीछे की जेब / बगल, inform); one man / one woman / many wording via
   `{{count:…|{{any:…?mahila|F}}{{none:…?mahila|M}}|MANY}}`; heading containers `{{each}}` + `{{sum:Accused|litre}}`; per-row

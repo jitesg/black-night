@@ -27,6 +27,7 @@ export const SYS_CATEGORIES = [
   'Prarthna Patra',
   'Narrative',
   'BNSS Karyavahi',
+  'Fard',
   'Nirodhatmak Karyvahi',
   'Knowledge Templates',
   'Reports',
@@ -608,7 +609,7 @@ export async function searchPublishedFormats(
   }
   if (__DEV__) console.log(`[SysFormatRepo] search query="${query}" filter="${filter ?? ''}"`);
 
-  const FORMAT_TYPES = ['GD', 'Case Diary', 'Narrative', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Any'];
+  const FORMAT_TYPES = ['GD', 'Case Diary', 'Narrative', 'Nyayalay', 'Prarthna Patra', 'BNSS Karyavahi', 'Fard', 'Any'];
 
   // SQL_IS_VISIBLE expands to: (status='published' OR status IS NULL OR created_by = ?)
   // Its lone `?` is the first placeholder — createdBy MUST be first in params.

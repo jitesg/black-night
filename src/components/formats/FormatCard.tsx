@@ -22,6 +22,7 @@ export const FORMAT_TYPE_COLORS: Record<string, { light: string; dark: string }>
   'Nyayalay':        { light: '#B45309', dark: '#FCD34D' }, // amber
   'Prarthna Patra':  { light: '#BE185D', dark: '#F9A8D4' }, // pink
   'BNSS Karyavahi':  { light: '#DC2626', dark: '#FCA5A5' }, // red
+  'Fard':            { light: '#92400E', dark: '#FBBF24' }, // brown
   'Any':             { light: '#475569', dark: '#CBD5E1' }, // slate
 };
 
@@ -43,6 +44,7 @@ export function getFormatTypeLabel(type: string, t: (k: string) => string): stri
     case 'Nyayalay': return t('format.type.nyayalay');
     case 'Prarthna Patra': return t('format.type.prarthnaPatra');
     case 'BNSS Karyavahi': return t('format.type.bnssKaryavahi');
+    case 'Fard': return t('format.type.fard');
     case 'Any': return t('format.type.any');
     default: return type;
   }
