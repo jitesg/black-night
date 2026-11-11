@@ -209,6 +209,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `{{count:…|{{any:…?mahila|F}}{{none:…?mahila|M}}|MANY}}`; heading containers `{{each}}` + `{{sum:Accused|litre}}`; per-row
   `{?mahila|अभियुक्ता|अभियुक्त}`; LadyConstable used when any row is महिला; opening "थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम
   जुर्म जरायम… में मामूर", witness search + आपस में जामा तलाशी lines (owner). Old v3 in `docs/format-backups/fard_60_1_daru_v3.json`.
+- `sys-fmt-fard-peedita-baramadgi` "फर्द बरामदगी पीड़िता / पीड़ित (मुकदमा सम्बन्धित — मुखबिर की सूचना पर)" (type Fard, owner's sample 64/2025, same
+  step-per-paragraph pattern as 60(1) v6): VictimType लड़की / लड़का switches every word (पीड़िता/पीड़ित, खड़ी/खड़ा, पुत्री-पत्नी chips or पुत्र;
+  लड़का hides LadyConstable — नाम पता by the officer, "पुलिस अभिरक्षा"); MatchBy (फोटो / परिजनों से पहचान / नाम पता); Pahar from RecoveryTime
+  (टार्च at night); सूचना InformRel + "वादी मुकदमा" tick + name / mobile (@FIR complainant). FIRNo / Sections from @FIR.
 - केस डायरी formats (owner, started): `sys-fmt-cd-nirikshan-ghatnasthal` "निरीक्षण घटना स्थल (नक्शा नजरी व ई-साक्ष्य वीडियोग्राफी)" v2 (Case Diary,
   plain text — no layout marks): Pointer वादी / अन्य (OtherName + optional OtherDetail → first mention full, later "<name> उपरोक्त"),
   Where साथ लेकर गये / घटना स्थल पर मौजूद (only the first adds "…को साथ लेकर घटना स्थल आया।"), PLACEOFINCIDENT (@FIR.ghatnasthal), Mark (A),
