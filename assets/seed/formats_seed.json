@@ -9462,6 +9462,295 @@
           "sort_order": 1
         }
       ]
+    },
+    {
+      "id": "sys-fmt-cd-vahan-prapatra-avlokan",
+      "title": "वाहन प्रपत्र अवलोकन — आरसी / परमिट / इंश्योरेन्स / फिटनेस / प्रदूषण",
+      "format_type": "Case Diary",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 1,
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "tags": [
+        "वाहन",
+        "प्रपत्र",
+        "अवलोकन",
+        "आरसी",
+        "RC",
+        "परमिट",
+        "इंश्योरेन्स",
+        "फिटनेस",
+        "प्रदूषण",
+        "केस डायरी"
+      ],
+      "last_updated": "2026-11-11",
+      "vivran": "{{if:doRC|अवलोकन आरसी.......... Reg No {{VehNo}}{{if:RcDate| Date of Reg {{RcDate}}}}{{if:Chassis|, Chassis No {{Chassis}}}}{{if:Engine|, Engine No {{Engine}}}}, Owner Name {{OwnerName}}{{if:OwnerFather| {{OwnerRel}} {{OwnerFather}}}}{{if:OwnerAddr| Address {{OwnerAddr}}}}{{if:Maker|, Maker's Name {{Maker}}}} ।{{if:doCD| बाद अवलोकन संलग्न सीडी है।}}\n}}{{if:doPermit|अवलोकन परमिट.......... Permit No {{PermitNo}}, {{OwnerName}}{{if:OwnerFather| {{OwnerRel}} {{OwnerFather}}}}{{if:OwnerAddr| Address {{OwnerAddr}}}}, Reg Mark of the vehicle {{VehNo}}{{if:Chassis|, Chassis No {{Chassis}}}}{{if:Engine|, Engine No {{Engine}}}}{{if:PermitTo|, Validity of the Permit from {{PermitFrom}} to {{PermitTo}}}} ।{{if:doCD| बाद अवलोकन संलग्न सीडी है।}}\n}}{{if:doIns|अवलोकन इंश्योरेन्स.......... {{InsCompany}} Policy No {{PolicyNo}}, {{OwnerName}}{{if:OwnerFather| {{OwnerRel}} {{OwnerFather}}}}{{if:OwnerAddr| Address {{OwnerAddr}}}}, Vehicle No {{VehNo}}{{if:InsTo|, Period of Insurance from 00.00 Hrs of {{InsFrom}} to midnight of {{InsTo}}}} ।{{if:doCD| बाद अवलोकन संलग्न सीडी है।}}\n}}{{if:doFit|अवलोकन फिटनेस सर्टिफिकेट.......... Reg No {{VehNo}}{{if:FitAppNo| Application No {{FitAppNo}}}}{{if:Chassis|, Chassis No {{Chassis}}}}{{if:Engine|, Engine No {{Engine}}}}{{if:FitInspected|, Inspected on {{FitInspected}}}}{{if:FitExpire| Certificate will expire on {{FitExpire}}}} ।{{if:doCD| बाद अवलोकन संलग्न सीडी है।}}\n}}{{if:doPuc|अवलोकन प्रदूषण सर्टिफिकेट.......... Certificate SL No {{PucNo}}, Reg No {{VehNo}}{{if:PucDate| Date {{PucDate}}}}{{if:PucTime| Time {{PucTime}}}}{{if:PucUpto| Validity upto {{PucUpto}}}} ।{{if:doCD| बाद अवलोकन संलग्न सीडी है।}}\n}}",
+      "keys": [
+        {
+          "key_name": "VehNo",
+          "label": "वाहन संख्या (Reg No)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: RJ19PA4901\"}",
+          "sort_order": 0
+        },
+        {
+          "key_name": "Chassis",
+          "label": "चेसिस नम्बर",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: MAT412279B0B02128\"}",
+          "sort_order": 1
+        },
+        {
+          "key_name": "Engine",
+          "label": "इंजन नम्बर",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 11B62988582\"}",
+          "sort_order": 2
+        },
+        {
+          "key_name": "OwnerName",
+          "label": "मालिक का नाम (Owner Name)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: Chandra Jain\"}",
+          "sort_order": 3
+        },
+        {
+          "key_name": "OwnerRel",
+          "label": "सम्बन्ध",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "w/o",
+          "dropdown_options": "[\"s/o\", \"w/o\", \"d/o\"]",
+          "sort_order": 4
+        },
+        {
+          "key_name": "OwnerFather",
+          "label": "पिता / पति का नाम (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: Vijay Jain\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "OwnerAddr",
+          "label": "मालिक का पता (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 625/7 12th B Rd Sardarpura Jodhpur, Rajasthan\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "doCD",
+          "label": "हर अवलोकन के बाद \"बाद अवलोकन संलग्न सीडी है।\" लिखें",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": null,
+          "sort_order": 7
+        },
+        {
+          "key_name": "doRC",
+          "label": "आरसी (RC) का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": null,
+          "sort_order": 8
+        },
+        {
+          "key_name": "RcDate",
+          "label": "आरसी — Date of Reg",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 28/06/2011\", \"showIf\": \"doRC\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "Maker",
+          "label": "आरसी — Maker's Name (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: TATA MOTORS LTD\", \"showIf\": \"doRC\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "doPermit",
+          "label": "परमिट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": null,
+          "sort_order": 11
+        },
+        {
+          "key_name": "PermitNo",
+          "label": "परमिट — Permit No",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: RJ2024-CC-4259D\", \"showIf\": \"doPermit\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "PermitFrom",
+          "label": "परमिट — Validity from",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 15.10.2024\", \"showIf\": \"doPermit\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "PermitTo",
+          "label": "परमिट — Validity to",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 14.10.2029\", \"showIf\": \"doPermit\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "doIns",
+          "label": "इंश्योरेन्स का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": null,
+          "sort_order": 15
+        },
+        {
+          "key_name": "InsCompany",
+          "label": "इंश्योरेन्स — कम्पनी",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: UNITED INDIA INSURANCE COMPANY LIMITED\", \"showIf\": \"doIns\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "PolicyNo",
+          "label": "इंश्योरेन्स — Policy No",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 2902003124P107811529\", \"showIf\": \"doIns\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "InsFrom",
+          "label": "इंश्योरेन्स — from (तारीख)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 31.08.2024\", \"showIf\": \"doIns\"}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "InsTo",
+          "label": "इंश्योरेन्स — to (तारीख)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 30.08.2025\", \"showIf\": \"doIns\"}",
+          "sort_order": 19
+        },
+        {
+          "key_name": "doFit",
+          "label": "फिटनेस सर्टिफिकेट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": null,
+          "sort_order": 20
+        },
+        {
+          "key_name": "FitAppNo",
+          "label": "फिटनेस — Application No (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: RJ24081292675725\", \"showIf\": \"doFit\"}",
+          "sort_order": 21
+        },
+        {
+          "key_name": "FitInspected",
+          "label": "फिटनेस — Inspected on",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.08.2024\", \"showIf\": \"doFit\"}",
+          "sort_order": 22
+        },
+        {
+          "key_name": "FitExpire",
+          "label": "फिटनेस — will expire on",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 07.09.2025\", \"showIf\": \"doFit\"}",
+          "sort_order": 23
+        },
+        {
+          "key_name": "doPuc",
+          "label": "प्रदूषण सर्टिफिकेट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": null,
+          "sort_order": 24
+        },
+        {
+          "key_name": "PucNo",
+          "label": "प्रदूषण — Certificate SL No",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: RJ01600080021625\", \"showIf\": \"doPuc\"}",
+          "sort_order": 25
+        },
+        {
+          "key_name": "PucDate",
+          "label": "प्रदूषण — Date",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 21.01.2025\", \"showIf\": \"doPuc\"}",
+          "sort_order": 26
+        },
+        {
+          "key_name": "PucTime",
+          "label": "प्रदूषण — Time (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 08.59.29 AM\", \"showIf\": \"doPuc\"}",
+          "sort_order": 27
+        },
+        {
+          "key_name": "PucUpto",
+          "label": "प्रदूषण — Validity upto",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20.07.2025\", \"showIf\": \"doPuc\"}",
+          "sort_order": 28
+        }
+      ]
     }
   ]
 }
