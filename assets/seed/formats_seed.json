@@ -3570,7 +3570,7 @@
           "is_required": 1,
           "default_value": "__FROM_LAST_CD_NUMBER__",
           "sort_order": 1,
-          "dropdown_options": null
+          "dropdown_options": "{\"hint\": \"पिछले पर्चे का नम्बर (जो प्रेषित हो चुका), जैसे: 02 — पिछली केस डायरी से अपने आप भरता है\"}"
         },
         {
           "key_name": "CDPDATE",
@@ -3579,7 +3579,7 @@
           "is_required": 1,
           "default_value": "__FROM_LAST_CD_DATE__",
           "sort_order": 2,
-          "dropdown_options": null
+          "dropdown_options": "{\"hint\": \"पिछले पर्चे की तारीख — पिछली केस डायरी से अपने आप भरती है\"}"
         }
       ],
       "is_favorite": 0,
@@ -3587,7 +3587,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "last_updated": "2026-07-17",
       "tags": [
@@ -3609,7 +3609,7 @@
           "is_required": 1,
           "default_value": "उ0नि0",
           "sort_order": 1,
-          "dropdown_options": null
+          "dropdown_options": "{\"hint\": \"अपना पद छोटे रूप में, जैसे: उ0नि0 / निरीक्षक\"}"
         }
       ],
       "is_favorite": 0,
@@ -3617,7 +3617,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "last_updated": "2026-07-17",
       "tags": [
@@ -3639,7 +3639,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 1,
-          "dropdown_options": "[{\"value\":\"yes\",\"label\":\"हाँ\"},{\"value\":\"no\",\"label\":\"नहीं\"}]"
+          "dropdown_options": "{\"options\": [{\"value\": \"yes\", \"label\": \"हाँ\"}, {\"value\": \"no\", \"label\": \"नहीं\"}], \"hint\": \"घटनास्थल की ई-साक्ष्य एप्प से वीडियोग्राफी हुई तो \\\"हाँ\\\"\"}"
         },
         {
           "key_name": "SIDNO",
@@ -3648,7 +3648,7 @@
           "is_required": 0,
           "default_value": null,
           "sort_order": 2,
-          "dropdown_options": null
+          "dropdown_options": "{\"hint\": \"ई-साक्ष्य एप्प पर मिली SID संख्या, जैसे: 1603969790436464\"}"
         }
       ],
       "is_favorite": 0,
@@ -3656,7 +3656,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "last_updated": "2026-07-17",
       "tags": [
@@ -3678,7 +3678,7 @@
           "is_required": 1,
           "default_value": "@FIR.accused_number|",
           "sort_order": 1,
-          "dropdown_options": "[\"अभियुक्त\",\"अभियुक्तगण\"]"
+          "dropdown_options": "{\"options\": [\"अभियुक्त\", \"अभियुक्तगण\"], \"hint\": \"मुकदमे में एक अभियुक्त है तो \\\"अभियुक्त\\\", एक से ज़्यादा तो \\\"अभियुक्तगण\\\" (मुकदमा चुनने पर अपने आप)\"}"
         }
       ],
       "is_favorite": 0,
@@ -3686,7 +3686,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "last_updated": "2026-07-17",
       "tags": [
@@ -3708,7 +3708,7 @@
           "is_required": 1,
           "default_value": "@FIR.accused_number|",
           "sort_order": 1,
-          "dropdown_options": "[\"अभियुक्त\",\"अभियुक्तगण\"]"
+          "dropdown_options": "{\"options\": [\"अभियुक्त\", \"अभियुक्तगण\"], \"hint\": \"मुकदमे में एक अभियुक्त है तो \\\"अभियुक्त\\\", एक से ज़्यादा तो \\\"अभियुक्तगण\\\" (मुकदमा चुनने पर अपने आप)\"}"
         }
       ],
       "is_favorite": 0,
@@ -3716,7 +3716,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "last_updated": "2026-07-17",
       "tags": [
@@ -3733,7 +3733,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "निरीक्षण",
@@ -3751,7 +3751,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "वादी",
-          "dropdown_options": "[{\"value\": \"वादी\", \"label\": \"वादी / वादिनी मुकदमा\"}, {\"value\": \"अन्य\", \"label\": \"किसी अन्य व्यक्ति\"}]",
+          "dropdown_options": "{\"options\": [{\"value\": \"वादी\", \"label\": \"वादी / वादिनी मुकदमा\"}, {\"value\": \"अन्य\", \"label\": \"किसी अन्य व्यक्ति\"}], \"hint\": \"घटना स्थल किसकी निशानदेही पर देखा — वादी / वादिनी, या कोई और (तब उसका नाम भरें)\"}",
           "sort_order": 0
         },
         {
@@ -3760,7 +3760,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "@FIR.complainant_vadi|वादी",
-          "dropdown_options": "{\"options\": [\"वादी\", \"वादिनी\"], \"showIf\": \"Pointer=वादी\"}",
+          "dropdown_options": "{\"options\": [\"वादी\", \"वादिनी\"], \"showIf\": \"Pointer=वादी\", \"hint\": \"वादी पुरुष है तो \\\"वादी\\\", महिला है तो \\\"वादिनी\\\" (मुकदमा चुनने पर अपने आप)\"}",
           "sort_order": 1
         },
         {
@@ -3769,7 +3769,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: गवाह रामपाल\", \"showIf\": \"Pointer=अन्य\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: गवाह रामपाल\", \"showIf\": \"Pointer=अन्य\", \"hint\": \"निशानदेही करने वाले का परिचय सहित नाम, जैसे: गवाह रामपाल\"}",
           "sort_order": 2
         },
         {
@@ -3778,7 +3778,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: पुत्र शिवबालक निवासी ग्राम बन्नावां थाना बछरावां जनपद रायबरेली\", \"showIf\": \"Pointer=अन्य\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: पुत्र शिवबालक निवासी ग्राम बन्नावां थाना बछरावां जनपद रायबरेली\", \"showIf\": \"Pointer=अन्य\", \"hint\": \"उसके पिता / पति व पता, जैसे: पुत्र शिवबालक निवासी ग्राम बन्नावां… — न हो तो खाली\"}",
           "sort_order": 3
         },
         {
@@ -3787,7 +3787,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "साथ लेकर गये",
-          "dropdown_options": "[{\"value\": \"साथ लेकर गये\", \"label\": \"थाने / कहीं और थे — साथ लेकर घटना स्थल गये\"}, {\"value\": \"घटना स्थल पर मौजूद\", \"label\": \"घटना स्थल पर ही मौजूद थे\"}]",
+          "dropdown_options": "{\"options\": [{\"value\": \"साथ लेकर गये\", \"label\": \"थाने / कहीं और थे — साथ लेकर घटना स्थल गये\"}, {\"value\": \"घटना स्थल पर मौजूद\", \"label\": \"घटना स्थल पर ही मौजूद थे\"}], \"hint\": \"वे आपके साथ थाने से चले, या घटना स्थल पर ही मिले — उसी हिसाब से पहली लाइन बनती है\"}",
           "sort_order": 4
         },
         {
@@ -3796,7 +3796,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_RELATED_FIR__",
-          "dropdown_options": "{\"placeholder\": \"जैसे: चुरुवा टोल प्लाजा के पास स्थित साहू रेस्टारेंट के पास\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चुरुवा टोल प्लाजा के पास स्थित साहू रेस्टारेंट के पास\", \"hint\": \"घटना स्थल का सही ठिकाना, जैसे: चुरुवा टोल प्लाजा के पास साहू रेस्टारेंट के पास (FIR से अपने आप)\"}",
           "sort_order": 5
         },
         {
@@ -3805,7 +3805,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "A",
-          "dropdown_options": "{\"placeholder\": \"जैसे: A / X\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: A / X\", \"hint\": \"नक्शा नजरी में घटना स्थल का चिन्ह, जैसे: A या X\"}",
           "sort_order": 6
         },
         {
@@ -3814,7 +3814,7 @@
           "field_type": "item_group",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"dir\", \"label\": \"दिशा\", \"type\": \"choice\", \"options\": [\"उत्तर\", \"दक्षिण\", \"पूर्व\", \"पश्चिम\", \"उत्तर-पूर्व\", \"उत्तर-पश्चिम\", \"दक्षिण-पूर्व\", \"दक्षिण-पश्चिम\"], \"default\": \"उत्तर\"}, {\"key\": \"what\", \"label\": \"इस दिशा में क्या है (जैसे: साहू रेस्टारेंट)\"}], \"addLabel\": \"+ और दिशा जोड़ें\", \"itemLabel\": \"दिशा\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"dir\", \"label\": \"दिशा\", \"type\": \"choice\", \"options\": [\"उत्तर\", \"दक्षिण\", \"पूर्व\", \"पश्चिम\", \"उत्तर-पूर्व\", \"उत्तर-पश्चिम\", \"दक्षिण-पूर्व\", \"दक्षिण-पश्चिम\"], \"default\": \"उत्तर\"}, {\"key\": \"what\", \"label\": \"इस दिशा में क्या है (जैसे: साहू रेस्टारेंट)\"}], \"addLabel\": \"+ और दिशा जोड़ें\", \"itemLabel\": \"दिशा\", \"hint\": \"हर दिशा की एक पंक्ति — दिशा चुनें और उस तरफ़ क्या है लिखें, जैसे: पूरब — साहू रेस्टारेंट\"}",
           "sort_order": 7
         },
         {
@@ -3823,7 +3823,7 @@
           "field_type": "decimal",
           "is_required": 0,
           "default_value": "26.",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 26.522196\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 26.522196\", \"hint\": \"GPS अक्षांश दशमलव सहित, जैसे: 26.522196 — मोबाइल के नक्शे से देखें; न हो तो खाली\"}",
           "sort_order": 8
         },
         {
@@ -3832,7 +3832,7 @@
           "field_type": "decimal",
           "is_required": 0,
           "default_value": "81.",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 81.068095\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 81.068095\", \"hint\": \"GPS देशान्तर दशमलव सहित, जैसे: 81.068095 — न हो तो खाली\"}",
           "sort_order": 9
         },
         {
@@ -3841,7 +3841,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "की गयी",
-          "dropdown_options": "[{\"value\": \"की गयी\", \"label\": \"की गयी\"}, {\"value\": \"तकनीकी समस्या\", \"label\": \"तकनीकी समस्या से नहीं हो सकी\"}, {\"value\": \"नहीं लिखना\", \"label\": \"कुछ न लिखें\"}]",
+          "dropdown_options": "{\"options\": [{\"value\": \"की गयी\", \"label\": \"की गयी\"}, {\"value\": \"तकनीकी समस्या\", \"label\": \"तकनीकी समस्या से नहीं हो सकी\"}, {\"value\": \"नहीं लिखना\", \"label\": \"कुछ न लिखें\"}], \"hint\": \"ई-साक्ष्य एप्प से वीडियोग्राफी हुई / तकनीकी समस्या रही / नहीं लिखना\"}",
           "sort_order": 10
         },
         {
@@ -3850,7 +3850,7 @@
           "field_type": "number",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 1603969790436464\", \"showIf\": \"ESakshya=की गयी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1603969790436464\", \"showIf\": \"ESakshya=की गयी\", \"hint\": \"ई-साक्ष्य की SID संख्या सिर्फ़ अंकों में, जैसे: 1603969790436464\"}",
           "sort_order": 11
         }
       ]
@@ -5454,7 +5454,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -5471,7 +5471,8 @@
           "field_type": "text",
           "is_required": 1,
           "sort_order": 1,
-          "default_value": "@FIR.fir_number"
+          "default_value": "@FIR.fir_number",
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Sections",
@@ -5479,7 +5480,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "sort_order": 2,
-          "default_value": "@FIR.section"
+          "default_value": "@FIR.section",
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Date",
@@ -5487,21 +5489,24 @@
           "field_type": "date",
           "is_required": 1,
           "sort_order": 3,
-          "default_value": "@LAST_CD.preparation_date"
+          "default_value": "@LAST_CD.preparation_date",
+          "dropdown_options": "{\"hint\": \"फर्द की तारीख चुनें (पिछली केस डायरी से अपने आप)\"}"
         },
         {
           "key_name": "PoliceStation",
           "label": "थाना",
           "field_type": "text",
           "is_required": 0,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "OfficerName",
           "label": "विवेचक (नाम/पद)",
           "field_type": "text",
           "is_required": 0,
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"विवेचक का नाम व पद, जैसे: उ0नि0 राम सिंह\"}"
         }
       ],
       "last_updated": "2026-10-07"
@@ -5518,7 +5523,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -5535,7 +5540,8 @@
           "field_type": "text",
           "is_required": 1,
           "sort_order": 1,
-          "default_value": "@FIR.fir_number"
+          "default_value": "@FIR.fir_number",
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Sections",
@@ -5543,7 +5549,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "sort_order": 2,
-          "default_value": "@FIR.section"
+          "default_value": "@FIR.section",
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Date",
@@ -5551,14 +5558,16 @@
           "field_type": "date",
           "is_required": 1,
           "sort_order": 3,
-          "default_value": "@LAST_CD.preparation_date"
+          "default_value": "@LAST_CD.preparation_date",
+          "dropdown_options": "{\"hint\": \"फर्द की तारीख चुनें (पिछली केस डायरी से अपने आप)\"}"
         },
         {
           "key_name": "PoliceStation",
           "label": "थाना",
           "field_type": "text",
           "is_required": 0,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         }
       ],
       "last_updated": "2026-10-07"
@@ -5575,7 +5584,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -5592,7 +5601,8 @@
           "field_type": "text",
           "is_required": 1,
           "sort_order": 1,
-          "default_value": "@FIR.fir_number"
+          "default_value": "@FIR.fir_number",
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Sections",
@@ -5600,7 +5610,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "sort_order": 2,
-          "default_value": "@FIR.section"
+          "default_value": "@FIR.section",
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Date",
@@ -5608,14 +5619,16 @@
           "field_type": "date",
           "is_required": 1,
           "sort_order": 3,
-          "default_value": "@LAST_CD.preparation_date"
+          "default_value": "@LAST_CD.preparation_date",
+          "dropdown_options": "{\"hint\": \"फर्द की तारीख चुनें (पिछली केस डायरी से अपने आप)\"}"
         },
         {
           "key_name": "PoliceStation",
           "label": "थाना",
           "field_type": "text",
           "is_required": 0,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         }
       ],
       "last_updated": "2026-10-07"
@@ -7986,7 +7999,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "35(3)",
@@ -8005,7 +8018,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 284/2025\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 284/2025\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 0
         },
         {
@@ -8014,7 +8027,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 115(2), 352, 351(3) बीएनएस\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 115(2), 352, 351(3) बीएनएस\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 1
         },
         {
@@ -8023,7 +8036,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "@FIR.fir_date",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 01.07.2025\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 01.07.2025\", \"hint\": \"मुकदमा दर्ज होने की तारीख, जैसे: 01.07.2025 — न हो तो खाली\"}",
           "sort_order": 2
         },
         {
@@ -8032,7 +8045,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: रपट नं0 12 समय 10:15 बजे\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: रपट नं0 12 समय 10:15 बजे\", \"hint\": \"रोजनामचा आम की रपट संख्या व समय, जैसे: रपट नं0 12 समय 10:15 बजे — न हो तो खाली\"}",
           "sort_order": 3
         },
         {
@@ -8041,7 +8054,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 05.07.2025\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 05.07.2025\", \"hint\": \"नोटिस की तारीख, जैसे: 05.07.2025 — खाली छोड़ें तो नोटिस पर हाथ से भरने की जगह (….) छपेगी\"}",
           "sort_order": 4
         },
         {
@@ -8050,7 +8063,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.accused1_name",
-          "dropdown_options": "{\"placeholder\": \"जैसे: रामचन्द्र\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: रामचन्द्र\", \"hint\": \"नोटिसी (अभियुक्त) का सिर्फ़ नाम, जैसे: रामचन्द्र\"}",
           "sort_order": 5
         },
         {
@@ -8059,7 +8072,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "@FIR.accused1_relation|पुत्र",
-          "dropdown_options": "[\"पुत्र\", \"पुत्री\", \"पत्नी\"]",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"hint\": \"पिता के नाम से तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
           "sort_order": 6
         },
         {
@@ -8068,7 +8081,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.accused1_father",
-          "dropdown_options": "{\"placeholder\": \"जैसे: भिखारी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: भिखारी\", \"hint\": \"पिता / पति का नाम, जैसे: भिखारी\"}",
           "sort_order": 7
         },
         {
@@ -8077,7 +8090,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: भग्तिन खेड़ा मजरे पश्चिम गांव\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: भग्तिन खेड़ा मजरे पश्चिम गांव\", \"hint\": \"ग्राम / मोहल्ला, जैसे: भग्तिन खेड़ा मजरे पश्चिम गांव\"}",
           "sort_order": 8
         },
         {
@@ -8086,7 +8099,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: बछरावां\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: बछरावां\", \"hint\": \"अभियुक्त के घर का थाना, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}",
           "sort_order": 9
         },
         {
@@ -8095,7 +8108,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: रायबरेली\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: रायबरेली\", \"hint\": \"अभियुक्त का जनपद, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}",
           "sort_order": 10
         },
         {
@@ -8104,7 +8117,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "@FIR.accused1_mobile",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 9876543210\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9876543210\", \"hint\": \"10 अंकों का मोबाइल — न हो तो खाली\"}",
           "sort_order": 11
         },
         {
@@ -8113,7 +8126,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 08.07.2025\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 08.07.2025\", \"hint\": \"अभियुक्त किस तारीख को उपस्थित हो, जैसे: 08.07.2025\"}",
           "sort_order": 12
         },
         {
@@ -8122,7 +8135,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 11:00 बजे\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 11:00 बजे\", \"hint\": \"उपस्थित होने का समय, जैसे: 11:00 बजे\"}",
           "sort_order": 13
         },
         {
@@ -8131,7 +8144,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "पूर्वान्ह",
-          "dropdown_options": "[\"पूर्वान्ह\", \"अपरान्ह\"]",
+          "dropdown_options": "{\"options\": [\"पूर्वान्ह\", \"अपरान्ह\"], \"hint\": \"12 बजे से पहले = पूर्वान्ह, बाद में = अपरान्ह\"}",
           "sort_order": 14
         },
         {
@@ -8140,7 +8153,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: थाना बछरावां जनपद रायबरेली\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: थाना बछरावां जनपद रायबरेली\", \"hint\": \"कहाँ उपस्थित हो, जैसे: थाना बछरावां जनपद रायबरेली\"}",
           "sort_order": 15
         },
         {
@@ -8149,7 +8162,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: आप बिना अनुमति जनपद से बाहर नहीं जायेंगे।\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: आप बिना अनुमति जनपद से बाहर नहीं जायेंगे।\", \"hint\": \"नोटिस की 10वीं शर्त, पूरा वाक्य, जैसे: आप बिना अनुमति जनपद से बाहर नहीं जायेंगे। — खाली छोड़ें तो \\\"कोई नहीं।\\\" छपेगा\"}",
           "sort_order": 16
         },
         {
@@ -8158,7 +8171,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 17
         },
         {
@@ -8167,7 +8180,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 18
+          "sort_order": 18,
+          "dropdown_options": "{\"hint\": \"विवेचक / भार साधक अधिकारी का सिर्फ़ नाम\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -8175,7 +8189,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 19
+          "sort_order": 19,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -8183,7 +8198,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 20
+          "sort_order": 20,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -8196,7 +8212,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "183",
@@ -8219,7 +8235,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"न्यायालय को \\\"183 BNSS बयान दर्ज कराने\\\" वाला पत्र चाहिए तो टिक\"}"
         },
         {
           "key_name": "doL2",
@@ -8227,7 +8244,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"दर्ज हुए बयान के \\\"अवलोकन\\\" हेतु पत्र चाहिए तो टिक\"}"
         },
         {
           "key_name": "doL3",
@@ -8235,7 +8253,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"बाल कल्याण समिति (CWC) को सुपुर्दगी वाला पत्र चाहिए तो टिक — तीनों में से जो चाहिए वही टिक रखें\"}"
         },
         {
           "key_name": "Law",
@@ -8243,7 +8262,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "बीएनएसएस",
-          "dropdown_options": "[{\"value\": \"बीएनएसएस\", \"label\": \"BNSS (धारा 183 / 180)\"}, {\"value\": \"सीआरपीसी\", \"label\": \"CrPC (धारा 164 / 161) — पुराने मुकदमे\"}]",
+          "dropdown_options": "{\"options\": [{\"value\": \"बीएनएसएस\", \"label\": \"BNSS (धारा 183 / 180)\"}, {\"value\": \"सीआरपीसी\", \"label\": \"CrPC (धारा 164 / 161) — पुराने मुकदमे\"}], \"hint\": \"नये मुकदमे BNSS में (धारा 183 / 180), पुराने CrPC में (164 / 161)\"}",
           "sort_order": 3
         },
         {
@@ -8252,7 +8271,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "श्रीमान मुख्य न्यायिक मजिस्ट्रेट महोदय",
-          "dropdown_options": "{\"placeholder\": \"जैसे: विशेष न्यायाधीश पॉक्सो महोदय / श्रीमान एसीजेएम प्रथम महोदय\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: विशेष न्यायाधीश पॉक्सो महोदय / श्रीमान एसीजेएम प्रथम महोदय\", \"hint\": \"जिस न्यायालय को पत्र जाना है, जैसे: विशेष न्यायाधीश पॉक्सो महोदय\"}",
           "sort_order": 4
         },
         {
@@ -8261,7 +8280,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 703/2024\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 703/2024\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 5
         },
         {
@@ -8270,7 +8289,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 137(2), 87 बीएनएस व 7/8 पॉक्सो एक्ट\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 137(2), 87 बीएनएस व 7/8 पॉक्सो एक्ट\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 6
         },
         {
@@ -8279,7 +8298,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.complainant_name",
-          "dropdown_options": "{\"placeholder\": \"जैसे: आरती\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: आरती\", \"hint\": \"पीड़िता / पीड़ित का सिर्फ़ नाम, जैसे: आरती (मुकदमा चुनने पर अपने आप)\"}",
           "sort_order": 7
         },
         {
@@ -8288,7 +8307,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "@FIR.complainant_relation|पुत्री",
-          "dropdown_options": "[\"पुत्री\", \"पत्नी\", \"पुत्र\"]",
+          "dropdown_options": "{\"options\": [\"पुत्री\", \"पत्नी\", \"पुत्र\"], \"hint\": \"पुत्री / पत्नी / पुत्र — पीड़ित लड़का हो तो \\\"पुत्र\\\" (शब्द अपने आप बदलते हैं)\"}",
           "sort_order": 8
         },
         {
@@ -8297,7 +8316,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.complainant_father",
-          "dropdown_options": "{\"placeholder\": \"जैसे: राजबहादुर\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राजबहादुर\", \"hint\": \"पिता / पति का नाम, जैसे: राजबहादुर\"}",
           "sort_order": 9
         },
         {
@@ -8306,7 +8325,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.complainant_address",
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\", \"hint\": \"पूरा पता, जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\"}",
           "sort_order": 10
         },
         {
@@ -8315,7 +8334,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "@FIR.complainant_age_years",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 13 वर्ष 08 माह\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 13 वर्ष 08 माह\", \"hint\": \"उम्र जैसे लिखनी हो, जैसे: 13 वर्ष 08 माह — न हो तो खाली\"}",
           "sort_order": 11
         },
         {
@@ -8324,7 +8343,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "dropdown_options": "{\"showIf\": \"doL1\"}",
+          "dropdown_options": "{\"showIf\": \"doL1\", \"hint\": \"पीड़िता का मेडिकल परीक्षण हो चुका है तो टिक — पत्र में यह वाक्य जुड़ेगा\"}",
           "sort_order": 12
         },
         {
@@ -8333,7 +8352,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "dropdown_options": "{\"showIf\": \"doL1\"}",
+          "dropdown_options": "{\"showIf\": \"doL1\", \"hint\": \"यह पीड़िता का पहला बयान है तो टिक रहने दें\"}",
           "sort_order": 13
         },
         {
@@ -8342,7 +8361,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 12.07.2025\", \"showIf\": \"doL2\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.07.2025\", \"showIf\": \"doL2\", \"hint\": \"बयान जिस तारीख को दर्ज हुआ, जैसे: 12.07.2025 — न पता हो तो खाली\"}",
           "sort_order": 14
         },
         {
@@ -8351,7 +8370,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "नाबालिग",
-          "dropdown_options": "{\"options\": [\"नाबालिग\", \"बालिग\"], \"showIf\": \"doL3\"}",
+          "dropdown_options": "{\"options\": [\"नाबालिग\", \"बालिग\"], \"showIf\": \"doL3\", \"hint\": \"पीड़िता 18 वर्ष से कम है तो नाबालिग\"}",
           "sort_order": 15
         },
         {
@@ -8360,7 +8379,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "समिति के आदेशानुसार",
-          "dropdown_options": "{\"options\": [{\"value\": \"समिति के आदेशानुसार\", \"label\": \"किसी का नाम नहीं (समिति के आदेशानुसार)\"}, \"माता\", \"पिता\", \"रिश्तेदार\", \"केयर टेकर\"], \"showIf\": \"doL3\"}",
+          "dropdown_options": "{\"options\": [{\"value\": \"समिति के आदेशानुसार\", \"label\": \"किसी का नाम नहीं (समिति के आदेशानुसार)\"}, \"माता\", \"पिता\", \"रिश्तेदार\", \"केयर टेकर\"], \"showIf\": \"doL3\", \"hint\": \"सुपुर्दगी किसे देने का निवेदन है — \\\"समिति के आदेशानुसार\\\" रखें तो कोई नाम नहीं जाता\"}",
           "sort_order": 16
         },
         {
@@ -8369,7 +8388,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चाचा / मौसी / नाना\", \"showIf\": \"doL3 & Receiver=रिश्तेदार\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चाचा / मौसी / नाना\", \"showIf\": \"doL3 & Receiver=रिश्तेदार\", \"hint\": \"वह रिश्तेदार पीड़िता का क्या लगता है, जैसे: चाचा / मौसी / नाना\"}",
           "sort_order": 17
         },
         {
@@ -8378,7 +8397,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमती सुनीता\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमती सुनीता\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"hint\": \"सुपुर्दगी लेने वाले का नाम, जैसे: श्रीमती सुनीता\"}",
           "sort_order": 18
         },
         {
@@ -8387,7 +8406,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "पत्नी",
-          "dropdown_options": "{\"options\": [\"पत्नी\", \"पुत्र\", \"पुत्री\"], \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\"}",
+          "dropdown_options": "{\"options\": [\"पत्नी\", \"पुत्र\", \"पुत्री\"], \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"hint\": \"सुपुर्दगी लेने वाले का सम्बन्ध (पुत्र / पत्नी …) उनके पिता / पति के नाम के साथ\"}",
           "sort_order": 19
         },
         {
@@ -8396,7 +8415,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: राजबहादुर\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राजबहादुर\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"hint\": \"उनके पिता / पति का नाम — न हो तो खाली\"}",
           "sort_order": 20
         },
         {
@@ -8405,7 +8424,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"hint\": \"उनका पता — खाली छोड़ें तो पीड़िता वाला पता लगेगा\"}",
           "sort_order": 21
         },
         {
@@ -8414,7 +8433,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 22
         },
         {
@@ -8423,7 +8442,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 23
+          "sort_order": 23,
+          "dropdown_options": "{\"hint\": \"विवेचक का सिर्फ़ नाम\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -8431,7 +8451,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 24
+          "sort_order": 24,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -8439,7 +8460,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 25
+          "sort_order": 25,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -8452,7 +8474,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "मेडिकल",
@@ -8473,7 +8495,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "@FIR.complainant_majroob_vadi|मजरूब/वादी",
-          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"]}",
+          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"], \"hint\": \"यह व्यक्ति मुकदमे में कौन है — मजरूब / वादी / अभियुक्त…; बहुवचन शब्द अपने आप बनते हैं\"}",
           "sort_order": 0
         },
         {
@@ -8482,7 +8504,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.complainant_name",
-          "dropdown_options": "{\"placeholder\": \"जैसे: रमेश सिंह उर्फ पुतान सिंह\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: रमेश सिंह उर्फ पुतान सिंह\", \"hint\": \"सिर्फ़ नाम, जैसे: रमेश सिंह उर्फ पुतान सिंह (व्यक्ति 1 में मुकदमा चुनने पर वादी का नाम अपने आप आता है)\"}",
           "sort_order": 1
         },
         {
@@ -8491,7 +8513,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "@FIR.complainant_relation|पुत्र",
-          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"]}",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"hint\": \"पिता के नाम से लिखना है तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
           "sort_order": 2
         },
         {
@@ -8500,7 +8522,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "@FIR.complainant_father",
-          "dropdown_options": "{\"placeholder\": \"जैसे: राजेन्द्र सिंह\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राजेन्द्र सिंह\", \"hint\": \"पिता / पति का नाम, जैसे: राजेन्द्र सिंह\"}",
           "sort_order": 3
         },
         {
@@ -8509,7 +8531,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "@FIR.complainant_address",
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\", \"hint\": \"पूरा पता, जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\"}",
           "sort_order": 4
         },
         {
@@ -8518,7 +8540,7 @@
           "field_type": "number",
           "is_required": 0,
           "default_value": "@FIR.complainant_age",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 45\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45 — न पता हो तो खाली\"}",
           "sort_order": 5
         },
         {
@@ -8527,7 +8549,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"इस व्यक्ति के मेडिकल प्रपत्र (MLC) का अवलोकन लिखना है तो टिक करें — अस्पताल, तारीख, डॉक्टर, चोटें भरने के बॉक्स खुलेंगे\"}"
         },
         {
           "key_name": "p1MlcHosp",
@@ -8535,7 +8558,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p1Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p1Mlc\", \"hint\": \"जिस अस्पताल में मेडिकल हुआ, जैसे: सीएचसी बछरावां\"}",
           "sort_order": 7
         },
         {
@@ -8544,7 +8567,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p1Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p1Mlc\", \"hint\": \"मेडिकल की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 8
         },
         {
@@ -8553,7 +8576,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p1Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p1Mlc\", \"hint\": \"मेडिकल का समय जैसा MLC पर लिखा है, जैसे: 12.55 एएम\"}",
           "sort_order": 9
         },
         {
@@ -8562,7 +8585,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p1Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p1Mlc\", \"hint\": \"मेडिकल करने वाले डॉक्टर का सिर्फ़ नाम, जैसे: इन्द्रभूषण जायसवाल (\\\"डॉ0\\\" अपने आप लगता है)\"}",
           "sort_order": 10
         },
         {
@@ -8571,7 +8594,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p1Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p1Mlc\", \"hint\": \"चोटों का विवरण कागज़ पर जैसा लिखा है वैसा ही (अंग्रेज़ी हो तो अंग्रेज़ी में) — हर चोट नई लाइन में 1. 2. …\"}",
           "sort_order": 11
         },
         {
@@ -8580,7 +8603,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p1Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p1Mlc\", \"hint\": \"डॉक्टर की राय / रेफर जैसा लिखा हो, जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण… — न हो तो खाली\"}",
           "sort_order": 12
         },
         {
@@ -8589,7 +8612,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कठोर व कुन्द वस्तु",
-          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p1Mlc\"}",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p1Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}",
           "sort_order": 13
         },
         {
@@ -8598,7 +8621,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"इमरजेंसी रजिस्टर की प्रमाणित प्रति का अवलोकन लिखना है तो टिक करें\"}"
         },
         {
           "key_name": "p1ErHosp",
@@ -8606,7 +8630,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p1Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p1Er\", \"hint\": \"अस्पताल का नाम, जैसे: सीएचसी बछरावां\"}",
           "sort_order": 15
         },
         {
@@ -8615,7 +8639,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p1Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p1Er\", \"hint\": \"इमरजेंसी में दर्ज होने की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 16
         },
         {
@@ -8624,7 +8648,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p1Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p1Er\", \"hint\": \"इमरजेंसी में दर्ज समय, जैसे: 9.20 बजे\"}",
           "sort_order": 17
         },
         {
@@ -8633,7 +8657,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p1Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p1Er\", \"hint\": \"डॉक्टर का सिर्फ़ नाम, जैसे: अभय चतुर्वेदी\"}",
           "sort_order": 18
         },
         {
@@ -8642,7 +8666,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p1Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p1Er\", \"hint\": \"चोटें / Advise कागज़ पर जैसा लिखा है वैसा ही (अंग्रेज़ी हो तो अंग्रेज़ी में) — हर चोट नई लाइन में 1. 2. …\"}",
           "sort_order": 19
         },
         {
@@ -8651,7 +8675,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 20
+          "sort_order": 20,
+          "dropdown_options": "{\"hint\": \"एक्स-रे रिपोर्ट का अवलोकन लिखना है तो टिक करें\"}"
         },
         {
           "key_name": "p1XrayDate",
@@ -8659,7 +8684,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p1Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p1Xray\", \"hint\": \"एक्स-रे की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 21
         },
         {
@@ -8668,7 +8693,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "जिला अस्पताल रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p1Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p1Xray\", \"hint\": \"जहाँ एक्स-रे हुआ, जैसे: जिला अस्पताल रायबरेली\"}",
           "sort_order": 22
         },
         {
@@ -8677,7 +8702,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p1Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p1Xray\", \"hint\": \"मजरूब को किसके साथ भिजवाकर एक्स-रे कराया, जैसे: हो0गा0 0232 अवधेश कुमार — न हो तो खाली\"}",
           "sort_order": 23
         },
         {
@@ -8686,7 +8711,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p1Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p1Xray\", \"hint\": \"एक्स-रे नम्बर जैसा रिपोर्ट पर है, जैसे: ML-3455/3456\"}",
           "sort_order": 24
         },
         {
@@ -8695,7 +8720,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p1Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p1Xray\", \"hint\": \"रेडियोलॉजिस्ट का नाम — न हो तो खाली\"}",
           "sort_order": 25
         },
         {
@@ -8704,7 +8729,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p1Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p1Xray\", \"hint\": \"रिपोर्ट में क्या लिखा है, जैसे: एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\"}",
           "sort_order": 26
         },
         {
@@ -8713,7 +8738,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 27
+          "sort_order": 27,
+          "dropdown_options": "{\"hint\": \"अस्पताल में भर्ती रहा हो तो BHT (भर्ती रिपोर्ट) का अवलोकन लिखने के लिए टिक करें\"}"
         },
         {
           "key_name": "p1BhtHosp",
@@ -8721,7 +8747,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "राणा बेनी माधव सिंह जिला अस्पताल रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p1Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p1Bht\", \"hint\": \"जहाँ भर्ती रहा, जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\"}",
           "sort_order": 28
         },
         {
@@ -8730,7 +8756,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p1Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p1Bht\", \"hint\": \"IPD नम्बर जैसा BHT पर है, जैसे: 20260002763\"}",
           "sort_order": 29
         },
         {
@@ -8739,7 +8765,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p1Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p1Bht\", \"hint\": \"भर्ती होने की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 30
         },
         {
@@ -8748,7 +8774,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p1Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p1Bht\", \"hint\": \"छुट्टी (डिस्चार्ज) की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 31
         },
         {
@@ -8757,7 +8783,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p1Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p1Bht\", \"hint\": \"वार्ड व बेड नम्बर, जैसे: वार्ड नं0 2 में बेड नं0 11 — न हो तो खाली\"}",
           "sort_order": 32
         },
         {
@@ -8766,7 +8792,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p1Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p1Bht\", \"hint\": \"BHT पर लिखी चोट / बीमारी, जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\"}",
           "sort_order": 33
         },
         {
@@ -8775,7 +8801,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "सीएचसी बछरावां रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p1Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p1Bht\", \"hint\": \"कहाँ से रेफर होकर आया, जैसे: सीएचसी बछरावां — न हो तो खाली\"}",
           "sort_order": 34
         },
         {
@@ -8784,7 +8810,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 35
+          "sort_order": 35,
+          "dropdown_options": "{\"hint\": \"दूसरे / तीसरे व्यक्ति का भी अवलोकन लिखना है तो टिक करें — उसके बॉक्स खुल जायेंगे\"}"
         },
         {
           "key_name": "p2Role",
@@ -8792,7 +8819,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मजरूब",
-          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"], \"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"], \"showIf\": \"p2On\", \"hint\": \"यह व्यक्ति मुकदमे में कौन है — मजरूब / वादी / अभियुक्त…; बहुवचन शब्द अपने आप बनते हैं\"}",
           "sort_order": 36
         },
         {
@@ -8801,7 +8828,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: खुशबू खान\", \"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: खुशबू खान\", \"showIf\": \"p2On\", \"hint\": \"सिर्फ़ नाम, जैसे: रमेश सिंह उर्फ पुतान सिंह (व्यक्ति 1 में मुकदमा चुनने पर वादी का नाम अपने आप आता है)\"}",
           "sort_order": 37
         },
         {
@@ -8810,7 +8837,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "पुत्र",
-          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"showIf\": \"p2On\", \"hint\": \"पिता के नाम से लिखना है तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
           "sort_order": 38
         },
         {
@@ -8819,7 +8846,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब खान\", \"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब खान\", \"showIf\": \"p2On\", \"hint\": \"पिता / पति का नाम, जैसे: राजेन्द्र सिंह\"}",
           "sort_order": 39
         },
         {
@@ -8828,7 +8855,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम रैन थाना बछरावां जनपद रायबरेली\", \"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम रैन थाना बछरावां जनपद रायबरेली\", \"showIf\": \"p2On\", \"hint\": \"पूरा पता, जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\"}",
           "sort_order": 40
         },
         {
@@ -8837,7 +8864,7 @@
           "field_type": "number",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"showIf\": \"p2On\", \"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45 — न पता हो तो खाली\"}",
           "sort_order": 41
         },
         {
@@ -8846,7 +8873,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"showIf\": \"p2On\", \"hint\": \"इस व्यक्ति के मेडिकल प्रपत्र (MLC) का अवलोकन लिखना है तो टिक करें — अस्पताल, तारीख, डॉक्टर, चोटें भरने के बॉक्स खुलेंगे\"}",
           "sort_order": 42
         },
         {
@@ -8855,7 +8882,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p2On & p2Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p2On & p2Mlc\", \"hint\": \"जिस अस्पताल में मेडिकल हुआ, जैसे: सीएचसी बछरावां\"}",
           "sort_order": 43
         },
         {
@@ -8864,7 +8891,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p2On & p2Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p2On & p2Mlc\", \"hint\": \"मेडिकल की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 44
         },
         {
@@ -8873,7 +8900,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p2On & p2Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p2On & p2Mlc\", \"hint\": \"मेडिकल का समय जैसा MLC पर लिखा है, जैसे: 12.55 एएम\"}",
           "sort_order": 45
         },
         {
@@ -8882,7 +8909,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p2On & p2Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p2On & p2Mlc\", \"hint\": \"मेडिकल करने वाले डॉक्टर का सिर्फ़ नाम, जैसे: इन्द्रभूषण जायसवाल (\\\"डॉ0\\\" अपने आप लगता है)\"}",
           "sort_order": 46
         },
         {
@@ -8891,7 +8918,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p2On & p2Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p2On & p2Mlc\", \"hint\": \"चोटों का विवरण कागज़ पर जैसा लिखा है वैसा ही (अंग्रेज़ी हो तो अंग्रेज़ी में) — हर चोट नई लाइन में 1. 2. …\"}",
           "sort_order": 47
         },
         {
@@ -8900,7 +8927,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p2On & p2Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p2On & p2Mlc\", \"hint\": \"डॉक्टर की राय / रेफर जैसा लिखा हो, जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण… — न हो तो खाली\"}",
           "sort_order": 48
         },
         {
@@ -8909,7 +8936,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कठोर व कुन्द वस्तु",
-          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p2On & p2Mlc\"}",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p2On & p2Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}",
           "sort_order": 49
         },
         {
@@ -8918,7 +8945,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"showIf\": \"p2On\", \"hint\": \"इमरजेंसी रजिस्टर की प्रमाणित प्रति का अवलोकन लिखना है तो टिक करें\"}",
           "sort_order": 50
         },
         {
@@ -8927,7 +8954,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p2On & p2Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p2On & p2Er\", \"hint\": \"अस्पताल का नाम, जैसे: सीएचसी बछरावां\"}",
           "sort_order": 51
         },
         {
@@ -8936,7 +8963,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p2On & p2Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p2On & p2Er\", \"hint\": \"इमरजेंसी में दर्ज होने की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 52
         },
         {
@@ -8945,7 +8972,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p2On & p2Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p2On & p2Er\", \"hint\": \"इमरजेंसी में दर्ज समय, जैसे: 9.20 बजे\"}",
           "sort_order": 53
         },
         {
@@ -8954,7 +8981,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p2On & p2Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p2On & p2Er\", \"hint\": \"डॉक्टर का सिर्फ़ नाम, जैसे: अभय चतुर्वेदी\"}",
           "sort_order": 54
         },
         {
@@ -8963,7 +8990,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p2On & p2Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p2On & p2Er\", \"hint\": \"चोटें / Advise कागज़ पर जैसा लिखा है वैसा ही (अंग्रेज़ी हो तो अंग्रेज़ी में) — हर चोट नई लाइन में 1. 2. …\"}",
           "sort_order": 55
         },
         {
@@ -8972,7 +8999,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"showIf\": \"p2On\", \"hint\": \"एक्स-रे रिपोर्ट का अवलोकन लिखना है तो टिक करें\"}",
           "sort_order": 56
         },
         {
@@ -8981,7 +9008,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p2On & p2Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p2On & p2Xray\", \"hint\": \"एक्स-रे की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 57
         },
         {
@@ -8990,7 +9017,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "जिला अस्पताल रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p2On & p2Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p2On & p2Xray\", \"hint\": \"जहाँ एक्स-रे हुआ, जैसे: जिला अस्पताल रायबरेली\"}",
           "sort_order": 58
         },
         {
@@ -8999,7 +9026,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p2On & p2Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p2On & p2Xray\", \"hint\": \"मजरूब को किसके साथ भिजवाकर एक्स-रे कराया, जैसे: हो0गा0 0232 अवधेश कुमार — न हो तो खाली\"}",
           "sort_order": 59
         },
         {
@@ -9008,7 +9035,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p2On & p2Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p2On & p2Xray\", \"hint\": \"एक्स-रे नम्बर जैसा रिपोर्ट पर है, जैसे: ML-3455/3456\"}",
           "sort_order": 60
         },
         {
@@ -9017,7 +9044,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p2On & p2Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p2On & p2Xray\", \"hint\": \"रेडियोलॉजिस्ट का नाम — न हो तो खाली\"}",
           "sort_order": 61
         },
         {
@@ -9026,7 +9053,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p2On & p2Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p2On & p2Xray\", \"hint\": \"रिपोर्ट में क्या लिखा है, जैसे: एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\"}",
           "sort_order": 62
         },
         {
@@ -9035,7 +9062,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"showIf\": \"p2On\", \"hint\": \"अस्पताल में भर्ती रहा हो तो BHT (भर्ती रिपोर्ट) का अवलोकन लिखने के लिए टिक करें\"}",
           "sort_order": 63
         },
         {
@@ -9044,7 +9071,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "राणा बेनी माधव सिंह जिला अस्पताल रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p2On & p2Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p2On & p2Bht\", \"hint\": \"जहाँ भर्ती रहा, जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\"}",
           "sort_order": 64
         },
         {
@@ -9053,7 +9080,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p2On & p2Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p2On & p2Bht\", \"hint\": \"IPD नम्बर जैसा BHT पर है, जैसे: 20260002763\"}",
           "sort_order": 65
         },
         {
@@ -9062,7 +9089,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p2On & p2Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p2On & p2Bht\", \"hint\": \"भर्ती होने की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 66
         },
         {
@@ -9071,7 +9098,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p2On & p2Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p2On & p2Bht\", \"hint\": \"छुट्टी (डिस्चार्ज) की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 67
         },
         {
@@ -9080,7 +9107,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p2On & p2Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p2On & p2Bht\", \"hint\": \"वार्ड व बेड नम्बर, जैसे: वार्ड नं0 2 में बेड नं0 11 — न हो तो खाली\"}",
           "sort_order": 68
         },
         {
@@ -9089,7 +9116,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p2On & p2Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p2On & p2Bht\", \"hint\": \"BHT पर लिखी चोट / बीमारी, जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\"}",
           "sort_order": 69
         },
         {
@@ -9098,7 +9125,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "सीएचसी बछरावां रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p2On & p2Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p2On & p2Bht\", \"hint\": \"कहाँ से रेफर होकर आया, जैसे: सीएचसी बछरावां — न हो तो खाली\"}",
           "sort_order": 70
         },
         {
@@ -9107,7 +9134,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p2On\"}",
+          "dropdown_options": "{\"showIf\": \"p2On\", \"hint\": \"दूसरे / तीसरे व्यक्ति का भी अवलोकन लिखना है तो टिक करें — उसके बॉक्स खुल जायेंगे\"}",
           "sort_order": 71
         },
         {
@@ -9116,7 +9143,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मजरूब",
-          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"], \"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूब/वादी\", \"मजरूबा\", \"मजरूबा/वादिनी\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\", \"अभियुक्त\", \"अभियुक्ता\"], \"showIf\": \"p3On\", \"hint\": \"यह व्यक्ति मुकदमे में कौन है — मजरूब / वादी / अभियुक्त…; बहुवचन शब्द अपने आप बनते हैं\"}",
           "sort_order": 72
         },
         {
@@ -9125,7 +9152,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: तेजरानी\", \"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: तेजरानी\", \"showIf\": \"p3On\", \"hint\": \"सिर्फ़ नाम, जैसे: रमेश सिंह उर्फ पुतान सिंह (व्यक्ति 1 में मुकदमा चुनने पर वादी का नाम अपने आप आता है)\"}",
           "sort_order": 73
         },
         {
@@ -9134,7 +9161,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "पुत्र",
-          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"showIf\": \"p3On\", \"hint\": \"पिता के नाम से लिखना है तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
           "sort_order": 74
         },
         {
@@ -9143,7 +9170,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चन्दन सिंह\", \"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चन्दन सिंह\", \"showIf\": \"p3On\", \"hint\": \"पिता / पति का नाम, जैसे: राजेन्द्र सिंह\"}",
           "sort_order": 75
         },
         {
@@ -9152,7 +9179,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम भवानीखेड़ा मजरे पश्चिम गांव थाना बछरावां जनपद रायबरेली\", \"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम भवानीखेड़ा मजरे पश्चिम गांव थाना बछरावां जनपद रायबरेली\", \"showIf\": \"p3On\", \"hint\": \"पूरा पता, जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\"}",
           "sort_order": 76
         },
         {
@@ -9161,7 +9188,7 @@
           "field_type": "number",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"showIf\": \"p3On\", \"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45 — न पता हो तो खाली\"}",
           "sort_order": 77
         },
         {
@@ -9170,7 +9197,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"showIf\": \"p3On\", \"hint\": \"इस व्यक्ति के मेडिकल प्रपत्र (MLC) का अवलोकन लिखना है तो टिक करें — अस्पताल, तारीख, डॉक्टर, चोटें भरने के बॉक्स खुलेंगे\"}",
           "sort_order": 78
         },
         {
@@ -9179,7 +9206,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p3On & p3Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p3On & p3Mlc\", \"hint\": \"जिस अस्पताल में मेडिकल हुआ, जैसे: सीएचसी बछरावां\"}",
           "sort_order": 79
         },
         {
@@ -9188,7 +9215,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p3On & p3Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20.03.2025\", \"showIf\": \"p3On & p3Mlc\", \"hint\": \"मेडिकल की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 80
         },
         {
@@ -9197,7 +9224,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p3On & p3Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.55 एएम\", \"showIf\": \"p3On & p3Mlc\", \"hint\": \"मेडिकल का समय जैसा MLC पर लिखा है, जैसे: 12.55 एएम\"}",
           "sort_order": 81
         },
         {
@@ -9206,7 +9233,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p3On & p3Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: इन्द्रभूषण जायसवाल\", \"showIf\": \"p3On & p3Mlc\", \"hint\": \"मेडिकल करने वाले डॉक्टर का सिर्फ़ नाम, जैसे: इन्द्रभूषण जायसवाल (\\\"डॉ0\\\" अपने आप लगता है)\"}",
           "sort_order": 82
         },
         {
@@ -9215,7 +9242,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p3On & p3Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. L/W (SUPERFICIAL) SKIN DEEP OF SIZE 2.5X0.3 CM ON LEFT FRONTAL REGION … 2. ABRASION OF SIZE 5X0.5 CM …\", \"showIf\": \"p3On & p3Mlc\", \"hint\": \"चोटों का विवरण कागज़ पर जैसा लिखा है वैसा ही (अंग्रेज़ी हो तो अंग्रेज़ी में) — हर चोट नई लाइन में 1. 2. …\"}",
           "sort_order": 83
         },
         {
@@ -9224,7 +9251,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p3On & p3Mlc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण प्रकृति की तथा एक्स-रे स्कल, सीटी हेड, कलाई के ज्वाइण्ट के एक्स-रे के लिये जिला अस्पताल रेफर किया गया है\", \"showIf\": \"p3On & p3Mlc\", \"hint\": \"डॉक्टर की राय / रेफर जैसा लिखा हो, जैसे: चोट नं0 01 व 03 को छोड़कर शेष साधारण… — न हो तो खाली\"}",
           "sort_order": 84
         },
         {
@@ -9233,7 +9260,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कठोर व कुन्द वस्तु",
-          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p3On & p3Mlc\"}",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p3On & p3Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}",
           "sort_order": 85
         },
         {
@@ -9242,7 +9269,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"showIf\": \"p3On\", \"hint\": \"इमरजेंसी रजिस्टर की प्रमाणित प्रति का अवलोकन लिखना है तो टिक करें\"}",
           "sort_order": 86
         },
         {
@@ -9251,7 +9278,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p3On & p3Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"p3On & p3Er\", \"hint\": \"अस्पताल का नाम, जैसे: सीएचसी बछरावां\"}",
           "sort_order": 87
         },
         {
@@ -9260,7 +9287,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p3On & p3Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p3On & p3Er\", \"hint\": \"इमरजेंसी में दर्ज होने की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 88
         },
         {
@@ -9269,7 +9296,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p3On & p3Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9.20 बजे\", \"showIf\": \"p3On & p3Er\", \"hint\": \"इमरजेंसी में दर्ज समय, जैसे: 9.20 बजे\"}",
           "sort_order": 89
         },
         {
@@ -9278,7 +9305,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p3On & p3Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"p3On & p3Er\", \"hint\": \"डॉक्टर का सिर्फ़ नाम, जैसे: अभय चतुर्वेदी\"}",
           "sort_order": 90
         },
         {
@@ -9287,7 +9314,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p3On & p3Er\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 1. Swelling laceration injury of size 5*.5*.2 cm present on Rt. Parietal region … Advise- Refer dist. Hospital Rbl. X-ray Lt. forearm, X-ray skull\", \"showIf\": \"p3On & p3Er\", \"hint\": \"चोटें / Advise कागज़ पर जैसा लिखा है वैसा ही (अंग्रेज़ी हो तो अंग्रेज़ी में) — हर चोट नई लाइन में 1. 2. …\"}",
           "sort_order": 91
         },
         {
@@ -9296,7 +9323,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"showIf\": \"p3On\", \"hint\": \"एक्स-रे रिपोर्ट का अवलोकन लिखना है तो टिक करें\"}",
           "sort_order": 92
         },
         {
@@ -9305,7 +9332,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p3On & p3Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 14.07.2025\", \"showIf\": \"p3On & p3Xray\", \"hint\": \"एक्स-रे की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 93
         },
         {
@@ -9314,7 +9341,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "जिला अस्पताल रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p3On & p3Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"showIf\": \"p3On & p3Xray\", \"hint\": \"जहाँ एक्स-रे हुआ, जैसे: जिला अस्पताल रायबरेली\"}",
           "sort_order": 94
         },
         {
@@ -9323,7 +9350,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p3On & p3Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: हो0गा0 0232 अवधेश कुमार थाना बछरावां\", \"showIf\": \"p3On & p3Xray\", \"hint\": \"मजरूब को किसके साथ भिजवाकर एक्स-रे कराया, जैसे: हो0गा0 0232 अवधेश कुमार — न हो तो खाली\"}",
           "sort_order": 95
         },
         {
@@ -9332,7 +9359,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p3On & p3Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ML-3455/3456\", \"showIf\": \"p3On & p3Xray\", \"hint\": \"एक्स-रे नम्बर जैसा रिपोर्ट पर है, जैसे: ML-3455/3456\"}",
           "sort_order": 96
         },
         {
@@ -9341,7 +9368,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p3On & p3Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अल्ताफ हुसैन\", \"showIf\": \"p3On & p3Xray\", \"hint\": \"रेडियोलॉजिस्ट का नाम — न हो तो खाली\"}",
           "sort_order": 97
         },
         {
@@ -9350,7 +9377,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p3On & p3Xray\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चेस्ट व दाहिने घुटने का एक्स-रे होना तथा एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\", \"showIf\": \"p3On & p3Xray\", \"hint\": \"रिपोर्ट में क्या लिखा है, जैसे: एक्स-रे चेस्ट – NAD और एक्स-रे राईट नी – NAD होना\"}",
           "sort_order": 98
         },
         {
@@ -9359,7 +9386,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"p3On\"}",
+          "dropdown_options": "{\"showIf\": \"p3On\", \"hint\": \"अस्पताल में भर्ती रहा हो तो BHT (भर्ती रिपोर्ट) का अवलोकन लिखने के लिए टिक करें\"}",
           "sort_order": 99
         },
         {
@@ -9368,7 +9395,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "राणा बेनी माधव सिंह जिला अस्पताल रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p3On & p3Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\", \"showIf\": \"p3On & p3Bht\", \"hint\": \"जहाँ भर्ती रहा, जैसे: राणा बेनी माधव सिंह जिला अस्पताल रायबरेली\"}",
           "sort_order": 100
         },
         {
@@ -9377,7 +9404,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p3On & p3Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20260002763\", \"showIf\": \"p3On & p3Bht\", \"hint\": \"IPD नम्बर जैसा BHT पर है, जैसे: 20260002763\"}",
           "sort_order": 101
         },
         {
@@ -9386,7 +9413,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p3On & p3Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 03.02.2026\", \"showIf\": \"p3On & p3Bht\", \"hint\": \"भर्ती होने की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 102
         },
         {
@@ -9395,7 +9422,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p3On & p3Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 13.02.2026\", \"showIf\": \"p3On & p3Bht\", \"hint\": \"छुट्टी (डिस्चार्ज) की तारीख बिंदु लगाकर, जैसे: 20.03.2025\"}",
           "sort_order": 103
         },
         {
@@ -9404,7 +9431,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p3On & p3Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: वार्ड नं0 2 में बेड नं0 11\", \"showIf\": \"p3On & p3Bht\", \"hint\": \"वार्ड व बेड नम्बर, जैसे: वार्ड नं0 2 में बेड नं0 11 — न हो तो खाली\"}",
           "sort_order": 104
         },
         {
@@ -9413,7 +9440,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p3On & p3Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\", \"showIf\": \"p3On & p3Bht\", \"hint\": \"BHT पर लिखी चोट / बीमारी, जैसे: हेड इन्जरी, इन्जरी आन लेफ्ट फोरआर्म\"}",
           "sort_order": 105
         },
         {
@@ -9422,7 +9449,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "सीएचसी बछरावां रायबरेली",
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p3On & p3Bht\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां रायबरेली\", \"showIf\": \"p3On & p3Bht\", \"hint\": \"कहाँ से रेफर होकर आया, जैसे: सीएचसी बछरावां — न हो तो खाली\"}",
           "sort_order": 106
         }
       ]
@@ -9436,7 +9463,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "डॉक्टर",
@@ -9455,7 +9482,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: जिला अस्पताल रायबरेली\", \"hint\": \"डॉक्टर किस अस्पताल में मिले, जैसे: जिला अस्पताल रायबरेली\"}",
           "sort_order": 0
         },
         {
@@ -9464,7 +9491,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: एमपी सिंह\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: एमपी सिंह\", \"hint\": \"डॉक्टर का सिर्फ़ नाम, जैसे: एमपी सिंह (\\\"डॉ0\\\" अपने आप लगता है)\"}",
           "sort_order": 1
         },
         {
@@ -9473,7 +9500,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल ऑफिसर\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल ऑफिसर\", \"hint\": \"डॉक्टर का पद, जैसे: मेडिकल ऑफिसर — न पता हो तो खाली\"}",
           "sort_order": 2
         },
         {
@@ -9482,7 +9509,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मजरूबगणों",
-          "dropdown_options": "{\"options\": [\"मजरूबगणों\", \"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"]}",
+          "dropdown_options": "{\"options\": [\"मजरूबगणों\", \"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"hint\": \"डॉक्टर ने किनका मेडिकल किया था — एक व्यक्ति / कई व्यक्ति के हिसाब से शब्द चुनें\"}",
           "sort_order": 3
         },
         {
@@ -9491,7 +9518,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"डॉक्टर की तलाश करने पर वे मौजूद मिले — यह वाक्य लिखना हो तो टिक करें\"}"
         },
         {
           "key_name": "d1Shown",
@@ -9499,7 +9527,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल रिपोर्ट\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल रिपोर्ट\", \"hint\": \"डॉक्टर को क्या दिखाकर पूछताछ की, जैसे: मेडिकल रिपोर्ट — न हो तो खाली\"}",
           "sort_order": 5
         },
         {
@@ -9508,7 +9536,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": "@FIR.complainant_doctor_row",
-          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"भूमिका\", \"type\": \"choice\", \"options\": [\"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"default\": \"मजरूब\"}, {\"key\": \"name\", \"label\": \"नाम, पिता / पति, पता, उम्र (जैसे: अयूब खान पुत्र फादिल खान निवासी रैन थाना बछरावाँ जनपद रायबरेली उम्र 55 वर्ष)\"}, {\"key\": \"bharti\", \"label\": \"अस्पताल में भर्ती कर इलाज हुआ (टिक न हो = सिर्फ़ मेडिकल परीक्षण)\", \"type\": \"check\"}, {\"key\": \"from\", \"label\": \"दिनांक (भर्ती / परीक्षण का)\"}, {\"key\": \"to\", \"label\": \"छुट्टी (डिस्चार्ज) दिनांक — भर्ती हो तो\"}, {\"key\": \"inj\", \"label\": \"क्या चोटें थीं / रेफर आदि (जैसे: मजरूब को हेड इन्जरी व बायें हाथ में चोट आयी थी)\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"भूमिका\", \"type\": \"choice\", \"options\": [\"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"default\": \"मजरूब\"}, {\"key\": \"name\", \"label\": \"नाम, पिता / पति, पता, उम्र (जैसे: अयूब खान पुत्र फादिल खान निवासी रैन थाना बछरावाँ जनपद रायबरेली उम्र 55 वर्ष)\"}, {\"key\": \"bharti\", \"label\": \"अस्पताल में भर्ती कर इलाज हुआ (टिक न हो = सिर्फ़ मेडिकल परीक्षण)\", \"type\": \"check\"}, {\"key\": \"from\", \"label\": \"दिनांक (भर्ती / परीक्षण का)\"}, {\"key\": \"to\", \"label\": \"छुट्टी (डिस्चार्ज) दिनांक — भर्ती हो तो\"}, {\"key\": \"inj\", \"label\": \"क्या चोटें थीं / रेफर आदि (जैसे: मजरूब को हेड इन्जरी व बायें हाथ में चोट आयी थी)\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\", \"hint\": \"हर मरीज़ की एक पंक्ति: भूमिका, पूरा नाम-पता-उम्र एक साथ, भर्ती हुआ तो टिक करें (तब भर्ती व छुट्टी की तारीख भरें), और चोटें। \\\"+\\\" से अगला मरीज़\"}",
           "sort_order": 6
         },
         {
@@ -9517,7 +9545,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब, रफीका बानो व खुशबू को ज्यादा चोटें होने के कारण जिला अस्पताल रायबरेली रेफर कर दिया गया था\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब, रफीका बानो व खुशबू को ज्यादा चोटें होने के कारण जिला अस्पताल रायबरेली रेफर कर दिया गया था\", \"hint\": \"डॉक्टर ने और कुछ बताया हो तो पूरा वाक्य, जैसे: … को ज्यादा चोटें होने के कारण जिला अस्पताल रेफर कर दिया गया था — न हो तो खाली\"}",
           "sort_order": 7
         },
         {
@@ -9526,7 +9554,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "मैं मेरे द्वारा तैयार की गयी मेडिकल रिपोर्ट का समर्थन करता हूँ",
-          "dropdown_options": "{\"placeholder\": \"जैसे: मेरे द्वारा मेडिकल रिपोर्ट तैयार की गयी थी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेरे द्वारा मेडिकल रिपोर्ट तैयार की गयी थी\", \"hint\": \"बयान की आखिरी लाइन — पहले से भरी ठीक हो तो रहने दें (\\\"यही मेरा बयान है।\\\" अपने आप जुड़ता है)\"}",
           "sort_order": 8
         },
         {
@@ -9535,7 +9563,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"दूसरे अस्पताल के दूसरे डॉक्टर का भी बयान लिखना है तो टिक करें\"}"
         },
         {
           "key_name": "d2Hosp",
@@ -9543,7 +9572,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सीएचसी बछरावां\", \"showIf\": \"d2On\", \"hint\": \"डॉक्टर किस अस्पताल में मिले, जैसे: जिला अस्पताल रायबरेली\"}",
           "sort_order": 10
         },
         {
@@ -9552,7 +9581,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अभय चतुर्वेदी\", \"showIf\": \"d2On\", \"hint\": \"डॉक्टर का सिर्फ़ नाम, जैसे: एमपी सिंह (\\\"डॉ0\\\" अपने आप लगता है)\"}",
           "sort_order": 11
         },
         {
@@ -9561,7 +9590,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल ऑफिसर\", \"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेडिकल ऑफिसर\", \"showIf\": \"d2On\", \"hint\": \"डॉक्टर का पद, जैसे: मेडिकल ऑफिसर — न पता हो तो खाली\"}",
           "sort_order": 12
         },
         {
@@ -9570,7 +9599,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मजरूबगणों",
-          "dropdown_options": "{\"options\": [\"मजरूबगणों\", \"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"options\": [\"मजरूबगणों\", \"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"showIf\": \"d2On\", \"hint\": \"डॉक्टर ने किनका मेडिकल किया था — एक व्यक्ति / कई व्यक्ति के हिसाब से शब्द चुनें\"}",
           "sort_order": 13
         },
         {
@@ -9579,7 +9608,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"showIf\": \"d2On\", \"hint\": \"डॉक्टर की तलाश करने पर वे मौजूद मिले — यह वाक्य लिखना हो तो टिक करें\"}",
           "sort_order": 14
         },
         {
@@ -9588,7 +9617,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: वादी का मेडिकल व इमरजेंसी रजिस्टर की प्रमाणित प्रति\", \"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: वादी का मेडिकल व इमरजेंसी रजिस्टर की प्रमाणित प्रति\", \"showIf\": \"d2On\", \"hint\": \"डॉक्टर को क्या दिखाकर पूछताछ की, जैसे: मेडिकल रिपोर्ट — न हो तो खाली\"}",
           "sort_order": 15
         },
         {
@@ -9597,7 +9626,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"भूमिका\", \"type\": \"choice\", \"options\": [\"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"default\": \"मजरूब\"}, {\"key\": \"name\", \"label\": \"नाम, पिता / पति, पता, उम्र (जैसे: अयूब खान पुत्र फादिल खान निवासी रैन थाना बछरावाँ जनपद रायबरेली उम्र 55 वर्ष)\"}, {\"key\": \"bharti\", \"label\": \"अस्पताल में भर्ती कर इलाज हुआ (टिक न हो = सिर्फ़ मेडिकल परीक्षण)\", \"type\": \"check\"}, {\"key\": \"from\", \"label\": \"दिनांक (भर्ती / परीक्षण का)\"}, {\"key\": \"to\", \"label\": \"छुट्टी (डिस्चार्ज) दिनांक — भर्ती हो तो\"}, {\"key\": \"inj\", \"label\": \"क्या चोटें थीं / रेफर आदि (जैसे: मजरूब को हेड इन्जरी व बायें हाथ में चोट आयी थी)\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\", \"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"भूमिका\", \"type\": \"choice\", \"options\": [\"मजरूब\", \"मजरूबा\", \"वादी\", \"वादिनी\", \"पीड़ित\", \"पीड़िता\"], \"default\": \"मजरूब\"}, {\"key\": \"name\", \"label\": \"नाम, पिता / पति, पता, उम्र (जैसे: अयूब खान पुत्र फादिल खान निवासी रैन थाना बछरावाँ जनपद रायबरेली उम्र 55 वर्ष)\"}, {\"key\": \"bharti\", \"label\": \"अस्पताल में भर्ती कर इलाज हुआ (टिक न हो = सिर्फ़ मेडिकल परीक्षण)\", \"type\": \"check\"}, {\"key\": \"from\", \"label\": \"दिनांक (भर्ती / परीक्षण का)\"}, {\"key\": \"to\", \"label\": \"छुट्टी (डिस्चार्ज) दिनांक — भर्ती हो तो\"}, {\"key\": \"inj\", \"label\": \"क्या चोटें थीं / रेफर आदि (जैसे: मजरूब को हेड इन्जरी व बायें हाथ में चोट आयी थी)\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\", \"showIf\": \"d2On\", \"hint\": \"हर मरीज़ की एक पंक्ति: भूमिका, पूरा नाम-पता-उम्र एक साथ, भर्ती हुआ तो टिक करें (तब भर्ती व छुट्टी की तारीख भरें), और चोटें। \\\"+\\\" से अगला मरीज़\"}",
           "sort_order": 16
         },
         {
@@ -9606,7 +9635,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब, रफीका बानो व खुशबू को ज्यादा चोटें होने के कारण जिला अस्पताल रायबरेली रेफर कर दिया गया था\", \"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब, रफीका बानो व खुशबू को ज्यादा चोटें होने के कारण जिला अस्पताल रायबरेली रेफर कर दिया गया था\", \"showIf\": \"d2On\", \"hint\": \"डॉक्टर ने और कुछ बताया हो तो पूरा वाक्य, जैसे: … को ज्यादा चोटें होने के कारण जिला अस्पताल रेफर कर दिया गया था — न हो तो खाली\"}",
           "sort_order": 17
         },
         {
@@ -9615,7 +9644,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "मैं मेरे द्वारा तैयार की गयी मेडिकल रिपोर्ट का समर्थन करता हूँ",
-          "dropdown_options": "{\"placeholder\": \"जैसे: मेरे द्वारा मेडिकल रिपोर्ट तैयार की गयी थी\", \"showIf\": \"d2On\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मेरे द्वारा मेडिकल रिपोर्ट तैयार की गयी थी\", \"showIf\": \"d2On\", \"hint\": \"बयान की आखिरी लाइन — पहले से भरी ठीक हो तो रहने दें (\\\"यही मेरा बयान है।\\\" अपने आप जुड़ता है)\"}",
           "sort_order": 18
         },
         {
@@ -9624,7 +9653,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 19
         }
       ]
@@ -9638,7 +9667,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "अभियुक्त",
@@ -9657,7 +9686,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": "@FIR.accused_rows",
-          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: बबलू)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पत्नी\", \"पुत्री\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम (जैसे: रामलाल)\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: रिशालखेड़ा मजरे महेरी थाना बछरावां जनपद रायबरेली)\"}, {\"key\": \"mobile\", \"label\": \"मोबाइल (वैकल्पिक)\"}, {\"key\": \"age\", \"label\": \"उम्र करीब (वर्ष, वैकल्पिक)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"own\", \"label\": \"अपने शब्दों में बयान (वैकल्पिक — खाली = जुर्म से इंकार, सफाई अधिवक्ता के माध्यम से)\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: बबलू)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पत्नी\", \"पुत्री\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम (जैसे: रामलाल)\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: रिशालखेड़ा मजरे महेरी थाना बछरावां जनपद रायबरेली)\"}, {\"key\": \"mobile\", \"label\": \"मोबाइल (वैकल्पिक)\"}, {\"key\": \"age\", \"label\": \"उम्र करीब (वर्ष, वैकल्पिक)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"own\", \"label\": \"अपने शब्दों में बयान (वैकल्पिक — खाली = जुर्म से इंकार, सफाई अधिवक्ता के माध्यम से)\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\", \"hint\": \"हर अभियुक्त / अभियुक्ता की एक पंक्ति: नाम, सम्बन्ध, पिता/पति, पता, मोबाइल, उम्र, महिला हो तो टिक; उसका अपना बयान लिखें — खाली छोड़ें तो \\\"जुर्म से इंकार…\\\" वाला बयान छपता है (मुकदमा चुनने पर FIR के अभियुक्त अपने आप)\"}",
           "sort_order": 0
         },
         {
@@ -9666,7 +9695,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"अपराध जमानतीय है तो टिक रहने दें — 35(3) नोटिस तामील वाला वाक्य उसी हिसाब से बनता है\"}"
         }
       ]
     },
@@ -9679,7 +9709,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "वाहन",
@@ -9702,7 +9732,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: RJ19PA4901\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: RJ19PA4901\", \"hint\": \"वाहन नम्बर बिना स्पेस, जैसे: RJ19PA4901\"}",
           "sort_order": 0
         },
         {
@@ -9711,7 +9741,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: MAT412279B0B02128\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: MAT412279B0B02128\", \"hint\": \"चेसिस नम्बर जैसा RC पर है\"}",
           "sort_order": 1
         },
         {
@@ -9720,7 +9750,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 11B62988582\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 11B62988582\", \"hint\": \"इंजन नम्बर जैसा RC पर है\"}",
           "sort_order": 2
         },
         {
@@ -9729,7 +9759,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: Chandra Jain\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: Chandra Jain\", \"hint\": \"मालिक का नाम जैसा RC पर (अंग्रेज़ी में) है, जैसे: Chandra Jain\"}",
           "sort_order": 3
         },
         {
@@ -9738,7 +9768,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "w/o",
-          "dropdown_options": "[\"s/o\", \"w/o\", \"d/o\"]",
+          "dropdown_options": "{\"options\": [\"s/o\", \"w/o\", \"d/o\"], \"hint\": \"RC में जैसा लिखा है: s/o (पुत्र), w/o (पत्नी), d/o (पुत्री)\"}",
           "sort_order": 4
         },
         {
@@ -9747,7 +9777,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: Vijay Jain\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: Vijay Jain\", \"hint\": \"पिता / पति का नाम जैसा RC पर है — न हो तो खाली\"}",
           "sort_order": 5
         },
         {
@@ -9756,7 +9786,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 625/7 12th B Rd Sardarpura Jodhpur, Rajasthan\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 625/7 12th B Rd Sardarpura Jodhpur, Rajasthan\", \"hint\": \"मालिक का पता जैसा RC पर है — न हो तो खाली\"}",
           "sort_order": 6
         },
         {
@@ -9765,7 +9795,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"हर कागज़ के अवलोकन के बाद \\\"बाद अवलोकन संलग्न सीडी है।\\\" लिखना है तो टिक रहने दें\"}",
           "sort_order": 7
         },
         {
@@ -9774,7 +9804,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"RC का अवलोकन लिखना है तो टिक\"}",
           "sort_order": 8
         },
         {
@@ -9783,7 +9813,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 28/06/2011\", \"showIf\": \"doRC\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 28/06/2011\", \"showIf\": \"doRC\", \"hint\": \"RC पर लिखी Date of Reg, जैसे: 28/06/2011\"}",
           "sort_order": 9
         },
         {
@@ -9792,7 +9822,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: TATA MOTORS LTD\", \"showIf\": \"doRC\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: TATA MOTORS LTD\", \"showIf\": \"doRC\", \"hint\": \"बनाने वाली कम्पनी जैसा RC पर, जैसे: TATA MOTORS LTD — न हो तो खाली\"}",
           "sort_order": 10
         },
         {
@@ -9801,7 +9831,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"परमिट का अवलोकन लिखना है तो टिक\"}",
           "sort_order": 11
         },
         {
@@ -9810,7 +9840,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: RJ2024-CC-4259D\", \"showIf\": \"doPermit\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: RJ2024-CC-4259D\", \"showIf\": \"doPermit\", \"hint\": \"परमिट नम्बर जैसा लिखा है\"}",
           "sort_order": 12
         },
         {
@@ -9819,7 +9849,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 15.10.2024\", \"showIf\": \"doPermit\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 15.10.2024\", \"showIf\": \"doPermit\", \"hint\": \"परमिट कब से मान्य — तारीख\"}",
           "sort_order": 13
         },
         {
@@ -9828,7 +9858,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 14.10.2029\", \"showIf\": \"doPermit\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 14.10.2029\", \"showIf\": \"doPermit\", \"hint\": \"परमिट कब तक मान्य — तारीख\"}",
           "sort_order": 14
         },
         {
@@ -9837,7 +9867,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"इंश्योरेन्स का अवलोकन लिखना है तो टिक\"}",
           "sort_order": 15
         },
         {
@@ -9846,7 +9876,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: UNITED INDIA INSURANCE COMPANY LIMITED\", \"showIf\": \"doIns\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: UNITED INDIA INSURANCE COMPANY LIMITED\", \"showIf\": \"doIns\", \"hint\": \"बीमा कम्पनी का नाम जैसा पॉलिसी पर है\"}",
           "sort_order": 16
         },
         {
@@ -9855,7 +9885,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 2902003124P107811529\", \"showIf\": \"doIns\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 2902003124P107811529\", \"showIf\": \"doIns\", \"hint\": \"पॉलिसी नम्बर जैसा लिखा है\"}",
           "sort_order": 17
         },
         {
@@ -9864,7 +9894,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 31.08.2024\", \"showIf\": \"doIns\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 31.08.2024\", \"showIf\": \"doIns\", \"hint\": \"बीमा कब से — तारीख\"}",
           "sort_order": 18
         },
         {
@@ -9873,7 +9903,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 30.08.2025\", \"showIf\": \"doIns\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 30.08.2025\", \"showIf\": \"doIns\", \"hint\": \"बीमा कब तक — तारीख\"}",
           "sort_order": 19
         },
         {
@@ -9882,7 +9912,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"फिटनेस सर्टिफिकेट का अवलोकन लिखना है तो टिक\"}",
           "sort_order": 20
         },
         {
@@ -9891,7 +9921,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: RJ24081292675725\", \"showIf\": \"doFit\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: RJ24081292675725\", \"showIf\": \"doFit\", \"hint\": \"फिटनेस Application No — न हो तो खाली\"}",
           "sort_order": 21
         },
         {
@@ -9900,7 +9930,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 12.08.2024\", \"showIf\": \"doFit\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12.08.2024\", \"showIf\": \"doFit\", \"hint\": \"जाँच (Inspected on) की तारीख\"}",
           "sort_order": 22
         },
         {
@@ -9909,7 +9939,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 07.09.2025\", \"showIf\": \"doFit\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 07.09.2025\", \"showIf\": \"doFit\", \"hint\": \"फिटनेस खत्म होने की तारीख\"}",
           "sort_order": 23
         },
         {
@@ -9918,7 +9948,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"प्रदूषण सर्टिफिकेट का अवलोकन लिखना है तो टिक\"}",
           "sort_order": 24
         },
         {
@@ -9927,7 +9957,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: RJ01600080021625\", \"showIf\": \"doPuc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: RJ01600080021625\", \"showIf\": \"doPuc\", \"hint\": \"प्रदूषण सर्टिफिकेट SL No\"}",
           "sort_order": 25
         },
         {
@@ -9936,7 +9966,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 21.01.2025\", \"showIf\": \"doPuc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 21.01.2025\", \"showIf\": \"doPuc\", \"hint\": \"प्रदूषण जाँच की तारीख\"}",
           "sort_order": 26
         },
         {
@@ -9945,7 +9975,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 08.59.29 AM\", \"showIf\": \"doPuc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 08.59.29 AM\", \"showIf\": \"doPuc\", \"hint\": \"जाँच का समय जैसा लिखा है — न हो तो खाली\"}",
           "sort_order": 27
         },
         {
@@ -9954,7 +9984,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 20.07.2025\", \"showIf\": \"doPuc\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 20.07.2025\", \"showIf\": \"doPuc\", \"hint\": \"प्रदूषण कब तक मान्य — तारीख\"}",
           "sort_order": 28
         }
       ]
