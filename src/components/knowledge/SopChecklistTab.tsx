@@ -289,6 +289,9 @@ export function SopChecklistTab({
         </View>
       ) : (
         <View className="gap-4">
+          {indexEntry?.ci ? (
+            <Text className="text-sm font-medium text-foreground leading-6 px-1">{indexEntry.ci}</Text>
+          ) : null}
           {groupedSteps.map(([groupName, stepsInGroup]) => (
             <View
               key={`grp-${groupName}`}
@@ -297,6 +300,10 @@ export function SopChecklistTab({
               <Text className="text-xs font-bold text-primary uppercase tracking-wider border-b border-border/60 pb-2">
                 📋 {groupName}
               </Text>
+              {(() => {
+                const gi = stepsInGroup.find((st) => st.gi)?.gi;
+                return gi ? <Text className="text-sm font-medium text-foreground leading-5">{gi}</Text> : null;
+              })()}
 
               <View className="gap-2.5">
                 {stepsInGroup.map((step) => {

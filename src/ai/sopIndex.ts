@@ -69,6 +69,8 @@ export interface SopStep {
   must?: number;
   dont?: number;
   g?: string;
+  /** optional line under the group heading (first step of the group), e.g. "क्या … लेबल पर निम्नलिखित जानकारी …:" */
+  gi?: string;
 }
 
 export interface SopLaw {
@@ -92,6 +94,8 @@ export interface SopIndexEntry {
   laws: SopLaw[];
   circ: SopCircular[];
   steps: SopStep[];
+  /** optional intro line shown above the checklist (owner: Chain of Custody IO checklist) */
+  ci?: string;
 }
 
 interface SopIndexBundle {
