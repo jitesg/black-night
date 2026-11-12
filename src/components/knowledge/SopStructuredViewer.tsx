@@ -1223,6 +1223,10 @@ function TermsBlock({ block, query }: { block: SopBlock; query: string }) {
           className="text-base font-bold text-foreground border-b border-border/60 pb-2"
         />
       ) : null}
+      {/* optional lead line above the terms (owner: Chain of Custody "एक विवेचक (IO) के दृष्टिकोण से …") */}
+      {block.t ? (
+        <HighlightText text={block.t} query={query} className="text-sm font-medium text-foreground leading-6" />
+      ) : null}
 
       <View className="gap-2.5">
         {items.map((it, idx) => (
