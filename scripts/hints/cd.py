@@ -16,6 +16,7 @@ def _generic(k):
     """Label + example (+ optional note) for plain data boxes."""
     lab = re.sub(r'\s*\((वैकल्पिक[^)]*|जैसे:[^)]*)\)', '', k['label']).strip(' —-')
     lab = re.sub(r'^(व्यक्ति|चिकित्सक) \d — ', '', lab)
+    lab = re.sub(r'^\d+[^\s.]*\.\s*', '', lab)  # "1ए. " / "12. " point numbers
     ph = _ph(k)
     opt = 'वैकल्पिक' in k['label']
     t = k.get('field_type')
