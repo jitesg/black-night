@@ -470,7 +470,7 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
             onPress={() => setShowKaryvahiDropdown(
               showKaryvahiDropdown === entry.uid ? null : entry.uid
             )}
-            className="flex-row items-center justify-between bg-secondary rounded-xl px-4 py-3 active:opacity-70"
+            className="flex-row items-center justify-between bg-secondary border border-border rounded-xl px-4 py-3 active:opacity-70"
           >
             <Text
               className={`text-sm flex-1 ${entry.karyvahiName ? 'text-foreground font-medium' : 'text-muted-foreground'}`}
@@ -502,7 +502,7 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
                         <Text
                           className="text-sm flex-1 text-foreground"
                           style={{
-                            color: entry.firKaryvahiId === k.id ? INDIGO : undefined,
+                            ...(entry.firKaryvahiId === k.id ? { color: INDIGO } : {}),
                             fontWeight: entry.firKaryvahiId === k.id ? '700' : '400',
                           }}
                         >

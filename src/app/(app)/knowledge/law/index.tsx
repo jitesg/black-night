@@ -145,7 +145,7 @@ export default function LawLibraryIndexScreen() {
                         key={pIdx}
                         style={{
                           fontWeight: isMatch ? '700' : '400',
-                          color: isMatch ? (colorScheme === 'dark' ? '#F97316' : '#EA580C') : undefined,
+                          ...(isMatch ? { color: colorScheme === 'dark' ? '#F97316' : '#EA580C' } : {}),
                         }}
                       >
                         {part}

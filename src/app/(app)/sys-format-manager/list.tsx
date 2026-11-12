@@ -148,7 +148,7 @@ function ActionMenu({
                     </View>
                     <Text
                       className="text-sm font-medium text-foreground"
-                      style={{ color: isDelete ? '#DC2626' : undefined }}
+                      style={{ ...(isDelete ? { color: '#DC2626' } : {}) }}
                     >
                       {a.label}
                     </Text>

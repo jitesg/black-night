@@ -423,7 +423,7 @@ export const SopExplainTab = forwardRef<SopExplainTabHandle, Props>(function Sop
                                   </View>
                                   <Text
                                     className="text-[15px] text-muted-foreground italic"
-                                    style={{ lineHeight: 23, textDecorationLine: done ? 'line-through' : 'none', color: step.dont === 1 ? RED : undefined }}
+                                    style={{ lineHeight: 23, textDecorationLine: done ? 'line-through' : 'none', ...(step.dont === 1 ? { color: RED } : {}) }}
                                   >
                                     {step.t}
                                   </Text>

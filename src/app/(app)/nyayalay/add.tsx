@@ -276,7 +276,7 @@ function ChecklistSection({
           <Text
             className="flex-1 text-sm text-foreground"
             style={{
-              color: item.is_checked ? '#6B7280' : undefined,
+              ...(item.is_checked ? { color: '#6B7280' } : {}),
               textDecorationLine: item.is_checked ? 'line-through' : 'none',
             }}
           >

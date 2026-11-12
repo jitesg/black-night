@@ -670,7 +670,7 @@ export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
           <View style={{ gap: 4 }}>
             {dd}
             {auto ? (
-              <Text className="text-xs" style={{ color: p ? '#15803D' : undefined }}>
+              <Text className="text-xs" style={{ ...(p ? { color: '#15803D' } : {}) }}>
                 {p ? `अपने आप: ${p} (समय ${time.trim()} से)` : 'समय भरने पर पहर अपने आप लगेगा'}
               </Text>
             ) : null}
