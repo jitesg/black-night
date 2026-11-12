@@ -1106,7 +1106,18 @@ export function generateReport(
     processed = _applyGroupAgreementText(processed, values, keyDefs);     // Step 3
     processed = _applyWholeGroupSubstitution(processed, values, keyDefs); // Step 4
   }
-  return processed.replace(/\{\{([A-Za-z0-9_]+)\}\}/g, (_, key) => values[key] ?? '');
+  return tidyRepeats(processed.replace(/\{\{([A-Za-z0-9_]+)\}\}/g, (_, key) => values[key] ?? ''));
+}
+
+/**
+ * Words the officer often types again inside a box (owner, 126/135): "ग्राम ग्राम अघौरा" (box "गाँव का नाम" after "ग्राम"),
+ * "के मध्य मध्य …" (old "विवाद का कारण" text starting with "मध्य"), "व्याप्त है । ।" (box ends with "।", format adds one).
+ */
+export function tidyRepeats(s: string): string {
+  return s
+    .replace(/(^|[\s(])ग्राम[ \t]+ग्राम(?=[ \t])/g, '$1ग्राम')
+    .replace(/(^|[\s(])मध्य[ \t]+मध्य(?=[ \t])/g, '$1मध्य')
+    .replace(/।(?:[ \t]*।)+/g, '।');
 }
 
 /**

@@ -89,6 +89,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `docs/format-backups/bnss126_before_marks.json`). Owner approves each batch with an A4 preview. Tests
   `scripts/test_format_markers.ts`.
 - 126/135 formats: "धारा 126/135 बीएनएस में चालानी" → "बीएनएसएस" in all six (owner; seed_version +1: beat/yaksh/mukadma 16, thanabhraman 15, ncr 13, prarthna 3).
+  ग्राम line fix (owner; seed_version +1 again: beat/yaksh/mukadma 17, thanabhraman 16, ncr 14, prarthna 4): "के मध्य" is in the format text
+  (before every {{Matter}}; "विवाद का कारण" defaults no longer start with "मध्य"), " ।" after every {{Matter}}, "{{secondparty}} के" added,
+  "{{FirstParty}} के" (was की), "जांचक्रम में ग्राम {{village}}", village label "गाँव का नाम" + placeholder "जैसे: अघौरा (ग्राम न लिखें)",
+  द्वित्तीय → द्वितीय, दिनांकदिनांक, double spaces. templateEngine `tidyRepeats` (end of generateReport, all formats): "ग्राम ग्राम" → "ग्राम",
+  "मध्य मध्य" → "मध्य", "। ।" / "।।" → "।".
   The two धारा 135(3) report letters have no संलग्नक block (owner) — signature moved to [[हस्ताक्षर]]
   (beat/yaksh 15, thanabhraman 14, mukadma 13, ncr 12, prarthna 2). The 170 formats' 135(3) letters never had one.
 - Person/accused groups (`templateEngine.generateReport`): ONE person → no "आदि" right after `{{g.1.name}}`

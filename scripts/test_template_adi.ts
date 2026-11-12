@@ -514,3 +514,22 @@ test('{{uniq:…}} — same text once (one मु0अ0सं0 for several items)
   const v = { Items: JSON.stringify([{ c: '37/24', isCase: 'हाँ' }, { c: '37/24', isCase: 'हाँ' }, { c: '45/24', isCase: 'हाँ' }, { c: 'x', isCase: '' }]) };
   assert.equal(generateReport('[{{uniq:Items?isCase|मु0अ0सं0 {c}| व }}]', v), '[मु0अ0सं0 37/24 व मु0अ0सं0 45/24]');
 });
+
+test('126/135: typed repeats tidied — ग्राम ग्राम, मध्य मध्य, । । (owner)', async () => {
+  const { tidyRepeats } = await import('../src/lib/templateEngine.ts');
+  assert.equal(tidyRepeats('कि ग्राम ग्राम अघौरा में'), 'कि ग्राम अघौरा में');
+  assert.equal(tidyRepeats('के मध्य मध्य रास्ते'), 'के मध्य रास्ते');
+  assert.equal(tidyRepeats('व्याप्त है । । जो'), 'व्याप्त है । जो');
+  assert.equal(tidyRepeats('है।। उक्त'), 'है। उक्त');
+  assert.equal(tidyRepeats('ग्रामीण ग्राम'), 'ग्रामीण ग्राम');
+  const f = JSON.parse(readFileSync('assets/seed/formats_seed.json', 'utf8')).formats
+    ?? JSON.parse(readFileSync('assets/seed/formats_seed.json', 'utf8'));
+  const beat = f.find((x: { id: string }) => x.id === 'sys-fmt-bnss126-beat');
+  const P1 = JSON.stringify([P('राम', 'श्याम', '35')]);
+  const out = generateReport(beat.vivran, { village: 'ग्राम अघौरा', FirstParty: 'प्रथम पक्ष', secondparty: 'द्वितीय पक्ष',
+    firstpartyDetails: P1, secondpartyDetail: JSON.stringify([P('सोहन', 'गोपाल', '40')]), Matter: 'जमीन के विवाद को लेकर तनाव है' }, beat.keys);
+  assert.match(out, /कि ग्राम अघौरा में प्रथम पक्ष के/);
+  assert.match(out, /व द्वितीय पक्ष के 1\.सोहन/);
+  assert.match(out, /के मध्य जमीन के विवाद को लेकर तनाव है । जो किसी/);
+  assert.doesNotMatch(out, /ग्राम ग्राम|।\s*।|द्वित्तीय/);
+});
