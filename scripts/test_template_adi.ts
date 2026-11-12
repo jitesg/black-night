@@ -522,6 +522,8 @@ test('126/135: typed repeats tidied — ग्राम ग्राम, मध�
   assert.equal(tidyRepeats('व्याप्त है । । जो'), 'व्याप्त है । जो');
   assert.equal(tidyRepeats('है।। उक्त'), 'है। उक्त');
   assert.equal(tidyRepeats('ग्रामीण ग्राम'), 'ग्रामीण ग्राम');
+  assert.equal(tidyRepeats('राम का का अपने पड़ोसी'), 'राम का अपने पड़ोसी');
+  assert.equal(tidyRepeats('काका का'), 'काका का');
   const f = JSON.parse(readFileSync('assets/seed/formats_seed.json', 'utf8')).formats
     ?? JSON.parse(readFileSync('assets/seed/formats_seed.json', 'utf8'));
   const beat = f.find((x: { id: string }) => x.id === 'sys-fmt-bnss126-beat');

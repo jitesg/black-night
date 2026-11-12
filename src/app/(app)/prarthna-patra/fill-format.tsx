@@ -24,7 +24,7 @@ import {
 import { generateReport } from '@/lib/templateEngine';
 import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
-import { FormatKeyInput } from '@/components/ui/input';
+import { FieldHint, FormatKeyInput, keyHint } from '@/components/ui/input';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
 import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
@@ -306,6 +306,7 @@ export default function PPFillFormatScreen() {
                       onValidChange={handleGroupValidChange}
                       error={fieldErrors[key.key_name]}
                     />
+                    <FieldHint text={keyHint(key.dropdown_options)} />
                   </View>
                 ) : key.field_type === 'person_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
@@ -317,6 +318,7 @@ export default function PPFillFormatScreen() {
                       onValidChange={handleGroupValidChange}
                       error={fieldErrors[key.key_name]}
                     />
+                    <FieldHint text={keyHint(key.dropdown_options)} />
                   </View>
                 ) : (
                   <FormatKeyInput

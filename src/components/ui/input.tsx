@@ -556,7 +556,30 @@ function fieldTypeToInputType(ft: string | undefined): InputType {
   }
 }
 
-export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>(
+/**
+ * How-to-write tip under a field ({"hint": "…"} in dropdown_options — owner: every 170/126/135 field) — never printed.
+ */
+export function keyHint(raw: string | null | undefined): string | undefined {
+  const t = String(raw ?? '').trim();
+  if (!t.startsWith('{')) return undefined;
+  try {
+    const v = JSON.parse(t) as { hint?: unknown };
+    return typeof v.hint === 'string' && v.hint.trim() ? v.hint.trim() : undefined;
+  } catch { return undefined; }
+}
+
+export function FieldHint({ text }: { text?: string }) {
+  if (!text) return null;
+  return <Text className="text-xs text-muted-foreground" style={{ lineHeight: 18 }}>💡 {text}</Text>;
+}
+
+export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>((props, ref) => {
+  const hint = keyHint(props.keyDef.dropdown_options);
+  const field = <FormatKeyField ref={ref} {...props} />;
+  return hint ? <View style={{ gap: 4 }}>{field}<FieldHint text={hint} /></View> : field;
+});
+
+const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
   ({ keyDef, value, onChange, error, allValues, allKeys }, ref) => {
     const fieldType = keyDef.field_type ?? 'text';
     const displayLabel = keyDef.label || keyDef.key_name;
@@ -946,5 +969,6 @@ const FormatKeyDateInput = forwardRef<View, FormatKeyDateInputProps>(
 FormatKeyDateInput.displayName = 'FormatKeyDateInput';
 
 FormatKeyInput.displayName = 'FormatKeyInput';
+FormatKeyField.displayName = 'FormatKeyField';
 
 export { Input as default };

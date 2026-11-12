@@ -93,7 +93,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (before every {{Matter}}; "विवाद का कारण" defaults no longer start with "मध्य"), " ।" after every {{Matter}}, "{{secondparty}} के" added,
   "{{FirstParty}} के" (was की), "जांचक्रम में ग्राम {{village}}", village label "गाँव का नाम" + placeholder "जैसे: अघौरा (ग्राम न लिखें)",
   द्वित्तीय → द्वितीय, दिनांकदिनांक, double spaces. templateEngine `tidyRepeats` (end of generateReport, all formats): "ग्राम ग्राम" → "ग्राम",
-  "मध्य मध्य" → "मध्य", "। ।" / "।।" → "।".
+  "मध्य मध्य" → "मध्य", "का का" → "का", "। ।" / "।।" → "।".
+- Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → "💡 …" under the field (`keyHint` / `FieldHint` in input.tsx; FormatKeyInput
+  wraps every type; formats/fill + prarthna-patra fill-format add it under Person/AccusedGroupInput; never printed; a dropdown's list goes
+  under "options"). Every field of the 6 bnss126 + 7 bnss170 formats has one (seed_version +1 each). 170 fixes too: " ।" after every
+  {{Matter}} / {{Advice}}; kshetra-ek "{{Accused#inline}} का {{Matter}}" (default no longer starts with "का"); prarthna-ubhay
+  "{{Matter}} । इस पर मुझ…" (was ", जिस पर"); Facts label without "(आखिर में । न लगाएँ)"; village placeholder.
   The two धारा 135(3) report letters have no संलग्नक block (owner) — signature moved to [[हस्ताक्षर]]
   (beat/yaksh 15, thanabhraman 14, mukadma 13, ncr 12, prarthna 2). The 170 formats' 135(3) letters never had one.
 - Person/accused groups (`templateEngine.generateReport`): ONE person → no "आदि" right after `{{g.1.name}}`

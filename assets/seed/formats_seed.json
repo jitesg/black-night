@@ -1051,7 +1051,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 17,
+      "seed_version": 18,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1066,7 +1066,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"जिस दिन बीट सूचना GD में दर्ज हुई, वह तारीख चुनें\"}"
         },
         {
           "key_name": "GD",
@@ -1074,7 +1075,8 @@
           "field_type": "number",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ GD नम्बर लिखें, जैसे: 23\"}"
         },
         {
           "key_name": "FirstParty",
@@ -1082,7 +1084,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्रथम पक्ष",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: प्रथम पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "secondparty",
@@ -1090,7 +1093,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "द्वितीय पक्ष",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: द्वितीय पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "Matter",
@@ -1098,7 +1102,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है ।",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ विवाद का कारण लिखें — \\\"के मध्य\\\" पहले और \\\"।\\\" आखिर में अपने आप लगते हैं। जैसे: रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है\"}"
         },
         {
           "key_name": "pad",
@@ -1107,7 +1112,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 5,
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
         },
         {
           "key_name": "Tehsil",
@@ -1115,7 +1120,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -1123,7 +1129,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -1131,7 +1138,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "village",
@@ -1140,7 +1148,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 9,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\"}"
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "OfficerName",
@@ -1148,7 +1156,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 10
+          "sort_order": 10,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "DateOfAction",
@@ -1156,7 +1165,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"जिस दिन मौके पर जाँच / कार्यवाही की, वह तारीख चुनें\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -1164,7 +1174,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -1172,7 +1183,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         }
       ],
       "last_updated": "2026-08-13"
@@ -1187,7 +1199,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 17,
+      "seed_version": 18,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1202,7 +1214,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्रथम पक्ष",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: प्रथम पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -1210,7 +1223,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondparty",
@@ -1218,7 +1232,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "द्वितीय पक्ष",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: द्वितीय पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -1226,7 +1241,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "Matter",
@@ -1234,7 +1250,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है ।",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ विवाद का कारण लिखें — \\\"के मध्य\\\" पहले और \\\"।\\\" आखिर में अपने आप लगते हैं। जैसे: रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है\"}"
         },
         {
           "key_name": "village",
@@ -1243,7 +1260,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 5,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\"}"
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -1252,7 +1269,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 11,
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
         },
         {
           "key_name": "Tehsil",
@@ -1260,7 +1277,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -1268,7 +1286,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -1276,7 +1295,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "OfficerName",
@@ -1284,7 +1304,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 10
+          "sort_order": 10,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "DateOfAction",
@@ -1292,7 +1313,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"जिस दिन मौके पर जाँच / कार्यवाही की, वह तारीख चुनें\"}"
         }
       ],
       "last_updated": "2026-08-13"
@@ -1307,7 +1329,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 16,
+      "seed_version": 17,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1322,7 +1344,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्रथम पक्ष",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: प्रथम पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -1330,7 +1353,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondparty",
@@ -1338,7 +1362,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "द्वितीय पक्ष",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: द्वितीय पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -1346,7 +1371,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "Matter",
@@ -1354,7 +1380,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है ।",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ विवाद का कारण लिखें — \\\"के मध्य\\\" पहले और \\\"।\\\" आखिर में अपने आप लगते हैं। जैसे: रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है\"}"
         },
         {
           "key_name": "DateOfAction",
@@ -1362,7 +1389,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"जिस दिन मौके पर जाँच / कार्यवाही की, वह तारीख चुनें\"}"
         },
         {
           "key_name": "village",
@@ -1371,7 +1399,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 6,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\"}"
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -1380,7 +1408,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 11,
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
         },
         {
           "key_name": "Tehsil",
@@ -1388,7 +1416,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -1396,7 +1425,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -1404,7 +1434,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "OfficerName",
@@ -1412,7 +1443,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 10
+          "sort_order": 10,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         }
       ],
       "last_updated": "2026-08-13"
@@ -1427,7 +1459,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 17,
+      "seed_version": 18,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1442,7 +1474,8 @@
           "field_type": "TEXT",
           "is_required": 1,
           "default_value": "@FIR.fir_number|230/26",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026\"}"
         },
         {
           "key_name": "SECTION",
@@ -1450,7 +1483,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "@FIR.section|115(2) बीएनएस",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस\"}"
         },
         {
           "key_name": "FirstParty",
@@ -1458,7 +1492,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्रथम पक्ष",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: प्रथम पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -1466,7 +1501,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondparty",
@@ -1474,7 +1510,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "द्वितीय पक्ष",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: द्वितीय पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -1482,7 +1519,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "Matter",
@@ -1490,7 +1528,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "दिनांक 02.06.2026 को मारपीट हुई थी जिसके संबंध मे मुकदमा उपरोक्त पंजीकृत हुआ था। उक्त घटना के बाद दोनो पक्षों में कसीदगी व तनाव व्याप्त है ।",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ विवाद का कारण लिखें — \\\"के मध्य\\\" पहले और \\\"।\\\" आखिर में अपने आप लगते हैं। जैसे: रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है\"}"
         },
         {
           "key_name": "DateOfAction",
@@ -1498,7 +1537,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"जिस दिन मौके पर जाँच / कार्यवाही की, वह तारीख चुनें\"}"
         },
         {
           "key_name": "village",
@@ -1507,7 +1547,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 8,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\"}"
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -1516,7 +1556,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 13,
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
         },
         {
           "key_name": "Tehsil",
@@ -1524,7 +1564,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -1532,7 +1573,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 10
+          "sort_order": 10,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -1540,7 +1582,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "OfficerName",
@@ -1548,7 +1591,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         }
       ],
       "last_updated": "2026-08-13"
@@ -1563,7 +1607,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 14,
+      "seed_version": 15,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1578,7 +1622,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"जिस दिन NCR दर्ज हुई, वह तारीख चुनें\"}"
         },
         {
           "key_name": "NCR",
@@ -1586,7 +1631,8 @@
           "field_type": "TEXT",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"NCR नम्बर / वर्ष, जैसे: 45/2026\"}"
         },
         {
           "key_name": "FirstParty",
@@ -1594,7 +1640,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्रथम पक्ष",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: प्रथम पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -1602,7 +1649,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondparty",
@@ -1610,7 +1658,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "द्वितीय पक्ष",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: द्वितीय पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -1618,7 +1667,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "Matter",
@@ -1626,7 +1676,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "दिनांक 02.06.2026 को मारपीट हुई थी जिस वाद विवाद के कारण कसीदगी व तनाव व्याप्त है ।",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ विवाद का कारण लिखें — \\\"के मध्य\\\" पहले और \\\"।\\\" आखिर में अपने आप लगते हैं। जैसे: रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है\"}"
         },
         {
           "key_name": "DateOfAction",
@@ -1634,7 +1685,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"जिस दिन मौके पर जाँच / कार्यवाही की, वह तारीख चुनें\"}"
         },
         {
           "key_name": "village",
@@ -1643,7 +1695,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 8,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\"}"
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -1652,7 +1704,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 13,
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
         },
         {
           "key_name": "Tehsil",
@@ -1660,7 +1712,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -1668,7 +1721,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 10
+          "sort_order": 10,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -1676,7 +1730,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "OfficerName",
@@ -1684,7 +1739,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         }
       ],
       "last_updated": "2026-08-13"
@@ -1699,7 +1755,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1714,7 +1770,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आवेदक",
-          "dropdown_options": "[\"आवेदक\", \"आवेदिका\"]",
+          "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}",
           "sort_order": 0
         },
         {
@@ -1723,7 +1779,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"पूरा नाम-पता, जैसे: राम स्वरूप पुत्र श्रीकृष्ण निवासी ग्राम अघौरा थाना बछरावां (\\\"आवेदक\\\" न लिखें, ऊपर चुना है)\"}"
         },
         {
           "key_name": "PPDate",
@@ -1731,7 +1788,8 @@
           "field_type": "date",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"प्रार्थना पत्र पर लिखी तारीख; न हो तो खाली छोड़ दें\"}"
         },
         {
           "key_name": "FirstParty",
@@ -1739,7 +1797,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्रथम पक्ष",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: प्रथम पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -1747,7 +1806,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondparty",
@@ -1755,7 +1815,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "द्वितीय पक्ष",
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"पत्र में पक्ष का नाम जैसे छपना है, जैसे: द्वितीय पक्ष — आगे \\\"के\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -1763,7 +1824,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "Matter",
@@ -1771,7 +1833,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "दिनांक 02.06.2026 को मारपीट हुई थी जिसके संबंध मे मुकदमा उपरोक्त पंजीकृत हुआ था। उक्त घटना के बाद दोनो पक्षों में कसीदगी व तनाव व्याप्त है ।",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ विवाद का कारण लिखें — \\\"के मध्य\\\" पहले और \\\"।\\\" आखिर में अपने आप लगते हैं। जैसे: रास्ते से निकलने को लेकर हुए वाद विवाद के कारण कसीदगी व तनाव व्याप्त है\"}"
         },
         {
           "key_name": "DateOfAction",
@@ -1779,7 +1842,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"जिस दिन मौके पर जाँच / कार्यवाही की, वह तारीख चुनें\"}"
         },
         {
           "key_name": "village",
@@ -1788,7 +1852,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 9,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\"}"
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -1797,7 +1861,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 10,
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
         },
         {
           "key_name": "Tehsil",
@@ -1805,7 +1869,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -1813,7 +1878,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -1821,7 +1887,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "OfficerName",
@@ -1829,7 +1896,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         }
       ],
       "last_updated": "2026-10-30"
@@ -1843,7 +1911,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1861,7 +1929,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026\"}"
         },
         {
           "key_name": "SECTION",
@@ -1869,7 +1938,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "@FIR.section",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस\"}"
         },
         {
           "key_name": "Complainant",
@@ -1877,7 +1947,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.complainant_with_role",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"भूमिका सहित पूरा, जैसे: वादिनी रेनू पत्नी धीरज (मुकदमा चुनने पर अपने आप भरता है)\"}"
         },
         {
           "key_name": "Accused",
@@ -1885,7 +1956,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": "@FIR.accused_cards",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर अभियुक्त का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)\"}"
         },
         {
           "key_name": "Remand",
@@ -1893,7 +1965,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"टिक करने पर 170 वाले पत्र में \\\"14 दिवस का रिमांड\\\" का निवेदन मोटे अक्षरों में छपता है\"}"
         },
         {
           "key_name": "ArrestTime",
@@ -1901,7 +1974,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"24 घंटे वाला समय, बिंदु लगाकर, जैसे: 13.30 (\\\"बजे\\\" न लिखें, अपने आप लगता है)\"}"
         },
         {
           "key_name": "InformedTo",
@@ -1909,7 +1983,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "परिजनों",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"किसे सूचना दी, जैसे: परिजनों / पिता रामलाल — \\\"को दी गयी\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -1917,7 +1992,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 10
         },
         {
@@ -1926,7 +2001,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -1934,7 +2010,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "Tehsil",
@@ -1942,7 +2019,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -1950,7 +2028,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -1963,7 +2042,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1981,7 +2060,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "Accused",
@@ -1989,7 +2069,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर अभियुक्त का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)\"}"
         },
         {
           "key_name": "Remand",
@@ -1997,7 +2078,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"टिक करने पर 170 वाले पत्र में \\\"14 दिवस का रिमांड\\\" का निवेदन मोटे अक्षरों में छपता है\"}"
         },
         {
           "key_name": "ArrestTime",
@@ -2005,7 +2087,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"24 घंटे वाला समय, बिंदु लगाकर, जैसे: 13.30 (\\\"बजे\\\" न लिखें, अपने आप लगता है)\"}"
         },
         {
           "key_name": "InformedTo",
@@ -2013,7 +2096,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "परिजनों",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"किसे सूचना दी, जैसे: परिजनों / पिता रामलाल — \\\"को दी गयी\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -2021,7 +2105,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 10
         },
         {
@@ -2030,7 +2114,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -2038,7 +2123,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "Tehsil",
@@ -2046,7 +2132,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -2054,7 +2141,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -2067,7 +2155,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2077,7 +2165,7 @@
         "शांति भंग"
       ],
       "last_updated": "2026-10-29",
-      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- प्रथम पक्ष )\n{{firstpartyDetails#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} थाना स्थानीय पर कार्य सरकार कर रहा था कि थाना कार्यालय से सूचना प्राप्त हुई कि पुलिस पीआरवी के कर्मचारीगण द्वारा ग्राम {{village}} से दो पक्षों के लोगों को किसी विवाद के संबंध में लाकर थाने पर सुपुर्द किया गया है, जिनसे मुझ {{pad}} द्वारा पूछताछ कर मामले/विवाद की जानकारी की जा रही थी। पूछताछ से ज्ञात हुआ कि प्रथम पक्ष के {{firstpartyDetails#inline}} व द्वितीय पक्ष के {{secondpartyDetail#inline}} के मध्य {{Matter}} पूछताछ के दौरान दोनों पक्ष तेज-तेज आवाज में चिल्लाते हुए एक-दूसरे पर आरोप-प्रत्यारोप लगाते हुए आमादा फौजदारी होने लगे। मुझ {{pad}} द्वारा उभय पक्षों को काफी समझाया-बुझाया गया, परन्तु वे नहीं माने और आपस में एक-दूसरे को मारने-पीटने की धमकी देने लगे। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- द्वितीय पक्ष )\n{{secondpartyDetail#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} थाना स्थानीय पर कार्य सरकार कर रहा था कि थाना कार्यालय से सूचना प्राप्त हुई कि पुलिस पीआरवी के कर्मचारीगण द्वारा ग्राम {{village}} से दो पक्षों के लोगों को किसी विवाद के संबंध में लाकर थाने पर सुपुर्द किया गया है, जिनसे मुझ {{pad}} द्वारा पूछताछ कर मामले/विवाद की जानकारी की जा रही थी। पूछताछ से ज्ञात हुआ कि प्रथम पक्ष के {{firstpartyDetails#inline}} व द्वितीय पक्ष के {{secondpartyDetail#inline}} के मध्य {{Matter}} पूछताछ के दौरान दोनों पक्ष तेज-तेज आवाज में चिल्लाते हुए एक-दूसरे पर आरोप-प्रत्यारोप लगाते हुए आमादा फौजदारी होने लगे। मुझ {{pad}} द्वारा उभय पक्षों को काफी समझाया-बुझाया गया, परन्तु वे नहीं माने और आपस में एक-दूसरे को मारने-पीटने की धमकी देने लगे। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- प्रथम पक्ष )\n{{firstpartyDetails#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} थाना स्थानीय पर कार्य सरकार कर रहा था कि थाना कार्यालय से सूचना प्राप्त हुई कि पुलिस पीआरवी के कर्मचारीगण द्वारा ग्राम {{village}} से दो पक्षों के लोगों को किसी विवाद के संबंध में लाकर थाने पर सुपुर्द किया गया है, जिनसे मुझ {{pad}} द्वारा पूछताछ कर मामले/विवाद की जानकारी की जा रही थी। पूछताछ से ज्ञात हुआ कि प्रथम पक्ष के {{firstpartyDetails#inline}} व द्वितीय पक्ष के {{secondpartyDetail#inline}} के मध्य {{Matter}} । पूछताछ के दौरान दोनों पक्ष तेज-तेज आवाज में चिल्लाते हुए एक-दूसरे पर आरोप-प्रत्यारोप लगाते हुए आमादा फौजदारी होने लगे। मुझ {{pad}} द्वारा उभय पक्षों को काफी समझाया-बुझाया गया, परन्तु वे नहीं माने और आपस में एक-दूसरे को मारने-पीटने की धमकी देने लगे। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- द्वितीय पक्ष )\n{{secondpartyDetail#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} थाना स्थानीय पर कार्य सरकार कर रहा था कि थाना कार्यालय से सूचना प्राप्त हुई कि पुलिस पीआरवी के कर्मचारीगण द्वारा ग्राम {{village}} से दो पक्षों के लोगों को किसी विवाद के संबंध में लाकर थाने पर सुपुर्द किया गया है, जिनसे मुझ {{pad}} द्वारा पूछताछ कर मामले/विवाद की जानकारी की जा रही थी। पूछताछ से ज्ञात हुआ कि प्रथम पक्ष के {{firstpartyDetails#inline}} व द्वितीय पक्ष के {{secondpartyDetail#inline}} के मध्य {{Matter}} । पूछताछ के दौरान दोनों पक्ष तेज-तेज आवाज में चिल्लाते हुए एक-दूसरे पर आरोप-प्रत्यारोप लगाते हुए आमादा फौजदारी होने लगे। मुझ {{pad}} द्वारा उभय पक्षों को काफी समझाया-बुझाया गया, परन्तु वे नहीं माने और आपस में एक-दूसरे को मारने-पीटने की धमकी देने लगे। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n",
       "keys": [
         {
           "key_name": "village",
@@ -2085,7 +2173,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -2093,7 +2182,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -2101,7 +2191,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "Matter",
@@ -2109,7 +2200,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "किसी बात को लेकर विवाद है।",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"\\\"के मध्य\\\" के बाद का हिस्सा, जैसे: जमीन की हदबरारी को लेकर विवाद है — \\\"।\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "Remand",
@@ -2117,7 +2209,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"टिक करने पर 170 वाले पत्र में \\\"14 दिवस का रिमांड\\\" का निवेदन मोटे अक्षरों में छपता है\"}"
         },
         {
           "key_name": "ArrestTime",
@@ -2125,7 +2218,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"24 घंटे वाला समय, बिंदु लगाकर, जैसे: 13.30 (\\\"बजे\\\" न लिखें, अपने आप लगता है)\"}"
         },
         {
           "key_name": "InformedTo",
@@ -2133,7 +2227,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "परिजनों",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"किसे सूचना दी, जैसे: परिजनों / पिता रामलाल — \\\"को दी गयी\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -2141,7 +2236,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 10
         },
         {
@@ -2150,7 +2245,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -2158,7 +2254,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "Tehsil",
@@ -2166,7 +2263,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -2174,7 +2272,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -2187,7 +2286,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2205,7 +2304,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आवेदिका",
-          "dropdown_options": "[\"आवेदिका\", \"आवेदक\"]",
+          "dropdown_options": "{\"options\": [\"आवेदिका\", \"आवेदक\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}",
           "sort_order": 0
         },
         {
@@ -2214,7 +2313,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"पूरा नाम-पता, जैसे: श्रीमती रचना देवी पत्नी कृष्णा शंकर निवासी ग्राम … (\\\"आवेदिका\\\" न लिखें, ऊपर चुना है)\"}"
         },
         {
           "key_name": "ApplicantName",
@@ -2222,15 +2322,17 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"छोटा नाम, जैसे: रचना देवी — आगे की लाइनों में यही छपता है\"}"
         },
         {
           "key_name": "Facts",
-          "label": "जांच में क्या पाया (आखिर में । न लगाएँ)",
+          "label": "जांच में क्या पाया",
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "आवेदिका एवं विपक्षी के मध्य जमीनी विवाद के चलते विपक्षी द्वारा आवेदिका के साथ वाद-विवाद किया जाना पाया गया",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"जांच में जो पाया, पूरे वाक्य में, जैसे: आवेदिका एवं विपक्षी के मध्य जमीनी विवाद के चलते … पाया गया — \\\"।\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "Accused",
@@ -2238,7 +2340,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर अभियुक्त का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)\"}"
         },
         {
           "key_name": "Remand",
@@ -2246,7 +2349,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"टिक करने पर 170 वाले पत्र में \\\"14 दिवस का रिमांड\\\" का निवेदन मोटे अक्षरों में छपता है\"}"
         },
         {
           "key_name": "ArrestTime",
@@ -2254,7 +2358,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"24 घंटे वाला समय, बिंदु लगाकर, जैसे: 13.30 (\\\"बजे\\\" न लिखें, अपने आप लगता है)\"}"
         },
         {
           "key_name": "InformedTo",
@@ -2262,7 +2367,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "परिजनों",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"किसे सूचना दी, जैसे: परिजनों / पिता रामलाल — \\\"को दी गयी\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -2270,7 +2376,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 10
         },
         {
@@ -2279,7 +2385,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -2287,7 +2394,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "Tehsil",
@@ -2295,7 +2403,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -2303,7 +2412,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -2316,7 +2426,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2326,7 +2436,7 @@
         "शांति भंग"
       ],
       "last_updated": "2026-10-29",
-      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- प्रथम पक्ष )\n{{firstpartyDetails#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{Avedak}} {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच के क्रम में {{Avedak}} पक्ष से {{firstpartyDetails#inline}} व विपक्षी {{secondpartyDetail#inline}} तलबिदा थाने पर उपस्थित आये। मुझ {{pad}} द्वारा जांच की गयी तो ज्ञात हुआ कि दोनों पक्षों के मध्य {{Matter}} जिस पर मुझ {{pad}} द्वारा उभय पक्षों को समझाया-बुझाया जा रहा था। इसी समय दोनों पक्ष एक-दूसरे पर थाने में झूठा प्रार्थना पत्र प्रेषित करने का आरोप-प्रत्यारोप लगाते हुए लड़ाई-झगड़ा करने पर आमादा फसाद होने लगे। मुझ {{pad}} {{OfficerName}} द्वारा उभय पक्षों को पुनः समझाया-बुझाया गया कि प्रकरण की जांच अभी प्रचलित है तथा जांच के बाद गुण-दोष के आधार पर विधिक कार्यवाही की जायेगी, परन्तु दोनों पक्षों पर समझाने-बुझाने का कोई असर नहीं हुआ और वे आपस में एक-दूसरे को मारने-पीटने की धमकी देने लगे। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- द्वितीय पक्ष )\n{{secondpartyDetail#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{Avedak}} {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच के क्रम में {{Avedak}} पक्ष से {{firstpartyDetails#inline}} व विपक्षी {{secondpartyDetail#inline}} तलबिदा थाने पर उपस्थित आये। मुझ {{pad}} द्वारा जांच की गयी तो ज्ञात हुआ कि दोनों पक्षों के मध्य {{Matter}} जिस पर मुझ {{pad}} द्वारा उभय पक्षों को समझाया-बुझाया जा रहा था। इसी समय दोनों पक्ष एक-दूसरे पर थाने में झूठा प्रार्थना पत्र प्रेषित करने का आरोप-प्रत्यारोप लगाते हुए लड़ाई-झगड़ा करने पर आमादा फसाद होने लगे। मुझ {{pad}} {{OfficerName}} द्वारा उभय पक्षों को पुनः समझाया-बुझाया गया कि प्रकरण की जांच अभी प्रचलित है तथा जांच के बाद गुण-दोष के आधार पर विधिक कार्यवाही की जायेगी, परन्तु दोनों पक्षों पर समझाने-बुझाने का कोई असर नहीं हुआ और वे आपस में एक-दूसरे को मारने-पीटने की धमकी देने लगे। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- प्रथम पक्ष )\n{{firstpartyDetails#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{Avedak}} {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच के क्रम में {{Avedak}} पक्ष से {{firstpartyDetails#inline}} व विपक्षी {{secondpartyDetail#inline}} तलबिदा थाने पर उपस्थित आये। मुझ {{pad}} द्वारा जांच की गयी तो ज्ञात हुआ कि दोनों पक्षों के मध्य {{Matter}} । इस पर मुझ {{pad}} द्वारा उभय पक्षों को समझाया-बुझाया जा रहा था। इसी समय दोनों पक्ष एक-दूसरे पर थाने में झूठा प्रार्थना पत्र प्रेषित करने का आरोप-प्रत्यारोप लगाते हुए लड़ाई-झगड़ा करने पर आमादा फसाद होने लगे। मुझ {{pad}} {{OfficerName}} द्वारा उभय पक्षों को पुनः समझाया-बुझाया गया कि प्रकरण की जांच अभी प्रचलित है तथा जांच के बाद गुण-दोष के आधार पर विधिक कार्यवाही की जायेगी, परन्तु दोनों पक्षों पर समझाने-बुझाने का कोई असर नहीं हुआ और वे आपस में एक-दूसरे को मारने-पीटने की धमकी देने लगे। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- द्वितीय पक्ष )\n{{secondpartyDetail#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{Avedak}} {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच के क्रम में {{Avedak}} पक्ष से {{firstpartyDetails#inline}} व विपक्षी {{secondpartyDetail#inline}} तलबिदा थाने पर उपस्थित आये। मुझ {{pad}} द्वारा जांच की गयी तो ज्ञात हुआ कि दोनों पक्षों के मध्य {{Matter}} । इस पर मुझ {{pad}} द्वारा उभय पक्षों को समझाया-बुझाया जा रहा था। इसी समय दोनों पक्ष एक-दूसरे पर थाने में झूठा प्रार्थना पत्र प्रेषित करने का आरोप-प्रत्यारोप लगाते हुए लड़ाई-झगड़ा करने पर आमादा फसाद होने लगे। मुझ {{pad}} {{OfficerName}} द्वारा उभय पक्षों को पुनः समझाया-बुझाया गया कि प्रकरण की जांच अभी प्रचलित है तथा जांच के बाद गुण-दोष के आधार पर विधिक कार्यवाही की जायेगी, परन्तु दोनों पक्षों पर समझाने-बुझाने का कोई असर नहीं हुआ और वे आपस में एक-दूसरे को मारने-पीटने की धमकी देने लगे। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n",
       "keys": [
         {
           "key_name": "Avedak",
@@ -2334,7 +2444,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आवेदिका",
-          "dropdown_options": "[\"आवेदिका\", \"आवेदक\"]",
+          "dropdown_options": "{\"options\": [\"आवेदिका\", \"आवेदक\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}",
           "sort_order": 0
         },
         {
@@ -2343,7 +2453,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"पूरा नाम-पता, जैसे: श्रीमती रचना देवी पत्नी कृष्णा शंकर निवासी ग्राम … (\\\"आवेदिका\\\" न लिखें, ऊपर चुना है)\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -2351,7 +2462,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -2359,15 +2471,17 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "Matter",
           "label": "विवाद (… के मध्य के बाद का हिस्सा)",
           "field_type": "multiline",
           "is_required": 1,
-          "default_value": "पुश्तैनी आबादी की जमीन के बँटवारे, कब्जेदारी व निर्माण से सम्बन्धित विवाद व्याप्त है,",
-          "sort_order": 4
+          "default_value": "पुश्तैनी आबादी की जमीन के बँटवारे, कब्जेदारी व निर्माण से सम्बन्धित विवाद व्याप्त है",
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"\\\"के मध्य\\\" के बाद का हिस्सा, जैसे: जमीन की हदबरारी को लेकर विवाद है — \\\"।\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "Remand",
@@ -2375,7 +2489,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"टिक करने पर 170 वाले पत्र में \\\"14 दिवस का रिमांड\\\" का निवेदन मोटे अक्षरों में छपता है\"}"
         },
         {
           "key_name": "ArrestTime",
@@ -2383,7 +2498,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"24 घंटे वाला समय, बिंदु लगाकर, जैसे: 13.30 (\\\"बजे\\\" न लिखें, अपने आप लगता है)\"}"
         },
         {
           "key_name": "InformedTo",
@@ -2391,7 +2507,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "परिजनों",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"किसे सूचना दी, जैसे: परिजनों / पिता रामलाल — \\\"को दी गयी\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -2399,7 +2516,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 10
         },
         {
@@ -2408,7 +2525,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -2416,7 +2534,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "Tehsil",
@@ -2424,7 +2543,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -2432,7 +2552,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -2445,7 +2566,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2455,7 +2576,7 @@
         "शांति भंग"
       ],
       "last_updated": "2026-10-29",
-      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- एकपक्षीय )\n{{Accused#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} मय हमराह {{Hamrah}} के थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम जुर्म जरायम एवं चेकिंग संदिग्ध व्यक्ति/वाहन करते हुए {{Purpose}} ग्राम {{village}} में मौजूद था। जांच से ज्ञात हुआ कि {{Accused#inline}} {{Matter}} {{Accused#short}} उपरोक्त को समझाया-बुझाया गया कि {{Advice}} इसी बीच {{Accused#short}} उपरोक्त एकाएक उग्र होकर विपक्षी को ऊल-जलूल कहते हुए मारने-पीटने पर उतारू होने लगे। हम पुलिस वालों द्वारा उन्हें पुनः समझाया-बुझाया गया, परन्तु वे नहीं माने और अधिक उग्र होकर गाली-गलौज करने लगे। मौके पर शान्ति व्यवस्था भंग होने की स्थिति उत्पन्न हो गयी। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख एकपक्षीय {{Accused#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि उक्त {{Accused#n|अभियुक्त|अभियुक्तगण}} को गिरफ्तार न किया जाता तो पुनः लड़ाई-झगड़ा कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर {{Accused#n|सकता था|सकते थे}}। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना उक्त {{Accused#n|अभियुक्त|अभियुक्तगण}} के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि एकपक्षीय {{Accused#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि एकपक्षीय {{Accused#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि एकपक्षीय {{Accused#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि एकपक्षीय {{Accused#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- एकपक्षीय )\n{{Accused#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} मय हमराह {{Hamrah}} के थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम जुर्म जरायम एवं चेकिंग संदिग्ध व्यक्ति/वाहन करते हुए {{Purpose}} ग्राम {{village}} में मौजूद था। जांच से ज्ञात हुआ कि {{Accused#inline}} का {{Matter}} । {{Accused#short}} उपरोक्त को समझाया-बुझाया गया कि {{Advice}} । इसी बीच {{Accused#short}} उपरोक्त एकाएक उग्र होकर विपक्षी को ऊल-जलूल कहते हुए मारने-पीटने पर उतारू होने लगे। हम पुलिस वालों द्वारा उन्हें पुनः समझाया-बुझाया गया, परन्तु वे नहीं माने और अधिक उग्र होकर गाली-गलौज करने लगे। मौके पर शान्ति व्यवस्था भंग होने की स्थिति उत्पन्न हो गयी। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख एकपक्षीय {{Accused#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि उक्त {{Accused#n|अभियुक्त|अभियुक्तगण}} को गिरफ्तार न किया जाता तो पुनः लड़ाई-झगड़ा कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर {{Accused#n|सकता था|सकते थे}}। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना उक्त {{Accused#n|अभियुक्त|अभियुक्तगण}} के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि एकपक्षीय {{Accused#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि एकपक्षीय {{Accused#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि एकपक्षीय {{Accused#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि एकपक्षीय {{Accused#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n",
       "keys": [
         {
           "key_name": "Hamrah",
@@ -2463,7 +2584,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 मेहताब आलम, का0 विजय यादव\"}"
         },
         {
           "key_name": "Purpose",
@@ -2471,7 +2593,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्रार्थना पत्र की जांच हेतु",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"किस काम से गए, \\\"हेतु\\\" के साथ, जैसे: प्रार्थना पत्र की जांच हेतु / बीट सूचना की जांच हेतु\"}"
         },
         {
           "key_name": "village",
@@ -2479,7 +2602,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "Accused",
@@ -2487,15 +2611,17 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर अभियुक्त का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)\"}"
         },
         {
           "key_name": "Matter",
           "label": "विवाद (अभियुक्त के नाम के बाद का हिस्सा)",
           "field_type": "multiline",
           "is_required": 1,
-          "default_value": "का अपने पड़ोसी से जमीन की हदबरारी को लेकर विवाद है।",
-          "sort_order": 4
+          "default_value": "अपने पड़ोसी से जमीन की हदबरारी को लेकर विवाद है।",
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"अभियुक्त के नाम के बाद का हिस्सा — \\\"का\\\" पहले अपने आप लगता है, जैसे: अपने पड़ोसी से जमीन की हदबरारी को लेकर विवाद है\"}"
         },
         {
           "key_name": "Advice",
@@ -2503,7 +2629,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "अपनी जमीन की पैमाइश व हदबरारी विधिक तरीके से मा0 न्यायालय के माध्यम से कराएँ।",
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"\\\"समझाया-बुझाया गया कि\\\" के बाद का हिस्सा, जैसे: अपनी जमीन की पैमाइश … न्यायालय के माध्यम से कराएँ — \\\"।\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "Remand",
@@ -2511,7 +2638,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"टिक करने पर 170 वाले पत्र में \\\"14 दिवस का रिमांड\\\" का निवेदन मोटे अक्षरों में छपता है\"}"
         },
         {
           "key_name": "ArrestTime",
@@ -2519,7 +2647,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"24 घंटे वाला समय, बिंदु लगाकर, जैसे: 13.30 (\\\"बजे\\\" न लिखें, अपने आप लगता है)\"}"
         },
         {
           "key_name": "InformedTo",
@@ -2527,7 +2656,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "परिजनों",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"किसे सूचना दी, जैसे: परिजनों / पिता रामलाल — \\\"को दी गयी\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -2535,7 +2665,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 10
         },
         {
@@ -2544,7 +2674,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -2552,7 +2683,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "Tehsil",
@@ -2560,7 +2692,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -2568,7 +2701,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -2581,7 +2715,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2591,7 +2725,7 @@
         "शांति भंग"
       ],
       "last_updated": "2026-10-29",
-      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- प्रथम पक्ष )\n{{firstpartyDetails#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} मय हमराह {{Hamrah}} के थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम जुर्म जरायम एवं चेकिंग संदिग्ध व्यक्ति/वाहन करते हुए {{Purpose}} ग्राम {{village}} में मौजूद था। जांच से ज्ञात हुआ कि प्रथम पक्ष के {{firstpartyDetails#inline}} व द्वितीय पक्ष के {{secondpartyDetail#inline}} के मध्य {{Matter}} दोनों पक्षों को समझाया-बुझाया गया कि {{Advice}} इसी बीच दोनों पक्ष एकाएक उग्र होकर एक-दूसरे को ऊल-जलूल कहते हुए मारने-पीटने पर उतारू होने लगे। हम पुलिस वालों द्वारा उभय पक्षों को पुनः समझाया-बुझाया गया, परन्तु वे नहीं माने और अधिक उग्र होकर एक-दूसरे पर आरोप-प्रत्यारोप लगाने लगे। मौके पर शान्ति व्यवस्था भंग होने की स्थिति उत्पन्न हो गयी। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- द्वितीय पक्ष )\n{{secondpartyDetail#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} मय हमराह {{Hamrah}} के थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम जुर्म जरायम एवं चेकिंग संदिग्ध व्यक्ति/वाहन करते हुए {{Purpose}} ग्राम {{village}} में मौजूद था। जांच से ज्ञात हुआ कि प्रथम पक्ष के {{firstpartyDetails#inline}} व द्वितीय पक्ष के {{secondpartyDetail#inline}} के मध्य {{Matter}} दोनों पक्षों को समझाया-बुझाया गया कि {{Advice}} इसी बीच दोनों पक्ष एकाएक उग्र होकर एक-दूसरे को ऊल-जलूल कहते हुए मारने-पीटने पर उतारू होने लगे। हम पुलिस वालों द्वारा उभय पक्षों को पुनः समझाया-बुझाया गया, परन्तु वे नहीं माने और अधिक उग्र होकर एक-दूसरे पर आरोप-प्रत्यारोप लगाने लगे। मौके पर शान्ति व्यवस्था भंग होने की स्थिति उत्पन्न हो गयी। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- प्रथम पक्ष )\n{{firstpartyDetails#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} मय हमराह {{Hamrah}} के थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम जुर्म जरायम एवं चेकिंग संदिग्ध व्यक्ति/वाहन करते हुए {{Purpose}} ग्राम {{village}} में मौजूद था। जांच से ज्ञात हुआ कि प्रथम पक्ष के {{firstpartyDetails#inline}} व द्वितीय पक्ष के {{secondpartyDetail#inline}} के मध्य {{Matter}} । दोनों पक्षों को समझाया-बुझाया गया कि {{Advice}} । इसी बीच दोनों पक्ष एकाएक उग्र होकर एक-दूसरे को ऊल-जलूल कहते हुए मारने-पीटने पर उतारू होने लगे। हम पुलिस वालों द्वारा उभय पक्षों को पुनः समझाया-बुझाया गया, परन्तु वे नहीं माने और अधिक उग्र होकर एक-दूसरे पर आरोप-प्रत्यारोप लगाने लगे। मौके पर शान्ति व्यवस्था भंग होने की स्थिति उत्पन्न हो गयी। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 170/126/135 BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n( बनाम- द्वितीय पक्ष )\n{{secondpartyDetail#block}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि मैं {{pad}} {{OfficerName}} मय हमराह {{Hamrah}} के थाना हाजा से रवाना होकर देखभाल क्षेत्र, रोकथाम जुर्म जरायम एवं चेकिंग संदिग्ध व्यक्ति/वाहन करते हुए {{Purpose}} ग्राम {{village}} में मौजूद था। जांच से ज्ञात हुआ कि प्रथम पक्ष के {{firstpartyDetails#inline}} व द्वितीय पक्ष के {{secondpartyDetail#inline}} के मध्य {{Matter}} । दोनों पक्षों को समझाया-बुझाया गया कि {{Advice}} । इसी बीच दोनों पक्ष एकाएक उग्र होकर एक-दूसरे को ऊल-जलूल कहते हुए मारने-पीटने पर उतारू होने लगे। हम पुलिस वालों द्वारा उभय पक्षों को पुनः समझाया-बुझाया गया, परन्तु वे नहीं माने और अधिक उग्र होकर एक-दूसरे पर आरोप-प्रत्यारोप लगाने लगे। मौके पर शान्ति व्यवस्था भंग होने की स्थिति उत्पन्न हो गयी। क्षेत्र में परिशान्ति कायम रखने हेतु गिरफ्तारी के अलावा अन्य कोई चारा न देख प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त व द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को समय करीब {{ArrestTime}} बजे अन्तर्गत धारा 170/126/135 BNSS हिरासत पुलिस में लिया गया। यदि अभियुक्तगण को गिरफ्तार न किया जाता तो पुनः कोई संगीन घटना कारित कर कानून व्यवस्था/शान्ति व्यवस्था भंग कर सकते थे। दौराने गिरफ्तारी मा0 सर्वोच्च न्यायालय एवं मानवाधिकार आयोग के आदेशों-निर्देशों का पालन किया गया। गिरफ्तारी की सूचना अभियुक्तगण के {{InformedTo}} को दी गयी।\n\n{{ifnot:Remand|अतः माननीय न्यायालय से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को अधिक से अधिक जमानत राशि व मुचलका धनराशि पर पाबन्द करने की कृपा करें।}}{{if:Remand|**अतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का 14 दिवस का रिमांड स्वीकृत करने तथा भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।**}}\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n\n[[संलग्नक]] संलग्नक-\nरिपोर्ट चालानी यथोपरि- 01 वर्क | ({{OfficerName}})\nनकल रपट- 01 वर्क | {{pad}}\nगिरफ्तारी प्रपत्र- 01 वर्क | थाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि प्रथम पक्ष के {{firstpartyDetails#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट चालानी अन्तर्गत धारा 135(3) BNSS थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nन्याया0 श्रीमान उप जिला मजिस्ट्रेट महोदय,\nतहसील {{Tehsil}} जनपद {{District}}\n[[पक्ष]] राज्य द्वारा- {{pad}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त का चालान अन्तर्गत धारा 170/126/135 भा0ना0सु0सं0 में मा0 न्यायालय किया जा चुका है। पाबन्द हेतु चालान जरिये चालानी रिपोर्ट अन्तर्गत धारा 135(3) भा0ना0सु0सं0 की रिपोर्ट दी जा रही है।\n\nअतः श्रीमान से निवेदन है कि द्वितीय पक्ष के {{secondpartyDetail#short}} उपरोक्त को तलब कर भारी से भारी धनराशि के मुचलके पर पाबन्द करने की कृपा करें।\n[[समापन]] रिपोर्ट सादर सेवा में प्रेषित है।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{pad}}\nथाना {{PoliceStation}}, जनपद {{District}}\n",
       "keys": [
         {
           "key_name": "Hamrah",
@@ -2599,7 +2733,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 मेहताब आलम, का0 विजय यादव\"}"
         },
         {
           "key_name": "Purpose",
@@ -2607,7 +2742,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्रार्थना पत्र की जांच हेतु",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"किस काम से गए, \\\"हेतु\\\" के साथ, जैसे: प्रार्थना पत्र की जांच हेतु / बीट सूचना की जांच हेतु\"}"
         },
         {
           "key_name": "village",
@@ -2615,7 +2751,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अघौरा (ग्राम न लिखें)\", \"hint\": \"सिर्फ़ गाँव का नाम लिखें, जैसे: अघौरा — \\\"ग्राम\\\" पत्र में अपने आप लगता है\"}"
         },
         {
           "key_name": "firstpartyDetails",
@@ -2623,7 +2760,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "secondpartyDetail",
@@ -2631,7 +2769,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता (ग्राम … थाना … जनपद …)। एक ही व्यक्ति हो तो \\\"आदि\\\" अपने आप हट जाता है\"}"
         },
         {
           "key_name": "Matter",
@@ -2639,7 +2778,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "जमीन की हदबरारी को लेकर विवाद है।",
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"\\\"के मध्य\\\" के बाद का हिस्सा, जैसे: जमीन की हदबरारी को लेकर विवाद है — \\\"।\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "Advice",
@@ -2647,7 +2787,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "अपनी-अपनी जमीन की पैमाइश व हदबरारी विधिक तरीके से मा0 न्यायालय के माध्यम से कराएँ।",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"\\\"समझाया-बुझाया गया कि\\\" के बाद का हिस्सा, जैसे: अपनी जमीन की पैमाइश … न्यायालय के माध्यम से कराएँ — \\\"।\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "Remand",
@@ -2655,7 +2796,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"टिक करने पर 170 वाले पत्र में \\\"14 दिवस का रिमांड\\\" का निवेदन मोटे अक्षरों में छपता है\"}"
         },
         {
           "key_name": "ArrestTime",
@@ -2663,7 +2805,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"24 घंटे वाला समय, बिंदु लगाकर, जैसे: 13.30 (\\\"बजे\\\" न लिखें, अपने आप लगता है)\"}"
         },
         {
           "key_name": "InformedTo",
@@ -2671,7 +2814,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "परिजनों",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"किसे सूचना दी, जैसे: परिजनों / पिता रामलाल — \\\"को दी गयी\\\" अपने आप लगता है\"}"
         },
         {
           "key_name": "pad",
@@ -2679,7 +2823,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 10
         },
         {
@@ -2688,7 +2832,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद ऊपर चुना है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -2696,7 +2841,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "Tehsil",
@@ -2704,7 +2850,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ तहसील का नाम, जैसे: महराजगंज (\\\"तहसील\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -2712,7 +2859,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
