@@ -393,7 +393,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Seeds in `assets/seed/`: `sop_index.json`, `sop_struct_1.json`, `sop_struct_2.json`,
   `sop_explain_1.json` (owner's files, byte-for-byte — except owner-asked fixes: sop-up-b2-01 शारीरिक क्षति "सामान्य कारण"
   = 16 separate points in sop_struct_1 + sop_seed_1 (seed_version 2); sys-sop-fsl-coc परिभाषा = owner's simple-words text
-  (sop_struct_2 intro block t with \n + •, sop_seed_2 description, seed_version 2); its प्रमुख शब्द = owner's 5 IO-view terms with the lead line in the terms block's optional `t` (TermsBlock shows it; seed_version 3); files stay compact one-line JSON). Add future
+  (sop_struct_2 intro block t with \n + •, sop_seed_2 description, seed_version 2); its प्रमुख शब्द = owner's 5 IO-view terms with the lead line in the terms block's optional `t` (TermsBlock shows it; seed_version 3); बुनियादी आधार + साक्ष्य का प्रलेखन = owner's numbered text as terms blocks (label + explanation; the 5 प्रलेखन points the owner's text didn't cover kept as label-only rows; seed_version 4); files stay compact one-line JSON). Add future
   `sop_explain_<n>.json` files to the list in `src/ai/sopExplain.ts`.
 - Tasks done: L29, L30A (structured viewer), L30B (checklist), L32 (समझें tab).
   Photos (`sop_images` table, "part 3") not supplied yet — the फोटो tab stays hidden.
