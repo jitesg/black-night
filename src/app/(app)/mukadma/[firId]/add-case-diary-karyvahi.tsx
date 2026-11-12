@@ -29,9 +29,10 @@ import { Plus, X, ChevronDown, LayoutTemplate, Zap, AlertCircle, FileText, Check
 import {
   getCaseDiaryById, addEntry, updateEntry as updateEntryInDB, deleteEntry as deleteEntryInDB,
   getNextSequenceOrder, getEntriesByDiary,
-  type CaseDiary,
+  getCaseDiariesByFIR, type CaseDiary,
 } from '@/lib/db/caseDiaryRepo';
 import { getKaryvahiByFIR, addExecution, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
+import { OPENING_LABEL, SARANSH_LABEL, openingLine } from '@/lib/caseDiaryParcha';
 import { getFIRById, type FIR } from '@/lib/db/firRepo';
 import { FirBasisHintsView } from '@/components/caseDiary/FirBasisHintsView';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
@@ -374,7 +375,7 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
   if (!entry.isExpanded) {
     const entryTitle = entry.kind === 'karyvahi'
       ? (entry.karyvahiName || 'अनाम कार्यवाही')
-      : 'Narrative Entry';
+      : (entry.narrativeTemplate || 'Narrative Entry');
     const entryPreview = entry.kind === 'karyvahi'
       ? stripHtmlTags(entry.vivran || '...')
       : stripHtmlTags(entry.narrativeText || '...');
@@ -675,13 +676,14 @@ export default function AddCaseDiaryKaryvahiScreen() {
     if (!firId || !diaryId) return;
     let isMounted = true;
     (async () => {
-      const [f, d, k, cdFmts, narFmts, existingEntries] = await Promise.all([
+      const [f, d, k, cdFmts, narFmts, existingEntries, allDiaries] = await Promise.all([
         getFIRById(firId),
         getCaseDiaryById(diaryId),
         getKaryvahiByFIR(firId),
         getPublishedFormatsByType('Case Diary'),
         getPublishedFormatsByType('Narrative'),
         getEntriesByDiary(diaryId),
+        getCaseDiariesByFIR(firId),
       ]);
       if (isMounted) {
         setDiary(d);
@@ -691,8 +693,17 @@ export default function AddCaseDiaryKaryvahiScreen() {
         setNarrativeFormats(narFmts);
 
         if (existingEntries.length === 0) {
-          // No automatic "मुकदमा सारांश" / "श्रीमान जी मुकदमा उपरोक्त…" entries any more: the पर्चा prints the
-          // FIR's सारांश box and the opening line itself (owner — they were printed twice).
+          // A new diary starts with two narrative entries (owner): the FIR's मुकदमा सारांश box as typed (only when
+          // filled) and the opening line for this पर्चा number. The पर्चा prints them from here (not twice).
+          const ordered = [...allDiaries].sort((a, b) => a.created_at - b.created_at);
+          const idx = ordered.findIndex((x) => x.id === diaryId);
+          const no = idx >= 0 ? idx + 1 : 1;
+          const prev = idx > 0 ? { no: idx, date: ordered[idx - 1].preparation_date } : null;
+          const saranshText = (f?.mukadma_saransh ?? '').trim();
+          const starters: DiaryEntry[] = [
+            ...(saranshText ? [{ ...mkEntry('narrative'), narrativeTemplate: SARANSH_LABEL, narrativeText: saranshText, isExpanded: false }] : []),
+            { ...mkEntry('narrative'), narrativeTemplate: OPENING_LABEL, narrativeText: openingLine(no, prev), isExpanded: false },
+          ];
 
           // If a specific karyvahi was pre-selected (from Diary tab queue), inject it
           // as the focused entry instead of the generic blank karyvahi slot.
@@ -701,9 +712,9 @@ export default function AddCaseDiaryKaryvahiScreen() {
             const preFilledKaryvahi: DiaryEntry = matched
               ? { ...mkEntry('karyvahi'), firKaryvahiId: matched.id, karyvahiName: matched.name, isExpanded: true }
               : { ...mkEntry('karyvahi'), isExpanded: true };
-            setEntries([preFilledKaryvahi]);
+            setEntries([...starters, preFilledKaryvahi]);
           } else {
-            setEntries([{ ...mkEntry('karyvahi'), isExpanded: true }]);
+            setEntries([...starters, { ...mkEntry('karyvahi'), isExpanded: true }]);
           }
         } else {
           // Load existing entries for editing — map DB rows into local DiaryEntry state

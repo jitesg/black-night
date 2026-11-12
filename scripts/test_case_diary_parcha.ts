@@ -53,3 +53,22 @@ test('old automatic opening entry is not printed twice (owner)', () => {
   assert.equal(ps.split('थाना स्थानीय पर पंजीकृत').length, 2); // only the edited one
   assert.match(ps, /मेरा जोड़ा हुआ/);
 });
+test('diary with its own सारांश / opening-line narratives prints them once, as edited (owner)', () => {
+  const open = P.openingLine(2, { no: 1, date: '2025-07-08' });
+  assert.match(open, /पर्चा नं0 01 दिनाँक 08\.07\.2025/);
+  const paras = P.buildParcha({ no: 2, date: '2025-07-15', places: [], prev: { no: 1, date: '2025-07-08' }, entries: [
+    { entry_type: 'narrative', narrative_template: P.SARANSH_LABEL, narrative_text: 'डायरी वाला सारांश' },
+    { entry_type: 'narrative', narrative_template: P.OPENING_LABEL, narrative_text: open + ' बदला' },
+    { entry_type: 'karyvahi', karyvahi_name: 'बयान', vivran: 'एक' },
+    { entry_type: 'karyvahi', karyvahi_name: 'नक्शा', vivran: 'दो' }] }, 'FIR वाला सारांश');
+  const s = txt(paras as never);
+  assert.doesNotMatch(s, /FIR वाला सारांश/);
+  assert.equal(s.split('मुकदमा साराशः- डायरी वाला सारांश').length, 2);
+  assert.equal(s.split('को किता कर सेवा मे प्रेषित किया जा चुका है').length, 2);
+  assert.match(s, /मशरूफ हुआ। बदला/);
+  const gaps = (paras as { gapBefore?: number; runs?: { text: string }[] }[]).filter((p) => p.gapBefore).map((p) => p.runs![1].text);
+  assert.deepEqual(gaps, ['दो']); // gap only between the two real entries
+  const first = txt(P.buildParcha({ no: 1, date: '2025-07-08', places: [], entries: [
+    { entry_type: 'narrative', narrative_template: P.SARANSH_LABEL, narrative_text: 'स' }] }, '') as never);
+  assert.match(first, /कार्यवाही- मुकदमा साराशं, विवेचना ग्रहण/);
+});

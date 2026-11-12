@@ -56,6 +56,20 @@ export function isAutoOpening(s: string): boolean {
     || /^श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 \d+ दिनांक .+? को किता कर सेवा मे प्रेषित किया जा चुका है। आज मै विवेचक दीगर कार्यसरकार से फुरसत पाकर मुकदमा उपरोक्त की विवेचना मे मशरूफ हुआ।$/.test(x);
 }
 
+/** Labels (narrative_template) of the two narrative entries a new diary starts with (owner): the FIR's सारांश and the
+ *  opening line. When a diary has them, the पर्चा prints them from the entries (as edited) instead of writing its own. */
+export const SARANSH_LABEL = 'मुकदमा सारांश';
+export const OPENING_LABEL = 'प्रारम्भिक पंक्ति';
+
+/** The पर्चा's opening line: पर्चा 01 → "…मुझ उ0नि0 को आवंटित…", later → "…पर्चा नं0 0n दिनाँक … प्रेषित…". */
+export function openingLine(no: number, prev?: { no: number; date?: string | null } | null): string {
+  return no === 1 || !prev
+    ? 'श्रीमान जी मुकदमा उपरोक्त थाना हाजा पर पंजीकृत होकर विवेचना हस्व आदेश SHO महोदय के मुझ उ0नि0 को आवंटित होकर थाना कार्यालय से नकल चिक, नकल रपट प्राप्त हुए। मुकदमा उपरोक्त की विवेचना ग्रहण कर मशरूफ विवेचना हो रहा हूँ।'
+    : `श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 ${pad2(prev.no)} दिनाँक ${pDate(prev.date)} को किता कर सेवा मे प्रेषित किया जा चुका है। आज मै विवेचक दीगर कार्यसरकार से फुरसत पाकर मुकदमा उपरोक्त की विवेचना मे मशरूफ हुआ।`;
+}
+
+const isNarr = (e: ParchaEntry, label: string) => e.entry_type !== 'karyvahi' && t(e.narrative_template) === label;
+
 /** One पर्चा as paragraphs. `saransh` = the FIR's मुकदमा सारांश box (same for every पर्चा; empty → no सारांश line). */
 export function buildParcha(p: ParchaInput, saransh: string): ParchaPara[] {
   const out: ParchaPara[] = [];
@@ -63,23 +77,29 @@ export function buildParcha(p: ParchaInput, saransh: string): ParchaPara[] {
     : pTime(p.start) ? ` समय ${pTime(p.start)} बजे से` : '';
   out.push(line({ text: `पर्चा नं0 ${pad2(p.no)} दिनाँक ${pDate(p.date) || '..........'}${time}`, highlight: true }));
   const names = p.entries.filter((e) => e.entry_type === 'karyvahi').map((e) => t(e.karyvahi_name)).filter(Boolean);
-  const sar = textParas(saransh);
-  const kary = p.no === 1 ? [...(sar.length ? ['मुकदमा साराशं'] : []), 'विवेचना ग्रहण', ...names] : names;
+  // A diary that holds its own सारांश / opening-line narrative entries prints those (where they stand) instead.
+  const ownSar = p.entries.some((e) => isNarr(e, SARANSH_LABEL));
+  const ownOpen = p.entries.some((e) => isNarr(e, OPENING_LABEL));
+  const sar = ownSar ? [] : textParas(saransh);
+  const hasSar = sar.length > 0 || p.entries.some((e) => isNarr(e, SARANSH_LABEL) && textParas(e.narrative_text).length > 0);
+  const kary = p.no === 1 ? [...(hasSar ? ['मुकदमा साराशं'] : []), 'विवेचना ग्रहण', ...names] : names;
   if (kary.length) out.push(line({ text: `कार्यवाही- ${Array.from(new Set(kary)).join(', ')}` }));
   out.push(line({ text: `दौरा- ${(p.places ?? []).filter(Boolean).join(' व ') || 'थाना कार्यालय'} ।` }));
   out.push({ blank: true });
   sar.forEach((s, i) => out.push(i === 0 ? line({ text: 'मुकदमा साराशः- ', red: true }, { text: s }) : line({ text: s })));
-  out.push(line({
-    text: p.no === 1 || !p.prev
-      ? 'श्रीमान जी मुकदमा उपरोक्त थाना हाजा पर पंजीकृत होकर विवेचना हस्व आदेश SHO महोदय के मुझ उ0नि0 को आवंटित होकर थाना कार्यालय से नकल चिक, नकल रपट प्राप्त हुए। मुकदमा उपरोक्त की विवेचना ग्रहण कर मशरूफ विवेचना हो रहा हूँ।'
-      : `श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 ${pad2(p.prev.no)} दिनाँक ${pDate(p.prev.date)} को किता कर सेवा मे प्रेषित किया जा चुका है। आज मै विवेचक दीगर कार्यसरकार से फुरसत पाकर मुकदमा उपरोक्त की विवेचना मे मशरूफ हुआ।`,
-  }));
+  if (!ownOpen) out.push(line({ text: openingLine(p.no, p.prev) }));
   let shown = 0;
   for (const e of p.entries) {
     const isK = e.entry_type === 'karyvahi';
     const label = t(isK ? e.karyvahi_name : e.narrative_template);
     const paras = textParas(isK ? e.vivran : e.narrative_text);
     if (!paras.length) continue;
+    // The diary's own सारांश / opening-line entries: same look as the पर्चा's own lines (no gap, not counted).
+    if (isNarr(e, SARANSH_LABEL)) {
+      paras.forEach((para, i) => out.push(i === 0 ? line({ text: 'मुकदमा साराशः- ', red: true }, { text: para }) : line({ text: para })));
+      continue;
+    }
+    if (isNarr(e, OPENING_LABEL)) { paras.forEach((para) => out.push(line({ text: para }))); continue; }
     // Old diaries got an automatic "मुकदमा सारांश:" note as their first entry — the सारांश is printed above already.
     if (!isK && /^मुकदमा\s*सारांश\s*:/.test(paras[0])) continue;
     // …and the automatic opening line (the पर्चा writes its own) — only when left exactly as the app wrote it.

@@ -371,7 +371,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (पर्चा 01 adds मुकदमा साराशं, विवेचना ग्रहण), "दौरा- <places व …> ।" (none → थाना कार्यालय), blank, red "मुकदमा साराशः- " + the FIR's
   मुकदमा सारांश box exactly as typed (owner: the app builds nothing; empty box → no line and no "मुकदमा साराशं" in कार्यवाही-; old
   auto "मुकदमा सारांश:" narrative entries are skipped; new diaries no longer get that entry — nor the automatic opening line
-  entry; old ones are skipped only when left exactly as the app wrote them, `isAutoOpening`), opening para
+  entry; old ones are skipped only when left exactly as the app wrote them, `isAutoOpening`); NOW (owner, again): a new diary starts with two narrative entries — `SARANSH_LABEL` "मुकदमा सारांश" (FIR box as typed,
+  only when filled) + `OPENING_LABEL` "प्रारम्भिक पंक्ति" (`openingLine(no, prev)`), editable/removable; a diary that has them prints them
+  (where they stand, red "मुकदमा साराशः- ", no 1.5 gap, not counted) instead of its own lines; diaries without them keep the auto lines, opening para
   (01: "…मुझ उ0नि0 को आवंटित…"; later: "…पर्चा नं0 0n दिनाँक … को किता कर सेवा मे प्रेषित किया जा चुका है…"), each entry "<red name>.......... text",
   closing "श्रीमान जी आज की कृत कार्यवाही का पर्चा किता कर सेवा मे प्रेषित है । विवेचना प्रचलित है ।" No signature (owner), colours kept (owner).
   1.5 lines of space between two कार्यवाही / नैरेटिव entries (owner; para `gapBefore` → Word: empty Kokila para at 1.5 spacing, A4:
