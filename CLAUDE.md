@@ -375,7 +375,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   only when filled) + `OPENING_LABEL` "प्रारम्भिक पंक्ति" (`openingLine(no, prev)`), editable/removable; a diary that has them prints them
   (where they stand, red "मुकदमा साराशः- ", no 1.5 gap, not counted) instead of its own lines; diaries without them keep the auto lines; on those two entries the format button is locked (no ✕, no picker — `lockedLabel`; the name is how the पर्चा finds them), opening para
   (01: "…मुझ उ0नि0 को आवंटित…"; later: "…पर्चा नं0 0n दिनाँक … को किता कर सेवा मे प्रेषित किया जा चुका है…"), each entry "<red name>.......... text",
-  NO closing line (owner removed it — the Narrative format `sys-fmt-cd-parcha-end` "पर्चा अंत" has it). No signature (owner), colours kept (owner).
+  NO closing line (owner removed it — the Narrative format `sys-fmt-cd-parcha-end` "पर्चा अंत" has it; seed_version 2: "तत्पश्चात मौके से रवाना होकर…"). No signature (owner), colours kept (owner).
   1.5 lines of space between two कार्यवाही / नैरेटिव entries (owner; para `gapBefore` → Word: empty Kokila para at 1.5 spacing, A4:
   margin-top 46.5px; A4 sheets cut after the last whole line of each paragraph so a gap never splits a line).
   Word: `caseDiaryParchaDocx.ts` (Kokila 18pt, justified, single spacing, 1 inch margins, all diaries in one flow); data via
