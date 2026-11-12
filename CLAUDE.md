@@ -94,9 +94,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   "{{FirstParty}} के" (was की), "जांचक्रम में ग्राम {{village}}", village label "गाँव का नाम" + placeholder "जैसे: अघौरा (ग्राम न लिखें)",
   द्वित्तीय → द्वितीय, दिनांकदिनांक, double spaces. templateEngine `tidyRepeats` (end of generateReport, all formats): "ग्राम ग्राम" → "ग्राम",
   "मध्य मध्य" → "मध्य", "का का" → "का", "। ।" / "।।" → "।".
-- Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → "💡 …" under the field (`keyHint` / `FieldHint` in input.tsx; FormatKeyInput
-  wraps every type; formats/fill + prarthna-patra fill-format add it under Person/AccusedGroupInput; never printed; a dropdown's list goes
-  under "options"). Every field of the 6 bnss126 + 7 bnss170 formats has one (seed_version +1 each). 170 fixes too: " ।" after every
+- Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → a small blue "ⓘ भरने का तरीका जानें" button ABOVE the field; tap → floating
+  box (Modal, measureInWindow, opens upwards near the bottom, 17px text, ✕ / tap outside closes) (`keyHint` / `FieldHint` in input.tsx;
+  FormatKeyInput wraps every type; formats/fill + prarthna-patra fill-format put it above Person/AccusedGroupInput; never printed; a dropdown's
+  list goes under "options"). Owner wants it on every predefined format (58 formats / 982 fields; 171 have a hint so far) — next: write hints
+  batch by batch (GD, फर्द, केस डायरी, न्यायालय + प्रार्थना पत्र, rest), samples shown per batch. Every field of the 6 bnss126 + 7 bnss170 formats has one (seed_version +1 each). 170 fixes too: " ।" after every
   {{Matter}} / {{Advice}}; kshetra-ek "{{Accused#inline}} का {{Matter}}" (default no longer starts with "का"); prarthna-ubhay
   "{{Matter}} । इस पर मुझ…" (was ", जिस पर"); Facts label without "(आखिर में । न लगाएँ)"; village placeholder.
   The two धारा 135(3) report letters have no संलग्नक block (owner) — signature moved to [[हस्ताक्षर]]

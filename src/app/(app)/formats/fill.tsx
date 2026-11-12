@@ -599,6 +599,7 @@ export default function FillScreen() {
               {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) =>
                 key.field_type === 'accused_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
+                    <FieldHint text={keyHint(key.dropdown_options)} />
                     <AccusedGroupInput
                       showStatus={format.vivran.includes(`{{${key.key_name}#`)}
                       keyName={key.key_name}
@@ -608,10 +609,10 @@ export default function FillScreen() {
                       onValidChange={handleGroupValidChange}
                       error={fieldErrors[key.key_name]}
                     />
-                    <FieldHint text={keyHint(key.dropdown_options)} />
                   </View>
                 ) : key.field_type === 'person_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
+                    <FieldHint text={keyHint(key.dropdown_options)} />
                     <PersonGroupInput
                       keyName={key.key_name}
                       label={key.label || key.key_name}
@@ -620,7 +621,6 @@ export default function FillScreen() {
                       onValidChange={handleGroupValidChange}
                       error={fieldErrors[key.key_name]}
                     />
-                    <FieldHint text={keyHint(key.dropdown_options)} />
                   </View>
                 ) : (
                   <FormatKeyInput
