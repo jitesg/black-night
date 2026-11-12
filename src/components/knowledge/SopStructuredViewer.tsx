@@ -1113,6 +1113,10 @@ function TwoBlock({ block, query }: { block: SopBlock; query: string }) {
           className="text-base font-bold text-foreground px-1"
         />
       ) : null}
+      {/* optional lead line (owner: Chain of Custody सूची-निर्माण …) */}
+      {block.t ? (
+        <HighlightText text={block.t} query={query} className="text-sm font-medium text-foreground leading-6 px-1" />
+      ) : null}
 
       <View className="flex-row flex-wrap gap-2.5">
         {items.map((it, idx) => (
