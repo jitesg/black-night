@@ -22,7 +22,8 @@ test('पर्चा 01 / 02', () => {
     { entry_type: 'karyvahi', karyvahi_name: 'नकल चिक', vivran: '<p>सेवा में</p><p>दूसरा</p>' }, { entry_type: 'karyvahi', karyvahi_name: 'खाली', vivran: '' }] }, 'X।');
   const t1 = txt(one as never);
   assert.match(t1, /^पर्चा नं0 01 दिनाँक 08\.07\.2025 समय 18\.50 से 19\.50 बजे तक\nकार्यवाही- मुकदमा साराशं, विवेचना ग्रहण, नकल चिक, खाली\nदौरा- थाना कार्यालय ।\n\nमुकदमा साराशः- X।\nश्रीमान जी मुकदमा उपरोक्त थाना हाजा पर पंजीकृत/);
-  assert.match(t1, /\nनकल चिक\.{10} सेवा में\nदूसरा\nश्रीमान जी आज की कृत कार्यवाही का पर्चा किता कर सेवा मे प्रेषित है । विवेचना प्रचलित है ।$/);
+  assert.match(t1, /\nनकल चिक\.{10} सेवा में\nदूसरा$/);
+  assert.doesNotMatch(t1, /कृत कार्यवाही का पर्चा/); // closing line = "पर्चा अंत" format (owner)
   assert.equal((one[0] as { runs: { highlight?: boolean }[] }).runs[0].highlight, true);
   const two = txt(P.buildParcha({ no: 2, date: '2025-07-15', places: ['क', 'ख'], prev: { no: 1, date: '2025-07-08' }, entries: [] }, '') as never);
   assert.match(two, /^पर्चा नं0 02 दिनाँक 15\.07\.2025\n/);

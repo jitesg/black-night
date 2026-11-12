@@ -9,7 +9,7 @@
  *   श्रीमान जी मुकदमा उपरोक्त मे पर्चा नं0 01 दिनाँक … को किता कर सेवा मे प्रेषित किया जा चुका है। …
  *   बयान वादी मुकदमा.......... <text>                                   (label red)
  *   …
- *   श्रीमान जी आज की कृत कार्यवाही का पर्चा किता कर सेवा मे प्रेषित है । विवेचना प्रचलित है ।
+ *   (no closing line — the officer adds the Narrative format "पर्चा अंत")
  *
  * Kokila 18pt, justified, single line spacing, 1 inch margins, diaries one after another. Pure — tests: scripts/test_case_diary_parcha.ts
  */
@@ -111,7 +111,7 @@ export function buildParcha(p: ParchaInput, saransh: string): ParchaPara[] {
     });
     shown += 1;
   }
-  out.push(line({ text: 'श्रीमान जी आज की कृत कार्यवाही का पर्चा किता कर सेवा मे प्रेषित है । विवेचना प्रचलित है ।' }));
+  // No automatic closing line any more (owner): the officer adds the Narrative format "पर्चा अंत" (sys-fmt-cd-parcha-end).
   return out;
 }
 
