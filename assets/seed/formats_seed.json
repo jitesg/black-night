@@ -3860,7 +3860,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -3877,7 +3877,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "पूछताछ हेतु बैठाया",
-          "dropdown_options": "[\"पूछताछ हेतु बैठाया\", \"पूछताछ के बाद सुपुर्दगी\"]",
+          "dropdown_options": "{\"options\": [\"पूछताछ हेतु बैठाया\", \"पूछताछ के बाद सुपुर्दगी\"], \"hint\": \"आदमी को थाने पर बैठाया है तो \\\"पूछताछ हेतु बैठाया\\\"; पूछताछ पूरी होने पर किसी को सौंप दिया तो \\\"पूछताछ के बाद सुपुर्दगी\\\"\"}",
           "sort_order": 0
         },
         {
@@ -3886,7 +3886,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मुकदमा",
-          "dropdown_options": "[\"मुकदमा\", \"प्रार्थना पत्र\", \"PRV द्वारा लाये गये\", \"अन्य\"]",
+          "dropdown_options": "{\"options\": [\"मुकदमा\", \"प्रार्थना पत्र\", \"PRV द्वारा लाये गये\", \"अन्य\"], \"hint\": \"किस मामले में बुलाया / लाया गया — इसी के हिसाब से नीचे मुकदमा / प्रार्थना पत्र / PRV वाले बॉक्स खुलते हैं\"}",
           "sort_order": 1
         },
         {
@@ -3895,7 +3895,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"Reason=मुकदमा\"}",
+          "dropdown_options": "{\"showIf\": \"Reason=मुकदमा\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 2
         },
         {
@@ -3904,7 +3904,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"showIf\": \"Reason=मुकदमा\"}",
+          "dropdown_options": "{\"showIf\": \"Reason=मुकदमा\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 3
         },
         {
@@ -3913,7 +3913,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Reason=प्रार्थना पत्र\"}",
+          "dropdown_options": "{\"showIf\": \"Reason=प्रार्थना पत्र\", \"hint\": \"आवेदक / आवेदिका का पूरा नाम-पता, जैसे: राम स्वरूप पुत्र श्रीकृष्ण निवासी ग्राम अघौरा थाना बछरावां\"}",
           "sort_order": 4
         },
         {
@@ -3922,7 +3922,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Reason=PRV द्वारा लाये गये\"}",
+          "dropdown_options": "{\"showIf\": \"Reason=PRV द्वारा लाये गये\", \"hint\": \"PRV की इवेन्ट संख्या जैसी 112 पर दर्ज है, जैसे: P12112601234\"}",
           "sort_order": 5
         },
         {
@@ -3931,7 +3931,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Reason=PRV द्वारा लाये गये\"}",
+          "dropdown_options": "{\"showIf\": \"Reason=PRV द्वारा लाये गये\", \"hint\": \"व्यक्ति की हालत एक छोटे वाक्यांश में, जैसे: मानसिक रूप से विक्षिप्त था — कुछ खास न हो तो खाली छोड़ें\"}",
           "sort_order": 6
         },
         {
@@ -3940,7 +3940,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Reason=अन्य\"}",
+          "dropdown_options": "{\"showIf\": \"Reason=अन्य\", \"hint\": \"किस बारे में बुलाया, \\\"के सम्बन्ध में\\\" तक, जैसे: गुमशुदगी की जांच के सम्बन्ध में\"}",
           "sort_order": 7
         },
         {
@@ -3949,7 +3949,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"थाने पर आये / लाये गये हर व्यक्ति का अलग कार्ड भरें — नाम, पिता/पति, उम्र और पूरा पता\"}"
         },
         {
           "key_name": "GiveMode",
@@ -3957,7 +3958,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "सबको एक ही व्यक्ति को",
-          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी\", \"options\": [\"सबको एक ही व्यक्ति को\", \"हर व्यक्ति को अलग-अलग\"]}",
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी\", \"options\": [\"सबको एक ही व्यक्ति को\", \"हर व्यक्ति को अलग-अलग\"], \"hint\": \"सब लोगों को एक ही व्यक्ति (जैसे पिता) को सौंपा तो पहला; हर व्यक्ति को अलग-अलग लोगों को सौंपा तो दूसरा चुनें\"}",
           "sort_order": 9
         },
         {
@@ -3966,7 +3967,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "पिता",
-          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"]}",
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"], \"hint\": \"सुपुर्दगी लेने वाला थाने पर आये व्यक्ति का क्या लगता है\"}",
           "sort_order": 10
         },
         {
@@ -3975,7 +3976,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\"}",
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"hint\": \"सुपुर्दगी लेने वाले का नाम, जैसे: गुड्डू उर्फ हयात मोहम्मद (\\\"पिता\\\" आदि न लिखें, रिश्ता ऊपर चुना है)\"}",
           "sort_order": 11
         },
         {
@@ -3984,7 +3985,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\"}",
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"hint\": \"सुपुर्दगी लेने वाले का पता — वही पता हो जो थाने पर आये व्यक्ति का है, तो खाली छोड़ें\"}",
           "sort_order": 12
         },
         {
@@ -3993,7 +3994,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"किसको सौंपा (जैसे: रवि  या  रवि व मोहन)\"}, {\"key\": \"rel\", \"label\": \"सुपुर्दगी लेने वाले का रिश्ता\", \"type\": \"choice\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"], \"default\": \"पिता\"}, {\"key\": \"name\", \"label\": \"सुपुर्दगी लेने वाले का नाम\"}, {\"key\": \"addr\", \"label\": \"पता — व्यक्ति वाला ही हो तो खाली\"}], \"addLabel\": \"+ और सुपुर्दगी जोड़ें\", \"itemLabel\": \"सुपुर्दगी\", \"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=हर व्यक्ति को अलग-अलग\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"किसको सौंपा (जैसे: रवि  या  रवि व मोहन)\"}, {\"key\": \"rel\", \"label\": \"सुपुर्दगी लेने वाले का रिश्ता\", \"type\": \"choice\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"], \"default\": \"पिता\"}, {\"key\": \"name\", \"label\": \"सुपुर्दगी लेने वाले का नाम\"}, {\"key\": \"addr\", \"label\": \"पता — व्यक्ति वाला ही हो तो खाली\"}], \"addLabel\": \"+ और सुपुर्दगी जोड़ें\", \"itemLabel\": \"सुपुर्दगी\", \"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=हर व्यक्ति को अलग-अलग\", \"hint\": \"हर सुपुर्दगी की एक पंक्ति: किसको सौंपा, लेने वाले का रिश्ता, नाम और पता (पता वही हो तो खाली)। \\\"+ और सुपुर्दगी जोड़ें\\\" से अगली पंक्ति\"}",
           "sort_order": 13
         }
       ]
@@ -4007,7 +4008,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "दाखिला",
@@ -4025,7 +4026,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "दूसरे अधिकारी ने लाकर दाखिल किया",
-          "dropdown_options": "[\"दूसरे अधिकारी ने लाकर दाखिल किया\", \"मैं वापस आकर दाखिल कर रहा (वापसी)\", \"थाने पर ही गिरफ्तार कर दाखिल किया\"]",
+          "dropdown_options": "{\"options\": [\"दूसरे अधिकारी ने लाकर दाखिल किया\", \"मैं वापस आकर दाखिल कर रहा (वापसी)\", \"थाने पर ही गिरफ्तार कर दाखिल किया\"], \"hint\": \"अभियुक्त किसने और कैसे दाखिल किया — इसी से हैडिंग और पहली लाइन बदलती है\"}",
           "sort_order": 0
         },
         {
@@ -4034,7 +4035,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मुकदमा",
-          "dropdown_options": "[\"मुकदमा\", \"170 BNSS चालानी (शांति भंग)\"]",
+          "dropdown_options": "{\"options\": [\"मुकदमा\", \"170 BNSS चालानी (शांति भंग)\"], \"hint\": \"मुकदमे में गिरफ्तारी है तो \\\"मुकदमा\\\"; शांति भंग में चालानी है तो \\\"170 BNSS चालानी\\\"\"}",
           "sort_order": 1
         },
         {
@@ -4043,7 +4044,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"CaseType=मुकदमा\"}",
+          "dropdown_options": "{\"showIf\": \"CaseType=मुकदमा\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 2
         },
         {
@@ -4052,7 +4053,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"showIf\": \"CaseType=मुकदमा\"}",
+          "dropdown_options": "{\"showIf\": \"CaseType=मुकदमा\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 3
         },
         {
@@ -4061,7 +4062,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उ0नि0",
-          "dropdown_options": "{\"options\": [\"उ0नि0\", \"निरीक्षक\", \"हे0का0\", \"का0\", \"प्रभारी निरीक्षक\"], \"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\"}",
+          "dropdown_options": "{\"options\": [\"उ0नि0\", \"निरीक्षक\", \"हे0का0\", \"का0\", \"प्रभारी निरीक्षक\"], \"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\", \"hint\": \"अभियुक्त लाकर दाखिल करने वाले अधिकारी का पद\"}",
           "sort_order": 4
         },
         {
@@ -4070,7 +4071,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\"}",
+          "dropdown_options": "{\"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\", \"hint\": \"लाने वाले अधिकारी का सिर्फ़ नाम, जैसे: राजेश कुमार\"}",
           "sort_order": 5
         },
         {
@@ -4079,7 +4080,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\", \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 6
         },
         {
@@ -4088,7 +4089,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\"}",
+          "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\", \"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह\"}",
           "sort_order": 7
         },
         {
@@ -4097,7 +4098,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)\"}",
+          "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — कोई साथ न हो तो खाली छोड़ें\"}",
           "sort_order": 8
         },
         {
@@ -4106,7 +4107,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "देखभाल क्षेत्र, चेकिंग संदिग्ध व्यक्ति/वाहन, रोकथाम जुर्म जरायम व तलाश वांछित",
-          "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)\"}",
+          "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)\", \"hint\": \"किस काम से क्षेत्र में गये थे — पहले से भरा text ठीक हो तो वैसा ही रहने दें, नहीं तो अपने शब्दों में बदलें\"}",
           "sort_order": 9
         },
         {
@@ -4115,7 +4116,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": "@FIR.accused_cards",
-          "sort_order": 10
+          "sort_order": 10,
+          "dropdown_options": "{\"hint\": \"हर गिरफ्तार अभियुक्त का अलग कार्ड — नाम, पिता/पति, उम्र और पूरा पता (मुकदमा चुनने पर FIR के अभियुक्त अपने आप आते हैं)\"}"
         },
         {
           "key_name": "Recovery",
@@ -4123,7 +4125,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"जामा तलाशी में कुछ मिला हो तो पूरा वाक्य, जैसे: एक अदद मोबाइल फोन बरामद हुआ, जिसे सुरक्षित रखा गया। — कुछ न मिला हो तो खाली छोड़ें\"}"
         },
         {
           "key_name": "Injury",
@@ -4131,7 +4134,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कोई जाहिरा चोट नहीं",
-          "dropdown_options": "[\"कोई जाहिरा चोट नहीं\", \"चोट है\"]",
+          "dropdown_options": "{\"options\": [\"कोई जाहिरा चोट नहीं\", \"चोट है\"], \"hint\": \"अभियुक्त के शरीर पर चोट है या नहीं\"}",
           "sort_order": 12
         },
         {
@@ -4140,7 +4143,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Injury=चोट है\"}",
+          "dropdown_options": "{\"showIf\": \"Injury=चोट है\", \"hint\": \"चोट का पूरा वाक्य, जैसे: बायें हाथ पर पुरानी खरोंच का निशान है।\"}",
           "sort_order": 13
         },
         {
@@ -4149,7 +4152,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मर्दाना",
-          "dropdown_options": "[\"मर्दाना\", \"महिला\"]",
+          "dropdown_options": "{\"options\": [\"मर्दाना\", \"महिला\"], \"hint\": \"अभियुक्त पुरुष है तो \\\"मर्दाना\\\", महिला है तो \\\"महिला\\\" हवालात\"}",
           "sort_order": 14
         },
         {
@@ -4158,7 +4161,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 15
+          "sort_order": 15,
+          "dropdown_options": "{\"hint\": \"टिक करें तो नीचे हर अभियुक्त का हुलिया (कद, रंग, चेहरा…) भरने की पंक्तियाँ खुलेंगी और GD में छपेंगी\"}"
         },
         {
           "key_name": "Hulia",
@@ -4166,7 +4170,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"अभियुक्त का नाम\"}, {\"key\": \"kad\", \"label\": \"कद\", \"type\": \"choice\", \"options\": [\"औसत\", \"लम्बा\", \"नाटा\"], \"default\": \"औसत\"}, {\"key\": \"rang\", \"label\": \"रंग\", \"type\": \"choice\", \"options\": [\"गेंहुआ\", \"सांवला\", \"गोरा\", \"काला\"], \"default\": \"गेंहुआ\"}, {\"key\": \"jism\", \"label\": \"जिस्म\", \"type\": \"choice\", \"options\": [\"इकहरा\", \"इकहरा मजबूत\", \"भारी\"], \"default\": \"इकहरा मजबूत\"}, {\"key\": \"age\", \"label\": \"उम्र (जैसे 25)\"}], \"addLabel\": \"+ और हुलिया जोड़ें\", \"itemLabel\": \"हुलिया\", \"showIf\": \"doHulia\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"अभियुक्त का नाम\"}, {\"key\": \"kad\", \"label\": \"कद\", \"type\": \"choice\", \"options\": [\"औसत\", \"लम्बा\", \"नाटा\"], \"default\": \"औसत\"}, {\"key\": \"rang\", \"label\": \"रंग\", \"type\": \"choice\", \"options\": [\"गेंहुआ\", \"सांवला\", \"गोरा\", \"काला\"], \"default\": \"गेंहुआ\"}, {\"key\": \"jism\", \"label\": \"जिस्म\", \"type\": \"choice\", \"options\": [\"इकहरा\", \"इकहरा मजबूत\", \"भारी\"], \"default\": \"इकहरा मजबूत\"}, {\"key\": \"age\", \"label\": \"उम्र (जैसे 25)\"}], \"addLabel\": \"+ और हुलिया जोड़ें\", \"itemLabel\": \"हुलिया\", \"showIf\": \"doHulia\", \"hint\": \"हर अभियुक्त की एक पंक्ति — नाम और कद, रंग आदि चुनें; \\\"+\\\" से अगला अभियुक्त\"}",
           "sort_order": 16
         },
         {
@@ -4176,7 +4180,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 17,
-          "dropdown_options": "{\"hint\": \"अभियुक्त कैसे पकड़ा गया? एक कार्ड छुएँ\", \"cards\": [{\"id\": \"mukhbir\", \"icon\": \"🕵️\", \"label\": \"मुखबिर की सूचना\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} मुखबिर खास की सूचना पर <<place>> से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"dabish\", \"icon\": \"🚪\", \"label\": \"दबिश\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<place>> पर दबिश देकर {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"checking\", \"icon\": \"🚓\", \"label\": \"चेकिंग के दौरान\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<place>> पर चेकिंग के दौरान {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"mauka\", \"icon\": \"📍\", \"label\": \"मौके पर ही\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} घटना स्थल <<place>> से मौके पर ही {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"dial112\", \"icon\": \"📞\", \"label\": \"डायल 112 से प्राप्त\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} डायल 112 की पीआरवी <<prv>> द्वारा पकड़कर सुपुर्द किये गये {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को प्राप्त कर <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"warrant\", \"icon\": \"⚖️\", \"label\": \"वारंट पर\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} मा0 न्यायालय <<court>> द्वारा जारी वारंट के अनुपालन में <<place>> से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को गिरफ्तार किया गया।\"}, {\"id\": \"swayam\", \"icon\": \"🙋\", \"label\": \"स्वयं थाने आया\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} स्वयं थाने पर उपस्थित होने पर थाना परिसर से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"own\", \"icon\": \"✍️\", \"label\": \"अपने शब्दों में\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<own>> {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}], \"slots\": {\"date\": {\"label\": \"गिरफ्तारी दिनांक\", \"type\": \"date\", \"default\": \"today\", \"placeholder\": \"जैसे 30.10.2025\"}, \"time\": {\"label\": \"समय\", \"type\": \"text\", \"optional\": true, \"before\": \" समय करीब \", \"after\": \" बजे\", \"placeholder\": \"जैसे 10.30\", \"title\": \"गिरफ्तारी का समय\"}, \"place\": {\"label\": \"स्थान\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे ग्राम रामपुर तिराहा\", \"title\": \"गिरफ्तारी का स्थान\"}, \"prv\": {\"label\": \"पीआरवी नं0\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे 1234\", \"title\": \"डायल 112 पीआरवी नंबर\"}, \"court\": {\"label\": \"न्यायालय\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे सी0जे0एम0 लखनऊ\", \"title\": \"वारंट जारी करने वाला न्यायालय\"}, \"own\": {\"label\": \"कैसे पकड़ा\", \"type\": \"multiline\", \"placeholder\": \"जैसे: वादी द्वारा पकड़कर सुपुर्द करने पर\", \"title\": \"अभियुक्त कैसे पकड़ा गया — अपने शब्दों में\"}, \"basis\": {\"label\": \"गिरफ्तारी का आधार\", \"type\": \"choice\", \"default\": \"नामजद होने के आधार पर\", \"options\": [\"नामजद होने के आधार पर\", \"साक्ष्य संकलन के आधार पर\", \"नाम प्रकाश में आने पर\", \"अपराध करते समय रंगे हाथ\"], \"showIf\": \"CaseType=मुकदमा\", \"whenHidden\": \"शांति व्यवस्था भंग होने की प्रबल आशंका के दृष्टिगत धारा 170 भा0ना0सु0सं0 के अन्तर्गत\"}}, \"extraLabel\": \"और कुछ लिखें\"}"
+          "dropdown_options": "{\"hint\": \"अभियुक्त कैसे पकड़ा गया? एक कार्ड छुएँ\", \"cards\": [{\"id\": \"mukhbir\", \"icon\": \"🕵️\", \"label\": \"मुखबिर की सूचना\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} मुखबिर खास की सूचना पर <<place>> से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"dabish\", \"icon\": \"🚪\", \"label\": \"दबिश\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<place>> पर दबिश देकर {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"checking\", \"icon\": \"🚓\", \"label\": \"चेकिंग के दौरान\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<place>> पर चेकिंग के दौरान {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"mauka\", \"icon\": \"📍\", \"label\": \"मौके पर ही\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} घटना स्थल <<place>> से मौके पर ही {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"dial112\", \"icon\": \"📞\", \"label\": \"डायल 112 से प्राप्त\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} डायल 112 की पीआरवी <<prv>> द्वारा पकड़कर सुपुर्द किये गये {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को प्राप्त कर <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"warrant\", \"icon\": \"⚖️\", \"label\": \"वारंट पर\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} मा0 न्यायालय <<court>> द्वारा जारी वारंट के अनुपालन में <<place>> से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को गिरफ्तार किया गया।\"}, {\"id\": \"swayam\", \"icon\": \"🙋\", \"label\": \"स्वयं थाने आया\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} स्वयं थाने पर उपस्थित होने पर थाना परिसर से {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}, {\"id\": \"own\", \"icon\": \"✍️\", \"label\": \"अपने शब्दों में\", \"text\": \"दिनांक <<date>> को<<time>> {{if:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|{{BringerRank}} {{BringerName}} द्वारा}}{{ifnot:Mode=दूसरे अधिकारी ने लाकर दाखिल किया|मुझ {{pad}} {{OfficerName}} द्वारा{{if:Hamrah| मय हमराह}}}} <<own>> {{Accused#n|अभियुक्त|अभियुक्तगण}} उपरोक्त को <<basis>> गिरफ्तार किया गया।\"}], \"slots\": {\"date\": {\"label\": \"गिरफ्तारी दिनांक\", \"type\": \"date\", \"default\": \"today\", \"placeholder\": \"जैसे 30.10.2025\"}, \"time\": {\"label\": \"समय\", \"type\": \"text\", \"optional\": true, \"before\": \" समय करीब \", \"after\": \" बजे\", \"placeholder\": \"जैसे 10.30\", \"title\": \"गिरफ्तारी का समय\"}, \"place\": {\"label\": \"स्थान\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे ग्राम रामपुर तिराहा\", \"title\": \"गिरफ्तारी का स्थान\"}, \"prv\": {\"label\": \"पीआरवी नं0\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे 1234\", \"title\": \"डायल 112 पीआरवी नंबर\"}, \"court\": {\"label\": \"न्यायालय\", \"type\": \"text\", \"remember\": true, \"placeholder\": \"जैसे सी0जे0एम0 लखनऊ\", \"title\": \"वारंट जारी करने वाला न्यायालय\"}, \"own\": {\"label\": \"कैसे पकड़ा\", \"type\": \"multiline\", \"placeholder\": \"जैसे: वादी द्वारा पकड़कर सुपुर्द करने पर\", \"title\": \"अभियुक्त कैसे पकड़ा गया — अपने शब्दों में\"}, \"basis\": {\"label\": \"गिरफ्तारी का आधार\", \"type\": \"choice\", \"default\": \"नामजद होने के आधार पर\", \"options\": [\"नामजद होने के आधार पर\", \"साक्ष्य संकलन के आधार पर\", \"नाम प्रकाश में आने पर\", \"अपराध करते समय रंगे हाथ\"], \"showIf\": \"CaseType=मुकदमा\", \"whenHidden\": \"शांति व्यवस्था भंग होने की प्रबल आशंका के दृष्टिगत धारा 170 भा0ना0सु0सं0 के अन्तर्गत\"}}, \"extraLabel\": \"और कुछ लिखें\", \"tip\": \"अभियुक्त कैसे पकड़ा गया — जो स्थिति सही हो वह कार्ड छुएँ, फिर पीले खाली स्थान छूकर भरें (हरा = भर गया)। पूरा वाक्य अपने आप बनता है\"}"
         },
         {
           "key_name": "InformRel",
@@ -4184,7 +4188,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "पिता",
-          "dropdown_options": "[\"पिता\", \"माता\", \"पत्नी\", \"पति\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\"]",
+          "dropdown_options": "{\"options\": [\"पिता\", \"माता\", \"पत्नी\", \"पति\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\"], \"hint\": \"गिरफ्तारी की सूचना अभियुक्त के किस परिजन को दी\"}",
           "sort_order": 18
         },
         {
@@ -4193,7 +4197,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 19
+          "sort_order": 19,
+          "dropdown_options": "{\"hint\": \"सूचना पाने वाले का नाम, जैसे: श्याम लाल — न पता हो तो खाली छोड़ें\"}"
         },
         {
           "key_name": "InformMobile",
@@ -4201,7 +4206,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 20
+          "sort_order": 20,
+          "dropdown_options": "{\"hint\": \"10 अंकों का मोबाइल नम्बर, जैसे: 9876543210 — न हो तो खाली छोड़ें\"}"
         }
       ]
     },
@@ -4214,7 +4220,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -4233,7 +4239,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"आप क्षेत्र से वापस आकर यह तस्करा लिख रहे हैं तो टिक करें — \\\"वापसी\\\" वाली लाइन और हमराह के बॉक्स खुलेंगे\"}"
         },
         {
           "key_name": "pad",
@@ -4241,7 +4248,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 1
         },
         {
@@ -4250,7 +4257,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "Hamrah",
@@ -4258,7 +4266,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}",
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — कोई साथ न हो तो खाली छोड़ें\"}",
           "sort_order": 3
         },
         {
@@ -4267,7 +4275,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "देखभाल क्षेत्र, रोकथाम जुर्म जरायम, चेकिंग संदिग्ध व्यक्ति/वाहन व जाँच पेण्डिंग विवेचना",
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}",
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"किस काम से क्षेत्र में गये थे — पहले से भरा text ठीक हो तो वैसा ही रहने दें, नहीं तो अपने शब्दों में बदलें\"}",
           "sort_order": 4
         },
         {
@@ -4276,7 +4284,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}",
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"हमराह के शस्त्र-कारतूस मालखाने में जमा किये हों तो टिक करें\"}",
           "sort_order": 5
         },
         {
@@ -4285,7 +4293,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Sections",
@@ -4293,7 +4302,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "@FIR.section",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"अभी तक जिन धाराओं में मुकदमा चल रहा है, जैसे: 115(2), 352 बीएनएस\"}"
         },
         {
           "key_name": "doBadh",
@@ -4301,7 +4311,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"कोई नयी धारा जुड़ी है तो टिक करें — उसकी धारा और कारण के बॉक्स खुलेंगे\"}"
         },
         {
           "key_name": "BadhSection",
@@ -4309,7 +4320,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doBadh\"}",
+          "dropdown_options": "{\"showIf\": \"doBadh\", \"hint\": \"सिर्फ़ जुड़ने वाली धारा, जैसे: 106(1) बीएनएस\"}",
           "sort_order": 9
         },
         {
@@ -4318,7 +4329,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doBadh\"}",
+          "dropdown_options": "{\"showIf\": \"doBadh\", \"hint\": \"धारा क्यों बढ़ी — पूरा वाक्य, जैसे: मजरूब … की इलाज के दौरान मृत्यु हो गयी है।\"}",
           "sort_order": 10
         },
         {
@@ -4327,7 +4338,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"कोई धारा हटानी (लोप) है तो टिक करें — उसकी धारा और कारण के बॉक्स खुलेंगे\"}"
         },
         {
           "key_name": "GhatSection",
@@ -4335,7 +4347,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doGhat\"}",
+          "dropdown_options": "{\"showIf\": \"doGhat\", \"hint\": \"सिर्फ़ हटने वाली धारा, जैसे: 303(2) बीएनएस\"}",
           "sort_order": 12
         },
         {
@@ -4344,7 +4356,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doGhat\"}",
+          "dropdown_options": "{\"showIf\": \"doGhat\", \"hint\": \"धारा क्यों हटी — पूरा वाक्य, जैसे: अभियोग में धारा 303(2) बीएनएस का अपराध होना नहीं पाया गया।\"}",
           "sort_order": 13
         },
         {
@@ -4353,7 +4365,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"किसी नये अभियुक्त का नाम प्रकाश में आया है तो टिक करें\"}"
         },
         {
           "key_name": "NaamAdd",
@@ -4361,7 +4374,7 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doNaamAdd\"}",
+          "dropdown_options": "{\"showIf\": \"doNaamAdd\", \"hint\": \"प्रकाश में आये हर व्यक्ति का अलग कार्ड — नाम, पिता/पति, उम्र और पूरा पता\"}",
           "sort_order": 15
         },
         {
@@ -4370,7 +4383,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doNaamAdd\"}",
+          "dropdown_options": "{\"showIf\": \"doNaamAdd\", \"hint\": \"नाम कैसे सामने आया — पूरा वाक्य, जैसे: गवाहों के बयान से यह तथ्य प्रकाश में आया है कि … ने अपराध कारित किया है।\"}",
           "sort_order": 16
         },
         {
@@ -4379,7 +4392,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 17
+          "sort_order": 17,
+          "dropdown_options": "{\"hint\": \"किसी नामजद का नाम गलत पाया गया / हटाना है तो टिक करें\"}"
         },
         {
           "key_name": "NaamHata",
@@ -4387,7 +4401,7 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doNaamHata\"}",
+          "dropdown_options": "{\"showIf\": \"doNaamHata\", \"hint\": \"जिनके नाम हटाने हैं, हर व्यक्ति का अलग कार्ड — नाम, पिता/पति, उम्र और पता\"}",
           "sort_order": 18
         },
         {
@@ -4396,7 +4410,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doNaamHata\"}",
+          "dropdown_options": "{\"showIf\": \"doNaamHata\", \"hint\": \"नाम क्यों हटाया — पूरा वाक्य, जैसे: अब तक की विवेचना से … द्वारा अपराध कारित किया जाना नहीं पाया गया।\"}",
           "sort_order": 19
         },
         {
@@ -4405,7 +4419,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 20
+          "sort_order": 20,
+          "dropdown_options": "{\"hint\": \"आगे की विवेचना जिन धाराओं में होगी, जैसे: 281/125(b)/106(1) बीएनएस — न लिखना हो तो खाली छोड़ें\"}"
         },
         {
           "key_name": "FurtherAgainst",
@@ -4413,7 +4428,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 21
+          "sort_order": 21,
+          "dropdown_options": "{\"hint\": \"आगे की विवेचना किसके विरुद्ध, जैसे: प्रकाश में आये अभियुक्त रविकान्त पुत्र रामनरेश — न लिखना हो तो खाली छोड़ें\"}"
         }
       ]
     },
@@ -4426,7 +4442,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "वाहन",
@@ -4443,7 +4459,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 0
         },
         {
@@ -4452,7 +4468,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "Hamrah",
@@ -4460,7 +4477,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — कोई साथ न हो तो खाली छोड़ें\"}"
         },
         {
           "key_name": "WapsiKaam",
@@ -4468,7 +4486,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "देखभाल क्षेत्र, रोकथाम जुर्म जरायम, चेकिंग संदिग्ध व्यक्ति/वाहन",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"किस काम से क्षेत्र में गये थे — पहले से भरा text ठीक हो तो वैसा ही रहने दें, नहीं तो अपने शब्दों में बदलें\"}"
         },
         {
           "key_name": "doShastra",
@@ -4476,7 +4495,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"हमराह के शस्त्र-कारतूस मालखाने में जमा किये हों तो टिक करें\"}"
         },
         {
           "key_name": "FIRNo",
@@ -4484,7 +4504,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "@FIR.fir_number",
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"वाहन किसी मुकदमे से जुड़ा है तो मु0अ0सं0, जैसे: 123/2026 — न हो तो खाली छोड़ें (तब धारा का बॉक्स भी छिप जाता है)\"}"
         },
         {
           "key_name": "Sections",
@@ -4492,7 +4513,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"showIf\": \"FIRNo\"}",
+          "dropdown_options": "{\"showIf\": \"FIRNo\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 6
         },
         {
@@ -4501,7 +4522,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"वाहन किस रूप में\", \"type\": \"choice\", \"options\": [\"दुर्घटनाकारक\", \"दुर्घटनाग्रस्त\", \"बरामद\", \"सम्बन्धित\"], \"default\": \"दुर्घटनाकारक\"}, {\"key\": \"vtype\", \"label\": \"वाहन का प्रकार (जैसे: स्कार्पियो, ओमनी कार, मोटरसाइकिल)\"}, {\"key\": \"vno\", \"label\": \"वाहन संख्या\"}, {\"key\": \"chassis\", \"label\": \"चेचिस सं0 — न हो तो खाली\"}, {\"key\": \"engine\", \"label\": \"इंजन सं0 — न हो तो खाली\"}], \"addLabel\": \"+ और वाहन जोड़ें\", \"itemLabel\": \"वाहन\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"वाहन किस रूप में\", \"type\": \"choice\", \"options\": [\"दुर्घटनाकारक\", \"दुर्घटनाग्रस्त\", \"बरामद\", \"सम्बन्धित\"], \"default\": \"दुर्घटनाकारक\"}, {\"key\": \"vtype\", \"label\": \"वाहन का प्रकार (जैसे: स्कार्पियो, ओमनी कार, मोटरसाइकिल)\"}, {\"key\": \"vno\", \"label\": \"वाहन संख्या\"}, {\"key\": \"chassis\", \"label\": \"चेचिस सं0 — न हो तो खाली\"}, {\"key\": \"engine\", \"label\": \"इंजन सं0 — न हो तो खाली\"}], \"addLabel\": \"+ और वाहन जोड़ें\", \"itemLabel\": \"वाहन\", \"hint\": \"हर वाहन की एक पंक्ति — वाहन किस रूप में (दुर्घटनाकारक / बरामद…), प्रकार, नम्बर, चेचिस व इंजन नं0; \\\"+\\\" से अगला वाहन\"}",
           "sort_order": 7
         },
         {
@@ -4510,7 +4531,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "घटनास्थल",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"वाहन कहाँ से लाये, जैसे: घटनास्थल / ग्राम अघौरा मोड़\"}"
         },
         {
           "key_name": "Lana",
@@ -4518,7 +4540,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "वैकल्पिक व्यवस्था कर",
-          "dropdown_options": "[\"वैकल्पिक व्यवस्था कर\", \"चलवाकर\", \"क्रेन की सहायता से\"]",
+          "dropdown_options": "{\"options\": [\"वैकल्पिक व्यवस्था कर\", \"चलवाकर\", \"क्रेन की सहायता से\"], \"hint\": \"वाहन थाने तक कैसे लाया गया\"}",
           "sort_order": 9
         }
       ]
@@ -4532,7 +4554,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -4550,7 +4572,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 0
         },
         {
@@ -4559,7 +4581,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "FIRNo",
@@ -4567,7 +4590,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Sections",
@@ -4575,7 +4599,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "@FIR.section",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Accused",
@@ -4583,7 +4608,8 @@
           "field_type": "person_group",
           "is_required": 1,
           "default_value": "@FIR.accused_cards",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"अवमुक्त किये जाने वाले हर आरोपी का अलग कार्ड — नाम, पिता/पति, उम्र और पूरा पता\"}"
         },
         {
           "key_name": "ArrestDate",
@@ -4591,7 +4617,8 @@
           "field_type": "date",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"आरोपी की गिरफ्तारी की तारीख चुनें — न पता हो तो खाली छोड़ें\"}"
         },
         {
           "key_name": "ArrestBasis",
@@ -4599,7 +4626,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "विवेचना में असहयोग करने के आधार पर",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"किस आधार पर गिरफ्तार हुए थे, \\\"के आधार पर\\\" तक, जैसे: विवेचना में असहयोग करने के आधार पर\"}"
         },
         {
           "key_name": "Reason",
@@ -4607,7 +4635,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"विवेचना में सामने आये नये तथ्य — पूरा वाक्य, जैसे: मृतक … की हत्या नामित आरोपीगण द्वारा नहीं की गयी है, बल्कि …\"}"
         },
         {
           "key_name": "doAvkash",
@@ -4615,7 +4644,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"आज माननीय न्यायालय में अवकाश है तो टिक करें — उसी हिसाब से वाक्य जुड़ता है\"}"
         }
       ]
     },
@@ -4629,7 +4659,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "रवानगी",
@@ -4643,7 +4673,8 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 7,
-          "default_value": "उ0नि0"
+          "default_value": "उ0नि0",
+          "dropdown_options": "{\"hint\": \"अपना पद छोटे रूप में, जैसे: उ0नि0 / निरीक्षक\"}"
         },
         {
           "key_name": "OfficerName",
@@ -4651,7 +4682,8 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 8,
-          "default_value": ""
+          "default_value": "",
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह\"}"
         },
         {
           "key_name": "Hamrah",
@@ -4659,7 +4691,8 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 9,
-          "default_value": "मय हमराह का0 अजय यादव"
+          "default_value": "मय हमराह का0 अजय यादव",
+          "dropdown_options": "{\"hint\": \"\\\"मय हमराह\\\" सहित पूरा लिखें, जैसे: मय हमराह का0 अजय यादव — कोई साथ न हो तो खाली छोड़ें\"}"
         }
       ],
       "last_updated": "2026-07-17"
@@ -4674,7 +4707,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "रवानगी",
@@ -4689,7 +4722,8 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 3,
-          "default_value": "@FIR.fir_number"
+          "default_value": "@FIR.fir_number",
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Sections",
@@ -4697,7 +4731,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "sort_order": 4,
-          "default_value": "@FIR.section"
+          "default_value": "@FIR.section",
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Rank",
@@ -4705,7 +4740,8 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 7,
-          "default_value": "उ0नि0"
+          "default_value": "उ0नि0",
+          "dropdown_options": "{\"hint\": \"अपना पद छोटे रूप में, जैसे: उ0नि0 / निरीक्षक\"}"
         },
         {
           "key_name": "OfficerName",
@@ -4713,7 +4749,8 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 8,
-          "default_value": ""
+          "default_value": "",
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह\"}"
         },
         {
           "key_name": "Hamrah",
@@ -4721,7 +4758,8 @@
           "field_type": "text",
           "is_required": 0,
           "sort_order": 9,
-          "default_value": "मय हमराह का0 अजय यादव"
+          "default_value": "मय हमराह का0 अजय यादव",
+          "dropdown_options": "{\"hint\": \"\\\"मय हमराह\\\" सहित पूरा लिखें, जैसे: मय हमराह का0 अजय यादव — कोई साथ न हो तो खाली छोड़ें\"}"
         }
       ],
       "last_updated": "2026-07-17"
@@ -4736,7 +4774,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 10,
+      "seed_version": 11,
       "app_version": "1.0.0",
       "tags": [
         "GD",
@@ -4755,7 +4793,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"आप क्षेत्र से वापस थाने आये हैं तो टिक रहने दें (हैडिंग \\\"वापसी उ0नि0 व …\\\"); थाने पर ही तस्करा लिखना है तो टिक हटा दें\"}"
         },
         {
           "key_name": "pad",
@@ -4763,7 +4802,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 1
         },
         {
@@ -4772,7 +4811,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "Hamrah",
@@ -4781,7 +4821,7 @@
           "is_required": 0,
           "default_value": null,
           "sort_order": 3,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — कोई साथ न हो तो खाली छोड़ें\"}"
         },
         {
           "key_name": "h1",
@@ -4789,7 +4829,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"आज 126/135 BNSS की चालानी दाखिल की है तो टिक करें — हैडिंग में \\\"दाखिला चालानी\\\" जुड़ेगा और उसके बॉक्स खुलेंगे\"}"
         },
         {
           "key_name": "h1Kita",
@@ -4797,7 +4838,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "01",
-          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h1\"}",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h1\", \"hint\": \"गिनती चुनें — 01 चुनने पर शब्द एकवचन (किता / नफर) में और ज़्यादा पर बहुवचन में छपते हैं\"}",
           "sort_order": 5
         },
         {
@@ -4806,7 +4847,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h1\"}",
+          "dropdown_options": "{\"showIf\": \"h1\", \"hint\": \"कहाँ / किसके बारे में, जैसे: ग्राम रामपुर में भूमि विवाद के उभय पक्षों के विरुद्ध — न हो तो खाली छोड़ें\"}",
           "sort_order": 6
         },
         {
@@ -4815,7 +4856,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h1\", \"placeholder\": \"जैसे: दोनों पक्षों को धारा 130 BNSS के नोटिस तामील कराये गये।\"}",
+          "dropdown_options": "{\"showIf\": \"h1\", \"placeholder\": \"जैसे: दोनों पक्षों को धारा 130 BNSS के नोटिस तामील कराये गये।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 7
         },
         {
@@ -4824,7 +4865,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"आज 170/135 BNSS की चालानी व अभियुक्त दाखिल किये हैं तो टिक करें\"}"
         },
         {
           "key_name": "h2Kita",
@@ -4832,7 +4874,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "01",
-          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h2\"}",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h2\", \"hint\": \"गिनती चुनें — 01 चुनने पर शब्द एकवचन (किता / नफर) में और ज़्यादा पर बहुवचन में छपते हैं\"}",
           "sort_order": 9
         },
         {
@@ -4841,7 +4883,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "01",
-          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h2\"}",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h2\", \"hint\": \"गिनती चुनें — 01 चुनने पर शब्द एकवचन (किता / नफर) में और ज़्यादा पर बहुवचन में छपते हैं\"}",
           "sort_order": 10
         },
         {
@@ -4850,7 +4892,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h2\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
+          "dropdown_options": "{\"showIf\": \"h2\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\", \"hint\": \"नाम क्रम से, पिता के नाम सहित, जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
           "sort_order": 11
         },
         {
@@ -4859,7 +4901,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h2\", \"placeholder\": \"जैसे: अभियुक्तगण को मा0 उपजिलाधिकारी न्यायालय के समक्ष प्रस्तुत किया जायेगा।\"}",
+          "dropdown_options": "{\"showIf\": \"h2\", \"placeholder\": \"जैसे: अभियुक्तगण को मा0 उपजिलाधिकारी न्यायालय के समक्ष प्रस्तुत किया जायेगा।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 12
         },
         {
@@ -4868,7 +4910,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"आज कोई वाहन दाखिल किया है तो टिक करें\"}"
         },
         {
           "key_name": "h3Count",
@@ -4876,7 +4919,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "01",
-          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h3\"}",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h3\", \"hint\": \"गिनती चुनें — 01 चुनने पर शब्द एकवचन (किता / नफर) में और ज़्यादा पर बहुवचन में छपते हैं\"}",
           "sort_order": 14
         },
         {
@@ -4885,7 +4928,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"h3\", \"placeholder\": \"जैसे: 106/2026\"}",
+          "dropdown_options": "{\"showIf\": \"h3\", \"placeholder\": \"जैसे: 106/2026\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 106/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 15
         },
         {
@@ -4894,7 +4937,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h3\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h3\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 281/125(b)/106(1) BNS\"}",
           "sort_order": 16
         },
         {
@@ -4903,7 +4946,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h3\"}",
+          "dropdown_options": "{\"showIf\": \"h3\", \"hint\": \"वाहन का प्रकार व नम्बर, जैसे: मोटरसाइकिल नं0 UP33AB1234\"}",
           "sort_order": 17
         },
         {
@@ -4912,7 +4955,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h3\", \"placeholder\": \"जैसे: वाहन की चाबी व कागजात मालखाने में जमा किये गये।\"}",
+          "dropdown_options": "{\"showIf\": \"h3\", \"placeholder\": \"जैसे: वाहन की चाबी व कागजात मालखाने में जमा किये गये।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 18
         },
         {
@@ -4921,7 +4964,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 19
+          "sort_order": 19,
+          "dropdown_options": "{\"hint\": \"मुकदमे में कोई धारा हटी (घटोत्तरी) है तो टिक करें — नई धारा अपने आप हिसाब से लिखी जाती है\"}"
         },
         {
           "key_name": "h4FIR",
@@ -4929,7 +4973,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: 106/2026\"}",
+          "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: 106/2026\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 106/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 20
         },
         {
@@ -4938,7 +4982,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 281/125(b)/106(1) BNS — अभी जिन धाराओं में मुकदमा दर्ज है\"}",
           "sort_order": 21
         },
         {
@@ -4947,7 +4991,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: 125(a) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: 125(a) BNS\", \"hint\": \"सिर्फ़ वह धारा जो हट रही है, जैसे: 125(a) BNS — बाकी धाराएँ अपने आप जुड़/घट जाती हैं\"}",
           "sort_order": 22
         },
         {
@@ -4956,7 +5000,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: मजरूब की सप्लीमेंटरी मेडिकल रिपोर्ट में चोट साधारण पायी गयी।\"}",
+          "dropdown_options": "{\"showIf\": \"h4\", \"placeholder\": \"जैसे: मजरूब की सप्लीमेंटरी मेडिकल रिपोर्ट में चोट साधारण पायी गयी।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 23
         },
         {
@@ -4965,7 +5009,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 24
+          "sort_order": 24,
+          "dropdown_options": "{\"hint\": \"मुकदमे में कोई धारा बढ़ी है तो टिक करें — नई धारा अपने आप हिसाब से लिखी जाती है\"}"
         },
         {
           "key_name": "h5FIR",
@@ -4973,7 +5018,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: 106/2026\"}",
+          "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: 106/2026\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 106/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 25
         },
         {
@@ -4982,7 +5027,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 281/125(b)/106(1) BNS — अभी जिन धाराओं में मुकदमा दर्ज है\"}",
           "sort_order": 26
         },
         {
@@ -4991,7 +5036,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: 125(a) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: 125(a) BNS\", \"hint\": \"सिर्फ़ वह धारा जो बढ़ रही है, जैसे: 125(a) BNS — बाकी धाराएँ अपने आप जुड़/घट जाती हैं\"}",
           "sort_order": 27
         },
         {
@@ -5000,7 +5045,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: मजरूब की मेडिकल रिपोर्ट में चोट गंभीर पायी गयी।\"}",
+          "dropdown_options": "{\"showIf\": \"h5\", \"placeholder\": \"जैसे: मजरूब की मेडिकल रिपोर्ट में चोट गंभीर पायी गयी।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 28
         },
         {
@@ -5009,7 +5054,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 29
+          "sort_order": 29,
+          "dropdown_options": "{\"hint\": \"आज गिरफ्तार अभियुक्त दाखिल किये हैं तो टिक करें\"}"
         },
         {
           "key_name": "h6Nafar",
@@ -5017,7 +5063,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "01",
-          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h6\"}",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h6\", \"hint\": \"गिनती चुनें — 01 चुनने पर शब्द एकवचन (किता / नफर) में और ज़्यादा पर बहुवचन में छपते हैं\"}",
           "sort_order": 30
         },
         {
@@ -5026,7 +5072,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: 106/2026\"}",
+          "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: 106/2026\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 106/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 31
         },
         {
@@ -5035,7 +5081,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 281/125(b)/106(1) BNS\"}",
           "sort_order": 32
         },
         {
@@ -5044,7 +5090,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
+          "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\", \"hint\": \"नाम क्रम से, पिता के नाम सहित, जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
           "sort_order": 33
         },
         {
@@ -5053,7 +5099,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: अभियुक्तगण का मेडिकल परीक्षण कराकर मा0 न्यायालय रवाना किया जायेगा।\"}",
+          "dropdown_options": "{\"showIf\": \"h6\", \"placeholder\": \"जैसे: अभियुक्तगण का मेडिकल परीक्षण कराकर मा0 न्यायालय रवाना किया जायेगा।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 34
         },
         {
@@ -5062,7 +5108,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 35
+          "sort_order": 35,
+          "dropdown_options": "{\"hint\": \"आज किसी आरोपी को अवमुक्त किया है तो टिक करें\"}"
         },
         {
           "key_name": "h7Nafar",
@@ -5070,7 +5117,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "01",
-          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h7\"}",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h7\", \"hint\": \"गिनती चुनें — 01 चुनने पर शब्द एकवचन (किता / नफर) में और ज़्यादा पर बहुवचन में छपते हैं\"}",
           "sort_order": 36
         },
         {
@@ -5079,7 +5126,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: 106/2026\"}",
+          "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: 106/2026\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 106/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 37
         },
         {
@@ -5088,7 +5135,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 281/125(b)/106(1) BNS\"}",
           "sort_order": 38
         },
         {
@@ -5097,7 +5144,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
+          "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\", \"hint\": \"नाम क्रम से, पिता के नाम सहित, जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
           "sort_order": 39
         },
         {
@@ -5106,7 +5153,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: आरोपी को हिदायत दी गयी कि बुलाये जाने पर समय से उपस्थित होगा।\"}",
+          "dropdown_options": "{\"showIf\": \"h7\", \"placeholder\": \"जैसे: आरोपी को हिदायत दी गयी कि बुलाये जाने पर समय से उपस्थित होगा।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 40
         },
         {
@@ -5115,7 +5162,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 41
+          "sort_order": 41,
+          "dropdown_options": "{\"hint\": \"विवेचना में किसी अभियुक्त का नाम प्रकाश में आया है तो टिक करें\"}"
         },
         {
           "key_name": "h8Nafar",
@@ -5123,7 +5171,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "01",
-          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h8\"}",
+          "dropdown_options": "{\"options\": [\"01\", \"02\", \"03\", \"04\", \"05\", \"06\", \"07\", \"08\"], \"showIf\": \"h8\", \"hint\": \"गिनती चुनें — 01 चुनने पर शब्द एकवचन (किता / नफर) में और ज़्यादा पर बहुवचन में छपते हैं\"}",
           "sort_order": 42
         },
         {
@@ -5132,7 +5180,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: 106/2026\"}",
+          "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: 106/2026\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 106/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 43
         },
         {
@@ -5141,7 +5189,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 281/125(b)/106(1) BNS\"}",
           "sort_order": 44
         },
         {
@@ -5150,7 +5198,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
+          "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\", \"hint\": \"नाम क्रम से, पिता के नाम सहित, जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
           "sort_order": 45
         },
         {
@@ -5159,7 +5207,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: वादी व गवाहों के बयान से अभियुक्त की घटना में संलिप्तता पायी गयी।\"}",
+          "dropdown_options": "{\"showIf\": \"h8\", \"placeholder\": \"जैसे: वादी व गवाहों के बयान से अभियुक्त की घटना में संलिप्तता पायी गयी।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 46
         },
         {
@@ -5168,7 +5216,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 47
+          "sort_order": 47,
+          "dropdown_options": "{\"hint\": \"किसी की नामजदगी गलत पायी गयी है तो टिक करें\"}"
         },
         {
           "key_name": "h9FIR",
@@ -5176,7 +5225,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: 106/2026\"}",
+          "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: 106/2026\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 106/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 48
         },
         {
@@ -5185,7 +5234,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\"}",
+          "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: 281/125(b)/106(1) BNS\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 281/125(b)/106(1) BNS\"}",
           "sort_order": 49
         },
         {
@@ -5194,7 +5243,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
+          "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\", \"hint\": \"नाम क्रम से, पिता के नाम सहित, जैसे: 1.रामू पुत्र श्याम 2.सोनू पुत्र मोहन\"}",
           "sort_order": 50
         },
         {
@@ -5203,7 +5252,7 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: घटना के समय अभियुक्त की अन्यत्र उपस्थिति के ठोस साक्ष्य मिले।\"}",
+          "dropdown_options": "{\"showIf\": \"h9\", \"placeholder\": \"जैसे: घटना के समय अभियुक्त की अन्यत्र उपस्थिति के ठोस साक्ष्य मिले।\", \"hint\": \"वैकल्पिक — इस हैडिंग वाले पैराग्राफ के आखिर में जोड़ने को कुछ और हो तो पूरा वाक्य लिखें; हल्के रंग वाला text सिर्फ़ उदाहरण है, छपता नहीं\"}",
           "sort_order": 51
         },
         {
@@ -5213,7 +5262,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 52,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "PrarthnaPatraJanch",
@@ -5222,7 +5271,7 @@
           "is_required": 0,
           "default_value": "आईजीआरएस एवं थाने पर प्राप्त शिकायती प्रार्थना पत्रों की मौके पर जाकर निष्पक्ष जांच की गयी तथा उभय पक्षों को सुनकर वैधानिक निस्तारण हेतु आख्या प्रेषित की गयी।",
           "sort_order": 53,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doPP\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doPP\", \"hint\": \"पहले से भरा text ठीक हो तो वैसा ही रहने दें; किसी प्रार्थना पत्र / IGRS की बात लिखनी हो तो उसका विवरण जोड़ें\"}"
         },
         {
           "key_name": "doVivechana",
@@ -5231,7 +5280,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 54,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "FIRNo",
@@ -5240,7 +5289,7 @@
           "is_required": 0,
           "default_value": "@FIR.fir_number",
           "sort_order": 55,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\", \"hint\": \"जिस मुकदमे की विवेचना में गये, उसका मु0अ0सं0, जैसे: 123/2026 — न हो तो खाली छोड़ें\"}"
         },
         {
           "key_name": "Sections",
@@ -5249,7 +5298,7 @@
           "is_required": 0,
           "default_value": "@FIR.section",
           "sort_order": 56,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\", \"hint\": \"उस मुकदमे की धाराएँ, जैसे: 115(2), 352 बीएनएस\"}"
         },
         {
           "key_name": "VivechanaKaryawahi",
@@ -5258,7 +5307,7 @@
           "is_required": 0,
           "default_value": "घटनास्थल का निरीक्षण, साक्ष्य संकलन व गवाहों के बयान अंकित किये गये।",
           "sort_order": 57,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVivechana\", \"hint\": \"विवेचना में क्या-क्या किया — पहले से भरा text ठीक हो तो रहने दें, नहीं तो अपने शब्दों में बदलें\"}"
         },
         {
           "key_name": "doGumshuda",
@@ -5267,7 +5316,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 58,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "GumshudaTalash",
@@ -5276,7 +5325,7 @@
           "is_required": 0,
           "default_value": "थाना स्थानीय पर दर्ज गुमशुदगी/अपहरण के सम्बन्ध में गुमशुदा/अपहृत व्यक्ति की पतारसी-सुरागरसी एवं सकुशल बरामदगी हेतु उसके परिजनों, रिश्तेदारों व परिचितों से विस्तृत पूछताछ कर क्षेत्र के सम्भावित स्थानों यथा- रेलवे स्टेशन, बस स्टैंड, टैक्सी स्टैंड, रैन बसेरा, धर्मशालाओं व अस्पतालों में सघन तलाश की गयी। दौरान पतारसी गुमशुदा के फोटोग्राफ/पम्फलेट आमजन, ऑटो चालकों व दुकानदारों को दिखाकर पूछताछ की गयी तथा घटनास्थल व मार्गों पर लगे सीसीटीवी कैमरों की फुटेज का अवलोकन किया गया। साथ ही गोपनीय जानकारी संकलित करने हेतु क्षेत्र के मुखबिरों (खास-व-आम) को सक्रिय कर आवश्यक दिशा-निर्देश दिये गये।",
           "sort_order": 59,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doGumshuda\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doGumshuda\", \"hint\": \"गुमशुदा / अपहृत की तलाश में क्या किया — पहले से भरा text ठीक हो तो रहने दें\"}"
         },
         {
           "key_name": "doBeat",
@@ -5285,7 +5334,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 60,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "BeatSuchna",
@@ -5294,7 +5343,7 @@
           "is_required": 0,
           "default_value": "अपने बीट क्षेत्र में भ्रमण कर ग्राम प्रहरियों (चौकीदारों) व सम्भ्रान्त व्यक्तियों से वार्ता की गयी एवं क्षेत्र की गोपनीय बीट सूचना/आसूचना संकलित की गयी।",
           "sort_order": 61,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doBeat\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doBeat\", \"hint\": \"बीट भ्रमण में क्या किया — पहले से भरा text ठीक हो तो रहने दें\"}"
         },
         {
           "key_name": "doHS",
@@ -5303,7 +5352,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 62,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "HSNigrani",
@@ -5312,7 +5361,7 @@
           "is_required": 0,
           "default_value": "क्षेत्र के सक्रिय हिस्ट्रीशीटरों व निगरानीशुदा व्यक्तियों की भौतिक तस्दीक हेतु उनके घरों पर चेकिंग की गयी। उपस्थित व्यक्तियों की वर्तमान आजीविका की जानकारी लेकर उन्हें सख्त हिदायत दी गयी तथा अनुपस्थित व्यक्तियों के परिजनों से पूछताछ कर उनके ठिकानों का सुराग लगाया गया। मुखबिरों व चौकीदारों को इन अपराधियों की गतिविधियों पर कड़ी नज़र रखने हेतु निर्देशित किया गया।",
           "sort_order": 63,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doHS\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doHS\", \"hint\": \"हिस्ट्रीशीटर / निगरानीशुदा की चेकिंग में क्या पाया — पहले से भरा text ठीक हो तो रहने दें\"}"
         },
         {
           "key_name": "doVishesh",
@@ -5321,7 +5370,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 64,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "VisheshAbhiyan",
@@ -5330,7 +5379,7 @@
           "is_required": 0,
           "default_value": "उच्चाधिकारियों के निर्देशानुसार चलाये जा रहे विशेष अभियान के तहत क्षेत्र में अवैध शराब के निर्माण, बिक्री एवं परिवहन की रोकथाम हेतु सम्भावित स्थानों एवं संदिग्ध वाहनों की सघन चेकिंग की गयी। सार्वजनिक स्थानों पर शराब पीने वाले व्यक्तियों की चेकिंग कर आवश्यक वैधानिक कार्यवाही/चेतावनी दी गयी। जुआ एवं सट्टेबाजी की रोकथाम हेतु सम्भावित स्थानों पर दबिश दी गयी तथा अवैध शराब, जुआ एवं अन्य असामाजिक गतिविधियों के सम्बन्ध में गोपनीय जानकारी संकलित की गयी।",
           "sort_order": 65,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doVishesh\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVishesh\", \"hint\": \"विशेष अभियान में क्या किया — पहले से भरा text ठीक हो तो रहने दें\"}"
         },
         {
           "key_name": "doSuraksha",
@@ -5339,7 +5388,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 66,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "SurakshaChecking",
@@ -5348,7 +5397,7 @@
           "is_required": 0,
           "default_value": "क्षेत्र के बैंक, वित्तीय संस्थानों, एटीएम, सर्राफा दुकानों व अन्य महत्वपूर्ण प्रतिष्ठानों की सुरक्षा व्यवस्था की विधिवत चेकिंग की गयी।",
           "sort_order": 67,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doSuraksha\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doSuraksha\", \"hint\": \"बैंक / एटीएम / प्रतिष्ठान की चेकिंग का विवरण — पहले से भरा text ठीक हो तो रहने दें\"}"
         },
         {
           "key_name": "doCourt",
@@ -5357,7 +5406,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 68,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "CourtTamila",
@@ -5366,7 +5415,7 @@
           "is_required": 0,
           "default_value": "माननीय न्यायालय से प्राप्त सम्मन, नोटिस, बी0डब्लू0 तथा एन0बी0डब्लू0 की तामीली हेतु सम्बन्धित व्यक्तियों के निवास स्थानों पर दबिश दी गयी/सम्पर्क किया गया तथा न्यायालय के आदेशों का विधिवत तामीला सुनिश्चित कराया गया।",
           "sort_order": 69,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doCourt\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doCourt\", \"hint\": \"सम्मन / वारंट की तामीली का विवरण — पहले से भरा text ठीक हो तो रहने दें\"}"
         },
         {
           "key_name": "doVistrit",
@@ -5375,7 +5424,7 @@
           "is_required": 0,
           "default_value": "",
           "sort_order": 70,
-          "dropdown_options": "{\"showIf\": \"doWapsi\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"आज यह काम भी किया है तो टिक करें — इसका पैराग्राफ GD में जुड़ेगा और नीचे उसका विवरण बॉक्स खुलेगा\"}"
         },
         {
           "key_name": "VistritKaryawahi",
@@ -5384,7 +5433,7 @@
           "is_required": 0,
           "default_value": "क्षेत्र भ्रमण के दौरान क्षेत्र के सम्भ्रान्त व्यक्तियों एवं आमजन से वार्ता कर कानून-व्यवस्था एवं अपराध सम्बन्धी जानकारी प्राप्त की गयी तथा चोरी की घटनाओं की रोकथाम हेतु ग्राम सुरक्षा समिति को क्रियाशील रहने हेतु उच्चाधिकारियों से प्राप्त आवश्यक दिशा-निर्देश साझा किये गये।",
           "sort_order": 71,
-          "dropdown_options": "{\"showIf\": \"doWapsi & doVistrit\"}"
+          "dropdown_options": "{\"showIf\": \"doWapsi & doVistrit\", \"hint\": \"आमजन / ग्राम सुरक्षा समिति से वार्ता का विवरण — पहले से भरा text ठीक हो तो रहने दें\"}"
         }
       ],
       "last_updated": "2026-11-01"

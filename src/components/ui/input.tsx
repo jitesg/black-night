@@ -559,12 +559,14 @@ function fieldTypeToInputType(ft: string | undefined): InputType {
 /**
  * How-to-write tip under a field ({"hint": "…"} in dropdown_options — owner: every 170/126/135 field) — never printed.
  */
-export function keyHint(raw: string | null | undefined): string | undefined {
+export function keyHint(raw: string | null | undefined, fieldType?: string | null): string | undefined {
   const t = String(raw ?? '').trim();
   if (!t.startsWith('{')) return undefined;
   try {
-    const v = JSON.parse(t) as { hint?: unknown };
-    return typeof v.hint === 'string' && v.hint.trim() ? v.hint.trim() : undefined;
+    // a "sentence" field already uses "hint" for its own card prompt → its tip is under "tip"
+    const v = JSON.parse(t) as { hint?: unknown; tip?: unknown };
+    const h = fieldType === 'sentence' ? v.tip : v.hint;
+    return typeof h === 'string' && h.trim() ? h.trim() : undefined;
   } catch { return undefined; }
 }
 
@@ -626,7 +628,7 @@ export function FieldHint({ text }: { text?: string }) {
 }
 
 export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>((props, ref) => {
-  const hint = keyHint(props.keyDef.dropdown_options);
+  const hint = keyHint(props.keyDef.dropdown_options, props.keyDef.field_type);
   const field = <FormatKeyField ref={ref} {...props} />;
   return hint ? <View style={{ gap: 2 }}><FieldHint text={hint} />{field}</View> : field;
 });
