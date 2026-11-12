@@ -88,7 +88,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   "सिपाही के लिए बीट सूचना"; originals in
   `docs/format-backups/bnss126_before_marks.json`). Owner approves each batch with an A4 preview. Tests
   `scripts/test_format_markers.ts`.
-- 126/135 formats: the two धारा 135(3) report letters have no संलग्नक block (owner) — signature moved to [[हस्ताक्षर]]
+- 126/135 formats: "धारा 126/135 बीएनएस में चालानी" → "बीएनएसएस" in all six (owner; seed_version +1: beat/yaksh/mukadma 16, thanabhraman 15, ncr 13, prarthna 3).
+  The two धारा 135(3) report letters have no संलग्नक block (owner) — signature moved to [[हस्ताक्षर]]
   (beat/yaksh 15, thanabhraman 14, mukadma 13, ncr 12, prarthna 2). The 170 formats' 135(3) letters never had one.
 - Person/accused groups (`templateEngine.generateReport`): ONE person → no "आदि" right after `{{g.1.name}}`
   (`_dropAdiForSingleEntry`, Step 0.5) and address word "निवासी" (not नि0/नि0गण); 2+ people unchanged (numbering 1. 2.,
