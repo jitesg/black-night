@@ -369,6 +369,8 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
 }: DiaryEntryCardProps) {
   const { t } = useTranslation();
   const formatPool  = entry.kind === 'narrative' ? narrativeFormats : caseDiaryFormats;
+  const lockedLabel = entry.kind === 'narrative'
+    && (entry.narrativeTemplate === SARANSH_LABEL || entry.narrativeTemplate === OPENING_LABEL);
   const formatLabel = entry.kind === 'narrative' ? 'Narrative' : 'Case Diary';
 
   // ── Collapsed strip: 3-line summary view ──────────────────────────────
@@ -527,9 +529,11 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
         </View>
       )}
 
-      {/* Format picker */}
+      {/* Format picker — locked on the diary's own सारांश / प्रारम्भिक पंक्ति entries: their name is how the पर्चा knows
+          them; removing or replacing it would print the line twice (owner). */}
       <View className="gap-2">
         <Pressable
+          disabled={lockedLabel}
           onPress={() => { setActiveFillPanel(null); setShowFormatList(showFormatList === entry.uid ? null : entry.uid); }}
           className="flex-row items-center gap-2 border border-dashed border-border rounded-xl px-4 py-3 active:opacity-70"
         >
@@ -539,7 +543,7 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
               ? `${t('fir.addCaseDiaryEntry.formatLabel')}: ${entry.formatUsed || entry.narrativeTemplate}`
               : t('fir.addCaseDiaryEntry.useFormat')}
           </Text>
-          {(entry.formatUsed || entry.narrativeTemplate) ? (
+          {(entry.formatUsed || entry.narrativeTemplate) && !lockedLabel ? (
             <Pressable
               onPress={() => updateEntry(entry.uid, { formatUsed: '', narrativeTemplate: '' })}
               className="p-0.5 active:opacity-60"
