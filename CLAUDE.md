@@ -100,7 +100,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   list goes under "options"). Owner wants it on every predefined format (58 formats / 982 fields; 171 have a hint so far) — next: write hints
   batch by batch (GD, फर्द, केस डायरी, न्यायालय + प्रार्थना पत्र, rest), samples shown per batch. Tool: `python3 scripts/hints/apply_hints.py <batch>`
   (batch modules in scripts/hints/: `wants(f)` + `hint(f, k)`, shared `common.py`; only fields without a hint, seed_version +1). A "sentence" field
-  keeps its tip under "tip" (its "hint" is the card prompt; `keyHint(raw, fieldType)`). Done: GD (all 8 formats, 156 fields). Every field of the 6 bnss126 + 7 bnss170 formats has one (seed_version +1 each). 170 fixes too: " ।" after every
+  keeps its tip under "tip" (its "hint" is the card prompt; `keyHint(raw, fieldType)`). Done: GD (all 8 formats, 156 fields), फर्द (4 formats, 105 fields). Every field of the 6 bnss126 + 7 bnss170 formats has one (seed_version +1 each). 170 fixes too: " ।" after every
   {{Matter}} / {{Advice}}; kshetra-ek "{{Accused#inline}} का {{Matter}}" (default no longer starts with "का"); prarthna-ubhay
   "{{Matter}} । इस पर मुझ…" (was ", जिस पर"); Facts label without "(आखिर में । न लगाएँ)"; village placeholder.
   The two धारा 135(3) report letters have no संलग्नक block (owner) — signature moved to [[हस्ताक्षर]]

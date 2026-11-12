@@ -9,7 +9,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 6,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "60(1)",
@@ -28,7 +28,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 05.03.2025\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 05.03.2025\", \"hint\": \"बरामदगी की तारीख बिंदु लगाकर, जैसे: 05.03.2025\"}",
           "sort_order": 0
         },
         {
@@ -37,7 +37,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 1
         },
         {
@@ -46,7 +46,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "TeamMembers",
@@ -54,7 +55,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार सोनकर\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार सोनकर\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार — कोई न हो तो खाली छोड़ें\"}",
           "sort_order": 3
         },
         {
@@ -63,7 +64,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: राखी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राखी\", \"hint\": \"महिला आरक्षी का सिर्फ़ नाम, जैसे: राखी — कोई अभियुक्ता (महिला) हो तभी भरें, नहीं तो खाली\"}",
           "sort_order": 4
         },
         {
@@ -72,7 +73,8 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"त्यौहार के समय की चेकिंग है तो टिक करें — \\\"व आगामी त्यौहार के दृष्टिगत अवैध शराब की रोकथाम\\\" जुड़ जायेगा\"}"
         },
         {
           "key_name": "PatrolVillage",
@@ -80,7 +82,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम नन्दाखेड़ा\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम नन्दाखेड़ा\", \"hint\": \"आप कहाँ मौजूद थे जब सूचना मिली, जैसे: ग्राम नन्दाखेड़ा\"}",
           "sort_order": 6
         },
         {
@@ -89,7 +91,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम बरौला\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम बरौला\", \"hint\": \"मुखबिर ने शराब कहाँ बतायी — गाँव / जगह, जैसे: ग्राम बरौला\"}",
           "sort_order": 7
         },
         {
@@ -98,7 +100,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "अपनी-अपनी मोटरसाइकिल से",
-          "dropdown_options": "{\"placeholder\": \"जैसे: अपनी-अपनी मोटरसाइकिल से / सरकारी वाहन से / पैदल\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अपनी-अपनी मोटरसाइकिल से / सरकारी वाहन से / पैदल\", \"hint\": \"वहाँ कैसे गये, \\\"से\\\" तक, जैसे: अपनी-अपनी मोटरसाइकिल से / सरकारी वाहन से / पैदल\"}",
           "sort_order": 8
         },
         {
@@ -107,7 +109,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अम्बेडकर मूर्ति के पास\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अम्बेडकर मूर्ति के पास\", \"hint\": \"अभियुक्त कहाँ खड़े मिले, जैसे: अम्बेडकर मूर्ति के पास\"}",
           "sort_order": 9
         },
         {
@@ -116,7 +118,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: सुमन पासी)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पत्नी\", \"पुत्री\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: ग्राम उफरापुर थाना बछरावां जनपद रायबरेली)\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक, जैसे: 45)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"cqty\", \"label\": \"8. पात्र संख्या (जैसे: 01)\", \"default\": \"01\"}, {\"key\": \"ctype\", \"label\": \"8. पात्र (जैसे: प्लास्टिक की पिपिया / प्लास्टिक का केन)\", \"default\": \"प्लास्टिक की पिपिया\"}, {\"key\": \"litre\", \"label\": \"8. शराब कितने लीटर (जैसे: 10)\"}, {\"key\": \"carry\", \"label\": \"8. जामा तलाशी में शराब कहाँ से बरामद\", \"type\": \"choice\", \"options\": [\"दाहिने हाथ\", \"बायें हाथ\", \"पैंट की दाहिनी जेब\", \"पैंट की बायीं जेब\", \"लोअर की दाहिनी जेब\", \"लोअर की बायीं जेब\", \"जीन्स की दाहिनी जेब\", \"जीन्स की बायीं जेब\", \"शर्ट की जेब\", \"पीछे की जेब\", \"बगल\"], \"default\": \"दाहिने हाथ\"}, {\"key\": \"inform\", \"label\": \"11. गिरफ्तारी की सूचना किसे (जैसे: पति सज्जनलाल)\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: सुमन पासी)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पत्नी\", \"पुत्री\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: ग्राम उफरापुर थाना बछरावां जनपद रायबरेली)\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक, जैसे: 45)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"cqty\", \"label\": \"8. पात्र संख्या (जैसे: 01)\", \"default\": \"01\"}, {\"key\": \"ctype\", \"label\": \"8. पात्र (जैसे: प्लास्टिक की पिपिया / प्लास्टिक का केन)\", \"default\": \"प्लास्टिक की पिपिया\"}, {\"key\": \"litre\", \"label\": \"8. शराब कितने लीटर (जैसे: 10)\"}, {\"key\": \"carry\", \"label\": \"8. जामा तलाशी में शराब कहाँ से बरामद\", \"type\": \"choice\", \"options\": [\"दाहिने हाथ\", \"बायें हाथ\", \"पैंट की दाहिनी जेब\", \"पैंट की बायीं जेब\", \"लोअर की दाहिनी जेब\", \"लोअर की बायीं जेब\", \"जीन्स की दाहिनी जेब\", \"जीन्स की बायीं जेब\", \"शर्ट की जेब\", \"पीछे की जेब\", \"बगल\"], \"default\": \"दाहिने हाथ\"}, {\"key\": \"inform\", \"label\": \"11. गिरफ्तारी की सूचना किसे (जैसे: पति सज्जनलाल)\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\", \"hint\": \"हर अभियुक्त / अभियुक्ता का अलग कार्ड: नाम, सम्बन्ध, पिता/पति, पता, उम्र; महिला हो तो \\\"महिला है\\\" टिक करें। फिर उसके पास मिली शराब — पात्र संख्या (01), पात्र (प्लास्टिक की पिपिया), लीटर (10), कहाँ से मिली, और सूचना किसे दी। \\\"+\\\" से अगला अभियुक्त\"}",
           "sort_order": 10
         },
         {
@@ -125,7 +127,7 @@
           "field_type": "item_group",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"by\", \"label\": \"तलाशी लेने वाले पुलिस कर्मी का नाम (जैसे: का0 अमित कुमार)\"}, {\"key\": \"who\", \"label\": \"किस अभियुक्त / अभियुक्ता की तलाशी\", \"type\": \"ref\", \"ref\": \"Accused\"}, {\"key\": \"how\", \"label\": \"जामा तलाशी कैसे ली गयी (जैसे: बायीं जेब चेक की गयी तो 500 के 10 नोट बरामद हुए)\", \"type\": \"multiline\", \"endWith\": \"।\"}], \"addLabel\": \"+ जामा तलाशी जोड़ें\", \"itemLabel\": \"जामा तलाशी\", \"startEmpty\": true}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"by\", \"label\": \"तलाशी लेने वाले पुलिस कर्मी का नाम (जैसे: का0 अमित कुमार)\"}, {\"key\": \"who\", \"label\": \"किस अभियुक्त / अभियुक्ता की तलाशी\", \"type\": \"ref\", \"ref\": \"Accused\"}, {\"key\": \"how\", \"label\": \"जामा तलाशी कैसे ली गयी (जैसे: बायीं जेब चेक की गयी तो 500 के 10 नोट बरामद हुए)\", \"type\": \"multiline\", \"endWith\": \"।\"}], \"addLabel\": \"+ जामा तलाशी जोड़ें\", \"itemLabel\": \"जामा तलाशी\", \"startEmpty\": true, \"hint\": \"वैकल्पिक — हर तलाशी की एक पंक्ति: तलाशी लेने वाले का नाम (का0 अमित कुमार), किसकी तलाशी (अभियुक्त का नाम छूकर चुनें), और कैसे ली — पूरा वाक्य। कोई पंक्ति न हो तो सामान्य वाक्य छपता है\"}",
           "sort_order": 11
         },
         {
@@ -134,7 +136,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "कच्ची शराब",
-          "dropdown_options": "{\"placeholder\": \"जैसे: कच्ची शराब / देशी शराब\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: कच्ची शराब / देशी शराब\", \"hint\": \"गन्ध से कौन सी शराब पायी गयी, जैसे: कच्ची शराब / देशी शराब\"}",
           "sort_order": 12
         },
         {
@@ -143,7 +145,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 18.05\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 18.05\", \"hint\": \"24 घंटे वाला समय बिंदु लगाकर, जैसे: 18.05 (रात 9:30 = 21.30) — \\\"बजे\\\" न लिखें\"}",
           "sort_order": 13
         },
         {
@@ -152,7 +154,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "समय से",
-          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"ArrestTime\"}",
+          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"ArrestTime\", \"hint\": \"\\\"समय से\\\" रहने दें तो ऊपर लिखे समय से सुबह / दिन / शाम / रात अपने आप लगता है; रात हो तो \\\"टार्च की रोशनी\\\" वाली लाइन भी जुड़ती है\"}",
           "sort_order": 14
         },
         {
@@ -161,7 +163,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मौके पर",
-          "dropdown_options": "[\"मौके पर\", \"फोन द्वारा\", \"थाने पहुँचकर दी जायेगी\"]",
+          "dropdown_options": "{\"options\": [\"मौके पर\", \"फोन द्वारा\", \"थाने पहुँचकर दी जायेगी\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}",
           "sort_order": 15
         },
         {
@@ -170,7 +172,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: मनोज सोनकर\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मनोज सोनकर\", \"hint\": \"जिस आरक्षी से फर्द लिखवायी / प्रिन्ट मँगवाया, उसका नाम, जैसे: मनोज सोनकर\"}",
           "sort_order": 16
         },
         {
@@ -179,7 +181,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 17
+          "sort_order": 17,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -187,7 +190,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 18
+          "sort_order": 18,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -200,7 +204,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -220,7 +224,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "लड़की",
-          "dropdown_options": "[{\"value\": \"लड़की\", \"label\": \"लड़की — पीड़िता\"}, {\"value\": \"लड़का\", \"label\": \"लड़का — पीड़ित\"}]",
+          "dropdown_options": "{\"options\": [{\"value\": \"लड़की\", \"label\": \"लड़की — पीड़िता\"}, {\"value\": \"लड़का\", \"label\": \"लड़का — पीड़ित\"}], \"hint\": \"बरामद लड़की है तो \\\"लड़की — पीड़िता\\\", लड़का है तो \\\"लड़का — पीड़ित\\\" — पूरी फर्द के शब्द (खड़ी/खड़ा, पुत्री/पुत्र…) इसी से बदलते हैं\"}",
           "sort_order": 0
         },
         {
@@ -229,7 +233,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 04.05.2025\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 04.05.2025\", \"hint\": \"बरामदगी की तारीख बिंदु लगाकर, जैसे: 05.03.2025\"}",
           "sort_order": 1
         },
         {
@@ -238,7 +242,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 2
         },
         {
@@ -247,7 +251,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}",
           "sort_order": 3
         },
         {
@@ -256,7 +260,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: का0 मनोज यादव\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: का0 मनोज यादव\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार — कोई न हो तो खाली छोड़ें\"}",
           "sort_order": 4
         },
         {
@@ -265,7 +269,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: स्नेहा वर्मा\", \"showIf\": \"VictimType=लड़की\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: स्नेहा वर्मा\", \"showIf\": \"VictimType=लड़की\", \"hint\": \"साथ रही महिला आरक्षी का सिर्फ़ नाम, जैसे: स्नेहा वर्मा — पीड़िता की बरामदगी में ज़रूरी\"}",
           "sort_order": 5
         },
         {
@@ -274,7 +278,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 64/2025\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 64/2025\", \"hint\": \"जिस मुकदमे से जुड़ी बरामदगी है उसका मु0अ0सं0 / वर्ष, जैसे: 37/2024 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 6
         },
         {
@@ -283,7 +287,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 87 BNS\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 87 BNS\", \"hint\": \"उस मुकदमे की धाराएँ अधिनियम सहित, जैसे: 331(4), 305 बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 7
         },
         {
@@ -292,7 +296,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अंकिता\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अंकिता\", \"hint\": \"पीड़िता / पीड़ित का सिर्फ़ नाम, जैसे: अंकिता\"}",
           "sort_order": 8
         },
         {
@@ -301,7 +305,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "पुत्री",
-          "dropdown_options": "{\"options\": [\"पुत्री\", \"पत्नी\"], \"showIf\": \"VictimType=लड़की\"}",
+          "dropdown_options": "{\"options\": [\"पुत्री\", \"पत्नी\"], \"showIf\": \"VictimType=लड़की\", \"hint\": \"पिता के नाम से लिखना है तो \\\"पुत्री\\\", पति के नाम से तो \\\"पत्नी\\\"\"}",
           "sort_order": 9
         },
         {
@@ -310,7 +314,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: स्व0 रामआसरे\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: स्व0 रामआसरे\", \"hint\": \"पिता / पति का नाम, जैसे: स्व0 रामआसरे\"}",
           "sort_order": 10
         },
         {
@@ -319,7 +323,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम रानीखेड़ा पोस्ट राजामऊ थाना बछरावां जनपद रायबरेली\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम रानीखेड़ा पोस्ट राजामऊ थाना बछरावां जनपद रायबरेली\", \"hint\": \"पूरा पता, जैसे: ग्राम रानीखेड़ा पोस्ट राजामऊ थाना बछरावां जनपद रायबरेली\"}",
           "sort_order": 11
         },
         {
@@ -328,7 +332,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: कस्बा बछरावां\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: कस्बा बछरावां\", \"hint\": \"सूचना मिलते समय आप कहाँ मामूर थे, जैसे: कस्बा बछरावां\"}",
           "sort_order": 12
         },
         {
@@ -337,7 +341,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: समौधा चौराहा\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: समौधा चौराहा\", \"hint\": \"मुखबिर ने पीड़िता / पीड़ित कहाँ खड़ा बताया, जैसे: समौधा चौराहा\"}",
           "sort_order": 13
         },
         {
@@ -346,7 +350,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "अपने निजी साधन से",
-          "dropdown_options": "{\"placeholder\": \"जैसे: अपने निजी साधन से / सरकारी वाहन से\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अपने निजी साधन से / सरकारी वाहन से\", \"hint\": \"वहाँ कैसे गये, \\\"से\\\" तक, जैसे: अपनी-अपनी मोटरसाइकिल से / सरकारी वाहन से / पैदल\"}",
           "sort_order": 14
         },
         {
@@ -355,7 +359,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सूट सलवार / जीन्स टी-शर्ट\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सूट सलवार / जीन्स टी-शर्ट\", \"hint\": \"क्या पहने थी / था, जैसे: सूट सलवार / जीन्स टी-शर्ट — न लिखना हो तो खाली\"}",
           "sort_order": 15
         },
         {
@@ -364,7 +368,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "परिजनों द्वारा दिये गये फोटो से",
-          "dropdown_options": "[\"परिजनों द्वारा दिये गये फोटो से\", \"मौके पर परिजनों से पहचान कराकर\", \"केवल नाम पता से\"]",
+          "dropdown_options": "{\"options\": [\"परिजनों द्वारा दिये गये फोटो से\", \"मौके पर परिजनों से पहचान कराकर\", \"केवल नाम पता से\"], \"hint\": \"पीड़िता / पीड़ित की पहचान कैसे पक्की की — उसी हिसाब से मिलान वाला वाक्य बनता है\"}",
           "sort_order": 16
         },
         {
@@ -373,7 +377,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 18.10\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 18.10\", \"hint\": \"24 घंटे वाला समय बिंदु लगाकर, जैसे: 18.05 (रात 9:30 = 21.30) — \\\"बजे\\\" न लिखें\"}",
           "sort_order": 17
         },
         {
@@ -382,7 +386,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "समय से",
-          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"RecoveryTime\"}",
+          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"RecoveryTime\", \"hint\": \"\\\"समय से\\\" रहने दें तो ऊपर लिखे समय से सुबह / दिन / शाम / रात अपने आप लगता है; रात हो तो \\\"टार्च की रोशनी\\\" वाली लाइन भी जुड़ती है\"}",
           "sort_order": 18
         },
         {
@@ -391,7 +395,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: भाई / पिता / माता\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: भाई / पिता / माता\", \"hint\": \"सूचना पीड़िता / पीड़ित के किस परिजन को दी, जैसे: भाई / पिता / माता\"}",
           "sort_order": 19
         },
         {
@@ -400,7 +404,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सूचना पाने वाला ही मुकदमे का वादी है तो टिक रहने दें — \\\"वादी मुकदमा\\\" भी जुड़ता है\"}",
           "sort_order": 20
         },
         {
@@ -409,7 +413,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.complainant_name",
-          "dropdown_options": "{\"placeholder\": \"जैसे: सुनील कुमार\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सुनील कुमार\", \"hint\": \"सूचना पाने वाले का नाम, जैसे: सुनील कुमार (मुकदमा चुनने पर वादी का नाम अपने आप आता है)\"}",
           "sort_order": 21
         },
         {
@@ -418,7 +422,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "@FIR.complainant_mobile",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 9312259916\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9312259916\", \"hint\": \"10 अंकों का मोबाइल नं0, जैसे: 9312259916 — न हो तो खाली\"}",
           "sort_order": 22
         },
         {
@@ -427,7 +431,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: मनोज यादव\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मनोज यादव\", \"hint\": \"जिस आरक्षी से फर्द लिखवायी / प्रिन्ट मँगवाया, उसका नाम, जैसे: मनोज सोनकर\"}",
           "sort_order": 23
         },
         {
@@ -436,7 +440,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}",
           "sort_order": 24
         },
         {
@@ -445,7 +449,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}",
           "sort_order": 25
         }
       ]
@@ -459,7 +463,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -479,7 +483,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 25.01.2024\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 25.01.2024\", \"hint\": \"बरामदगी की तारीख बिंदु लगाकर, जैसे: 05.03.2025\"}",
           "sort_order": 0
         },
         {
@@ -488,7 +492,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 1
         },
         {
@@ -497,7 +501,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}",
           "sort_order": 2
         },
         {
@@ -506,7 +510,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: का0 अभिषेक\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: का0 अभिषेक\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार — कोई न हो तो खाली छोड़ें\"}",
           "sort_order": 3
         },
         {
@@ -515,7 +519,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: राखी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राखी\", \"hint\": \"महिला आरक्षी का सिर्फ़ नाम, जैसे: राखी — कोई अभियुक्ता (महिला) हो तभी भरें, नहीं तो खाली\"}",
           "sort_order": 4
         },
         {
@@ -524,7 +528,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: सरकारी वाहन संख्या UP33AG0496 टाटा सूमो\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सरकारी वाहन संख्या UP33AG0496 टाटा सूमो\", \"hint\": \"किस वाहन से गये, जैसे: सरकारी वाहन संख्या UP33AG0496 टाटा सूमो — न लिखना हो तो खाली\"}",
           "sort_order": 5
         },
         {
@@ -533,7 +537,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 45\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"hint\": \"रवानगी की GD रपट संख्या, जैसे: 45 — न पता हो तो खाली (पत्र में …… छपेगा)\"}",
           "sort_order": 6
         },
         {
@@ -542,7 +546,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 23.00\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 23.00\", \"hint\": \"रवानगी का समय, जैसे: 23.00 — न पता हो तो खाली (पत्र में …… छपेगा)\"}",
           "sort_order": 7
         },
         {
@@ -551,7 +555,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 37/24\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 37/24\", \"hint\": \"जिस मुकदमे के अभियुक्तों की तलाश में थे उसका मु0अ0सं0 / वर्ष, जैसे: 37/2024 — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 8
         },
         {
@@ -560,7 +564,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "@FIR.section",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 457/380 भादवि0\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 457/380 भादवि0\", \"hint\": \"उस मुकदमे की धाराएँ अधिनियम सहित, जैसे: 331(4), 305 बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
           "sort_order": 9
         },
         {
@@ -569,7 +573,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: डेपारमऊ चौराहे\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: डेपारमऊ चौराहे\", \"hint\": \"सूचना मिलते समय आप कहाँ मौजूद थे, जैसे: डेपारमऊ चौराहे\"}",
           "sort_order": 10
         },
         {
@@ -578,7 +582,7 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम हिलहा में एक माह पहले एक घर में घुसकर चोरी की घटना को अंजाम देने वाले\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम हिलहा में एक माह पहले एक घर में घुसकर चोरी की घटना को अंजाम देने वाले\", \"hint\": \"घटना एक वाक्यांश में, \\\"वांछित अपराधियों में से\\\" से पहले का हिस्सा, जैसे: ग्राम हिलहा में एक माह पहले एक घर में घुसकर चोरी की घटना को अंजाम देने वाले\"}",
           "sort_order": 11
         },
         {
@@ -587,7 +591,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चोप सिंह का पुरवा मोड़\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोप सिंह का पुरवा मोड़\", \"hint\": \"मुखबिर ने अभियुक्त कहाँ बताये, जैसे: चोप सिंह का पुरवा मोड़\"}",
           "sort_order": 12
         },
         {
@@ -596,7 +600,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "सरकारी वाहन से",
-          "dropdown_options": "{\"placeholder\": \"जैसे: सरकारी वाहन से / अपनी-अपनी मोटरसाइकिल से\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: सरकारी वाहन से / अपनी-अपनी मोटरसाइकिल से\", \"hint\": \"वहाँ कैसे गये, \\\"से\\\" तक, जैसे: अपनी-अपनी मोटरसाइकिल से / सरकारी वाहन से / पैदल\"}",
           "sort_order": 13
         },
         {
@@ -605,7 +609,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: मऊ नहर पुलिया\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मऊ नहर पुलिया\", \"hint\": \"मुखबिर ने गाड़ी कहाँ रुकवायी, जैसे: मऊ नहर पुलिया — न लिखना हो तो खाली\"}",
           "sort_order": 14
         },
         {
@@ -614,7 +618,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चोप सिंह का पुरवा\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चोप सिंह का पुरवा\", \"hint\": \"पुलिस देखकर अभियुक्त किस ओर भागे, जैसे: चोप सिंह का पुरवा — न भागे हों तो खाली\"}",
           "sort_order": 15
         },
         {
@@ -623,7 +627,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: मोड़ से करीब 20 कदम पर\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: मोड़ से करीब 20 कदम पर\", \"hint\": \"कहाँ पकड़ा, जैसे: मोड़ से करीब 20 कदम पर — न लिखना हो तो खाली\"}",
           "sort_order": 16
         },
         {
@@ -632,7 +636,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: रौनक सिंह)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: हिलहा थाना महराजगंज जनपद रायबरेली)\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"say\", \"label\": \"10. बरामद माल के बारे में अभियुक्त ने क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: रौनक सिंह)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम\"}, {\"key\": \"addr\", \"label\": \"पता (जैसे: हिलहा थाना महराजगंज जनपद रायबरेली)\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"say\", \"label\": \"10. बरामद माल के बारे में अभियुक्त ने क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\", \"hint\": \"हर अभियुक्त / अभियुक्ता का अलग कार्ड: नाम, सम्बन्ध, पिता/पति, पता, उम्र; महिला हो तो \\\"महिला है\\\" टिक करें। बरामद माल के बारे में उसने क्या बताया — वैकल्पिक। \\\"+\\\" से अगला\"}",
           "sort_order": 17
         },
         {
@@ -641,7 +645,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"किस अभियुक्त / अभियुक्ता से बरामद\", \"type\": \"ref\", \"ref\": \"Accused\"}, {\"key\": \"what\", \"label\": \"क्या बरामद (जैसे: 07 अदद बिछिया सफेद धातु / एक अदद तमंचा नाजायज 12 बोर व 01 जिन्दा कारतूस 12 बोर)\"}, {\"key\": \"from\", \"label\": \"कहाँ से (जैसे: पहनी पैंट की आगे की दाहिनी जेब)\"}, {\"key\": \"kind\", \"label\": \"किस तरह की चीज़\", \"type\": \"choice\", \"options\": [\"मुकदमे का माल\", \"अवैध शस्त्र\", \"अपनी चीज़\"], \"default\": \"मुकदमे का माल\", \"flags\": {\"isCase\": \"मुकदमे का माल\", \"isArms\": \"अवैध शस्त्र\", \"isOwn\": \"अपनी चीज़\"}}, {\"key\": \"case\", \"label\": \"मु0अ0सं0 (खाली = ऊपर वाला मुकदमा)\", \"showIf\": \"kind=मुकदमे का माल\", \"fallback\": \"FIRNo\"}, {\"key\": \"dhara\", \"label\": \"धारा (खाली = ऊपर वाली धारा)\", \"showIf\": \"kind=मुकदमे का माल\", \"fallback\": \"Sections\"}, {\"key\": \"arms\", \"label\": \"आर्म्स एक्ट धारा\", \"showIf\": \"kind=अवैध शस्त्र\", \"default\": \"3/25 आर्म्स एक्ट\"}, {\"key\": \"said\", \"label\": \"अधिकार पत्र माँगने पर अभियुक्त ने क्या कहा (वैकल्पिक)\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}, {\"key\": \"chamber\", \"label\": \"कारतूस चैम्बर में था (अलग किया गया)\", \"type\": \"check\", \"showIf\": \"kind=अवैध शस्त्र\"}, {\"key\": \"huliya\", \"label\": \"हुलिया (वैकल्पिक)\", \"type\": \"multiline\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}, {\"key\": \"source\", \"label\": \"स्रोत — अभियुक्त ने क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}], \"addLabel\": \"+ बरामदगी जोड़ें\", \"itemLabel\": \"बरामदगी\", \"groupInto\": {\"key\": \"Accused\", \"match\": \"who\", \"by\": \"name\", \"field\": \"found\", \"row\": \"{from} से {what}\", \"sep\": \" व \"}}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"who\", \"label\": \"किस अभियुक्त / अभियुक्ता से बरामद\", \"type\": \"ref\", \"ref\": \"Accused\"}, {\"key\": \"what\", \"label\": \"क्या बरामद (जैसे: 07 अदद बिछिया सफेद धातु / एक अदद तमंचा नाजायज 12 बोर व 01 जिन्दा कारतूस 12 बोर)\"}, {\"key\": \"from\", \"label\": \"कहाँ से (जैसे: पहनी पैंट की आगे की दाहिनी जेब)\"}, {\"key\": \"kind\", \"label\": \"किस तरह की चीज़\", \"type\": \"choice\", \"options\": [\"मुकदमे का माल\", \"अवैध शस्त्र\", \"अपनी चीज़\"], \"default\": \"मुकदमे का माल\", \"flags\": {\"isCase\": \"मुकदमे का माल\", \"isArms\": \"अवैध शस्त्र\", \"isOwn\": \"अपनी चीज़\"}}, {\"key\": \"case\", \"label\": \"मु0अ0सं0 (खाली = ऊपर वाला मुकदमा)\", \"showIf\": \"kind=मुकदमे का माल\", \"fallback\": \"FIRNo\"}, {\"key\": \"dhara\", \"label\": \"धारा (खाली = ऊपर वाली धारा)\", \"showIf\": \"kind=मुकदमे का माल\", \"fallback\": \"Sections\"}, {\"key\": \"arms\", \"label\": \"आर्म्स एक्ट धारा\", \"showIf\": \"kind=अवैध शस्त्र\", \"default\": \"3/25 आर्म्स एक्ट\"}, {\"key\": \"said\", \"label\": \"अधिकार पत्र माँगने पर अभियुक्त ने क्या कहा (वैकल्पिक)\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}, {\"key\": \"chamber\", \"label\": \"कारतूस चैम्बर में था (अलग किया गया)\", \"type\": \"check\", \"showIf\": \"kind=अवैध शस्त्र\"}, {\"key\": \"huliya\", \"label\": \"हुलिया (वैकल्पिक)\", \"type\": \"multiline\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}, {\"key\": \"source\", \"label\": \"स्रोत — अभियुक्त ने क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"showIf\": \"kind=अवैध शस्त्र\", \"endWith\": \"।\"}], \"addLabel\": \"+ बरामदगी जोड़ें\", \"itemLabel\": \"बरामदगी\", \"groupInto\": {\"key\": \"Accused\", \"match\": \"who\", \"by\": \"name\", \"field\": \"found\", \"row\": \"{from} से {what}\", \"sep\": \" व \"}, \"hint\": \"हर बरामद चीज़ का अलग कार्ड: किससे मिली (अभियुक्त का नाम छूकर चुनें), क्या मिला (07 अदद बिछिया सफेद धातु), कहाँ से (पैंट की दाहिनी जेब), और किस तरह की चीज़ — मुकदमे का माल / अवैध शस्त्र / अभियुक्त की अपनी चीज़। दूसरे मुकदमे का माल हो तो उसका मु0अ0सं0 व धारा भरें, नहीं तो खाली (ऊपर वाला लगेगा)\"}",
           "sort_order": 18
         },
         {
@@ -650,7 +654,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 23.50\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 23.50\", \"hint\": \"24 घंटे वाला समय बिंदु लगाकर, जैसे: 18.05 (रात 9:30 = 21.30) — \\\"बजे\\\" न लिखें\"}",
           "sort_order": 19
         },
         {
@@ -659,7 +663,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "समय से",
-          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"ArrestTime\"}",
+          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"ArrestTime\", \"hint\": \"\\\"समय से\\\" रहने दें तो ऊपर लिखे समय से सुबह / दिन / शाम / रात अपने आप लगता है; रात हो तो \\\"टार्च की रोशनी\\\" वाली लाइन भी जुड़ती है\"}",
           "sort_order": 20
         },
         {
@@ -668,7 +672,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: संदीप यादव\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: संदीप यादव\", \"hint\": \"सील करने के डिब्बे किस आरक्षी से मँगवाये, जैसे: संदीप यादव — न लिखना हो तो खाली\"}",
           "sort_order": 21
         },
         {
@@ -677,7 +681,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "परिजनों",
-          "dropdown_options": "{\"placeholder\": \"जैसे: परिजनों / पिता रामकरन सिंह\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: परिजनों / पिता रामकरन सिंह\", \"hint\": \"गिरफ्तारी की सूचना किसे, जैसे: परिजनों / पिता रामकरन सिंह\"}",
           "sort_order": 22
         },
         {
@@ -686,7 +690,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "अकब से दी जा रही है",
-          "dropdown_options": "[\"मौके पर दी गयी\", \"फोन द्वारा दी गयी\", \"अकब से दी जा रही है\"]",
+          "dropdown_options": "{\"options\": [\"मौके पर दी गयी\", \"फोन द्वारा दी गयी\", \"अकब से दी जा रही है\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}",
           "sort_order": 23
         },
         {
@@ -695,7 +699,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "लैपटॉप पर",
-          "dropdown_options": "[\"लैपटॉप पर\", \"मोबाइल पर\"]",
+          "dropdown_options": "{\"options\": [\"लैपटॉप पर\", \"मोबाइल पर\"], \"hint\": \"फर्द किस पर टाइप हुई — वही वाक्य फर्द के आखिर में छपता है\"}",
           "sort_order": 24
         },
         {
@@ -704,7 +708,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: संदीप\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: संदीप\", \"hint\": \"जिस आरक्षी से फर्द लिखवायी / प्रिन्ट मँगवाया, उसका नाम, जैसे: मनोज सोनकर\"}",
           "sort_order": 25
         },
         {
@@ -713,7 +717,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}",
           "sort_order": 26
         },
         {
@@ -722,7 +726,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}",
           "sort_order": 27
         }
       ]
@@ -736,7 +740,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -757,7 +761,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "गांजा",
-          "dropdown_options": "[\"गांजा\", \"चरस\", \"स्मैक\", \"हेरोइन\", \"अफीम\", \"डोडा पोस्त\"]",
+          "dropdown_options": "{\"options\": [\"गांजा\", \"चरस\", \"स्मैक\", \"हेरोइन\", \"अफीम\", \"डोडा पोस्त\"], \"hint\": \"कौन सा मादक पदार्थ मिला — फर्द में उसी का नाम (गांजा / गांजे…) छपता है\"}",
           "sort_order": 0
         },
         {
@@ -766,7 +770,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "8/20 NDPS एक्ट",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 8/20 NDPS एक्ट (गांजा / चरस) · 8/21 (स्मैक / हेरोइन) · 8/18 (अफीम) · 8/15 (डोडा पोस्त)\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 8/20 NDPS एक्ट (गांजा / चरस) · 8/21 (स्मैक / हेरोइन) · 8/18 (अफीम) · 8/15 (डोडा पोस्त)\", \"hint\": \"NDPS की धारा पदार्थ के हिसाब से: गांजा / चरस 8/20 · स्मैक / हेरोइन 8/21 · अफीम 8/18 · डोडा पोस्त 8/15 (आखिर में \\\"NDPS एक्ट\\\")\"}",
           "sort_order": 1
         },
         {
@@ -775,7 +779,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 08.06.2026\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 08.06.2026\", \"hint\": \"बरामदगी की तारीख बिंदु लगाकर, जैसे: 05.03.2025\"}",
           "sort_order": 2
         },
         {
@@ -784,7 +788,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 3
         },
         {
@@ -793,7 +797,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}",
           "sort_order": 4
         },
         {
@@ -802,7 +806,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: कां0 3880 शिवम सिंह, कां0 242 भोलाराम व रि0कां0 2150 कृष्ण कुमार\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: कां0 3880 शिवम सिंह, कां0 242 भोलाराम व रि0कां0 2150 कृष्ण कुमार\", \"hint\": \"साथ गए कर्मचारी पद व नम्बर सहित, जैसे: कां0 3880 शिवम सिंह, कां0 242 भोलाराम — कोई न हो तो खाली\"}",
           "sort_order": 5
         },
         {
@@ -811,7 +815,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: राखी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: राखी\", \"hint\": \"महिला आरक्षी का सिर्फ़ नाम, जैसे: राखी — कोई अभियुक्ता (महिला) हो तभी भरें, नहीं तो खाली\"}",
           "sort_order": 6
         },
         {
@@ -820,7 +824,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 66\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 66\", \"hint\": \"रवानगी की GD रपट संख्या, जैसे: 45 — न पता हो तो खाली (पत्र में …… छपेगा)\"}",
           "sort_order": 7
         },
         {
@@ -829,7 +833,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 22.58\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 22.58\", \"hint\": \"रवानगी का समय, जैसे: 23.00 — न पता हो तो खाली (पत्र में …… छपेगा)\"}",
           "sort_order": 8
         },
         {
@@ -838,7 +842,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चौकी क्षेत्र पुस्ता तिराहा\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चौकी क्षेत्र पुस्ता तिराहा\", \"hint\": \"सूचना मिलते समय कहाँ चेकिंग कर रहे थे, जैसे: चौकी क्षेत्र पुस्ता तिराहा\"}",
           "sort_order": 9
         },
         {
@@ -847,7 +851,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अल्फला मस्जिद की तरफ से\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: अल्फला मस्जिद की तरफ से\", \"hint\": \"मुखबिर के अनुसार अभियुक्त किस तरफ से आ रहा है, \\\"की तरफ से\\\" तक, जैसे: अल्फला मस्जिद की तरफ से\"}",
           "sort_order": 10
         },
         {
@@ -856,7 +860,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "प्राइवेट वाहन से",
-          "dropdown_options": "{\"placeholder\": \"जैसे: प्राइवेट वाहन से / सरकारी वाहन से\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: प्राइवेट वाहन से / सरकारी वाहन से\", \"hint\": \"वहाँ कैसे गये, \\\"से\\\" तक, जैसे: अपनी-अपनी मोटरसाइकिल से / सरकारी वाहन से / पैदल\"}",
           "sort_order": 11
         },
         {
@@ -865,7 +869,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: प्राचीन हनुमान मन्दिर आजाद इन्कलेव के सामने\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: प्राचीन हनुमान मन्दिर आजाद इन्कलेव के सामने\", \"hint\": \"आप कहाँ पहुँचकर इंतज़ार में रुके, जैसे: प्राचीन हनुमान मन्दिर के सामने\"}",
           "sort_order": 12
         },
         {
@@ -874,7 +878,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": "रोड के किनारे खड़े वाहनों",
-          "dropdown_options": "{\"placeholder\": \"जैसे: रोड के किनारे खड़े वाहनों\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: रोड के किनारे खड़े वाहनों\", \"hint\": \"किसकी आड़ लेकर छिपे, जैसे: रोड के किनारे खड़े वाहनों — न लिखना हो तो खाली\"}",
           "sort_order": 13
         },
         {
@@ -883,7 +887,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: रोड पर चलने वाले वाहनों की रोशनी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: रोड पर चलने वाले वाहनों की रोशनी\", \"hint\": \"अभियुक्त किसकी रोशनी में दिखा, जैसे: रोड पर चलने वाले वाहनों की रोशनी — दिन हो तो खाली\"}",
           "sort_order": 14
         },
         {
@@ -892,7 +896,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: सुल्तान)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम (जैसे: मो0 मेहराज)\"}, {\"key\": \"addr\", \"label\": \"पता\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक, जैसे: 19)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"look\", \"label\": \"5. पहचान — कैसा दिखा (जैसे: एक जवान उम्र का लड़का जिसने पीले रंग की हाफ टीशर्ट पहने है)\"}, {\"key\": \"where\", \"label\": \"5. कहाँ लिये था\", \"default\": \"हाथ में\"}, {\"key\": \"carry\", \"label\": \"5. किसमें लिये था (जैसे: हरे रंग की पोलीथीन / काले रंग का थैला)\"}, {\"key\": \"plan\", \"label\": \"7. सामान के बारे में और क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}, {\"key\": \"extra\", \"label\": \"10. पोलीथीन / थैले में और क्या मिला (वैकल्पिक)\", \"type\": \"multiline\"}, {\"key\": \"kg\", \"label\": \"10. वजन — किलो (जैसे: 1)\"}, {\"key\": \"gm\", \"label\": \"10. वजन — ग्राम (जैसे: 200)\"}, {\"key\": \"source\", \"label\": \"12. मादक पदार्थ कहाँ से लाया — क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\", \"copy\": [\"Drug\"], \"weight\": {\"kg\": \"kg\", \"gm\": \"gm\", \"rowField\": \"wt\", \"total\": \"TotalWt\"}}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: सुल्तान)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम (जैसे: मो0 मेहराज)\"}, {\"key\": \"addr\", \"label\": \"पता\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक, जैसे: 19)\"}, {\"key\": \"mahila\", \"label\": \"महिला है (अभियुक्ता)\", \"type\": \"check\"}, {\"key\": \"look\", \"label\": \"5. पहचान — कैसा दिखा (जैसे: एक जवान उम्र का लड़का जिसने पीले रंग की हाफ टीशर्ट पहने है)\"}, {\"key\": \"where\", \"label\": \"5. कहाँ लिये था\", \"default\": \"हाथ में\"}, {\"key\": \"carry\", \"label\": \"5. किसमें लिये था (जैसे: हरे रंग की पोलीथीन / काले रंग का थैला)\"}, {\"key\": \"plan\", \"label\": \"7. सामान के बारे में और क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}, {\"key\": \"extra\", \"label\": \"10. पोलीथीन / थैले में और क्या मिला (वैकल्पिक)\", \"type\": \"multiline\"}, {\"key\": \"kg\", \"label\": \"10. वजन — किलो (जैसे: 1)\"}, {\"key\": \"gm\", \"label\": \"10. वजन — ग्राम (जैसे: 200)\"}, {\"key\": \"source\", \"label\": \"12. मादक पदार्थ कहाँ से लाया — क्या बताया (वैकल्पिक)\", \"type\": \"multiline\", \"endWith\": \"।\"}], \"addLabel\": \"+ और अभियुक्त जोड़ें\", \"itemLabel\": \"अभियुक्त\", \"copy\": [\"Drug\"], \"weight\": {\"kg\": \"kg\", \"gm\": \"gm\", \"rowField\": \"wt\", \"total\": \"TotalWt\"}, \"hint\": \"हर अभियुक्त / अभियुक्ता का अलग कार्ड: नाम, सम्बन्ध, पिता/पति, पता, उम्र, महिला टिक; फिर कैसा दिखा, कहाँ और किसमें (पोलीथीन / थैला) लिये था, और वजन — किलो व ग्राम अलग बॉक्स में (कुल वजन अपने आप जुड़ता है)। \\\"+\\\" से अगला\"}",
           "sort_order": 15
         },
         {
@@ -901,7 +905,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"पकड़ते समय आवश्यक बल प्रयोग किया हो तो टिक रहने दें\"}",
           "sort_order": 16
         },
         {
@@ -910,7 +914,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: प्राचीन हनुमान मन्दिर आजाद इन्कलेव के सामने रोड पर ही\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: प्राचीन हनुमान मन्दिर आजाद इन्कलेव के सामने रोड पर ही\", \"hint\": \"कहाँ पकड़ा, जैसे: हनुमान मन्दिर के सामने रोड पर ही — खाली छोड़ें तो \\\"मौके पर ही\\\" छपेगा\"}",
           "sort_order": 17
         },
         {
@@ -919,7 +923,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमान सहायक पुलिस आयुक्त लोनी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमान सहायक पुलिस आयुक्त लोनी\", \"hint\": \"धारा 50 के लिए जिस राजपत्रित अधिकारी को कॉल किया, जैसे: श्रीमान सहायक पुलिस आयुक्त लोनी — न किया हो तो खाली\"}",
           "sort_order": 18
         },
         {
@@ -928,7 +932,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 9643322910\", \"showIf\": \"GazOfficer\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 9643322910\", \"showIf\": \"GazOfficer\", \"hint\": \"उन अधिकारी का CUG नम्बर, जैसे: 9643322910\"}",
           "sort_order": 19
         },
         {
@@ -937,7 +941,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है",
-          "dropdown_options": "{\"options\": [\"नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है\", \"काल रिसीव नहीं हुई\", \"नम्बर व्यस्त बता रहा है\"], \"showIf\": \"GazOfficer\"}",
+          "dropdown_options": "{\"options\": [\"नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है\", \"काल रिसीव नहीं हुई\", \"नम्बर व्यस्त बता रहा है\"], \"showIf\": \"GazOfficer\", \"hint\": \"कॉल करने पर क्या हुआ\"}",
           "sort_order": 20
         },
         {
@@ -946,7 +950,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 09.06.2026\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 09.06.2026\", \"hint\": \"गिरफ्तारी रात 12 बजे के बाद हुई हो तो अगली तारीख, जैसे: 09.06.2026 — नहीं तो खाली (ऊपर वाली तारीख लगेगी)\"}",
           "sort_order": 21
         },
         {
@@ -955,7 +959,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 00.10\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 00.10\", \"hint\": \"24 घंटे वाला समय बिंदु लगाकर, जैसे: 18.05 (रात 9:30 = 21.30) — \\\"बजे\\\" न लिखें\"}",
           "sort_order": 22
         },
         {
@@ -964,7 +968,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "समय से",
-          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"ArrestTime\"}",
+          "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"ArrestTime\", \"hint\": \"\\\"समय से\\\" रहने दें तो ऊपर लिखे समय से सुबह / दिन / शाम / रात अपने आप लगता है; रात हो तो \\\"टार्च की रोशनी\\\" वाली लाइन भी जुड़ती है\"}",
           "sort_order": 23
         },
         {
@@ -973,7 +977,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "थाने पहुँचकर उचित माध्यम से दी जायेगी",
-          "dropdown_options": "[\"थाने पहुँचकर उचित माध्यम से दी जायेगी\", \"मौके पर फोन द्वारा दी गयी\", \"मौके पर दी गयी\"]",
+          "dropdown_options": "{\"options\": [\"थाने पहुँचकर उचित माध्यम से दी जायेगी\", \"मौके पर फोन द्वारा दी गयी\", \"मौके पर दी गयी\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}",
           "sort_order": 24
         },
         {
@@ -982,7 +986,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "लैपटॉप पर",
-          "dropdown_options": "[\"लैपटॉप पर\", \"मोबाइल पर\"]",
+          "dropdown_options": "{\"options\": [\"लैपटॉप पर\", \"मोबाइल पर\"], \"hint\": \"फर्द किस पर टाइप हुई — वही वाक्य फर्द के आखिर में छपता है\"}",
           "sort_order": 25
         },
         {
@@ -991,7 +995,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 3880 शिवम सिंह\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 3880 शिवम सिंह\", \"hint\": \"प्रिन्ट मँगवाने वाले आरक्षी का नम्बर व नाम, जैसे: 3880 शिवम सिंह\"}",
           "sort_order": 26
         },
         {
@@ -1000,7 +1004,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चौकी पुस्ता\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: चौकी पुस्ता\", \"hint\": \"प्रिन्ट कहाँ से मँगवाया, जैसे: चौकी पुस्ता — न लिखना हो तो खाली\"}",
           "sort_order": 27
         },
         {
@@ -1009,7 +1013,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "हाँ",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"कार्यवाही की वीडियोग्राफी ई-साक्ष्य पर अपलोड की हो तो टिक रहने दें\"}",
           "sort_order": 28
         },
         {
@@ -1018,7 +1022,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: स्ट्रीट लाइट व मोबाइल फोन एवं टार्च की रोशनी\"}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: स्ट्रीट लाइट व मोबाइल फोन एवं टार्च की रोशनी\", \"hint\": \"कार्यवाही किसकी रोशनी में हुई, जैसे: स्ट्रीट लाइट व मोबाइल फोन एवं टार्च की रोशनी — दिन हो तो खाली\"}",
           "sort_order": 29
         },
         {
@@ -1027,7 +1031,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}",
           "sort_order": 30
         },
         {
@@ -1036,7 +1040,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "dropdown_options": null,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}",
           "sort_order": 31
         }
       ]
