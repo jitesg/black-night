@@ -35,8 +35,8 @@ export function isPmKaryvahi(k: { step_code?: string | null; name?: string | nul
 
 export interface SubStepState {
   done: boolean;
-  /** 'manual' = officer's tick on the card; 'auto' = saved from the format */
-  by?: 'manual' | 'auto';
+  /** 'manual' = officer's tick on the card; 'auto' = saved from the format; 'old' = written before the checklist existed */
+  by?: 'manual' | 'auto' | 'old';
   /** पर्चा number (01, 02…) of the diary that wrote it */
   parcha?: string;
   /** case diary entry that wrote it (un-tick when the entry is deleted) */
@@ -88,6 +88,7 @@ export function toggleSubStep(map: SubStepsMap, id: string, now: number = Date.n
 export function subStepNote(s: SubStepState | undefined): string {
   if (!s?.done) return '';
   if (s.parcha) return `पर्चा ${s.parcha}`;
+  if (s.by === 'old') return 'पहले से';
   return s.by === 'manual' ? 'स्वयं ✓' : '';
 }
 
@@ -96,4 +97,38 @@ export function remainingText(map: SubStepsMap): string {
   const r = subStepProgress(map).remaining;
   if (r.length === 0) return '';
   return 'बाकी: ' + r.map((s) => s.label.replace(/\s*\(.*$/, '')).join(', ');
+}
+
+/** Parts the PM format printed: its ticks doPan … doBayanDoc that are on ("हाँ"). */
+export function partsFromFormatValues(values: Record<string, string | undefined>): string[] {
+  return PM_SUB_STEPS.filter((s) => String(values[s.formatKey] ?? '').trim() !== '').map((s) => s.id);
+}
+
+/** Drop the ticks a case diary entry made (entry deleted / its format generated again). Manual ticks stay. */
+export function removeEntryParts(map: SubStepsMap, entryId: string): SubStepsMap {
+  const next: SubStepsMap = {};
+  for (const [id, st] of Object.entries(map)) if (st.entryId !== entryId) next[id] = st;
+  return next;
+}
+
+/** Saving the format in a diary entry: its parts become done with the पर्चा number. */
+export function applyEntryParts(map: SubStepsMap, entryId: string, parts: string[], parcha: string, now: number = Date.now()): SubStepsMap {
+  const next = removeEntryParts(map, entryId);
+  for (const id of parts) {
+    if (PM_SUB_STEPS.some((s) => s.id === id)) next[id] = { done: true, by: 'auto', parcha, entryId, at: now };
+  }
+  return next;
+}
+
+/** Old karyvahis already written before this checklist existed → all 6 done (by 'old'). */
+export function allDoneLegacy(now: number = Date.now()): SubStepsMap {
+  const m: SubStepsMap = {};
+  for (const s of PM_SUB_STEPS) m[s.id] = { done: true, by: 'old', at: now };
+  return m;
+}
+
+/** Done rule: पंचनामा व पोस्टमार्टम = all 6 parts; every other karyvahi = written at least once. */
+export function isKaryvahiDone(k: { step_code?: string | null; name?: string | null; sub_steps_json?: string | null; execution_count?: number | null }): boolean {
+  if (isPmKaryvahi(k)) return subStepProgress(parseSubSteps(k.sub_steps_json)).complete;
+  return (k.execution_count ?? 0) > 0;
 }

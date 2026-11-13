@@ -4,6 +4,9 @@ import { updateFIRStatus } from './firRepo';
 import { getChecklistItemsForPairs, getChecklistItemsForCrimeTypes, getChecklistsByCrimeType, getItemsByChecklist, parseCrimeTypePairs, type ChecklistItem } from './checklistRepo';
 import { logger } from '../logger';
 import { unlockDependentsOf } from './actionConditionsRepo';
+import {
+  isPmKaryvahi, isKaryvahiDone, parseSubSteps, applyEntryParts, removeEntryParts, allDoneLegacy,
+} from '../karyvahiSubSteps';
 
 // ── Instance counter for mount/unmount tracing (shared across screen renders) ──
 let _karyvahiInstanceSeq = 0;
@@ -659,9 +662,14 @@ export async function recalcExecutionCount(firKaryvahiId: string, firId: string)
   );
   const count = row?.cnt ?? 0;
   const now = nowTimestamp();
+  // पंचनामा व पोस्टमार्टम: complete only when all 6 parts are ticked (owner, चरण 3)
+  const k = await db.getFirstAsync<{ name: string; step_code: string | null; sub_steps_json: string | null }>(
+    'SELECT name, step_code, sub_steps_json FROM fir_karyvahi WHERE id = ?', [firKaryvahiId],
+  );
+  const done = k ? isKaryvahiDone({ ...k, execution_count: count }) : count > 0;
   await db.runAsync(
     'UPDATE fir_karyvahi SET execution_count = ?, is_completed = ?, updated_at = ? WHERE id = ?',
-    [count, count > 0 ? 1 : 0, now, firKaryvahiId]
+    [count, done ? 1 : 0, now, firKaryvahiId]
   );
   await updateFIRStatus(firId);
   return count;
@@ -791,10 +799,69 @@ export async function updateKaryvahiStatus(
   }
 }
 
-/** पंचनामा व पोस्टमार्टम checklist (6 parts) — saved as JSON on the karyvahi row. */
-export async function setKaryvahiSubSteps(id: string, json: string): Promise<void> {
+/** पंचनामा व पोस्टमार्टम checklist (6 parts) — saved as JSON on the karyvahi row; completion follows (6/6). */
+export async function setKaryvahiSubSteps(id: string, firId: string, json: string): Promise<void> {
   const db = await getDatabase();
   await db.runAsync('UPDATE fir_karyvahi SET sub_steps_json = ?, updated_at = ? WHERE id = ?', [json, nowTimestamp(), id]);
+  await recalcExecutionCount(id, firId);
+}
+
+/**
+ * The PM format was saved in a case diary entry: tick the parts it printed (with the पर्चा number).
+ * `karyvahiId` = the entry's karyvahi; when that is not the पंचनामा व पोस्टमार्टम karyvahi, the FIR's first such karyvahi is used.
+ * Returns the karyvahi id that was updated (or null when the FIR has none).
+ */
+export async function applyPmPartsFromEntry(
+  firId: string, karyvahiId: string | undefined, entryId: string, parts: string[], parcha: string,
+): Promise<string | null> {
+  const db = await getDatabase();
+  const rows = await db.getAllAsync<{ id: string; name: string; step_code: string | null; sub_steps_json: string | null; sort_order: number | null }>(
+    'SELECT id, name, step_code, sub_steps_json, sort_order FROM fir_karyvahi WHERE fir_id = ? AND deleted_at IS NULL ORDER BY sort_order, created_at',
+    [firId],
+  );
+  const target = rows.find((r) => r.id === karyvahiId && isPmKaryvahi(r)) ?? rows.find((r) => isPmKaryvahi(r));
+  if (!target) return null;
+  // the same entry may have ticked another karyvahi earlier (karyvahi changed) — clear it there
+  for (const r of rows) {
+    if (r.id !== target.id && (r.sub_steps_json ?? '').includes(entryId)) {
+      await setKaryvahiSubSteps(r.id, firId, JSON.stringify(removeEntryParts(parseSubSteps(r.sub_steps_json), entryId)));
+    }
+  }
+  const next = applyEntryParts(parseSubSteps(target.sub_steps_json), entryId, parts, parcha);
+  await setKaryvahiSubSteps(target.id, firId, JSON.stringify(next));
+  return target.id;
+}
+
+/** Case diary entries deleted (or their diary): remove the ticks they made. */
+export async function clearPmPartsForEntries(entryIds: string[]): Promise<void> {
+  if (entryIds.length === 0) return;
+  const db = await getDatabase();
+  for (const entryId of entryIds) {
+    const rows = await db.getAllAsync<{ id: string; fir_id: string; sub_steps_json: string | null }>(
+      'SELECT id, fir_id, sub_steps_json FROM fir_karyvahi WHERE sub_steps_json LIKE ?', [`%${entryId}%`],
+    );
+    for (const r of rows) {
+      await setKaryvahiSubSteps(r.id, r.fir_id, JSON.stringify(removeEntryParts(parseSubSteps(r.sub_steps_json), entryId)));
+    }
+  }
+}
+
+/**
+ * One-time (app_migrations): पंचनामा व पोस्टमार्टम karyvahis already written before the checklist existed
+ * stay complete — all 6 parts ticked as "पहले से".
+ */
+export async function migratePmSubStepsLegacy(): Promise<number> {
+  const db = await getDatabase();
+  const rows = await db.getAllAsync<{ id: string; fir_id: string; name: string; step_code: string | null; sub_steps_json: string | null }>(
+    "SELECT id, fir_id, name, step_code, sub_steps_json FROM fir_karyvahi WHERE deleted_at IS NULL AND COALESCE(execution_count, 0) > 0",
+  );
+  let n = 0;
+  for (const r of rows) {
+    if (!isPmKaryvahi(r) || Object.keys(parseSubSteps(r.sub_steps_json)).length > 0) continue;
+    await setKaryvahiSubSteps(r.id, r.fir_id, JSON.stringify(allDoneLegacy()));
+    n++;
+  }
+  return n;
 }
 
 export async function updateKaryvahi(id: string, firId: string, name: string, precautions?: string): Promise<void> {

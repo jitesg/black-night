@@ -42,3 +42,25 @@ test('progress, toggle, notes, remaining', () => {
   assert.ok(subStepProgress(m).complete);
   assert.equal(remainingText(m), '');
 });
+
+test('format save → parts with पर्चा; regenerate / delete entry', async () => {
+  const { partsFromFormatValues, applyEntryParts, removeEntryParts, isKaryvahiDone, allDoneLegacy } = await import('../src/lib/karyvahiSubSteps.ts');
+  assert.deepEqual(partsFromFormatValues({ doPan: 'हाँ', doPm: 'हाँ', doBayanSI: '', doBayanDoc: 'हाँ' }), ['pan', 'pm', 'doc']);
+  let m = toggleSubStep({}, 'co', 1);
+  m = applyEntryParts(m, 'e1', ['pan', 'pm'], '03', 2);
+  assert.equal(subStepNote(m.pan), 'पर्चा 03');
+  assert.equal(subStepProgress(m).done, 3);
+  m = applyEntryParts(m, 'e1', ['pan'], '03', 3); // generated again with fewer ticks
+  assert.equal(subStepProgress(m).done, 2);
+  m = applyEntryParts(m, 'e2', ['si', 'panch', 'doc', 'pm'], '04', 4);
+  assert.equal(subStepProgress(m).complete, true);
+  const json = JSON.stringify(m);
+  assert.ok(isKaryvahiDone({ step_code: 'RTA_PM_DEATH', sub_steps_json: json, execution_count: 0 }));
+  m = removeEntryParts(m, 'e2');
+  assert.deepEqual(Object.keys(m).sort(), ['co', 'pan']);
+  assert.ok(!isKaryvahiDone({ step_code: 'RTA_PM_DEATH', sub_steps_json: JSON.stringify(m), execution_count: 5 }));
+  assert.ok(isKaryvahiDone({ name: 'घटनास्थल निरीक्षण', execution_count: 1 }));
+  assert.ok(!isKaryvahiDone({ name: 'घटनास्थल निरीक्षण', execution_count: 0 }));
+  assert.equal(subStepNote(allDoneLegacy().pan), 'पहले से');
+  assert.ok(subStepProgress(allDoneLegacy()).complete);
+});

@@ -37,7 +37,7 @@ import { getDefaultKnowledge } from '@/lib/defaultKaryvahiKnowledge';
 import { matchesQuery } from '@/lib/searchUtils';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import {
-  isPmKaryvahi, parseSubSteps, subStepProgress, toggleSubStep, subStepNote, PM_SUB_STEPS, type SubStepsMap,
+  isPmKaryvahi, isKaryvahiDone, parseSubSteps, subStepProgress, toggleSubStep, subStepNote, PM_SUB_STEPS,
 } from '@/lib/karyvahiSubSteps';
 
 type FilterMode = 'all' | 'pending' | 'completed';
@@ -357,22 +357,20 @@ function ReasonModal({
 
 // ── Karyvahi card (General tab) ───────────────────────────────────────────────
 // ── पंचनामा व पोस्टमार्टम: inner checklist (6 parts, owner) ──────────────────────
-function PmSubStepsPanel({ item, onWrite }: { item: FIRKaryvahi; onWrite: (item: FIRKaryvahi) => void }) {
+function PmSubStepsPanel({ item, onWrite, onChange }: {
+  item: FIRKaryvahi;
+  onWrite: (item: FIRKaryvahi) => void;
+  onChange: (item: FIRKaryvahi, json: string) => void;
+}) {
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme ?? 'light'];
   const sem = getSemanticColors(colorScheme ?? 'light');
   const [open, setOpen] = useState(false);
-  const [map, setMap] = useState<SubStepsMap>(() => parseSubSteps(item.sub_steps_json));
-  useEffect(() => { setMap(parseSubSteps(item.sub_steps_json)); }, [item.sub_steps_json]);
+  const map = useMemo(() => parseSubSteps(item.sub_steps_json), [item.sub_steps_json]);
   const prog = subStepProgress(map);
   const barColor = prog.complete ? sem.COMPLETED_STATUS.fg : sem.CONDITIONAL.fg;
 
-  const onToggle = (id: string) => {
-    const next = toggleSubStep(map, id);
-    setMap(next);
-    item.sub_steps_json = JSON.stringify(next); // keep the list row in step until the next reload
-    setKaryvahiSubSteps(item.id, item.sub_steps_json).catch((e) => logger.warn('[PmSubSteps] save failed:', e));
-  };
+  const onToggle = (id: string) => onChange(item, JSON.stringify(toggleSubStep(map, id)));
 
   return (
     <View className="mb-2.5">
@@ -441,6 +439,7 @@ function KaryvahiCard({
   onStatusChange,
   onQueueToggle,
   onWriteDiary,
+  onSubStepsChange,
   blockerName,
 }: {
   item: FIRKaryvahi;
@@ -451,6 +450,7 @@ function KaryvahiCard({
   onStatusChange: (item: FIRKaryvahi, newStatus: KaryvahiStatus) => void;
   onQueueToggle: (item: FIRKaryvahi) => void;
   onWriteDiary: (item: FIRKaryvahi) => void;
+  onSubStepsChange: (item: FIRKaryvahi, json: string) => void;
   blockerName?: string;
 }) {
   const { t } = useTranslation();
@@ -459,8 +459,8 @@ function KaryvahiCard({
   const sem = getSemanticColors(colorScheme ?? 'light');
 
   const count        = item.execution_count ?? 0;
-  const done         = count > 0;
-  const multipleExec = count > 1;
+  const done         = isKaryvahiDone(item); // पंचनामा व पोस्टमार्टम: only at 6/6
+  const multipleExec = count > 1 && done;
   const locked       = (item.is_locked ?? 0) === 1 && !done;
   const status: KaryvahiStatus = done ? 'COMPLETED' : ((item.status as KaryvahiStatus) ?? 'PENDING');
   const priority     = (item.priority as KaryvahiPriority) ?? 'MANDATORY';
@@ -496,7 +496,7 @@ function KaryvahiCard({
     </View>
   ) : undefined;
 
-  const badge = count > 0 ? (
+  const badge = count > 0 && done ? (
     <View
       className="rounded-full items-center justify-center px-2.5 py-1"
       style={{
@@ -631,7 +631,7 @@ function KaryvahiCard({
       statusSlot={statusControl}
       badgeSlot={badge}
       footerSlot={isPmKaryvahi(item)
-        ? <><PmSubStepsPanel item={item} onWrite={onWriteDiary} />{actionsRow}</>
+        ? <><PmSubStepsPanel item={item} onWrite={onWriteDiary} onChange={onSubStepsChange} />{actionsRow}</>
         : actionsRow}
       bannerSlot={banner}
       dimmed={locked}
@@ -673,7 +673,7 @@ function RadialRing({
 
 function PrioritySection({
   priority, items, firId, diaries, onDelete, onCircleInfo, onStatusChange,
-  onQueueToggle, onWriteDiary, conditions, allItems,
+  onQueueToggle, onWriteDiary, onSubStepsChange, conditions, allItems,
 }: {
   priority: KaryvahiPriority;
   items: FIRKaryvahi[];
@@ -684,6 +684,7 @@ function PrioritySection({
   onStatusChange: (item: FIRKaryvahi, newStatus: KaryvahiStatus) => void;
   onQueueToggle: (item: FIRKaryvahi) => void;
   onWriteDiary: (item: FIRKaryvahi) => void;
+  onSubStepsChange: (item: FIRKaryvahi, json: string) => void;
   conditions: ActionCondition[];
   allItems: FIRKaryvahi[];
 }) {
@@ -694,7 +695,7 @@ function PrioritySection({
 
   const cfg = PRIORITY_CONFIG[priority];
   const completedCount = items.filter(
-    (i) => (i.status as KaryvahiStatus) === 'COMPLETED' || (i.execution_count ?? 0) > 0
+    (i) => (i.status as KaryvahiStatus) === 'COMPLETED' || isKaryvahiDone(i)
   ).length;
 
   const nameById = useMemo(() => {
@@ -743,6 +744,7 @@ function PrioritySection({
             onStatusChange={onStatusChange}
             onQueueToggle={onQueueToggle}
             onWriteDiary={onWriteDiary}
+            onSubStepsChange={onSubStepsChange}
             blockerName={blocker}
           />
         );
@@ -892,7 +894,7 @@ function DiaryView({
     (i) =>
       (i.queued_for_diary ?? 0) === 1 &&
       ['PENDING', 'IN_PROGRESS', 'DEFERRED'].includes((i.status as KaryvahiStatus) ?? 'PENDING') &&
-      (i.execution_count ?? 0) === 0,
+      !isKaryvahiDone(i),
   );
 
   // Section B: chronological serial numbers then group newest-first
@@ -1238,8 +1240,15 @@ function KaryvahiTab() {
     await updateKaryvahiQueuedFlag(item.id, stableFirId, !nowQueued);
   }, [stableFirId]);
 
+  // पंचनामा व पोस्टमार्टम checklist tick on the card → row updated at once, saved (completion follows 6/6)
+  const handleSubStepsChange = useCallback((item: FIRKaryvahi, json: string) => {
+    if (!stableFirId) return;
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, sub_steps_json: json } : i)));
+    setKaryvahiSubSteps(item.id, stableFirId, json).catch((e) => logger.warn('[PmSubSteps] save failed:', e));
+  }, [stableFirId]);
+
   const effectiveStatus = (item: FIRKaryvahi): KaryvahiStatus =>
-    (item.execution_count ?? 0) > 0 ? 'COMPLETED' : ((item.status as KaryvahiStatus) ?? 'PENDING');
+    isKaryvahiDone(item) ? 'COMPLETED' : ((item.status as KaryvahiStatus) ?? 'PENDING');
 
   const filtered = useMemo(() => items.filter((it) => {
     const matchesSearch = matchesQuery(query, it.name, it.precautions);
@@ -1275,6 +1284,7 @@ function KaryvahiTab() {
     onStatusChange: handleStatusChange,
     onQueueToggle:  handleQueueToggle,
     onWriteDiary:   (it: FIRKaryvahi) => setDiarySheetItem(it),
+    onSubStepsChange: handleSubStepsChange,
   };
 
   const latestDiary = diaries.length > 0 ? diaries[0] : null;

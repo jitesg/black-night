@@ -113,9 +113,13 @@ export async function updateCaseDiary(id: string, input: Partial<CaseDiaryInput>
 export async function deleteCaseDiary(id: string): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
+  const doomed = await db.getAllAsync<{ id: string }>(
+    'SELECT id FROM case_diary_entries WHERE case_diary_id = ? AND deleted_at IS NULL', [id],
+  );
   await db.runAsync('UPDATE case_diary_karyvahi SET deleted_at = ? WHERE diary_id = ? AND deleted_at IS NULL', [now, id]);
   await db.runAsync('UPDATE case_diary_entries SET deleted_at = ? WHERE case_diary_id = ? AND deleted_at IS NULL', [now, id]);
   await db.runAsync('UPDATE case_diaries SET deleted_at = ? WHERE id = ?', [now, id]);
+  clearPmParts(doomed.map((r) => r.id));
   resyncCdAlerts();
 }
 
@@ -308,7 +312,24 @@ export async function deleteEntry(entryId: string): Promise<void> {
   await db.runAsync(
     'UPDATE case_diary_entries SET deleted_at = ? WHERE id = ?',
     [now, entryId]
+  );  clearPmParts([entryId]);
+}
+
+/** पंचनामा व पोस्टमार्टम checklist: ticks made by deleted entries go away (lazy import — no cycle). */
+function clearPmParts(entryIds: string[]): void {
+  if (entryIds.length === 0) return;
+  import('./firKaryvahiRepo').then((m) => m.clearPmPartsForEntries(entryIds)).catch(() => {});
+}
+
+/** पर्चा number of a diary: its place among the FIR's diaries by date (01, 02 …). */
+export async function getParchaNumber(firId: string, diaryId: string): Promise<string> {
+  const db = await getDatabase();
+  const rows = await db.getAllAsync<{ id: string }>(
+    'SELECT id FROM case_diaries WHERE fir_id = ? AND deleted_at IS NULL ORDER BY preparation_date ASC, created_at ASC',
+    [firId],
   );
+  const i = rows.findIndex((r) => r.id === diaryId);
+  return String(i >= 0 ? i + 1 : rows.length + 1).padStart(2, '0');
 }
 
 // ── Diary timeline for karyvahi tab ──────────────────────────────────────────

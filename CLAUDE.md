@@ -257,7 +257,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   owner's samples; generator `scripts/build_panchayatnama_pm.py`, tests `scripts/test_panchayatnama_pm.ts`): 6 ticks doPan / doPm / doBayanSI /
   doBayanCo / doBayanPanch / doBayanDoc (each prints its part; only-PM wording "की मूल … प्राप्त हुई है जिसका"); Panch = item_group (mahila, own
   text; `copy` Story1/Story2/BodyPlace/DName); docMahila, doViscera, optional DocInjury. `tidyRepeats` drops blank lines at the very top.
-  Plan (owner, चरण 3–6 next): auto-tick on save, pending until 6/6, prefill remaining, 7-day bell.
+  Plan (owner, चरण 4–6 next): pending shown everywhere, prefill remaining, 7-day bell.
+  चरण 3 done: done rule `isKaryvahiDone` (PM karyvahi = 6/6, others execution_count > 0) — used by recalcExecutionCount (is_completed) and the
+  karyvahi tab (card / ring / filters / diary queue). Format save in add-case-diary-karyvahi: entry `pmParts` (from doPan… via
+  `partsFromFormatValues`; another format → []) → `applyPmPartsFromEntry(firId, karyvahiId, entryId, parts, getParchaNumber())` (entry's karyvahi, else
+  the FIR's first PM karyvahi; ticks carry entryId + पर्चा). deleteEntry / deleteCaseDiary → `clearPmPartsForEntries` (lazy import). One-time migration
+  `v360_pm_substeps_legacy` (_layout MIGRATIONS): PM karyvahis written before → all 6 "पहले से".
   चरण 2 done: karyvahi card checklist — `src/lib/karyvahiSubSteps.ts` (pure; tests `scripts/test_karyvahi_sub_steps.ts`): 6 parts pan/pm/si/co/panch/doc
   (formatKey doPan…), `isPmKaryvahi` = step_code RTA_PM_DEATH / ABS_INQUEST_PM / CHM_INQUEST_PM / MUR_INQUEST / DWD_INQUEST_SDM or a name with
   पंचनामा/पंचायतनामा + पोस्टमार्टम/शव परीक्षण (not जब्ती/बरामदगी); column fir_karyvahi.sub_steps_json (`setKaryvahiSubSteps`); card (tabs)/karyvahi.tsx

@@ -27,7 +27,7 @@ import * as knowledgeRepo from '@/lib/db/knowledgeRepo';
 import { lookupCirculars, isCircularLookupQuery } from '@/ai/circularLookup';
 import { lookupSop, isSopLookupQuery } from '@/ai/sopLookup';
 import { getAll as getAllSops, getById as getSopById, search as searchSops, getSopStepCount } from '@/ai/sopIndex';
-import { migrateCompletedToExecutions, migrateDefaultKaryvahiHindiNames } from '@/lib/db/firKaryvahiRepo';
+import { migrateCompletedToExecutions, migrateDefaultKaryvahiHindiNames, migratePmSubStepsLegacy } from '@/lib/db/firKaryvahiRepo';
 import { seedDefaultPhrasesIfEmpty } from '@/lib/db/phraseLibraryRepo';
 import { AppLogger } from '@/lib/appLogger';
 import { clearDevSession } from '@/lib/devOptionsAuth';
@@ -103,6 +103,11 @@ const MIGRATIONS: Array<{ name: string; run: () => Promise<unknown> }> = [
   {
     name: 'v340_default_karyvahi_hindi_names',
     run:  migrateDefaultKaryvahiHindiNames,
+  },
+  {
+    // पंचनामा व पोस्टमार्टम checklist: old written karyvahis stay complete (6/6 "पहले से")
+    name: 'v360_pm_substeps_legacy',
+    run:  migratePmSubStepsLegacy,
   },
 ];
 

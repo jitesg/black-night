@@ -29,9 +29,10 @@ import { Plus, X, ChevronDown, LayoutTemplate, Zap, AlertCircle, FileText, Check
 import {
   getCaseDiaryById, addEntry, updateEntry as updateEntryInDB, deleteEntry as deleteEntryInDB,
   getNextSequenceOrder, getEntriesByDiary,
-  getCaseDiariesByFIR, type CaseDiary,
+  getCaseDiariesByFIR, getParchaNumber, type CaseDiary,
 } from '@/lib/db/caseDiaryRepo';
-import { getKaryvahiByFIR, addExecution, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
+import { getKaryvahiByFIR, addExecution, applyPmPartsFromEntry, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
+import { PM_FORMAT_ID, partsFromFormatValues } from '@/lib/karyvahiSubSteps';
 import { OPENING_LABEL, SARANSH_LABEL, openingLine } from '@/lib/caseDiaryParcha';
 import { getFIRById, type FIR } from '@/lib/db/firRepo';
 import { FirBasisHintsView } from '@/components/caseDiary/FirBasisHintsView';
@@ -67,6 +68,8 @@ interface DiaryEntry {
   // narrative fields
   narrativeText: string;
   narrativeTemplate: string;
+  /** पंचनामा व पोस्टमार्टम format generated in this session → the parts it printed (undefined = untouched) */
+  pmParts?: string[];
 }
 
 function mkEntry(kind: EntryKind = 'karyvahi'): DiaryEntry {
@@ -96,7 +99,7 @@ function FormatFillPanel({
   workspace: ReturnType<typeof useWorkspace>['workspace'];
   /** Pre-filled values from a previous draft save for this panel. */
   initialDraftValues?: Record<string, string>;
-  onGenerated: (report: string, formatTitle: string) => void;
+  onGenerated: (report: string, formatTitle: string, formatId: string, values: Record<string, string>) => void;
   /** Called when the user picks "ड्राफ्ट सेव करें" — passes current values up to parent. */
   onSaveDraft: (values: Record<string, string>) => void;
   onClose: () => void;
@@ -162,7 +165,7 @@ function FormatFillPanel({
       return;
     }
     void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Case Diary', markedText: generateReport(format.vivran, values, dynKeys, { keepMarkers: true }), values });
-    onGenerated(generateReport(format.vivran, values, dynKeys), format.title);
+    onGenerated(generateReport(format.vivran, values, dynKeys), format.title, format.id, values);
   };
 
   return (
@@ -569,9 +572,13 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
             firId={firId}
             workspace={workspace}
             initialDraftValues={draftFormats[`${entry.uid}::${activeFillPanel.fmt.id}`]}
-            onGenerated={(report, title) => {
+            onGenerated={(report, title, formatId, vals) => {
+              // पंचनामा व पोस्टमार्टम: remember which parts this entry printed (ticked on save); another format → none
+              const pm = formatId === PM_FORMAT_ID
+                ? { pmParts: partsFromFormatValues(vals) }
+                : entry.pmParts !== undefined ? { pmParts: [] } : {};
               updateEntry(entry.uid, entry.kind === 'karyvahi'
-                ? { vivran: report, formatUsed: title }
+                ? { vivran: report, formatUsed: title, ...pm }
                 : { narrativeText: report, narrativeTemplate: title }
               );
               setActiveFillPanel(null);
@@ -789,6 +796,17 @@ export default function AddCaseDiaryKaryvahiScreen() {
     ? (confirmEntry.kind === 'karyvahi' ? (confirmEntry.karyvahiName.trim() || 'कार्यवाही') : (confirmEntry.narrativeTemplate.trim() || 'नैरेटिव'))
     : '';
 
+  /** पंचनामा व पोस्टमार्टम checklist: the parts this entry's format printed get ticked with the पर्चा number (owner, चरण 3). */
+  const tickPmParts = async (e: DiaryEntry, entryId: string) => {
+    if (e.pmParts === undefined || !firId || !diaryId) return;
+    try {
+      const parcha = await getParchaNumber(firId, diaryId);
+      await applyPmPartsFromEntry(firId, e.firKaryvahiId || undefined, entryId, e.pmParts, parcha);
+    } catch (err) {
+      logger.warn('[AddCaseDiaryKaryvahi] PM checklist tick failed:', err);
+    }
+  };
+
   const handleSave = async () => {
     // Validate entries — never silently discard filled-but-incomplete ones
     const valid: DiaryEntry[] = [];
@@ -840,6 +858,7 @@ export default function AddCaseDiaryKaryvahiScreen() {
               vivran: e.vivran.trim() || undefined,
               format_used: e.formatUsed || undefined,
             });
+            await tickPmParts(e, e.uid);
           } else {
             await updateEntryInDB(e.uid, {
               narrative_text: e.narrativeText.trim(),
@@ -861,7 +880,7 @@ export default function AddCaseDiaryKaryvahiScreen() {
               });
               executionId = exec.id;
             }
-            await addEntry({
+            const saved = await addEntry({
               case_diary_id: diaryId!,
               entry_type: 'karyvahi',
               sequence_order: seqOrder,
@@ -871,6 +890,7 @@ export default function AddCaseDiaryKaryvahiScreen() {
               vivran: e.vivran.trim() || undefined,
               format_used: e.formatUsed || undefined,
             });
+            await tickPmParts(e, saved.id);
           } else {
             await addEntry({
               case_diary_id: diaryId!,
