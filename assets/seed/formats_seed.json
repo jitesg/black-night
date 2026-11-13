@@ -5796,7 +5796,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "पत्र",
@@ -5812,7 +5812,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "श्रीमान पुलिस अधीक्षक महोदय,\nजनपद रायबरेली।",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"\\\"सेवा में\\\" के नीचे की लाइनें, हर लाइन अलग — पद, कार्यालय, जनपद, जैसे: श्रीमान पुलिस अधीक्षक महोदय, ⏎ जनपद रायबरेली।\"}"
         },
         {
           "key_name": "Subject",
@@ -5820,7 +5821,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"\\\"विषय:\\\" के बाद वाला छोटा वाक्य, जैसे: मु0अ0सं0 123/2026 में CDR उपलब्ध कराने के सम्बन्ध में\"}"
         },
         {
           "key_name": "Body",
@@ -5828,7 +5830,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "सविनय निवेदन है कि ",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"पत्र का पूरा मज़मून; नया पैराग्राफ शुरू करना हो तो बीच में एक खाली लाइन छोड़ें\"}"
         },
         {
           "key_name": "Closing",
@@ -5836,7 +5839,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "सादर सेवा में प्रेषित है।",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"पत्र की आखिरी लाइन (बीच में छपती है) — पहले से भरी ठीक हो तो रहने दें\"}"
         },
         {
           "key_name": "Attachments",
@@ -5844,7 +5848,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"संलग्न कागज़, हर लाइन पर एक — नम्बर अपने आप लगते हैं; कुछ न हो तो खाली\"}"
         },
         {
           "key_name": "Date",
@@ -5852,7 +5857,8 @@
           "field_type": "date",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"पत्र पर तारीख चाहिए तो चुनें — न चाहिए तो खाली\"}"
         },
         {
           "key_name": "pad",
@@ -5860,7 +5866,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 6
         },
         {
@@ -5869,7 +5875,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -5877,7 +5884,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -5885,7 +5893,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -5898,7 +5907,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "वाहन",
@@ -5916,7 +5925,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"जिस जनपद के RTO को पत्र जाना है, जैसे: रायबरेली\"}"
         },
         {
           "key_name": "TheftDate",
@@ -5924,7 +5934,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"वाहन चोरी होने की तारीख चुनें\"}"
         },
         {
           "key_name": "TheftPlace",
@@ -5932,7 +5943,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.ghatnasthal",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"चोरी का स्थान, जैसे: ग्राम बन्नावां (FIR से अपने आप)\"}"
         },
         {
           "key_name": "VehicleType",
@@ -5940,7 +5952,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"वाहन का प्रकार व मॉडल, जैसे: मोटरसाइकिल हीरो स्प्लेण्डर\"}"
         },
         {
           "key_name": "VehicleNo",
@@ -5948,7 +5961,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"वाहन नम्बर बिना स्पेस, जैसे: UP33AB1234\"}"
         },
         {
           "key_name": "EngineNo",
@@ -5956,7 +5970,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"इंजन नम्बर जैसा RC पर है\"}"
         },
         {
           "key_name": "ChassisNo",
@@ -5964,7 +5979,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"चेसिस नम्बर जैसा RC पर है\"}"
         },
         {
           "key_name": "FIRNO",
@@ -5972,7 +5988,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "SECTION",
@@ -5980,7 +5997,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "@FIR.section|303(2) BNS",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "RCPages",
@@ -5988,7 +6006,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "01",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"संलग्न RC की छायाप्रति कितने पन्ने (वर्क), जैसे: 01\"}"
         },
         {
           "key_name": "FIRPages",
@@ -5996,7 +6015,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "02",
-          "sort_order": 10
+          "sort_order": 10,
+          "dropdown_options": "{\"hint\": \"संलग्न FIR की छायाप्रति कितने पन्ने, जैसे: 02\"}"
         },
         {
           "key_name": "pad",
@@ -6004,7 +6024,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 11
         },
         {
@@ -6013,7 +6033,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -6021,7 +6042,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -6029,7 +6051,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -6171,7 +6194,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "दुर्घटना",
@@ -6189,7 +6212,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "प्रभारी संभागीय परिवहन अधिकारी महोदय,\nजनपद लखनऊ, उत्तर प्रदेश।",
-          "sort_order": 0
+          "sort_order": 0,
+          "dropdown_options": "{\"hint\": \"\\\"सेवा में\\\" के नीचे की लाइनें, हर लाइन अलग — पद, कार्यालय, जनपद, जैसे: श्रीमान पुलिस अधीक्षक महोदय, ⏎ जनपद रायबरेली।\"}"
         },
         {
           "key_name": "FIRNO",
@@ -6197,7 +6221,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "SECTION",
@@ -6205,7 +6230,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "@FIR.section|281/125(b) BNS",
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Copies",
@@ -6213,7 +6239,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "02",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"कितनी प्रमाणित प्रतियाँ चाहिए, दो अंकों में, जैसे: 02\"}"
         },
         {
           "key_name": "Vehicles",
@@ -6221,7 +6248,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"वाहन की भूमिका\", \"type\": \"choice\", \"options\": [\"दुर्घटनाकारक\", \"दुर्घटनाग्रस्त\"], \"default\": \"दुर्घटनाकारक\"}, {\"key\": \"vtype\", \"label\": \"वाहन का प्रकार (जैसे: ट्रैक्टर, मोटरसाइकिल)\"}, {\"key\": \"vno\", \"label\": \"वाहन नंबर\"}, {\"key\": \"driver\", \"label\": \"चालक का नाम\"}, {\"key\": \"father\", \"label\": \"चालक के पिता का नाम\"}, {\"key\": \"address\", \"label\": \"चालक का पता\"}, {\"key\": \"dl\", \"label\": \"ड्राइविंग लाइसेंस नंबर\"}, {\"key\": \"needDL\", \"label\": \"इस चालक के DL की प्रति माँगनी है\", \"type\": \"check\", \"default\": \"हाँ\"}, {\"key\": \"needRC\", \"label\": \"इस वाहन की RC की प्रति माँगनी है\", \"type\": \"check\", \"default\": \"हाँ\"}], \"addLabel\": \"+ और वाहन जोड़ें\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"role\", \"label\": \"वाहन की भूमिका\", \"type\": \"choice\", \"options\": [\"दुर्घटनाकारक\", \"दुर्घटनाग्रस्त\"], \"default\": \"दुर्घटनाकारक\"}, {\"key\": \"vtype\", \"label\": \"वाहन का प्रकार (जैसे: ट्रैक्टर, मोटरसाइकिल)\"}, {\"key\": \"vno\", \"label\": \"वाहन नंबर\"}, {\"key\": \"driver\", \"label\": \"चालक का नाम\"}, {\"key\": \"father\", \"label\": \"चालक के पिता का नाम\"}, {\"key\": \"address\", \"label\": \"चालक का पता\"}, {\"key\": \"dl\", \"label\": \"ड्राइविंग लाइसेंस नंबर\"}, {\"key\": \"needDL\", \"label\": \"इस चालक के DL की प्रति माँगनी है\", \"type\": \"check\", \"default\": \"हाँ\"}, {\"key\": \"needRC\", \"label\": \"इस वाहन की RC की प्रति माँगनी है\", \"type\": \"check\", \"default\": \"हाँ\"}], \"addLabel\": \"+ और वाहन जोड़ें\", \"hint\": \"हर वाहन की एक पंक्ति: भूमिका (दुर्घटनाकारक / दुर्घटनाग्रस्त), प्रकार, नम्बर, चालक का नाम-पिता-पता, DL नम्बर; DL चाहिए तो \\\"DL\\\" और RC चाहिए तो \\\"RC\\\" टिक करें — उसी हिसाब से एक या दोनों पत्र बनते हैं\"}",
           "sort_order": 4
         },
         {
@@ -6230,7 +6257,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 5
         },
         {
@@ -6239,7 +6266,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -6247,7 +6275,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -6255,7 +6284,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -6268,7 +6298,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "मेडिकल",
@@ -6288,7 +6318,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "BHT (मेडिकल प्रपत्र)",
-          "dropdown_options": "[\"BHT (मेडिकल प्रपत्र)\", \"एक्स-रे रिपोर्ट\", \"सप्लीमेंटरी रिपोर्ट\", \"DNA परीक्षण\"]",
+          "dropdown_options": "{\"options\": [\"BHT (मेडिकल प्रपत्र)\", \"एक्स-रे रिपोर्ट\", \"सप्लीमेंटरी रिपोर्ट\", \"DNA परीक्षण\"], \"hint\": \"अस्पताल से क्या मँगाना है — BHT / एक्स-रे / सप्लीमेंटरी / DNA; पत्र का विषय और शब्द इसी से बनते हैं\"}",
           "sort_order": 0
         },
         {
@@ -6297,7 +6327,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"Type=एक्स-रे रिपोर्ट\"}",
+          "dropdown_options": "{\"showIf\": \"Type=एक्स-रे रिपोर्ट\", \"hint\": \"एक्स-रे के साथ सीटी स्कैन रिपोर्ट भी चाहिए तो टिक\"}",
           "sort_order": 1
         },
         {
@@ -6306,7 +6336,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"showIf\": \"Type=एक्स-रे रिपोर्ट\"}",
+          "dropdown_options": "{\"showIf\": \"Type=एक्स-रे रिपोर्ट\", \"hint\": \"रिपोर्ट न मिलने से सप्लीमेंटरी रुकी है — यह वाक्य जोड़ना हो तो टिक\"}",
           "sort_order": 2
         },
         {
@@ -6315,7 +6345,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": "श्रीमान मुख्य चिकित्साधीक्षक महोदय,\nजिला अस्पताल रायबरेली।",
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"\\\"सेवा में\\\" के नीचे की लाइनें, जैसे: श्रीमान मुख्य चिकित्साधीक्षक महोदय, ⏎ जिला अस्पताल रायबरेली।\"}"
         },
         {
           "key_name": "HospitalShort",
@@ -6323,7 +6354,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"पत्र के अंदर आने वाला अस्पताल का नाम, जैसे: जिला अस्पताल रायबरेली / सीएचसी बछरावां\"}"
         },
         {
           "key_name": "FIRNo",
@@ -6331,7 +6363,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "@FIR.fir_number",
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Sections",
@@ -6339,7 +6372,8 @@
           "field_type": "multiline",
           "is_required": 0,
           "default_value": "@FIR.section",
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
         },
         {
           "key_name": "Role",
@@ -6347,7 +6381,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मजरूब",
-          "dropdown_options": "[\"मजरूब\", \"मजरूबा\", \"अभियुक्त\", \"अभियुक्ता\", \"पीड़िता\"]",
+          "dropdown_options": "{\"options\": [\"मजरूब\", \"मजरूबा\", \"अभियुक्त\", \"अभियुक्ता\", \"पीड़िता\"], \"hint\": \"व्यक्ति मुकदमे में कौन है — कई व्यक्ति हों तो \\\"मजरूबगण / अभियुक्तगण\\\" अपने आप बनता है\"}",
           "sort_order": 7
         },
         {
@@ -6356,7 +6390,7 @@
           "field_type": "item_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम व पिता/पति (जैसे: मनीष पुत्र हरीशंकर)\"}, {\"key\": \"addr\", \"label\": \"पता\"}, {\"key\": \"age\", \"label\": \"उम्र — न हो तो खाली\"}, {\"key\": \"mlc\", \"label\": \"MLC No. — न हो तो खाली\"}, {\"key\": \"cr\", \"label\": \"CR No. — न हो तो खाली\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\"}",
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम व पिता/पति (जैसे: मनीष पुत्र हरीशंकर)\"}, {\"key\": \"addr\", \"label\": \"पता\"}, {\"key\": \"age\", \"label\": \"उम्र — न हो तो खाली\"}, {\"key\": \"mlc\", \"label\": \"MLC No. — न हो तो खाली\"}, {\"key\": \"cr\", \"label\": \"CR No. — न हो तो खाली\"}], \"addLabel\": \"+ और व्यक्ति जोड़ें\", \"itemLabel\": \"व्यक्ति\", \"hint\": \"हर व्यक्ति की एक पंक्ति: नाम व पिता/पति (मनीष पुत्र हरीशंकर), पता, उम्र, MLC नं0 व CR नं0 (न हों तो खाली)। \\\"+\\\" से अगला\"}",
           "sort_order": 8
         },
         {
@@ -6365,7 +6399,7 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Type=BHT (मेडिकल प्रपत्र)/एक्स-रे रिपोर्ट/सप्लीमेंटरी रिपोर्ट\"}",
+          "dropdown_options": "{\"showIf\": \"Type=BHT (मेडिकल प्रपत्र)/एक्स-रे रिपोर्ट/सप्लीमेंटरी रिपोर्ट\", \"hint\": \"इलाज / परीक्षण की तारीख, जैसे: 01.05.2025 या 16.04.2025 व 20.04.2025 — न पता हो तो खाली\"}",
           "sort_order": 9
         },
         {
@@ -6374,7 +6408,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 10
         },
         {
@@ -6383,7 +6417,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 11
+          "sort_order": 11,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -6391,7 +6426,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -6399,7 +6435,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         },
         {
           "key_name": "Mobile",
@@ -6407,7 +6444,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"10 अंकों का अपना मोबाइल नम्बर — हस्ताक्षर के नीचे छपता है; न देना हो तो खाली छोड़ें\"}"
         }
       ]
     },
@@ -6420,7 +6458,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "पोस्टमार्टम",
@@ -6440,7 +6478,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मृतक",
-          "dropdown_options": "[\"मृतक\", \"मृतका\"]",
+          "dropdown_options": "{\"options\": [\"मृतक\", \"मृतका\"], \"hint\": \"पुरुष हो तो \\\"मृतक\\\", महिला हो तो \\\"मृतका\\\" — फोटो लाश वाला चित्र भी इसी से बदलता है\"}",
           "sort_order": 0
         },
         {
@@ -6449,7 +6487,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ नाम\"}"
         },
         {
           "key_name": "Relation",
@@ -6457,7 +6496,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "पुत्र",
-          "dropdown_options": "[\"पुत्र\", \"पुत्री\", \"पत्नी\"]",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"hint\": \"पिता के नाम से तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
           "sort_order": 2
         },
         {
@@ -6466,7 +6505,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"पिता / पति का नाम\"}"
         },
         {
           "key_name": "Age",
@@ -6474,7 +6514,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45\"}"
         },
         {
           "key_name": "Caste",
@@ -6482,7 +6523,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"जाति — न लिखनी हो तो खाली\"}"
         },
         {
           "key_name": "DAddress",
@@ -6490,7 +6532,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"ग्राम / मोहल्ला, जैसे: ग्राम रामपुर मजरे सरायउमर\"}"
         },
         {
           "key_name": "DThana",
@@ -6498,7 +6541,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"मृतक का थाना — आपका ही थाना हो तो खाली\"}"
         },
         {
           "key_name": "DDistrict",
@@ -6506,7 +6550,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"मृतक का जनपद — आपका ही जनपद हो तो खाली\"}"
         },
         {
           "key_name": "DeathCause",
@@ -6514,7 +6559,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"मृत्यु कैसे हुई, \\\"से / में\\\" तक, जैसे: सड़क दुर्घटना में / फाँसी लगाने से\"}"
         },
         {
           "key_name": "Wrap",
@@ -6522,7 +6568,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कपड़े",
-          "dropdown_options": "[\"कपड़े\", \"बॉडी बैग\"]",
+          "dropdown_options": "{\"options\": [\"कपड़े\", \"बॉडी बैग\"], \"hint\": \"शव कपड़े में सील किया या बॉडी बैग में\"}",
           "sort_order": 10
         },
         {
@@ -6531,7 +6577,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आरक्षी",
-          "dropdown_options": "[\"मुख्य आरक्षी\", \"आरक्षी\", \"महिला आरक्षी\"]",
+          "dropdown_options": "{\"options\": [\"मुख्य आरक्षी\", \"आरक्षी\", \"महिला आरक्षी\"], \"hint\": \"शव ले जाने वाले कर्मचारी का पद\"}",
           "sort_order": 11
         },
         {
@@ -6540,7 +6586,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 12
+          "sort_order": 12,
+          "dropdown_options": "{\"hint\": \"उस कर्मचारी का सिर्फ़ नाम\"}"
         },
         {
           "key_name": "Carrier2",
@@ -6548,7 +6595,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 13
+          "sort_order": 13,
+          "dropdown_options": "{\"hint\": \"साथ में दूसरा कर्मचारी हो तो पद सहित नाम, जैसे: आरक्षी रामू यादव — नहीं तो खाली\"}"
         },
         {
           "key_name": "SendDT",
@@ -6556,7 +6604,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 14
+          "sort_order": 14,
+          "dropdown_options": "{\"hint\": \"शव भेजने का दिनांक व समय, जैसे: 31.10.2026 समय 14.30 बजे\"}"
         },
         {
           "key_name": "InfoDT",
@@ -6564,7 +6613,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 15
+          "sort_order": 15,
+          "dropdown_options": "{\"hint\": \"थाने पर सूचना का दिनांक व समय, जैसे: 31.10.2026 समय 09.15 बजे\"}"
         },
         {
           "key_name": "DeathDT",
@@ -6572,7 +6622,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 16
+          "sort_order": 16,
+          "dropdown_options": "{\"hint\": \"मृत्यु का अनुमानित दिनांक व समय\"}"
         },
         {
           "key_name": "Direction",
@@ -6580,7 +6631,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 17
+          "sort_order": 17,
+          "dropdown_options": "{\"hint\": \"जिला मुख्यालय से घटना स्थल की दिशा व दूरी, जैसे: पूर्व 35 किमी0\"}"
         },
         {
           "key_name": "SendMode",
@@ -6588,7 +6640,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "एम्बुलेंस द्वारा",
-          "sort_order": 18
+          "sort_order": 18,
+          "dropdown_options": "{\"hint\": \"शव किस वाहन से भेजा, जैसे: एम्बुलेंस द्वारा / निजी वाहन द्वारा\"}"
         },
         {
           "key_name": "pad",
@@ -6596,7 +6649,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "[\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
           "sort_order": 19
         },
         {
@@ -6605,7 +6658,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 20
+          "sort_order": 20,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -6613,7 +6667,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 21
+          "sort_order": 21,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -6621,7 +6676,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 22
+          "sort_order": 22,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
@@ -6634,7 +6690,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 1,
+      "seed_version": 2,
       "app_version": "1.0.0",
       "tags": [
         "अवकाश",
@@ -6652,7 +6708,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आरक्षी",
-          "dropdown_options": "[\"आरक्षी\", \"मुख्य आरक्षी\", \"महिला आरक्षी\", \"आरक्षी चालक\", \"उपनिरीक्षक\", \"महिला उपनिरीक्षक\"]",
+          "dropdown_options": "{\"options\": [\"आरक्षी\", \"मुख्य आरक्षी\", \"महिला आरक्षी\", \"आरक्षी चालक\", \"उपनिरीक्षक\", \"महिला उपनिरीक्षक\"], \"hint\": \"छुट्टी लेने वाले कर्मचारी का पद\"}",
           "sort_order": 0
         },
         {
@@ -6661,7 +6717,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 1
+          "sort_order": 1,
+          "dropdown_options": "{\"hint\": \"कर्मचारी का नाम व नम्बर, जैसे: 1234 रामू यादव\"}"
         },
         {
           "key_name": "FromDate",
@@ -6669,7 +6726,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 2
+          "sort_order": 2,
+          "dropdown_options": "{\"hint\": \"छुट्टी किस तारीख से\"}"
         },
         {
           "key_name": "ToDate",
@@ -6677,7 +6735,8 @@
           "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 3
+          "sort_order": 3,
+          "dropdown_options": "{\"hint\": \"छुट्टी किस तारीख तक\"}"
         },
         {
           "key_name": "Days",
@@ -6685,7 +6744,8 @@
           "field_type": "number",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 4
+          "sort_order": 4,
+          "dropdown_options": "{\"hint\": \"कुल दिन अंक में, जैसे: 05 — न लिखना हो तो खाली\"}"
         },
         {
           "key_name": "Reason",
@@ -6693,7 +6753,8 @@
           "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 5
+          "sort_order": 5,
+          "dropdown_options": "{\"hint\": \"छुट्टी का कारण पूरे वाक्य में, जैसे: घर पर बहन की शादी होने के कारण\"}"
         },
         {
           "key_name": "StaffCount",
@@ -6701,7 +6762,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 6
+          "sort_order": 6,
+          "dropdown_options": "{\"hint\": \"थाने पर नियुक्त आरक्षी / मुख्य आरक्षियों की संख्या — खाली छोड़ें तो …… छपेगा (हाथ से भरने को)\"}"
         },
         {
           "key_name": "LastReturn",
@@ -6709,7 +6771,8 @@
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "sort_order": 7
+          "sort_order": 7,
+          "dropdown_options": "{\"hint\": \"पिछले अवकाश से वापसी की तारीख — खाली छोड़ें तो …… छपेगा\"}"
         },
         {
           "key_name": "PoliceStation",
@@ -6717,7 +6780,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 8
+          "sort_order": 8,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
           "key_name": "District",
@@ -6725,7 +6789,8 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 9
+          "sort_order": 9,
+          "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]
     },
