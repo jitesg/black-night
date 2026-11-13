@@ -1325,56 +1325,51 @@ function KaryvahiTab() {
 
   return (
     <View className="flex-1 bg-background">
-      {/* ── Header + Segmented control ─────────────────────────────────── */}
+      {/* ── Header ─────────────────────────────────────────────────────── */}
       <AppHeader
         title={t('fir.karyvahi.title')}
         showBack
-        titleSlot={
-          <View>
-            <Text
-              numberOfLines={1}
-              style={{ fontSize: 17, fontWeight: '600', color: c.foreground, letterSpacing: -0.2 }}
-            >
-              {t('fir.karyvahi.title')}
-            </Text>
-            {/* Segmented control sits immediately under title — one compact unit */}
-            <View className="flex-row rounded-lg bg-secondary p-0.5 gap-0.5 mt-1.5" style={{ alignSelf: 'stretch' }}>
-              {VIEWS.map((v) => {
-                const isActive = activeView === v.value;
-                return (
-                  <Pressable
-                    key={v.value}
-                    onPress={() => setActiveView(v.value)}
-                    className="flex-1 flex-row items-center justify-center gap-1.5 py-1.5 rounded-md active:opacity-70"
-                    style={{ backgroundColor: isActive ? c.card : 'transparent' }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 11,
-                        fontWeight: '600',
-                        color: isActive ? c.primary : c.mutedForeground,
-                      }}
-                      numberOfLines={1}
-                    >
-                      {v.label}
-                    </Text>
-                    {v.value === 'diary' && queuedCount > 0 && (
-                      <View
-                        className="rounded-full items-center justify-center"
-                        style={{ width: 16, height: 16, backgroundColor: c.primary }}
-                      >
-                        <Text style={{ fontSize: 9, color: c.primaryForeground, fontWeight: '700' }}>
-                          {queuedCount > 9 ? '9+' : queuedCount}
-                        </Text>
-                      </View>
-                    )}
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-        }
       />
+
+      {/* ── सामान्य / केस डायरी की कार्यवाही (owner): moved out of the header onto the screen — full width, bigger, stays
+          under the header while the list scrolls (it sits outside the list). ── */}
+      <View className="px-4 pt-3 pb-1 bg-background">
+        <View className="flex-row rounded-xl bg-secondary p-1 gap-1">
+          {VIEWS.map((v) => {
+            const isActive = activeView === v.value;
+            return (
+              <Pressable
+                key={v.value}
+                onPress={() => setActiveView(v.value)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: isActive }}
+                className="flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-lg active:opacity-70"
+                style={{
+                  backgroundColor: isActive ? c.card : 'transparent',
+                  ...(isActive ? { shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 3, shadowOffset: { width: 0, height: 1 }, elevation: 1 } : {}),
+                }}
+              >
+                <Text
+                  style={{ fontSize: 14, fontWeight: isActive ? '700' : '600', color: isActive ? c.primary : c.mutedForeground }}
+                  numberOfLines={1}
+                >
+                  {v.label}
+                </Text>
+                {v.value === 'diary' && queuedCount > 0 && (
+                  <View
+                    className="rounded-full items-center justify-center"
+                    style={{ minWidth: 20, height: 20, paddingHorizontal: 4, backgroundColor: c.primary }}
+                  >
+                    <Text style={{ fontSize: 11, color: c.primaryForeground, fontWeight: '700' }}>
+                      {queuedCount > 9 ? '9+' : queuedCount}
+                    </Text>
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">

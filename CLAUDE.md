@@ -459,6 +459,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end
   before start is allowed — past midnight).
+- FIR कार्यवाही tab (`(tabs)/karyvahi.tsx`): the "सामान्य कार्यवाही | केस डायरी की कार्यवाही (n)" switch is NOT in the header any more (owner) —
+  a full-width segmented control (14px, py-2.5, white active pill) right under the plain AppHeader, outside the list so it always stays visible.
 - FIR Case Diary tab header (`(tabs)/case-diary.tsx`): Export All / Add Diary are 38px icon-only buttons (green ⬇ / indigo +, labels in
   accessibilityLabel) — the text pills cut the tab title (owner).
 - केस डायरी कार्यवाही screen (`add-case-diary-karyvahi.tsx`): ✕ on an entry (collapsed card or open form) → `askRemoveEntry`: empty entry removed at once,
