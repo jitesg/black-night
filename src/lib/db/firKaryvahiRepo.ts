@@ -804,6 +804,8 @@ export async function setKaryvahiSubSteps(id: string, firId: string, json: strin
   const db = await getDatabase();
   await db.runAsync('UPDATE fir_karyvahi SET sub_steps_json = ?, updated_at = ? WHERE id = ?', [json, nowTimestamp(), id]);
   await recalcExecutionCount(id, firId);
+  // पंचनामा के बयान लंबित alert follows the checklist (lazy import — no RN deps here)
+  import('../pmBayanService').then((m) => m.resyncPmBayanAlertsSoon()).catch(() => {});
 }
 
 /**

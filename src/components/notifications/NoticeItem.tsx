@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { ArrowRight, Bell, CalendarClock, FileText, FileWarning, NotebookPen, Scale, Scroll } from 'lucide-react-native';
+import { ArrowRight, Bell, CalendarClock, ClipboardList, FileText, FileWarning, NotebookPen, Scale, Scroll } from 'lucide-react-native';
 import { THEME } from '@/lib/theme';
 import type { NoticeCard, NoticeKind, NoticeLevel } from '@/lib/noticeCards';
 
@@ -18,6 +18,7 @@ export const KIND_META: Record<NoticeKind, { label: string; icon: typeof Bell; t
   petition: { label: 'प्रार्थना पत्र', icon: Scroll,      tile: '#14B8A6', soft: { light: '#0F766E', dark: '#5EEAD4' } },
   reminder: { label: 'रिमाइंडर',      icon: Bell,        tile: '#F59E0B', soft: { light: '#B45309', dark: '#FCD34D' } },
   nk:       { label: 'निरोधात्मक',     icon: FileWarning, tile: '#EF4444', soft: { light: '#DC2626', dark: '#FCA5A5' } },
+  pm:       { label: 'पंचनामा बयान',   icon: ClipboardList, tile: '#06B6D4', soft: { light: '#0E7490', dark: '#67E8F9' } },
 };
 
 const LEVEL_COLOR: Record<NoticeLevel, { light: string; dark: string }> = {

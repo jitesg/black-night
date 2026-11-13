@@ -18,7 +18,7 @@ import { refreshAppBadge } from '@/lib/appBadge';
 import type { NoticeCard, NoticeKind } from '@/lib/noticeCards';
 
 type Filter = 'all' | NoticeKind;
-const FILTERS: Filter[] = ['all', 'cd', 'nk', 'court', 'petition', 'reminder'];
+const FILTERS: Filter[] = ['all', 'cd', 'pm', 'nk', 'court', 'petition', 'reminder'];
 
 export default function NotificationsScreen() {
   const { colorScheme } = useColorScheme();
@@ -39,7 +39,7 @@ export default function NotificationsScreen() {
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const counts = useMemo(() => {
-    const c: Record<Filter, number> = { all: cards.length, cd: 0, court: 0, petition: 0, reminder: 0, nk: 0 };
+    const c: Record<Filter, number> = { all: cards.length, cd: 0, court: 0, petition: 0, reminder: 0, nk: 0, pm: 0 };
     for (const x of cards) c[x.kind] += 1;
     return c;
   }, [cards]);

@@ -8,6 +8,7 @@
  *   numbers are permitted.
  */
 import { syncNkChalaniAlerts } from '@/lib/nkChalaniService';
+import { syncPmBayanAlerts } from '@/lib/pmBayanService';
 import * as Notifications from 'expo-notifications';
 import { getDatabase } from '@/lib/db/database';
 import { getPersistedSettings } from '@/hooks/useSettingsStore';
@@ -154,6 +155,9 @@ export async function syncAppNotifications(): Promise<void> {
 
     // f) notifNkChalani — निरोधात्मक चलानी प्रेषण लंबित (daily 9 AM summary)
     await syncNkChalaniAlerts();
+
+    // g) notifPmBayan — पंचनामा के बयान लंबित (7+ days after the पंचायतनामा, daily 9 AM summary)
+    await syncPmBayanAlerts();
 
     // App-icon badge = सूचनाएँ that need action (same number as the home bell).
     await refreshAppBadge();

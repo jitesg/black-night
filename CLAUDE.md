@@ -257,7 +257,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   owner's samples; generator `scripts/build_panchayatnama_pm.py`, tests `scripts/test_panchayatnama_pm.ts`): 6 ticks doPan / doPm / doBayanSI /
   doBayanCo / doBayanPanch / doBayanDoc (each prints its part; only-PM wording "की मूल … प्राप्त हुई है जिसका"); Panch = item_group (mahila, own
   text; `copy` Story1/Story2/BodyPlace/DName); docMahila, doViscera, optional DocInjury. `tidyRepeats` drops blank lines at the very top.
-  Plan (owner, चरण 6 next): 7-day bell.
+  All 6 चरण done. चरण 6 (bell): `src/lib/pmBayan.ts` (pure; tests `scripts/test_pm_bayan.ts`) — pending = पंचायतनामा part done (not 'old') and < 6/6;
+  base = PanDate in last_values_json, else the pan tick day; due from day 7 (`PM_BAYAN_AFTER_DAYS`), red from day 15. सूचनाएँ card kind 'pm'
+  ("पंचनामा बयान", progress n/6, route FIR karyvahi tab, filter chip) via noticeRepo `getPmBayanRows`; phone alert `pmBayanService.ts`
+  (`kind: pm_bayan`, 9 AM daily summary, data.route; setting notifPmBayan; resync from setKaryvahiSubSteps + syncAppNotifications).
   चरण 5 done (instant filling): saving the PM format stores its values in fir_karyvahi.last_values_json (entry `pmValues` → applyPmPartsFromEntry);
   FormatFillPanel (केस डायरी कार्यवाही) opening the PM format merges `getPmPrefill(firId)` = `prefillPmValues(last, map)` (last values; only parts
   still left ticked; all 6 done → format's own ticks) after the context defaults, before a draft.

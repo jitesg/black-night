@@ -9,8 +9,9 @@
  */
 import { CD_ALERT_AFTER_DAYS, CD_MAX_GAP_DAYS, daysBetween, fmtDate, gapBase, parseLocalDate, type CdFirRow } from './caseDiaryGap';
 import { nkDate, nkPendingDays, nkPlace, type NkPendingRow } from './nkChalani';
+import { PM_BAYAN_OVER_DAYS, pmBayanDue, pmBayanRoute, type PmBayanRow } from './pmBayan';
 
-export type NoticeKind = 'cd' | 'court' | 'petition' | 'reminder' | 'nk';
+export type NoticeKind = 'cd' | 'court' | 'petition' | 'reminder' | 'nk' | 'pm';
 export type NoticeLevel = 'over' | 'warn' | 'info';
 
 export interface NoticeCard {
@@ -103,9 +104,23 @@ function deadlineCard(
 
 export function buildNoticeCards(input: {
   firs?: CdFirRow[]; courtDocs?: CourtDocRow[]; petitions?: PetitionRow[]; reminders?: ReminderRow[];
-  nkPending?: NkPendingRow[];
+  nkPending?: NkPendingRow[]; pmBayan?: PmBayanRow[];
 }, now: Date = new Date()): NoticeCard[] {
   const out: NoticeCard[] = [];
+
+  // पंचनामा व पोस्टमार्टम: 7+ days after the पंचायतनामा and the बयान / PM parts are not all done.
+  for (const p of pmBayanDue(input.pmBayan ?? [], now)) {
+    const days = daysBetween(p.base, now);
+    out.push({
+      id: `pm-${p.row.firId}`, kind: 'pm', level: days >= PM_BAYAN_OVER_DAYS ? 'over' : 'warn',
+      title: `पंचनामा के बयान लंबित — मु0अ0सं0 ${p.row.fir_number}`,
+      body: `पंचायतनामा (${fmtDate(p.base)}) को ${days} दिन हो गये, अभी ${p.done}/${p.total} पूरे। ${p.remaining}`,
+      when: `${days} दिन`, route: pmBayanRoute(p.row.firId), rank: -days,
+      progress: { value: p.done / p.total, label: `${p.done}/${p.total}` },
+      meta: [`मु0अ0सं0 ${p.row.fir_number}`, `पंचायतनामा ${fmtDate(p.base)}`],
+      action: 'बयान लिखें',
+    });
+  }
 
   // निरोधात्मक: चलानी not yet sent to the magistrate (until the checklist tick is set).
   for (const r of input.nkPending ?? []) {

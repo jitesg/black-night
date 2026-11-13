@@ -450,6 +450,8 @@
       "caseDiaryGapDesc": "Daily 9 AM reminder when the last case diary is more than 7 days old (keep the gap under 15 days)",
       "nkChalani": "Chalani pending alert",
       "nkChalaniDesc": "Daily 9 AM reminder until a preventive action's chalani is ticked as sent to the magistrate",
+      "pmBayan": "Panchnama statements pending alert",
+      "pmBayanDesc": "Daily 9 AM reminder from day 7 after the panchayatnama until all 6 parts of the panchnama & post-mortem checklist are done",
       "disclaimer": "Notifications require device permission. If notifications are not appearing, enable them in your device Settings → InvestSuite → Notifications."
     },
     "search": {

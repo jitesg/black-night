@@ -6,10 +6,12 @@ import { getDatabase } from './database';
 import { getUpcomingReminders } from './reminderRepo';
 import type { CdFirRow } from '@/lib/caseDiaryGap';
 import type { NkPendingRow } from '@/lib/nkChalani';
+import type { PmBayanRow } from '@/lib/pmBayan';
+import { isPmKaryvahi } from '@/lib/karyvahiSubSteps';
 import { extractKaryvahiFacts } from '@/lib/nirodhatmak/extractKaryvahi';
 import { buildNoticeCards, type CourtDocRow, type NoticeCard, type PetitionRow, type ReminderRow } from '@/lib/noticeCards';
 
-export interface NoticeInput { firs: CdFirRow[]; courtDocs: CourtDocRow[]; petitions: PetitionRow[]; reminders: ReminderRow[]; nkPending: NkPendingRow[] }
+export interface NoticeInput { firs: CdFirRow[]; courtDocs: CourtDocRow[]; petitions: PetitionRow[]; reminders: ReminderRow[]; nkPending: NkPendingRow[]; pmBayan: PmBayanRow[] }
 
 /** Pending FIRs with the date of their latest case diary. */
 export async function getPendingFirsWithLastDiary(): Promise<CdFirRow[]> {
@@ -64,16 +66,31 @@ export async function getPendingNkChalani(): Promise<NkPendingRow[]> {
   return out;
 }
 
+/** पंचनामा व पोस्टमार्टम karyvahis of open FIRs (rules decide which are pending — pmBayan.ts). */
+export async function getPmBayanRows(): Promise<PmBayanRow[]> {
+  const db = await getDatabase();
+  const rows = await db.getAllAsync<{
+    firId: string; fir_number: string; name: string; step_code: string | null; sub_steps_json: string | null; last_values_json: string | null;
+  }>(
+    `SELECT k.fir_id AS firId, f.fir_number, k.name, k.step_code, k.sub_steps_json, k.last_values_json
+       FROM fir_karyvahi k JOIN firs f ON f.id = k.fir_id
+      WHERE k.deleted_at IS NULL AND f.deleted_at IS NULL AND COALESCE(f.status, 'Pending') = 'Pending'
+        AND k.sub_steps_json LIKE '%"pan"%'`,
+  );
+  return rows.filter((r) => isPmKaryvahi(r)).map(({ firId, fir_number, sub_steps_json, last_values_json }) => ({ firId, fir_number, sub_steps_json, last_values_json }));
+}
+
 export async function loadNoticeInput(): Promise<NoticeInput> {
-  const [firs, courtDocs, petitions, reminders, nkPending] = await Promise.all([
+  const [firs, courtDocs, petitions, reminders, nkPending, pmBayan] = await Promise.all([
     getPendingFirsWithLastDiary().catch(() => [] as CdFirRow[]),
     getPendingCourtDocs().catch(() => [] as CourtDocRow[]),
     getPendingPetitions().catch(() => [] as PetitionRow[]),
     getUpcomingReminders().catch(() => []),
     getPendingNkChalani().catch(() => [] as NkPendingRow[]),
+    getPmBayanRows().catch(() => [] as PmBayanRow[]),
   ]);
   return {
-    firs, courtDocs, petitions, nkPending,
+    firs, courtDocs, petitions, nkPending, pmBayan,
     // A snoozed reminder counts from its snooze time.
     reminders: reminders.map((r) => ({
       id: r.id, title: r.title, fir_label: r.fir_label,
