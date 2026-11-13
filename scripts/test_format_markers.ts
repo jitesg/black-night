@@ -278,3 +278,20 @@ test('126/135: गवाहान line by the doGawah tick (default on); off →
     assert.equal((off.match(/<div class="doc-witness">​<\/div>/g) ?? []).length, 2, f.id);
   }
 });
+
+test('126/135: the 135(3) letters have 2 empty lines above the signature (owner)', async () => {
+  const { generateReport } = await import('../src/lib/templateEngine.ts');
+  const seed = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const person = (name: string) => ({ name, relationType: 'पुत्र', fatherOrHusbandName: 'श्याम', age: '35', fullAddress: 'ग्राम अ' });
+  for (const f of seed.formats.filter((x: { id: string }) => x.id.startsWith('sys-fmt-bnss126-'))) {
+    const v: Record<string, string> = {};
+    for (const k of f.keys) v[k.key_name] = 'X';
+    Object.assign(v, { OfficerName: 'जीतेश सिंह', firstpartyDetails: JSON.stringify([person('राम')]), secondpartyDetail: JSON.stringify([person('सोहन')]) });
+    const html = P.renderTextForPrint(generateReport(f.vivran, v, f.keys, { keepMarkers: true }));
+    const letters135 = html.split('<div class="doc-letter">').filter((x: string) => x.includes('135(3) BNSS थाना'));
+    assert.equal(letters135.length, 2, f.id);
+    for (const l of letters135) {
+      assert.match(l, /<td class="sig">​<\/td><\/tr><tr><td class="att"><\/td><td class="sig">​<\/td><\/tr><tr><td class="att"><\/td><td class="sig">\( जीतेश सिंह\)/, f.id);
+    }
+  }
+});

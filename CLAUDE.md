@@ -103,6 +103,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   गवाहान tick (owner, only these 6 formats): checkbox `doGawah` (default "हाँ", one tick for both letters) → "[[गवाह]] {{if:doGawah|गवाहान – …}}{{ifnot:doGawah|\u200b}}" —
   unticked prints a zero-width line so संलग्नक / हस्ताक्षर stay where they were (seed_version +1: beat/yaksh 20, thanabhraman 22, mukadma 21, ncr 17,
   prarthna 8). Backup docs/format-backups/bnss126_before_gawah_tick.json.
+  135(3) letters: 2 zero-width lines at the top of [[हस्ताक्षर]] → the signature sits 2 lines lower (owner; seed_version +1: beat/yaksh 21,
+  thanabhraman 23, mukadma 22, ncr 18, prarthna 9). Backup docs/format-backups/bnss126_before_135_sign_gap.json.
 - Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → blue text link "ⓘ कैसे भरें?" at the RIGHT END of the field's label line
   (owner, design B — the old chip above the field looked awkward); tap → floating box (Modal, measureInWindow, opens upwards near the bottom; owner's design C: green header strip "ⓘ <field label> —
   कैसे भरें" + ✕, tip 17px, example in a light-green box with a green left bar, small muted note — parts from `src/lib/hintParts.ts` `splitHint`
