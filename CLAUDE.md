@@ -416,7 +416,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   ("क, ख व ग"), accused_count / _co_count (01), accused_abhiyukt / accused_number, accused_cards (PersonGroupInput JSON),
   accused_group (AccusedGroupInput JSON, status नामजद). Markers set in 22 formats (all FIRNo / Sections keys, 170 मुकदमा वादी + अभियुक्त,
   न्यायिक अभिरक्षा / DCRB / GD dakhila + avmukt accused, बेल नोटिस अभियुक्त, वाहन फ्लैग TheftPlace…; an old literal default kept as fallback).
-  `mergeContextDefaults` (empty FIR value never wipes a default card). "मुकदमा चुनें": `components/formats/FirPickBanner.tsx` on
+  `mergeContextDefaults` (empty FIR value never wipes a default card). "मुकदमा चुनें": `components/formats/FirPickBanner.tsx` (look = owner's design: app-green card, green round badge with lucide
+  Scale → Check once picked, big मु0अ0सं0 + "धारा · वादी …", green "चुनें" / outlined "बदलें"; colours PICK_LIGHT / PICK_DARK, dark title white — no gold) on
   formats/fill (no firId), nyayalay + prarthna-patra fill-format when `hasFirMarkers`; pick → `applyPickedFir` fills only untouched
   fields (empty / opening value / last pick). Tests in `scripts/test_*.ts` must treat "@…" defaults as empty.
   "📁 मुकदमे से भरें" (owner, चरण 1 of "person details = group fields"): `components/formats/FirPeopleButton.tsx` on every PersonGroupInput /

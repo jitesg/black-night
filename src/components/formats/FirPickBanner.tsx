@@ -6,13 +6,25 @@
 import { useEffect, useState } from 'react';
 import { FlatList, Modal, Pressable, Text, TextInput, View } from 'react-native';
 import { useColorScheme } from 'nativewind';
+import { Check, Scale } from 'lucide-react-native';
 import { THEME } from '@/lib/theme';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import { getAllFIRs, searchFIRs, type FIR } from '@/lib/db/firRepo';
 
+// Owner's design (F, colour 1, icon क, dark option 2): app-green card, green round badge (⚖ → ✓ once picked), green button.
+const PICK_LIGHT = {
+  bg: '#ECFDF3', border: '#86EFAC', title: '#14532D', desc: '#3F6B4E', num: '#14532D',
+  badge: '#15803D', badgeIcon: '#FFFFFF', btn: '#15803D', btnText: '#FFFFFF',
+};
+const PICK_DARK = {
+  bg: '#163322', border: '#2F5A3E', title: '#F1F5F9', desc: '#B7CCBF', num: '#FFFFFF',
+  badge: '#4ADE80', badgeIcon: '#0F2016', btn: '#4ADE80', btnText: '#0F2016',
+};
+
 export function FirPickBanner({ picked, onPick }: { picked: FIR | null; onPick: (fir: FIR) => void }) {
   const { colorScheme } = useColorScheme();
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const P = colorScheme === 'dark' ? PICK_DARK : PICK_LIGHT;
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [list, setList] = useState<FIR[]>([]);
@@ -33,23 +45,43 @@ export function FirPickBanner({ picked, onPick }: { picked: FIR | null; onPick: 
     <>
       <Pressable
         onPress={() => setOpen(true)}
+        accessibilityRole="button"
+        accessibilityLabel={picked ? `मु0अ0सं0 ${picked.fir_number} — बदलें` : 'मुकदमा चुनें'}
         style={{
-          flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 14, padding: 12,
-          borderWidth: 1, borderColor: picked ? '#86EFAC' : '#A5B4FC', backgroundColor: picked ? '#F0FDF4' : '#EEF2FF',
+          flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 16, paddingVertical: 13, paddingHorizontal: 15,
+          borderWidth: 1, borderColor: P.border, backgroundColor: P.bg,
         }}
       >
-        <Text style={{ fontSize: 20 }}>📁</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: picked ? '#166534' : '#3730A3' }}>
-            {picked ? `मु0अ0सं0 ${picked.fir_number} की जानकारी भरी गयी` : 'मुकदमा चुनें'}
-          </Text>
-          <Text style={{ fontSize: 12, color: '#475569', marginTop: 2 }} numberOfLines={2}>
-            {picked
-              ? [picked.section, picked.complainant_name].filter(Boolean).join(' · ') || 'बदलने के लिये छुएँ'
-              : 'मुकदमा चुनने पर वादी, अभियुक्त, मु0अ0सं0, धारा अपने-आप भर जायेंगे'}
-          </Text>
+        <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: P.badge, alignItems: 'center', justifyContent: 'center' }}>
+          {picked ? <Check size={20} color={P.badgeIcon} strokeWidth={3} /> : <Scale size={20} color={P.badgeIcon} strokeWidth={2.2} />}
         </View>
-        <Text style={{ fontSize: 13, fontWeight: '700', color: picked ? '#166534' : '#4F46E5' }}>{picked ? 'बदलें' : 'चुनें ›'}</Text>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          {picked ? (
+            <>
+              <Text style={{ fontSize: 12, color: P.desc }}>मु0अ0सं0</Text>
+              <Text numberOfLines={1} style={{ fontSize: 21, fontWeight: '800', color: P.num }}>{picked.fir_number}</Text>
+              {[picked.section, picked.complainant_name ? `वादी ${picked.complainant_name}` : ''].filter(Boolean).length ? (
+                <Text numberOfLines={2} style={{ fontSize: 12, color: P.desc }}>
+                  {[picked.section, picked.complainant_name ? `वादी ${picked.complainant_name}` : ''].filter(Boolean).join(' · ')}
+                </Text>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <Text style={{ fontSize: 15, fontWeight: '800', color: P.title }}>मुकदमा चुनें</Text>
+              <Text style={{ fontSize: 12, color: P.desc }}>वादी, अभियुक्त, धारा अपने-आप भरेंगे</Text>
+            </>
+          )}
+        </View>
+        {picked ? (
+          <View style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: P.btn }}>
+            <Text style={{ fontSize: 13, fontWeight: '800', color: P.btn }}>बदलें</Text>
+          </View>
+        ) : (
+          <View style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 999, backgroundColor: P.btn }}>
+            <Text style={{ fontSize: 13, fontWeight: '800', color: P.btnText }}>चुनें</Text>
+          </View>
+        )}
       </Pressable>
 
       <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
