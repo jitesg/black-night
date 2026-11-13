@@ -720,7 +720,16 @@ function FIRDetailsTab() {
           className="rounded-2xl py-4 items-center active:opacity-80"
           style={{ backgroundColor: '#6366F1', borderCurve: 'continuous' }}
         >
-          <Text className="text-white font-bold text-base">{saving ? t('common.saving') : t('common.saveChanges')}</Text>
+          {/* Android: the 2-word Hindi label was measured too narrow → "सहेजें" wrapped onto a hidden 2nd line and "बदलाव" sat
+              off-centre (owner). One line, full width, centred. */}
+          <Text
+            numberOfLines={1}
+            textBreakStrategy="simple"
+            className="text-white font-bold text-base"
+            style={{ alignSelf: 'stretch', textAlign: 'center' }}
+          >
+            {saving ? t('common.saving') : t('common.saveChanges')}
+          </Text>
         </Pressable>
       </ScrollView>
 
