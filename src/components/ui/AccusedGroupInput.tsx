@@ -20,6 +20,8 @@
  *   - email: basic pattern if provided
  */
 
+import { FirPeopleButton } from '@/components/formats/FirPeopleButton';
+import { insertIntoGroup, toCard } from '@/lib/firPeople';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, Text, TextInput, ToastAndroid, View } from 'react-native';
 import { ChevronDown, ChevronUp, Copy, ScanLine, Sparkles, Trash2, UserPlus, X } from 'lucide-react-native';
@@ -907,6 +909,8 @@ export const AccusedGroupInput = memo(({
         <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>
           {resolvedLabel}
         </Text>
+        {/* "📁 मुकदमे से डालें" (owner) — only inside a format fill screen */}
+        <FirPeopleButton onInsert={(people) => onChange(keyName, insertIntoGroup(value, people.map((p, n) => toCard(p, true, n))))} />
         <View style={{ backgroundColor: '#F3F4F6', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 }}>
           <Text style={{ fontSize: 11, color: C.muted, fontWeight: '500' }}>
             {t('group.accused.countBadge', { count: entries.length })}

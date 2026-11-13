@@ -1,4 +1,5 @@
 import { applyPickedFir, hasFirMarkers, mergeContextDefaults, resolveContextDefaults } from '@/lib/contextDefaultResolver';
+import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { isKeyVisible } from '@/lib/formatShowIf';
 import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
 import { deleteReportRecord, getReportRecord, saveDraftRecord, saveReportRecord } from '@/lib/db/reportRecordRepo';
@@ -398,7 +399,18 @@ export default function FillScreen() {
   // Auto-filled global keys present in this template
   const autoFilledKeyNames = Object.keys(autoValues);
 
+  // "📁 मुकदमे से डालें" (owner): the group fields' button reads the form's मुकदमा from here
+  const pickFir = async (fir: FIR) => {
+    const ctx = await resolveContextDefaults(dynamicKeys, fir.id);
+    const r = applyPickedFir(values, ctx, initialValuesRef.current, pickedValuesRef.current);
+    setValues(r.next);
+    pickedValuesRef.current = r.picked;
+    isDirty.current = true;
+    setPickedFir(fir);
+  };
+
   return (
+    <FirPeopleContext.Provider value={{ firId: firId ?? pickedFir?.id ?? null, onPickFir: firId ? undefined : (fir) => { void pickFir(fir); } }}>
     <View className="flex-1 bg-background">
       {/* ── Discard-changes confirmation (3-option) ───────────────────── */}
       <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
@@ -505,14 +517,7 @@ export default function FillScreen() {
           {!firId && hasFirMarkers(dynamicKeys) ? (
             <FirPickBanner
               picked={pickedFir}
-              onPick={async (fir) => {
-                const ctx = await resolveContextDefaults(dynamicKeys, fir.id);
-                const r = applyPickedFir(values, ctx, initialValuesRef.current, pickedValuesRef.current);
-                setValues(r.next);
-                pickedValuesRef.current = r.picked;
-                isDirty.current = true;
-                setPickedFir(fir);
-              }}
+              onPick={pickFir}
             />
           ) : null}
 
@@ -678,5 +683,6 @@ export default function FillScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
+    </FirPeopleContext.Provider>
   );
 }

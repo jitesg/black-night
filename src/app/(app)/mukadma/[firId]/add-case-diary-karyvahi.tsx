@@ -9,6 +9,7 @@
  * No forced narrative-before-karyvahi rule.
  * Route: /(app)/mukadma/[firId]/add-case-diary-karyvahi?diaryId=<uuid>
  */
+import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { resolveContextDefaults } from '@/lib/contextDefaultResolver';
 import { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { logger } from '@/lib/logger';
@@ -179,6 +180,8 @@ function FormatFillPanel({
   };
 
   return (
+    // "📁 मुकदमे से डालें" (owner): this diary's मुकदमा for the group fields' button
+    <FirPeopleContext.Provider value={{ firId: firId ?? null }}>
     <View className="bg-card border border-border rounded-2xl mt-2 overflow-hidden" style={{ borderCurve: 'continuous' }}>
       {/* ── Panel-level 3-option discard dialog ────────────────────────── */}
       <AlertDialog open={showPanelDiscardDialog} onOpenChange={setShowPanelDiscardDialog}>
@@ -256,6 +259,7 @@ function FormatFillPanel({
         </View>
       )}
     </View>
+    </FirPeopleContext.Provider>
   );
 }
 

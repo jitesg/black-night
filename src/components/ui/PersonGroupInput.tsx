@@ -23,6 +23,8 @@
  *   - 2+ prior cards        → tapping opens an inline mini-picker to choose which.
  */
 
+import { FirPeopleButton } from '@/components/formats/FirPeopleButton';
+import { insertIntoGroup, toCard } from '@/lib/firPeople';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, Text, TextInput, ToastAndroid, View } from 'react-native';
 import { ChevronDown, ChevronUp, Copy, ScanLine, Sparkles, Trash2, UserPlus, X } from 'lucide-react-native';
@@ -787,6 +789,13 @@ export const PersonGroupInput = memo(({
         <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>
           {resolvedLabel}
         </Text>
+        {/* "📁 मुकदमे से डालें" (owner) — only inside a format fill screen */}
+        <FirPeopleButton
+          multi={!single}
+          onInsert={(people) => onChange(keyName, single
+            ? JSON.stringify([toCard(people[0], false, 0)])
+            : insertIntoGroup(value, people.map((p, n) => toCard(p, false, n))))}
+        />
         {single ? null : (
           <View style={{ backgroundColor: '#F0F9FF', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 }}>
             <Text style={{ fontSize: 11, color: '#0369A1', fontWeight: '500' }}>

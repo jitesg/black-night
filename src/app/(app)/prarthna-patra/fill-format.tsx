@@ -5,6 +5,7 @@
  *   - mode=action (default): generates text → ppActionDraftStore → back to take-action
  *   - mode=report: generates text → ppReportDraftStore → back to report screen
  */
+import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { isKeyVisible } from '@/lib/formatShowIf';
 import { literalDefault } from '@/lib/firFill';
 import { useCallback, useRef, useState } from 'react';
@@ -188,7 +189,18 @@ export default function PPFillFormatScreen() {
 
   const autoFilledKeyNames = Object.keys(autoValues);
 
+  // "📁 मुकदमे से डालें" (owner): the group fields' button reads the form's मुकदमा from here
+  const pickFir = async (fir: FIR) => {
+    // "मुकदमा चुनें": the FIR's मु0अ0सं0 / धारा / अभियुक्त … fill the untouched fields
+    const ctx = await resolveContextDefaults(dynamicKeys, fir.id);
+    const r = applyPickedFir(values, ctx, initialValues, pickedValuesRef.current);
+    setValues(r.next);
+    pickedValuesRef.current = r.picked;
+    setPickedFir(fir);
+  };
+
   return (
+    <FirPeopleContext.Provider value={{ firId: pickedFir?.id ?? null, onPickFir: (fir) => { void pickFir(fir); } }}>
     <View className="flex-1 bg-background">
       <AppHeader
         title={format.title}
@@ -207,14 +219,7 @@ export default function PPFillFormatScreen() {
         {hasFirMarkers(dynamicKeys) ? (
           <FirPickBanner
             picked={pickedFir}
-            onPick={async (fir) => {
-              // "मुकदमा चुनें": the FIR's मु0अ0सं0 / धारा / अभियुक्त … fill the untouched fields
-              const ctx = await resolveContextDefaults(dynamicKeys, fir.id);
-              const r = applyPickedFir(values, ctx, initialValues, pickedValuesRef.current);
-              setValues(r.next);
-              pickedValuesRef.current = r.picked;
-              setPickedFir(fir);
-            }}
+            onPick={pickFir}
           />
         ) : null}
         {pendingDraft ? (
@@ -390,5 +395,6 @@ export default function PPFillFormatScreen() {
         </AlertDialogContent>
       </AlertDialog>
     </View>
+    </FirPeopleContext.Provider>
   );
 }

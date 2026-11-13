@@ -22,6 +22,7 @@
  *   // "@"-markers are included; static defaults are left untouched.
  */
 
+import { skipPersonMarker } from './firPeople';
 import { getCaseDiariesByFIR, getNextDiaryNumber } from './db/caseDiaryRepo';
 import { getFIRById } from './db/firRepo';
 import { getAccusedByFIR } from './db/firAccusedRepo';
@@ -113,6 +114,8 @@ function _normaliseMarker(dv: string): string {
 export interface KeyWithDefault {
   key_name: string;
   default_value?: string | null;
+  /** group fields (person / accused / item_group) are not filled with people from the FIR — "📁 मुकदमे से डालें" (owner) */
+  field_type?: string | null;
 }
 
 /**
@@ -147,6 +150,8 @@ export async function resolveContextDefaults(
   for (const key of keys) {
     const raw0 = key.default_value;
     if (!raw0) continue;
+    // owner (ख): वादी / अभियुक्त go into a group field only when picked with "📁 मुकदमे से डालें"
+    if (skipPersonMarker(key.field_type, raw0)) continue;
 
     // Accept both "@PREFIX.field" and legacy "__FROM_*__" forms
     const isAtMarker     = raw0.startsWith('@');
@@ -224,5 +229,5 @@ export function applyPickedFir(
 
 /** Does this format have fields the FIR can fill? (shows the "मुकदमा चुनें" banner) */
 export function hasFirMarkers(keys: KeyWithDefault[]): boolean {
-  return keys.some((k) => /^@FIR\.|^__FROM_RELATED_FIR__$/.test(k.default_value ?? ''));
+  return keys.some((k) => /^@FIR\.|^__FROM_RELATED_FIR__$/.test(k.default_value ?? '') || ['person_group', 'accused_group'].includes(k.field_type ?? ''));
 }
