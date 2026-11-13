@@ -635,10 +635,22 @@ export const PersonGroupInput = memo(({
     }
   }, [entries.length]);
 
+  // Cards replaced from outside with the same count ("📁 मुकदमे से डालें" fills the blank card) → errors follow the new cards
+  const prevValueRef = useRef(value);
+  const reportValidityRef = useRef<((errors: CardErrors[]) => void) | null>(null);
+  useEffect(() => {
+    if (prevValueRef.current === value) return;
+    prevValueRef.current = value;
+    const next = entries.map((e) => validatePersonEntry(e, validationMsgs));
+    setAllCardErrors(next);
+    reportValidityRef.current?.(next);
+  }, [value]);
+
   const reportValidity = useCallback((errors: CardErrors[]) => {
     if (!onValidChange) return;
     onValidChange(keyName, !errors.some(hasCardErrors));
   }, [onValidChange, keyName]);
+  reportValidityRef.current = reportValidity;
 
   const toggleCollapse = useCallback((i: number) => {
     setCollapsedSet((prev) => {
