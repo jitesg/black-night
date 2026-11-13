@@ -342,6 +342,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,
   0.5in margins, marks/data-fmt honoured; `exportReportToDocx` → share sheet). निरोधात्मक: card long-press menu + editor
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.
+- निरोधात्मक add/edit (owner): NO "कार्यवाही दिनांक" / "कार्यवाही प्रकार" boxes. On save the card date = the format's DateOfAction
+  (`nkActionDate`), else the day the report was put in from the format (170 formats have no date field — owner: report date), else the old
+  date (edit) / today; the card's middle line (proceeding_type column) = the format title without धारा numbers (`cleanFormatTitle`:
+  "बीट सूचना 126/135 की कार्यवाही" → "बीट सूचना की कार्यवाही", "170/126/135 – PRV …" → "PRV …"), no format → old type / "निरोधात्मक
+  कार्यवाही". Title read via getFormatById (the bridge carries no title); format_title saved too. `src/lib/nirodhatmak/nkCardMeta.ts`, tests
+  `scripts/test_nk_card_meta.ts`. List filter प्रकार = the titles present on the cards (client side, nkMatchesFilters type).
 - निरोधात्मक card checklist (owner: simple only — no dates/alerts/filters): 3 ticks `KARYVAHI_CHECKLIST` in nirodhatmakRepo
   (चलानी प्रेषित / नोटिस प्राप्त / तामील), column `checklist_json`, `setKaryvahiChecklist`; rows hidden behind a "चेकलिस्ट n/3 ▾" button on the card (green ✓ at 3/3; closed on every visit; pending pill stays visible).
   "चलानी प्रेषण लंबित" until `prashit` is ticked: amber pill on the card, सूचनाएँ card kind 'nk' (bell count), and one

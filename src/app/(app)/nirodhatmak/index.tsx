@@ -22,7 +22,6 @@ import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { HighlightText } from '@/components/HighlightText';
 import {
   getAllNirodhatmakKaryvahi, searchNirodhatmakKaryvahi, deleteNirodhatmakKaryvahi,
-  NIRODHATMAK_TYPES,
   type NirodhatmakKaryvahi, type NirodhatmakType,
   KARYVAHI_CHECKLIST, parseKaryvahiChecklist, setKaryvahiChecklist, type KaryvahiChecklist,
 } from '@/lib/db/nirodhatmakRepo';
@@ -464,10 +463,11 @@ export default function NirodhatmakHomeScreen() {
 
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const loadData = useCallback(async (q = query, type = activeType) => {
+  // प्रकार is filtered on the phone (its options = the card titles present, owner: titles come from the formats now).
+  const loadData = useCallback(async (q = query, _type: NirodhatmakType | null = null) => {
     try {
-      const results = q.trim() || type
-        ? await searchNirodhatmakKaryvahi(q, type)
+      const results = q.trim()
+        ? await searchNirodhatmakKaryvahi(q, null)
         : await getAllNirodhatmakKaryvahi();
       setRecords(results);
     } catch (e) {
@@ -513,14 +513,19 @@ export default function NirodhatmakHomeScreen() {
   const handleTypeFilter = (type: NirodhatmakType | null) => {
     setActiveType(type);
     setShowFilters(false);
-    loadData(query, type);
   };
+  const typeOptions = useMemo(() => {
+    const n = new Map<string, number>();
+    for (const r of records) { const k = String(r.proceeding_type ?? '').trim(); if (k) n.set(k, (n.get(k) ?? 0) + 1); }
+    return [...n.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([v]) => ({ value: v, label: NIRODHATMAK_TYPE_KEYS[v] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[v]) : v }));
+  }, [records, t]);
 
   // ── Filters (design C sheet) ────────────────────────────────────────────
   const filterGroups = useMemo<FilterGroupDef[]>(() => [
     {
       key: 'type', label: t('filter.type', 'प्रकार'),
-      options: NIRODHATMAK_TYPES.map((v) => ({ value: v, label: NIRODHATMAK_TYPE_KEYS[v] ? t('nirodhatmak.type.' + NIRODHATMAK_TYPE_KEYS[v]) : v })),
+      options: typeOptions,
     },
     {
       key: 'date', label: t('filter.date', 'तारीख'),
@@ -532,22 +537,20 @@ export default function NirodhatmakHomeScreen() {
       key: 'status', label: t('filter.status', 'स्थिति'),
       options: [{ value: 'pending', label: 'चलानी लंबित' }, { value: 'incomplete', label: 'चेकलिस्ट अधूरी' }, { value: 'done', label: 'पूरी' }],
     },
-  ], [t]);
+  ], [t, typeOptions]);
   const filterValues = useMemo<FilterValues>(
     () => ({ type: activeType, date: extraFilters.date ?? null, status: extraFilters.status ?? null,
       from: extraFilters.from ?? null, to: extraFilters.to ?? null }),
     [activeType, extraFilters],
   );
   const shownRecords = useMemo(
-    () => records.filter((r) => nkMatchesFilters(r, extraFilters)),
-    [records, extraFilters],
+    () => records.filter((r) => nkMatchesFilters(r, { ...extraFilters, type: activeType })),
+    [records, extraFilters, activeType],
   );
-  // "लागू करें (n)": the type part needs a DB query, so the count is shown only when the type is unchanged.
+  // "लागू करें (n)"
   const previewCount = useCallback((v: FilterValues): number => (
-    (v.type ?? null) === activeType
-      ? records.filter((r) => nkMatchesFilters(r, { date: v.date, status: v.status, from: v.from, to: v.to })).length
-      : NaN
-  ), [records, activeType]);
+    records.filter((r) => nkMatchesFilters(r, { type: v.type, date: v.date, status: v.status, from: v.from, to: v.to })).length
+  ), [records]);
   const applyFilters = (v: FilterValues) => {
     // "तारीख चुनें" with neither से nor तक = no date filter
     const range = v.date === 'range';
