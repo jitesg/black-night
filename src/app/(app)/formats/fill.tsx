@@ -622,6 +622,7 @@ export default function FillScreen() {
                     <FieldHint text={keyHint(key.dropdown_options)} />
                     <PersonGroupInput
                       keyName={key.key_name}
+                      single={/"single"\s*:\s*true/.test(key.dropdown_options ?? '')}
                       addressOptional={/"addressOptional"\s*:\s*true/.test(key.dropdown_options ?? '')}
                       label={key.label || key.key_name}
                       value={values[key.key_name] ?? initPersonGroup()}

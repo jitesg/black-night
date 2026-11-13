@@ -18,7 +18,7 @@ const P = (name: string, rel: string, father: string, addr: string, age: string,
   ({ name, rel, father, addr, age, mobile, mahila: '', own: '', ...extra });
 const ALL_OFF = { doPan: '', doPm: '', doBayanSI: '', doBayanCo: '', doBayanPanch: '', doBayanDoc: '' };
 const base = {
-  Gender: 'मृतक', DName: 'नेवल किशोर', DRel: 'पुत्र', DFather: 'राम आधार', DAddr: 'नेवाजखेड़ा थाना हरचन्द्रपुर जनपद रायबरेली', DAge: '25',
+  Gender: 'मृतक', DCard: JSON.stringify([{ name: 'नेवल किशोर', relationType: 'पुत्र', fatherOrHusbandName: 'राम आधार', fullAddress: 'नेवाजखेड़ा थाना हरचन्द्रपुर जनपद रायबरेली', age: '25' }]),
   SIRank: 'उ0नि0', SIName: 'जीतेश सिंह', CoRank: 'का0', CoName: 'राजमल', Thana: 'थाना बछरावां',
   PanDate: '19.07.2025', PanInfo: 'थाना बछरावां से मिली सूचना के आधार पर', PanPlace: 'बन्नावा', PanchOpinion: 'सड़क दुर्घटना मे आयी चोटो के कारण',
   doIOAgree: 'हाँ', PmHouseSent: 'पीएम हाउस रायबरेली', doCD: 'हाँ',
@@ -66,7 +66,7 @@ test('उ0नि0 / आरक्षी बयान; महिला आरक�
 test('पंच बयान: one paragraph per पंच; woman → रही / आयी थी; own text wins', () => {
   const panch = JSON.stringify([P('विनय', 'पुत्र', 'हरि', 'दुर्गापुर', '', '9794940250'),
     P('रेनू', 'पत्नी', 'भोला', 'बन्नावा', '', '', { mahila: 'हाँ' }), P('विपिन', 'पुत्र', 'हरीश', 'छबीले खेड़ा', '', '', { own: 'मेरा भाई नितिन … ।' })]);
-  const out = run({ ...ALL_OFF, doBayanPanch: 'हाँ', Panch: panch, DName: 'नितिन', BodyPlace: 'पीजीआई ट्रामा सेन्टर', Story1: 'घटना।', Story2: 'आखिर।' });
+  const out = run({ ...ALL_OFF, doBayanPanch: 'हाँ', Panch: panch, DCard: JSON.stringify([{ name: 'नितिन', fullAddress: 'क' }]), BodyPlace: 'पीजीआई ट्रामा सेन्टर', Story1: 'घटना।', Story2: 'आखिर।' });
   const paras = out.split('\n\n');
   assert.equal(paras.length, 3);
   assert.match(paras[0], /^बयान गवाह\/पंच गवाह\.+विनय पुत्र हरि नि0 दुर्गापुर मो0न0 9794940250 पूछने पर बता रहे है कि घटना। सूचना मिलने पर मै भी पीजीआई ट्रामा सेन्टर मे आया था । दरोगा जी द्वारा नितिन के शव का पंचनामा भरा था .* आखिर। यही मेरा बयान है ।$/);

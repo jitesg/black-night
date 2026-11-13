@@ -73,15 +73,11 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
   const cur = (k: string) => (out ?? values)[k];
   const groupings: { rows: Record<string, string>[]; g: GroupInto }[] = [];
 
+  // Person card → the format's old single keys (owner: person details as cards; template text unchanged). Done first,
+  // so a group's "copy" can use a value a card fills (e.g. DName). dropdown_options {"expand": {"VName": "name",
+  //   "Rel": "relationType||पुत्र", "VFather": "fatherOrHusbandName", "VAddr": "fullAddress", "VAge": "age|वर्ष"}} —
+  //   "field|suffix" appends a word to a non-empty value, "field||fallback" = word when the card leaves it empty; card N = "#2:name".
   for (const kd of keyDefs) {
-    const src = paharSource(kd.dropdown_options);
-    if (src) {
-      const v = String(values[kd.key_name] ?? '').trim();
-      if (!v || v === PAHAR_AUTO) set(kd.key_name, paharFromTime(values[src]));
-    }
-    // person card → the format's old single keys (owner: person details as cards; template text unchanged):
-    // dropdown_options {"expand": {"VName": "name", "Rel": "relationType", "VFather": "fatherOrHusbandName",
-    //   "VAddr": "fullAddress", "VAge": "age|वर्ष"}} — "field|suffix" appends a word to a non-empty value; card N = "#2:name".
     if (kd.field_type === 'person_group' || kd.field_type === 'accused_group') {
       const ex = (parseJson(kd.dropdown_options) as { expand?: Record<string, string> } | null)?.expand;
       if (ex && typeof ex === 'object') {
@@ -91,15 +87,24 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
           let idx = 0;
           const m = /^#(\d+):(.*)$/.exec(spec);
           if (m) { idx = Number(m[1]) - 1; spec = m[2]; }
-          const [field, suffix] = spec.split('|');
+          const [field, suffix, fallback] = spec.split('|');
           const card = cards[idx];
           let v = card ? String(card[field] ?? card[field === 'fullAddress' ? 'address' : field] ?? '').trim() : '';
           if (v && suffix) v = `${v} ${suffix}`;
+          if (!v && fallback && card) v = fallback;
           set(target, v);
         }
       }
-      continue;
     }
+  }
+
+  for (const kd of keyDefs) {
+    const src = paharSource(kd.dropdown_options);
+    if (src) {
+      const v = String(values[kd.key_name] ?? '').trim();
+      if (!v || v === PAHAR_AUTO) set(kd.key_name, paharFromTime(values[src]));
+    }
+    if (kd.field_type === 'person_group' || kd.field_type === 'accused_group') continue;
     if (kd.field_type === 'item_group') {
       const cfg = parseJson(kd.dropdown_options) as { columns?: ColCfg[]; groupInto?: GroupInto; copy?: string[]; weight?: Weight } | null;
       const cols = cfg?.columns ?? [];
@@ -133,7 +138,7 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
           if (!String(row[c.key!] ?? '').trim()) row[c.key!] = String(values[c.fallback!] ?? '').trim();
         }
         // "copy": ["Drug"] — form values the row text needs (a row can't hold {{Drug}} itself)
-        for (const k of copy) row[k] = String(values[k] ?? '');
+        for (const k of copy) row[k] = String(cur(k) ?? '');
         // "weight": kg + gm cells → row text "01 किलो 200 ग्राम"
         if (wt) row[wt.rowField!] = kgText(num(row[wt.kg || 'kg']) * 1000 + num(row[wt.gm || 'gm']));
         return row;

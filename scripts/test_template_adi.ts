@@ -344,8 +344,7 @@ test('पोस्टमार्टम कागज़: 6 sheets, मृतक 
   const P2 = await import('../src/lib/printLayout.ts');
   const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
   const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-postmortem-33');
-  const base = { pad: 'उपनिरीक्षक', OfficerName: 'क', PoliceStation: 'ख', District: 'ग', DName: 'राम', Relation: 'पुत्र', Father: 'श्याम', Age: '40',
-    DAddress: 'ग्राम घ', DeathCause: 'सड़क दुर्घटना में', Wrap: 'कपड़े', CarrierRank: 'आरक्षी', CarrierName: 'च', SendDT: '1', InfoDT: '2', DeathDT: '3',
+  const base = { pad: 'उपनिरीक्षक', OfficerName: 'क', PoliceStation: 'ख', District: 'ग', DCard: JSON.stringify([{ name: 'राम', relationType: 'पुत्र', fatherOrHusbandName: 'श्याम', age: '40', fullAddress: 'ग्राम घ' }]), DeathCause: 'सड़क दुर्घटना में', Wrap: 'कपड़े', CarrierRank: 'आरक्षी', CarrierName: 'च', SendDT: '1', InfoDT: '2', DeathDT: '3',
     Direction: 'पूर्व 5 किमी0', SendMode: 'एम्बुलेंस द्वारा' };
   for (const [Gender, pic] of [['मृतक', 'फोटो-लाश-पुरुष'], ['मृतका', 'फोटो-लाश-महिला']]) {
     const marked = generateReport(f.vivran, { ...base, Gender }, f.keys, { keepMarkers: true });

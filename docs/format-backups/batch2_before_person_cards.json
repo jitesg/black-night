@@ -1,0 +1,1680 @@
+[
+  {
+    "id": "sys-fmt-postmortem-report-request",
+    "title": "पोस्ट मार्टम रिपोर्ट प्रेषित करने हेतु",
+    "format_type": "Nyayalay",
+    "vivran": "रिपोर्ट थाना {{PoliceStation}} जनपद {{District}} ।\n\n\nसेवा में ,\n          श्रीमान प्रभारी निरीक्षक महोदय\n           {{PSName}} ।\n\nविषय: मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} से संबंधित मृतक कि पोस्ट मार्टम रिपोर्ट  प्रेषित करने हेतु\n\t\nमहोदय ,\n          निवेदन है कि थाना बछरावां पर पंजीकृत मु0अ0सं0 {{FIRNumber}} धारा {{Sections}} की विवेचना मुझ {{Rank}} द्वारा सम्पादित की जा रही है । मुकदमा उपरोक्त से सम्बन्धित मृतक {{DeadPersonName}} {{DeadPersonAddress}} उम्र करीब {{DeadPersonAge}} वर्ष का पोस्टमार्टम आपके थाने द्वारा दिनांक {{DateOfPM}}को कराया गया है। विवेचना का विधिक निस्तारण करने हेतु उक्त मृतक की पोस्ट मार्टम रिपोर्ट की आवश्यकता है। अतः महोदय\n\t            रिपोर्ट सादर सेवा मे प्रेषित है ।\n({{OfficerName}})\n{{Rank}}\nथाना {{PoliceStation}},जनपद  {{District}}",
+    "is_favorite": 0,
+    "created_by": "system",
+    "source": "system",
+    "editable": 0,
+    "content_type": "format",
+    "seed_version": 5,
+    "app_version": "1.0.0",
+    "tags": [
+      "पोस्टमार्टम",
+      "मृतक",
+      "रिपोर्ट"
+    ],
+    "keys": [
+      {
+        "key_name": "PSName",
+        "label": "उस थाने व जनपद का नाम जहां से पोस्टमार्टम भरा गया हो",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 1,
+        "default_value": "थाना PGI जनपद लखनऊ",
+        "dropdown_options": "{\"hint\": \"जिस थाने व जनपद में पोस्टमार्टम का पंचायतनामा भरा गया, जैसे: थाना PGI जनपद लखनऊ\"}"
+      },
+      {
+        "key_name": "FIRNumber",
+        "label": "मु0अ0सं0",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 2,
+        "default_value": "@FIR.fir_number",
+        "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
+      },
+      {
+        "key_name": "Sections",
+        "label": "धारा",
+        "field_type": "multiline",
+        "is_required": 1,
+        "sort_order": 3,
+        "default_value": "@FIR.section",
+        "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
+      },
+      {
+        "key_name": "DeadPersonName",
+        "label": "मृतक का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 4,
+        "default_value": "श्री रामहेत पुत्र तुलाराम",
+        "dropdown_options": "{\"hint\": \"\\\"श्री / श्रीमती\\\" सहित मृतक का नाम व पिता का नाम\"}"
+      },
+      {
+        "key_name": "DeadPersonAddress",
+        "label": "मृतक का पूरा पता/मो0 व जाति",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 5,
+        "default_value": "निवासी ग्राम पलही बाजार मजरे सरायउमर थाना बछरावां जनपद रायबरेली",
+        "dropdown_options": "{\"hint\": \"\\\"निवासी\\\" से शुरू करके मृतक का पूरा पता, मोबाइल व जाति\"}"
+      },
+      {
+        "key_name": "DeadPersonAge",
+        "label": "मृतक की उम्र",
+        "field_type": "number",
+        "is_required": 1,
+        "sort_order": 6,
+        "dropdown_options": "{\"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45\"}"
+      },
+      {
+        "key_name": "DateOfPM",
+        "label": "पीएम करने का दिनांक",
+        "field_type": "date",
+        "is_required": 1,
+        "sort_order": 7,
+        "dropdown_options": "{\"hint\": \"पोस्टमार्टम जिस दिन हुआ\"}"
+      },
+      {
+        "key_name": "PoliceStation",
+        "label": "थाना",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 8,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
+      },
+      {
+        "key_name": "OfficerName",
+        "label": "अधिकारी का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 9,
+        "dropdown_options": "{\"hint\": \"अपना सिर्फ़ नाम\"}"
+      },
+      {
+        "key_name": "District",
+        "label": "जनपद",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 10,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
+      },
+      {
+        "key_name": "Rank",
+        "label": "पद/रैंक",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 11,
+        "default_value": "उ0नि0",
+        "dropdown_options": "{\"hint\": \"अपना पद छोटे रूप में, जैसे: उ0नि0 / निरीक्षक\"}"
+      }
+    ],
+    "last_updated": "2026-08-06"
+  },
+  {
+    "id": "sys-fmt-postmortem-33",
+    "title": "पोस्टमार्टम हेतु शव भेजने के कागज़ (RI पत्र, CMO पत्र, फार्म 33, नमूना सील)",
+    "format_type": "Any",
+    "is_favorite": 0,
+    "created_by": "system",
+    "source": "system",
+    "editable": 1,
+    "content_type": "format",
+    "seed_version": 2,
+    "app_version": "1.0.0",
+    "tags": [
+      "पोस्टमार्टम",
+      "पंचायतनामा",
+      "फार्म 33",
+      "शव",
+      "CMO",
+      "प्रतिसार निरीक्षक",
+      "नमूना सील"
+    ],
+    "last_updated": "2026-10-31",
+    "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nश्रीमान प्रतिसार निरीक्षक महोदय,\nजनपद {{District}}।\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} थाना {{PoliceStation}} जनपद {{District}} के हमराह {{Gender}} {{DName}} {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} उम्र {{Age}} वर्ष का शव पोस्टमार्टम हेतु भेजा जा रहा है।\n[[विवरण]] कृपया {{Gender}} के शव का पोस्टमार्टम कराने की व्यवस्था करने की कृपा करें।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}\n\n[[सेवा में]] सेवा में,\nश्रीमान मुख्य चिकित्साधिकारी महोदय,\nजनपद {{District}}।\n[[महोदय]] महोदय,\n[[विवरण]] निवेदन है कि {{Gender}} {{DName}} उम्र {{Age}} वर्ष {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} की मृत्यु {{DeathCause}} हुई है। {{Gender}} का शव {{Wrap}} में रखकर सील सर्वमुहर कर {{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} के सुपुर्द कर पोस्टमार्टम हेतु भेजा जा रहा है।\n[[विवरण]] अतः श्रीमान जी से निवेदन है कि {{Gender}} के शव का पोस्टमार्टम कर रिपोर्ट से अवगत कराने की कृपा करें।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n\n[[पत्र]]\n[[शीर्षक]] फार्म संख्या-33   पी0एम0 संख्या ..............   दिनांक ..............\n\n[[सेवा में]] सेवा में,\nश्रीमान मुख्य चिकित्साधिकारी महोदय,\nजनपद {{District}}।\n[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} थाना {{PoliceStation}} जनपद {{District}} के हमराह {{Gender}} {{DName}} {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} उम्र {{Age}} वर्ष का शव पोस्टमार्टम हेतु भेजा जा रहा है।\n[[हस्ताक्षर]] प्रतिसार निरीक्षक\nजनपद {{District}}\n\n[[पत्र]]\n[[बीच]] पुलिस फार्म नं0 379\nफोटो लाश\n\n[[विवरण]] {{Gender}} {{DName}}{{if:Caste| जाति {{Caste}}}} उम्र {{Age}} वर्ष {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जिला {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}}।\n[[चित्र]] {{if:Gender=मृतक|फोटो-लाश-पुरुष}}{{if:Gender=मृतका|फोटो-लाश-महिला}}\n[[बीच]] ​\n​\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n\n[[पत्र]]\n[[बीच]] नमूना सील\n\n[[विवरण]] {{Gender}} {{DName}}{{if:Caste| जाति {{Caste}}}} उम्र {{Age}} वर्ष {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} का शव एक {{Wrap}} में रखकर, सीलकर, सर्वमुहर करके शव विच्छेदन हेतु मॉर्चरी जिला {{District}} भेजा जा रहा है।\n[[विवरण]] जिसके सील का नमूना निम्नवत है –\n[[बीच]] ​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n​\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n\n[[पत्र]]\n[[बीच]] पुलिस फार्म नं0 33\nचालान शव विच्छेदन हेतु\n\n[[विवरण]] {{Gender}} {{DName}}{{if:Caste| जाति {{Caste}}}} उम्र {{Age}} वर्ष {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जिला {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}}।\n[[तालिका]] शव को हेड क्वार्टर भेजने का दिनांक व समय | थाने में सूचना का दिनांक व समय | समय जब समझा कि मृत्यु हुई, दिनांक व समय | शव का विवरण कि पुरुष या स्त्री का है, यदि ज्ञात हो तो नाम व पता | शव विच्छेदन हेतु शव भेजने वाले अधिकारी का नाम व पता\n{{SendDT}} | {{InfoDT}} | {{DeathDT}} | {{if:Gender=मृतक|पुरुष}}{{if:Gender=मृतका|स्त्री}} — {{DName}} {{Relation}} {{Father}} निवासी {{DAddress}} थाना {{if:DThana|{{DThana}}}}{{ifnot:DThana|{{PoliceStation}}}} जनपद {{if:DDistrict|{{DDistrict}}}}{{ifnot:DDistrict|{{District}}}} | {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}} {{OfficerName}} थाना {{PoliceStation}} जनपद {{District}}\n\n[[तालिका]] शव के साथ जाने वाले कर्मचारीगणों के नाम व पता | मुख्यालय पहुँचने का दिनांक व समय | शव प्राप्ति के स्थान से मुख्यालय की दिशा व दूरी | शव को किस तरह से भेजा गया का विवरण\n{{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} थाना {{PoliceStation}} जनपद {{District}} | ​ | {{Direction}} | शव को {{Wrap}} में रखकर, सील सर्वमुहर कर {{SendMode}} {{CarrierRank}} {{CarrierName}}{{if:Carrier2| व {{Carrier2}}}} के सुपुर्द कर भेजा गया।\n\n[[बीच]] ​\n​\n​\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:pad=प्रभारी निरीक्षक|प्रभारी निरीक्षक}}{{if:pad=थानाध्यक्ष|थानाध्यक्ष}}\nथाना {{PoliceStation}} जनपद {{District}}\n",
+    "keys": [
+      {
+        "key_name": "Gender",
+        "label": "मृतक या मृतका",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "मृतक",
+        "dropdown_options": "{\"options\": [\"मृतक\", \"मृतका\"], \"hint\": \"पुरुष हो तो \\\"मृतक\\\", महिला हो तो \\\"मृतका\\\" — फोटो लाश वाला चित्र भी इसी से बदलता है\"}",
+        "sort_order": 0
+      },
+      {
+        "key_name": "DName",
+        "label": "मृतक/मृतका का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 1,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ नाम\"}"
+      },
+      {
+        "key_name": "Relation",
+        "label": "रिश्ता",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "पुत्र",
+        "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"hint\": \"पिता के नाम से तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
+        "sort_order": 2
+      },
+      {
+        "key_name": "Father",
+        "label": "पिता / पति का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 3,
+        "dropdown_options": "{\"hint\": \"पिता / पति का नाम\"}"
+      },
+      {
+        "key_name": "Age",
+        "label": "उम्र (वर्ष)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 4,
+        "dropdown_options": "{\"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45\"}"
+      },
+      {
+        "key_name": "Caste",
+        "label": "जाति — न हो तो खाली",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "sort_order": 5,
+        "dropdown_options": "{\"hint\": \"जाति — न लिखनी हो तो खाली\"}"
+      },
+      {
+        "key_name": "DAddress",
+        "label": "निवासी — ग्राम / मोहल्ला (जैसे: ग्राम रामपुर मजरे सरायउमर)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 6,
+        "dropdown_options": "{\"hint\": \"ग्राम / मोहल्ला, जैसे: ग्राम रामपुर मजरे सरायउमर\"}"
+      },
+      {
+        "key_name": "DThana",
+        "label": "मृतक का थाना — अपना थाना हो तो खाली",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "sort_order": 7,
+        "dropdown_options": "{\"hint\": \"मृतक का थाना — आपका ही थाना हो तो खाली\"}"
+      },
+      {
+        "key_name": "DDistrict",
+        "label": "मृतक का जनपद — अपना जनपद हो तो खाली",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "sort_order": 8,
+        "dropdown_options": "{\"hint\": \"मृतक का जनपद — आपका ही जनपद हो तो खाली\"}"
+      },
+      {
+        "key_name": "DeathCause",
+        "label": "मृत्यु कैसे हुई (जैसे: सड़क दुर्घटना में / फाँसी लगाने से / पानी में डूबने से)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 9,
+        "dropdown_options": "{\"hint\": \"मृत्यु कैसे हुई, \\\"से / में\\\" तक, जैसे: सड़क दुर्घटना में / फाँसी लगाने से\"}"
+      },
+      {
+        "key_name": "Wrap",
+        "label": "शव किसमें रखा",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "कपड़े",
+        "dropdown_options": "{\"options\": [\"कपड़े\", \"बॉडी बैग\"], \"hint\": \"शव कपड़े में सील किया या बॉडी बैग में\"}",
+        "sort_order": 10
+      },
+      {
+        "key_name": "CarrierRank",
+        "label": "शव ले जाने वाले कर्मचारी का पद",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "आरक्षी",
+        "dropdown_options": "{\"options\": [\"मुख्य आरक्षी\", \"आरक्षी\", \"महिला आरक्षी\"], \"hint\": \"शव ले जाने वाले कर्मचारी का पद\"}",
+        "sort_order": 11
+      },
+      {
+        "key_name": "CarrierName",
+        "label": "कर्मचारी का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 12,
+        "dropdown_options": "{\"hint\": \"उस कर्मचारी का सिर्फ़ नाम\"}"
+      },
+      {
+        "key_name": "Carrier2",
+        "label": "दूसरा कर्मचारी — पद व नाम (जैसे: आरक्षी रामू यादव) — न हो तो खाली",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "sort_order": 13,
+        "dropdown_options": "{\"hint\": \"साथ में दूसरा कर्मचारी हो तो पद सहित नाम, जैसे: आरक्षी रामू यादव — नहीं तो खाली\"}"
+      },
+      {
+        "key_name": "SendDT",
+        "label": "फार्म 33 — शव भेजने का दिनांक व समय (जैसे: 31.10.2026 समय 14.30 बजे)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 14,
+        "dropdown_options": "{\"hint\": \"शव भेजने का दिनांक व समय, जैसे: 31.10.2026 समय 14.30 बजे\"}"
+      },
+      {
+        "key_name": "InfoDT",
+        "label": "फार्म 33 — थाने पर सूचना का दिनांक व समय",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 15,
+        "dropdown_options": "{\"hint\": \"थाने पर सूचना का दिनांक व समय, जैसे: 31.10.2026 समय 09.15 बजे\"}"
+      },
+      {
+        "key_name": "DeathDT",
+        "label": "फार्म 33 — मृत्यु का अनुमानित दिनांक व समय",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 16,
+        "dropdown_options": "{\"hint\": \"मृत्यु का अनुमानित दिनांक व समय\"}"
+      },
+      {
+        "key_name": "Direction",
+        "label": "फार्म 33 — मुख्यालय से दिशा व दूरी (जैसे: पूर्व 35 किमी0)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 17,
+        "dropdown_options": "{\"hint\": \"जिला मुख्यालय से घटना स्थल की दिशा व दूरी, जैसे: पूर्व 35 किमी0\"}"
+      },
+      {
+        "key_name": "SendMode",
+        "label": "फार्म 33 — किस वाहन से भेजा (जैसे: एम्बुलेंस द्वारा / निजी वाहन द्वारा)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "एम्बुलेंस द्वारा",
+        "sort_order": 18,
+        "dropdown_options": "{\"hint\": \"शव किस वाहन से भेजा, जैसे: एम्बुलेंस द्वारा / निजी वाहन द्वारा\"}"
+      },
+      {
+        "key_name": "pad",
+        "label": "पद/रैंक",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "उपनिरीक्षक",
+        "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
+        "sort_order": 19
+      },
+      {
+        "key_name": "OfficerName",
+        "label": "अधिकारी का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 20,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
+      },
+      {
+        "key_name": "PoliceStation",
+        "label": "थाना",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 21,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
+      },
+      {
+        "key_name": "District",
+        "label": "जनपद",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 22,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-bail-notice-aakhya",
+    "title": "बेल नोटिस आख्या (19 बिन्दु)",
+    "format_type": "Nyayalay",
+    "is_favorite": 0,
+    "created_by": "system",
+    "source": "system",
+    "editable": 1,
+    "content_type": "format",
+    "seed_version": 4,
+    "app_version": "1.0.0",
+    "tags": [
+      "बेल नोटिस",
+      "जमानत",
+      "आख्या",
+      "19 बिन्दु",
+      "न्यायालय"
+    ],
+    "last_updated": "2026-11-03",
+    "vivran": "[[पत्र]]\n[[सूची]] **अभियुक्त का नाम –** {{AccName}}{{if:AccFather|, **पिता का नाम –** {{AccFather}}}}{{if:AccAddr|, **पता –** {{AccAddr}}}}\n**बेल नोटिस सं0 –** {{BailNo}}, **वर्ष –** {{BailYear}}, **मु0अ0सं0 –** {{FIRNo}}{{if:CaseNo|, **दण्ड वाद सं0 / सत्र विचारण संख्या –** {{CaseNo}}}}\n**धारा –** {{Sections}}, **थाना –** {{PoliceStation}}, **जनपद –** {{District}}\n[[तालिका]] (6mm) [7/30/63] क्र0 | विषय | विवरण\n1 | घटना | ए– घटना का दिनांक व समय – {{IncDate}} ⏎ बी– प्रथम सूचना रिपोर्ट का दिनांक व समय – {{FirDate}}\n2 | अभियुक्त की स्थिति | 1– नामित या प्रकाश में आया हुआ – {{AccStatus}} ⏎ 2– यदि प्रकाश में आया अभियुक्त है तो किस साक्ष्य से, केस डायरी के किस पृष्ठ संख्या व सी0डी0 संख्या पर है – {{if:AccStatus=प्रकाश में आया|{{LightEvidence}}}}{{ifnot:AccStatus=प्रकाश में आया|लागू नहीं।}}\n3 | अभियुक्त का आपराधिक इतिहास | 1– सम्पूर्ण आपराधिक इतिहास डीसीआरबी व सीसीटीएनएस के अनुसार – {{CrimHistory}} ⏎ 2– यदि अभियुक्त पूर्व में दोषसिद्ध हुआ हो, तो उसका पूर्ण विवरण – {{Conviction}}\n4 | अभियुक्तगण को धारा 41ए द0प्र0सं0 / धारा 35(3) बीएनएसएस के अन्तर्गत नोटिस के सम्बन्ध में | 1– धारा 41ए सीआरपीसी / धारा 35(3) बीएनएसएस की नोटिस जारी की गयी है अथवा नहीं – {{Notice353}} ⏎ 2– नोटिस जारी करने व तामीला का दिनांक – {{if:Notice353=जारी की गयी है|{{NoticeDate}}}}{{if:Notice353=जारी नहीं की गयी है|लागू नहीं।}}\n5 | अभियुक्त की गिरफ्तारी | 1– गिरफ्तारी का दिनांक – {{ArrestDate}} ⏎ 2– जेल में निरुद्धि की अवधि – {{JailPeriod}} ⏎ 3– धारा 82/83 सीआरपीसी / 84/85 बीएनएसएस जारी हो तो उसका दिनांक सहित उल्लेख – {{Proclaim}}\n6 | आरोप पत्र के सम्बन्ध में | 1– यदि आरोप पत्र कित्ता कर न्यायालय में प्रेषित किया गया हो तो आरोप पत्र संख्या व दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{CSNo}}}}{{ifnot:CSStatus=आरोप पत्र प्रेषित|लागू नहीं।}} ⏎ 2– यदि विवेचना प्रचलित हो तो उसका उल्लेख – {{if:CSStatus=विवेचना प्रचलित|विवेचना प्रचलित है।}}{{ifnot:CSStatus=विवेचना प्रचलित|लागू नहीं।}} ⏎ 3– यदि आरोप पत्र न्यायालय में प्रेषित किया गया है तो प्रसंज्ञान लिये जाने का दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{Cognizance}}}} ⏎ 4– अभियुक्तगण / अभियुक्त के विरुद्ध आरोप विरचित किये जाने का दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{ChargeFramed}}}}\n7 | सहअभियुक्त के सम्बन्ध में | 1– संख्या – {{CoAccCount}}\n8 | सहअभियुक्त के जेल या जमानत के सम्बन्ध में | 1– जेल में निरुद्धि का दिनांक – {{CoJail}} ⏎ 2– जमानत पर रिहा का दिनांक – {{CoBail}}\n9 | पंचायतनामा के सम्बन्ध में | {{if:gDeath|1– पंचायतनामा तैयार करने का दिनांक – {{PanDate}} ⏎ 2– पंचायतनामा तैयार करने वाले का नाम – {{PanBy}} ⏎ 3– पंचों की राय – {{PanOpinion}}}}{{ifnot:gDeath|लागू नहीं।}}\n10 | पोस्टमार्टम रिपोर्ट के सम्बन्ध में | {{if:gDeath|1– मृत्यु का दिनांक – {{DeathDate}} ⏎ 2– मृत्यु का तात्कालिक कारण – {{DeathCause}} ⏎ 3– यदि मृत्युपूर्व चोटें हों तो उसका विवरण – {{AnteInjury}}}}{{ifnot:gDeath|लागू नहीं।}}\n11 | फर्द बरामदगी के सम्बन्ध में | {{if:gRecovery|1– क्या बरामद – {{RecWhat}} ⏎ 2– किसके कब्जे से बरामद – {{RecFrom}} ⏎ 3– किसके निशानदेही पर बरामद – {{RecPoint}} ⏎ 4– बरामदगी के समय मौजूद साक्षी – {{RecWitness}}}}{{ifnot:gRecovery|लागू नहीं।}}\n12 | रासायनिक विशेषज्ञ व अग्नेयास्त्र विशेषज्ञ की रिपोर्ट के सम्बन्ध में | {{if:gFsl|1– विधि विज्ञान प्रयोगशाला / अग्नेयास्त्र विशेषज्ञ की रिपोर्ट प्राप्त करने का दिनांक – {{FslDate}} ⏎ 2– केसडायरी की संख्या व पेज संख्या – {{FslCD}}}}{{ifnot:gFsl|लागू नहीं।}}\n13 | मृत्युकालिक कथन के सम्बन्ध में | {{if:gDying|1– केसडायरी की संख्या व पेज संख्या – {{DyingCD}}}}{{ifnot:gDying|लागू नहीं।}}\n14 | पीड़ित पक्ष की चोट के सम्बन्ध में | {{if:gInjury|1– मजरूबों की संख्या तथा केसडायरी के किस पृष्ठ संख्या व सीडी पर उल्लेख है – {{InjCount}} ⏎ 2– मजरूबों की चोटों की संख्या – {{InjNo}} ⏎ 3– चोट लगने का दिनांक व समय तथा चोटों की प्रकृति – {{InjNature}}}}{{ifnot:gInjury|लागू नहीं।}}\n15 | पॉक्सो एक्ट व एससी/एसटी एक्ट के सम्बन्ध में | {{if:gPocso|1– पीड़ित पक्ष को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक – {{PocsoVictimDate}}}}{{if:gPocso|{{if:gScst| ⏎ }}}}{{if:gScst|2– पीड़ित पक्ष / वादी को सूचना का दिनांक – {{ScstDate}}}}{{ifnot:gPocso|{{ifnot:gScst|लागू नहीं।}}}}\n16 | पॉक्सो एक्ट के सीडब्ल्यूसी के सम्बन्ध में | {{if:gPocso|1– बाल कल्याण समिति को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक – {{CwcDate}} ⏎ 2– यदि पीड़ित पक्ष द्वारा विधिक सहायता की माँग की गयी है तो उसका उल्लेख – {{LegalAid}}}}{{ifnot:gPocso|लागू नहीं।}}\n17 | बलात्कार, अश्लीलता, महिला के विरुद्ध अपराध के सम्बन्ध में | {{if:gWomen|1– धारा 161 सीआरपीसी / धारा 180 बीएनएसएस, सीडी संख्या, पेज संख्या व दिनांक – {{Stmt180}} ⏎ 2– धारा 164 सीआरपीसी / धारा 183 बीएनएसएस, सीडी संख्या, पेज संख्या व दिनांक – {{Stmt183}}}}{{ifnot:gWomen|लागू नहीं।}}\n18 | गैंगचार्ट के सम्बन्ध में | {{if:gGang|1– केसडायरी के पृष्ठ संख्या व सीडी संख्या – {{GangCD}} ⏎ 2– गैंगचार्ट की प्रमाणित प्रति, पेज संख्या – {{GangChart}} ⏎ 3– धारा 14(1) गैंगस्टर एक्ट के अन्तर्गत कार्यवाही का विवरण – {{Gang141}}}}{{ifnot:gGang|लागू नहीं।}}\n19 | एनडीपीएस एक्ट के सम्बन्ध में | {{if:gNdps|1– बरामद मादक पदार्थ का नाम व मात्रा – {{NdpsWhat}} ⏎ 2– बरामद मादक पदार्थ वाणिज्यिक मात्रा के ऊपर या नीचे है – {{NdpsQty}}}}{{ifnot:gNdps|लागू नहीं।}}\n\n[[विवरण]] **नोट :–** प्रमाणित किया जाता है कि केसडायरी के क्रम संख्या 1 लगायत {{if:CDTo|{{CDTo}}}}{{ifnot:CDTo|..........}} कुल वर्क {{if:Pages|{{Pages}}}}{{ifnot:Pages|..........}} की प्रमाणित छायाप्रति संलग्न है।\n[[हस्ताक्षर]] ({{OfficerName}})\nविवेचना अधिकारी\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}\n",
+    "keys": [
+      {
+        "key_name": "AccName",
+        "label": "अभियुक्त का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "@FIR.accused1_name",
+        "dropdown_options": "{\"placeholder\": \"जैसे: रामू\", \"hint\": \"अभियुक्त का सिर्फ़ नाम (मुकदमा चुनने पर अपने आप)\"}",
+        "sort_order": 0
+      },
+      {
+        "key_name": "AccFather",
+        "label": "पिता का नाम",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": "@FIR.accused1_father",
+        "dropdown_options": "{\"placeholder\": \"जैसे: श्यामलाल\", \"hint\": \"पिता का नाम\"}",
+        "sort_order": 1
+      },
+      {
+        "key_name": "AccAddr",
+        "label": "पता",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": "@FIR.accused1_address",
+        "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम बन्नावां थाना बछरावां जनपद रायबरेली\", \"hint\": \"पूरा पता, जैसे: ग्राम बन्नावां थाना बछरावां जनपद रायबरेली\"}",
+        "sort_order": 2
+      },
+      {
+        "key_name": "BailNo",
+        "label": "बेल नोटिस सं0",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 45/2025\", \"hint\": \"बेल नोटिस संख्या जैसी नोटिस पर है, जैसे: 45/2025\"}",
+        "sort_order": 3
+      },
+      {
+        "key_name": "BailYear",
+        "label": "वर्ष",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 2025\", \"hint\": \"वर्ष, जैसे: 2025\"}",
+        "sort_order": 4
+      },
+      {
+        "key_name": "FIRNo",
+        "label": "मु0अ0सं0",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "@FIR.fir_number",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 284/2025\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
+        "sort_order": 5
+      },
+      {
+        "key_name": "CaseNo",
+        "label": "दण्ड वाद सं0 / सत्र विचारण संख्या (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 1234/2025\", \"hint\": \"दण्ड वाद सं0 / सत्र विचारण संख्या लिखें — जैसे: 1234/2025 (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 6
+      },
+      {
+        "key_name": "Sections",
+        "label": "धारा",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": "@FIR.section",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 115(2), 352, 351(3) बीएनएस\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
+        "sort_order": 7
+      },
+      {
+        "key_name": "IncDate",
+        "label": "1ए. घटना का दिनांक व समय",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": "@FIR.occurrence_datetime",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 30.06.2025 समय करीब 20:00 बजे\", \"hint\": \"घटना का दिनांक व समय: तारीख बिंदु लगाकर लिखें — जैसे: 30.06.2025 समय करीब 20:00 बजे\"}",
+        "sort_order": 8
+      },
+      {
+        "key_name": "FirDate",
+        "label": "1बी. प्रथम सूचना रिपोर्ट का दिनांक व समय",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": "@FIR.fir_datetime",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 01.07.2025 समय 10:15 बजे\", \"hint\": \"प्रथम सूचना रिपोर्ट का दिनांक व समय: तारीख बिंदु लगाकर लिखें — जैसे: 01.07.2025 समय 10:15 बजे\"}",
+        "sort_order": 9
+      },
+      {
+        "key_name": "AccStatus",
+        "label": "2. अभियुक्त की स्थिति",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "नामित",
+        "dropdown_options": "{\"options\": [\"नामित\", \"प्रकाश में आया\"], \"hint\": \"अभियुक्त FIR में नामित है या बाद में प्रकाश में आया — प्रकाश में आया हो तो साक्ष्य का बॉक्स खुलेगा\"}",
+        "sort_order": 10
+      },
+      {
+        "key_name": "LightEvidence",
+        "label": "किस साक्ष्य से प्रकाश में आया, केस डायरी पृष्ठ संख्या व सी0डी0 संख्या",
+        "field_type": "multiline",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: गवाहों के बयान से, सी0डी0 संख्या 3 पृष्ठ 4\", \"showIf\": \"AccStatus=प्रकाश में आया\", \"hint\": \"किस साक्ष्य से प्रकाश में आया, केस डायरी पृष्ठ संख्या व सी0डी0 संख्या लिखें — जैसे: गवाहों के बयान से, सी0डी0 संख्या 3 पृष्ठ 4\"}",
+        "sort_order": 11
+      },
+      {
+        "key_name": "CrimHistory",
+        "label": "3. आपराधिक इतिहास (डीसीआरबी व सीसीटीएनएस के अनुसार)",
+        "field_type": "multiline",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: कोई आपराधिक इतिहास नहीं है\", \"hint\": \"आपराधिक इतिहास (डीसीआरबी व सीसीटीएनएस के अनुसार) लिखें — जैसे: कोई आपराधिक इतिहास नहीं है\"}",
+        "sort_order": 12
+      },
+      {
+        "key_name": "Conviction",
+        "label": "पूर्व में दोषसिद्धि हो तो पूर्ण विवरण (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: कोई दोषसिद्धि नहीं\", \"hint\": \"पूर्व में दोषसिद्धि हो तो पूर्ण विवरण लिखें — जैसे: कोई दोषसिद्धि नहीं (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 13
+      },
+      {
+        "key_name": "Notice353",
+        "label": "4. धारा 41ए द0प्र0सं0 / 35(3) बीएनएसएस की नोटिस",
+        "field_type": "dropdown",
+        "is_required": 0,
+        "default_value": "",
+        "dropdown_options": "{\"options\": [\"जारी की गयी है\", \"जारी नहीं की गयी है\"], \"hint\": \"41ए / 35(3) का नोटिस जारी हुआ या नहीं — हुआ हो तो तारीख का बॉक्स खुलेगा\"}",
+        "sort_order": 14
+      },
+      {
+        "key_name": "NoticeDate",
+        "label": "नोटिस जारी करने व तामीला का दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 05.07.2025 / 06.07.2025\", \"showIf\": \"Notice353=जारी की गयी है\", \"hint\": \"नोटिस जारी करने व तामीला का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 05.07.2025 / 06.07.2025\"}",
+        "sort_order": 15
+      },
+      {
+        "key_name": "ArrestDate",
+        "label": "5. गिरफ्तारी का दिनांक (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 10.07.2025\", \"hint\": \"गिरफ्तारी का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 10.07.2025 (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 16
+      },
+      {
+        "key_name": "JailPeriod",
+        "label": "जेल में निरुद्धि की अवधि (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 10.07.2025 से निरन्तर\", \"hint\": \"जेल में निरुद्धि की अवधि लिखें — जैसे: 10.07.2025 से निरन्तर (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 17
+      },
+      {
+        "key_name": "Proclaim",
+        "label": "धारा 82/83 सीआरपीसी / 84/85 बीएनएसएस जारी हो तो दिनांक सहित (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: जारी नहीं\", \"hint\": \"धारा 82/83 सीआरपीसी / 84/85 बीएनएसएस जारी हो तो दिनांक सहित: तारीख बिंदु लगाकर लिखें — जैसे: जारी नहीं (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 18
+      },
+      {
+        "key_name": "CSStatus",
+        "label": "6. आरोप पत्र की स्थिति",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "विवेचना प्रचलित",
+        "dropdown_options": "{\"options\": [\"विवेचना प्रचलित\", \"आरोप पत्र प्रेषित\"], \"hint\": \"विवेचना अभी चल रही है या आरोप पत्र जा चुका — गया हो तो उसका विवरण भरें\"}",
+        "sort_order": 19
+      },
+      {
+        "key_name": "CSNo",
+        "label": "आरोप पत्र संख्या व दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 120/2025 दिनांक 20.08.2025\", \"showIf\": \"CSStatus=आरोप पत्र प्रेषित\", \"hint\": \"आरोप पत्र संख्या व दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 120/2025 दिनांक 20.08.2025\"}",
+        "sort_order": 20
+      },
+      {
+        "key_name": "Cognizance",
+        "label": "प्रसंज्ञान लिये जाने का दिनांक (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 25.08.2025\", \"showIf\": \"CSStatus=आरोप पत्र प्रेषित\", \"hint\": \"प्रसंज्ञान लिये जाने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 25.08.2025 (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 21
+      },
+      {
+        "key_name": "ChargeFramed",
+        "label": "आरोप विरचित किये जाने का दिनांक (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 15.09.2025\", \"showIf\": \"CSStatus=आरोप पत्र प्रेषित\", \"hint\": \"आरोप विरचित किये जाने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 15.09.2025 (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 22
+      },
+      {
+        "key_name": "CoAccCount",
+        "label": "7. सहअभियुक्तों की संख्या",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": "@FIR.accused_co_count",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 02\", \"hint\": \"सहअभियुक्तों की संख्या लिखें — जैसे: 02\"}",
+        "sort_order": 23
+      },
+      {
+        "key_name": "CoJail",
+        "label": "8. सहअभियुक्त — जेल में निरुद्धि का दिनांक (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 12.07.2025\", \"hint\": \"सहअभियुक्त — जेल में निरुद्धि का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 12.07.2025 (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 24
+      },
+      {
+        "key_name": "CoBail",
+        "label": "सहअभियुक्त — जमानत पर रिहा का दिनांक (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 01.08.2025\", \"hint\": \"सहअभियुक्त — जमानत पर रिहा का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 01.08.2025 (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 25
+      },
+      {
+        "key_name": "gDeath",
+        "label": "मृत्यु का मामला — बिन्दु 9 पंचायतनामा व 10 पोस्टमार्टम भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 26,
+        "dropdown_options": "{\"hint\": \"मृत्यु का मामला हो तो टिक — बिन्दु 9 व 10 के बॉक्स खुलेंगे; टिक न हो तो वहाँ \\\"लागू नहीं।\\\" छपता है\"}"
+      },
+      {
+        "key_name": "PanDate",
+        "label": "9. पंचायतनामा तैयार करने का दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 02.07.2025\", \"showIf\": \"gDeath\", \"hint\": \"पंचायतनामा तैयार करने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 02.07.2025\"}",
+        "sort_order": 27
+      },
+      {
+        "key_name": "PanBy",
+        "label": "पंचायतनामा तैयार करने वाले का नाम",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: उ0नि0 रामसिंह\", \"showIf\": \"gDeath\", \"hint\": \"पंचायतनामा तैयार करने वाले का नाम लिखें — जैसे: उ0नि0 रामसिंह\"}",
+        "sort_order": 28
+      },
+      {
+        "key_name": "PanOpinion",
+        "label": "पंचों की राय",
+        "field_type": "multiline",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: मृत्यु का कारण स्पष्ट करने हेतु पोस्टमार्टम कराया जाना उचित है\", \"showIf\": \"gDeath\", \"hint\": \"पंचों की राय लिखें — जैसे: मृत्यु का कारण स्पष्ट करने हेतु पोस्टमार्टम कराया जाना उचित है\"}",
+        "sort_order": 29
+      },
+      {
+        "key_name": "DeathDate",
+        "label": "10. मृत्यु का दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 01.07.2025\", \"showIf\": \"gDeath\", \"hint\": \"मृत्यु का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 01.07.2025\"}",
+        "sort_order": 30
+      },
+      {
+        "key_name": "DeathCause",
+        "label": "मृत्यु का तात्कालिक कारण",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: सिर में आयी चोटों के कारण कोमा व शॉक\", \"showIf\": \"gDeath\", \"hint\": \"मृत्यु का तात्कालिक कारण लिखें — जैसे: सिर में आयी चोटों के कारण कोमा व शॉक\"}",
+        "sort_order": 31
+      },
+      {
+        "key_name": "AnteInjury",
+        "label": "मृत्युपूर्व चोटों का विवरण",
+        "field_type": "multiline",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 01 अदद फटा घाव सिर पर\", \"showIf\": \"gDeath\", \"hint\": \"मृत्युपूर्व चोटों का विवरण लिखें — जैसे: 01 अदद फटा घाव सिर पर\"}",
+        "sort_order": 32
+      },
+      {
+        "key_name": "gRecovery",
+        "label": "बरामदगी हुई — बिन्दु 11 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 33,
+        "dropdown_options": "{\"hint\": \"बरामदगी हुई हो तो टिक — बिन्दु 11 खुलेगा\"}"
+      },
+      {
+        "key_name": "RecWhat",
+        "label": "11. क्या बरामद",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 01 अदद लाठी\", \"showIf\": \"gRecovery\", \"hint\": \"क्या बरामद लिखें — जैसे: 01 अदद लाठी\"}",
+        "sort_order": 34
+      },
+      {
+        "key_name": "RecFrom",
+        "label": "किसके कब्जे से बरामद",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: अभियुक्त उपरोक्त\", \"showIf\": \"gRecovery\", \"hint\": \"किसके कब्जे से बरामद लिखें — जैसे: अभियुक्त उपरोक्त\"}",
+        "sort_order": 35
+      },
+      {
+        "key_name": "RecPoint",
+        "label": "किसके निशानदेही पर बरामद",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: अभियुक्त उपरोक्त\", \"showIf\": \"gRecovery\", \"hint\": \"किसके निशानदेही पर बरामद लिखें — जैसे: अभियुक्त उपरोक्त\"}",
+        "sort_order": 36
+      },
+      {
+        "key_name": "RecWitness",
+        "label": "बरामदगी के समय मौजूद साक्षी",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 1. रामपाल 2. श्यामू\", \"showIf\": \"gRecovery\", \"hint\": \"बरामदगी के समय मौजूद साक्षी लिखें — जैसे: 1. रामपाल 2. श्यामू\"}",
+        "sort_order": 37
+      },
+      {
+        "key_name": "gFsl",
+        "label": "विधि विज्ञान / अग्नेयास्त्र विशेषज्ञ की रिपोर्ट — बिन्दु 12 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 38,
+        "dropdown_options": "{\"hint\": \"FSL / अग्नेयास्त्र विशेषज्ञ की रिपोर्ट आयी हो तो टिक — बिन्दु 12\"}"
+      },
+      {
+        "key_name": "FslDate",
+        "label": "12. रिपोर्ट प्राप्त करने का दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 10.09.2025\", \"showIf\": \"gFsl\", \"hint\": \"रिपोर्ट प्राप्त करने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 10.09.2025\"}",
+        "sort_order": 39
+      },
+      {
+        "key_name": "FslCD",
+        "label": "केस डायरी संख्या व पेज संख्या",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 12 पृष्ठ 3\", \"showIf\": \"gFsl\", \"hint\": \"केस डायरी संख्या व पेज संख्या लिखें — जैसे: सी0डी0 संख्या 12 पृष्ठ 3\"}",
+        "sort_order": 40
+      },
+      {
+        "key_name": "gDying",
+        "label": "मृत्युकालिक कथन — बिन्दु 13 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 41,
+        "dropdown_options": "{\"hint\": \"मृत्युकालिक कथन हुआ हो तो टिक — बिन्दु 13\"}"
+      },
+      {
+        "key_name": "DyingCD",
+        "label": "13. मृत्युकालिक कथन — केस डायरी संख्या व पेज संख्या",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 2 पृष्ठ 5\", \"showIf\": \"gDying\", \"hint\": \"मृत्युकालिक कथन — केस डायरी संख्या व पेज संख्या लिखें — जैसे: सी0डी0 संख्या 2 पृष्ठ 5\"}",
+        "sort_order": 42
+      },
+      {
+        "key_name": "gInjury",
+        "label": "पीड़ित पक्ष को चोट — बिन्दु 14 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 43,
+        "dropdown_options": "{\"hint\": \"पीड़ित पक्ष को चोट हो तो टिक — बिन्दु 14\"}"
+      },
+      {
+        "key_name": "InjCount",
+        "label": "14. मजरूबों की संख्या तथा केस डायरी पृष्ठ / सी0डी0 संख्या",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 01, सी0डी0 संख्या 1 पृष्ठ 2\", \"showIf\": \"gInjury\", \"hint\": \"मजरूबों की संख्या तथा केस डायरी पृष्ठ / सी0डी0 संख्या लिखें — जैसे: 01, सी0डी0 संख्या 1 पृष्ठ 2\"}",
+        "sort_order": 44
+      },
+      {
+        "key_name": "InjNo",
+        "label": "मजरूबों की चोटों की संख्या",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 03\", \"showIf\": \"gInjury\", \"hint\": \"मजरूबों की चोटों की संख्या लिखें — जैसे: 03\"}",
+        "sort_order": 45
+      },
+      {
+        "key_name": "InjNature",
+        "label": "चोट लगने का दिनांक व समय तथा चोटों की प्रकृति",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 30.06.2025 समय 20:00 बजे, साधारण\", \"showIf\": \"gInjury\", \"hint\": \"चोट लगने का दिनांक व समय तथा चोटों की प्रकृति: तारीख बिंदु लगाकर लिखें — जैसे: 30.06.2025 समय 20:00 बजे, साधारण\"}",
+        "sort_order": 46
+      },
+      {
+        "key_name": "gPocso",
+        "label": "पॉक्सो एक्ट का मामला — बिन्दु 15, 16 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 47,
+        "dropdown_options": "{\"hint\": \"पॉक्सो एक्ट का मामला हो तो टिक — बिन्दु 15, 16\"}"
+      },
+      {
+        "key_name": "PocsoVictimDate",
+        "label": "15. पीड़ित पक्ष को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 12.09.2025\", \"showIf\": \"gPocso\", \"hint\": \"पीड़ित पक्ष को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 12.09.2025\"}",
+        "sort_order": 48
+      },
+      {
+        "key_name": "CwcDate",
+        "label": "16. बाल कल्याण समिति को बेल नोटिस की प्रति प्राप्त कराने का दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 12.09.2025\", \"showIf\": \"gPocso\", \"hint\": \"बाल कल्याण समिति को बेल नोटिस की प्रति प्राप्त कराने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 12.09.2025\"}",
+        "sort_order": 49
+      },
+      {
+        "key_name": "LegalAid",
+        "label": "पीड़ित पक्ष द्वारा विधिक सहायता की माँग (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: कोई माँग नहीं की गयी\", \"showIf\": \"gPocso\", \"hint\": \"पीड़ित पक्ष द्वारा विधिक सहायता की माँग लिखें — जैसे: कोई माँग नहीं की गयी (न हो तो खाली छोड़ें)\"}",
+        "sort_order": 50
+      },
+      {
+        "key_name": "gScst",
+        "label": "एससी/एसटी एक्ट का मामला — बिन्दु 15 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 51,
+        "dropdown_options": "{\"hint\": \"एससी/एसटी एक्ट का मामला हो तो टिक — बिन्दु 15\"}"
+      },
+      {
+        "key_name": "ScstDate",
+        "label": "15. पीड़ित पक्ष / वादी को सूचना का दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 12.09.2025\", \"showIf\": \"gScst\", \"hint\": \"पीड़ित पक्ष / वादी को सूचना का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 12.09.2025\"}",
+        "sort_order": 52
+      },
+      {
+        "key_name": "gWomen",
+        "label": "बलात्कार / अश्लीलता / महिला के विरुद्ध अपराध — बिन्दु 17 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 53,
+        "dropdown_options": "{\"hint\": \"महिला के विरुद्ध अपराध हो तो टिक — बिन्दु 17\"}"
+      },
+      {
+        "key_name": "Stmt180",
+        "label": "17. धारा 161 सीआरपीसी / 180 बीएनएसएस — सी0डी0 संख्या, पेज संख्या व दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 1 पृष्ठ 3 दिनांक 01.07.2025\", \"showIf\": \"gWomen\", \"hint\": \"धारा 161 सीआरपीसी / 180 बीएनएसएस — सी0डी0 संख्या, पेज संख्या व दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: सी0डी0 संख्या 1 पृष्ठ 3 दिनांक 01.07.2025\"}",
+        "sort_order": 54
+      },
+      {
+        "key_name": "Stmt183",
+        "label": "धारा 164 सीआरपीसी / 183 बीएनएसएस — सी0डी0 संख्या, पेज संख्या व दिनांक",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 3 पृष्ठ 2 दिनांक 05.07.2025\", \"showIf\": \"gWomen\", \"hint\": \"धारा 164 सीआरपीसी / 183 बीएनएसएस — सी0डी0 संख्या, पेज संख्या व दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: सी0डी0 संख्या 3 पृष्ठ 2 दिनांक 05.07.2025\"}",
+        "sort_order": 55
+      },
+      {
+        "key_name": "gGang",
+        "label": "गैंगस्टर एक्ट — बिन्दु 18 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 56,
+        "dropdown_options": "{\"hint\": \"गैंगस्टर एक्ट हो तो टिक — बिन्दु 18\"}"
+      },
+      {
+        "key_name": "GangCD",
+        "label": "18. केसडायरी के पृष्ठ संख्या व सी0डी0 संख्या",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 4 पृष्ठ 2\", \"showIf\": \"gGang\", \"hint\": \"केसडायरी के पृष्ठ संख्या व सी0डी0 संख्या लिखें — जैसे: सी0डी0 संख्या 4 पृष्ठ 2\"}",
+        "sort_order": 57
+      },
+      {
+        "key_name": "GangChart",
+        "label": "गैंगचार्ट की प्रमाणित प्रति, पेज संख्या",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: पृष्ठ 1 ता 4\", \"showIf\": \"gGang\", \"hint\": \"गैंगचार्ट की प्रमाणित प्रति, पेज संख्या लिखें — जैसे: पृष्ठ 1 ता 4\"}",
+        "sort_order": 58
+      },
+      {
+        "key_name": "Gang141",
+        "label": "धारा 14(1) गैंगस्टर एक्ट के अन्तर्गत कार्यवाही का विवरण",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: कार्यवाही प्रचलित\", \"showIf\": \"gGang\", \"hint\": \"धारा 14(1) गैंगस्टर एक्ट के अन्तर्गत कार्यवाही का विवरण लिखें — जैसे: कार्यवाही प्रचलित\"}",
+        "sort_order": 59
+      },
+      {
+        "key_name": "gNdps",
+        "label": "एनडीपीएस एक्ट — बिन्दु 19 भरें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "",
+        "sort_order": 60,
+        "dropdown_options": "{\"hint\": \"NDPS एक्ट हो तो टिक — बिन्दु 19\"}"
+      },
+      {
+        "key_name": "NdpsWhat",
+        "label": "19. बरामद मादक पदार्थ का नाम व मात्रा",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: नाजायज चरस 1.2 किग्रा\", \"showIf\": \"gNdps\", \"hint\": \"बरामद मादक पदार्थ का नाम व मात्रा लिखें — जैसे: नाजायज चरस 1.2 किग्रा\"}",
+        "sort_order": 61
+      },
+      {
+        "key_name": "NdpsQty",
+        "label": "मात्रा वाणिज्यिक मात्रा के",
+        "field_type": "dropdown",
+        "is_required": 0,
+        "default_value": "",
+        "dropdown_options": "{\"options\": [\"ऊपर है\", \"नीचे है\"], \"showIf\": \"gNdps\", \"hint\": \"बरामद मात्रा वाणिज्यिक मात्रा से कम है या ज़्यादा\"}",
+        "sort_order": 62
+      },
+      {
+        "key_name": "CDTo",
+        "label": "नोट: केसडायरी क्रम संख्या 1 लगायत … (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 12\", \"hint\": \"नोट में \\\"केस डायरी क्रम संख्या 1 लगायत …\\\" — आखिरी केस डायरी नम्बर, जैसे: 12 (खाली = बिंदु छपेंगे)\"}",
+        "sort_order": 63
+      },
+      {
+        "key_name": "Pages",
+        "label": "कुल वर्क (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 48\", \"hint\": \"कुल पन्ने (वर्क), जैसे: 48 — खाली = बिंदु छपेंगे\"}",
+        "sort_order": 64
+      },
+      {
+        "key_name": "pad",
+        "label": "पद/रैंक",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "उपनिरीक्षक",
+        "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+        "sort_order": 65
+      },
+      {
+        "key_name": "OfficerName",
+        "label": "विवेचक का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 66,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
+      },
+      {
+        "key_name": "PoliceStation",
+        "label": "थाना",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 67,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
+      },
+      {
+        "key_name": "District",
+        "label": "जनपद",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 68,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-notice-35-3-bnss",
+    "title": "धारा 35(3) BNSS — पुलिस द्वारा उपस्थिति के लिये नोटिस (पावती सहित)",
+    "format_type": "Case Diary",
+    "is_favorite": 0,
+    "created_by": "system",
+    "source": "system",
+    "editable": 1,
+    "content_type": "format",
+    "seed_version": 5,
+    "app_version": "1.0.0",
+    "tags": [
+      "35(3)",
+      "41ए",
+      "नोटिस",
+      "उपस्थिति",
+      "पावती",
+      "BNSS"
+    ],
+    "last_updated": "2026-11-03",
+    "vivran": "[[पत्र]]\n[[बीच]] पुलिस द्वारा उपस्थिति के लिये नोटिस\n[[बीच]] (भारतीय नागरिक सुरक्षा संहिता-2023 की धारा 35(3) के अन्तर्गत)\n[[विवरण]] **मु0अ0सं0 –** {{FIRNo}}, **अन्तर्गत धारा –** {{Sections}}, **दिनांक –** {{if:NoticeDate|{{NoticeDate}}}}{{ifnot:NoticeDate|..........}}, **थाना –** {{PoliceStation}}, **रो0आम संख्या व समय –** {{if:RoAam|{{RoAam}}}}{{ifnot:RoAam|..........}}, **जनपद –** {{District}}, **नाम {{if:Rel=पुत्र|अभियुक्त}}{{ifnot:Rel=पुत्र|अभियुक्ता}} –** {{AccName}} {{Rel}} {{AccFather}} निवासी ग्राम / मोहल्ला {{AccVillage}} थाना {{AccPS}} जनपद {{AccDistrict}}{{if:Mobile| मो0न0 {{Mobile}}}}।\n\nभारतीय नागरिक सुरक्षा संहिता-2023 की धारा 35 की उपधारा (3) के अनुसरण में मैं आपको सूचित करता हूँ कि पुलिस थाना {{PoliceStation}} पर पंजीकृत मु0अ0सं0 {{FIRNo}} दिनांक {{if:FirDate|{{FirDate}}}}{{ifnot:FirDate|..........}} धारा {{Sections}} के अधीन अन्वेषण के दौरान यह प्रकट हुआ है कि वर्तमान अन्वेषण के सम्बन्ध में तथ्यों और परिस्थितियों को सुनिश्चित करने के लिये आपसे प्रश्न पूछने के लिये युक्ति-युक्त आधार है। अतः आपको निर्देशित किया जाता है कि आप मेरे समक्ष दिनांक **{{AppearDate}}** को समय **{{AppearTime}} {{AmPm}}** {{AppearAt}} पर उपस्थित होना सुनिश्चित करें।\n\nयद्यपि आपको उपरोक्त एफ0आई0आर0 के सम्बन्ध में इस स्तर पर गिरफ्तार नहीं किया जा रहा है, आपको निम्नांकित सभी शर्तों व निर्देशों का पालन करने का निर्देश दिया जाता है –\n[[सूची]] 1. आप भविष्य में कोई अपराध नहीं करेंगे।\n2. आप मामले में साक्ष्यों के साथ किसी तरह की छेड़छाड़ नहीं करेंगे।\n3. आप मामले के तथ्य से परिचित किसी भी व्यक्ति को न्यायालय या पुलिस अधिकारी को ऐसे तथ्यों का खुलासा करने से रोकने के लिये धमकी, प्रलोभन या वचन नहीं देंगे।\n4. जब भी अपेक्षित / निर्देशित होगा, आप न्यायालय के समक्ष उपस्थित होंगे।\n5. जब भी आवश्यकता होगी, आप मामले के अन्वेषण में शामिल होंगे और अन्वेषण में सहयोग करेंगे।\n6. आप मामले के सही निष्कर्ष तक पहुँचने के उद्देश्य से किसी सुसंगत भाग को छुपाए बिना सभी तथ्यों का सच्चाई से खुलासा करेंगे।\n7. आप अन्वेषण के प्रयोजन के लिये आवश्यक सभी सुसंगत दस्तावेज / सामग्रियाँ प्रस्तुत करेंगे।\n8. आप सह अपराधी को पकड़ने में अपना पूरा सहयोग / सहायता प्रदान करेंगे।\n9. आप किसी भी तरह से मामले के अन्वेषण / परीक्षण के उद्देश्य से सुसंगत किसी भी साक्ष्य को नष्ट करने की अनुमति नहीं देंगे।\n10. कोई अन्य शर्त जो मामले के तथ्यों के अनुसार अन्वेषण अधिकारी / एस0एच0ओ0 द्वारा लगाई जा सकती है – {{if:OtherCond|{{OtherCond}}}}{{ifnot:OtherCond|कोई नहीं।}}\n[[विवरण]] इस नोटिस की शर्तों में भाग लेने / अनुपालन करने में विफलता आपको भारतीय नागरिक सुरक्षा संहिता-2023 की धारा 35(6) के तहत गिरफ्तारी के लिये उत्तरदायी बना सकती है।\n[[सूची]] ​\n​\n​\n[[दाएँ]] ({{OfficerName}})\n[[दाएँ]] {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} / भार साधक अधिकारी\n[[दाएँ]] थाना {{PoliceStation}} जनपद {{District}}\n[[सूची]] ​\n[[बीच]] पावती\n[[विवरण]] भारतीय नागरिक सुरक्षा संहिता-2023 की धारा 35(3) के तहत जारी उपर्युक्त नोटिस दिनांक {{if:NoticeDate|{{NoticeDate}}}}{{ifnot:NoticeDate|..........}} के अनुपालन में नोटिस प्राप्तकर्ता दिनांक .......... समय .......... से .......... तक उपस्थित हुआ है। पुलिस थाने द्वारा रखे गये रजिस्टर में नोटिसी की उपस्थिति दर्ज की गयी है।\n\nयह पावती भारतीय नागरिक सुरक्षा संहिता-2023 की धारा 35(3) के अनुपालन में जारी की जा रही है। नोटिसी द्वारा प्रस्तुत दस्तावेजों को जब्ती ज्ञापन / प्रस्तुति ज्ञापन (प्रतिलिपि संलग्न) के माध्यम से विधिवत जब्त कर लिया गया है। नोटिस प्राप्त करने वाला किसी भी अन्य नोटिस का पालन करना जारी रखने का वचन देता है, जो उसे वर्तमान अन्वेषण के दौरान प्राप्त हो सकता है।\n[[सूची]] ​\n​\n​\n[[दोनों ओर]] {{if:Rel=पुत्र|अभियुक्त}}{{ifnot:Rel=पुत्र|अभियुक्ता}} के हस्ताक्षर / नोटिसी | विवेचक के हस्ताक्षर\n",
+    "keys": [
+      {
+        "key_name": "FIRNo",
+        "label": "मु0अ0सं0",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "@FIR.fir_number",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 284/2025\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}",
+        "sort_order": 0
+      },
+      {
+        "key_name": "Sections",
+        "label": "धारा",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": "@FIR.section",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 115(2), 352, 351(3) बीएनएस\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
+        "sort_order": 1
+      },
+      {
+        "key_name": "FirDate",
+        "label": "मुकदमा पंजीकरण का दिनांक (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": "@FIR.fir_date",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 01.07.2025\", \"hint\": \"मुकदमा दर्ज होने की तारीख, जैसे: 01.07.2025 — न हो तो खाली\"}",
+        "sort_order": 2
+      },
+      {
+        "key_name": "RoAam",
+        "label": "रो0आम संख्या व समय (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: रपट नं0 12 समय 10:15 बजे\", \"hint\": \"रोजनामचा आम की रपट संख्या व समय, जैसे: रपट नं0 12 समय 10:15 बजे — न हो तो खाली\"}",
+        "sort_order": 3
+      },
+      {
+        "key_name": "NoticeDate",
+        "label": "नोटिस का दिनांक (वैकल्पिक — खाली = हाथ से भरें)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 05.07.2025\", \"hint\": \"नोटिस की तारीख, जैसे: 05.07.2025 — खाली छोड़ें तो नोटिस पर हाथ से भरने की जगह (….) छपेगी\"}",
+        "sort_order": 4
+      },
+      {
+        "key_name": "AccName",
+        "label": "नोटिसी (अभियुक्त) का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "@FIR.accused1_name",
+        "dropdown_options": "{\"placeholder\": \"जैसे: रामचन्द्र\", \"hint\": \"नोटिसी (अभियुक्त) का सिर्फ़ नाम, जैसे: रामचन्द्र\"}",
+        "sort_order": 5
+      },
+      {
+        "key_name": "Rel",
+        "label": "सम्बन्ध",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "@FIR.accused1_relation|पुत्र",
+        "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"hint\": \"पिता के नाम से तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
+        "sort_order": 6
+      },
+      {
+        "key_name": "AccFather",
+        "label": "पिता / पति का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "@FIR.accused1_father",
+        "dropdown_options": "{\"placeholder\": \"जैसे: भिखारी\", \"hint\": \"पिता / पति का नाम, जैसे: भिखारी\"}",
+        "sort_order": 7
+      },
+      {
+        "key_name": "AccVillage",
+        "label": "निवासी ग्राम / मोहल्ला",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: भग्तिन खेड़ा मजरे पश्चिम गांव\", \"hint\": \"ग्राम / मोहल्ला, जैसे: भग्तिन खेड़ा मजरे पश्चिम गांव\"}",
+        "sort_order": 8
+      },
+      {
+        "key_name": "AccPS",
+        "label": "अभियुक्त का थाना",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: बछरावां\", \"hint\": \"अभियुक्त के घर का थाना, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}",
+        "sort_order": 9
+      },
+      {
+        "key_name": "AccDistrict",
+        "label": "अभियुक्त का जनपद",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: रायबरेली\", \"hint\": \"अभियुक्त का जनपद, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}",
+        "sort_order": 10
+      },
+      {
+        "key_name": "Mobile",
+        "label": "मो0न0 (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": "@FIR.accused1_mobile",
+        "dropdown_options": "{\"placeholder\": \"जैसे: 9876543210\", \"hint\": \"10 अंकों का मोबाइल — न हो तो खाली\"}",
+        "sort_order": 11
+      },
+      {
+        "key_name": "AppearDate",
+        "label": "उपस्थित होने का दिनांक",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 08.07.2025\", \"hint\": \"अभियुक्त किस तारीख को उपस्थित हो, जैसे: 08.07.2025\"}",
+        "sort_order": 12
+      },
+      {
+        "key_name": "AppearTime",
+        "label": "समय",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 11:00 बजे\", \"hint\": \"उपस्थित होने का समय, जैसे: 11:00 बजे\"}",
+        "sort_order": 13
+      },
+      {
+        "key_name": "AmPm",
+        "label": "पूर्वान्ह / अपरान्ह",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "पूर्वान्ह",
+        "dropdown_options": "{\"options\": [\"पूर्वान्ह\", \"अपरान्ह\"], \"hint\": \"12 बजे से पहले = पूर्वान्ह, बाद में = अपरान्ह\"}",
+        "sort_order": 14
+      },
+      {
+        "key_name": "AppearAt",
+        "label": "कहाँ उपस्थित हों (थाना / कार्यालय)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: थाना बछरावां जनपद रायबरेली\", \"hint\": \"कहाँ उपस्थित हो, जैसे: थाना बछरावां जनपद रायबरेली\"}",
+        "sort_order": 15
+      },
+      {
+        "key_name": "OtherCond",
+        "label": "10. कोई अन्य शर्त (वैकल्पिक)",
+        "field_type": "multiline",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: आप बिना अनुमति जनपद से बाहर नहीं जायेंगे।\", \"hint\": \"नोटिस की 10वीं शर्त, पूरा वाक्य, जैसे: आप बिना अनुमति जनपद से बाहर नहीं जायेंगे। — खाली छोड़ें तो \\\"कोई नहीं।\\\" छपेगा\"}",
+        "sort_order": 16
+      },
+      {
+        "key_name": "pad",
+        "label": "पद/रैंक",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "उपनिरीक्षक",
+        "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+        "sort_order": 17
+      },
+      {
+        "key_name": "OfficerName",
+        "label": "विवेचक / भार साधक अधिकारी का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 18,
+        "dropdown_options": "{\"hint\": \"विवेचक / भार साधक अधिकारी का सिर्फ़ नाम\"}"
+      },
+      {
+        "key_name": "PoliceStation",
+        "label": "थाना",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 19,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
+      },
+      {
+        "key_name": "District",
+        "label": "जनपद",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+        "sort_order": 20,
+        "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-cd-panchayatnama-pm-avlokan",
+    "title": "पंचायतनामा / पोस्टमार्टम — अवलोकन व सभी बयान (पंच, उ0नि0, आरक्षी, चिकित्सक)",
+    "format_type": "Case Diary",
+    "vivran": "{{if:doPan|थाना कार्यालय से {{Gender}} {{DName}} {{if:doPan|का}}{{ifnot:doPan|की}} मूल {{if:doPan|पंचायतनामा}}{{if:doPan|{{if:doPm| व }}}}{{if:doPm|पोस्टमार्टम रिपोर्ट}} प्राप्त {{if:doPan|{{if:doPm|हुए है जिनका}}{{ifnot:doPm|हुआ है जिसका}}}}{{ifnot:doPan|हुई है जिसका}} अवलोकन किया जा रहा है ।}}{{ifnot:doPan|{{if:doPm|थाना कार्यालय से {{Gender}} {{DName}} {{if:doPan|का}}{{ifnot:doPan|की}} मूल {{if:doPan|पंचायतनामा}}{{if:doPan|{{if:doPm| व }}}}{{if:doPm|पोस्टमार्टम रिपोर्ट}} प्राप्त {{if:doPan|{{if:doPm|हुए है जिनका}}{{ifnot:doPm|हुआ है जिसका}}}}{{ifnot:doPan|हुई है जिसका}} अवलोकन किया जा रहा है ।}}}}{{if:doPan|\n\nअवलोकन पंचायतनामा.......{{Gender}} {{DName}} {{DRel}} {{DFather}} निवासी {{DAddr}}{{if:DAge| उम्र {{DAge}} वर्ष}} के शव पंचायतनामा दिनांक {{PanDate}} को {{PanInfo}} {{SIRank}} {{SIName}} द्वारा {{PanPlace}} मे समक्ष पंच गवाहान {{each:Panch|{#}. {name} {rel} {father} निवासी {addr}{ उम्र ~age~ वर्ष}{ मो0न0 ~mobile~}| }} भरकर तैयार किया गया है जिसमे पंचो की राय में {{Gender}} {{DName}} उपरोक्त की मृत्यु {{PanchOpinion}} हुई है फिर भी मृत्यु का सही कारण जानने के लिए शव का पोस्टमार्टम कराया जाना नितान्त आवश्यक है ।{{if:doIOAgree| राय उपनिरीक्षक मे {{SIRank}} की राय भी पंचो की राय से मेल खाती है फिर भी}}{{ifnot:doIOAgree| अतः}} मृत्यु का सही कारण जानने के लिये शव को सील सर्व मोहर कर {{CoRank}} {{CoName}} {{Thana}} की सुपुर्दगी मे देकर पोस्टमार्टम हेतु {{PmHouseSent}} भेजा जाना अंकित है । पंचायतनामा पर पंचान के हस्ताक्षर व नि0 अं0 बने है।{{if:doCD| बाद अवलोकन मूल पंचायतनामा संलग्न सीडी है।}}}}{{if:doPm|\n\nअवलोकन पोस्टमार्टम रिपोर्ट.......... {{Gender}} {{DName}} {{DRel}} {{DFather}} निवासी {{DAddr}}{{if:DAge| उम्र {{DAge}} वर्ष}} के शव को दिनांक {{PmDate}} को समय {{BodyTime}} पर शव प्राप्त कर पोस्टमार्टम समय {{PmFrom}} से {{PmTo}} पर पीएम न0 {{PmNo}} डा0 {{DocName}} {{DocPost}} {{DocHosp}} द्वारा {{PmPlace}} में किया गया। पोस्टमार्टम रिपोर्ट में इंजरी {{PmInjury}} अंकित है। मृत्यु का तात्कालिक कारण {{PmCause}} अंकित किया गया है। रिपोर्ट पर चिकित्सक के हस्ताक्षर व मुहर बनी है।{{if:doCD| बाद अवलोकन पोस्टमार्टम रिपोर्ट मूल संलग्न सीडी है।}}}}{{if:doBayanSI|\n\nबयान पंचनामा भरने वाले {{if:SIRank=उ0नि0|उपनिरीक्षक}}{{if:SIRank=नि0|निरीक्षक}}......{{SIRank}} श्री {{SIName}} {{Thana}}{{if:SIMobile| मो0न0 {{SIMobile}}}} पूछने पर बता रहे है कि दिनांक {{InfoDate}} को{{if:InfoTime| {{InfoTime}} के समय}} {{BodyPlace}} से {{DeathHow}} {{if:Gender=मृतका|एक महिला}}{{if:Gender=मृतक|एक व्यक्ति}} जिसका नाम {{DName}} {{DRel}} {{DFather}} नि0 {{DAddr}}{{if:DAge| उम्र {{DAge}} वर्ष}} था की मृत्यु हो जाने की सूचना प्राप्त हुई थी प्राप्त सूचना पर मै {{if:SIRank=उ0नि0|उपनिरीक्षक}}{{if:SIRank=नि0|निरीक्षक}} मय हमराह {{CoRank}} {{CoName}} के थाना हाजा से मय दीगर कागजात के {{BodyPlace}} पहुंचा था । मेरे द्वारा दिनांक {{PanDate}} को{{if:PanWhen| {{PanWhen}}}} {{BodyPlace}} मे मौजूद {{Gender}} के परिजनो मे से पंच गवाह नियुक्त कर {{Gender}} के शव का पंचायतनामा भरकर शव को पोस्टमार्टम हेतु {{CoRank}} {{CoName}} की सुपुर्दगी मे देकर पोस्टमार्टम हाउस भेजा गया था । अपने द्वारा भरे पंचायतनामा का मै समर्थन करता हूँ । पंचनामा पर मेरे व पंच गवाहान के हस्ताक्षर मौजूद है । यही मेरा बयान है ।}}{{if:doBayanCo|\n\nबयान पोस्टमार्टम कराने वाला {{if:CoRank=का0|आरक्षी}}{{if:CoRank=हे0का0|मुख्य आरक्षी}}{{if:CoRank=म0का0|महिला आरक्षी}}.......{{CoRank}} {{CoName}} {{Thana}}{{if:CoMobile| मो0न0 {{CoMobile}}}} पूछने पर बता {{if:CoRank=म0का0|रही}}{{ifnot:CoRank=म0का0|रहे}} है कि दिनांक {{InfoDate}} को{{if:InfoTime| {{InfoTime}} के समय}} {{BodyPlace}} से {{Gender}} {{DName}} {{DRel}} {{DFather}} नि0 {{DAddr}}{{if:DAge| उम्र {{DAge}} वर्ष}} की मृत्यु की सूचना पर मै {{if:CoRank=का0|आरक्षी}}{{if:CoRank=हे0का0|मुख्य आरक्षी}}{{if:CoRank=म0का0|महिला आरक्षी}} {{SIRank}} श्री {{SIName}} के साथ {{BodyPlace}} मे {{if:CoRank=म0का0|पहुंची थी}}{{ifnot:CoRank=म0का0|पहुंचा था}} जहाँ पर {{Gender}} के परिजन व {{Gender}} का शव मौजूद था । {{SIRank}} श्री {{SIName}} ने {{Gender}} के शव का पंचनामा भरकर शव को सील सर्व मोहर कर व कागजात तैयार कर पोस्टमार्टम हेतु शव को मुझे सुपुर्द कर पोस्टमार्टम हाउस भेजा था । मेरे द्वारा {{PmPlace}} मे जाकर शव का पोस्टमार्टम कराया गया था । बाद पोस्टमार्टम शव को उनके परिजनो को सुपुर्द किया गया था । यही मेरा बयान है ।}}{{if:doBayanPanch|\n\n{{each:Panch|बयान गवाह/पंच गवाह..........{name} {rel} {father} नि0 {addr}{ मो0न0 ~mobile~} पूछने पर बता {?mahila|रही|रहे} है कि {?own|{own}|{Story1} सूचना मिलने पर मै भी {BodyPlace} मे {?mahila|आयी थी|आया था} । दरोगा जी द्वारा {DName} के शव का पंचनामा भरा था पंचनामा पर मैने भी अपने हस्ताक्षर बनाये थे । {Story2}} यही मेरा बयान है ।|\n\n}}}}{{if:doBayanDoc|\n\nबयान चिकित्सक ( मृतक का PM करने वाले ):- डा0 {{DocName}} {{DocPost}}, {{DocHosp}}{{if:DocMobile| मो0नं0 {{DocMobile}}}} पीएम रिपोर्ट की छायाप्रति का अवलोकन करते हुए बदरियाफ्त बता {{if:docMahila|रही}}{{ifnot:docMahila|रहे}} है कि मैं {{DocHosp}} में {{DocPost}} के पद पर नियुक्त हूँ। दिनांक {{PmDate}} को मेरी ड्यूटी {{DutyFrom}} से PM हाउस में शव का पोस्टमार्टम करने हेतु लगी थी। {{Gender}} {{DName}} {{DRel}} {{DFather}} निवासी {{DAddr}} के शव को मय पंचायतनामा के कागजात के दिनांक {{PmDate}} को समय {{BodyTime}} पर शव को प्राप्त करते हुए शव का PM क्रमांक {{PmNo}} पर दिनांक {{PmDate}} को समय {{PmFrom}} से प्रारंभ कर {{PmTo}} तक किया गया था। {{Gender}} {{DName}} ( ANTi MORTEM INJURIES ) {{if:DocInjury|{{DocInjury}}}}{{ifnot:DocInjury|{{PmInjury}}}} जो PM रिपोर्ट में अंकित है। {{Gender}} {{DName}} की मृत्यु का कारण: {{PmCause}} मेरे द्वारा अंकित किया गया था।{{if:doViscera| मेरे द्वारा {{Gender}} का विसरा परीक्षण हेतु संरक्षित किया था।}} PM रिपोर्ट मेरे द्वारा तैयार की गयी थी। पीएम रिपोर्ट पर मेरे हस्ताक्षर हैं। {{Gender}} {{DName}} की PM रिपोर्ट का मैं समर्थन {{if:docMahila|करती}}{{ifnot:docMahila|करता}} हूँ।}}",
+    "keys": [
+      {
+        "key_name": "Gender",
+        "label": "मृतक या मृतका",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "मृतक",
+        "dropdown_options": "{\"options\": [\"मृतक\", \"मृतका\"], \"hint\": \"पुरुष हो तो \\\"मृतक\\\", महिला हो तो \\\"मृतका\\\" — पूरे लेख में यही शब्द आता है\"}",
+        "sort_order": 1
+      },
+      {
+        "key_name": "DName",
+        "label": "मृतक / मृतका का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: नेवल किशोर\", \"hint\": \"सिर्फ़ नाम, जैसे: नेवल किशोर\"}",
+        "sort_order": 2
+      },
+      {
+        "key_name": "DRel",
+        "label": "सम्बन्ध",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "पुत्र",
+        "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"hint\": \"पिता के नाम से तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
+        "sort_order": 3
+      },
+      {
+        "key_name": "DFather",
+        "label": "पिता / पति का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: राम आधार\", \"hint\": \"पिता / पति का नाम, जैसे: राम आधार\"}",
+        "sort_order": 4
+      },
+      {
+        "key_name": "DAddr",
+        "label": "पता (\"निवासी\" के बाद का)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: नेवाजखेड़ा थाना हरचन्द्रपुर जनपद रायबरेली\", \"hint\": \"\\\"निवासी\\\" के बाद वाला पूरा पता, जैसे: नेवाजखेड़ा थाना हरचन्द्रपुर जनपद रायबरेली\"}",
+        "sort_order": 5
+      },
+      {
+        "key_name": "DAge",
+        "label": "उम्र (वर्ष, वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 25\", \"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 25 — न पता हो तो खाली\"}",
+        "sort_order": 6
+      },
+      {
+        "key_name": "SIRank",
+        "label": "पंचायतनामा भरने वाले अधिकारी — पद",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "उ0नि0",
+        "dropdown_options": "{\"options\": [{\"value\": \"उ0नि0\", \"label\": \"उपनिरीक्षक\"}, {\"value\": \"नि0\", \"label\": \"निरीक्षक\"}], \"hint\": \"पंचायतनामा भरने वाले अधिकारी का पद\"}",
+        "sort_order": 7
+      },
+      {
+        "key_name": "SIName",
+        "label": "पंचायतनामा भरने वाले अधिकारी — नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: अमर कुमार\", \"hint\": \"सिर्फ़ नाम, जैसे: अमर कुमार (\\\"श्री\\\" बयान में अपने आप लगता है)\"}",
+        "sort_order": 8
+      },
+      {
+        "key_name": "CoRank",
+        "label": "शव ले जाने (पोस्टमार्टम कराने) वाला कर्मचारी — पद",
+        "field_type": "dropdown",
+        "is_required": 1,
+        "default_value": "का0",
+        "dropdown_options": "{\"options\": [{\"value\": \"का0\", \"label\": \"आरक्षी\"}, {\"value\": \"हे0का0\", \"label\": \"मुख्य आरक्षी\"}, {\"value\": \"म0का0\", \"label\": \"महिला आरक्षी\"}], \"hint\": \"शव लेकर पोस्टमार्टम कराने वाले कर्मचारी का पद\"}",
+        "sort_order": 9
+      },
+      {
+        "key_name": "CoName",
+        "label": "उस कर्मचारी का नम्बर व नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 8330 सोनू सिंह\", \"hint\": \"नम्बर व नाम, जैसे: 8330 सोनू सिंह\"}",
+        "sort_order": 10
+      },
+      {
+        "key_name": "Thana",
+        "label": "दोनों का थाना (व जनपद)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: थाना पीजीआई जनपद लखनऊ\", \"hint\": \"\\\"थाना\\\" सहित, जैसे: थाना पीजीआई जनपद लखनऊ / थाना बछरावां\"}",
+        "sort_order": 11
+      },
+      {
+        "key_name": "doPan",
+        "label": "मूल पंचायतनामा का अवलोकन",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "हाँ",
+        "dropdown_options": "{\"hint\": \"पंचायतनामा का अवलोकन लिखना है तो टिक रहने दें — उसके बॉक्स खुले रहेंगे\"}",
+        "sort_order": 12
+      },
+      {
+        "key_name": "PanDate",
+        "label": "पंचायतनामा — दिनांक",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"पंचायतनामा भरे जाने की तारीख बिंदु लगाकर\", \"placeholder\": \"जैसे: 19.07.2025\"}",
+        "sort_order": 13
+      },
+      {
+        "key_name": "PanInfo",
+        "label": "किस सूचना के आधार पर",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "थाना बछरावां से मिली सूचना के आधार पर",
+        "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"किसकी सूचना पर पंचायतनामा भरा गया, \\\"आधार पर\\\" तक, जैसे: थाना बछरावां से मिली सूचना के आधार पर\"}",
+        "sort_order": 14
+      },
+      {
+        "key_name": "PanPlace",
+        "label": "पंचायतनामा कहाँ भरा गया",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"जगह का नाम, जैसे: बन्नावा — पत्र में \\\"… मे\\\" अपने आप लगता है\", \"placeholder\": \"जैसे: बन्नावा\"}",
+        "sort_order": 15
+      },
+      {
+        "key_name": "Panch",
+        "label": "पंच गवाहान (हर पंच की एक पंक्ति)",
+        "field_type": "item_group",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: लवकुश)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम\"}, {\"key\": \"addr\", \"label\": \"पता — \\\"निवासी\\\" के बाद का\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक, जैसे: 38 या करीब 33)\"}, {\"key\": \"mobile\", \"label\": \"मोबाइल (वैकल्पिक)\"}, {\"key\": \"mahila\", \"label\": \"महिला है\", \"type\": \"check\"}, {\"key\": \"own\", \"label\": \"अलग बयान (वैकल्पिक) — इस पंच की बात अलग हो (जैसे \\\"मेरा भाई…\\\") तो \\\"पूछने पर बता रहे है कि\\\" के बाद का पूरा बयान\", \"type\": \"multiline\"}], \"copy\": [\"Story1\", \"Story2\", \"BodyPlace\", \"DName\"], \"addLabel\": \"+ और पंच जोड़ें\", \"itemLabel\": \"पंच\", \"hint\": \"हर पंच का अलग कार्ड: नाम, सम्बन्ध, पिता/पति, पता, उम्र, मोबाइल — पंचायतनामा अवलोकन में क्रम 1. 2. 3. अपने आप; पंच गवाहों के बयान भी इन्हीं कार्ड से बनते हैं। किसी पंच की बात अलग हो (मृतक का भाई आदि) तो उसके कार्ड में \\\"अलग बयान\\\" भरें। \\\"+\\\" से अगला पंच\"}",
+        "sort_order": 16
+      },
+      {
+        "key_name": "PanchOpinion",
+        "label": "पंचों की राय — मृत्यु किस कारण से",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "सड़क दुर्घटना मे आयी चोटो के कारण",
+        "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"\\\"मृत्यु … हुई है\\\" के बीच का हिस्सा, जैसे: सड़क दुर्घटना मे आयी चोटो के कारण / फाँसी लगाने से\"}",
+        "sort_order": 17
+      },
+      {
+        "key_name": "doIOAgree",
+        "label": "उ0नि0 की राय भी पंचों की राय से मेल खाती है",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "हाँ",
+        "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"पंचायतनामा भरने वाले अधिकारी की राय भी यही है तो टिक रहने दें\"}",
+        "sort_order": 18
+      },
+      {
+        "key_name": "PmHouseSent",
+        "label": "शव कहाँ भेजा गया",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "पीएम हाउस रायबरेली",
+        "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"जहाँ पोस्टमार्टम हेतु भेजा, जैसे: पीएम हाउस रायबरेली\"}",
+        "sort_order": 19
+      },
+      {
+        "key_name": "doPm",
+        "label": "पोस्टमार्टम रिपोर्ट का अवलोकन",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "हाँ",
+        "dropdown_options": "{\"hint\": \"पोस्टमार्टम रिपोर्ट का अवलोकन लिखना है तो टिक रहने दें\"}",
+        "sort_order": 20
+      },
+      {
+        "key_name": "PmDate",
+        "label": "पोस्टमार्टम — दिनांक",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"पोस्टमार्टम की तारीख बिंदु लगाकर\", \"placeholder\": \"जैसे: 20.07.2025\"}",
+        "sort_order": 21
+      },
+      {
+        "key_name": "BodyTime",
+        "label": "शव प्राप्त होने का समय",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"रिपोर्ट पर लिखा शव प्राप्ति का समय, जैसे: 01.45 PM\", \"placeholder\": \"जैसे: 01.45 PM\"}",
+        "sort_order": 22
+      },
+      {
+        "key_name": "PmFrom",
+        "label": "पोस्टमार्टम — कब से",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"पोस्टमार्टम शुरू होने का समय, जैसे: 01.50 PM\", \"placeholder\": \"जैसे: 01.50 PM\"}",
+        "sort_order": 23
+      },
+      {
+        "key_name": "PmTo",
+        "label": "पोस्टमार्टम — कब तक",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"पोस्टमार्टम खत्म होने का समय, जैसे: 02.30 PM\", \"placeholder\": \"जैसे: 02.30 PM\"}",
+        "sort_order": 24
+      },
+      {
+        "key_name": "PmNo",
+        "label": "पीएम नं0",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"पोस्टमार्टम नम्बर / वर्ष, जैसे: 122/2025\", \"placeholder\": \"जैसे: 122/2025\"}",
+        "sort_order": 25
+      },
+      {
+        "key_name": "DocName",
+        "label": "पोस्टमार्टम करने वाले डॉक्टर — नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: सचिन राज निगम\", \"hint\": \"सिर्फ़ नाम — \\\"डा0\\\" अपने आप लगता है; PM अवलोकन और डॉक्टर के बयान दोनों में आता है\"}",
+        "sort_order": 26
+      },
+      {
+        "key_name": "DocPost",
+        "label": "डॉक्टर का पद",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "चिकित्साधिकारी",
+        "dropdown_options": "{\"hint\": \"जैसे: चिकित्साधिकारी\"}",
+        "sort_order": 27
+      },
+      {
+        "key_name": "DocHosp",
+        "label": "डॉक्टर कहाँ नियुक्त",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: CHC हरचन्दपुर जनपद रायबरेली\", \"hint\": \"अस्पताल व जनपद, जैसे: CHC हरचन्दपुर जनपद रायबरेली\"}",
+        "sort_order": 28
+      },
+      {
+        "key_name": "PmInjury",
+        "label": "चोटें (रिपोर्ट में जैसा लिखा है)",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"ANTEMORTEM INJURY रिपोर्ट में जैसे लिखी हैं वैसे ही (अंग्रेज़ी में), क्रम सहित — \\\"अंकित है।\\\" अपने आप लगता है\", \"placeholder\": \"जैसे: ANTEMORTEM INJURY ;- 1. CRUSHED INJURY OF HEAD … 2:- LACERATED WOUND …\"}",
+        "sort_order": 29
+      },
+      {
+        "key_name": "PmCause",
+        "label": "मृत्यु का तात्कालिक कारण",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"रिपोर्ट में जैसा लिखा है, जैसे: HAEMORRHAGIC shock, बजह antemortem INJURY as noted — \\\"अंकित किया गया है।\\\" अपने आप\", \"placeholder\": \"जैसे: HAEMORRHAGIC shock, बजह antemortem INJURY as noted\"}",
+        "sort_order": 30
+      },
+      {
+        "key_name": "PmPlace",
+        "label": "पोस्टमार्टम कहाँ हुआ",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "जिला पीएम हाउस रायबरेली",
+        "dropdown_options": "{\"hint\": \"जहाँ पोस्टमार्टम हुआ, जैसे: जिला पीएम हाउस रायबरेली / जिला पीएम हाउस K.G.M.U. Mortuary Lucknow — PM अवलोकन और आरक्षी के बयान दोनों में आता है\"}",
+        "sort_order": 31
+      },
+      {
+        "key_name": "doCD",
+        "label": "\"बाद अवलोकन … मूल संलग्न सीडी है।\" लिखें",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "हाँ",
+        "dropdown_options": "{\"hint\": \"हर अवलोकन के आखिर में \\\"बाद अवलोकन … संलग्न सीडी है।\\\" लिखना है तो टिक रहने दें\"}",
+        "sort_order": 32
+      },
+      {
+        "key_name": "doBayanSI",
+        "label": "बयान — पंचनामा भरने वाले उपनिरीक्षक",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "हाँ",
+        "dropdown_options": "{\"hint\": \"पंचायतनामा भरने वाले अधिकारी का बयान लिखना है तो टिक रहने दें\"}",
+        "sort_order": 33
+      },
+      {
+        "key_name": "doBayanCo",
+        "label": "बयान — पोस्टमार्टम कराने वाला आरक्षी",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "हाँ",
+        "dropdown_options": "{\"hint\": \"शव ले जाकर पोस्टमार्टम कराने वाले कर्मचारी का बयान लिखना है तो टिक रहने दें\"}",
+        "sort_order": 34
+      },
+      {
+        "key_name": "doBayanPanch",
+        "label": "बयान — पंच गवाहान (हर पंच का अलग पैराग्राफ)",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "हाँ",
+        "dropdown_options": "{\"hint\": \"पंचों के बयान लिखने हैं तो टिक रहने दें — ऊपर के पंच कार्ड से हर पंच का बयान बनेगा\"}",
+        "sort_order": 35
+      },
+      {
+        "key_name": "doBayanDoc",
+        "label": "बयान — पोस्टमार्टम करने वाले चिकित्सक",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": "हाँ",
+        "dropdown_options": "{\"hint\": \"पोस्टमार्टम करने वाले डॉक्टर का बयान लिखना है तो टिक रहने दें\"}",
+        "sort_order": 36
+      },
+      {
+        "key_name": "SIMobile",
+        "label": "उ0नि0 का मोबाइल (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"10 अंकों का नम्बर — न हो तो खाली\", \"placeholder\": \"जैसे: 9140646060\", \"showIf\": \"doBayanSI\"}",
+        "sort_order": 37
+      },
+      {
+        "key_name": "CoMobile",
+        "label": "आरक्षी का मोबाइल (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"10 अंकों का नम्बर — न हो तो खाली\", \"placeholder\": \"जैसे: 9760346820\", \"showIf\": \"doBayanCo\"}",
+        "sort_order": 38
+      },
+      {
+        "key_name": "InfoDate",
+        "label": "मृत्यु की सूचना — दिनांक",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"जिस दिन मृत्यु की सूचना मिली, बिंदु लगाकर — बयान में आता है\", \"placeholder\": \"जैसे: 09.05.2025\"}",
+        "sort_order": 39
+      },
+      {
+        "key_name": "InfoTime",
+        "label": "सूचना का समय (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"पहर सहित समय, जैसे: सुबह 9.10 — \\\"के समय\\\" अपने आप लगता है\", \"placeholder\": \"जैसे: सुबह 9.10\"}",
+        "sort_order": 40
+      },
+      {
+        "key_name": "BodyPlace",
+        "label": "सूचना कहाँ से मिली / शव कहाँ था",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"अस्पताल / जगह का नाम, जैसे: एपेक्स ट्रामा सेंटर लखनऊ — बयानों में \\\"… से सूचना\\\", \\\"… पहुंचा\\\" दोनों जगह आता है\", \"placeholder\": \"जैसे: एपेक्स ट्रामा सेंटर लखनऊ\"}",
+        "sort_order": 41
+      },
+      {
+        "key_name": "DeathHow",
+        "label": "मृत्यु किस घटना में",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "सड़क दुर्घटना मे",
+        "dropdown_options": "{\"hint\": \"\\\"… एक व्यक्ति की मृत्यु\\\" से पहले का हिस्सा, जैसे: सड़क दुर्घटना मे / फाँसी लगाने से\"}",
+        "sort_order": 42
+      },
+      {
+        "key_name": "PanWhen",
+        "label": "पंचायतनामा किस पहर भरा (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"hint\": \"जैसे: सवेरे / दोपहर — न लिखना हो तो खाली\", \"placeholder\": \"जैसे: सवेरे\", \"showIf\": \"doBayanSI\"}",
+        "sort_order": 43
+      },
+      {
+        "key_name": "DocMobile",
+        "label": "डॉक्टर का मोबाइल (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: 7985622041\", \"showIf\": \"doBayanDoc\", \"hint\": \"10 अंकों का नम्बर — न हो तो खाली\"}",
+        "sort_order": 44
+      },
+      {
+        "key_name": "docMahila",
+        "label": "डॉक्टर महिला हैं",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"showIf\": \"doBayanDoc\", \"hint\": \"महिला डॉक्टर हों तो टिक — \\\"बता रही है\\\", \\\"करती हूँ\\\" अपने आप\"}",
+        "sort_order": 45
+      },
+      {
+        "key_name": "DutyFrom",
+        "label": "डॉक्टर की ड्यूटी किसके आदेश / कहाँ से लगी",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "जिला अस्पताल",
+        "dropdown_options": "{\"showIf\": \"doBayanDoc\", \"hint\": \"\\\"… से PM हाउस में शव का पोस्टमार्टम करने हेतु\\\" से पहले का हिस्सा, जैसे: जिला अस्पताल\"}",
+        "sort_order": 46
+      },
+      {
+        "key_name": "DocInjury",
+        "label": "डॉक्टर के बयान में चोटें — अलग लिखनी हों तो (वैकल्पिक)",
+        "field_type": "multiline",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"showIf\": \"doBayanDoc\", \"placeholder\": \"जैसे: के सिर के बाएं पार्श्विका क्षेत्र पर बाएं कान से 7 सेमी ऊपर 10 सेमी x 4 सेमी आकार का कटा हुआ घाव थी।\", \"hint\": \"\\\"( ANTi MORTEM INJURIES )\\\" के बाद का हिस्सा, जैसे: के सिर के बाएं … कटा हुआ घाव थी। — खाली छोड़ें तो ऊपर वाली PM रिपोर्ट की चोटें आएँगी\"}",
+        "sort_order": 47
+      },
+      {
+        "key_name": "doViscera",
+        "label": "विसरा परीक्षण हेतु संरक्षित किया",
+        "field_type": "checkbox",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"showIf\": \"doBayanDoc\", \"hint\": \"डॉक्टर ने विसरा सुरक्षित किया हो तो टिक — बयान में यह वाक्य जुड़ेगा\"}",
+        "sort_order": 48
+      },
+      {
+        "key_name": "Story1",
+        "label": "पंच गवाहों का बयान — घटना का विवरण (सबके लिए एक)",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"showIf\": \"doBayanPanch\", \"placeholder\": \"जैसे: दिनाँक 30/04/2025 को शाम 7.00 नितिन … आ रहे थे कि … एक्सीडेंट हो गया … रेफर किया गया था। दिनाँक 08/05/2025 को नितिन उपरोक्त कि दौराने ईलाज मृत्यु हो गयी थी …\", \"hint\": \"\\\"पूछने पर बता रहे है कि\\\" के बाद का हिस्सा — घटना कैसे हुई, इलाज कहाँ हुआ, मृत्यु कब हुई। एक बार लिखें, हर पंच के बयान में यही आता है\"}",
+        "sort_order": 49
+      },
+      {
+        "key_name": "Story2",
+        "label": "पंच गवाहों का बयान — आखिरी हिस्सा (सबके लिए एक)",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": "साहब यह घटना अज्ञात वाहन व चालक द्वारा गाड़ी को तेज रफ्तार व लापरवाही पूर्वक चलाने के कारण हुई है । साहब अज्ञात वाहन व चालक का पता लगाकर उसके विरुद्ध कानूनी कार्यवाही की जाये ।",
+        "dropdown_options": "{\"showIf\": \"doBayanPanch\", \"placeholder\": \"जैसे: दिनाँक 11/05/2025 को मनीष के भाई ने थाने पर तहरीर देकर मुकदमा लिखवाया था। साहब …\", \"hint\": \"पंचनामा वाली लाइन के बाद का हिस्सा — मुकदमा किसने लिखाया, गवाह क्या चाहता है। \\\"यही मेरा बयान है ।\\\" अपने आप लगता है\"}",
+        "sort_order": 50
+      }
+    ],
+    "is_favorite": 0,
+    "source": "system",
+    "editable": 1,
+    "created_by": "system",
+    "content_type": "format",
+    "seed_version": 1,
+    "app_version": "1.0.0",
+    "last_updated": "2026-11-13",
+    "tags": [
+      "पंचायतनामा",
+      "पोस्टमार्टम",
+      "अवलोकन",
+      "मृतक",
+      "बयान",
+      "केस डायरी"
+    ]
+  }
+]

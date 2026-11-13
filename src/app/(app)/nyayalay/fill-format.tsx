@@ -32,7 +32,9 @@ import { getNyayalayDocWithDetails } from '@/lib/db/nyayalayRepo';
 import { generateReport } from '@/lib/templateEngine';
 import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS, resolveNyayalayKeys, NYAYALAY_KEY_LABELS } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
-import { FormatKeyInput } from '@/components/ui/input';
+import { FieldHint, FormatKeyInput, keyHint } from '@/components/ui/input';
+import { AccusedGroupInput, initAccusedGroup } from '@/components/ui/AccusedGroupInput';
+import { PersonGroupInput, initPersonGroup } from '@/components/ui/PersonGroupInput';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
 import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
@@ -57,6 +59,8 @@ export default function NyayalayFillFormatScreen() {
   const [format, setFormat] = useState<PredefinedFormat | null>(null);
   const [dynamicKeys, setDynamicKeys] = useState<FormatKey[]>([]);
   const [values, setValues] = useState<Record<string, string>>({});
+  // person / accused cards report whether they are filled correctly (like the प्रार्थना पत्र fill screen)
+  const [groupValid, setGroupValid] = useState<Record<string, boolean>>({});
   const [initialValues, setInitialValues] = useState<Record<string, string>>({});
   const [pickedFir, setPickedFir] = useState<FIR | null>(null);
   const pickedValuesRef = useRef<Record<string, string>>({});
@@ -118,13 +122,16 @@ export default function NyayalayFillFormatScreen() {
 
       const defaults: Record<string, string> = {};
       for (const key of dynKeys) {
-        if (literalDefault(key.default_value)) defaults[key.key_name] = literalDefault(key.default_value);
+        if (key.field_type === 'accused_group') defaults[key.key_name] = initAccusedGroup();
+        else if (key.field_type === 'person_group') defaults[key.key_name] = initPersonGroup();
+        else if (literalDefault(key.default_value)) defaults[key.key_name] = literalDefault(key.default_value);
       }
       // Merge order: defaults < workspace < nyayalay (most specific wins)
       const merged = { ...defaults, ...wsResolved, ...nylResolved };
       setValues(merged);
       setInitialValues(merged);
       setFieldErrors({});
+      setGroupValid({});
       setBannerError('');
       setPendingDraft(await loadFillDraft('Nyayalay', formatId, docId));
     })();
@@ -141,6 +148,10 @@ export default function NyayalayFillFormatScreen() {
     setBannerError('');
   };
 
+  const handleGroupValidChange = (keyName: string, isValid: boolean) => {
+    setGroupValid((prev) => ({ ...prev, [keyName]: isValid }));
+  };
+
   const handleBackPress = () => {
     if (isDirty) setShowDiscardDialog(true);
     else router.back();
@@ -150,6 +161,12 @@ export default function NyayalayFillFormatScreen() {
     if (!format) return;
     if (missingWorkspaceFields.length > 0) {
       setBannerError(t('nyayalay.format.workspaceIncompleteBanner', { fields: missingWorkspaceFields.join(', ') }));
+      return;
+    }
+    const invalidGroups = Object.entries(groupValid).filter(([k, valid]) =>
+      !valid && dynamicKeys.some((key) => key.key_name === k && isKeyVisible(key, values)));
+    if (invalidGroups.length > 0) {
+      setBannerError(t('format.fill.errorGroupInvalid'));
       return;
     }
     const { fieldErrors: errs, firstErrorKey, hasErrors } = validateRequiredFields(dynamicKeys, values);
@@ -304,18 +321,47 @@ export default function NyayalayFillFormatScreen() {
               <Text className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                 {t('nyayalay.format.fillRequiredDetails')}
               </Text>
-              {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) => (
-                <FormatKeyInput
-                  key={key.id}
-                  ref={(r) => { fieldRefs.current[key.key_name] = r; }}
-                  keyDef={key}
-                  value={values[key.key_name] ?? ''}
-                  onChange={setValue}
-                  error={fieldErrors[key.key_name]}
-                  allValues={values}
-                  allKeys={dynamicKeys}
-                />
-              ))}
+              {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) =>
+                key.field_type === 'accused_group' ? (
+                  <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
+                    <FieldHint text={keyHint(key.dropdown_options)} />
+                    <AccusedGroupInput
+                      showStatus={format?.vivran.includes(`{{${key.key_name}#`) ?? false}
+                      keyName={key.key_name}
+                      label={key.label || key.key_name}
+                      value={values[key.key_name] ?? initAccusedGroup()}
+                      onChange={setValue}
+                      onValidChange={handleGroupValidChange}
+                      error={fieldErrors[key.key_name]}
+                    />
+                  </View>
+                ) : key.field_type === 'person_group' ? (
+                  <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
+                    <FieldHint text={keyHint(key.dropdown_options)} />
+                    <PersonGroupInput
+                      keyName={key.key_name}
+                      single={/"single"\s*:\s*true/.test(key.dropdown_options ?? '')}
+                      addressOptional={/"addressOptional"\s*:\s*true/.test(key.dropdown_options ?? '')}
+                      label={key.label || key.key_name}
+                      value={values[key.key_name] ?? initPersonGroup()}
+                      onChange={setValue}
+                      onValidChange={handleGroupValidChange}
+                      error={fieldErrors[key.key_name]}
+                    />
+                  </View>
+                ) : (
+                  <FormatKeyInput
+                    key={key.id}
+                    ref={(r) => { fieldRefs.current[key.key_name] = r; }}
+                    keyDef={key}
+                    value={values[key.key_name] ?? ''}
+                    onChange={setValue}
+                    error={fieldErrors[key.key_name]}
+                    allValues={values}
+                    allKeys={dynamicKeys}
+                  />
+                )
+              )}
             </>
           ) : null}
 

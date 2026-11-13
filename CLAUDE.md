@@ -436,6 +436,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   "VAge":"age|वर्ष","X":"#2:name"}`) fills them from the card in deriveFormatValues (formatDerived.ts). Option `addressOptional` (PersonGroupInput prop,
   passed by formats/fill, prarthna fill-format and the केस डायरी panel — which now renders person_group keys too). Token `{{Key#name}}` = names only
   ("क व ख"). Backups in docs/format-backups/*_before_person_card(s).json. Tests `scripts/test_person_cards.ts`.
+  Batch 2 done: बेल नोटिस (v5 AccCard), 35(3) नोटिस (v6 AccCard; address = full card address "निवासी {{AccAddr}}", AccVillage/PS/District gone),
+  पंचायतनामा/PM अवलोकन (v2 DCard), फार्म 33 (v3 DCard incl. caste; DThana/DDistrict gone, full address; age `{{if:Age|…}}`), PM रिपोर्ट पत्र
+  (v6 `{{DeadCard#prose}}`). Option `"single": true` = one card only (all 4 fill screens). expand spec `"relationType||पुत्र"` = fallback when the
+  card leaves it empty; expand runs before item_group `copy` (DName into पंच rows). न्यायालय fill-format now renders person / accused cards
+  (before: plain text box). Backup docs/format-backups/batch2_before_person_cards.json.
 - केस डायरी date/time (owner): `src/lib/caseDiaryTime.ts` (pure; tests `scripts/test_case_diary_time.ts`) — the FIRST diary opens with the FIR
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end

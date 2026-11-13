@@ -235,6 +235,7 @@ function FormatFillPanel({
                   keyName={key.key_name}
                   label={key.label || key.key_name}
                   value={values[key.key_name] ?? initPersonGroup()}
+                  single={/"single"\s*:\s*true/.test(key.dropdown_options ?? '')}
                   addressOptional={/"addressOptional"\s*:\s*true/.test(key.dropdown_options ?? '')}
                   onChange={(kn, v) => {
                     setValues((p) => ({ ...p, [kn]: v }));
