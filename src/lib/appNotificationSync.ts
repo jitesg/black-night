@@ -9,6 +9,7 @@
  */
 import { syncNkChalaniAlerts } from '@/lib/nkChalaniService';
 import { syncPmBayanAlerts } from '@/lib/pmBayanService';
+import { syncSceneAlerts } from '@/lib/sceneAlertService';
 import * as Notifications from 'expo-notifications';
 import { getDatabase } from '@/lib/db/database';
 import { getPersistedSettings } from '@/hooks/useSettingsStore';
@@ -158,6 +159,9 @@ export async function syncAppNotifications(): Promise<void> {
 
     // g) notifPmBayan — पंचनामा के बयान लंबित (7+ days after the पंचायतनामा, daily 9 AM summary)
     await syncPmBayanAlerts();
+
+    // h) notifSceneGap — घटनास्थल की कार्यवाही लंबित (3+ days after the FIR, daily 9 AM summary)
+    await syncSceneAlerts();
 
     // App-icon badge = सूचनाएँ that need action (same number as the home bell).
     await refreshAppBadge();

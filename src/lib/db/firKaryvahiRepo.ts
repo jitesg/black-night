@@ -5,7 +5,8 @@ import { getChecklistItemsForPairs, getChecklistItemsForCrimeTypes, getChecklist
 import { logger } from '../logger';
 import { unlockDependentsOf } from './actionConditionsRepo';
 import {
-  isPmKaryvahi, isKaryvahiDone, parseSubSteps, applyEntryParts, removeEntryParts, allDoneLegacy, prefillPmValues,
+  isKaryvahiDone, parseSubSteps, applyEntryParts, removeEntryParts, allDoneLegacy, prefillChecklistValues,
+  checklistOf, checklistForFormat, partNotesFromValues, PM_DEF, SCENE_DEF, SCENE_MERGED_STEP_CODES, type ChecklistDef,
 } from '../karyvahiSubSteps';
 
 // ── Instance counter for mount/unmount tracing (shared across screen renders) ──
@@ -49,14 +50,16 @@ export interface FIRKaryvahi {
 
 export type FIRKaryvahiInput = Omit<FIRKaryvahi, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>;
 
-// Five mandatory Karyvahi added to every FIR at creation time (sort_order 0–4)
+// Mandatory Karyvahi added to every FIR at creation time (sort_order 0–3; ई-साक्ष्य is now inside घटनास्थल निरीक्षण)
 export const DEFAULT_KARYVAHI = [
   { name: 'नकल चिक का अवलोकन', precautions: 'नकल चिक की प्रविष्टि का अवलोकन कर सत्यापित करें।' },
   { name: 'नकल रपट का अवलोकन', precautions: 'नकल रपट की प्रविष्टि का अवलोकन कर सत्यापित करें।' },
   { name: 'वादी/वादिनी का बयान', precautions: 'वादी/पीड़ित का बयान दर्ज करें।' },
   { name: 'घटनास्थल निरीक्षण', precautions: 'घटनास्थल का निरीक्षण करें।' },
-  { name: 'ई-साक्ष्य ऐप से वीडियोग्राफी', precautions: 'ई-साक्ष्य ऐप से वीडियोग्राफी करें।' },
 ] as const;
+
+/** Old default card — now part 4 of the "घटनास्थल निरीक्षण" checklist (owner); old FIRs keep their card. */
+export const MERGED_DEFAULT_KARYVAHI_NAMES: readonly string[] = ['ई-साक्ष्य ऐप से वीडियोग्राफी'];
 
 export const LEGACY_DEFAULT_KARYVAHI_NAMES: readonly string[] = [
   'Avlokan Nakal Chick',
@@ -306,6 +309,7 @@ export async function seedFIRKaryvahi(firId: string, crimeType: string): Promise
   const seededNames = new Set([
     ...DEFAULT_KARYVAHI.map((k) => k.name.toLowerCase().trim()),
     ...LEGACY_DEFAULT_KARYVAHI_NAMES.map((name) => name.toLowerCase().trim()),
+    ...MERGED_DEFAULT_KARYVAHI_NAMES.map((name) => name.toLowerCase().trim()),
   ]);
   const checklistItems: ChecklistItem[] = [];
 
@@ -374,6 +378,12 @@ export async function seedFIRKaryvahi(firId: string, crimeType: string): Promise
     } catch (e) {
       logger.warn('[TRACE] seedFIRKaryvahi flat getChecklistItemsForCrimeTypes failed:', e);
     }
+  }
+
+  // घटनास्थल (owner): सुरक्षा / फोटो-वीडियो / नक्शा नजरी (+ हत्या / हत्या का प्रयास वाले) are parts of the one
+  // "घटनास्थल निरीक्षण" card's checklist now — not separate cards in new FIRs.
+  for (let i = checklistItems.length - 1; i >= 0; i--) {
+    if (checklistItems[i].step_code && SCENE_MERGED_STEP_CODES.includes(checklistItems[i].step_code as string)) checklistItems.splice(i, 1);
   }
 
   logger.warn(
@@ -806,53 +816,61 @@ export async function setKaryvahiSubSteps(id: string, firId: string, json: strin
   await recalcExecutionCount(id, firId);
   // पंचनामा के बयान लंबित alert follows the checklist (lazy import — no RN deps here)
   import('../pmBayanService').then((m) => m.resyncPmBayanAlertsSoon()).catch(() => {});
+  import('../sceneAlertService').then((m) => m.resyncSceneAlertsSoon()).catch(() => {});
 }
 
+type ChecklistRow = { id: string; fir_id: string; name: string; step_code: string | null; sub_steps_json: string | null; last_values_json?: string | null };
+
 /**
- * The PM format was saved in a case diary entry: tick the parts it printed (with the पर्चा number).
- * `karyvahiId` = the entry's karyvahi; when that is not the पंचनामा व पोस्टमार्टम karyvahi, the FIR's first such karyvahi is used.
- * Returns the karyvahi id that was updated (or null when the FIR has none).
+ * A case diary entry was saved: keep the karyvahi checklists in step with the format it was generated from.
+ * The entry's ticks are first removed everywhere (format changed / karyvahi changed / generated again); then, when
+ * `formatId` is a checklist format (पंचनामा व पोस्टमार्टम / निरीक्षण घटना स्थल), the parts it printed are ticked with the
+ * पर्चा number on the entry's karyvahi — or, when that card has another checklist, the FIR's first matching card —
+ * and its values are kept for instant filling. Returns the karyvahi id that was ticked (or null).
  */
-export async function applyPmPartsFromEntry(
-  firId: string, karyvahiId: string | undefined, entryId: string, parts: string[], parcha: string,
-  values?: Record<string, string>,
+export async function syncEntryChecklist(
+  firId: string, karyvahiId: string | undefined, entryId: string, formatId: string | null,
+  values: Record<string, string> | undefined, parcha: string,
 ): Promise<string | null> {
   const db = await getDatabase();
-  const rows = await db.getAllAsync<{ id: string; name: string; step_code: string | null; sub_steps_json: string | null; sort_order: number | null }>(
-    'SELECT id, name, step_code, sub_steps_json, sort_order FROM fir_karyvahi WHERE fir_id = ? AND deleted_at IS NULL ORDER BY sort_order, created_at',
+  const rows = await db.getAllAsync<ChecklistRow & { sort_order: number | null }>(
+    'SELECT id, fir_id, name, step_code, sub_steps_json, sort_order FROM fir_karyvahi WHERE fir_id = ? AND deleted_at IS NULL ORDER BY sort_order, created_at',
     [firId],
   );
-  const target = rows.find((r) => r.id === karyvahiId && isPmKaryvahi(r)) ?? rows.find((r) => isPmKaryvahi(r));
-  if (!target) return null;
-  // the same entry may have ticked another karyvahi earlier (karyvahi changed) — clear it there
+  const def = checklistForFormat(formatId);
+  const target = def ? (rows.find((r) => r.id === karyvahiId && def.match(r)) ?? rows.find((r) => def.match(r)) ?? null) : null;
   for (const r of rows) {
-    if (r.id !== target.id && (r.sub_steps_json ?? '').includes(entryId)) {
-      await setKaryvahiSubSteps(r.id, firId, JSON.stringify(removeEntryParts(parseSubSteps(r.sub_steps_json), entryId)));
-    }
+    if (r.id === target?.id || !(r.sub_steps_json ?? '').includes(entryId)) continue;
+    const d = checklistOf(r);
+    if (d) await setKaryvahiSubSteps(r.id, firId, JSON.stringify(removeEntryParts(parseSubSteps(r.sub_steps_json, d), entryId)));
   }
-  const next = applyEntryParts(parseSubSteps(target.sub_steps_json), entryId, parts, parcha);
+  if (!def || !target) return null;
+  const v = values ?? {};
+  const next = applyEntryParts(parseSubSteps(target.sub_steps_json, def), entryId, def.partsFromValues(v), parcha, Date.now(), def, partNotesFromValues(def, v));
   await setKaryvahiSubSteps(target.id, firId, JSON.stringify(next));
-  if (values && Object.keys(values).length > 0) {
-    await db.runAsync('UPDATE fir_karyvahi SET last_values_json = ? WHERE id = ?', [JSON.stringify(values), target.id]);
+  if (Object.keys(v).length > 0) {
+    await db.runAsync('UPDATE fir_karyvahi SET last_values_json = ? WHERE id = ?', [JSON.stringify(v), target.id]);
   }
   return target.id;
 }
 
-/** Instant filling: the PM format opened again for this FIR → last values + only the remaining parts ticked; null = no PM karyvahi. */
-export async function getPmPrefill(firId: string): Promise<Record<string, string> | null> {
+/** Instant filling: a checklist format opened again for this FIR → last values (PM: only the remaining parts ticked); null = no such card. */
+export async function getChecklistPrefill(firId: string, formatId: string): Promise<Record<string, string> | null> {
+  const def = checklistForFormat(formatId);
+  if (!def) return null;
   const db = await getDatabase();
-  const rows = await db.getAllAsync<{ name: string; step_code: string | null; sub_steps_json: string | null; last_values_json: string | null }>(
-    'SELECT name, step_code, sub_steps_json, last_values_json FROM fir_karyvahi WHERE fir_id = ? AND deleted_at IS NULL ORDER BY sort_order, created_at',
+  const rows = await db.getAllAsync<ChecklistRow>(
+    'SELECT id, fir_id, name, step_code, sub_steps_json, last_values_json FROM fir_karyvahi WHERE fir_id = ? AND deleted_at IS NULL ORDER BY sort_order, created_at',
     [firId],
   );
-  const k = rows.find((r) => isPmKaryvahi(r));
+  const k = rows.find((r) => def.match(r));
   if (!k) return null;
   let last: Record<string, string> = {};
   try {
     const v = JSON.parse(k.last_values_json || '{}');
     if (v && typeof v === 'object' && !Array.isArray(v)) last = v;
   } catch { /* old / empty */ }
-  return prefillPmValues(last, parseSubSteps(k.sub_steps_json));
+  return prefillChecklistValues(def, last, parseSubSteps(k.sub_steps_json, def));
 }
 
 /** Case diary entries deleted (or their diary): remove the ticks they made. */
@@ -860,31 +878,39 @@ export async function clearPmPartsForEntries(entryIds: string[]): Promise<void> 
   if (entryIds.length === 0) return;
   const db = await getDatabase();
   for (const entryId of entryIds) {
-    const rows = await db.getAllAsync<{ id: string; fir_id: string; sub_steps_json: string | null }>(
-      'SELECT id, fir_id, sub_steps_json FROM fir_karyvahi WHERE sub_steps_json LIKE ?', [`%${entryId}%`],
+    const rows = await db.getAllAsync<ChecklistRow>(
+      'SELECT id, fir_id, name, step_code, sub_steps_json FROM fir_karyvahi WHERE sub_steps_json LIKE ?', [`%${entryId}%`],
     );
     for (const r of rows) {
-      await setKaryvahiSubSteps(r.id, r.fir_id, JSON.stringify(removeEntryParts(parseSubSteps(r.sub_steps_json), entryId)));
+      const d = checklistOf(r);
+      if (d) await setKaryvahiSubSteps(r.id, r.fir_id, JSON.stringify(removeEntryParts(parseSubSteps(r.sub_steps_json, d), entryId)));
     }
   }
 }
 
-/**
- * One-time (app_migrations): पंचनामा व पोस्टमार्टम karyvahis already written before the checklist existed
- * stay complete — all 6 parts ticked as "पहले से".
- */
-export async function migratePmSubStepsLegacy(): Promise<number> {
+/** Cards of this checklist already written before it existed stay complete — every part "पहले से". */
+async function migrateChecklistLegacy(def: ChecklistDef): Promise<number> {
   const db = await getDatabase();
-  const rows = await db.getAllAsync<{ id: string; fir_id: string; name: string; step_code: string | null; sub_steps_json: string | null }>(
+  const rows = await db.getAllAsync<ChecklistRow>(
     "SELECT id, fir_id, name, step_code, sub_steps_json FROM fir_karyvahi WHERE deleted_at IS NULL AND COALESCE(execution_count, 0) > 0",
   );
   let n = 0;
   for (const r of rows) {
-    if (!isPmKaryvahi(r) || Object.keys(parseSubSteps(r.sub_steps_json)).length > 0) continue;
-    await setKaryvahiSubSteps(r.id, r.fir_id, JSON.stringify(allDoneLegacy()));
+    if (checklistOf(r) !== def || Object.keys(parseSubSteps(r.sub_steps_json, def)).length > 0) continue;
+    await setKaryvahiSubSteps(r.id, r.fir_id, JSON.stringify(allDoneLegacy(Date.now(), def)));
     n++;
   }
   return n;
+}
+
+/** One-time (app_migrations): पंचनामा व पोस्टमार्टम karyvahis already written → all 6 "पहले से". */
+export function migratePmSubStepsLegacy(): Promise<number> {
+  return migrateChecklistLegacy(PM_DEF);
+}
+
+/** One-time (app_migrations): घटनास्थल निरीक्षण already written → all 5 "पहले से" (owner). */
+export function migrateSceneSubStepsLegacy(): Promise<number> {
+  return migrateChecklistLegacy(SCENE_DEF);
 }
 
 export async function updateKaryvahi(id: string, firId: string, name: string, precautions?: string): Promise<void> {

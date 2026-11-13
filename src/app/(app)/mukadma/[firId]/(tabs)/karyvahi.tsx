@@ -37,7 +37,7 @@ import { getDefaultKnowledge } from '@/lib/defaultKaryvahiKnowledge';
 import { matchesQuery } from '@/lib/searchUtils';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import {
-  isPmKaryvahi, isKaryvahiDone, pmPendingInfo, parseSubSteps, subStepProgress, toggleSubStep, subStepNote, PM_SUB_STEPS,
+  checklistOf, isKaryvahiDone, pmPendingInfo, parseSubSteps, subStepProgress, toggleSubStep, subStepNote, type ChecklistDef,
 } from '@/lib/karyvahiSubSteps';
 
 type FilterMode = 'all' | 'pending' | 'completed';
@@ -357,8 +357,10 @@ function ReasonModal({
 
 // ── Karyvahi card (General tab) ───────────────────────────────────────────────
 // ── पंचनामा व पोस्टमार्टम: inner checklist (6 parts, owner) ──────────────────────
-function PmSubStepsPanel({ item, onWrite, onChange }: {
+function PmSubStepsPanel({ item, def, onWrite, onChange }: {
   item: FIRKaryvahi;
+  /** पंचनामा व पोस्टमार्टम (6 parts) / घटनास्थल निरीक्षण (5 parts, 3 optional) */
+  def: ChecklistDef;
   onWrite: (item: FIRKaryvahi) => void;
   onChange: (item: FIRKaryvahi, json: string) => void;
 }) {
@@ -366,11 +368,11 @@ function PmSubStepsPanel({ item, onWrite, onChange }: {
   const c = THEME[colorScheme ?? 'light'];
   const sem = getSemanticColors(colorScheme ?? 'light');
   const [open, setOpen] = useState(false);
-  const map = useMemo(() => parseSubSteps(item.sub_steps_json), [item.sub_steps_json]);
-  const prog = subStepProgress(map);
+  const map = useMemo(() => parseSubSteps(item.sub_steps_json, def), [item.sub_steps_json, def]);
+  const prog = subStepProgress(map, def);
   const barColor = prog.complete ? sem.COMPLETED_STATUS.fg : sem.CONDITIONAL.fg;
 
-  const onToggle = (id: string) => onChange(item, JSON.stringify(toggleSubStep(map, id)));
+  const onToggle = (id: string) => onChange(item, JSON.stringify(toggleSubStep(map, id, Date.now(), def)));
 
   return (
     <View className="mb-2.5">
@@ -384,6 +386,9 @@ function PmSubStepsPanel({ item, onWrite, onChange }: {
         <Text className="text-xs font-semibold" style={{ color: barColor }}>
           चेकलिस्ट {prog.done}/{prog.total} {prog.complete ? '✓' : ''}
         </Text>
+        {prog.optionalTotal > 0 ? (
+          <Text className="text-xs text-muted-foreground" numberOfLines={1}>+ वैकल्पिक {prog.optionalDone}/{prog.optionalTotal}</Text>
+        ) : null}
         <View className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: c.border }}>
           <View style={{ width: `${Math.round((prog.done / prog.total) * 100)}%`, height: '100%', backgroundColor: barColor }} />
         </View>
@@ -392,7 +397,7 @@ function PmSubStepsPanel({ item, onWrite, onChange }: {
 
       {open && (
         <View className="mt-1.5 gap-0.5">
-          {PM_SUB_STEPS.map((s) => {
+          {def.steps.map((s) => {
             const st = map[s.id];
             const isDone = !!st?.done;
             const note = subStepNote(st);
@@ -407,7 +412,10 @@ function PmSubStepsPanel({ item, onWrite, onChange }: {
                 {isDone
                   ? <CheckCircle2 size={16} color={sem.COMPLETED_STATUS.fg} />
                   : <Circle size={16} color={c.mutedForeground} />}
-                <Text className={`text-xs flex-1 ${isDone ? 'text-muted-foreground' : 'text-foreground'}`}>{s.label}</Text>
+                <Text className={`text-xs flex-1 ${isDone ? 'text-muted-foreground' : 'text-foreground'}`}>
+                  {s.label}
+                  {s.optional ? <Text className="text-xs text-muted-foreground"> (वैकल्पिक)</Text> : null}
+                </Text>
                 {note ? (
                   <Text className="text-xs font-medium" style={{ color: sem.COMPLETED_STATUS.fg }}>{note}</Text>
                 ) : null}
@@ -496,7 +504,8 @@ function KaryvahiCard({
     </View>
   ) : undefined;
 
-  const pmPending = pmPendingInfo(item); // पंचनामा व पोस्टमार्टम not yet 6/6
+  const checklistDef = checklistOf(item); // पंचनामा व पोस्टमार्टम / घटनास्थल निरीक्षण
+  const pmPending = pmPendingInfo(item); // checklist card not yet complete
   const badge = pmPending ? (
     <View
       className="rounded-full items-center justify-center px-2.5 py-1"
@@ -645,8 +654,8 @@ function KaryvahiCard({
       subtitle={subtitleContent}
       statusSlot={statusControl}
       badgeSlot={badge}
-      footerSlot={isPmKaryvahi(item)
-        ? <><PmSubStepsPanel item={item} onWrite={onWriteDiary} onChange={onSubStepsChange} />{actionsRow}</>
+      footerSlot={checklistDef
+        ? <><PmSubStepsPanel item={item} def={checklistDef} onWrite={onWriteDiary} onChange={onSubStepsChange} />{actionsRow}</>
         : actionsRow}
       bannerSlot={banner}
       dimmed={locked}

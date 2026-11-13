@@ -50,6 +50,7 @@ export interface SettingsState {
   /** निरोधात्मक: चलानी प्रेषण लंबित — 9 AM daily alert. */
   notifNkChalani: boolean;
   notifPmBayan: boolean;
+  notifSceneGap: boolean;
 
   // AI Assistant
   aiSuggestions: boolean;
@@ -100,6 +101,7 @@ const DEFAULTS: SettingsState = {
   notifCaseDiaryGap: true,
   notifNkChalani: true,
   notifPmBayan: true,
+  notifSceneGap: true,
   aiSuggestions: true,
   aiDraftAssistance: true,
   aiKnowledgeSearch: true,

@@ -2,13 +2,13 @@
  * Notifications Settings Screen
  */
 import { View, Text, ScrollView, Switch } from 'react-native';
-import { Bell, Scale, Clock, BarChart2, Search, NotebookPen, FileWarning, ClipboardList } from 'lucide-react-native';
+import { Bell, Scale, Clock, BarChart2, Search, NotebookPen, FileWarning, ClipboardList, MapPin } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore, type SettingsState } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 type NotifKey = keyof Pick<SettingsState,
-  'notifReminders' | 'notifCourtAlerts' | 'notifDeadlines' | 'notifDailySummary' | 'notifInvestigations' | 'notifCaseDiaryGap' | 'notifNkChalani' | 'notifPmBayan'
+  'notifReminders' | 'notifCourtAlerts' | 'notifDeadlines' | 'notifDailySummary' | 'notifInvestigations' | 'notifCaseDiaryGap' | 'notifNkChalani' | 'notifPmBayan' | 'notifSceneGap'
 >;
 
 const NOTIF_ITEMS: { key: NotifKey; labelKey: string; descKey: string; icon: typeof Bell; color: string }[] = [
@@ -19,6 +19,7 @@ const NOTIF_ITEMS: { key: NotifKey; labelKey: string; descKey: string; icon: typ
   { key: 'notifInvestigations', labelKey: 'settings.notifications.investigations', descKey: 'settings.notifications.investigationsDesc', icon: Search, color: '#7C3AED' },
   { key: 'notifCaseDiaryGap', labelKey: 'settings.notifications.caseDiaryGap', descKey: 'settings.notifications.caseDiaryGapDesc', icon: NotebookPen, color: '#B45309' },
   { key: 'notifNkChalani', labelKey: 'settings.notifications.nkChalani', descKey: 'settings.notifications.nkChalaniDesc', icon: FileWarning, color: '#DC2626' },
+  { key: 'notifSceneGap', labelKey: 'settings.notifications.sceneGap', descKey: 'settings.notifications.sceneGapDesc', icon: MapPin, color: '#EA580C' },
   { key: 'notifPmBayan', labelKey: 'settings.notifications.pmBayan', descKey: 'settings.notifications.pmBayanDesc', icon: ClipboardList, color: '#0891B2' },
 ];
 

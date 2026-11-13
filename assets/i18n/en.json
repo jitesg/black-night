@@ -452,6 +452,8 @@
       "nkChalaniDesc": "Daily 9 AM reminder until a preventive action's chalani is ticked as sent to the magistrate",
       "pmBayan": "Panchnama statements pending alert",
       "pmBayanDesc": "Daily 9 AM reminder from day 7 after the panchayatnama until all 6 parts of the panchnama & post-mortem checklist are done",
+      "sceneGap": "Crime scene pending alert",
+      "sceneGapDesc": "Daily 9 AM reminder from day 3 after the FIR (up to 30 days) until the scene inspection (e-Sakshya / site map) is written in the case diary",
       "disclaimer": "Notifications require device permission. If notifications are not appearing, enable them in your device Settings → InvestSuite → Notifications."
     },
     "search": {

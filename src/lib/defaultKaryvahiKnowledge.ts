@@ -3,6 +3,8 @@ import { fmtSteps, fmtDocs } from '@/lib/db/playbooks/playbookTexts';
 import { matchDefaultKaryvahi, type DefaultKaryvahiKey } from '@/lib/karyvahiNames';
 import type { ChecklistItem } from '@/lib/db/checklistRepo';
 import i18n from '@/lib/i18n';
+import { isSceneKaryvahi } from '@/lib/karyvahiSubSteps';
+import { sceneKnowledgeSections } from '@/lib/sceneKnowledge';
 
 export interface DefaultKnowledge {
   key: string;
@@ -215,6 +217,11 @@ export function resolveKnowledgeSections(
 ): KnowledgeSection[] {
   const currentLang = (lang || i18n?.language || 'hi').toLowerCase();
   const isEn = currentLang.startsWith('en');
+
+  // घटनास्थल निरीक्षण = one card for the whole scene work (owner): the texts of the merged cards, part by part
+  if (!isEn && isSceneKaryvahi({ name })) {
+    return sceneKnowledgeSections((key) => getDefaultKnowledge(key, 'hi'));
+  }
 
   const defKey = matchDefaultKaryvahi(name);
   if (defKey) {

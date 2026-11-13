@@ -27,7 +27,7 @@ import * as knowledgeRepo from '@/lib/db/knowledgeRepo';
 import { lookupCirculars, isCircularLookupQuery } from '@/ai/circularLookup';
 import { lookupSop, isSopLookupQuery } from '@/ai/sopLookup';
 import { getAll as getAllSops, getById as getSopById, search as searchSops, getSopStepCount } from '@/ai/sopIndex';
-import { migrateCompletedToExecutions, migrateDefaultKaryvahiHindiNames, migratePmSubStepsLegacy } from '@/lib/db/firKaryvahiRepo';
+import { migrateCompletedToExecutions, migrateDefaultKaryvahiHindiNames, migratePmSubStepsLegacy, migrateSceneSubStepsLegacy } from '@/lib/db/firKaryvahiRepo';
 import { seedDefaultPhrasesIfEmpty } from '@/lib/db/phraseLibraryRepo';
 import { AppLogger } from '@/lib/appLogger';
 import { clearDevSession } from '@/lib/devOptionsAuth';
@@ -42,6 +42,7 @@ import { CD_GAP_KIND } from '@/lib/caseDiaryGapService';
 import { DEADLINE_KIND } from '@/lib/deadlineAlertService';
 import { NK_CHALANI_KIND } from '@/lib/nkChalaniService';
 import { PM_BAYAN_KIND } from '@/lib/pmBayanService';
+import { SCENE_GAP_KIND } from '@/lib/sceneAlertService';
 import { AIProviderManager } from '@/ai/level5/AIProviderManager';
 import { LearningEngine } from '@/ai/level5/LearningEngine';
 import { NAV_THEME } from '@/lib/theme';
@@ -109,6 +110,11 @@ const MIGRATIONS: Array<{ name: string; run: () => Promise<unknown> }> = [
     // पंचनामा व पोस्टमार्टम checklist: old written karyvahis stay complete (6/6 "पहले से")
     name: 'v360_pm_substeps_legacy',
     run:  migratePmSubStepsLegacy,
+  },
+  {
+    // घटनास्थल निरीक्षण checklist: old written cards stay complete (5/5 "पहले से")
+    name: 'v370_scene_substeps_legacy',
+    run:  migrateSceneSubStepsLegacy,
   },
 ];
 
@@ -252,7 +258,7 @@ function AppNavigator({
       const data = response.notification.request.content.data as Record<string, unknown> | undefined;
       if (data?.kind === CD_GAP_KIND && typeof data.firId === 'string') return `/(app)/mukadma/${data.firId}/case-diary`;
       // न्यायालय / प्रार्थना पत्र deadline alerts carry the screen to open.
-      if ((data?.kind === DEADLINE_KIND || data?.kind === NK_CHALANI_KIND || data?.kind === PM_BAYAN_KIND) && typeof data.route === 'string' && data.route.startsWith('/(app)/')) return data.route;
+      if ((data?.kind === DEADLINE_KIND || data?.kind === NK_CHALANI_KIND || data?.kind === PM_BAYAN_KIND || data?.kind === SCENE_GAP_KIND) && typeof data.route === 'string' && data.route.startsWith('/(app)/')) return data.route;
       return null;
     };
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {

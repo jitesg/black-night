@@ -31,8 +31,8 @@ import {
   getNextSequenceOrder, getEntriesByDiary,
   getCaseDiariesByFIR, getParchaNumber, type CaseDiary,
 } from '@/lib/db/caseDiaryRepo';
-import { getKaryvahiByFIR, addExecution, applyPmPartsFromEntry, getPmPrefill, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
-import { PM_FORMAT_ID, partsFromFormatValues, pmPendingInfo } from '@/lib/karyvahiSubSteps';
+import { getKaryvahiByFIR, addExecution, syncEntryChecklist, getChecklistPrefill, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
+import { checklistForFormat, pmPendingInfo } from '@/lib/karyvahiSubSteps';
 import { OPENING_LABEL, SARANSH_LABEL, openingLine } from '@/lib/caseDiaryParcha';
 import { getFIRById, type FIR } from '@/lib/db/firRepo';
 import { FirBasisHintsView } from '@/components/caseDiary/FirBasisHintsView';
@@ -69,9 +69,10 @@ interface DiaryEntry {
   narrativeText: string;
   narrativeTemplate: string;
   /** पंचनामा व पोस्टमार्टम format generated in this session → the parts it printed (undefined = untouched) */
-  pmParts?: string[];
-  /** …and the values typed in it (saved for instant filling next time) */
-  pmValues?: Record<string, string>;
+  /** format generated in this session (undefined = untouched) — checklist formats tick the karyvahi card on save */
+  ckFormatId?: string;
+  /** …and the values typed in it (ticks + instant filling next time) */
+  ckValues?: Record<string, string>;
 }
 
 function mkEntry(kind: EntryKind = 'karyvahi'): DiaryEntry {
@@ -136,7 +137,8 @@ function FormatFillPanel({
         }
         const contextDefaults = await resolveContextDefaults(dyn, firId);
         // पंचनामा व पोस्टमार्टम again for this FIR → last values, only the parts still left ticked (owner, चरण 5)
-        const pmPrefill = format.id === PM_FORMAT_ID && firId ? (await getPmPrefill(firId)) ?? {} : {};
+        // checklist format (पंचनामा व पोस्टमार्टम / निरीक्षण घटना स्थल) again for this FIR → last values (owner, चरण 5)
+        const pmPrefill = checklistForFormat(format.id) && firId ? (await getChecklistPrefill(firId, format.id)) ?? {} : {};
 
         if (isMounted) {
           setMissingWs(missing);
@@ -589,9 +591,7 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
             initialDraftValues={draftFormats[`${entry.uid}::${activeFillPanel.fmt.id}`]}
             onGenerated={(report, title, formatId, vals) => {
               // पंचनामा व पोस्टमार्टम: remember which parts this entry printed (ticked on save); another format → none
-              const pm = formatId === PM_FORMAT_ID
-                ? { pmParts: partsFromFormatValues(vals), pmValues: vals }
-                : entry.pmParts !== undefined ? { pmParts: [] } : {};
+              const pm = { ckFormatId: formatId, ckValues: vals };
               updateEntry(entry.uid, entry.kind === 'karyvahi'
                 ? { vivran: report, formatUsed: title, ...pm }
                 : { narrativeText: report, narrativeTemplate: title }
@@ -813,10 +813,10 @@ export default function AddCaseDiaryKaryvahiScreen() {
 
   /** पंचनामा व पोस्टमार्टम checklist: the parts this entry's format printed get ticked with the पर्चा number (owner, चरण 3). */
   const tickPmParts = async (e: DiaryEntry, entryId: string) => {
-    if (e.pmParts === undefined || !firId || !diaryId) return;
+    if (e.ckFormatId === undefined || !firId || !diaryId) return;
     try {
       const parcha = await getParchaNumber(firId, diaryId);
-      await applyPmPartsFromEntry(firId, e.firKaryvahiId || undefined, entryId, e.pmParts, parcha, e.pmValues);
+      await syncEntryChecklist(firId, e.firKaryvahiId || undefined, entryId, e.ckFormatId, e.ckValues, parcha);
     } catch (err) {
       logger.warn('[AddCaseDiaryKaryvahi] PM checklist tick failed:', err);
     }

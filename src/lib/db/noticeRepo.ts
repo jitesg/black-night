@@ -7,11 +7,12 @@ import { getUpcomingReminders } from './reminderRepo';
 import type { CdFirRow } from '@/lib/caseDiaryGap';
 import type { NkPendingRow } from '@/lib/nkChalani';
 import type { PmBayanRow } from '@/lib/pmBayan';
-import { isPmKaryvahi } from '@/lib/karyvahiSubSteps';
+import type { SceneRow } from '@/lib/sceneAlert';
+import { isPmKaryvahi, isSceneKaryvahi } from '@/lib/karyvahiSubSteps';
 import { extractKaryvahiFacts } from '@/lib/nirodhatmak/extractKaryvahi';
 import { buildNoticeCards, type CourtDocRow, type NoticeCard, type PetitionRow, type ReminderRow } from '@/lib/noticeCards';
 
-export interface NoticeInput { firs: CdFirRow[]; courtDocs: CourtDocRow[]; petitions: PetitionRow[]; reminders: ReminderRow[]; nkPending: NkPendingRow[]; pmBayan: PmBayanRow[] }
+export interface NoticeInput { firs: CdFirRow[]; courtDocs: CourtDocRow[]; petitions: PetitionRow[]; reminders: ReminderRow[]; nkPending: NkPendingRow[]; pmBayan: PmBayanRow[]; scene: SceneRow[] }
 
 /** Pending FIRs with the date of their latest case diary. */
 export async function getPendingFirsWithLastDiary(): Promise<CdFirRow[]> {
@@ -80,17 +81,42 @@ export async function getPmBayanRows(): Promise<PmBayanRow[]> {
   return rows.filter((r) => isPmKaryvahi(r)).map(({ firId, fir_number, sub_steps_json, last_values_json }) => ({ firId, fir_number, sub_steps_json, last_values_json }));
 }
 
+/** घटनास्थल निरीक्षण cards of open FIRs from the last 31 days (rules decide which are pending — sceneAlert.ts). */
+export async function getSceneRows(): Promise<SceneRow[]> {
+  const db = await getDatabase();
+  const since = Math.floor(Date.now() / 1000) - 31 * 86400;
+  const rows = await db.getAllAsync<{
+    firId: string; fir_number: string; date_of_information: string | null; created_at: number | null;
+    name: string; step_code: string | null; sub_steps_json: string | null;
+  }>(
+    `SELECT k.fir_id AS firId, f.fir_number, f.date_of_information, f.created_at, k.name, k.step_code, k.sub_steps_json
+       FROM fir_karyvahi k JOIN firs f ON f.id = k.fir_id
+      WHERE k.deleted_at IS NULL AND f.deleted_at IS NULL AND COALESCE(f.status, 'Pending') = 'Pending'
+        AND (f.created_at IS NULL OR f.created_at >= ? OR f.created_at >= ? * 1000)`,
+    [since, since],
+  );
+  const seen = new Set<string>();
+  const out: SceneRow[] = [];
+  for (const r of rows) {
+    if (!isSceneKaryvahi(r) || seen.has(r.firId)) continue; // one card per FIR
+    seen.add(r.firId);
+    out.push({ firId: r.firId, fir_number: r.fir_number, date_of_information: r.date_of_information, created_at: r.created_at, sub_steps_json: r.sub_steps_json });
+  }
+  return out;
+}
+
 export async function loadNoticeInput(): Promise<NoticeInput> {
-  const [firs, courtDocs, petitions, reminders, nkPending, pmBayan] = await Promise.all([
+  const [firs, courtDocs, petitions, reminders, nkPending, pmBayan, scene] = await Promise.all([
     getPendingFirsWithLastDiary().catch(() => [] as CdFirRow[]),
     getPendingCourtDocs().catch(() => [] as CourtDocRow[]),
     getPendingPetitions().catch(() => [] as PetitionRow[]),
     getUpcomingReminders().catch(() => []),
     getPendingNkChalani().catch(() => [] as NkPendingRow[]),
     getPmBayanRows().catch(() => [] as PmBayanRow[]),
+    getSceneRows().catch(() => [] as SceneRow[]),
   ]);
   return {
-    firs, courtDocs, petitions, nkPending, pmBayan,
+    firs, courtDocs, petitions, nkPending, pmBayan, scene,
     // A snoozed reminder counts from its snooze time.
     reminders: reminders.map((r) => ({
       id: r.id, title: r.title, fir_label: r.fir_label,

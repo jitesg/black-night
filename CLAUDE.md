@@ -276,6 +276,16 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   पंचनामा/पंचायतनामा + पोस्टमार्टम/शव परीक्षण (not जब्ती/बरामदगी); column fir_karyvahi.sub_steps_json (`setKaryvahiSubSteps`); card (tabs)/karyvahi.tsx
   `PmSubStepsPanel`: "चेकलिस्ट n/6" + bar (amber → green at 6/6), rows tap = manual tick, "पर्चा NN" note, "बाकी n लिखें →" opens DiaryActionSheet.
   Default karyvahi (owner option ख, death cases only): already seeded by the crime-type playbooks — nothing extra added.
+- घटनास्थल = ONE card "घटनास्थल निरीक्षण" (owner): `src/lib/karyvahiSubSteps.ts` is now generic — `ChecklistDef` (PM_DEF, SCENE_DEF), `checklistOf(k)`,
+  `checklistForFormat(id)`; steps may be `optional` (progress / done / pending chips count required parts only; card shows "+ वैकल्पिक n/m"). SCENE_DEF:
+  nir / sur / photo optional (narrative or a tick by hand), esakshya + naksha required; format `sys-fmt-cd-nirikshan-ghatnasthal` ticks nir + naksha
+  always and esakshya when ESakshya = की गयी / तकनीकी समस्या (note "तकनीकी समस्या"). New FIRs: the default "ई-साक्ष्य ऐप से वीडियोग्राफी" card and the
+  playbook cards `SCENE_MERGED_STEP_CODES` (COM_SCENE_SECURE/PHOTO, COM_SITE_PLAN, MUR_SCENE_SECURE/PHOTO, MUR_SITE_PLAN, ATM_SPOT) are not added (old FIRs
+  keep theirs). Card "जानकारी" = `src/lib/sceneKnowledge.ts` (overview + ① निरीक्षण … ⑤ नक्शा नजरी built from the merged cards' texts; via
+  resolveKnowledgeSections, Hindi). Entry save → `syncEntryChecklist(firId, karyvahiId, entryId, formatId, values, parcha)` (clears the entry's ticks
+  everywhere, then ticks the matching card; keeps values for `getChecklistPrefill`). Migration `v370_scene_substeps_legacy` (written → 5/5 "पहले से").
+  Bell: `src/lib/sceneAlert.ts` (tests `scripts/test_scene_alert.ts`; FIR date + 3 days, red from 7, only up to day 30), card kind 'scene' ("घटनास्थल"),
+  `sceneAlertService.ts` (`kind: scene_gap`, setting notifSceneGap), noticeRepo `getSceneRows`.
 - `sys-fmt-cd-abhiyukt-bayan-35-3` "अभियुक्त का बयान — 07 वर्ष या उससे कम सजा (धारा 35(3) BNSS नोटिस तामील सहित)" (Case Diary, plain text, owner's
   sample): item_group Accused (name, rel, father, addr, mobile, age, mahila, own) — one / woman / many wording like the 60(1) फर्द; Bailable
   tick; per-row "बयान अभियुक्त(ा) — …" para, own text or default "जुर्म से इंकार… सफाई जरिये अधिवक्ता… बता रहे / रही हैं" (nested {?own|…{?mahila|…}…}).

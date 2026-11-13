@@ -10,8 +10,9 @@
 import { CD_ALERT_AFTER_DAYS, CD_MAX_GAP_DAYS, daysBetween, fmtDate, gapBase, parseLocalDate, type CdFirRow } from './caseDiaryGap';
 import { nkDate, nkPendingDays, nkPlace, type NkPendingRow } from './nkChalani';
 import { PM_BAYAN_OVER_DAYS, pmBayanDue, pmBayanRoute, type PmBayanRow } from './pmBayan';
+import { SCENE_OVER_DAYS, sceneDue, sceneRoute, type SceneRow } from './sceneAlert';
 
-export type NoticeKind = 'cd' | 'court' | 'petition' | 'reminder' | 'nk' | 'pm';
+export type NoticeKind = 'cd' | 'court' | 'petition' | 'reminder' | 'nk' | 'pm' | 'scene';
 export type NoticeLevel = 'over' | 'warn' | 'info';
 
 export interface NoticeCard {
@@ -104,9 +105,23 @@ function deadlineCard(
 
 export function buildNoticeCards(input: {
   firs?: CdFirRow[]; courtDocs?: CourtDocRow[]; petitions?: PetitionRow[]; reminders?: ReminderRow[];
-  nkPending?: NkPendingRow[]; pmBayan?: PmBayanRow[];
+  nkPending?: NkPendingRow[]; pmBayan?: PmBayanRow[]; scene?: SceneRow[];
 }, now: Date = new Date()): NoticeCard[] {
   const out: NoticeCard[] = [];
+
+  // घटनास्थल निरीक्षण: 3+ days after the FIR and ई-साक्ष्य / नक्शा नजरी not yet written in the case diary.
+  for (const p of sceneDue(input.scene ?? [], now)) {
+    const days = daysBetween(p.base, now);
+    out.push({
+      id: `scene-${p.row.firId}`, kind: 'scene', level: days >= SCENE_OVER_DAYS ? 'over' : 'warn',
+      title: `घटनास्थल की कार्यवाही लंबित — मु0अ0सं0 ${p.row.fir_number}`,
+      body: `मुकदमा (${fmtDate(p.base)}) को ${days} दिन हो गये, घटनास्थल निरीक्षण की केस डायरी अभी पूरी नहीं। ${p.remaining}`,
+      when: `${days} दिन`, route: sceneRoute(p.row.firId), rank: -days,
+      progress: { value: p.done / p.total, label: `${p.done}/${p.total}` },
+      meta: [`मु0अ0सं0 ${p.row.fir_number}`, `मुकदमा ${fmtDate(p.base)}`],
+      action: 'केस डायरी लिखें',
+    });
+  }
 
   // पंचनामा व पोस्टमार्टम: 7+ days after the पंचायतनामा and the बयान / PM parts are not all done.
   for (const p of pmBayanDue(input.pmBayan ?? [], now)) {

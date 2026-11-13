@@ -59,15 +59,15 @@ test('format save → parts with पर्चा; regenerate / delete entry', as
   m = removeEntryParts(m, 'e2');
   assert.deepEqual(Object.keys(m).sort(), ['co', 'pan']);
   assert.ok(!isKaryvahiDone({ step_code: 'RTA_PM_DEATH', sub_steps_json: JSON.stringify(m), execution_count: 5 }));
-  assert.ok(isKaryvahiDone({ name: 'घटनास्थल निरीक्षण', execution_count: 1 }));
-  assert.ok(!isKaryvahiDone({ name: 'घटनास्थल निरीक्षण', execution_count: 0 }));
+  assert.ok(isKaryvahiDone({ name: 'वादी/वादिनी का बयान', execution_count: 1 }));
+  assert.ok(!isKaryvahiDone({ name: 'वादी/वादिनी का बयान', execution_count: 0 }));
   assert.equal(subStepNote(allDoneLegacy().pan), 'पहले से');
   assert.ok(subStepProgress(allDoneLegacy()).complete);
 });
 
 test('pending chip info', async () => {
   const { pmPendingInfo } = await import('../src/lib/karyvahiSubSteps.ts');
-  assert.equal(pmPendingInfo({ name: 'घटनास्थल निरीक्षण' }), null);
+  assert.equal(pmPendingInfo({ name: 'वादी/वादिनी का बयान' }), null);
   const i = pmPendingInfo({ step_code: 'RTA_PM_DEATH', sub_steps_json: JSON.stringify({ pan: { done: true }, pm: { done: true }, si: { done: true } }) });
   assert.deepEqual(i, { done: 3, total: 6, remaining: 'बाकी: बयान आरक्षी, बयान पंच गवाहान, बयान चिकित्सक' });
   const all = Object.fromEntries(PM_SUB_STEPS.map((s) => [s.id, { done: true }]));
@@ -89,4 +89,33 @@ test('instant filling when all 6 are done keeps the format ticks', async () => {
   const v = prefillPmValues({ DName: 'क', doPan: '' }, allDoneLegacy());
   assert.equal(v.DName, 'क');
   assert.ok(!('doPan' in v));
+});
+
+test('घटनास्थल निरीक्षण: 5 parts, only ई-साक्ष्य + नक्शा नजरी required; format ticks निरीक्षण / ई-साक्ष्य / नक्शा', async () => {
+  const m = await import('../src/lib/karyvahiSubSteps.ts');
+  const { SCENE_DEF, checklistOf, checklistForFormat, isSceneKaryvahi, applyEntryParts, partNotesFromValues, isKaryvahiDone, pmPendingInfo, allDoneLegacy } = m;
+  assert.ok(isSceneKaryvahi({ name: 'घटनास्थल निरीक्षण' }));
+  assert.ok(isSceneKaryvahi({ name: 'x', step_code: 'ATM_SPOT' }));
+  assert.ok(!isSceneKaryvahi({ name: 'घटनास्थल की सुरक्षा' }));
+  assert.equal(checklistOf({ name: 'घटनास्थल निरीक्षण' }), SCENE_DEF);
+  assert.equal(checklistOf({ name: 'मृतक का पंचनामा व पोस्टमार्टम' })?.kind, 'pm');
+  assert.equal(checklistOf({ name: 'वादी/वादिनी का बयान' }), null);
+  assert.equal(checklistForFormat('sys-fmt-cd-nirikshan-ghatnasthal'), SCENE_DEF);
+  assert.deepEqual(SCENE_DEF.partsFromValues({ ESakshya: 'की गयी' }), ['nir', 'esakshya', 'naksha']);
+  assert.deepEqual(SCENE_DEF.partsFromValues({ ESakshya: 'नहीं लिखना' }), ['nir', 'naksha']);
+  const tech = { ESakshya: 'तकनीकी समस्या' };
+  let map = applyEntryParts({}, 'e1', SCENE_DEF.partsFromValues(tech), '02', 1, SCENE_DEF, partNotesFromValues(SCENE_DEF, tech));
+  assert.equal(subStepNote(map.esakshya), 'पर्चा 02 · तकनीकी समस्या');
+  const card = (j: object) => ({ name: 'घटनास्थल निरीक्षण', sub_steps_json: JSON.stringify(j), execution_count: 1 });
+  assert.ok(isKaryvahiDone(card(map)));
+  assert.ok(!isKaryvahiDone(card({ nir: { done: true }, sur: { done: true }, photo: { done: true }, naksha: { done: true } })));
+  assert.deepEqual(pmPendingInfo(card({ naksha: { done: true } })), { done: 1, total: 2, remaining: 'बाकी: ई-साक्ष्य से फोटो-वीडियोग्राफी' });
+  const p = subStepProgress(map, SCENE_DEF);
+  assert.equal(p.optionalDone, 1);
+  assert.equal(p.optionalTotal, 3);
+  assert.ok(subStepProgress(allDoneLegacy(1, SCENE_DEF), SCENE_DEF).complete);
+  // optional parts are tickable by hand
+  map = toggleSubStep(map, 'sur', 1, SCENE_DEF);
+  assert.ok(map.sur.done);
+  assert.equal(toggleSubStep(map, 'pan', 1, SCENE_DEF), map);
 });
