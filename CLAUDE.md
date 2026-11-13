@@ -17,6 +17,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Start it with the GitHub MCP tool `actions_run_trigger` (method `run_workflow`,
   workflow `build-apk.yml`, ref `claude/app-apk-build-upbmwa`). Pushing a `build-*`
   tag also works, but tag pushes are blocked by the sandbox proxy.
+- TESTING phase (owner): build arm64-v8a only; BEFORE RELEASE build both (`abis` = `armeabi-v7a,arm64-v8a`).
 - Faster builds (owner): only arm64-v8a by default (workflow_dispatch input `abis`, e.g. `armeabi-v7a,arm64-v8a` for old 32-bit phones) +
   `gradle/actions/setup-gradle` cache + `--build-cache`. Took ~15–20 min with both CPU types. Then send the link
   `https://github.com/jitesg/black-night/releases/download/apk-build-<n>/InvestSuite.apk`
