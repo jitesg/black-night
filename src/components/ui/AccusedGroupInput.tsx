@@ -920,28 +920,23 @@ export const AccusedGroupInput = memo(({
 
   return (
     <View style={{ gap: 10 }}>
-      {/* with a tip: label + "ⓘ कैसे भरें?" on their own line, the buttons below (owner, design B) */}
-      {hint ? (
-        <LabelWithHint hint={hint}>
-          <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-            {resolvedLabel}
-          </Text>
-        </LabelWithHint>
-      ) : null}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        {hint ? <View style={{ flex: 1 }} /> : (
-          <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>
-            {resolvedLabel}
-          </Text>
-        )}
-        {/* "📁 मुकदमे से भरें" (owner) — only inside a format fill screen */}
-        <FirPeopleButton onInsert={(people) => onChange(keyName, insertIntoGroup(value, people.map((p, n) => toCard(p, true, n))))} />
+      {/* label (+ "ⓘ कैसे भरें?") and the count; the full-width "मुकदमे से … भरें" button below (owner, design B) */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <LabelWithHint hint={hint}>
+            <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              {resolvedLabel}
+            </Text>
+          </LabelWithHint>
+        </View>
         <View style={{ backgroundColor: '#F3F4F6', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 }}>
           <Text style={{ fontSize: 11, color: C.muted, fontWeight: '500' }}>
             {t('group.accused.countBadge', { count: entries.length })}
           </Text>
         </View>
       </View>
+      {/* "मुकदमे से भरें" (owner) — only inside a format fill screen */}
+      <FirPeopleButton onInsert={(people) => onChange(keyName, insertIntoGroup(value, people.map((p, n) => toCard(p, true, n))))} />
 
       {/* Toast / Snackbar banner */}
       {toastMsg ? (

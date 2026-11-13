@@ -420,7 +420,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Scale → Check once picked, big मु0अ0सं0 + "धारा · वादी …", green "चुनें" / outlined "बदलें"; colours PICK_LIGHT / PICK_DARK, dark title white — no gold) on
   formats/fill (no firId), nyayalay + prarthna-patra fill-format when `hasFirMarkers`; pick → `applyPickedFir` fills only untouched
   fields (empty / opening value / last pick). Tests in `scripts/test_*.ts` must treat "@…" defaults as empty.
-  "📁 मुकदमे से भरें" (owner, चरण 1 of "person details = group fields"): `components/formats/FirPeopleButton.tsx` on every PersonGroupInput /
+  "मुकदमे से वादी / अभियुक्त भरें" (owner, चरण 1 of "person details = group fields"; look = design B: full-width dashed green strip with a
+  lucide Users icon, own line under the label row (label + ⓘ + count), light #ECFDF3/#15803D, dark #163322/#4ADE80): `components/formats/FirPeopleButton.tsx` on every PersonGroupInput /
   AccusedGroupInput / person item_group (`isPersonItemGroup` = has a "name" column) — sheet lists the form's मुकदमा people (`src/lib/firPeople.ts`
   `firPeople`: वादी + named अभियुक्त; tests `scripts/test_fir_people.ts`), multi-tick → `insertIntoGroup` (blank opening card/row replaced, no
   duplicates) with `toCard` / `toItemRow`; no मुकदमा yet → the sheet asks for one and passes it to the form (`onPickFir` = the screen's

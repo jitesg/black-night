@@ -1,5 +1,5 @@
 /**
- * "📁 मुकदमे से भरें" (owner): a small button on every person group field of a format. It lists the people of the
+ * "मुकदमे से वादी / अभियुक्त भरें" (owner, design B: full-width dashed green strip) on every person group field of a format. It lists the people of the
  * मुकदमा chosen at the top of the form (वादी + अभियुक्त, rules in src/lib/firPeople.ts); the ticked ones go into the
  * field. No मुकदमा chosen yet → the sheet first asks for one (and the form takes it like the "मुकदमा चुनें" box).
  * Shown only inside a FirPeopleContext (format fill screens) — never on the FIR screens themselves.
@@ -7,6 +7,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, Text, TextInput, View } from 'react-native';
 import { useColorScheme } from 'nativewind';
+import { Users } from 'lucide-react-native';
 import { THEME } from '@/lib/theme';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import { getAllFIRs, getFIRById, searchFIRs, type FIR } from '@/lib/db/firRepo';
@@ -29,6 +30,7 @@ export function FirPeopleButton({ onInsert, multi = true }: { onInsert: (people:
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const C = isDark ? THEME.dark : THEME.light;
+  const G = isDark ? { bg: '#163322', line: '#4ADE80', fg: '#4ADE80' } : { bg: '#ECFDF3', line: '#15803D', fg: '#15803D' };
   const [open, setOpen] = useState(false);
   const [firId, setFirId] = useState<string | null>(null);
   const [firLabel, setFirLabel] = useState('');
@@ -84,19 +86,19 @@ export function FirPeopleButton({ onInsert, multi = true }: { onInsert: (people:
 
   return (
     <>
+      {/* Owner's design B: full-width dashed green strip above the cards (app green, light + dark) */}
       <Pressable
         onPress={() => setOpen(true)}
         accessibilityRole="button"
-        accessibilityLabel="मुकदमे से भरें"
-        hitSlop={6}
+        accessibilityLabel="मुकदमे से वादी / अभियुक्त भरें"
         style={{
-          flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'flex-start',
-          paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999,
-          backgroundColor: isDark ? '#4F46E533' : '#EEF2FF', borderWidth: 1, borderColor: isDark ? '#818CF8' : '#C7D2FE',
+          flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, alignSelf: 'stretch',
+          minHeight: 42, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12,
+          borderWidth: 1.5, borderStyle: 'dashed', borderColor: G.line, backgroundColor: G.bg,
         }}
       >
-        <Text style={{ fontSize: 12 }}>📁</Text>
-        <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '700', color: isDark ? '#C7D2FE' : ACCENT }}>मुकदमे से भरें</Text>
+        <Users size={16} color={G.fg} strokeWidth={2.4} />
+        <Text numberOfLines={1} style={{ flexShrink: 1, fontSize: 14, fontWeight: '700', color: G.fg }}>मुकदमे से वादी / अभियुक्त भरें</Text>
       </Pressable>
 
       <Modal visible={open} animationType="slide" transparent onRequestClose={close}>

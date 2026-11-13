@@ -802,27 +802,15 @@ export const PersonGroupInput = memo(({
 
   return (
     <View style={{ gap: 10 }}>
-      {/* with a tip: label + "ⓘ कैसे भरें?" on their own line, the buttons below (owner, design B) */}
-      {hint ? (
-        <LabelWithHint hint={hint}>
-          <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-            {resolvedLabel}
-          </Text>
-        </LabelWithHint>
-      ) : null}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        {hint ? <View style={{ flex: 1 }} /> : (
-          <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>
-            {resolvedLabel}
-          </Text>
-        )}
-        {/* "📁 मुकदमे से भरें" (owner) — only inside a format fill screen */}
-        <FirPeopleButton
-          multi={!single}
-          onInsert={(people) => onChange(keyName, single
-            ? JSON.stringify([toCard(people[0], false, 0)])
-            : insertIntoGroup(value, people.map((p, n) => toCard(p, false, n))))}
-        />
+      {/* label (+ "ⓘ कैसे भरें?") and the count; the full-width "मुकदमे से … भरें" button below (owner, design B) */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <LabelWithHint hint={hint}>
+            <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              {resolvedLabel}
+            </Text>
+          </LabelWithHint>
+        </View>
         {single ? null : (
           <View style={{ backgroundColor: '#F0F9FF', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 }}>
             <Text style={{ fontSize: 11, color: '#0369A1', fontWeight: '500' }}>
@@ -831,6 +819,13 @@ export const PersonGroupInput = memo(({
           </View>
         )}
       </View>
+      {/* "मुकदमे से भरें" (owner) — only inside a format fill screen */}
+      <FirPeopleButton
+        multi={!single}
+        onInsert={(people) => onChange(keyName, single
+          ? JSON.stringify([toCard(people[0], false, 0)])
+          : insertIntoGroup(value, people.map((p, n) => toCard(p, false, n))))}
+      />
 
       {/* Toast / Snackbar banner */}
       {toastMsg ? (
