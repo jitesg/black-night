@@ -73,3 +73,20 @@ test('pending chip info', async () => {
   const all = Object.fromEntries(PM_SUB_STEPS.map((s) => [s.id, { done: true }]));
   assert.equal(pmPendingInfo({ step_code: 'RTA_PM_DEATH', sub_steps_json: JSON.stringify(all) }), null);
 });
+
+test('instant filling: last values + only remaining ticks', async () => {
+  const { prefillPmValues } = await import('../src/lib/karyvahiSubSteps.ts');
+  const v = prefillPmValues({ DName: 'नेवल किशोर', doPan: 'हाँ', doPm: 'हाँ', doBayanSI: '' }, { pan: { done: true }, pm: { done: true } });
+  assert.equal(v.DName, 'नेवल किशोर');
+  assert.equal(v.doPan, '');
+  assert.equal(v.doPm, '');
+  assert.equal(v.doBayanSI, 'हाँ');
+  assert.equal(v.doBayanDoc, 'हाँ');
+});
+
+test('instant filling when all 6 are done keeps the format ticks', async () => {
+  const { prefillPmValues, allDoneLegacy } = await import('../src/lib/karyvahiSubSteps.ts');
+  const v = prefillPmValues({ DName: 'क', doPan: '' }, allDoneLegacy());
+  assert.equal(v.DName, 'क');
+  assert.ok(!('doPan' in v));
+});

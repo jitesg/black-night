@@ -5,7 +5,7 @@ import { getChecklistItemsForPairs, getChecklistItemsForCrimeTypes, getChecklist
 import { logger } from '../logger';
 import { unlockDependentsOf } from './actionConditionsRepo';
 import {
-  isPmKaryvahi, isKaryvahiDone, parseSubSteps, applyEntryParts, removeEntryParts, allDoneLegacy,
+  isPmKaryvahi, isKaryvahiDone, parseSubSteps, applyEntryParts, removeEntryParts, allDoneLegacy, prefillPmValues,
 } from '../karyvahiSubSteps';
 
 // ── Instance counter for mount/unmount tracing (shared across screen renders) ──
@@ -813,6 +813,7 @@ export async function setKaryvahiSubSteps(id: string, firId: string, json: strin
  */
 export async function applyPmPartsFromEntry(
   firId: string, karyvahiId: string | undefined, entryId: string, parts: string[], parcha: string,
+  values?: Record<string, string>,
 ): Promise<string | null> {
   const db = await getDatabase();
   const rows = await db.getAllAsync<{ id: string; name: string; step_code: string | null; sub_steps_json: string | null; sort_order: number | null }>(
@@ -829,7 +830,27 @@ export async function applyPmPartsFromEntry(
   }
   const next = applyEntryParts(parseSubSteps(target.sub_steps_json), entryId, parts, parcha);
   await setKaryvahiSubSteps(target.id, firId, JSON.stringify(next));
+  if (values && Object.keys(values).length > 0) {
+    await db.runAsync('UPDATE fir_karyvahi SET last_values_json = ? WHERE id = ?', [JSON.stringify(values), target.id]);
+  }
   return target.id;
+}
+
+/** Instant filling: the PM format opened again for this FIR → last values + only the remaining parts ticked; null = no PM karyvahi. */
+export async function getPmPrefill(firId: string): Promise<Record<string, string> | null> {
+  const db = await getDatabase();
+  const rows = await db.getAllAsync<{ name: string; step_code: string | null; sub_steps_json: string | null; last_values_json: string | null }>(
+    'SELECT name, step_code, sub_steps_json, last_values_json FROM fir_karyvahi WHERE fir_id = ? AND deleted_at IS NULL ORDER BY sort_order, created_at',
+    [firId],
+  );
+  const k = rows.find((r) => isPmKaryvahi(r));
+  if (!k) return null;
+  let last: Record<string, string> = {};
+  try {
+    const v = JSON.parse(k.last_values_json || '{}');
+    if (v && typeof v === 'object' && !Array.isArray(v)) last = v;
+  } catch { /* old / empty */ }
+  return prefillPmValues(last, parseSubSteps(k.sub_steps_json));
 }
 
 /** Case diary entries deleted (or their diary): remove the ticks they made. */

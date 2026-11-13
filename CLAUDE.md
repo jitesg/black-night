@@ -257,7 +257,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   owner's samples; generator `scripts/build_panchayatnama_pm.py`, tests `scripts/test_panchayatnama_pm.ts`): 6 ticks doPan / doPm / doBayanSI /
   doBayanCo / doBayanPanch / doBayanDoc (each prints its part; only-PM wording "की मूल … प्राप्त हुई है जिसका"); Panch = item_group (mahila, own
   text; `copy` Story1/Story2/BodyPlace/DName); docMahila, doViscera, optional DocInjury. `tidyRepeats` drops blank lines at the very top.
-  Plan (owner, चरण 5–6 next): prefill remaining, 7-day bell.
+  Plan (owner, चरण 6 next): 7-day bell.
+  चरण 5 done (instant filling): saving the PM format stores its values in fir_karyvahi.last_values_json (entry `pmValues` → applyPmPartsFromEntry);
+  FormatFillPanel (केस डायरी कार्यवाही) opening the PM format merges `getPmPrefill(firId)` = `prefillPmValues(last, map)` (last values; only parts
+  still left ticked; all 6 done → format's own ticks) after the context defaults, before a draft.
   चरण 4 done: `pmPendingInfo(k)` (null unless PM and < 6/6) → card badge "⏳ लंबित · n/6" + "बाकी: …" line (karyvahi tab; its लंबित filter /
   top count already follow isKaryvahiDone), Add Entry karyvahi list chip "⏳ n/6 · m बाकी", pending-actions chip + बाकी line (done = isKaryvahiDone).
   चरण 3 done: done rule `isKaryvahiDone` (PM karyvahi = 6/6, others execution_count > 0) — used by recalcExecutionCount (is_completed) and the

@@ -142,3 +142,17 @@ export function pmPendingInfo(k: { step_code?: string | null; name?: string | nu
   if (p.complete) return null;
   return { done: p.done, total: p.total, remaining: remainingText(map) };
 }
+
+/**
+ * Instant filling (owner, चरण 5): opening the PM format again for the same FIR → the last typed values come back
+ * and only the parts still left stay ticked (done parts off). `last` = values saved with the earlier entry (may be {}).
+ */
+export function prefillPmValues(last: Record<string, string>, map: SubStepsMap): Record<string, string> {
+  const out: Record<string, string> = { ...last };
+  const complete = subStepProgress(map).complete;
+  for (const s of PM_SUB_STEPS) {
+    if (complete) delete out[s.formatKey]; // all 6 done → the format's own ticks (writing again)
+    else out[s.formatKey] = map[s.id]?.done ? '' : 'हाँ';
+  }
+  return out;
+}
