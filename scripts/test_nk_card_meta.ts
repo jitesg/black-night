@@ -1,8 +1,8 @@
-/** निरोधात्मक card date / title. Run: node --experimental-strip-types --test scripts/test_nk_card_meta.ts */
+/** निरोधात्मक card title. Run: node --experimental-strip-types --test scripts/test_nk_card_meta.ts */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { cleanFormatTitle, nkActionDate, toYmd } from '../src/lib/nirodhatmak/nkCardMeta.ts';
+import { cleanFormatTitle } from '../src/lib/nirodhatmak/nkCardMeta.ts';
 
 test('titles without section numbers', () => {
   assert.equal(cleanFormatTitle('बीट सूचना 126/135 की कार्यवाही'), 'बीट सूचना की कार्यवाही');
@@ -17,10 +17,3 @@ test('titles without section numbers', () => {
   }
 });
 
-test('date from DateOfAction, else the report day', () => {
-  assert.equal(nkActionDate({ DateOfAction: '2026-11-05' }, '2026-11-13'), '2026-11-05');
-  assert.equal(nkActionDate({ DateOfAction: '5.11.2026' }, '2026-11-13'), '2026-11-05');
-  assert.equal(nkActionDate({ Other: 'x' }, '2026-11-13'), '2026-11-13');
-  assert.equal(nkActionDate(null, '2026-11-13'), '2026-11-13');
-  assert.equal(toYmd(''), null);
-});

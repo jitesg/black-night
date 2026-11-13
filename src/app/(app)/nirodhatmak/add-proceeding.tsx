@@ -18,7 +18,7 @@ import { BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View } 
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  LayoutTemplate, Save, AlertCircle, FileDown,
+  Calendar, ChevronDown, LayoutTemplate, Save, AlertCircle, FileDown,
 } from 'lucide-react-native';
 import {
   createNirodhatmakKaryvahi, updateNirodhatmakKaryvahi,
@@ -26,6 +26,7 @@ import {
   type NirodhatmakType,
 } from '@/lib/db/nirodhatmakRepo';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { nirodhatmakFormatBridge } from '@/lib/nirodhatmakFormatBridge';
 import { isHtml, markdownToHtml } from '@/lib/markdownToHtml';
@@ -36,7 +37,7 @@ import {
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { exportKaryvahiDocx } from '@/lib/nirodhatmak/karyvahiDocx';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
-import { cleanFormatTitle, nkActionDate, NK_NO_FORMAT_TYPE } from '@/lib/nirodhatmak/nkCardMeta';
+import { cleanFormatTitle, NK_NO_FORMAT_TYPE } from '@/lib/nirodhatmak/nkCardMeta';
 import { getFormatById } from '@/lib/db/predefinedFormatRepo';
 
 const MODULE_COLOR = '#DC2626';
@@ -56,6 +57,12 @@ function dateToString(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
+function fmtDate(str: string): string {
+  if (!str) return '';
+  const [y, m, d] = str.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${d} ${months[parseInt(m, 10) - 1]} ${y}`;
+}
 
 // ─── Screen ───────────────────────────────────────────────────────────────
 export default function AddProceedingScreen() {
@@ -65,17 +72,16 @@ export default function AddProceedingScreen() {
 
   // Form state
   const [proceedingDate, setProceedingDate] = useState<Date>(todayDateObj());
-  // Owner: no कार्यवाही दिनांक / प्रकार boxes — the card's date and middle line come from the report (nkCardMeta.ts).
-  // These hold an old entry's values (kept when no format is used again while editing).
+  // Owner: no कार्यवाही प्रकार box — the card's middle line comes from the format's title (nkCardMeta.ts). This holds an old
+  // entry's type (kept when no format is used again while editing).
   const [proceedingType, setProceedingType] = useState<string>('');
   const [editorContent, setEditorContent] = useState('');
   const [formatId, setFormatId] = useState<string | undefined>(undefined);
   const [formatTitle, setFormatTitle] = useState<string | undefined>(undefined);
 
-  // Day the report was put in from a format in this session (the card date when the format has no कार्यवाही तिथि).
-  const reportDayRef = useRef<string | null>(null);
-  // Filled values of the saved entry (edit mode) — the date is worked out from them again on save.
-  const loadedValuesRef = useRef<Record<string, unknown> | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  // dateStr mirrors proceedingDate as "YYYY-MM-DD" for the modal
+  const proceedingDateStr = dateToString(proceedingDate);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -167,7 +173,6 @@ export default function AddProceedingScreen() {
               setEditorContent(pending.text);
             }
             if (pending.values) valuesJsonRef.current = JSON.stringify(pending.values);
-            reportDayRef.current = dateToString(todayDateObj());
             if (pending.formatId) {
               setFormatId(pending.formatId);
               setFormatTitle(undefined); // formatTitle not carried by bridge — read from the format below
@@ -190,7 +195,6 @@ export default function AddProceedingScreen() {
 
           setProceedingDate(new Date(entry.proceeding_date + 'T00:00:00'));
           setProceedingType(entry.proceeding_type ?? '');
-          try { loadedValuesRef.current = entry.values_json ? JSON.parse(entry.values_json) : null; } catch { loadedValuesRef.current = null; }
           setEditorContent(entry.editor_content ?? entry.report_text ?? '');
           setFormatId(entry.format_id || undefined);
           setFormatTitle(entry.format_title || undefined);
@@ -239,15 +243,11 @@ export default function AddProceedingScreen() {
 
     const saveOpId = ++latestSaveOpRef.current;
     try {
-      // Card date + middle line from the report (owner): कार्यवाही करने की तिथि, else the day the report was made;
-      // the format's title without धारा numbers. Nothing new from a format while editing → the old values stay.
-      const values = valuesJsonRef.current ? JSON.parse(valuesJsonRef.current) as Record<string, unknown> : loadedValuesRef.current;
-      const baseDay = reportDayRef.current ?? (isEdit ? dateToString(proceedingDate) : dateToString(todayDateObj()));
-      const cardDate = nkActionDate(values, baseDay);
+      // Card middle line (owner): the format's title without धारा numbers; no format → the old type / "निरोधात्मक कार्यवाही".
       const title = formatTitle ?? (formatId ? (await getFormatById(formatId).catch(() => null))?.title : undefined);
       const cardType = cleanFormatTitle(title) || proceedingType || NK_NO_FORMAT_TYPE;
       const data = {
-        proceeding_date: cardDate,
+        proceeding_date: dateToString(proceedingDate),
         village_id: '',
         village_name: '',
         proceeding_type: cardType as NirodhatmakType,
@@ -363,6 +363,35 @@ export default function AddProceedingScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
+          {/* ── Proceeding Date ───────────────────────────────── */}
+          <View className="gap-1.5">
+            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              {t('nirodhatmak.form.proceedingDate')} <Text className="text-destructive">*</Text>
+            </Text>
+            <Pressable
+              onPress={() => setShowDatePicker(true)}
+              className="flex-row items-center gap-3 border border-border rounded-xl px-4 py-3 bg-card active:opacity-70"
+              style={{ borderCurve: 'continuous' }}
+            >
+              <Calendar size={16} color={MODULE_COLOR} />
+              <Text className="flex-1 text-base text-foreground">
+                {fmtDate(proceedingDateStr)}
+              </Text>
+              <ChevronDown size={16} color="#9CA3AF" />
+            </Pressable>
+            <DatePickerModal
+              visible={showDatePicker}
+              value={proceedingDateStr}
+              label={t('nirodhatmak.form.proceedingDate')}
+              accentColor={MODULE_COLOR}
+              onConfirm={(v) => {
+                const [y, m, d] = v.split('-').map(Number);
+                setProceedingDate(new Date(y, m - 1, d));
+              }}
+              onClose={() => setShowDatePicker(false)}
+            />
+          </View>
+
           {/* ── Add From Format Button (above the editor) ──────────────────────── */}
           <AddFromFormatCard
             title={t('nirodhatmak.form.addFromFormat')}
