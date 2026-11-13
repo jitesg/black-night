@@ -349,6 +349,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   the titles present on the cards (client side, nkMatchesFilters type).
 - निरोधात्मक card checklist (owner: simple only — no dates/alerts/filters): 3 ticks `KARYVAHI_CHECKLIST` in nirodhatmakRepo
   (चलानी प्रेषित / नोटिस प्राप्त / तामील), column `checklist_json`, `setKaryvahiChecklist`; rows hidden behind a "चेकलिस्ट n/3 ▾" button on the card (green ✓ at 3/3; closed on every visit; pending pill stays visible).
+  Always-visible 3-part progress bar under that row (owner): one part per item, filled amber, all green at 3/3, empty = muted 20%.
   "चलानी प्रेषण लंबित" until `prashit` is ticked: amber pill on the card, सूचनाएँ card kind 'nk' (bell count), and one
   9 AM summary alert per day from the day after the karyvahi date — rules `src/lib/nkChalani.ts` (tests
   `scripts/test_nk_chalani.ts`), scheduler `nkChalaniService.ts` (`kind: nk_chalani`, route /(app)/nirodhatmak; setting

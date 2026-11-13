@@ -400,6 +400,18 @@ function KaryvahiChecklistRows({ itemId, json, scheme, onPrashit }: {
           {open ? <ChevronUp size={15} color={btnColor} /> : <ChevronDown size={15} color={btnColor} />}
         </Pressable>
       </View>
+      {/* Progress bar (owner): one part per checklist item, filled as they are ticked — amber, green at 3/3 */}
+      <View
+        accessibilityLabel={`प्रगति ${done}/${KARYVAHI_CHECKLIST.length}`}
+        style={{ flexDirection: 'row', gap: 4, marginTop: 8, marginBottom: open ? 4 : 0 }}
+      >
+        {KARYVAHI_CHECKLIST.map((r, i) => (
+          <View
+            key={r.key}
+            style={{ flex: 1, height: 6, borderRadius: 3, backgroundColor: i < done ? (all ? green : amber) : `${c.muted}33` }}
+          />
+        ))}
+      </View>
       {open && KARYVAHI_CHECKLIST.map((row) => {
         const on = !!ticks[row.key];
         return (
