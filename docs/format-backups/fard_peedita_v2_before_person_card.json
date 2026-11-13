@@ -1,0 +1,259 @@
+{
+  "id": "sys-fmt-fard-peedita-baramadgi",
+  "title": "फर्द बरामदगी पीड़िता / पीड़ित (मुकदमा सम्बन्धित — मुखबिर की सूचना पर)",
+  "format_type": "Fard",
+  "is_favorite": 0,
+  "created_by": "system",
+  "source": "system",
+  "editable": 1,
+  "content_type": "format",
+  "seed_version": 2,
+  "app_version": "1.0.0",
+  "tags": [
+    "फर्द",
+    "बरामदगी",
+    "पीड़िता",
+    "पीड़ित",
+    "गुमशुदा",
+    "87 BNS",
+    "137(2) BNS"
+  ],
+  "last_updated": "2026-11-11",
+  "vivran": "[[पत्र]]\n[[सूची]] **फर्द बरामदगी {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} सम्बन्धित मु0अ0सं0 {{FIRNo}} धारा {{Sections}} थाना {{PoliceStation}} जनपद {{District}}**\n[[विवरण]] आज दिनांक {{RecoveryDate}} को मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:VictimType=लड़की| मय {{if:Hamrah|{{Hamrah}}, }}म0का0 {{LadyConstable}} के}}{{if:VictimType=लड़का|{{if:Hamrah| मय {{Hamrah}} के}}}} थाना हाजा से रवाना होकर मु0अ0सं0 {{FIRNo}} धारा {{Sections}} से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} {{VictimName}} {{if:VictimType=लड़की|{{VictimRel}}}}{{if:VictimType=लड़का|पुत्र}} {{VictimFather}} निवासी {{VictimAddr}} की पतारसी सुरागरसी हेतु {{PatrolPlace}} में मामूर था।\n\nतभी मुखबिर खास ने आकर सूचना दी कि साहब आप जिस {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} {{VictimName}} की तलाश कर रहे हैं, वह इस समय {{SpotPlace}} पर {{if:VictimType=लड़की|खड़ी हुई है}}{{if:VictimType=लड़का|खड़ा हुआ है}}, यदि जल्दी किया जाये तो बरामद {{if:VictimType=लड़की|की जा सकती है}}{{if:VictimType=लड़का|किया जा सकता है}}।\n\nमुखबिर की सूचना पर विश्वास करके मैं {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:Hamrah| मय हमराहियान के}}{{if:VictimType=लड़की|{{ifnot:Hamrah| मय महिला आरक्षी के}}}}{{if:VictimType=लड़का|}} {{GoBy}} मुखबिर द्वारा बताये गये स्थान की ओर चल दिया।\n\nजैसे ही हम लोग {{SpotPlace}} के पास पहुँचे तो मुखबिर रुक गया।\n\nमुखबिर ने {{if:Pahar=रात|टार्च की रोशनी में }}इशारा करके बताया कि सामने {{SpotPlace}} पर जो {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़का}}{{if:Clothes| {{Clothes}} पहने}} {{if:VictimType=लड़की|खड़ी}}{{if:VictimType=लड़का|खड़ा}} है, यह वही {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़का}} है जिसकी आप तलाश कर रहे हैं। इतना बताकर मुखबिर पीछे मुड़कर चला गया।\n\nहम लोग {{if:Pahar=रात|टार्च की रोशनी में }}{{if:VictimType=लड़की|खड़ी लड़की}}{{if:VictimType=लड़का|खड़े लड़के}} के समीप पहुँचे।\n\n{{if:VictimType=लड़की|मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} के निर्देशानुसार महिला आरक्षी {{LadyConstable}} द्वारा खड़ी लड़की}}{{if:VictimType=लड़का|मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा खड़े लड़के}} से उसका नाम पता पूछा गया तो उसने अपना नाम {{VictimName}} {{if:VictimType=लड़की|{{VictimRel}}}}{{if:VictimType=लड़का|पुत्र}} {{VictimFather}} निवासी {{VictimAddr}} बताया।\n\n{{if:MatchBy=परिजनों द्वारा दिये गये फोटो से|परिजनों द्वारा दिये गये फोटो से मिलान किया गया। नाम पता व फोटो से मिलान करने पर}}{{if:MatchBy=मौके पर परिजनों से पहचान कराकर|मौके पर परिजनों को बुलाकर पहचान करायी गयी। नाम पता व परिजनों द्वारा पहचान करने पर}}{{if:MatchBy=केवल नाम पता से|नाम पता से मिलान करने पर}} {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} का मुकदमा उपरोक्त से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} होना पाया गया।\n\nउक्त {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} का मुकदमा उपरोक्त से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} होने का विश्वास होने पर उक्त {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} को {{if:VictimType=लड़की|महिला आरक्षी {{LadyConstable}} द्वारा }}{{if:VictimType=लड़का|}}समय करीब {{RecoveryTime}} बजे{{if:Pahar| {{Pahar}} में}} सुरक्षार्थ {{if:VictimType=लड़की|अपनी}}{{if:VictimType=लड़का|पुलिस}} अभिरक्षा में लिया गया। दौराने बरामदगी माननीय सर्वोच्च न्यायालय व मानवाधिकार आयोग के आदेश व निर्देशों का पालन किया गया।\n\nबरामदगी की सूचना {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} के {{InformRel}}{{if:InformVadi|/वादी मुकदमा}} {{InformName}} {{if:InformMobile|के मोबाइल न0 {{InformMobile}} पर दी गयी।}}{{ifnot:InformMobile|को दी गयी।}}\n\nफर्द मौके पर ही मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा बोल-बोलकर का0 {{Typist}} द्वारा मोबाइल पर गूगल डॉक्स एप्प के माध्यम से लिखवायी गयी, जिसकी प्रति नजदीकी बाजार में भेजकर निकलवाकर अलामात बनवाये जा रहे हैं।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}",
+  "keys": [
+    {
+      "key_name": "VictimType",
+      "label": "पीड़िता (लड़की) या पीड़ित (लड़का)",
+      "field_type": "dropdown",
+      "is_required": 1,
+      "default_value": "लड़की",
+      "dropdown_options": "{\"options\": [{\"value\": \"लड़की\", \"label\": \"लड़की — पीड़िता\"}, {\"value\": \"लड़का\", \"label\": \"लड़का — पीड़ित\"}], \"hint\": \"बरामद लड़की है तो \\\"लड़की — पीड़िता\\\", लड़का है तो \\\"लड़का — पीड़ित\\\" — पूरी फर्द के शब्द (खड़ी/खड़ा, पुत्री/पुत्र…) इसी से बदलते हैं\"}",
+      "sort_order": 0
+    },
+    {
+      "key_name": "RecoveryDate",
+      "label": "1. मौजूदगी — दिनांक",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: 04.05.2025\", \"hint\": \"बरामदगी की तारीख बिंदु लगाकर, जैसे: 05.03.2025\"}",
+      "sort_order": 1
+    },
+    {
+      "key_name": "pad",
+      "label": "1. मौजूदगी — पद/रैंक",
+      "field_type": "dropdown",
+      "is_required": 1,
+      "default_value": "उपनिरीक्षक",
+      "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+      "sort_order": 2
+    },
+    {
+      "key_name": "OfficerName",
+      "label": "1. मौजूदगी — अधिकारी का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+      "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}",
+      "sort_order": 3
+    },
+    {
+      "key_name": "Hamrah",
+      "label": "1. मौजूदगी — हमराह (वैकल्पिक)",
+      "field_type": "text",
+      "is_required": 0,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: का0 मनोज यादव\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार — कोई न हो तो खाली छोड़ें\"}",
+      "sort_order": 4
+    },
+    {
+      "key_name": "LadyConstable",
+      "label": "1. मौजूदगी — महिला आरक्षी का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: स्नेहा वर्मा\", \"showIf\": \"VictimType=लड़की\", \"hint\": \"साथ रही महिला आरक्षी का सिर्फ़ नाम, जैसे: स्नेहा वर्मा — पीड़िता की बरामदगी में ज़रूरी\"}",
+      "sort_order": 5
+    },
+    {
+      "key_name": "FIRNo",
+      "label": "1. मौजूदगी — मु0अ0सं0",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "@FIR.fir_number",
+      "dropdown_options": "{\"placeholder\": \"जैसे: 64/2025\", \"hint\": \"जिस मुकदमे से जुड़ी बरामदगी है उसका मु0अ0सं0 / वर्ष, जैसे: 37/2024 — मुकदमा चुनने पर अपने आप भरता है\"}",
+      "sort_order": 6
+    },
+    {
+      "key_name": "Sections",
+      "label": "1. मौजूदगी — धारा",
+      "field_type": "multiline",
+      "is_required": 1,
+      "default_value": "@FIR.section",
+      "dropdown_options": "{\"placeholder\": \"जैसे: 87 BNS\", \"hint\": \"उस मुकदमे की धाराएँ अधिनियम सहित, जैसे: 331(4), 305 बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
+      "sort_order": 7
+    },
+    {
+      "key_name": "VictimName",
+      "label": "1. मौजूदगी — पीड़िता / पीड़ित का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: अंकिता\", \"hint\": \"पीड़िता / पीड़ित का सिर्फ़ नाम, जैसे: अंकिता\"}",
+      "sort_order": 8
+    },
+    {
+      "key_name": "VictimRel",
+      "label": "1. मौजूदगी — सम्बन्ध",
+      "field_type": "dropdown",
+      "is_required": 1,
+      "default_value": "पुत्री",
+      "dropdown_options": "{\"options\": [\"पुत्री\", \"पत्नी\"], \"showIf\": \"VictimType=लड़की\", \"hint\": \"पिता के नाम से लिखना है तो \\\"पुत्री\\\", पति के नाम से तो \\\"पत्नी\\\"\"}",
+      "sort_order": 9
+    },
+    {
+      "key_name": "VictimFather",
+      "label": "1. मौजूदगी — पिता / पति का नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: स्व0 रामआसरे\", \"hint\": \"पिता / पति का नाम, जैसे: स्व0 रामआसरे\"}",
+      "sort_order": 10
+    },
+    {
+      "key_name": "VictimAddr",
+      "label": "1. मौजूदगी — पता",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम रानीखेड़ा पोस्ट राजामऊ थाना बछरावां जनपद रायबरेली\", \"hint\": \"पूरा पता, जैसे: ग्राम रानीखेड़ा पोस्ट राजामऊ थाना बछरावां जनपद रायबरेली\"}",
+      "sort_order": 11
+    },
+    {
+      "key_name": "PatrolPlace",
+      "label": "1. मौजूदगी — कहाँ मामूर थे",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: कस्बा बछरावां\", \"hint\": \"सूचना मिलते समय आप कहाँ मामूर थे, जैसे: कस्बा बछरावां\"}",
+      "sort_order": 12
+    },
+    {
+      "key_name": "SpotPlace",
+      "label": "2. मुखबिर की सूचना — कहाँ खड़ी / खड़ा है",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: समौधा चौराहा\", \"hint\": \"मुखबिर ने पीड़िता / पीड़ित कहाँ खड़ा बताया, जैसे: समौधा चौराहा\"}",
+      "sort_order": 13
+    },
+    {
+      "key_name": "GoBy",
+      "label": "3. वहाँ से चल देना — किससे गये",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "अपने निजी साधन से",
+      "dropdown_options": "{\"placeholder\": \"जैसे: अपने निजी साधन से / सरकारी वाहन से\", \"hint\": \"वहाँ कैसे गये, \\\"से\\\" तक, जैसे: अपनी-अपनी मोटरसाइकिल से / सरकारी वाहन से / पैदल\"}",
+      "sort_order": 14
+    },
+    {
+      "key_name": "Clothes",
+      "label": "5. पहचान — क्या पहने था / थी (वैकल्पिक)",
+      "field_type": "text",
+      "is_required": 0,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: सूट सलवार / जीन्स टी-शर्ट\", \"hint\": \"क्या पहने थी / था, जैसे: सूट सलवार / जीन्स टी-शर्ट — न लिखना हो तो खाली\"}",
+      "sort_order": 15
+    },
+    {
+      "key_name": "MatchBy",
+      "label": "8. मिलान — पीड़िता / पीड़ित होना कैसे पाया",
+      "field_type": "dropdown",
+      "is_required": 1,
+      "default_value": "परिजनों द्वारा दिये गये फोटो से",
+      "dropdown_options": "{\"options\": [\"परिजनों द्वारा दिये गये फोटो से\", \"मौके पर परिजनों से पहचान कराकर\", \"केवल नाम पता से\"], \"hint\": \"पीड़िता / पीड़ित की पहचान कैसे पक्की की — उसी हिसाब से मिलान वाला वाक्य बनता है\"}",
+      "sort_order": 16
+    },
+    {
+      "key_name": "RecoveryTime",
+      "label": "9. अभिरक्षा में लेना — समय",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: 18.10\", \"hint\": \"24 घंटे वाला समय बिंदु लगाकर, जैसे: 18.05 (रात 9:30 = 21.30) — \\\"बजे\\\" न लिखें\"}",
+      "sort_order": 17
+    },
+    {
+      "key_name": "Pahar",
+      "label": "9. अभिरक्षा में लेना — पहर (समय से अपने आप; बदलना हो तो चुनें)",
+      "field_type": "dropdown",
+      "is_required": 0,
+      "default_value": "समय से",
+      "dropdown_options": "{\"options\": [\"समय से\", \"सुबह\", \"दिन\", \"शाम\", \"रात\"], \"paharFrom\": \"RecoveryTime\", \"hint\": \"\\\"समय से\\\" रहने दें तो ऊपर लिखे समय से सुबह / दिन / शाम / रात अपने आप लगता है; रात हो तो \\\"टार्च की रोशनी\\\" वाली लाइन भी जुड़ती है\"}",
+      "sort_order": 18
+    },
+    {
+      "key_name": "InformRel",
+      "label": "10. सूचना — पीड़िता / पीड़ित का कौन (सम्बन्ध)",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: भाई / पिता / माता\", \"hint\": \"सूचना पीड़िता / पीड़ित के किस परिजन को दी, जैसे: भाई / पिता / माता\"}",
+      "sort_order": 19
+    },
+    {
+      "key_name": "InformVadi",
+      "label": "10. सूचना — वही वादी मुकदमा है",
+      "field_type": "checkbox",
+      "is_required": 0,
+      "default_value": "हाँ",
+      "dropdown_options": "{\"hint\": \"सूचना पाने वाला ही मुकदमे का वादी है तो टिक रहने दें — \\\"वादी मुकदमा\\\" भी जुड़ता है\"}",
+      "sort_order": 20
+    },
+    {
+      "key_name": "InformName",
+      "label": "10. सूचना — नाम",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "@FIR.complainant_name",
+      "dropdown_options": "{\"placeholder\": \"जैसे: सुनील कुमार\", \"hint\": \"सूचना पाने वाले का नाम, जैसे: सुनील कुमार (मुकदमा चुनने पर वादी का नाम अपने आप आता है)\"}",
+      "sort_order": 21
+    },
+    {
+      "key_name": "InformMobile",
+      "label": "10. सूचना — मोबाइल नं0 (वैकल्पिक)",
+      "field_type": "text",
+      "is_required": 0,
+      "default_value": "@FIR.complainant_mobile",
+      "dropdown_options": "{\"placeholder\": \"जैसे: 9312259916\", \"hint\": \"10 अंकों का मोबाइल नं0, जैसे: 9312259916 — न हो तो खाली\"}",
+      "sort_order": 22
+    },
+    {
+      "key_name": "Typist",
+      "label": "अंत — फर्द किस आरक्षी से लिखवायी",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": null,
+      "dropdown_options": "{\"placeholder\": \"जैसे: मनोज यादव\", \"hint\": \"जिस आरक्षी से फर्द लिखवायी / प्रिन्ट मँगवाया, उसका नाम, जैसे: मनोज सोनकर\"}",
+      "sort_order": 23
+    },
+    {
+      "key_name": "PoliceStation",
+      "label": "थाना",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+      "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}",
+      "sort_order": 24
+    },
+    {
+      "key_name": "District",
+      "label": "जनपद",
+      "field_type": "text",
+      "is_required": 1,
+      "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+      "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}",
+      "sort_order": 25
+    }
+  ]
+}

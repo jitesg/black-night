@@ -758,6 +758,7 @@ function _applyIfTokens(template: string, values: Record<string, string>): strin
  *   {{Key#inline}}        → the same people on one line ("1.A … 2.B … निवासीगण <address>")
  *   {{Key#short}}         → name + father only ("1.A पुत्र X 2.B पुत्र Y"), for "… उपरोक्त"
  *   {{Key#prose}}         → like #inline, but ONE person has no "1." ("रामू पुत्र श्याम निवासी …")
+ *   {{Key#name}}          → names only ("अंकिता", "क व ख")
  *   {{Key#num}}           → the usual prose ({{Key}}), but one person also gets "1." (126/135 formats)
  *   All of these number a single person "1." too (owner's choice for 126/135 and 170).
  *   {{Key#count}}         → number of people in words (एक, दो, तीन …)
@@ -862,6 +863,12 @@ function _applyGroupStatus(template: string, values: Record<string, string>, key
   const count = (k: string) => _parseGroupEntries<StatusEntry>(values[k] ?? '').filter((e) => String(e?.name ?? '').trim()).length;
   out = out.replace(/\{\{([A-Za-z0-9_]+)#count\}\}/g, (match, key: string) =>
     (isGroup(key) ? (COUNT_WORDS[count(key)] ?? String(count(key))) : match));
+  // {{Key#name}} → names only: "अंकिता", "क व ख", "क, ख व ग" (फर्द पीड़िता: "लड़की अंकिता की तलाश")
+  out = out.replace(/\{\{([A-Za-z0-9_]+)#name\}\}/g, (match, key: string) => {
+    if (!isGroup(key)) return match;
+    const names = _parseGroupEntries<StatusEntry>(values[key] ?? '').map((e) => String(e?.name ?? '').trim()).filter(Boolean);
+    return names.length <= 1 ? (names[0] ?? '') : `${names.slice(0, -1).join(', ')} व ${names[names.length - 1]}`;
+  });
   // {{Key#cnt}} → "01", "03" (GD: "01 नफर अभियुक्त")
   out = out.replace(/\{\{([A-Za-z0-9_]+)#cnt\}\}/g, (match, key: string) =>
     (isGroup(key) ? String(count(key)).padStart(2, '0') : match));

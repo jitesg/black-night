@@ -204,7 +204,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -216,7 +216,7 @@
         "137(2) BNS"
       ],
       "last_updated": "2026-11-11",
-      "vivran": "[[पत्र]]\n[[सूची]] **फर्द बरामदगी {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} सम्बन्धित मु0अ0सं0 {{FIRNo}} धारा {{Sections}} थाना {{PoliceStation}} जनपद {{District}}**\n[[विवरण]] आज दिनांक {{RecoveryDate}} को मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:VictimType=लड़की| मय {{if:Hamrah|{{Hamrah}}, }}म0का0 {{LadyConstable}} के}}{{if:VictimType=लड़का|{{if:Hamrah| मय {{Hamrah}} के}}}} थाना हाजा से रवाना होकर मु0अ0सं0 {{FIRNo}} धारा {{Sections}} से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} {{VictimName}} {{if:VictimType=लड़की|{{VictimRel}}}}{{if:VictimType=लड़का|पुत्र}} {{VictimFather}} निवासी {{VictimAddr}} की पतारसी सुरागरसी हेतु {{PatrolPlace}} में मामूर था।\n\nतभी मुखबिर खास ने आकर सूचना दी कि साहब आप जिस {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} {{VictimName}} की तलाश कर रहे हैं, वह इस समय {{SpotPlace}} पर {{if:VictimType=लड़की|खड़ी हुई है}}{{if:VictimType=लड़का|खड़ा हुआ है}}, यदि जल्दी किया जाये तो बरामद {{if:VictimType=लड़की|की जा सकती है}}{{if:VictimType=लड़का|किया जा सकता है}}।\n\nमुखबिर की सूचना पर विश्वास करके मैं {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:Hamrah| मय हमराहियान के}}{{if:VictimType=लड़की|{{ifnot:Hamrah| मय महिला आरक्षी के}}}}{{if:VictimType=लड़का|}} {{GoBy}} मुखबिर द्वारा बताये गये स्थान की ओर चल दिया।\n\nजैसे ही हम लोग {{SpotPlace}} के पास पहुँचे तो मुखबिर रुक गया।\n\nमुखबिर ने {{if:Pahar=रात|टार्च की रोशनी में }}इशारा करके बताया कि सामने {{SpotPlace}} पर जो {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़का}}{{if:Clothes| {{Clothes}} पहने}} {{if:VictimType=लड़की|खड़ी}}{{if:VictimType=लड़का|खड़ा}} है, यह वही {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़का}} है जिसकी आप तलाश कर रहे हैं। इतना बताकर मुखबिर पीछे मुड़कर चला गया।\n\nहम लोग {{if:Pahar=रात|टार्च की रोशनी में }}{{if:VictimType=लड़की|खड़ी लड़की}}{{if:VictimType=लड़का|खड़े लड़के}} के समीप पहुँचे।\n\n{{if:VictimType=लड़की|मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} के निर्देशानुसार महिला आरक्षी {{LadyConstable}} द्वारा खड़ी लड़की}}{{if:VictimType=लड़का|मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा खड़े लड़के}} से उसका नाम पता पूछा गया तो उसने अपना नाम {{VictimName}} {{if:VictimType=लड़की|{{VictimRel}}}}{{if:VictimType=लड़का|पुत्र}} {{VictimFather}} निवासी {{VictimAddr}} बताया।\n\n{{if:MatchBy=परिजनों द्वारा दिये गये फोटो से|परिजनों द्वारा दिये गये फोटो से मिलान किया गया। नाम पता व फोटो से मिलान करने पर}}{{if:MatchBy=मौके पर परिजनों से पहचान कराकर|मौके पर परिजनों को बुलाकर पहचान करायी गयी। नाम पता व परिजनों द्वारा पहचान करने पर}}{{if:MatchBy=केवल नाम पता से|नाम पता से मिलान करने पर}} {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} का मुकदमा उपरोक्त से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} होना पाया गया।\n\nउक्त {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} का मुकदमा उपरोक्त से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} होने का विश्वास होने पर उक्त {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} को {{if:VictimType=लड़की|महिला आरक्षी {{LadyConstable}} द्वारा }}{{if:VictimType=लड़का|}}समय करीब {{RecoveryTime}} बजे{{if:Pahar| {{Pahar}} में}} सुरक्षार्थ {{if:VictimType=लड़की|अपनी}}{{if:VictimType=लड़का|पुलिस}} अभिरक्षा में लिया गया। दौराने बरामदगी माननीय सर्वोच्च न्यायालय व मानवाधिकार आयोग के आदेश व निर्देशों का पालन किया गया।\n\nबरामदगी की सूचना {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} के {{InformRel}}{{if:InformVadi|/वादी मुकदमा}} {{InformName}} {{if:InformMobile|के मोबाइल न0 {{InformMobile}} पर दी गयी।}}{{ifnot:InformMobile|को दी गयी।}}\n\nफर्द मौके पर ही मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा बोल-बोलकर का0 {{Typist}} द्वारा मोबाइल पर गूगल डॉक्स एप्प के माध्यम से लिखवायी गयी, जिसकी प्रति नजदीकी बाजार में भेजकर निकलवाकर अलामात बनवाये जा रहे हैं।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}",
+      "vivran": "[[पत्र]]\n[[सूची]] **फर्द बरामदगी {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} सम्बन्धित मु0अ0सं0 {{FIRNo}} धारा {{Sections}} थाना {{PoliceStation}} जनपद {{District}}**\n[[विवरण]] आज दिनांक {{RecoveryDate}} को मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:VictimType=लड़की| मय {{if:Hamrah|{{Hamrah}}, }}म0का0 {{LadyConstable}} के}}{{if:VictimType=लड़का|{{if:Hamrah| मय {{Hamrah}} के}}}} थाना हाजा से रवाना होकर मु0अ0सं0 {{FIRNo}} धारा {{Sections}} से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} {{Victim#prose}} की पतारसी सुरागरसी हेतु {{PatrolPlace}} में मामूर था।\n\nतभी मुखबिर खास ने आकर सूचना दी कि साहब आप जिस {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} {{Victim#name}} की तलाश कर रहे हैं, वह इस समय {{SpotPlace}} पर {{if:VictimType=लड़की|खड़ी हुई है}}{{if:VictimType=लड़का|खड़ा हुआ है}}, यदि जल्दी किया जाये तो बरामद {{if:VictimType=लड़की|की जा सकती है}}{{if:VictimType=लड़का|किया जा सकता है}}।\n\nमुखबिर की सूचना पर विश्वास करके मैं {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}}{{if:Hamrah| मय हमराहियान के}}{{if:VictimType=लड़की|{{ifnot:Hamrah| मय महिला आरक्षी के}}}}{{if:VictimType=लड़का|}} {{GoBy}} मुखबिर द्वारा बताये गये स्थान की ओर चल दिया।\n\nजैसे ही हम लोग {{SpotPlace}} के पास पहुँचे तो मुखबिर रुक गया।\n\nमुखबिर ने {{if:Pahar=रात|टार्च की रोशनी में }}इशारा करके बताया कि सामने {{SpotPlace}} पर जो {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़का}}{{if:Clothes| {{Clothes}} पहने}} {{if:VictimType=लड़की|खड़ी}}{{if:VictimType=लड़का|खड़ा}} है, यह वही {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़का}} है जिसकी आप तलाश कर रहे हैं। इतना बताकर मुखबिर पीछे मुड़कर चला गया।\n\nहम लोग {{if:Pahar=रात|टार्च की रोशनी में }}{{if:VictimType=लड़की|खड़ी लड़की}}{{if:VictimType=लड़का|खड़े लड़के}} के समीप पहुँचे।\n\n{{if:VictimType=लड़की|मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} के निर्देशानुसार महिला आरक्षी {{LadyConstable}} द्वारा खड़ी लड़की}}{{if:VictimType=लड़का|मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा खड़े लड़के}} से उसका नाम पता पूछा गया तो उसने अपना नाम {{Victim#prose}} बताया।\n\n{{if:MatchBy=परिजनों द्वारा दिये गये फोटो से|परिजनों द्वारा दिये गये फोटो से मिलान किया गया। नाम पता व फोटो से मिलान करने पर}}{{if:MatchBy=मौके पर परिजनों से पहचान कराकर|मौके पर परिजनों को बुलाकर पहचान करायी गयी। नाम पता व परिजनों द्वारा पहचान करने पर}}{{if:MatchBy=केवल नाम पता से|नाम पता से मिलान करने पर}} {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} का मुकदमा उपरोक्त से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} होना पाया गया।\n\nउक्त {{if:VictimType=लड़की|लड़की}}{{if:VictimType=लड़का|लड़के}} का मुकदमा उपरोक्त से सम्बन्धित {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} होने का विश्वास होने पर उक्त {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} को {{if:VictimType=लड़की|महिला आरक्षी {{LadyConstable}} द्वारा }}{{if:VictimType=लड़का|}}समय करीब {{RecoveryTime}} बजे{{if:Pahar| {{Pahar}} में}} सुरक्षार्थ {{if:VictimType=लड़की|अपनी}}{{if:VictimType=लड़का|पुलिस}} अभिरक्षा में लिया गया। दौराने बरामदगी माननीय सर्वोच्च न्यायालय व मानवाधिकार आयोग के आदेश व निर्देशों का पालन किया गया।\n\nबरामदगी की सूचना {{if:VictimType=लड़की|पीड़िता}}{{if:VictimType=लड़का|पीड़ित}} के {{InformRel}}{{if:InformVadi|/वादी मुकदमा}} {{InformName}} {{if:InformMobile|के मोबाइल न0 {{InformMobile}} पर दी गयी।}}{{ifnot:InformMobile|को दी गयी।}}\n\nफर्द मौके पर ही मुझ {{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा बोल-बोलकर का0 {{Typist}} द्वारा मोबाइल पर गूगल डॉक्स एप्प के माध्यम से लिखवायी गयी, जिसकी प्रति नजदीकी बाजार में भेजकर निकलवाकर अलामात बनवाये जा रहे हैं।\n[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उपनिरीक्षक}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}",
       "keys": [
         {
           "key_name": "VictimType",
@@ -291,40 +291,13 @@
           "sort_order": 7
         },
         {
-          "key_name": "VictimName",
-          "label": "1. मौजूदगी — पीड़िता / पीड़ित का नाम",
-          "field_type": "text",
+          "key_name": "Victim",
+          "label": "1. मौजूदगी — पीड़िता / पीड़ित (कार्ड)",
+          "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अंकिता\", \"hint\": \"पीड़िता / पीड़ित का सिर्फ़ नाम, जैसे: अंकिता\"}",
+          "dropdown_options": "{\"hint\": \"पीड़िता / पीड़ित का कार्ड — नाम, सम्बन्ध (पुत्री / पत्नी / पुत्र), पिता / पति का नाम और पूरा पता, जैसे: अंकिता पुत्री स्व0 रामआसरे निवासी ग्राम रानीखेड़ा …\"}",
           "sort_order": 8
-        },
-        {
-          "key_name": "VictimRel",
-          "label": "1. मौजूदगी — सम्बन्ध",
-          "field_type": "dropdown",
-          "is_required": 1,
-          "default_value": "पुत्री",
-          "dropdown_options": "{\"options\": [\"पुत्री\", \"पत्नी\"], \"showIf\": \"VictimType=लड़की\", \"hint\": \"पिता के नाम से लिखना है तो \\\"पुत्री\\\", पति के नाम से तो \\\"पत्नी\\\"\"}",
-          "sort_order": 9
-        },
-        {
-          "key_name": "VictimFather",
-          "label": "1. मौजूदगी — पिता / पति का नाम",
-          "field_type": "text",
-          "is_required": 1,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: स्व0 रामआसरे\", \"hint\": \"पिता / पति का नाम, जैसे: स्व0 रामआसरे\"}",
-          "sort_order": 10
-        },
-        {
-          "key_name": "VictimAddr",
-          "label": "1. मौजूदगी — पता",
-          "field_type": "text",
-          "is_required": 1,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम रानीखेड़ा पोस्ट राजामऊ थाना बछरावां जनपद रायबरेली\", \"hint\": \"पूरा पता, जैसे: ग्राम रानीखेड़ा पोस्ट राजामऊ थाना बछरावां जनपद रायबरेली\"}",
-          "sort_order": 11
         },
         {
           "key_name": "PatrolPlace",
@@ -3921,7 +3894,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -3930,7 +3903,7 @@
         "GD"
       ],
       "last_updated": "2026-10-30",
-      "vivran": "{{if:Stage=पूछताछ हेतु बैठाया|{{ifnot:Reason=PRV द्वारा लाये गये|इस समय {{PersonName#inline}} को {{if:Reason=मुकदमा|मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित}}{{if:Reason=प्रार्थना पत्र|आवेदक/आवेदिका {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच के सम्बन्ध में}}{{if:Reason=अन्य|{{OtherReason}}}} पूछताछ हेतु थाना हाजा बुलवाया गया था, जो तलबिदा उपस्थित आये थे।}}{{if:Reason=PRV द्वारा लाये गये|इस समय थाना स्थानीय पर पीआरवी द्वारा{{if:EventNo| इवेन्ट संख्या {{EventNo}} की सूचना पर}} {{PersonName#n|एक व्यक्ति|{{PersonName#count}} व्यक्तियों}} को लाया गया था{{if:Condition|, जो {{Condition}}}}। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} से नाम पता पूछा गया तो {{PersonName#n|उसने अपना नाम पता|उन्होंने अपने नाम पते}} {{PersonName#inline}} बताया।}} जिन्हें पूछताछ हेतु पूछताछ कक्ष में सन्तरी पहरा की निगरानी में बैठाया गया। तस्करा अंकित किया गया।}}{{if:Stage=पूछताछ के बाद सुपुर्दगी|{{ifnot:Reason=PRV द्वारा लाये गये|इस समय थाना कार्यालय/पूछताछ कक्ष में बैठे {{PersonName#inline}} को {{if:Reason=मुकदमा|मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित}}{{if:Reason=प्रार्थना पत्र|आवेदक/आवेदिका {{Applicant}} द्वारा प्रेषित प्रार्थना पत्र की जांच के सम्बन्ध में}}{{if:Reason=अन्य|{{OtherReason}}}} पूछताछ हेतु थाना हाजा बुलवाया गया था, जो तलबिदा उपस्थित आये थे।{{if:GiveMode=सबको एक ही व्यक्ति को| जिन्हें बाद पूछताछ उनके {{ReceiverRelation}} {{ReceiverName}}{{if:ReceiverAddress| निवासी {{ReceiverAddress}}}} के हमराह कर हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जायेगा तो थाने पर उपस्थित होंगे।}}{{if:GiveMode=हर व्यक्ति को अलग-अलग| जिनमें से बाद पूछताछ {{each:Givers?name|{who} को उनके {rel} {name}{ निवासी ~addr} के हमराह| तथा }} कर हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जायेगा तो थाने पर उपस्थित होंगे।}}}}{{if:Reason=PRV द्वारा लाये गये|थाना स्थानीय पर पीआरवी द्वारा{{if:EventNo| इवेन्ट संख्या {{EventNo}} की सूचना पर}} {{PersonName#n|एक व्यक्ति|{{PersonName#count}} व्यक्तियों}} को लाया गया था{{if:Condition|, जो {{Condition}}}}। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} से नाम पता पूछा गया तो {{PersonName#n|उसने अपना नाम पता|उन्होंने अपने नाम पते}} {{PersonName#inline}} बताया। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} के परिजनों/परिचितों से सम्पर्क किया गया तो तारीखी इमरोजा में {{if:GiveMode=सबको एक ही व्यक्ति को|उनके {{ReceiverRelation}} {{ReceiverName}}{{if:ReceiverAddress| निवासी {{ReceiverAddress}}}} उपस्थित आये, जिनको सुपुर्दगी में देकर रुखसत किया गया।}}{{if:GiveMode=हर व्यक्ति को अलग-अलग|{{each:Givers?name|{who} के {rel} {name}{ निवासी ~addr}| तथा }} उपस्थित आये, जिनको क्रमशः सुपुर्दगी में देकर रुखसत किया गया।}}}} तस्करा अंकित किया गया।}}",
+      "vivran": "{{if:Stage=पूछताछ हेतु बैठाया|{{ifnot:Reason=PRV द्वारा लाये गये|इस समय {{PersonName#prose}} को {{if:Reason=मुकदमा|मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित}}{{if:Reason=प्रार्थना पत्र|आवेदक/आवेदिका {{Applicant#prose}} द्वारा प्रेषित प्रार्थना पत्र की जांच के सम्बन्ध में}}{{if:Reason=अन्य|{{OtherReason}}}} पूछताछ हेतु थाना हाजा बुलवाया गया था, जो तलबिदा उपस्थित आये थे।}}{{if:Reason=PRV द्वारा लाये गये|इस समय थाना स्थानीय पर पीआरवी द्वारा{{if:EventNo| इवेन्ट संख्या {{EventNo}} की सूचना पर}} {{PersonName#n|एक व्यक्ति|{{PersonName#count}} व्यक्तियों}} को लाया गया था{{if:Condition|, जो {{Condition}}}}। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} से नाम पता पूछा गया तो {{PersonName#n|उसने अपना नाम पता|उन्होंने अपने नाम पते}} {{PersonName#prose}} बताया।}} जिन्हें पूछताछ हेतु पूछताछ कक्ष में सन्तरी पहरा की निगरानी में बैठाया गया। तस्करा अंकित किया गया।}}{{if:Stage=पूछताछ के बाद सुपुर्दगी|{{ifnot:Reason=PRV द्वारा लाये गये|इस समय थाना कार्यालय/पूछताछ कक्ष में बैठे {{PersonName#prose}} को {{if:Reason=मुकदमा|मु0अ0सं0 {{FIRNo}}{{if:Sections| धारा {{Sections}}}} से सम्बन्धित}}{{if:Reason=प्रार्थना पत्र|आवेदक/आवेदिका {{Applicant#prose}} द्वारा प्रेषित प्रार्थना पत्र की जांच के सम्बन्ध में}}{{if:Reason=अन्य|{{OtherReason}}}} पूछताछ हेतु थाना हाजा बुलवाया गया था, जो तलबिदा उपस्थित आये थे।{{if:GiveMode=सबको एक ही व्यक्ति को| जिन्हें बाद पूछताछ उनके {{ReceiverRelation}} {{Receiver#prose}} के हमराह कर हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जायेगा तो थाने पर उपस्थित होंगे।}}{{if:GiveMode=हर व्यक्ति को अलग-अलग| जिनमें से बाद पूछताछ {{each:Givers?name|{who} को उनके {rel} {name}{ निवासी ~addr} के हमराह| तथा }} कर हिदायत दी गयी कि पूछताछ व बयान या अन्य किसी कारणवश जब भी थाना हाजा बुलाया जायेगा तो थाने पर उपस्थित होंगे।}}}}{{if:Reason=PRV द्वारा लाये गये|थाना स्थानीय पर पीआरवी द्वारा{{if:EventNo| इवेन्ट संख्या {{EventNo}} की सूचना पर}} {{PersonName#n|एक व्यक्ति|{{PersonName#count}} व्यक्तियों}} को लाया गया था{{if:Condition|, जो {{Condition}}}}। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} से नाम पता पूछा गया तो {{PersonName#n|उसने अपना नाम पता|उन्होंने अपने नाम पते}} {{PersonName#prose}} बताया। {{PersonName#n|उक्त व्यक्ति|उक्त व्यक्तियों}} के परिजनों/परिचितों से सम्पर्क किया गया तो तारीखी इमरोजा में {{if:GiveMode=सबको एक ही व्यक्ति को|उनके {{ReceiverRelation}} {{Receiver#prose}} उपस्थित आये, जिनको सुपुर्दगी में देकर रुखसत किया गया।}}{{if:GiveMode=हर व्यक्ति को अलग-अलग|{{each:Givers?name|{who} के {rel} {name}{ निवासी ~addr}| तथा }} उपस्थित आये, जिनको क्रमशः सुपुर्दगी में देकर रुखसत किया गया।}}}} तस्करा अंकित किया गया।}}",
       "keys": [
         {
           "key_name": "Stage",
@@ -3970,11 +3943,11 @@
         },
         {
           "key_name": "Applicant",
-          "label": "आवेदक/आवेदिका का नाम-पता (जैसे: राम स्वरूप पुत्र श्रीकृष्ण निवासी ग्राम …)",
-          "field_type": "multiline",
+          "label": "आवेदक / आवेदिका (कार्ड)",
+          "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Reason=प्रार्थना पत्र\", \"hint\": \"आवेदक / आवेदिका का पूरा नाम-पता, जैसे: राम स्वरूप पुत्र श्रीकृष्ण निवासी ग्राम अघौरा थाना बछरावां\"}",
+          "dropdown_options": "{\"showIf\": \"Reason=प्रार्थना पत्र\", \"hint\": \"आवेदक / आवेदिका का कार्ड — नाम, पिता/पति, पूरा पता (ऊपर \\\"📁 मुकदमे से भरें\\\" से भी चुन सकते हैं)\"}",
           "sort_order": 4
         },
         {
@@ -4032,22 +4005,13 @@
           "sort_order": 10
         },
         {
-          "key_name": "ReceiverName",
-          "label": "सुपुर्दगी लेने वाले का नाम (जैसे: गुड्डू उर्फ हयात मोहम्मद)",
-          "field_type": "text",
+          "key_name": "Receiver",
+          "label": "सुपुर्दगी लेने वाला (कार्ड)",
+          "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"hint\": \"सुपुर्दगी लेने वाले का नाम, जैसे: गुड्डू उर्फ हयात मोहम्मद (\\\"पिता\\\" आदि न लिखें, रिश्ता ऊपर चुना है)\"}",
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"hint\": \"सुपुर्दगी लेने वाले का कार्ड — नाम, पिता/पति और पता (पता वही हो जो थाने आये व्यक्ति का है तो खाली छोड़ें)\", \"addressOptional\": true}",
           "sort_order": 11
-        },
-        {
-          "key_name": "ReceiverAddress",
-          "label": "सुपुर्दगी लेने वाले का पता — व्यक्ति वाला ही हो तो खाली",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"hint\": \"सुपुर्दगी लेने वाले का पता — वही पता हो जो थाने पर आये व्यक्ति का है, तो खाली छोड़ें\"}",
-          "sort_order": 12
         },
         {
           "key_name": "Givers",
@@ -8359,7 +8323,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "183",
@@ -8440,49 +8404,13 @@
           "sort_order": 6
         },
         {
-          "key_name": "VName",
-          "label": "पीड़िता / पीड़ित का नाम",
-          "field_type": "text",
+          "key_name": "Victim",
+          "label": "पीड़िता / पीड़ित (कार्ड)",
+          "field_type": "person_group",
+          "default_value": null,
           "is_required": 1,
-          "default_value": "@FIR.complainant_name",
-          "dropdown_options": "{\"placeholder\": \"जैसे: आरती\", \"hint\": \"पीड़िता / पीड़ित का सिर्फ़ नाम, जैसे: आरती (मुकदमा चुनने पर अपने आप)\"}",
+          "dropdown_options": "{\"hint\": \"पीड़िता / पीड़ित का कार्ड — नाम, सम्बन्ध (पुत्री / पत्नी / पुत्र), पिता / पति, पता, उम्र। ऊपर \\\"📁 मुकदमे से भरें\\\" से वादी चुन सकते हैं। सम्बन्ध \\\"पुत्र\\\" = पीड़ित / निवासी, बाकी = पीड़िता / निवासिनी।\", \"expand\": {\"VName\": \"name\", \"Rel\": \"relationType\", \"VFather\": \"fatherOrHusbandName\", \"VAddr\": \"fullAddress\", \"VAge\": \"age|वर्ष\"}}",
           "sort_order": 7
-        },
-        {
-          "key_name": "Rel",
-          "label": "सम्बन्ध",
-          "field_type": "dropdown",
-          "is_required": 1,
-          "default_value": "@FIR.complainant_relation|पुत्री",
-          "dropdown_options": "{\"options\": [\"पुत्री\", \"पत्नी\", \"पुत्र\"], \"hint\": \"पुत्री / पत्नी / पुत्र — पीड़ित लड़का हो तो \\\"पुत्र\\\" (शब्द अपने आप बदलते हैं)\"}",
-          "sort_order": 8
-        },
-        {
-          "key_name": "VFather",
-          "label": "पिता / पति का नाम",
-          "field_type": "text",
-          "is_required": 1,
-          "default_value": "@FIR.complainant_father",
-          "dropdown_options": "{\"placeholder\": \"जैसे: राजबहादुर\", \"hint\": \"पिता / पति का नाम, जैसे: राजबहादुर\"}",
-          "sort_order": 9
-        },
-        {
-          "key_name": "VAddr",
-          "label": "पता",
-          "field_type": "text",
-          "is_required": 1,
-          "default_value": "@FIR.complainant_address",
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\", \"hint\": \"पूरा पता, जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\"}",
-          "sort_order": 10
-        },
-        {
-          "key_name": "VAge",
-          "label": "उम्र (वैकल्पिक)",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": "@FIR.complainant_age_years",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 13 वर्ष 08 माह\", \"hint\": \"उम्र जैसे लिखनी हो, जैसे: 13 वर्ष 08 माह — न हो तो खाली\"}",
-          "sort_order": 11
         },
         {
           "key_name": "doMedical",
@@ -8539,40 +8467,13 @@
           "sort_order": 17
         },
         {
-          "key_name": "RecvName",
-          "label": "सुपुर्दगी लेने वाले का नाम",
-          "field_type": "text",
-          "is_required": 1,
+          "key_name": "RecvCard",
+          "label": "सुपुर्दगी लेने वाला (कार्ड)",
+          "field_type": "person_group",
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमती सुनीता\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"hint\": \"सुपुर्दगी लेने वाले का नाम, जैसे: श्रीमती सुनीता\"}",
+          "is_required": 0,
+          "dropdown_options": "{\"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"addressOptional\": true, \"hint\": \"सुपुर्दगी लेने वाले का कार्ड — नाम, सम्बन्ध, पिता / पति, पता (पता खाली = पीड़िता वाला पता)\", \"expand\": {\"RecvName\": \"name\", \"RecvRel\": \"relationType\", \"RecvFather\": \"fatherOrHusbandName\", \"RecvAddr\": \"fullAddress\"}}",
           "sort_order": 18
-        },
-        {
-          "key_name": "RecvRel",
-          "label": "उनका सम्बन्ध (वैकल्पिक)",
-          "field_type": "dropdown",
-          "is_required": 0,
-          "default_value": "पत्नी",
-          "dropdown_options": "{\"options\": [\"पत्नी\", \"पुत्र\", \"पुत्री\"], \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"hint\": \"सुपुर्दगी लेने वाले का सम्बन्ध (पुत्र / पत्नी …) उनके पिता / पति के नाम के साथ\"}",
-          "sort_order": 19
-        },
-        {
-          "key_name": "RecvFather",
-          "label": "पिता / पति का नाम (वैकल्पिक)",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: राजबहादुर\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"hint\": \"उनके पिता / पति का नाम — न हो तो खाली\"}",
-          "sort_order": 20
-        },
-        {
-          "key_name": "RecvAddr",
-          "label": "उनका पता (वैकल्पिक — खाली = पीड़िता वाला पता)",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम मैहरोरा थाना बछरावां जनपद रायबरेली\", \"showIf\": \"doL3 & Receiver=माता/पिता/रिश्तेदार/केयर टेकर\", \"hint\": \"उनका पता — खाली छोड़ें तो पीड़िता वाला पता लगेगा\"}",
-          "sort_order": 21
         },
         {
           "key_name": "pad",
@@ -8621,7 +8522,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "मेडिकल",
@@ -8646,49 +8547,13 @@
           "sort_order": 0
         },
         {
-          "key_name": "p1Name",
-          "label": "व्यक्ति 1 — नाम",
-          "field_type": "text",
+          "key_name": "p1Card",
+          "label": "व्यक्ति 1 (कार्ड)",
+          "field_type": "person_group",
+          "default_value": null,
           "is_required": 1,
-          "default_value": "@FIR.complainant_name",
-          "dropdown_options": "{\"placeholder\": \"जैसे: रमेश सिंह उर्फ पुतान सिंह\", \"hint\": \"सिर्फ़ नाम, जैसे: रमेश सिंह उर्फ पुतान सिंह (व्यक्ति 1 में मुकदमा चुनने पर वादी का नाम अपने आप आता है)\"}",
+          "dropdown_options": "{\"hint\": \"व्यक्ति का कार्ड — नाम, सम्बन्ध, पिता / पति, पता, उम्र (उम्र न पता हो तो खाली)। ऊपर \\\"📁 मुकदमे से भरें\\\" से वादी / अभियुक्त चुन सकते हैं।\", \"expand\": {\"p1Name\": \"name\", \"p1Rel\": \"relationType\", \"p1Father\": \"fatherOrHusbandName\", \"p1Addr\": \"fullAddress\", \"p1Age\": \"age\"}}",
           "sort_order": 1
-        },
-        {
-          "key_name": "p1Rel",
-          "label": "सम्बन्ध",
-          "field_type": "dropdown",
-          "is_required": 1,
-          "default_value": "@FIR.complainant_relation|पुत्र",
-          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"hint\": \"पिता के नाम से लिखना है तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
-          "sort_order": 2
-        },
-        {
-          "key_name": "p1Father",
-          "label": "पिता / पति का नाम",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": "@FIR.complainant_father",
-          "dropdown_options": "{\"placeholder\": \"जैसे: राजेन्द्र सिंह\", \"hint\": \"पिता / पति का नाम, जैसे: राजेन्द्र सिंह\"}",
-          "sort_order": 3
-        },
-        {
-          "key_name": "p1Addr",
-          "label": "पता",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": "@FIR.complainant_address",
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\", \"hint\": \"पूरा पता, जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\"}",
-          "sort_order": 4
-        },
-        {
-          "key_name": "p1Age",
-          "label": "उम्र (वैकल्पिक, वर्ष)",
-          "field_type": "number",
-          "is_required": 0,
-          "default_value": "@FIR.complainant_age",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45 — न पता हो तो खाली\"}",
-          "sort_order": 5
         },
         {
           "key_name": "p1Mlc",
@@ -8970,49 +8835,13 @@
           "sort_order": 36
         },
         {
-          "key_name": "p2Name",
-          "label": "व्यक्ति 2 — नाम",
-          "field_type": "text",
-          "is_required": 1,
+          "key_name": "p2Card",
+          "label": "व्यक्ति 2 (कार्ड)",
+          "field_type": "person_group",
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: खुशबू खान\", \"showIf\": \"p2On\", \"hint\": \"सिर्फ़ नाम, जैसे: रमेश सिंह उर्फ पुतान सिंह (व्यक्ति 1 में मुकदमा चुनने पर वादी का नाम अपने आप आता है)\"}",
+          "is_required": 1,
+          "dropdown_options": "{\"showIf\": \"p2On\", \"hint\": \"व्यक्ति का कार्ड — नाम, सम्बन्ध, पिता / पति, पता, उम्र (उम्र न पता हो तो खाली)। ऊपर \\\"📁 मुकदमे से भरें\\\" से वादी / अभियुक्त चुन सकते हैं।\", \"expand\": {\"p2Name\": \"name\", \"p2Rel\": \"relationType\", \"p2Father\": \"fatherOrHusbandName\", \"p2Addr\": \"fullAddress\", \"p2Age\": \"age\"}}",
           "sort_order": 37
-        },
-        {
-          "key_name": "p2Rel",
-          "label": "सम्बन्ध",
-          "field_type": "dropdown",
-          "is_required": 1,
-          "default_value": "पुत्र",
-          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"showIf\": \"p2On\", \"hint\": \"पिता के नाम से लिखना है तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
-          "sort_order": 38
-        },
-        {
-          "key_name": "p2Father",
-          "label": "पिता / पति का नाम",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: अयूब खान\", \"showIf\": \"p2On\", \"hint\": \"पिता / पति का नाम, जैसे: राजेन्द्र सिंह\"}",
-          "sort_order": 39
-        },
-        {
-          "key_name": "p2Addr",
-          "label": "पता",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम रैन थाना बछरावां जनपद रायबरेली\", \"showIf\": \"p2On\", \"hint\": \"पूरा पता, जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\"}",
-          "sort_order": 40
-        },
-        {
-          "key_name": "p2Age",
-          "label": "उम्र (वैकल्पिक, वर्ष)",
-          "field_type": "number",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"showIf\": \"p2On\", \"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45 — न पता हो तो खाली\"}",
-          "sort_order": 41
         },
         {
           "key_name": "p2Mlc",
@@ -9294,49 +9123,13 @@
           "sort_order": 72
         },
         {
-          "key_name": "p3Name",
-          "label": "व्यक्ति 3 — नाम",
-          "field_type": "text",
-          "is_required": 1,
+          "key_name": "p3Card",
+          "label": "व्यक्ति 3 (कार्ड)",
+          "field_type": "person_group",
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: तेजरानी\", \"showIf\": \"p3On\", \"hint\": \"सिर्फ़ नाम, जैसे: रमेश सिंह उर्फ पुतान सिंह (व्यक्ति 1 में मुकदमा चुनने पर वादी का नाम अपने आप आता है)\"}",
+          "is_required": 1,
+          "dropdown_options": "{\"showIf\": \"p3On\", \"hint\": \"व्यक्ति का कार्ड — नाम, सम्बन्ध, पिता / पति, पता, उम्र (उम्र न पता हो तो खाली)। ऊपर \\\"📁 मुकदमे से भरें\\\" से वादी / अभियुक्त चुन सकते हैं।\", \"expand\": {\"p3Name\": \"name\", \"p3Rel\": \"relationType\", \"p3Father\": \"fatherOrHusbandName\", \"p3Addr\": \"fullAddress\", \"p3Age\": \"age\"}}",
           "sort_order": 73
-        },
-        {
-          "key_name": "p3Rel",
-          "label": "सम्बन्ध",
-          "field_type": "dropdown",
-          "is_required": 1,
-          "default_value": "पुत्र",
-          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"showIf\": \"p3On\", \"hint\": \"पिता के नाम से लिखना है तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
-          "sort_order": 74
-        },
-        {
-          "key_name": "p3Father",
-          "label": "पिता / पति का नाम",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: चन्दन सिंह\", \"showIf\": \"p3On\", \"hint\": \"पिता / पति का नाम, जैसे: राजेन्द्र सिंह\"}",
-          "sort_order": 75
-        },
-        {
-          "key_name": "p3Addr",
-          "label": "पता",
-          "field_type": "text",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: ग्राम भवानीखेड़ा मजरे पश्चिम गांव थाना बछरावां जनपद रायबरेली\", \"showIf\": \"p3On\", \"hint\": \"पूरा पता, जैसे: ग्राम महेरी थाना बछरावां जनपद रायबरेली\"}",
-          "sort_order": 76
-        },
-        {
-          "key_name": "p3Age",
-          "label": "उम्र (वैकल्पिक, वर्ष)",
-          "field_type": "number",
-          "is_required": 0,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 45\", \"showIf\": \"p3On\", \"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 45 — न पता हो तो खाली\"}",
-          "sort_order": 77
         },
         {
           "key_name": "p3Mlc",

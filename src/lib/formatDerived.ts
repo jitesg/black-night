@@ -79,6 +79,27 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
       const v = String(values[kd.key_name] ?? '').trim();
       if (!v || v === PAHAR_AUTO) set(kd.key_name, paharFromTime(values[src]));
     }
+    // person card → the format's old single keys (owner: person details as cards; template text unchanged):
+    // dropdown_options {"expand": {"VName": "name", "Rel": "relationType", "VFather": "fatherOrHusbandName",
+    //   "VAddr": "fullAddress", "VAge": "age|वर्ष"}} — "field|suffix" appends a word to a non-empty value; card N = "#2:name".
+    if (kd.field_type === 'person_group' || kd.field_type === 'accused_group') {
+      const ex = (parseJson(kd.dropdown_options) as { expand?: Record<string, string> } | null)?.expand;
+      if (ex && typeof ex === 'object') {
+        const cards = rowsOf(values[kd.key_name]).filter((c) => String(c.name ?? '').trim());
+        for (const [target, specRaw] of Object.entries(ex)) {
+          let spec = String(specRaw);
+          let idx = 0;
+          const m = /^#(\d+):(.*)$/.exec(spec);
+          if (m) { idx = Number(m[1]) - 1; spec = m[2]; }
+          const [field, suffix] = spec.split('|');
+          const card = cards[idx];
+          let v = card ? String(card[field] ?? card[field === 'fullAddress' ? 'address' : field] ?? '').trim() : '';
+          if (v && suffix) v = `${v} ${suffix}`;
+          set(target, v);
+        }
+      }
+      continue;
+    }
     if (kd.field_type === 'item_group') {
       const cfg = parseJson(kd.dropdown_options) as { columns?: ColCfg[]; groupInto?: GroupInto; copy?: string[]; weight?: Weight } | null;
       const cols = cfg?.columns ?? [];

@@ -147,7 +147,7 @@ function validatePersonEntry(e: PersonEntry, msgs: {
 }): CardErrors {
   const errs: CardErrors = {};
   if (!e.name.trim())        errs.name = msgs.nameRequired;
-  if (!e.fullAddress.trim()) errs.fullAddress = msgs.addressRequired;
+  if (msgs.addressRequired && !e.fullAddress.trim()) errs.fullAddress = msgs.addressRequired; // '' = address optional
   if (e.age.trim()) {
     const n = parseInt(e.age, 10);
     if (isNaN(n) || n < 1 || n > 120) errs.age = msgs.ageInvalid;
@@ -574,10 +574,12 @@ export interface PersonGroupInputProps {
   error?: string;
   /** Exactly one person (FIR वादी): no count badge, no "+ add" button. */
   single?: boolean;
+  /** Address may stay empty (format key option {"addressOptional": true}, e.g. सुपुर्दगी लेने वाला). */
+  addressOptional?: boolean;
 }
 
 export const PersonGroupInput = memo(({
-  label, value, onChange, onValidChange, keyName, error, single,
+  label, value, onChange, onValidChange, keyName, error, single, addressOptional,
 }: PersonGroupInputProps) => {
   const C = useGroupTokens();
   const { t } = useTranslation();
@@ -585,7 +587,7 @@ export const PersonGroupInput = memo(({
 
   const validationMsgs = {
     nameRequired:    t('group.validation.nameRequired'),
-    addressRequired: t('group.validation.addressRequired'),
+    addressRequired: addressOptional ? '' : t('group.validation.addressRequired'),
     ageInvalid:      t('group.validation.ageInvalid'),
     mobileInvalid:   t('group.validation.mobileInvalid'),
     emailInvalid:    t('group.validation.emailInvalid'),

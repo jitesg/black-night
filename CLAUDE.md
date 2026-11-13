@@ -428,6 +428,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   the box). चरण 3 started: वापसी उ0नि0 (seed_version 12; v11 in docs/format-backups/gd_wapsi_v11_before_person_cards.json) — h2/h6/h7/h8/h9Names are
   person_group, the hNNafar dropdowns are gone: `{{hNNames#cnt}}` (01 नफर), `{{hNNames#n|अभियुक्त|अभियुक्तगण}}`, `{{hNNames#inline}}`.
   formats/fill + prarthna fill-format: an invalid group blocks generating only while it is visible (showIf).
+  Batch 1 done (owner): वापसी (v13, token `#prose` = #inline but one person without "1."), तस्करा पूछताछ/सुपुर्दगी (v5: Applicant + Receiver cards,
+  Receiver `addressOptional`), फर्द पीड़िता (v3: Victim card, `{{Victim#prose}}` / `{{Victim#name}}`), 183 बयान (v5: Victim + RecvCard), मेडिकल अवलोकन
+  (v4: p1Card…p3Card). Template text kept where the grammar hangs on the old keys: person_group option `expand` (`{"VName":"name","Rel":"relationType",
+  "VAge":"age|वर्ष","X":"#2:name"}`) fills them from the card in deriveFormatValues (formatDerived.ts). Option `addressOptional` (PersonGroupInput prop,
+  passed by formats/fill, prarthna fill-format and the केस डायरी panel — which now renders person_group keys too). Token `{{Key#name}}` = names only
+  ("क व ख"). Backups in docs/format-backups/*_before_person_card(s).json. Tests `scripts/test_person_cards.ts`.
 - केस डायरी date/time (owner): `src/lib/caseDiaryTime.ts` (pure; tests `scripts/test_case_diary_time.ts`) — the FIRST diary opens with the FIR
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end

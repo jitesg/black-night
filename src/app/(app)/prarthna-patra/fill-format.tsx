@@ -320,6 +320,7 @@ export default function PPFillFormatScreen() {
                     <FieldHint text={keyHint(key.dropdown_options)} />
                     <PersonGroupInput
                       keyName={key.key_name}
+                      addressOptional={/"addressOptional"\s*:\s*true/.test(key.dropdown_options ?? '')}
                       label={key.label || key.key_name}
                       value={values[key.key_name] ?? initPersonGroup()}
                       onChange={setValue}
