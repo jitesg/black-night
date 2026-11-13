@@ -406,7 +406,7 @@ export default function KaryvahiDetailScreen() {
   const execCount   = karyvahi.execution_count ?? 0;
   const done        = isKaryvahiDone(karyvahi); // checklist cards (पंचनामा / घटनास्थल): required parts done
   const isUserAdded = karyvahi.source === 'user';
-  const sections    = resolveKnowledgeSections(karyvahi.name, karyvahi.precautions, playbookItem, t);
+  const sections    = resolveKnowledgeSections(karyvahi.name, karyvahi.precautions, playbookItem, t, undefined, { step_code: karyvahi.step_code, merged_codes: karyvahi.merged_codes });
   const defKey      = matchDefaultKaryvahi(karyvahi.name);
   const defKnowledge = defKey ? getDefaultKnowledge(defKey) : null;
   const headerDescription = defKnowledge ? defKnowledge.what : (karyvahi.precautions || undefined);

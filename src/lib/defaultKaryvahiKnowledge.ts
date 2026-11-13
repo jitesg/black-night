@@ -3,7 +3,8 @@ import { fmtSteps, fmtDocs } from '@/lib/db/playbooks/playbookTexts';
 import { matchDefaultKaryvahi, type DefaultKaryvahiKey } from '@/lib/karyvahiNames';
 import type { ChecklistItem } from '@/lib/db/checklistRepo';
 import i18n from '@/lib/i18n';
-import { isSceneKaryvahi } from '@/lib/karyvahiSubSteps';
+import { isSceneKaryvahi, checklistOf, MERGED_DEFS } from '@/lib/karyvahiSubSteps';
+import { mergedKnowledgeSections, foldedCardSections } from '@/lib/mergedKnowledge';
 import { sceneKnowledgeSections } from '@/lib/sceneKnowledge';
 
 export interface DefaultKnowledge {
@@ -214,13 +215,25 @@ export function resolveKnowledgeSections(
   playbookItem?: ChecklistItem | null,
   t?: (key: any, defaultValue?: any) => any,
   lang?: string
-): KnowledgeSection[] {
+,
+  /** the card row: merged cards (step_code CK_*) and folded cards (merged_codes) */
+  card?: { step_code?: string | null; merged_codes?: string | null }): KnowledgeSection[] {
   const currentLang = (lang || i18n?.language || 'hi').toLowerCase();
   const isEn = currentLang.startsWith('en');
 
   // घटनास्थल निरीक्षण = one card for the whole scene work (owner): the texts of the merged cards, part by part
   if (!isEn && isSceneKaryvahi({ name })) {
     return sceneKnowledgeSections((key) => getDefaultKnowledge(key, 'hi'));
+  }
+  // merged cards (मेडिकल, साक्ष्य व FSL, अभियुक्त …): the folded cards' texts, part by part
+  const ckDef = checklistOf({ name, step_code: card?.step_code });
+  if (!isEn && ckDef && MERGED_DEFS.includes(ckDef)) {
+    return mergedKnowledgeSections(ckDef, card?.merged_codes);
+  }
+  // cards folded into this one (पंचनामा व पोस्टमार्टम) → their texts after its own
+  const folded = !isEn && card?.merged_codes ? foldedCardSections(card.merged_codes) : [];
+  if (folded.length) {
+    return [...resolveKnowledgeSections(name, precautions, playbookItem, t, lang), ...folded];
   }
 
   const defKey = matchDefaultKaryvahi(name);

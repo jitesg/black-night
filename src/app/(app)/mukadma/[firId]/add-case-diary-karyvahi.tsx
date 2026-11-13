@@ -32,7 +32,7 @@ import {
   getCaseDiariesByFIR, getParchaNumber, type CaseDiary,
 } from '@/lib/db/caseDiaryRepo';
 import { getKaryvahiByFIR, addExecution, syncEntryChecklist, getChecklistPrefill, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
-import { checklistForFormat, pmPendingInfo } from '@/lib/karyvahiSubSteps';
+import { checklistForFormat, checklistOf, parseSubSteps, partEntryName, partByEntryName, pmPendingInfo } from '@/lib/karyvahiSubSteps';
 import { OPENING_LABEL, SARANSH_LABEL, openingLine } from '@/lib/caseDiaryParcha';
 import { getFIRById, type FIR } from '@/lib/db/firRepo';
 import { FirBasisHintsView } from '@/components/caseDiary/FirBasisHintsView';
@@ -73,6 +73,10 @@ interface DiaryEntry {
   ckFormatId?: string;
   /** …and the values typed in it (ticks + instant filling next time) */
   ckValues?: Record<string, string>;
+  /** "हिस्सा चुनें": part of the card this entry writes (null = the whole card) */
+  ckPart?: string | null;
+  /** checklist ticks must be re-synced on save (format generated / part or karyvahi changed in this session) */
+  ckDirty?: boolean;
 }
 
 function mkEntry(kind: EntryKind = 'karyvahi'): DiaryEntry {
@@ -505,7 +509,7 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
                     <Pressable
                       key={k.id}
                       onPress={() => {
-                        updateEntry(entry.uid, { firKaryvahiId: k.id, karyvahiName: k.name });
+                        updateEntry(entry.uid, { firKaryvahiId: k.id, karyvahiName: k.name, ckPart: null, ckDirty: true });
                         setShowKaryvahiDropdown(null);
                       }}
                       className="px-4 py-3 border-b border-border active:bg-secondary"
@@ -546,6 +550,42 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
               </ScrollView>
             </View>
           )}
+
+          {/* "हिस्सा चुनें" (owner): a card with a checklist → which part this entry writes; the part name is printed in the पर्चा
+              and the part is ticked (with the पर्चा number) on save */}
+          {(() => {
+            const card = firKaryvahi.find((k) => k.id === entry.firKaryvahiId);
+            const def = card ? checklistOf(card) : null;
+            if (!card || !def) return null;
+            const map = parseSubSteps(card.sub_steps_json, def);
+            return (
+              <View className="gap-1.5 mt-1">
+                <Text className="text-xs text-muted-foreground">कौन सा हिस्सा लिख रहे हैं? (पर्चे में यही नाम छपेगा)</Text>
+                <View className="flex-row flex-wrap gap-1.5">
+                  {def.steps.map((st) => {
+                    const sel = entry.ckPart === st.id;
+                    const done = !!map[st.id]?.done;
+                    return (
+                      <Pressable
+                        key={st.id}
+                        onPress={() => updateEntry(entry.uid, sel
+                          ? { ckPart: null, ckDirty: true, karyvahiName: card.name }
+                          : { ckPart: st.id, ckDirty: true, karyvahiName: partEntryName(st) })}
+                        className="rounded-full px-3 py-1.5 border border-border bg-secondary"
+                        style={sel ? { backgroundColor: `${INDIGO}1A`, borderColor: INDIGO } : {}}
+                        accessibilityRole="radio"
+                        accessibilityState={{ selected: sel }}
+                      >
+                        <Text className="text-xs text-foreground" style={sel ? { color: INDIGO, fontWeight: '700' } : {}}>
+                          {done ? '✓ ' : ''}{st.label}{st.optional ? ' (वैकल्पिक)' : ''}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+            );
+          })()}
         </View>
       )}
 
@@ -591,7 +631,7 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
             initialDraftValues={draftFormats[`${entry.uid}::${activeFillPanel.fmt.id}`]}
             onGenerated={(report, title, formatId, vals) => {
               // पंचनामा व पोस्टमार्टम: remember which parts this entry printed (ticked on save); another format → none
-              const pm = { ckFormatId: formatId, ckValues: vals };
+              const pm = { ckFormatId: formatId, ckValues: vals, ckDirty: true };
               updateEntry(entry.uid, entry.kind === 'karyvahi'
                 ? { vivran: report, formatUsed: title, ...pm }
                 : { narrativeText: report, narrativeTemplate: title }
@@ -751,6 +791,12 @@ export default function AddCaseDiaryKaryvahiScreen() {
             isDone: true,
             firKaryvahiId: e.fir_karyvahi_id || '',
             karyvahiName: e.karyvahi_name || '',
+            // "हिस्सा चुनें": the part this saved entry wrote (its name) — kept if the format is generated again
+            ckPart: (() => {
+              const card = k.find((x) => x.id === e.fir_karyvahi_id);
+              const d = card ? checklistOf(card) : null;
+              return d ? partByEntryName(d, e.karyvahi_name)?.id ?? null : null;
+            })(),
             vivran: e.vivran || '',
             formatUsed: e.format_used || '',
             narrativeText: e.narrative_text || '',
@@ -813,10 +859,10 @@ export default function AddCaseDiaryKaryvahiScreen() {
 
   /** पंचनामा व पोस्टमार्टम checklist: the parts this entry's format printed get ticked with the पर्चा number (owner, चरण 3). */
   const tickPmParts = async (e: DiaryEntry, entryId: string) => {
-    if (e.ckFormatId === undefined || !firId || !diaryId) return;
+    if (!e.ckDirty || !firId || !diaryId) return;
     try {
       const parcha = await getParchaNumber(firId, diaryId);
-      await syncEntryChecklist(firId, e.firKaryvahiId || undefined, entryId, e.ckFormatId, e.ckValues, parcha);
+      await syncEntryChecklist(firId, e.firKaryvahiId || undefined, entryId, e.ckFormatId ?? null, e.ckValues, parcha, e.ckPart ?? null);
     } catch (err) {
       logger.warn('[AddCaseDiaryKaryvahi] PM checklist tick failed:', err);
     }

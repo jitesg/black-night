@@ -13,7 +13,7 @@ import { MURDER_STEPS } from '@/lib/db/playbooks/murder';
 import { ATTEMPT_MURDER_STEPS } from '@/lib/db/playbooks/attemptMurder';
 import { PLAYBOOK_TEXTS } from '@/lib/db/playbooks/playbookTexts';
 
-interface StepText {
+export interface StepText {
   why_text?: string; court_text?: string; legal_basis?: string; care_text?: string; risk_text?: string;
   steps_text?: string; docs_text?: string; condition_note?: string;
 }
@@ -29,7 +29,7 @@ function block(label: string, text?: string | null): string {
 }
 
 /** One playbook card's texts as labelled lines. */
-function stepBody(s: StepText | undefined): string {
+export function stepBody(s: StepText | undefined): string {
   if (!s) return '';
   return [
     line('क्यों ज़रूरी', s.why_text),

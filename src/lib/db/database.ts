@@ -1194,6 +1194,8 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'fir_karyvahi', 'sub_steps_json', "TEXT DEFAULT '{}'");
   // …and the values last typed in its format (instant filling next time)
   await _ensureColumn(database, 'fir_karyvahi', 'last_values_json', "TEXT DEFAULT ''");
+  // merged card (new FIRs): the playbook cards folded into it — its "जानकारी" shows their texts
+  await _ensureColumn(database, 'fir_karyvahi', 'merged_codes', "TEXT DEFAULT ''");
 
   // ── Reminders v3: category, priority, case link, custom repeat, early
   // alert, repeat-until-done (nag), snooze, completion time.

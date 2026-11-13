@@ -5,8 +5,8 @@ import { getChecklistItemsForPairs, getChecklistItemsForCrimeTypes, getChecklist
 import { logger } from '../logger';
 import { unlockDependentsOf } from './actionConditionsRepo';
 import {
-  isKaryvahiDone, parseSubSteps, applyEntryParts, removeEntryParts, allDoneLegacy, prefillChecklistValues,
-  checklistOf, checklistForFormat, partNotesFromValues, PM_DEF, SCENE_DEF, SCENE_MERGED_STEP_CODES, type ChecklistDef,
+  isKaryvahiDone, parseSubSteps, applyEntryParts, removeEntryParts, removeEntryPicks, allDoneLegacy, prefillChecklistValues,
+  checklistOf, checklistForFormat, partNotesFromValues, partsForFormat, mergeSeedItems, PM_DEF, SCENE_DEF, SCENE_MERGED_STEP_CODES, type ChecklistDef,
 } from '../karyvahiSubSteps';
 
 // ── Instance counter for mount/unmount tracing (shared across screen renders) ──
@@ -43,6 +43,8 @@ export interface FIRKaryvahi {
   queued_for_diary?: number; // 0 | 1, DEFAULT 0
   // पंचनामा व पोस्टमार्टम: inner checklist JSON (src/lib/karyvahiSubSteps.ts)
   sub_steps_json?: string;
+  /** playbook cards folded into this one at seeding (comma list of step codes) — for its "जानकारी" */
+  merged_codes?: string;
   created_at: number;
   updated_at: number;
   deleted_at?: number;
@@ -385,6 +387,10 @@ export async function seedFIRKaryvahi(firId: string, crimeType: string): Promise
   for (let i = checklistItems.length - 1; i >= 0; i--) {
     if (checklistItems[i].step_code && SCENE_MERGED_STEP_CODES.includes(checklistItems[i].step_code as string)) checklistItems.splice(i, 1);
   }
+  // …and the same for मेडिकल / साक्ष्य व FSL / अभियुक्त / हथियार / CCTV / गवाह / मकसद / डिजिटल / समापन + पंचनामा extras (owner)
+  const mergedItems = mergeSeedItems(checklistItems as Array<ChecklistItem & { merged_codes?: string }>);
+  checklistItems.length = 0;
+  checklistItems.push(...mergedItems);
 
   logger.warn(
     `[TRACE] seedFIRKaryvahi pre-tx:` +
@@ -471,13 +477,16 @@ export async function seedFIRKaryvahi(firId: string, crimeType: string): Promise
         : `INSERT INTO fir_karyvahi
              (id, fir_id, name, precautions, is_completed, priority, status, auto_generate_format_id, step_code, created_at, updated_at)
            VALUES (?, ?, ?, ?, 0, ?, 'PENDING', ?, ?, ?, ?)`;
+      const rowId = generateUUID();
       const params = hasSortOrder
-        ? [generateUUID(), firId, item.task_name.trim(), item.brief_description?.trim() || null, 10 + i, priority, formatId, item.step_code ?? null, now + offset, now + offset]
-        : [generateUUID(), firId, item.task_name.trim(), item.brief_description?.trim() || null, priority, formatId, item.step_code ?? null, now + offset, now + offset];
+        ? [rowId, firId, item.task_name.trim(), item.brief_description?.trim() || null, 10 + i, priority, formatId, item.step_code ?? null, now + offset, now + offset]
+        : [rowId, firId, item.task_name.trim(), item.brief_description?.trim() || null, priority, formatId, item.step_code ?? null, now + offset, now + offset];
 
       txState = `checklist INSERT ${i + 1} of ${checklistItems.length}`;
       try {
         await db.runAsync(sql, params);
+        const mergedCodes = (item as { merged_codes?: string }).merged_codes;
+        if (mergedCodes) await db.runAsync('UPDATE fir_karyvahi SET merged_codes = ? WHERE id = ?', [mergedCodes, rowId]);
         // Phase 6: snapshot this template item verbatim — future template edits
         // will not affect this FIR because the FIR reads from the snapshot.
         await saveSnapshot(db, firId, item as unknown as Record<string, unknown>);
@@ -830,34 +839,60 @@ type ChecklistRow = { id: string; fir_id: string; name: string; step_code: strin
  */
 export async function syncEntryChecklist(
   firId: string, karyvahiId: string | undefined, entryId: string, formatId: string | null,
-  values: Record<string, string> | undefined, parcha: string,
+  values: Record<string, string> | undefined, parcha: string, pickedPart?: string | null,
 ): Promise<string | null> {
   const db = await getDatabase();
   const rows = await db.getAllAsync<ChecklistRow & { sort_order: number | null }>(
     'SELECT id, fir_id, name, step_code, sub_steps_json, sort_order FROM fir_karyvahi WHERE fir_id = ? AND deleted_at IS NULL ORDER BY sort_order, created_at',
     [firId],
   );
-  const def = checklistForFormat(formatId);
-  const target = def ? (rows.find((r) => r.id === karyvahiId && def.match(r)) ?? rows.find((r) => def.match(r)) ?? null) : null;
-  for (const r of rows) {
-    if (r.id === target?.id || !(r.sub_steps_json ?? '').includes(entryId)) continue;
-    const d = checklistOf(r);
-    if (d) await setKaryvahiSubSteps(r.id, firId, JSON.stringify(removeEntryParts(parseSubSteps(r.sub_steps_json, d), entryId)));
-  }
-  if (!def || !target) return null;
   const v = values ?? {};
-  const next = applyEntryParts(parseSubSteps(target.sub_steps_json, def), entryId, def.partsFromValues(v), parcha, Date.now(), def, partNotesFromValues(def, v));
-  await setKaryvahiSubSteps(target.id, firId, JSON.stringify(next));
-  if (Object.keys(v).length > 0) {
-    await db.runAsync('UPDATE fir_karyvahi SET last_values_json = ? WHERE id = ?', [JSON.stringify(v), target.id]);
+  // card id → what to tick
+  const plans = new Map<string, { def: ChecklistDef; row: ChecklistRow; parts: Set<string>; notes: Record<string, string> }>();
+  const fdef = checklistForFormat(formatId);
+  if (fdef && formatId) {
+    const t = rows.find((r) => r.id === karyvahiId && fdef.match(r)) ?? rows.find((r) => fdef.match(r));
+    if (t) plans.set(t.id, { def: fdef, row: t, parts: new Set(partsForFormat(fdef, formatId, v)), notes: partNotesFromValues(fdef, v) });
   }
-  return target.id;
+  // "हिस्सा चुनें": the part picked for the entry's own card
+  if (pickedPart) {
+    const own = rows.find((r) => r.id === karyvahiId);
+    const d = own ? checklistOf(own) : null;
+    if (own && d && d.steps.some((s) => s.id === pickedPart)) {
+      const p = plans.get(own.id) ?? { def: d, row: own, parts: new Set<string>(), notes: {} };
+      p.parts.add(pickedPart);
+      plans.set(own.id, p);
+    }
+  }
+  // no format generated in this session (only the part / karyvahi changed) → the entry's format ticks stay
+  const keepFormatTicks = !formatId;
+  for (const r of rows) {
+    if (plans.has(r.id) || !(r.sub_steps_json ?? '').includes(entryId)) continue;
+    const d = checklistOf(r);
+    if (!d) continue;
+    const map = parseSubSteps(r.sub_steps_json, d);
+    const next = keepFormatTicks && r.id === karyvahiId ? removeEntryPicks(map, entryId) : removeEntryParts(map, entryId);
+    await setKaryvahiSubSteps(r.id, firId, JSON.stringify(next));
+  }
+  let ticked: string | null = null;
+  for (const { def, row, parts, notes } of plans.values()) {
+    const next = applyEntryParts(
+      parseSubSteps(row.sub_steps_json, def), entryId, [...parts], parcha, Date.now(), def, notes,
+      pickedPart ?? null, keepFormatTicks && row.id === karyvahiId,
+    );
+    await setKaryvahiSubSteps(row.id, firId, JSON.stringify(next));
+    if (def === fdef && def.prefill && Object.keys(v).length > 0) {
+      await db.runAsync('UPDATE fir_karyvahi SET last_values_json = ? WHERE id = ?', [JSON.stringify(v), row.id]);
+    }
+    ticked = ticked ?? row.id;
+  }
+  return ticked;
 }
 
 /** Instant filling: a checklist format opened again for this FIR → last values (PM: only the remaining parts ticked); null = no such card. */
 export async function getChecklistPrefill(firId: string, formatId: string): Promise<Record<string, string> | null> {
   const def = checklistForFormat(formatId);
-  if (!def) return null;
+  if (!def || !def.prefill) return null;
   const db = await getDatabase();
   const rows = await db.getAllAsync<ChecklistRow>(
     'SELECT id, fir_id, name, step_code, sub_steps_json, last_values_json FROM fir_karyvahi WHERE fir_id = ? AND deleted_at IS NULL ORDER BY sort_order, created_at',

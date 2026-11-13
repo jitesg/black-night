@@ -286,6 +286,18 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   everywhere, then ticks the matching card; keeps values for `getChecklistPrefill`). Migration `v370_scene_substeps_legacy` (written → 5/5 "पहले से").
   Bell: `src/lib/sceneAlert.ts` (tests `scripts/test_scene_alert.ts`; FIR date + 3 days, red from 7, only up to day 30), card kind 'scene' ("घटनास्थल"),
   `sceneAlertService.ts` (`kind: scene_gap`, setting notifSceneGap), noticeRepo `getSceneRows`.
+- Merged cards (owner's list 2–10 + 12; 1 वादी बयान and 11 नकल चिक/रपट left for later): in a NEW FIR `mergeSeedItems` (karyvahiSubSteps.ts, pure,
+  run in seedFIRKaryvahi) folds 2+ playbook cards of one def into ONE card (title, step_code CK_MED / CK_FSL / CK_ACC / CK_WPN / CK_CCTV / CK_WIT /
+  CK_MOT / CK_DIG / CK_END, best priority; a single code stays as it was) and PM_DEF.mergeCodes (MUR_PM_SEND/REPORT, DWD_MEDICAL_CAUSE, CHM_DEATH_CAUSE)
+  into the FIR's पंचनामा card (+ optional part "शव पोस्टमार्टम हेतु भेजा"); column fir_karyvahi.merged_codes keeps the folded codes. Old FIRs unchanged
+  (defs match only the CK_* code / exact title). Parts carry `codes` (their folded cards) and `entryName`. Formats that tick: medical-avlokan →
+  mlc/xray/final, doctor-bayan → dr, notice-35-3 → arrest, abhiyukt-bayan-35-3 → arrest + interrog, fard_jabti → FSL jabti, fard_baramadgi →
+  अभियुक्त recovery (`moreFormats`, `partsForFormat`); instant filling only for `prefill` defs (PM, घटनास्थल).
+  "हिस्सा चुनें" (part A): add-case-diary-karyvahi shows part chips under a checklist card → entry name = part's entryName (printed in the पर्चा),
+  entry `ckPart` (from the name when a saved entry is reopened — `partByEntryName`), `ckDirty` → `syncEntryChecklist(…, pickedPart)`; a pick is a
+  tick with `pick: true` — changing only the pick keeps the entry's format ticks (`removeEntryPicks`). "जानकारी": `src/lib/mergedKnowledge.ts`
+  (overview + ①… per part with the folded cards' texts from all playbooks; folded extras on the PM card as "＋ …"), via resolveKnowledgeSections(…, card).
+  No new bells for these (owner to decide).
 - `sys-fmt-cd-abhiyukt-bayan-35-3` "अभियुक्त का बयान — 07 वर्ष या उससे कम सजा (धारा 35(3) BNSS नोटिस तामील सहित)" (Case Diary, plain text, owner's
   sample): item_group Accused (name, rel, father, addr, mobile, age, mahila, own) — one / woman / many wording like the 60(1) फर्द; Bailable
   tick; per-row "बयान अभियुक्त(ा) — …" para, own text or default "जुर्म से इंकार… सफाई जरिये अधिवक्ता… बता रहे / रही हैं" (nested {?own|…{?mahila|…}…}).
