@@ -477,7 +477,7 @@ test('126/135 + 170/135: the 135(3) report letters have no संलग्नक
       const head = /\[\[शीर्षक\]\][^\n]*/.exec(L)?.[0] ?? '';
       if (!/135\(3\) BNSS/.test(head) || /126\/135/.test(head)) continue;
       assert.doesNotMatch(L, /\[\[संलग्नक\]\]/, f.id);
-      assert.match(L, /\[\[हस्ताक्षर\]\][^\n]*\{\{OfficerName\}\}/, f.id);
+      assert.match(L, /\[\[हस्ताक्षर\]\][\s\u200b]*\(\s*\{\{OfficerName\}\}/, f.id); // 126/135: 2 empty lines first (owner)
     }
   }
 });
