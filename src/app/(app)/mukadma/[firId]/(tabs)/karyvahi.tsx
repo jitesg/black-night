@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { newDiaryDefaultDate } from '@/lib/caseDiaryTime';
 import { getFIRById } from '@/lib/db/firRepo';
 import { logger } from '@/lib/logger';
-import { View, Text, Pressable, ActivityIndicator, TextInput, ScrollView, Modal, KeyboardAvoidingView } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, TextInput, ScrollView, Modal, KeyboardAvoidingView, useWindowDimensions } from 'react-native';
 import Svg, { Circle as SvgCircle } from 'react-native-svg';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -783,6 +783,7 @@ function DiaryActionSheet({
   onClose: () => void;
 }) {
   const [creating, setCreating] = useState(false);
+  const { width: winW } = useWindowDimensions();
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme ?? 'light'];
   const sem = getSemanticColors(colorScheme ?? 'light');
@@ -828,7 +829,8 @@ function DiaryActionSheet({
 
   return (
     <AlertDialog open={visible} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <AlertDialogContent>
+      {/* full width (owner): the dialog overlay shrink-wraps its content, so w-full alone stayed narrow */}
+      <AlertDialogContent className="max-w-none" style={{ width: winW - 32, maxWidth: winW - 32 }}>
         <AlertDialogHeader>
           <AlertDialogTitle numberOfLines={2}>{item?.name ?? ''}</AlertDialogTitle>
           <AlertDialogDescription>केस डायरी में दर्ज करने का तरीका चुनें</AlertDialogDescription>
