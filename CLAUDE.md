@@ -96,6 +96,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   "{{FirstParty}} के" (was की), "जांचक्रम में ग्राम {{village}}", village label "गाँव का नाम" + placeholder "जैसे: अघौरा (ग्राम न लिखें)",
   द्वित्तीय → द्वितीय, दिनांकदिनांक, double spaces. templateEngine `tidyRepeats` (end of generateReport, all formats): "ग्राम ग्राम" → "ग्राम",
   "मध्य मध्य" → "मध्य", "का का" → "का", "। ।" / "।।" → "।".
+  "अतः" paragraphs (owner; seed_version +1 again: beat/yaksh/mukadma 19, thanabhraman 18, ncr 16, prarthna 6): the 126/135 letters' last request
+  is its own [[विवरण]] paragraph "अतः श्रीमान जी से निवेदन है कि शान्ति…" (was joined to the previous one, without अतः), and the 135(3) letters'
+  "अतः महोदय से निवेदन…" has a blank line before it (a single newline inside [[विवरण]] joins lines into ONE paragraph — use a blank line or a new
+  [[विवरण]] for a new indented paragraph). Backup docs/format-backups/bnss126_before_atah_para.json; test in scripts/test_format_markers.ts.
 - Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → blue text link "ⓘ कैसे भरें?" at the RIGHT END of the field's label line
   (owner, design B — the old chip above the field looked awkward); tap → floating box (Modal, measureInWindow, opens upwards near the bottom; owner's design C: green header strip "ⓘ <field label> —
   कैसे भरें" + ✕, tip 17px, example in a light-green box with a green left bar, small muted note — parts from `src/lib/hintParts.ts` `splitHint`

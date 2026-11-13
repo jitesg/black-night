@@ -216,3 +216,19 @@ test('[[तालिका]] column widths [a/b/c] and ⏎ line breaks in a cell
   assert.equal(P.renderTextForPrint(M.editorHtmlToMarkedText(E.renderModelsForEditor([m]))), html);
   assert.doesNotMatch(M.stripFormatMarkers(t), /⏎|\[8\//);
 });
+
+test('126/135 formats: "अतः श्रीमान जी…" and the 135(3) "अतः महोदय…" are their own paragraphs (owner)', async () => {
+  const { generateReport } = await import('../src/lib/templateEngine.ts');
+  const seed = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const person = (name: string) => ({ name, relationType: 'पुत्र', fatherOrHusbandName: 'श्याम', age: '35', fullAddress: 'ग्राम अ' });
+  for (const f of seed.formats.filter((x: { id: string }) => x.id.startsWith('sys-fmt-bnss126-'))) {
+    const v: Record<string, string> = {};
+    for (const k of f.keys) v[k.key_name] = 'X';
+    v.firstpartyDetails = JSON.stringify([person('राम')]);
+    v.secondpartyDetail = JSON.stringify([person('सोहन')]);
+    const html = P.renderTextForPrint(generateReport(f.vivran, v, f.keys, { keepMarkers: true }));
+    assert.equal((html.match(/<p>अतः श्रीमान जी से निवेदन है कि शान्ति/g) ?? []).length, 2, f.id);
+    assert.equal((html.match(/<p>अतः महोदय से निवेदन/g) ?? []).length, 2, f.id);
+    assert.doesNotMatch(html, /[।|] (अतः )?(श्रीमान जी|महोदय) से निवेदन/, f.id);
+  }
+});
