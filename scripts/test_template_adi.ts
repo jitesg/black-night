@@ -431,7 +431,7 @@ test('GD वापसी / तस्करा: heading joined with व, था�
   assert.match(a, /^वापसी उ0नि0 व दाखिला 02 किता चालानी अंतर्गत धारा 126\/135 BNSS व दाखिला 01 अदद वाहन सम्बन्धित मु0अ0सं0 104\/26\n/);
   assert.match(a, /सर्वप्रथम बीट।/);
   assert.match(a, /01 अदद वाहन बाइक को थाना परिसर में दाखिल कर सुरक्षार्थ खड़ा कराया गया।/);
-  const b = generateReport(f.vivran, { ...base, doWapsi: '', h4: 'हाँ', h4FIR: '1/26', h4Dhara: '106 BNS', h6: 'हाँ', h6Nafar: '03', h6FIR: '1/26', h6Names: 'क ख ग' }, f.keys);
+  const b = generateReport(f.vivran, { ...base, doWapsi: '', h4: 'हाँ', h4FIR: '1/26', h4Dhara: '106 BNS', h6: 'हाँ', h6FIR: '1/26', h6Names: JSON.stringify(['क', 'ख', 'ग'].map((name) => ({ name, fatherOrHusbandName: '', fullAddress: 'ग्राम अ', relationType: 'पुत्र', gender: 'पुरुष' }))) }, f.keys);
   assert.match(b, /^तस्करा बावत धारा घटोत्तरी सम्बन्धित मु0अ0सं0 1\/26 व तस्करा बावत दाखिला गिरफ्तारशुदा 03 नफर अभियुक्तगण/);
   assert.match(b, /तस्करा अंकित किया जाता है कि –/);
   assert.doesNotMatch(b, /रवानाशुदा/);

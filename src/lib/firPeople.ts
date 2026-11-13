@@ -1,5 +1,5 @@
 /**
- * "📁 मुकदमे से डालें" (owner): the people of a मुकदमा (वादी + अभियुक्त) as a pick list, and helpers that put the
+ * "📁 मुकदमे से भरें" (owner): the people of a मुकदमा (वादी + अभियुक्त) as a pick list, and helpers that put the
  * picked ones into a format's group field — person card (PersonGroupInput), accused card (AccusedGroupInput) or an
  * item_group whose columns hold a person (name / rel / father / addr / age / mobile / mahila).
  * Owner's choice (ख): group fields are no longer filled by themselves from the FIR — the officer picks with the button.

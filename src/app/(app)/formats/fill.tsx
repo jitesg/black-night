@@ -237,7 +237,9 @@ export default function FillScreen() {
         return;
       }
       // Block save if any group card has validation errors
-      const invalidGroups = Object.entries(groupValid).filter(([, valid]) => !valid);
+      // only cards the officer can see (a card hidden by its tick — showIf — keeps an old state that must not block)
+      const invalidGroups = Object.entries(groupValid).filter(([k, valid]) =>
+        !valid && dynamicKeys.some((key) => key.key_name === k && isKeyVisible(key, values)));
       if (invalidGroups.length > 0) {
         setBannerError(t('format.fill.errorGroupInvalid'));
         return;
@@ -399,7 +401,7 @@ export default function FillScreen() {
   // Auto-filled global keys present in this template
   const autoFilledKeyNames = Object.keys(autoValues);
 
-  // "📁 मुकदमे से डालें" (owner): the group fields' button reads the form's मुकदमा from here
+  // "📁 मुकदमे से भरें" (owner): the group fields' button reads the form's मुकदमा from here
   const pickFir = async (fir: FIR) => {
     const ctx = await resolveContextDefaults(dynamicKeys, fir.id);
     const r = applyPickedFir(values, ctx, initialValuesRef.current, pickedValuesRef.current);

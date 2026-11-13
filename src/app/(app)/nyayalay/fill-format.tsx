@@ -198,7 +198,7 @@ export default function NyayalayFillFormatScreen() {
   const allAutoFilled = { ...autoValues, ...nyayalayAutoValues };
   const allAutoFilledKeys = Object.keys(allAutoFilled);
 
-  // "📁 मुकदमे से डालें" (owner): the group fields' button reads the form's मुकदमा from here
+  // "📁 मुकदमे से भरें" (owner): the group fields' button reads the form's मुकदमा from here
   const pickFir = async (fir: FIR) => {
     // "मुकदमा चुनें": the FIR's मु0अ0सं0 / धारा / अभियुक्त … fill the untouched fields
     const ctx = await resolveContextDefaults(dynamicKeys, fir.id);

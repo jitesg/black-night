@@ -1,5 +1,5 @@
 /**
- * "📁 मुकदमे से डालें" (owner): a small button on every person group field of a format. It lists the people of the
+ * "📁 मुकदमे से भरें" (owner): a small button on every person group field of a format. It lists the people of the
  * मुकदमा chosen at the top of the form (वादी + अभियुक्त, rules in src/lib/firPeople.ts); the ticked ones go into the
  * field. No मुकदमा chosen yet → the sheet first asks for one (and the form takes it like the "मुकदमा चुनें" box).
  * Shown only inside a FirPeopleContext (format fill screens) — never on the FIR screens themselves.
@@ -87,7 +87,7 @@ export function FirPeopleButton({ onInsert, multi = true }: { onInsert: (people:
       <Pressable
         onPress={() => setOpen(true)}
         accessibilityRole="button"
-        accessibilityLabel="मुकदमे से डालें"
+        accessibilityLabel="मुकदमे से भरें"
         hitSlop={6}
         style={{
           flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'flex-start',
@@ -96,7 +96,7 @@ export function FirPeopleButton({ onInsert, multi = true }: { onInsert: (people:
         }}
       >
         <Text style={{ fontSize: 12 }}>📁</Text>
-        <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '700', color: isDark ? '#C7D2FE' : ACCENT }}>मुकदमे से डालें</Text>
+        <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '700', color: isDark ? '#C7D2FE' : ACCENT }}>मुकदमे से भरें</Text>
       </Pressable>
 
       <Modal visible={open} animationType="slide" transparent onRequestClose={close}>
@@ -104,7 +104,7 @@ export function FirPeopleButton({ onInsert, multi = true }: { onInsert: (people:
           <View style={{ maxHeight: '85%', backgroundColor: C.background, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 14, paddingBottom: NAV_BAR_INSET + 8 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginBottom: 6 }}>
               <Text style={{ flex: 1, fontSize: 17, fontWeight: '700', color: C.foreground }}>
-                {activeFir ? 'किसे डालना है?' : 'पहले मुकदमा चुनें'}
+                {activeFir ? 'किसे भरना है?' : 'पहले मुकदमा चुनें'}
               </Text>
               <Pressable onPress={close} style={{ padding: 6 }}>
                 <Text style={{ fontSize: 15, color: C.mutedForeground }}>बंद करें</Text>
@@ -169,7 +169,7 @@ export function FirPeopleButton({ onInsert, multi = true }: { onInsert: (people:
                     style={{ flex: 1, alignItems: 'center', paddingVertical: 12, borderRadius: 12, backgroundColor: sel.size ? ACCENT : C.secondary }}
                   >
                     <Text style={{ fontSize: 15, fontWeight: '700', color: sel.size ? '#FFFFFF' : C.mutedForeground }}>
-                      डालें{sel.size ? ` (${sel.size})` : ''}
+                      भरें{sel.size ? ` (${sel.size})` : ''}
                     </Text>
                   </Pressable>
                 </View>

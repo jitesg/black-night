@@ -129,7 +129,9 @@ export default function PPFillFormatScreen() {
       return;
     }
     // Block save if any group card has validation errors
-    const invalidGroups = Object.entries(groupValid).filter(([, valid]) => !valid);
+    // only cards the officer can see (a card hidden by its tick keeps an old state that must not block)
+    const invalidGroups = Object.entries(groupValid).filter(([k, valid]) =>
+      !valid && dynamicKeys.some((key) => key.key_name === k && isKeyVisible(key, values)));
     if (invalidGroups.length > 0) {
       setBannerError(t('format.fill.errorGroupInvalid'));
       return;
@@ -189,7 +191,7 @@ export default function PPFillFormatScreen() {
 
   const autoFilledKeyNames = Object.keys(autoValues);
 
-  // "📁 मुकदमे से डालें" (owner): the group fields' button reads the form's मुकदमा from here
+  // "📁 मुकदमे से भरें" (owner): the group fields' button reads the form's मुकदमा from here
   const pickFir = async (fir: FIR) => {
     // "मुकदमा चुनें": the FIR's मु0अ0सं0 / धारा / अभियुक्त … fill the untouched fields
     const ctx = await resolveContextDefaults(dynamicKeys, fir.id);

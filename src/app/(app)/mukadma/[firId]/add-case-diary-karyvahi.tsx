@@ -180,7 +180,7 @@ function FormatFillPanel({
   };
 
   return (
-    // "📁 मुकदमे से डालें" (owner): this diary's मुकदमा for the group fields' button
+    // "📁 मुकदमे से भरें" (owner): this diary's मुकदमा for the group fields' button
     <FirPeopleContext.Provider value={{ firId: firId ?? null }}>
     <View className="bg-card border border-border rounded-2xl mt-2 overflow-hidden" style={{ borderCurve: 'continuous' }}>
       {/* ── Panel-level 3-option discard dialog ────────────────────────── */}

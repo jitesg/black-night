@@ -112,7 +112,7 @@ export const ItemGroupInput = forwardRef<View, {
         {String(displayLabel).replace(/\s*\*+\s*$/, '')}
         {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
       </Text>
-      {/* "📁 मुकदमे से डालें" (owner): lists that hold people (name column) */}
+      {/* "📁 मुकदमे से भरें" (owner): lists that hold people (name column) */}
       {isPersonItemGroup(cols) ? (
         <FirPeopleButton
           onInsert={(people) => onChange(keyName, insertIntoGroup(JSON.stringify(rows), people.map((p) => toItemRow(p, cols)), newRow(cols)))}

@@ -416,7 +416,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `mergeContextDefaults` (empty FIR value never wipes a default card). "मुकदमा चुनें": `components/formats/FirPickBanner.tsx` on
   formats/fill (no firId), nyayalay + prarthna-patra fill-format when `hasFirMarkers`; pick → `applyPickedFir` fills only untouched
   fields (empty / opening value / last pick). Tests in `scripts/test_*.ts` must treat "@…" defaults as empty.
-  "📁 मुकदमे से डालें" (owner, चरण 1 of "person details = group fields"): `components/formats/FirPeopleButton.tsx` on every PersonGroupInput /
+  "📁 मुकदमे से भरें" (owner, चरण 1 of "person details = group fields"): `components/formats/FirPeopleButton.tsx` on every PersonGroupInput /
   AccusedGroupInput / person item_group (`isPersonItemGroup` = has a "name" column) — sheet lists the form's मुकदमा people (`src/lib/firPeople.ts`
   `firPeople`: वादी + named अभियुक्त; tests `scripts/test_fir_people.ts`), multi-tick → `insertIntoGroup` (blank opening card/row replaced, no
   duplicates) with `toCard` / `toItemRow`; no मुकदमा yet → the sheet asks for one and passes it to the form (`onPickFir` = the screen's
@@ -424,7 +424,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   FormatFillPanel with its firId) — never on FIR add/details. Owner (ख): group fields with a person marker (accused_cards / _group / _rows,
   complainant_doctor_row …) are NOT auto-filled any more (`skipPersonMarker` in resolveContextDefaults; loose text boxes keep their markers until
   चरण 3 turns them into groups). "मुकदमा चुनें" banner also shows for formats with person/accused groups. Next: चरण 2 GD fill + चरण 3 convert loose
-  person boxes (32 formats) to groups, batch by batch with samples.
+  person boxes (32 formats) to groups, batch by batch with samples. चरण 2 = already there (GD opens formats/fill; 7 of 8 GD formats show
+  the box). चरण 3 started: वापसी उ0नि0 (seed_version 12; v11 in docs/format-backups/gd_wapsi_v11_before_person_cards.json) — h2/h6/h7/h8/h9Names are
+  person_group, the hNNafar dropdowns are gone: `{{hNNames#cnt}}` (01 नफर), `{{hNNames#n|अभियुक्त|अभियुक्तगण}}`, `{{hNNames#inline}}`.
+  formats/fill + prarthna fill-format: an invalid group blocks generating only while it is visible (showIf).
 - केस डायरी date/time (owner): `src/lib/caseDiaryTime.ts` (pure; tests `scripts/test_case_diary_time.ts`) — the FIRST diary opens with the FIR
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end

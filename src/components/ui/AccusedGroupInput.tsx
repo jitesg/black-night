@@ -749,7 +749,7 @@ export const AccusedGroupInput = memo(({
     }
   }, [entries.length]);
 
-  // Cards replaced from outside with the same count ("📁 मुकदमे से डालें" fills the blank card) → errors follow the new cards
+  // Cards replaced from outside with the same count ("📁 मुकदमे से भरें" fills the blank card) → errors follow the new cards
   const prevValueRef = useRef(value);
   const reportValidityRef = useRef<((errors: CardErrors[]) => void) | null>(null);
   useEffect(() => {
@@ -921,7 +921,7 @@ export const AccusedGroupInput = memo(({
         <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>
           {resolvedLabel}
         </Text>
-        {/* "📁 मुकदमे से डालें" (owner) — only inside a format fill screen */}
+        {/* "📁 मुकदमे से भरें" (owner) — only inside a format fill screen */}
         <FirPeopleButton onInsert={(people) => onChange(keyName, insertIntoGroup(value, people.map((p, n) => toCard(p, true, n))))} />
         <View style={{ backgroundColor: '#F3F4F6', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 }}>
           <Text style={{ fontSize: 11, color: C.muted, fontWeight: '500' }}>
