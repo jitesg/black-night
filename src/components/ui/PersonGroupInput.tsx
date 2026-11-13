@@ -805,7 +805,7 @@ export const PersonGroupInput = memo(({
       {/* label (+ "ⓘ कैसे भरें?") and the count; the full-width "मुकदमे से … भरें" button below (owner, design B) */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
         <View style={{ flex: 1, minWidth: 0 }}>
-          <LabelWithHint hint={hint}>
+          <LabelWithHint hint={hint} title={String(resolvedLabel)}>
             <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 }}>
               {resolvedLabel}
             </Text>

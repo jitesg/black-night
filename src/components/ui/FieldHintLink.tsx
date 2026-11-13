@@ -8,10 +8,12 @@ import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native'
 import { X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { splitHint } from '@/lib/hintParts';
 
 export const HINT_LINK_LABEL = 'कैसे भरें?';
 
-export function HintLink({ text }: { text?: string }) {
+/** `title` = the field's label (box header "ⓘ <title> — कैसे भरें"). */
+export function HintLink({ text, title }: { text?: string; title?: string }) {
   const { colorScheme } = useColorScheme();
   const dark = colorScheme === 'dark';
   const c = THEME[dark ? 'dark' : 'light'];
@@ -20,6 +22,12 @@ export function HintLink({ text }: { text?: string }) {
   const [pos, setPos] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   if (!text) return null;
   const accent = dark ? '#60A5FA' : '#2563EB';
+  // box = owner's design C: green header strip, tip, example in a light-green box with a green bar, small note
+  const G = dark
+    ? { head: '#4ADE80', headText: '#0F2016', line: '#2F5A3E', exBg: '#163322', exBar: '#4ADE80' }
+    : { head: '#15803D', headText: '#FFFFFF', line: '#86EFAC', exBg: '#ECFDF3', exBar: '#15803D' };
+  const parts = splitHint(text);
+  const name = String(title ?? '').replace(/\s*\*+\s*$/, '').trim();
   const open = () => btnRef.current?.measureInWindow((x, y, w, h) => setPos({ x, y, w, h }));
   const close = () => setPos(null);
   const boxW = Math.min(winW - 24, 420);
@@ -46,15 +54,26 @@ export function HintLink({ text }: { text?: string }) {
               onStartShouldSetResponder={() => true}
               style={{ position: 'absolute', left, width: boxW,
                 ...(placeAbove ? { bottom: winH - pos.y + 8 } : { top: below }),
-                backgroundColor: c.card, borderRadius: 14, borderWidth: 1, borderColor: dark ? '#60A5FA66' : '#BFDBFE',
-                paddingHorizontal: 16, paddingVertical: 14, gap: 8, elevation: 8,
+                backgroundColor: c.card, borderRadius: 14, borderWidth: 1, borderColor: G.line, overflow: 'hidden', elevation: 8,
                 shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } }}
             >
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: accent }}>ⓘ कैसे भरें</Text>
-                <Pressable onPress={close} hitSlop={10} accessibilityLabel="बंद करें"><X size={18} color={c.mutedForeground} /></Pressable>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: G.head, paddingHorizontal: 14, paddingVertical: 9 }}>
+                <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: G.headText }}>
+                  {name ? `ⓘ ${name} — कैसे भरें` : 'ⓘ कैसे भरें'}
+                </Text>
+                <Pressable onPress={close} hitSlop={10} accessibilityLabel="बंद करें"><X size={18} color={G.headText} /></Pressable>
               </View>
-              <Text style={{ fontSize: 17, lineHeight: 28, color: c.foreground }}>{text}</Text>
+              <View style={{ paddingHorizontal: 14, paddingTop: 10, paddingBottom: 12, gap: 8 }}>
+                {parts.main ? <Text style={{ fontSize: 17, lineHeight: 28, color: c.foreground }}>{parts.main}</Text> : null}
+                {parts.example ? (
+                  <View style={{ borderLeftWidth: 3, borderLeftColor: G.exBar, backgroundColor: G.exBg, borderTopRightRadius: 8, borderBottomRightRadius: 8, paddingHorizontal: 10, paddingVertical: 6 }}>
+                    <Text style={{ fontSize: 16, lineHeight: 26, color: c.foreground }}>
+                      जैसे: <Text style={{ fontWeight: '700' }}>{parts.example}</Text>
+                    </Text>
+                  </View>
+                ) : null}
+                {parts.note ? <Text style={{ fontSize: 14, lineHeight: 22, color: c.mutedForeground }}>{parts.note}</Text> : null}
+              </View>
             </View>
           ) : null}
         </Pressable>
@@ -64,12 +83,12 @@ export function HintLink({ text }: { text?: string }) {
 }
 
 /** A field's label line with the link at its right end (just the label when there is no tip). */
-export function LabelWithHint({ hint, children }: { hint?: string; children: React.ReactNode }) {
+export function LabelWithHint({ hint, title, children }: { hint?: string; title?: string; children: React.ReactNode }) {
   if (!hint) return <>{children}</>;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
       <View style={{ flex: 1, minWidth: 0 }}>{children}</View>
-      <HintLink text={hint} />
+      <HintLink text={hint} title={title} />
     </View>
   );
 }

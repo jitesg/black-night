@@ -111,7 +111,7 @@ export const ItemGroupInput = forwardRef<View, {
 
   return (
     <View ref={ref} style={{ gap: T.space.sm }}>
-      <LabelWithHint hint={hint}>
+      <LabelWithHint hint={hint} title={String(displayLabel)}>
         <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
           {String(displayLabel).replace(/\s*\*+\s*$/, '')}
           {required ? <Text style={{ color: c.destructive }}> *</Text> : null}

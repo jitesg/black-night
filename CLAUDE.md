@@ -97,8 +97,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   द्वित्तीय → द्वितीय, दिनांकदिनांक, double spaces. templateEngine `tidyRepeats` (end of generateReport, all formats): "ग्राम ग्राम" → "ग्राम",
   "मध्य मध्य" → "मध्य", "का का" → "का", "। ।" / "।।" → "।".
 - Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → blue text link "ⓘ कैसे भरें?" at the RIGHT END of the field's label line
-  (owner, design B — the old chip above the field looked awkward); tap → floating box (Modal, measureInWindow, opens upwards near the bottom,
-  17px text, ✕ / tap outside closes). `components/ui/FieldHintLink.tsx` (`HintLink`, `LabelWithHint`); `keyHint` in input.tsx; FormatKeyField passes
+  (owner, design B — the old chip above the field looked awkward); tap → floating box (Modal, measureInWindow, opens upwards near the bottom; owner's design C: green header strip "ⓘ <field label> —
+  कैसे भरें" + ✕, tip 17px, example in a light-green box with a green left bar, small muted note — parts from `src/lib/hintParts.ts` `splitHint`
+  (first "जैसे:" → example, then first " — " → note; no जैसे = whole; tests `scripts/test_hint_parts.ts`); `title` = the label; tap outside closes). `components/ui/FieldHintLink.tsx` (`HintLink`, `LabelWithHint`); `keyHint` in input.tsx; FormatKeyField passes
   `hint` to every label (Input `labelHint`, dropdown, multi_choice, date, item_group, sentence; checkbox = link at the row end); Person/AccusedGroupInput
   `hint` prop (label + link on their own line, buttons below) from the 4 fill screens; never printed; a dropdown's list goes under "options"). Owner wanted it on every predefined format (58 formats / 982 fields) — done batch by batch with samples. Tool: `python3 scripts/hints/apply_hints.py <batch>`
   (batch modules in scripts/hints/: `wants(f)` + `hint(f, k)`, shared `common.py`; only fields without a hint, seed_version +1). A "sentence" field

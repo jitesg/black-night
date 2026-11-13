@@ -406,7 +406,7 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
     <View style={[{ gap: T.space.xs }, containerStyle]}>
       {/* Label */}
       {label ? (
-        <LabelWithHint hint={labelHint}>
+        <LabelWithHint hint={labelHint} title={typeof label === 'string' ? label : undefined}>
           <Text style={{ ...T.caption1, color: hasError ? C.error : C.label, fontWeight: T.weight.medium } as TextStyle}>
             {/* Labels from formats may already end in '*'; show only one */}
             {required && typeof label === 'string' ? label.replace(/\s*\*+\s*$/, '') : label}
@@ -749,7 +749,7 @@ const FormatKeyDropdownInput = forwardRef<View, {
   const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
   return (
     <View ref={ref} style={{ gap: T.space.xs }}>
-      <LabelWithHint hint={hint}>
+      <LabelWithHint hint={hint} title={displayLabel}>
         <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
           {String(displayLabel).replace(/\s*\*+\s*$/, '')}
           {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
@@ -802,7 +802,7 @@ const FormatKeyMultiChoiceInput = forwardRef<View, {
   const order = options.map((o) => o.value);
   return (
     <View ref={ref} style={{ gap: T.space.xs }}>
-      <LabelWithHint hint={hint}>
+      <LabelWithHint hint={hint} title={displayLabel}>
         <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
           {String(displayLabel).replace(/\s*\*+\s*$/, '')}
           {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
@@ -878,7 +878,7 @@ const FormatKeyCheckboxInput = forwardRef<View, {
         <Text style={{ flex: 1, fontSize: 14, lineHeight: 21, fontWeight: on ? '700' : '500', color: on ? green : c.foreground }}>
           {String(displayLabel).replace(/\s*\*+\s*$/, '')}
         </Text>
-        <HintLink text={hint} />
+        <HintLink text={hint} title={displayLabel} />
       </Pressable>
     </View>
   );
@@ -925,7 +925,7 @@ const FormatKeyDateInput = forwardRef<View, FormatKeyDateInputProps>(
     return (
       <View ref={ref} style={{ gap: T.space.xs }}>
         {/* Label */}
-        <LabelWithHint hint={hint}>
+        <LabelWithHint hint={hint} title={displayLabel}>
           <Text style={{ ...T.caption1, color: error ? C.error : C.label, fontWeight: T.weight.medium } as TextStyle}>
             {String(displayLabel).replace(/\s*\*+\s*$/, '')}
             {required ? <Text style={{ color: C.error }}> *</Text> : null}

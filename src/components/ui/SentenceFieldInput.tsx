@@ -88,7 +88,7 @@ export const SentenceFieldInput = forwardRef<View, {
     <View ref={ref} style={{ gap: T.space.sm }}>
       <View style={{ borderWidth: 1.5, borderColor: error ? c.destructive : c.border, borderRadius: 16, padding: 14, gap: 10, backgroundColor: c.card }}>
         <View>
-          <LabelWithHint hint={hint}>
+          <LabelWithHint hint={hint} title={String(displayLabel)}>
             <Text style={{ fontSize: 15.5, lineHeight: 24, fontWeight: '700', color: c.foreground }}>
               {String(displayLabel).replace(/\s*\*+\s*$/, '')}
               {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
