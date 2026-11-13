@@ -38,7 +38,7 @@ import type { DocumentModel } from './formatParsingEngine';
 export type MarkRole =
   | 'letter' | 'header' | 'sewa' | 'subject' | 'party' | 'salutation'
   | 'body' | 'closing' | 'witness' | 'attachments' | 'signature'
-  | 'center' | 'right' | 'split' | 'list' | 'table' | 'image';
+  | 'center' | 'right' | 'split' | 'list' | 'listIn' | 'table' | 'image';
 
 export const MARK_ROLES: Record<string, MarkRole> = {
   'पत्र': 'letter',
@@ -59,6 +59,7 @@ export const MARK_ROLES: Record<string, MarkRole> = {
   'दायें': 'right',
   'दोनों ओर': 'split',
   'सूची': 'list',
+  'सूची अंदर': 'listIn',
   'तालिका': 'table',
   'चित्र': 'image',
 };
@@ -67,7 +68,7 @@ const ROLE_NAME: Record<MarkRole, string> = {
   letter: 'पत्र', header: 'शीर्षक', sewa: 'सेवा में', subject: 'विषय', party: 'पक्ष',
   salutation: 'महोदय', body: 'विवरण', closing: 'समापन', witness: 'गवाह',
   attachments: 'संलग्नक', signature: 'हस्ताक्षर',
-  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची', table: 'तालिका', image: 'चित्र',
+  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची', listIn: 'सूची अंदर', table: 'तालिका', image: 'चित्र',
 };
 
 /** Hindi name of a role, as written in the mark. */
@@ -260,6 +261,10 @@ export function parseMarkedLetter(text: string): DocumentModel {
       case 'list':
         model.bodyBlocks!.push({ kind: 'line', text: clean(t) });
         break;
+      // [[सूची अंदर]]: the same, every line moved in by the paragraph indent (owner: names in the धारा 130 notice).
+      case 'listIn':
+        model.bodyBlocks!.push({ kind: 'line', text: clean(t), indent: true });
+        break;
       case 'table':
         rows.push(t.split('|').map((c) => clean(c)).join(' | '));
         break;
@@ -340,7 +345,7 @@ export function editorHtmlToMarkedText(html: string): string {
     }
     if (name === 'br') { if (cell !== null) cell += ` ${CELL_BREAK} `; else if (buf.trim()) flush(); continue; }
     // Bold inside a body paragraph → **…** (centre / party lines are bold by their own role).
-    if ((name === 'b' || name === 'strong') && cell === null && (current() === markName('body') || current() === markName('list') || current() === markName('party'))) { buf += '**'; continue; }
+    if ((name === 'b' || name === 'strong') && cell === null && (current() === markName('body') || current() === markName('list') || current() === markName('listIn') || current() === markName('party'))) { buf += '**'; continue; }
     if (name === 'td' || name === 'th') {
       if (!closing) cell = '';
       else if (cell !== null) { cells?.push(cell.replace(/\s+/g, ' ').trim()); cell = null; }

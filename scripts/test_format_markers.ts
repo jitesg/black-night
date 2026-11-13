@@ -10,6 +10,7 @@ import { readFileSync } from 'node:fs';
 register('data:text/javascript,' + encodeURIComponent(
   "export async function resolve(s, c, next) { try { return await next(s, c); } catch (e) { if (s.startsWith('.') && !/\\.[a-z]+$/.test(s)) return next(s + '.ts', c); throw e; } }",
 ));
+(globalThis as Record<string, unknown>).__DEV__ = false;
 const M = await import('../src/lib/formatMarkers.ts');
 const E = await import('../src/lib/formatParsingEngine.ts');
 const P = await import('../src/lib/printLayout.ts');
@@ -293,5 +294,20 @@ test('126/135: the 135(3) letters have 2 empty lines above the signature (owner)
     for (const l of letters135) {
       assert.match(l, /<td class="sig">​<\/td><\/tr><tr><td class="att"><\/td><td class="sig">​<\/td><\/tr><tr><td class="att"><\/td><td class="sig">\( ?जीतेश सिंह\)/, f.id);
     }
+  }
+});
+
+test('[[सूची अंदर]]: list lines moved in (print class, editor padding, round trip) — 130 notice names (owner)', async () => {
+  const marked = '[[पत्र]]\n[[बीच]] नोटिस\n[[विवरण]] पैरा।\n\n[[सूची अंदर]] 1.राम पुत्र श्याम\n2.मोहन पुत्र श्याम\n\n[[विवरण]] अगला पैरा।';
+  const html = P.renderTextForPrint(marked);
+  assert.equal((html.match(/<p class="doc-line doc-line-in">/g) ?? []).length, 2);
+  const ed = E.renderModelsForEditor([M.parseMarkedLetter(M.splitMarkedLetters(marked)[0])]);
+  assert.match(ed, /data-fmt="सूची अंदर"/);
+  assert.match(M.editorHtmlToMarkedText(ed), /\[\[सूची अंदर\]\] 1\.राम पुत्र श्याम/);
+  const { generateReport } = await import('../src/lib/templateEngine.ts');
+  const seed = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  for (const f of seed.formats.filter((x: { id: string }) => x.id.startsWith('sys-fmt-bnss126-'))) {
+    assert.equal((f.vivran.match(/\[\[सूची अंदर\]\] \{\{(firstpartyDetails|secondpartyDetail)#list\}\}/g) ?? []).length, 2, f.id);
+    assert.doesNotMatch(generateReport(f.vivran, {}, f.keys), /\[\[सूची/, f.id);
   }
 });

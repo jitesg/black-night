@@ -116,7 +116,7 @@ export function renderLetterHtml(model: DocumentModel): string {
       out.push(`<div class="doc-body">${blocks.map((b) => {
         if (b.kind === 'center') return `<p class="doc-center">${esc(b.text)}</p>`;
         if (b.kind === 'right') return `<p class="doc-right">${esc(b.text)}</p>`;
-        if (b.kind === 'line') return `<p class="doc-line">${inlineBoldHtml(esc(b.text))}</p>`;
+        if (b.kind === 'line') return `<p class="doc-line${b.indent ? ' doc-line-in' : ''}">${inlineBoldHtml(esc(b.text))}</p>`;
         if (b.kind === 'image') {
           const img = formatImage(b.text);
           return img ? `<p class="doc-image"><img src="${img.uri}" alt="${esc(b.text)}" style="max-height:${IMAGE_HEIGHT_MM}mm" /></p>` : '';
@@ -239,6 +239,7 @@ export const LETTER_SHEET_CSS = `
   /* one blank line between a right-aligned signature line and the paragraph below it (प्रतिलिपि) */
   .letters .doc-body p.doc-right + p:not(.doc-right) { margin-top: 1.5em; }
   .letters .doc-body p.doc-line { text-align: left; text-indent: 0; margin: 0; }
+  .letters .doc-body p.doc-line-in { padding-left: var(--doc-indent); }
   .letters .doc-body p.doc-line + p:not(.doc-line) { margin-top: 0.3em; }
   .letters .doc-split { width: 100%; border-collapse: collapse; margin: 0.4em 0; }
   .letters .doc-body p.doc-image { text-align: center; text-indent: 0; margin: 0.4em 0; }

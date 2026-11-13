@@ -128,7 +128,7 @@ function letterBlocks(model: DocumentModel, first: boolean): (Paragraph | Table)
       if (b.kind === 'center') p(b.text, { align: AlignmentType.CENTER, bold: true });
       // consecutive right lines (a signature block) stay together
       else if (b.kind === 'right') p(b.text, { align: AlignmentType.RIGHT, before: prevKind === 'right' ? 0 : 120 });
-      else if (b.kind === 'line') p(b.text, { align: AlignmentType.LEFT });
+      else if (b.kind === 'line') p(b.text, { align: AlignmentType.LEFT, ...(b.indent ? { indentLeft: INDENT } : {}) });
       else if (b.kind === 'image') {
         const img = formatImage(b.text);
         if (img) {

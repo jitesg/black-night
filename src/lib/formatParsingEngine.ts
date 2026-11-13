@@ -50,7 +50,7 @@ export interface DocumentModel {
   /** Marked formats only: [[हस्ताक्षर]] lines. */
   signatureLines?: string[];
   /** Marked formats only: body in order — paragraphs and centred / right / split lines. */
-  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split' | 'line' | 'table' | 'image'; text: string }[];
+  bodyBlocks?: { kind: 'para' | 'center' | 'right' | 'split' | 'line' | 'table' | 'image'; text: string; indent?: boolean }[];
 }
 
 // ─── Anchor patterns ──────────────────────────────────────────────────────
@@ -417,7 +417,9 @@ function renderMarkedModelForEditor(model: DocumentModel): string {
     const afterRight = prevKind === 'right' && b.kind !== 'right';
     prevKind = b.kind;
     if (b.kind === 'para') parts.push(div('body', `text-align:justify;text-indent:1.5em;${afterRight ? 'margin-top:1.5em;' : ''}`, inlineBoldHtml(esc(b.text))));
-    else if (b.kind === 'line') parts.push(div('list', 'text-align:left;', inlineBoldHtml(esc(b.text))));
+    else if (b.kind === 'line') parts.push(b.indent
+      ? div('listIn', 'text-align:left;padding-left:2.5em;', inlineBoldHtml(esc(b.text)))
+      : div('list', 'text-align:left;', inlineBoldHtml(esc(b.text))));
     else if (b.kind === 'center') parts.push(div('center', 'text-align:center;', `<b>${esc(b.text)}</b>`));
     else if (b.kind === 'right') parts.push(div('right', 'text-align:right;', esc(b.text)));
     else if (b.kind === 'image') {
