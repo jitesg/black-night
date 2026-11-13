@@ -394,7 +394,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `...(selected ? { color: ACCENT } : {})` — NEVER `color: x ? A : undefined` (the undefined wiped the theme colour on the phone: केस डायरी
   कार्यवाही list names dark on dark, owner; all 9 such places changed) (fixed: crime-type + rank pickers in add-fir, karyvahi picker in add-case-diary-karyvahi,
   न्यायालय checklists, sys-format menu, प्रार्थना पत्र report rows + editor); light header strips → `bg-secondary`. view-case-diary
-  actions (संपादित / Edit Entries / A4 / Export) sit in a wrapping row under the header (in the header they ran off-screen).
+  actions (जानकारी / प्रविष्टियाँ / A4 / निर्यात) sit in ONE row under the header (in the header they ran off-screen): 4 equal flex-1 buttons,
+  height 34, radius 10, label numberOfLines 1 + simple (Android measured the Hindi labels too wide), colours per theme (owner).
 - Full-screen editor content pushes (owner: first word typed twice, "नकलचिकनकलचिक लिखा"): the WebView starts with the CURRENT text
   (`openHtml`, computed when the modal opens — not the first-mount `initialHtml`), and every setContentHTML goes through `pushContent`, which
   skips it when the words equal what the WebView already shows (`webHtmlRef`; same text in other tags never re-sent — a reset while the

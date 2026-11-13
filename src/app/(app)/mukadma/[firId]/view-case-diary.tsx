@@ -22,6 +22,8 @@ import { FirBasisCard } from '@/components/caseDiary/FirBasisCard';
 import { CaseDiaryA4Preview } from '@/components/caseDiary/CaseDiaryA4Preview';
 import { parchaHtml } from '@/lib/caseDiaryParcha';
 
+import { useColorScheme } from 'nativewind';
+
 const NAVY = '#6366F1';
 
 function MetaRow({ icon: Icon, value }: { icon: React.ComponentType<{ size: number; color: string }>; value: string }) {
@@ -125,6 +127,10 @@ export default function ViewCaseDiaryScreen() {
   const [exportError, setExportError] = useState('');
   const [diaryNo, setDiaryNo] = useState<number | null>(null);
   const [a4Html, setA4Html] = useState('');
+  const dark = useColorScheme().colorScheme === 'dark';
+  const AC = dark
+    ? { info: '#9CAFA3', entries: '#A5B4FC', a4: '#FBBF24', export: '#4ADE80' }
+    : { info: '#6B7280', entries: NAVY, a4: '#B45309', export: '#059669' };
   // A4 प्रीव्यू = the same पर्चा layout as the Word export (owner's sample)
   const openA4 = async () => {
     if (!diary) return;
@@ -205,47 +211,45 @@ export default function ViewCaseDiaryScreen() {
         subtitle={t('fir.viewCaseDiary.subtitle')}
         showBack
       />
-      {/* Actions under the header (in the header they ran off the screen next to 🤖 / 🔔) */}
-      <View className="flex-row flex-wrap items-center gap-2 px-5 pt-3 pb-1">
-        {/* Edit diary metadata (date/time/places) */}
-        <Pressable
-          onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary' as never, params: { firId, diaryId } })}
-          className="flex-row items-center gap-1 rounded-lg px-3 py-2 active:opacity-70 border border-border bg-card"
-        >
-          <Pencil size={11} color="#6B7280" />
-          <Text className="text-xs font-bold text-muted-foreground">{t('fir.viewCaseDiary.editInfo')}</Text>
-        </Pressable>
-        {/* Edit entries */}
-        <Pressable
-          onPress={() => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary-karyvahi' as never, params: { firId, diaryId } })}
-          className="flex-row items-center gap-1 rounded-lg px-3 py-2 active:opacity-70 border border-border bg-card"
-        >
-          <ListChecks size={11} color={NAVY} />
-          <Text className="text-xs font-bold" style={{ color: NAVY }}>{t('fir.viewCaseDiary.editEntries')}</Text>
-        </Pressable>
-        {/* A4 preview (owner) */}
-        <Pressable
-          onPress={openA4}
-          className="flex-row items-center gap-1 rounded-lg px-3 py-2 active:opacity-70 border border-border bg-card"
-        >
-          <FileText size={11} color="#B45309" />
-          <Text className="text-xs font-bold" style={{ color: '#B45309' }}>A4</Text>
-        </Pressable>
-        {/* Export DOCX */}
-        {entries.length > 0 && (
+      {/* Actions under the header (in the header they ran off the screen next to 🤖 / 🔔). Owner: one row, 4 equal buttons, same
+          height (34), label on one line — Android measured the Hindi labels too wide (empty space, "निर्यात" pushed to a 2nd row). */}
+      <View className="flex-row items-center gap-2 px-5 pt-3 pb-1">
+        {[
+          {
+            key: 'info', label: t('fir.viewCaseDiary.editInfo'), color: AC.info, Icon: Pencil,
+            onPress: () => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary' as never, params: { firId, diaryId } }),
+          },
+          {
+            key: 'entries', label: 'प्रविष्टियाँ', a11y: t('fir.viewCaseDiary.editEntries'), color: AC.entries, Icon: ListChecks,
+            onPress: () => router.push({ pathname: '/(app)/mukadma/[firId]/add-case-diary-karyvahi' as never, params: { firId, diaryId } }),
+          },
+          { key: 'a4', label: 'A4', color: AC.a4, Icon: FileText, onPress: openA4 },
+          ...(entries.length > 0 ? [{
+            key: 'export', label: exporting ? t('fir.viewCaseDiary.exporting') : t('fir.viewCaseDiary.export'), color: AC.export,
+            Icon: Download, onPress: handleExport, busy: exporting,
+          }] : []),
+        ].map((b) => (
           <Pressable
-            onPress={handleExport}
-            disabled={exporting}
-            className="flex-row items-center gap-1 rounded-lg px-3 py-2 active:opacity-70 border border-border bg-card"
+            key={b.key}
+            onPress={b.onPress}
+            disabled={'busy' in b ? !!b.busy : false}
+            accessibilityRole="button"
+            accessibilityLabel={'a11y' in b ? b.a11y : b.label}
+            className="flex-1 flex-row items-center justify-center gap-1.5 active:opacity-70 border border-border bg-card"
+            style={{ height: 34, borderRadius: 10, paddingHorizontal: 6 }}
           >
-            {exporting
-              ? <ActivityIndicator size="small" color={NAVY} />
-              : <Download size={11} color="#059669" />}
-            <Text className="text-xs font-bold" style={{ color: '#059669' }}>
-              {exporting ? t('fir.viewCaseDiary.exporting') : t('fir.viewCaseDiary.export')}
+            {'busy' in b && b.busy
+              ? <ActivityIndicator size="small" color={b.color} />
+              : <b.Icon size={12} color={b.color} />}
+            <Text
+              numberOfLines={1}
+              textBreakStrategy="simple"
+              style={{ flexShrink: 1, fontSize: 12, fontWeight: '700', color: b.color, includeFontPadding: false }}
+            >
+              {b.label}
             </Text>
           </Pressable>
-        )}
+        ))}
       </View>
       <CaseDiaryA4Preview
         visible={!!a4Html}
