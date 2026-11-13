@@ -291,7 +291,7 @@ export function GeneratedReportView({
               ? <ActivityIndicator size={13} color={C.foreground} />
               : <FileText size={13} color={C.foreground} />}
             <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-medium text-foreground">
-              {exporting ? t('editor.exporting') : 'Word (DOC) एक्सपोर्ट'}
+              {exporting ? t('editor.exporting') : '.doc' /* owner: just ".doc" */}
             </Text>
           </Pressable>
         ) : (

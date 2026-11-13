@@ -322,7 +322,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `parseDropdownOptions`: JSON strings / {value,label} / comma list). Every `pad` (पद/रैंक) key is a dropdown
   उपनिरीक्षक / निरीक्षक (default उपनिरीक्षक) — seed (7 formats, seed_version bumped) + idempotent UPDATE in database.ts
   for formats made in the app.
-- Formats → जनरेटेड रिपोर्ट (`formats/preview.tsx`): `GeneratedReportView wordExport` shows "Word (DOC) एक्सपोर्ट" instead of PDF (owner);
+- Formats → जनरेटेड रिपोर्ट (`formats/preview.tsx`): `GeneratedReportView wordExport` shows a ".doc" button (owner; was "Word (DOC) एक्सपोर्ट") instead of PDF;
   unedited marked format → its editor HTML, else the edited content. Other screens keep PDF.
 - हाल के कार्य (owner): every report generated from a predefined format is kept forever in table `report_records` (marked text +
   edited HTML; schema.ts) — saved from formats/fill (module = callingModule GD/NK or format_type), nyayalay / prarthna-patra
