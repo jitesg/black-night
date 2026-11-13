@@ -259,3 +259,22 @@ test('थाना क्षेत्र भ्रमण: हमराह box �
   const noH = generateReport(f.vivran, { ...v, Hamrah: '' }, f.keys);
   assert.equal((noH.match(/मैं उपनिरीक्षक मय हमराह थाना हाजा से रवाना/g) ?? []).length, 2);
 });
+
+test('126/135: गवाहान line by the doGawah tick (default on); off → an empty line keeps the place', async () => {
+  const { generateReport } = await import('../src/lib/templateEngine.ts');
+  const seed = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const person = (name: string) => ({ name, relationType: 'पुत्र', fatherOrHusbandName: 'श्याम', age: '35', fullAddress: 'ग्राम अ' });
+  for (const f of seed.formats.filter((x: { id: string }) => x.id.startsWith('sys-fmt-bnss126-'))) {
+    const key = f.keys.find((k: { key_name: string }) => k.key_name === 'doGawah');
+    assert.equal(key?.default_value, 'हाँ', f.id);
+    const v: Record<string, string> = {};
+    for (const k of f.keys) v[k.key_name] = 'X';
+    Object.assign(v, { FirstParty: 'प्रथम पक्ष', secondparty: 'द्वितीय पक्ष', firstpartyDetails: JSON.stringify([person('राम')]), secondpartyDetail: JSON.stringify([person('सोहन')]) });
+    const on = P.renderTextForPrint(generateReport(f.vivran, { ...v, doGawah: 'हाँ' }, f.keys, { keepMarkers: true }));
+    assert.match(on, /<div class="doc-witness">गवाहान – प्रथम पक्ष के विरूद्ध द्वितीय पक्ष के व्यक्ति गवाही देंगे ।<\/div>/, f.id);
+    assert.match(on, /<div class="doc-witness">गवाहान – द्वितीय पक्ष के विरूद्ध प्रथम पक्ष के व्यक्ति गवाही देंगे ।<\/div>/, f.id);
+    const off = P.renderTextForPrint(generateReport(f.vivran, { ...v, doGawah: '' }, f.keys, { keepMarkers: true }));
+    assert.doesNotMatch(off, /गवाही देंगे/, f.id);
+    assert.equal((off.match(/<div class="doc-witness">​<\/div>/g) ?? []).length, 2, f.id);
+  }
+});
