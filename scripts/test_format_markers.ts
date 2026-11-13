@@ -232,3 +232,16 @@ test('126/135 formats: "अतः श्रीमान जी…" and the 135(3
     assert.doesNotMatch(html, /[।|] (अतः )?(श्रीमान जी|महोदय) से निवेदन/, f.id);
   }
 });
+
+test('थाना क्षेत्र भ्रमण: the द्वितीय पक्ष letter asks to bind द्वितीय पक्ष (was "उभय पक्ष")', async () => {
+  const { generateReport } = await import('../src/lib/templateEngine.ts');
+  const seed = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = seed.formats.find((x: { id: string }) => x.id === 'sys-fmt-bnss126-thanabhraman');
+  const person = (name: string) => ({ name, relationType: 'पुत्र', fatherOrHusbandName: 'श्याम', age: '35', fullAddress: 'ग्राम अ' });
+  const v: Record<string, string> = {};
+  for (const k of f.keys) v[k.key_name] = 'X';
+  Object.assign(v, { FirstParty: 'प्रथम पक्ष', secondparty: 'द्वितीय पक्ष', firstpartyDetails: JSON.stringify([person('राम')]), secondpartyDetail: JSON.stringify([person('सोहन')]) });
+  const out = generateReport(f.vivran, v, f.keys);
+  assert.match(out, /कायम रखने हेतु द्वितीय पक्ष उपरोक्त को अधिक से अधिक/);
+  assert.doesNotMatch(out, /कायम रखने हेतु उभय पक्ष उपरोक्त/);
+});
