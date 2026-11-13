@@ -247,8 +247,9 @@ test('अभियुक्त दाखिला: every mode × case type fills
   const f = d.formats.find((x: { id: string }) => x.id === 'sys-gd-fmt-abhiyukt-dakhila');
   const def: Record<string, string> = {};
   for (const k of f.keys) def[k.key_name] = k.default_value && !/^(__|@)/.test(k.default_value) ? k.default_value : 'क';
-  const modes = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'Mode').dropdown_options);
-  const types = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'CaseType').dropdown_options);
+  const opts = (raw: string) => { const v = JSON.parse(raw); return Array.isArray(v) ? v : v.options; }; // hints moved lists under "options"
+  const modes = opts(f.keys.find((k: { key_name: string }) => k.key_name === 'Mode').dropdown_options);
+  const types = opts(f.keys.find((k: { key_name: string }) => k.key_name === 'CaseType').dropdown_options);
   for (const Mode of modes) for (const CaseType of types) {
     const t = generateReport(f.vivran, { ...def, Mode, CaseType, doHulia: 'हाँ', Accused: JSON.stringify([P('रवि', 'रामपाल', '24')]),
       Hulia: JSON.stringify([{ who: 'रवि', kad: 'औसत', rang: 'गेंहुआ', jism: 'इकहरा', age: '24' }]) }, f.keys);
@@ -287,7 +288,8 @@ test('मेडिकल पत्र: every type (and एक्स-रे ticks
   const P2 = (await import('../src/lib/printLayout.ts'));
   const d = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
   const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-medical-patra');
-  const types = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'Type').dropdown_options);
+  const tv = JSON.parse(f.keys.find((k: { key_name: string }) => k.key_name === 'Type').dropdown_options);
+  const types = Array.isArray(tv) ? tv : tv.options; // hints moved lists under "options"
   const one = JSON.stringify([{ name: 'मनीष पुत्र हरीशंकर', addr: 'लखनऊ', mlc: '1' }]);
   const two = JSON.stringify([{ name: 'रोहित', addr: 'क' }, { name: 'रामकुमार', addr: 'ख' }]);
   for (const Type of types) for (const Persons of [one, two]) for (const doDelay of ['', 'हाँ']) {

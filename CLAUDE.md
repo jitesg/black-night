@@ -253,6 +253,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   sample): up to 2 doctors (d2On) — Hosp, Name, Post, Who chips, Search tick (तलाश… मौजूद मिले), Shown (what was shown), item_group dNPat
   (role, name, bharti tick → "…से … तक भर्ती कर दवा-इलाज" else "…का मेडिकल परीक्षण", from, to, inj), Extra, Close + "यही मेरा बयान है।";
   2nd doctor opens "तत्पश्चात मैं …".
+- `sys-fmt-cd-panchayatnama-pm-avlokan` "पंचायतनामा / पोस्टमार्टम — अवलोकन व सभी बयान (पंच, उ0नि0, आरक्षी, चिकित्सक)" (Case Diary, plain text,
+  owner's samples; generator `scripts/build_panchayatnama_pm.py`, tests `scripts/test_panchayatnama_pm.ts`): 6 ticks doPan / doPm / doBayanSI /
+  doBayanCo / doBayanPanch / doBayanDoc (each prints its part; only-PM wording "की मूल … प्राप्त हुई है जिसका"); Panch = item_group (mahila, own
+  text; `copy` Story1/Story2/BodyPlace/DName); docMahila, doViscera, optional DocInjury. `tidyRepeats` drops blank lines at the very top.
+  Plan (owner, चरण 2–6 next): checklist n/6 on the karyvahi card, auto-tick on save, pending until 6/6, prefill remaining, 7-day bell.
 - `sys-fmt-cd-abhiyukt-bayan-35-3` "अभियुक्त का बयान — 07 वर्ष या उससे कम सजा (धारा 35(3) BNSS नोटिस तामील सहित)" (Case Diary, plain text, owner's
   sample): item_group Accused (name, rel, father, addr, mobile, age, mahila, own) — one / woman / many wording like the 60(1) फर्द; Bailable
   tick; per-row "बयान अभियुक्त(ा) — …" para, own text or default "जुर्म से इंकार… सफाई जरिये अधिवक्ता… बता रहे / रही हैं" (nested {?own|…{?mahila|…}…}).

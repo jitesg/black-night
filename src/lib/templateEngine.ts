@@ -1115,6 +1115,7 @@ export function generateReport(
  */
 export function tidyRepeats(s: string): string {
   return s
+    .replace(/^(?:[ \t]*\n)+/, '') // a format whose first part is switched off (पंचायतनामा / PM: 6 ticks) — no blank lines on top
     .replace(/(^|[\s(])ग्राम[ \t]+ग्राम(?=[ \t])/g, '$1ग्राम')
     .replace(/(^|[\s(])मध्य[ \t]+मध्य(?=[ \t])/g, '$1मध्य')
     .replace(/(^|[\s(])का[ \t]+का(?=[ \t])/g, '$1का') // 170 क्षेत्र भ्रमण: "{{Accused}} का" + old "का अपने पड़ोसी से…"

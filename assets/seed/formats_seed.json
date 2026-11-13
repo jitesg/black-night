@@ -9842,6 +9842,480 @@
       ]
     },
     {
+      "id": "sys-fmt-cd-panchayatnama-pm-avlokan",
+      "title": "पंचायतनामा / पोस्टमार्टम — अवलोकन व सभी बयान (पंच, उ0नि0, आरक्षी, चिकित्सक)",
+      "format_type": "Case Diary",
+      "vivran": "{{if:doPan|थाना कार्यालय से {{Gender}} {{DName}} {{if:doPan|का}}{{ifnot:doPan|की}} मूल {{if:doPan|पंचायतनामा}}{{if:doPan|{{if:doPm| व }}}}{{if:doPm|पोस्टमार्टम रिपोर्ट}} प्राप्त {{if:doPan|{{if:doPm|हुए है जिनका}}{{ifnot:doPm|हुआ है जिसका}}}}{{ifnot:doPan|हुई है जिसका}} अवलोकन किया जा रहा है ।}}{{ifnot:doPan|{{if:doPm|थाना कार्यालय से {{Gender}} {{DName}} {{if:doPan|का}}{{ifnot:doPan|की}} मूल {{if:doPan|पंचायतनामा}}{{if:doPan|{{if:doPm| व }}}}{{if:doPm|पोस्टमार्टम रिपोर्ट}} प्राप्त {{if:doPan|{{if:doPm|हुए है जिनका}}{{ifnot:doPm|हुआ है जिसका}}}}{{ifnot:doPan|हुई है जिसका}} अवलोकन किया जा रहा है ।}}}}{{if:doPan|\n\nअवलोकन पंचायतनामा.......{{Gender}} {{DName}} {{DRel}} {{DFather}} निवासी {{DAddr}}{{if:DAge| उम्र {{DAge}} वर्ष}} के शव पंचायतनामा दिनांक {{PanDate}} को {{PanInfo}} {{SIRank}} {{SIName}} द्वारा {{PanPlace}} मे समक्ष पंच गवाहान {{each:Panch|{#}. {name} {rel} {father} निवासी {addr}{ उम्र ~age~ वर्ष}{ मो0न0 ~mobile~}| }} भरकर तैयार किया गया है जिसमे पंचो की राय में {{Gender}} {{DName}} उपरोक्त की मृत्यु {{PanchOpinion}} हुई है फिर भी मृत्यु का सही कारण जानने के लिए शव का पोस्टमार्टम कराया जाना नितान्त आवश्यक है ।{{if:doIOAgree| राय उपनिरीक्षक मे {{SIRank}} की राय भी पंचो की राय से मेल खाती है फिर भी}}{{ifnot:doIOAgree| अतः}} मृत्यु का सही कारण जानने के लिये शव को सील सर्व मोहर कर {{CoRank}} {{CoName}} {{Thana}} की सुपुर्दगी मे देकर पोस्टमार्टम हेतु {{PmHouseSent}} भेजा जाना अंकित है । पंचायतनामा पर पंचान के हस्ताक्षर व नि0 अं0 बने है।{{if:doCD| बाद अवलोकन मूल पंचायतनामा संलग्न सीडी है।}}}}{{if:doPm|\n\nअवलोकन पोस्टमार्टम रिपोर्ट.......... {{Gender}} {{DName}} {{DRel}} {{DFather}} निवासी {{DAddr}}{{if:DAge| उम्र {{DAge}} वर्ष}} के शव को दिनांक {{PmDate}} को समय {{BodyTime}} पर शव प्राप्त कर पोस्टमार्टम समय {{PmFrom}} से {{PmTo}} पर पीएम न0 {{PmNo}} डा0 {{DocName}} {{DocPost}} {{DocHosp}} द्वारा {{PmPlace}} में किया गया। पोस्टमार्टम रिपोर्ट में इंजरी {{PmInjury}} अंकित है। मृत्यु का तात्कालिक कारण {{PmCause}} अंकित किया गया है। रिपोर्ट पर चिकित्सक के हस्ताक्षर व मुहर बनी है।{{if:doCD| बाद अवलोकन पोस्टमार्टम रिपोर्ट मूल संलग्न सीडी है।}}}}{{if:doBayanSI|\n\nबयान पंचनामा भरने वाले {{if:SIRank=उ0नि0|उपनिरीक्षक}}{{if:SIRank=नि0|निरीक्षक}}......{{SIRank}} श्री {{SIName}} {{Thana}}{{if:SIMobile| मो0न0 {{SIMobile}}}} पूछने पर बता रहे है कि दिनांक {{InfoDate}} को{{if:InfoTime| {{InfoTime}} के समय}} {{BodyPlace}} से {{DeathHow}} {{if:Gender=मृतका|एक महिला}}{{if:Gender=मृतक|एक व्यक्ति}} जिसका नाम {{DName}} {{DRel}} {{DFather}} नि0 {{DAddr}}{{if:DAge| उम्र {{DAge}} वर्ष}} था की मृत्यु हो जाने की सूचना प्राप्त हुई थी प्राप्त सूचना पर मै {{if:SIRank=उ0नि0|उपनिरीक्षक}}{{if:SIRank=नि0|निरीक्षक}} मय हमराह {{CoRank}} {{CoName}} के थाना हाजा से मय दीगर कागजात के {{BodyPlace}} पहुंचा था । मेरे द्वारा दिनांक {{PanDate}} को{{if:PanWhen| {{PanWhen}}}} {{BodyPlace}} मे मौजूद {{Gender}} के परिजनो मे से पंच गवाह नियुक्त कर {{Gender}} के शव का पंचायतनामा भरकर शव को पोस्टमार्टम हेतु {{CoRank}} {{CoName}} की सुपुर्दगी मे देकर पोस्टमार्टम हाउस भेजा गया था । अपने द्वारा भरे पंचायतनामा का मै समर्थन करता हूँ । पंचनामा पर मेरे व पंच गवाहान के हस्ताक्षर मौजूद है । यही मेरा बयान है ।}}{{if:doBayanCo|\n\nबयान पोस्टमार्टम कराने वाला {{if:CoRank=का0|आरक्षी}}{{if:CoRank=हे0का0|मुख्य आरक्षी}}{{if:CoRank=म0का0|महिला आरक्षी}}.......{{CoRank}} {{CoName}} {{Thana}}{{if:CoMobile| मो0न0 {{CoMobile}}}} पूछने पर बता {{if:CoRank=म0का0|रही}}{{ifnot:CoRank=म0का0|रहे}} है कि दिनांक {{InfoDate}} को{{if:InfoTime| {{InfoTime}} के समय}} {{BodyPlace}} से {{Gender}} {{DName}} {{DRel}} {{DFather}} नि0 {{DAddr}}{{if:DAge| उम्र {{DAge}} वर्ष}} की मृत्यु की सूचना पर मै {{if:CoRank=का0|आरक्षी}}{{if:CoRank=हे0का0|मुख्य आरक्षी}}{{if:CoRank=म0का0|महिला आरक्षी}} {{SIRank}} श्री {{SIName}} के साथ {{BodyPlace}} मे {{if:CoRank=म0का0|पहुंची थी}}{{ifnot:CoRank=म0का0|पहुंचा था}} जहाँ पर {{Gender}} के परिजन व {{Gender}} का शव मौजूद था । {{SIRank}} श्री {{SIName}} ने {{Gender}} के शव का पंचनामा भरकर शव को सील सर्व मोहर कर व कागजात तैयार कर पोस्टमार्टम हेतु शव को मुझे सुपुर्द कर पोस्टमार्टम हाउस भेजा था । मेरे द्वारा {{PmPlace}} मे जाकर शव का पोस्टमार्टम कराया गया था । बाद पोस्टमार्टम शव को उनके परिजनो को सुपुर्द किया गया था । यही मेरा बयान है ।}}{{if:doBayanPanch|\n\n{{each:Panch|बयान गवाह/पंच गवाह..........{name} {rel} {father} नि0 {addr}{ मो0न0 ~mobile~} पूछने पर बता {?mahila|रही|रहे} है कि {?own|{own}|{Story1} सूचना मिलने पर मै भी {BodyPlace} मे {?mahila|आयी थी|आया था} । दरोगा जी द्वारा {DName} के शव का पंचनामा भरा था पंचनामा पर मैने भी अपने हस्ताक्षर बनाये थे । {Story2}} यही मेरा बयान है ।|\n\n}}}}{{if:doBayanDoc|\n\nबयान चिकित्सक ( मृतक का PM करने वाले ):- डा0 {{DocName}} {{DocPost}}, {{DocHosp}}{{if:DocMobile| मो0नं0 {{DocMobile}}}} पीएम रिपोर्ट की छायाप्रति का अवलोकन करते हुए बदरियाफ्त बता {{if:docMahila|रही}}{{ifnot:docMahila|रहे}} है कि मैं {{DocHosp}} में {{DocPost}} के पद पर नियुक्त हूँ। दिनांक {{PmDate}} को मेरी ड्यूटी {{DutyFrom}} से PM हाउस में शव का पोस्टमार्टम करने हेतु लगी थी। {{Gender}} {{DName}} {{DRel}} {{DFather}} निवासी {{DAddr}} के शव को मय पंचायतनामा के कागजात के दिनांक {{PmDate}} को समय {{BodyTime}} पर शव को प्राप्त करते हुए शव का PM क्रमांक {{PmNo}} पर दिनांक {{PmDate}} को समय {{PmFrom}} से प्रारंभ कर {{PmTo}} तक किया गया था। {{Gender}} {{DName}} ( ANTi MORTEM INJURIES ) {{if:DocInjury|{{DocInjury}}}}{{ifnot:DocInjury|{{PmInjury}}}} जो PM रिपोर्ट में अंकित है। {{Gender}} {{DName}} की मृत्यु का कारण: {{PmCause}} मेरे द्वारा अंकित किया गया था।{{if:doViscera| मेरे द्वारा {{Gender}} का विसरा परीक्षण हेतु संरक्षित किया था।}} PM रिपोर्ट मेरे द्वारा तैयार की गयी थी। पीएम रिपोर्ट पर मेरे हस्ताक्षर हैं। {{Gender}} {{DName}} की PM रिपोर्ट का मैं समर्थन {{if:docMahila|करती}}{{ifnot:docMahila|करता}} हूँ।}}",
+      "keys": [
+        {
+          "key_name": "Gender",
+          "label": "मृतक या मृतका",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "मृतक",
+          "dropdown_options": "{\"options\": [\"मृतक\", \"मृतका\"], \"hint\": \"पुरुष हो तो \\\"मृतक\\\", महिला हो तो \\\"मृतका\\\" — पूरे लेख में यही शब्द आता है\"}",
+          "sort_order": 1
+        },
+        {
+          "key_name": "DName",
+          "label": "मृतक / मृतका का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: नेवल किशोर\", \"hint\": \"सिर्फ़ नाम, जैसे: नेवल किशोर\"}",
+          "sort_order": 2
+        },
+        {
+          "key_name": "DRel",
+          "label": "सम्बन्ध",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "पुत्र",
+          "dropdown_options": "{\"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"hint\": \"पिता के नाम से तो पुत्र / पुत्री, पति के नाम से तो पत्नी\"}",
+          "sort_order": 3
+        },
+        {
+          "key_name": "DFather",
+          "label": "पिता / पति का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: राम आधार\", \"hint\": \"पिता / पति का नाम, जैसे: राम आधार\"}",
+          "sort_order": 4
+        },
+        {
+          "key_name": "DAddr",
+          "label": "पता (\"निवासी\" के बाद का)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: नेवाजखेड़ा थाना हरचन्द्रपुर जनपद रायबरेली\", \"hint\": \"\\\"निवासी\\\" के बाद वाला पूरा पता, जैसे: नेवाजखेड़ा थाना हरचन्द्रपुर जनपद रायबरेली\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "DAge",
+          "label": "उम्र (वर्ष, वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 25\", \"hint\": \"उम्र सिर्फ़ अंक में, जैसे: 25 — न पता हो तो खाली\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "SIRank",
+          "label": "पंचायतनामा भरने वाले अधिकारी — पद",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उ0नि0",
+          "dropdown_options": "{\"options\": [{\"value\": \"उ0नि0\", \"label\": \"उपनिरीक्षक\"}, {\"value\": \"नि0\", \"label\": \"निरीक्षक\"}], \"hint\": \"पंचायतनामा भरने वाले अधिकारी का पद\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "SIName",
+          "label": "पंचायतनामा भरने वाले अधिकारी — नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: अमर कुमार\", \"hint\": \"सिर्फ़ नाम, जैसे: अमर कुमार (\\\"श्री\\\" बयान में अपने आप लगता है)\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "CoRank",
+          "label": "शव ले जाने (पोस्टमार्टम कराने) वाला कर्मचारी — पद",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "का0",
+          "dropdown_options": "{\"options\": [{\"value\": \"का0\", \"label\": \"आरक्षी\"}, {\"value\": \"हे0का0\", \"label\": \"मुख्य आरक्षी\"}, {\"value\": \"म0का0\", \"label\": \"महिला आरक्षी\"}], \"hint\": \"शव लेकर पोस्टमार्टम कराने वाले कर्मचारी का पद\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "CoName",
+          "label": "उस कर्मचारी का नम्बर व नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 8330 सोनू सिंह\", \"hint\": \"नम्बर व नाम, जैसे: 8330 सोनू सिंह\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "Thana",
+          "label": "दोनों का थाना (व जनपद)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: थाना पीजीआई जनपद लखनऊ\", \"hint\": \"\\\"थाना\\\" सहित, जैसे: थाना पीजीआई जनपद लखनऊ / थाना बछरावां\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "doPan",
+          "label": "मूल पंचायतनामा का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"hint\": \"पंचायतनामा का अवलोकन लिखना है तो टिक रहने दें — उसके बॉक्स खुले रहेंगे\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "PanDate",
+          "label": "पंचायतनामा — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"पंचायतनामा भरे जाने की तारीख बिंदु लगाकर\", \"placeholder\": \"जैसे: 19.07.2025\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "PanInfo",
+          "label": "किस सूचना के आधार पर",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "थाना बछरावां से मिली सूचना के आधार पर",
+          "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"किसकी सूचना पर पंचायतनामा भरा गया, \\\"आधार पर\\\" तक, जैसे: थाना बछरावां से मिली सूचना के आधार पर\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "PanPlace",
+          "label": "पंचायतनामा कहाँ भरा गया",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"जगह का नाम, जैसे: बन्नावा — पत्र में \\\"… मे\\\" अपने आप लगता है\", \"placeholder\": \"जैसे: बन्नावा\"}",
+          "sort_order": 15
+        },
+        {
+          "key_name": "Panch",
+          "label": "पंच गवाहान (हर पंच की एक पंक्ति)",
+          "field_type": "item_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"columns\": [{\"key\": \"name\", \"label\": \"नाम (जैसे: लवकुश)\"}, {\"key\": \"rel\", \"label\": \"सम्बन्ध\", \"type\": \"choice\", \"options\": [\"पुत्र\", \"पुत्री\", \"पत्नी\"], \"default\": \"पुत्र\"}, {\"key\": \"father\", \"label\": \"पिता / पति का नाम\"}, {\"key\": \"addr\", \"label\": \"पता — \\\"निवासी\\\" के बाद का\"}, {\"key\": \"age\", \"label\": \"उम्र (वैकल्पिक, जैसे: 38 या करीब 33)\"}, {\"key\": \"mobile\", \"label\": \"मोबाइल (वैकल्पिक)\"}, {\"key\": \"mahila\", \"label\": \"महिला है\", \"type\": \"check\"}, {\"key\": \"own\", \"label\": \"अलग बयान (वैकल्पिक) — इस पंच की बात अलग हो (जैसे \\\"मेरा भाई…\\\") तो \\\"पूछने पर बता रहे है कि\\\" के बाद का पूरा बयान\", \"type\": \"multiline\"}], \"copy\": [\"Story1\", \"Story2\", \"BodyPlace\", \"DName\"], \"addLabel\": \"+ और पंच जोड़ें\", \"itemLabel\": \"पंच\", \"hint\": \"हर पंच का अलग कार्ड: नाम, सम्बन्ध, पिता/पति, पता, उम्र, मोबाइल — पंचायतनामा अवलोकन में क्रम 1. 2. 3. अपने आप; पंच गवाहों के बयान भी इन्हीं कार्ड से बनते हैं। किसी पंच की बात अलग हो (मृतक का भाई आदि) तो उसके कार्ड में \\\"अलग बयान\\\" भरें। \\\"+\\\" से अगला पंच\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "PanchOpinion",
+          "label": "पंचों की राय — मृत्यु किस कारण से",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "सड़क दुर्घटना मे आयी चोटो के कारण",
+          "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"\\\"मृत्यु … हुई है\\\" के बीच का हिस्सा, जैसे: सड़क दुर्घटना मे आयी चोटो के कारण / फाँसी लगाने से\"}",
+          "sort_order": 17
+        },
+        {
+          "key_name": "doIOAgree",
+          "label": "उ0नि0 की राय भी पंचों की राय से मेल खाती है",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"पंचायतनामा भरने वाले अधिकारी की राय भी यही है तो टिक रहने दें\"}",
+          "sort_order": 18
+        },
+        {
+          "key_name": "PmHouseSent",
+          "label": "शव कहाँ भेजा गया",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "पीएम हाउस रायबरेली",
+          "dropdown_options": "{\"showIf\": \"doPan\", \"hint\": \"जहाँ पोस्टमार्टम हेतु भेजा, जैसे: पीएम हाउस रायबरेली\"}",
+          "sort_order": 19
+        },
+        {
+          "key_name": "doPm",
+          "label": "पोस्टमार्टम रिपोर्ट का अवलोकन",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"hint\": \"पोस्टमार्टम रिपोर्ट का अवलोकन लिखना है तो टिक रहने दें\"}",
+          "sort_order": 20
+        },
+        {
+          "key_name": "PmDate",
+          "label": "पोस्टमार्टम — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"पोस्टमार्टम की तारीख बिंदु लगाकर\", \"placeholder\": \"जैसे: 20.07.2025\"}",
+          "sort_order": 21
+        },
+        {
+          "key_name": "BodyTime",
+          "label": "शव प्राप्त होने का समय",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"रिपोर्ट पर लिखा शव प्राप्ति का समय, जैसे: 01.45 PM\", \"placeholder\": \"जैसे: 01.45 PM\"}",
+          "sort_order": 22
+        },
+        {
+          "key_name": "PmFrom",
+          "label": "पोस्टमार्टम — कब से",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"पोस्टमार्टम शुरू होने का समय, जैसे: 01.50 PM\", \"placeholder\": \"जैसे: 01.50 PM\"}",
+          "sort_order": 23
+        },
+        {
+          "key_name": "PmTo",
+          "label": "पोस्टमार्टम — कब तक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"पोस्टमार्टम खत्म होने का समय, जैसे: 02.30 PM\", \"placeholder\": \"जैसे: 02.30 PM\"}",
+          "sort_order": 24
+        },
+        {
+          "key_name": "PmNo",
+          "label": "पीएम नं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"पोस्टमार्टम नम्बर / वर्ष, जैसे: 122/2025\", \"placeholder\": \"जैसे: 122/2025\"}",
+          "sort_order": 25
+        },
+        {
+          "key_name": "DocName",
+          "label": "पोस्टमार्टम करने वाले डॉक्टर — नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: सचिन राज निगम\", \"hint\": \"सिर्फ़ नाम — \\\"डा0\\\" अपने आप लगता है; PM अवलोकन और डॉक्टर के बयान दोनों में आता है\"}",
+          "sort_order": 26
+        },
+        {
+          "key_name": "DocPost",
+          "label": "डॉक्टर का पद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "चिकित्साधिकारी",
+          "dropdown_options": "{\"hint\": \"जैसे: चिकित्साधिकारी\"}",
+          "sort_order": 27
+        },
+        {
+          "key_name": "DocHosp",
+          "label": "डॉक्टर कहाँ नियुक्त",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: CHC हरचन्दपुर जनपद रायबरेली\", \"hint\": \"अस्पताल व जनपद, जैसे: CHC हरचन्दपुर जनपद रायबरेली\"}",
+          "sort_order": 28
+        },
+        {
+          "key_name": "PmInjury",
+          "label": "चोटें (रिपोर्ट में जैसा लिखा है)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"ANTEMORTEM INJURY रिपोर्ट में जैसे लिखी हैं वैसे ही (अंग्रेज़ी में), क्रम सहित — \\\"अंकित है।\\\" अपने आप लगता है\", \"placeholder\": \"जैसे: ANTEMORTEM INJURY ;- 1. CRUSHED INJURY OF HEAD … 2:- LACERATED WOUND …\"}",
+          "sort_order": 29
+        },
+        {
+          "key_name": "PmCause",
+          "label": "मृत्यु का तात्कालिक कारण",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"रिपोर्ट में जैसा लिखा है, जैसे: HAEMORRHAGIC shock, बजह antemortem INJURY as noted — \\\"अंकित किया गया है।\\\" अपने आप\", \"placeholder\": \"जैसे: HAEMORRHAGIC shock, बजह antemortem INJURY as noted\"}",
+          "sort_order": 30
+        },
+        {
+          "key_name": "PmPlace",
+          "label": "पोस्टमार्टम कहाँ हुआ",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "जिला पीएम हाउस रायबरेली",
+          "dropdown_options": "{\"hint\": \"जहाँ पोस्टमार्टम हुआ, जैसे: जिला पीएम हाउस रायबरेली / जिला पीएम हाउस K.G.M.U. Mortuary Lucknow — PM अवलोकन और आरक्षी के बयान दोनों में आता है\"}",
+          "sort_order": 31
+        },
+        {
+          "key_name": "doCD",
+          "label": "\"बाद अवलोकन … मूल संलग्न सीडी है।\" लिखें",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"hint\": \"हर अवलोकन के आखिर में \\\"बाद अवलोकन … संलग्न सीडी है।\\\" लिखना है तो टिक रहने दें\"}",
+          "sort_order": 32
+        },
+        {
+          "key_name": "doBayanSI",
+          "label": "बयान — पंचनामा भरने वाले उपनिरीक्षक",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"hint\": \"पंचायतनामा भरने वाले अधिकारी का बयान लिखना है तो टिक रहने दें\"}",
+          "sort_order": 33
+        },
+        {
+          "key_name": "doBayanCo",
+          "label": "बयान — पोस्टमार्टम कराने वाला आरक्षी",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"hint\": \"शव ले जाकर पोस्टमार्टम कराने वाले कर्मचारी का बयान लिखना है तो टिक रहने दें\"}",
+          "sort_order": 34
+        },
+        {
+          "key_name": "doBayanPanch",
+          "label": "बयान — पंच गवाहान (हर पंच का अलग पैराग्राफ)",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"hint\": \"पंचों के बयान लिखने हैं तो टिक रहने दें — ऊपर के पंच कार्ड से हर पंच का बयान बनेगा\"}",
+          "sort_order": 35
+        },
+        {
+          "key_name": "doBayanDoc",
+          "label": "बयान — पोस्टमार्टम करने वाले चिकित्सक",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": "हाँ",
+          "dropdown_options": "{\"hint\": \"पोस्टमार्टम करने वाले डॉक्टर का बयान लिखना है तो टिक रहने दें\"}",
+          "sort_order": 36
+        },
+        {
+          "key_name": "SIMobile",
+          "label": "उ0नि0 का मोबाइल (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"10 अंकों का नम्बर — न हो तो खाली\", \"placeholder\": \"जैसे: 9140646060\", \"showIf\": \"doBayanSI\"}",
+          "sort_order": 37
+        },
+        {
+          "key_name": "CoMobile",
+          "label": "आरक्षी का मोबाइल (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"10 अंकों का नम्बर — न हो तो खाली\", \"placeholder\": \"जैसे: 9760346820\", \"showIf\": \"doBayanCo\"}",
+          "sort_order": 38
+        },
+        {
+          "key_name": "InfoDate",
+          "label": "मृत्यु की सूचना — दिनांक",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"जिस दिन मृत्यु की सूचना मिली, बिंदु लगाकर — बयान में आता है\", \"placeholder\": \"जैसे: 09.05.2025\"}",
+          "sort_order": 39
+        },
+        {
+          "key_name": "InfoTime",
+          "label": "सूचना का समय (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"पहर सहित समय, जैसे: सुबह 9.10 — \\\"के समय\\\" अपने आप लगता है\", \"placeholder\": \"जैसे: सुबह 9.10\"}",
+          "sort_order": 40
+        },
+        {
+          "key_name": "BodyPlace",
+          "label": "सूचना कहाँ से मिली / शव कहाँ था",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"अस्पताल / जगह का नाम, जैसे: एपेक्स ट्रामा सेंटर लखनऊ — बयानों में \\\"… से सूचना\\\", \\\"… पहुंचा\\\" दोनों जगह आता है\", \"placeholder\": \"जैसे: एपेक्स ट्रामा सेंटर लखनऊ\"}",
+          "sort_order": 41
+        },
+        {
+          "key_name": "DeathHow",
+          "label": "मृत्यु किस घटना में",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "सड़क दुर्घटना मे",
+          "dropdown_options": "{\"hint\": \"\\\"… एक व्यक्ति की मृत्यु\\\" से पहले का हिस्सा, जैसे: सड़क दुर्घटना मे / फाँसी लगाने से\"}",
+          "sort_order": 42
+        },
+        {
+          "key_name": "PanWhen",
+          "label": "पंचायतनामा किस पहर भरा (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"hint\": \"जैसे: सवेरे / दोपहर — न लिखना हो तो खाली\", \"placeholder\": \"जैसे: सवेरे\", \"showIf\": \"doBayanSI\"}",
+          "sort_order": 43
+        },
+        {
+          "key_name": "DocMobile",
+          "label": "डॉक्टर का मोबाइल (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 7985622041\", \"showIf\": \"doBayanDoc\", \"hint\": \"10 अंकों का नम्बर — न हो तो खाली\"}",
+          "sort_order": 44
+        },
+        {
+          "key_name": "docMahila",
+          "label": "डॉक्टर महिला हैं",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doBayanDoc\", \"hint\": \"महिला डॉक्टर हों तो टिक — \\\"बता रही है\\\", \\\"करती हूँ\\\" अपने आप\"}",
+          "sort_order": 45
+        },
+        {
+          "key_name": "DutyFrom",
+          "label": "डॉक्टर की ड्यूटी किसके आदेश / कहाँ से लगी",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "जिला अस्पताल",
+          "dropdown_options": "{\"showIf\": \"doBayanDoc\", \"hint\": \"\\\"… से PM हाउस में शव का पोस्टमार्टम करने हेतु\\\" से पहले का हिस्सा, जैसे: जिला अस्पताल\"}",
+          "sort_order": 46
+        },
+        {
+          "key_name": "DocInjury",
+          "label": "डॉक्टर के बयान में चोटें — अलग लिखनी हों तो (वैकल्पिक)",
+          "field_type": "multiline",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doBayanDoc\", \"placeholder\": \"जैसे: के सिर के बाएं पार्श्विका क्षेत्र पर बाएं कान से 7 सेमी ऊपर 10 सेमी x 4 सेमी आकार का कटा हुआ घाव थी।\", \"hint\": \"\\\"( ANTi MORTEM INJURIES )\\\" के बाद का हिस्सा, जैसे: के सिर के बाएं … कटा हुआ घाव थी। — खाली छोड़ें तो ऊपर वाली PM रिपोर्ट की चोटें आएँगी\"}",
+          "sort_order": 47
+        },
+        {
+          "key_name": "doViscera",
+          "label": "विसरा परीक्षण हेतु संरक्षित किया",
+          "field_type": "checkbox",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doBayanDoc\", \"hint\": \"डॉक्टर ने विसरा सुरक्षित किया हो तो टिक — बयान में यह वाक्य जुड़ेगा\"}",
+          "sort_order": 48
+        },
+        {
+          "key_name": "Story1",
+          "label": "पंच गवाहों का बयान — घटना का विवरण (सबके लिए एक)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"showIf\": \"doBayanPanch\", \"placeholder\": \"जैसे: दिनाँक 30/04/2025 को शाम 7.00 नितिन … आ रहे थे कि … एक्सीडेंट हो गया … रेफर किया गया था। दिनाँक 08/05/2025 को नितिन उपरोक्त कि दौराने ईलाज मृत्यु हो गयी थी …\", \"hint\": \"\\\"पूछने पर बता रहे है कि\\\" के बाद का हिस्सा — घटना कैसे हुई, इलाज कहाँ हुआ, मृत्यु कब हुई। एक बार लिखें, हर पंच के बयान में यही आता है\"}",
+          "sort_order": 49
+        },
+        {
+          "key_name": "Story2",
+          "label": "पंच गवाहों का बयान — आखिरी हिस्सा (सबके लिए एक)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "साहब यह घटना अज्ञात वाहन व चालक द्वारा गाड़ी को तेज रफ्तार व लापरवाही पूर्वक चलाने के कारण हुई है । साहब अज्ञात वाहन व चालक का पता लगाकर उसके विरुद्ध कानूनी कार्यवाही की जाये ।",
+          "dropdown_options": "{\"showIf\": \"doBayanPanch\", \"placeholder\": \"जैसे: दिनाँक 11/05/2025 को मनीष के भाई ने थाने पर तहरीर देकर मुकदमा लिखवाया था। साहब …\", \"hint\": \"पंचनामा वाली लाइन के बाद का हिस्सा — मुकदमा किसने लिखाया, गवाह क्या चाहता है। \\\"यही मेरा बयान है ।\\\" अपने आप लगता है\"}",
+          "sort_order": 50
+        }
+      ],
+      "is_favorite": 0,
+      "source": "system",
+      "editable": 1,
+      "created_by": "system",
+      "content_type": "format",
+      "seed_version": 1,
+      "app_version": "1.0.0",
+      "last_updated": "2026-11-13",
+      "tags": [
+        "पंचायतनामा",
+        "पोस्टमार्टम",
+        "अवलोकन",
+        "मृतक",
+        "बयान",
+        "केस डायरी"
+      ]
+    },
+    {
       "id": "sys-fmt-cd-abhiyukt-bayan-35-3",
       "title": "अभियुक्त का बयान — 07 वर्ष या उससे कम सजा (धारा 35(3) BNSS नोटिस तामील सहित)",
       "format_type": "Case Diary",
