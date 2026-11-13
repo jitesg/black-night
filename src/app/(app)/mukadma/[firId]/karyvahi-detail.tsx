@@ -9,6 +9,7 @@
  *   • Execution history
  *   • Delete karyvahi (user-added items only)
  */
+import { isKaryvahiDone } from '@/lib/karyvahiSubSteps';
 import { useState, useEffect, useCallback } from 'react';
 import { persistPickedFile } from '@/lib/attachmentFiles';
 import { View, Text, ScrollView, Pressable, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
@@ -403,7 +404,7 @@ export default function KaryvahiDetailScreen() {
   }
 
   const execCount   = karyvahi.execution_count ?? 0;
-  const done        = execCount > 0;
+  const done        = isKaryvahiDone(karyvahi); // checklist cards (पंचनामा / घटनास्थल): required parts done
   const isUserAdded = karyvahi.source === 'user';
   const sections    = resolveKnowledgeSections(karyvahi.name, karyvahi.precautions, playbookItem, t);
   const defKey      = matchDefaultKaryvahi(karyvahi.name);
