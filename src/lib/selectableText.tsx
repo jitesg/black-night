@@ -17,7 +17,8 @@
  * at least 1.5 × fontSize (also when includeFontPadding is off), so the top
  * matras (ि ी े ै ँ) and bottom ones (ु ू ृ ्र) are not cut; and the phone's
  * font-size setting is capped at 1.2× so very large system fonts don't push
- * text out of buttons, pills and headers.
+ * text out of buttons, pills and headers. Short Hindi labels inside a button (≤ 24 letters, plain text) are drawn on one line
+ * with "simple" (see BUTTON_LABEL_MAX_LEN).
  */
 import React, { createContext, forwardRef, useContext } from 'react';
 
@@ -77,6 +78,23 @@ function textLength(children: unknown, depth = 0): number {
  */
 const ANDROID_MIN_SELECTABLE_LEN = 60;
 
+/**
+ * Android, short Hindi labels INSIDE a button / pressable (owner, app-wide): with "highQuality" Android measures Devanagari
+ * wider than it draws — the button gets empty space after the label, and a 2-word label can lose its last word to a hidden
+ * 2nd line ("Word (DOC) एक्सपोर्ट" → "Word (DOC)", "बदलाव सहेजें" → "बदलाव"). A label of plain text up to this many characters,
+ * with no numberOfLines of its own, is drawn on ONE line with "simple" (a one-line label can't be split from its matra).
+ * In a very tight spot it shows "…" instead of a 2nd line.
+ */
+const BUTTON_LABEL_MAX_LEN = 24;
+
+/** Only plain strings / numbers (no nested Text, no newline). */
+function plainLabel(children: unknown): boolean {
+  if (typeof children === 'string') return !children.includes('\n');
+  if (typeof children === 'number') return true;
+  if (Array.isArray(children)) return children.every((c) => c == null || typeof c === 'boolean' || plainLabel(c));
+  return false;
+}
+
 patch('Text', (OrigText) => forwardRef<unknown, AnyProps>(function SelectableText(props, ref) {
   const noSelect = useContext(NoSelectContext);
   const autoOk = !IS_ANDROID || (props.numberOfLines !== 1 && textLength(props.children) >= ANDROID_MIN_SELECTABLE_LEN);
@@ -93,13 +111,27 @@ patch('Text', (OrigText) => forwardRef<unknown, AnyProps>(function SelectableTex
   //  • a lineHeight too small for the font clips the top / bottom matras →
   //    raise it to 1.4 × fontSize.
   //  • very large phone font sizes overflow fixed-height rows → cap the scale.
+  const hindi = hasDevanagari(props.children);
+  const buttonLabel = noSelect && hindi && props.numberOfLines === undefined && !props.adjustsFontSizeToFit
+    && plainLabel(props.children) && textLength(props.children) <= BUTTON_LABEL_MAX_LEN;
   let style = props.style;
-  if (style && hasDevanagari(props.children)) {
+  if (style && hindi) {
     const flat = flatten(style);
     const fs = Number(flat?.fontSize) || 14;
     const lh = Number(flat?.lineHeight);
     const tight = lh > 0 ? lh < fs * MIN_LINE_RATIO : flat?.includeFontPadding === false;
     if (tight) style = [style, { lineHeight: Math.ceil(fs * FIX_LINE_RATIO) }];
+  }
+  if (buttonLabel) {
+    return React.createElement(OrigText, {
+      maxFontSizeMultiplier: MAX_FONT_SCALE,
+      ...props,
+      style,
+      numberOfLines: 1,
+      textBreakStrategy: 'simple',
+      selectable,
+      ref,
+    });
   }
   return React.createElement(OrigText, {
     maxFontSizeMultiplier: MAX_FONT_SCALE,

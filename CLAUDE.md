@@ -390,6 +390,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   'simple' ('simple' splits a letter from its matra → "चकालस्ट", hidden 2nd line — build 21 regression), and
   Hindi text (Devanagari in children) gets lineHeight ≥ 1.5×fontSize (also when includeFontPadding is off);
   maxFontSizeMultiplier 1.2 by default. Never use textBreakStrategy "simple" on text that can wrap.
+  Button labels (owner, app-wide): Android "highQuality" measures Devanagari too wide → empty space in buttons and a hidden 2nd word
+  ("Word (DOC) एक्सपोर्ट" → "Word (DOC)"). So a Hindi label INSIDE a Pressable/Touchable (NoSelectContext), plain text only, ≤ 24 chars, no
+  numberOfLines of its own → numberOfLines 1 + "simple" automatically (`BUTTON_LABEL_MAX_LEN`); tight spots show "…". GeneratedReportView labels
+  also set it explicitly.
 - Dark mode: never hard-code a dark text colour ('#111827') on bg-card / bg-background — use className `text-foreground` and
   `...(selected ? { color: ACCENT } : {})` — NEVER `color: x ? A : undefined` (the undefined wiped the theme colour on the phone: केस डायरी
   कार्यवाही list names dark on dark, owner; all 9 such places changed) (fixed: crime-type + rank pickers in add-fir, karyvahi picker in add-case-diary-karyvahi,

@@ -255,7 +255,8 @@ export function GeneratedReportView({
   // ── View mode ──────────────────────────────────────────────────────────────
   return (
     <View className="gap-3">
-      {/* Compact Material 3 outlined action bar */}
+      {/* Compact Material 3 outlined action bar. Labels on one line (owner): Android measured the Hindi words too wide —
+          empty space in the buttons and "एक्सपोर्ट" hidden on a 2nd line of "Word (DOC) एक्सपोर्ट". */}
       <View className="flex-row gap-2 flex-wrap">
         <Pressable
           onPress={handleCopy}
@@ -265,7 +266,7 @@ export function GeneratedReportView({
           {copied
             ? <CheckCircle size={13} color={successColor} />
             : <Copy size={13} color={C.foreground} />}
-          <Text className="text-xs font-medium" style={{ color: copied ? successColor : C.foreground }}>
+          <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-medium" style={{ color: copied ? successColor : C.foreground }}>
             {copied ? t('common.copied') : t('common.copy')}
           </Text>
         </Pressable>
@@ -276,7 +277,7 @@ export function GeneratedReportView({
           style={{ borderCurve: 'continuous' }}
         >
           <Share2 size={13} color={C.foreground} />
-          <Text className="text-xs font-medium text-foreground">{t('common.share')}</Text>
+          <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-medium text-foreground">{t('common.share')}</Text>
         </Pressable>
 
         {wordExport ? (
@@ -289,7 +290,7 @@ export function GeneratedReportView({
             {exporting
               ? <ActivityIndicator size={13} color={C.foreground} />
               : <FileText size={13} color={C.foreground} />}
-            <Text className="text-xs font-medium text-foreground">
+            <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-medium text-foreground">
               {exporting ? t('editor.exporting') : 'Word (DOC) एक्सपोर्ट'}
             </Text>
           </Pressable>
@@ -304,7 +305,7 @@ export function GeneratedReportView({
             {exporting
               ? <ActivityIndicator size={13} color={C.foreground} />
               : <FileDown size={13} color={C.foreground} />}
-            <Text className="text-xs font-medium text-foreground">
+            <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-medium text-foreground">
               {exporting ? t('editor.exporting') : t('common.exportPdf')}
             </Text>
           </Pressable>
@@ -317,7 +318,7 @@ export function GeneratedReportView({
             style={{ borderCurve: 'continuous' }}
           >
             <Edit3 size={13} color={C.foreground} />
-            <Text className="text-xs font-medium text-foreground">{t('common.edit')}</Text>
+            <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-medium text-foreground">{t('common.edit')}</Text>
           </Pressable>
         ) : null}
       </View>
