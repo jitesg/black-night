@@ -245,3 +245,17 @@ test('थाना क्षेत्र भ्रमण: the द्विती
   assert.match(out, /कायम रखने हेतु द्वितीय पक्ष उपरोक्त को अधिक से अधिक/);
   assert.doesNotMatch(out, /कायम रखने हेतु उभय पक्ष उपरोक्त/);
 });
+
+test('थाना क्षेत्र भ्रमण: हमराह box → "मय हमराह का0 सुखराम के थाना हाजा"; empty → as before', async () => {
+  const { generateReport } = await import('../src/lib/templateEngine.ts');
+  const seed = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = seed.formats.find((x: { id: string }) => x.id === 'sys-fmt-bnss126-thanabhraman');
+  const person = (name: string) => ({ name, relationType: 'पुत्र', fatherOrHusbandName: 'श्याम', age: '35', fullAddress: 'ग्राम अ' });
+  const v: Record<string, string> = {};
+  for (const k of f.keys) v[k.key_name] = 'X';
+  Object.assign(v, { pad: 'उपनिरीक्षक', firstpartyDetails: JSON.stringify([person('राम')]), secondpartyDetail: JSON.stringify([person('सोहन')]) });
+  const withH = generateReport(f.vivran, { ...v, Hamrah: 'का0 सुखराम' }, f.keys);
+  assert.equal((withH.match(/मैं उपनिरीक्षक मय हमराह का0 सुखराम के थाना हाजा से रवाना/g) ?? []).length, 2);
+  const noH = generateReport(f.vivran, { ...v, Hamrah: '' }, f.keys);
+  assert.equal((noH.match(/मैं उपनिरीक्षक मय हमराह थाना हाजा से रवाना/g) ?? []).length, 2);
+});
