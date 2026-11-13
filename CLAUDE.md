@@ -96,10 +96,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   "{{FirstParty}} के" (was की), "जांचक्रम में ग्राम {{village}}", village label "गाँव का नाम" + placeholder "जैसे: अघौरा (ग्राम न लिखें)",
   द्वित्तीय → द्वितीय, दिनांकदिनांक, double spaces. templateEngine `tidyRepeats` (end of generateReport, all formats): "ग्राम ग्राम" → "ग्राम",
   "मध्य मध्य" → "मध्य", "का का" → "का", "। ।" / "।।" → "।".
-- Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → a small blue "ⓘ भरने का तरीका जानें" button ABOVE the field; tap → floating
-  box (Modal, measureInWindow, opens upwards near the bottom, 17px text, ✕ / tap outside closes) (`keyHint` / `FieldHint` in input.tsx;
-  FormatKeyInput wraps every type; formats/fill + prarthna-patra fill-format put it above Person/AccusedGroupInput; never printed; a dropdown's
-  list goes under "options"). Owner wanted it on every predefined format (58 formats / 982 fields) — done batch by batch with samples. Tool: `python3 scripts/hints/apply_hints.py <batch>`
+- Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → blue text link "ⓘ कैसे भरें?" at the RIGHT END of the field's label line
+  (owner, design B — the old chip above the field looked awkward); tap → floating box (Modal, measureInWindow, opens upwards near the bottom,
+  17px text, ✕ / tap outside closes). `components/ui/FieldHintLink.tsx` (`HintLink`, `LabelWithHint`); `keyHint` in input.tsx; FormatKeyField passes
+  `hint` to every label (Input `labelHint`, dropdown, multi_choice, date, item_group, sentence; checkbox = link at the row end); Person/AccusedGroupInput
+  `hint` prop (label + link on their own line, buttons below) from the 4 fill screens; never printed; a dropdown's list goes under "options"). Owner wanted it on every predefined format (58 formats / 982 fields) — done batch by batch with samples. Tool: `python3 scripts/hints/apply_hints.py <batch>`
   (batch modules in scripts/hints/: `wants(f)` + `hint(f, k)`, shared `common.py`; only fields without a hint, seed_version +1). A "sentence" field
   keeps its tip under "tip" (its "hint" is the card prompt; `keyHint(raw, fieldType)`). Done: GD (all 8 formats, 156 fields), फर्द (4 formats, 105 fields), केस डायरी + Narrative (15 formats, 237 fields), न्यायालय + प्रार्थना पत्र (12 formats, 232 fields). बाकी 6 "Any" formats (82 fields) too → ALL predefined format fields now have a hint (new fields: add one). Every field of the 6 bnss126 + 7 bnss170 formats has one (seed_version +1 each). 170 fixes too: " ।" after every
   {{Matter}} / {{Advice}}; kshetra-ek "{{Accused#inline}} का {{Matter}}" (default no longer starts with "का"); prarthna-ubhay

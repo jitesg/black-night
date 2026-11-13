@@ -32,7 +32,7 @@ import { getNyayalayDocWithDetails } from '@/lib/db/nyayalayRepo';
 import { generateReport } from '@/lib/templateEngine';
 import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS, resolveNyayalayKeys, NYAYALAY_KEY_LABELS } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
-import { FieldHint, FormatKeyInput, keyHint } from '@/components/ui/input';
+import { FormatKeyInput, keyHint } from '@/components/ui/input';
 import { AccusedGroupInput, initAccusedGroup } from '@/components/ui/AccusedGroupInput';
 import { PersonGroupInput, initPersonGroup } from '@/components/ui/PersonGroupInput';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
@@ -324,8 +324,8 @@ export default function NyayalayFillFormatScreen() {
               {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) =>
                 key.field_type === 'accused_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
-                    <FieldHint text={keyHint(key.dropdown_options)} />
                     <AccusedGroupInput
+                      hint={keyHint(key.dropdown_options)}
                       showStatus={format?.vivran.includes(`{{${key.key_name}#`) ?? false}
                       keyName={key.key_name}
                       label={key.label || key.key_name}
@@ -337,8 +337,8 @@ export default function NyayalayFillFormatScreen() {
                   </View>
                 ) : key.field_type === 'person_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
-                    <FieldHint text={keyHint(key.dropdown_options)} />
                     <PersonGroupInput
+                      hint={keyHint(key.dropdown_options)}
                       keyName={key.key_name}
                       single={/"single"\s*:\s*true/.test(key.dropdown_options ?? '')}
                       addressOptional={/"addressOptional"\s*:\s*true/.test(key.dropdown_options ?? '')}

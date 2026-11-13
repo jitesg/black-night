@@ -26,7 +26,7 @@ import React, {
   forwardRef, memo, useRef, useState, useCallback, useImperativeHandle,
 } from 'react';
 import {
-  Modal, Platform, Pressable, Text, TextInput, View, useWindowDimensions,
+  Platform, Pressable, Text, TextInput, View,
   type KeyboardTypeOptions, type ReturnKeyTypeOptions, type TextStyle, type ViewStyle,
 } from 'react-native';
 import { Calendar, ChevronDown, Eye, EyeOff, X } from 'lucide-react-native';
@@ -38,6 +38,7 @@ import { ItemGroupInput, parseItemGroupConfig } from './ItemGroupInput';
 import { PAHAR_AUTO, paharFromTime, paharSource } from '@/lib/formatDerived';
 import { useClearCopy } from '@/components/common/ClearCopyTools';
 import { SentenceFieldInput } from './SentenceFieldInput';
+import { HintLink, LabelWithHint } from './FieldHintLink';
 import type { KeyDefForRender } from '@/lib/templateEngine';
 import { multiChoiceSelected, multiChoiceToggle } from '@/lib/multiChoice';
 
@@ -173,6 +174,8 @@ export interface InputProps {
 
   // Content
   label?: string;
+  /** format field tip → "ⓘ कैसे भरें?" at the right of the label line (FieldHintLink.tsx) */
+  labelHint?: string;
   placeholder?: string;
   value: string;
   defaultValue?: string;
@@ -227,6 +230,7 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
   {
     type = 'text',
     label,
+    labelHint,
     placeholder,
     value,
     required,
@@ -402,11 +406,13 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
     <View style={[{ gap: T.space.xs }, containerStyle]}>
       {/* Label */}
       {label ? (
-        <Text style={{ ...T.caption1, color: hasError ? C.error : C.label, fontWeight: T.weight.medium } as TextStyle}>
-          {/* Labels from formats may already end in '*'; show only one */}
-          {required && typeof label === 'string' ? label.replace(/\s*\*+\s*$/, '') : label}
-          {required ? <Text style={{ color: C.error }}> *</Text> : null}
-        </Text>
+        <LabelWithHint hint={labelHint}>
+          <Text style={{ ...T.caption1, color: hasError ? C.error : C.label, fontWeight: T.weight.medium } as TextStyle}>
+            {/* Labels from formats may already end in '*'; show only one */}
+            {required && typeof label === 'string' ? label.replace(/\s*\*+\s*$/, '') : label}
+            {required ? <Text style={{ color: C.error }}> *</Text> : null}
+          </Text>
+        </LabelWithHint>
       ) : null}
 
       {/* Input row */}
@@ -570,74 +576,15 @@ export function keyHint(raw: string | null | undefined, fieldType?: string | nul
   } catch { return undefined; }
 }
 
-/**
- * "ⓘ भरने का तरीका जानें" above a field; a tap opens a floating box with the tip, a tap outside (or ✕) closes it
- * (owner). One open at a time — the box is a modal. Never printed.
- */
-export function FieldHint({ text }: { text?: string }) {
-  const { colorScheme } = useColorScheme();
-  const dark = colorScheme === 'dark';
-  const c = THEME[dark ? 'dark' : 'light'];
-  const { width: winW, height: winH } = useWindowDimensions();
-  const btnRef = useRef<View>(null);
-  const [pos, setPos] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-  if (!text) return null;
-  const accent = dark ? '#60A5FA' : '#2563EB';
-  const open = () => btnRef.current?.measureInWindow((x, y, w, h) => setPos({ x, y, w, h }));
-  const close = () => setPos(null);
-  const boxW = Math.min(winW - 24, 420);
-  const left = pos ? Math.max(12, Math.min(pos.x + pos.w - boxW, winW - boxW - 12)) : 12;
-  const below = pos ? pos.y + pos.h + 8 : 0;
-  const placeAbove = pos ? below > winH * 0.6 : false; // near the bottom → open upwards
-  return (
-    <View style={{ alignItems: 'flex-end' }}>
-      <Pressable
-        ref={btnRef}
-        onPress={pos ? close : open}
-        hitSlop={8}
-        accessibilityRole="button"
-        accessibilityLabel="भरने का तरीका जानें"
-        style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 999,
-          borderWidth: 1, borderColor: dark ? '#60A5FA66' : '#BFDBFE', backgroundColor: dark ? '#1E3A8A33' : '#EFF6FF' }}
-      >
-        <Text style={{ fontSize: 13, fontWeight: '700', color: accent }}>ⓘ</Text>
-        <Text style={{ fontSize: 12, fontWeight: '600', color: accent }}>भरने का तरीका जानें</Text>
-      </Pressable>
-      <Modal visible={!!pos} transparent animationType="fade" onRequestClose={close} statusBarTranslucent>
-        <Pressable onPress={close} style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.25)' }}>
-          {pos ? (
-            <View
-              onStartShouldSetResponder={() => true}
-              style={{ position: 'absolute', left, width: boxW,
-                ...(placeAbove ? { bottom: winH - pos.y + 8 } : { top: below }),
-                backgroundColor: c.card, borderRadius: 14, borderWidth: 1, borderColor: dark ? '#60A5FA66' : '#BFDBFE',
-                paddingHorizontal: 16, paddingVertical: 14, gap: 8, elevation: 8,
-                shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } }}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: accent }}>ⓘ भरने का तरीका</Text>
-                <Pressable onPress={close} hitSlop={10} accessibilityLabel="बंद करें"><X size={18} color={c.mutedForeground} /></Pressable>
-              </View>
-              <Text style={{ fontSize: 17, lineHeight: 28, color: c.foreground }}>{text}</Text>
-            </View>
-          ) : null}
-        </Pressable>
-      </Modal>
-    </View>
-  );
-}
-
-export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>((props, ref) => {
-  const hint = keyHint(props.keyDef.dropdown_options, props.keyDef.field_type);
-  const field = <FormatKeyField ref={ref} {...props} />;
-  return hint ? <View style={{ gap: 2 }}><FieldHint text={hint} />{field}</View> : field;
-});
+export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>((props, ref) => <FormatKeyField ref={ref} {...props} />);
 
 const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
   ({ keyDef, value, onChange, error, allValues, allKeys }, ref) => {
     const fieldType = keyDef.field_type ?? 'text';
     const displayLabel = keyDef.label || keyDef.key_name;
     const required = Boolean(keyDef.is_required);
+    // "ⓘ कैसे भरें?" at the right end of the label line (owner, design B)
+    const hint = keyHint(keyDef.dropdown_options, fieldType);
 
     // ── Date field — dedicated date-picker trigger + modal ───────────────────
     if (fieldType === 'date') {
@@ -649,6 +596,7 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
           onChange={onChange}
           error={error}
           displayLabel={displayLabel}
+          hint={hint}
           required={required}
         />
       );
@@ -664,6 +612,7 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
           value={value}
           onChange={onChange}
           displayLabel={displayLabel}
+          hint={hint}
           required={required}
           error={error}
           allValues={allValues}
@@ -682,6 +631,7 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
           value={value}
           onChange={onChange}
           displayLabel={displayLabel}
+          hint={hint}
           required={required}
           error={error}
           allValues={allValues}
@@ -698,6 +648,7 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
           value={value}
           onChange={onChange}
           displayLabel={displayLabel}
+          hint={hint}
         />
       );
     }
@@ -715,6 +666,7 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
             onChange={onChange}
             error={error}
             displayLabel={displayLabel}
+            hint={hint}
             required={required}
           />
         );
@@ -734,6 +686,7 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
             onChange={onChange}
             error={error}
             displayLabel={displayLabel}
+            hint={hint}
             required={required}
           />
         );
@@ -764,6 +717,7 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
         <Input
           type={inputType}
           label={displayLabel} // <Input> adds the red * for required fields
+          labelHint={hint}
           placeholder={keyPlaceholder(keyDef.dropdown_options) ?? (isMarkerDefault(keyDef.default_value) ? undefined : keyDef.default_value) ?? `Enter ${displayLabel}`}
           value={value}
           onChangeText={(v) => onChange(keyDef.key_name, v)}
@@ -788,16 +742,19 @@ const FormatKeyDropdownInput = forwardRef<View, {
   error?: string;
   displayLabel: string;
   required: boolean;
-}>(({ keyName, options, value, onChange, error, displayLabel, required }, ref) => {
+  hint?: string;
+}>(({ keyName, options, value, onChange, error, displayLabel, required, hint }, ref) => {
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
   const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
   return (
     <View ref={ref} style={{ gap: T.space.xs }}>
-      <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
-        {String(displayLabel).replace(/\s*\*+\s*$/, '')}
-        {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
-      </Text>
+      <LabelWithHint hint={hint}>
+        <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
+          {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+          {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
+        </Text>
+      </LabelWithHint>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {options.map((o) => {
           const on = value === o.value;
@@ -836,7 +793,8 @@ const FormatKeyMultiChoiceInput = forwardRef<View, {
   error?: string;
   displayLabel: string;
   required: boolean;
-}>(({ keyName, options, value, onChange, error, displayLabel, required }, ref) => {
+  hint?: string;
+}>(({ keyName, options, value, onChange, error, displayLabel, required, hint }, ref) => {
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
   const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
@@ -844,11 +802,13 @@ const FormatKeyMultiChoiceInput = forwardRef<View, {
   const order = options.map((o) => o.value);
   return (
     <View ref={ref} style={{ gap: T.space.xs }}>
-      <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
-        {String(displayLabel).replace(/\s*\*+\s*$/, '')}
-        {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
-        {selected.length ? <Text style={{ color: green, fontWeight: '700' }}>{`  (${selected.length} चुने)`}</Text> : null}
-      </Text>
+      <LabelWithHint hint={hint}>
+        <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
+          {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+          {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
+          {selected.length ? <Text style={{ color: green, fontWeight: '700' }}>{`  (${selected.length} चुने)`}</Text> : null}
+        </Text>
+      </LabelWithHint>
       <View style={{ borderWidth: 1, borderColor: error ? c.destructive : c.border, borderRadius: 12, backgroundColor: c.card, overflow: 'hidden' }}>
         {options.map((o, i) => {
           const on = selected.includes(o.value);
@@ -891,7 +851,8 @@ const FormatKeyCheckboxInput = forwardRef<View, {
   value: string;
   onChange: (keyName: string, value: string) => void;
   displayLabel: string;
-}>(({ keyName, value, onChange, displayLabel }, ref) => {
+  hint?: string;
+}>(({ keyName, value, onChange, displayLabel, hint }, ref) => {
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
   const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
@@ -917,6 +878,7 @@ const FormatKeyCheckboxInput = forwardRef<View, {
         <Text style={{ flex: 1, fontSize: 14, lineHeight: 21, fontWeight: on ? '700' : '500', color: on ? green : c.foreground }}>
           {String(displayLabel).replace(/\s*\*+\s*$/, '')}
         </Text>
+        <HintLink text={hint} />
       </Pressable>
     </View>
   );
@@ -933,10 +895,11 @@ interface FormatKeyDateInputProps {
   error?: string;
   displayLabel: string;
   required: boolean;
+  hint?: string;
 }
 
 const FormatKeyDateInput = forwardRef<View, FormatKeyDateInputProps>(
-  ({ keyDef, value, onChange, error, displayLabel, required }, ref) => {
+  ({ keyDef, value, onChange, error, displayLabel, required, hint }, ref) => {
     const { colorScheme } = useColorScheme();
     const C = {
       border:       colorScheme === 'dark' ? THEME.dark.border : THEME.light.border,
@@ -962,10 +925,12 @@ const FormatKeyDateInput = forwardRef<View, FormatKeyDateInputProps>(
     return (
       <View ref={ref} style={{ gap: T.space.xs }}>
         {/* Label */}
-        <Text style={{ ...T.caption1, color: error ? C.error : C.label, fontWeight: T.weight.medium } as TextStyle}>
-          {String(displayLabel).replace(/\s*\*+\s*$/, '')}
-          {required ? <Text style={{ color: C.error }}> *</Text> : null}
-        </Text>
+        <LabelWithHint hint={hint}>
+          <Text style={{ ...T.caption1, color: error ? C.error : C.label, fontWeight: T.weight.medium } as TextStyle}>
+            {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+            {required ? <Text style={{ color: C.error }}> *</Text> : null}
+          </Text>
+        </LabelWithHint>
 
         {/* Tappable trigger row — visually matches the Input component */}
         <Pressable

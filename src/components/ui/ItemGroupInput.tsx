@@ -8,6 +8,7 @@
  * "ref" (chips with the names typed in another list — {ref: "Accused"}; formatDerived.ts copies that row's fields).
  * "startEmpty": no card until "+" is pressed (optional lists).
  */
+import { LabelWithHint } from './FieldHintLink';
 import { FirPeopleButton } from '@/components/formats/FirPeopleButton';
 import { insertIntoGroup, isPersonItemGroup, toItemRow } from '@/lib/firPeople';
 import React, { forwardRef, useMemo } from 'react';
@@ -92,11 +93,13 @@ export const ItemGroupInput = forwardRef<View, {
   value: string;
   onChange: (keyName: string, value: string) => void;
   displayLabel: string;
+  /** "ⓘ कैसे भरें?" at the right of the label line */
+  hint?: string;
   required?: boolean;
   error?: string;
   /** The whole form — 'ref' columns list the rows of another list from it. */
   allValues?: Record<string, string>;
-}>(({ keyName, config, value, onChange, displayLabel, required, error, allValues }, ref) => {
+}>(({ keyName, config, value, onChange, displayLabel, required, error, allValues, hint }, ref) => {
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
   const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
@@ -108,10 +111,12 @@ export const ItemGroupInput = forwardRef<View, {
 
   return (
     <View ref={ref} style={{ gap: T.space.sm }}>
-      <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
-        {String(displayLabel).replace(/\s*\*+\s*$/, '')}
-        {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
-      </Text>
+      <LabelWithHint hint={hint}>
+        <Text style={{ ...T.caption1, color: error ? c.destructive : c.mutedForeground, fontWeight: T.weight.medium } as TextStyle}>
+          {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+          {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
+        </Text>
+      </LabelWithHint>
       {/* "📁 मुकदमे से भरें" (owner): lists that hold people (name column) */}
       {isPersonItemGroup(cols) ? (
         <FirPeopleButton

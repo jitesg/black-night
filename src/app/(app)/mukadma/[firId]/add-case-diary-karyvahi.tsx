@@ -19,7 +19,7 @@ import {
   BackHandler, View, Text, ScrollView, Pressable, KeyboardAvoidingView, ActivityIndicator,
 } from 'react-native';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
-import { FormatKeyInput, FieldHint, keyHint } from '@/components/ui/input';
+import { FormatKeyInput, keyHint } from '@/components/ui/input';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { useLocalSearchParams, useFocusEffect, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -230,8 +230,8 @@ function FormatFillPanel({
             dynKeys.filter((key) => isKeyVisible(key, values)).map((key) => key.field_type === 'person_group' ? (
               // person cards (owner: every person's details as a card, with "📁 मुकदमे से भरें")
               <View key={key.id} className="gap-1">
-                <FieldHint text={keyHint(key.dropdown_options)} />
                 <PersonGroupInput
+                  hint={keyHint(key.dropdown_options)}
                   keyName={key.key_name}
                   label={key.label || key.key_name}
                   value={values[key.key_name] ?? initPersonGroup()}

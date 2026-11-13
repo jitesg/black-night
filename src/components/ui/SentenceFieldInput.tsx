@@ -6,6 +6,7 @@
  * "पिछली बार लिखा" for remembered blanks). Rules live in src/lib/sentenceField.ts.
  */
 import 'expo-sqlite/localStorage/install';
+import { LabelWithHint } from './FieldHintLink';
 import React, { forwardRef, useEffect, useMemo, useState } from 'react';
 import { Keyboard, Modal, Pressable, ScrollView, Text, TextInput, View, type TextStyle } from 'react-native';
 import { useColorScheme } from 'nativewind';
@@ -53,11 +54,13 @@ export const SentenceFieldInput = forwardRef<View, {
   value: string;
   onChange: (keyName: string, value: string) => void;
   displayLabel: string;
+  /** "ⓘ कैसे भरें?" at the right of the title line */
+  hint?: string;
   required?: boolean;
   error?: string;
   allValues?: Record<string, string>;
   allKeys?: KeyDefForRender[];
-}>(({ keyName, configRaw, value, onChange, displayLabel, required, error, allValues, allKeys }, ref) => {
+}>(({ keyName, configRaw, value, onChange, displayLabel, required, error, allValues, allKeys, hint }, ref) => {
   const { colorScheme } = useColorScheme();
   const dark = colorScheme === 'dark';
   const c = THEME[dark ? 'dark' : 'light'];
@@ -85,10 +88,12 @@ export const SentenceFieldInput = forwardRef<View, {
     <View ref={ref} style={{ gap: T.space.sm }}>
       <View style={{ borderWidth: 1.5, borderColor: error ? c.destructive : c.border, borderRadius: 16, padding: 14, gap: 10, backgroundColor: c.card }}>
         <View>
-          <Text style={{ fontSize: 15.5, lineHeight: 24, fontWeight: '700', color: c.foreground }}>
-            {String(displayLabel).replace(/\s*\*+\s*$/, '')}
-            {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
-          </Text>
+          <LabelWithHint hint={hint}>
+            <Text style={{ fontSize: 15.5, lineHeight: 24, fontWeight: '700', color: c.foreground }}>
+              {String(displayLabel).replace(/\s*\*+\s*$/, '')}
+              {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
+            </Text>
+          </LabelWithHint>
           <Text style={{ fontSize: 12.5, lineHeight: 19, color: c.mutedForeground }}>
             {card ? 'कार्ड बदलना हो तो दूसरा छुएँ' : (cfg.hint ?? 'एक कार्ड छुएँ')}
           </Text>

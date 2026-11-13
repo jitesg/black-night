@@ -21,6 +21,7 @@
  */
 
 import { FirPeopleButton } from '@/components/formats/FirPeopleButton';
+import { LabelWithHint } from './FieldHintLink';
 import { insertIntoGroup, toCard } from '@/lib/firPeople';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, Text, TextInput, ToastAndroid, View } from 'react-native';
@@ -684,10 +685,12 @@ export interface AccusedGroupInputProps {
   error?: string;
   /** Format uses {{Key#summary}}: ask each accused's status (नामजद / प्रकाश में आया / वांछित नहीं). */
   showStatus?: boolean;
+  /** format field tip → "ⓘ कैसे भरें?" on the label line */
+  hint?: string;
 }
 
 export const AccusedGroupInput = memo(({
-  label, value, onChange, onValidChange, keyName, error, showStatus,
+  label, value, onChange, onValidChange, keyName, error, showStatus, hint,
 }: AccusedGroupInputProps) => {
   const C = useGroupTokens();
   const { t } = useTranslation();
@@ -917,10 +920,20 @@ export const AccusedGroupInput = memo(({
 
   return (
     <View style={{ gap: 10 }}>
+      {/* with a tip: label + "ⓘ कैसे भरें?" on their own line, the buttons below (owner, design B) */}
+      {hint ? (
+        <LabelWithHint hint={hint}>
+          <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            {resolvedLabel}
+          </Text>
+        </LabelWithHint>
+      ) : null}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>
-          {resolvedLabel}
-        </Text>
+        {hint ? <View style={{ flex: 1 }} /> : (
+          <Text style={{ fontSize: 12, color: C.label, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>
+            {resolvedLabel}
+          </Text>
+        )}
         {/* "📁 मुकदमे से भरें" (owner) — only inside a format fill screen */}
         <FirPeopleButton onInsert={(people) => onChange(keyName, insertIntoGroup(value, people.map((p, n) => toCard(p, true, n))))} />
         <View style={{ backgroundColor: '#F3F4F6', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 }}>
