@@ -37,6 +37,8 @@ export interface FIRKaryvahi {
   step_code?: string;
   // Diary queue flag: 1 = officer flagged this item for the next Case Diary session
   queued_for_diary?: number; // 0 | 1, DEFAULT 0
+  // पंचनामा व पोस्टमार्टम: inner checklist JSON (src/lib/karyvahiSubSteps.ts)
+  sub_steps_json?: string;
   created_at: number;
   updated_at: number;
   deleted_at?: number;
@@ -787,6 +789,12 @@ export async function updateKaryvahiStatus(
       logger.warn('[Phase3] unlockDependentsOf failed:', e);
     }
   }
+}
+
+/** पंचनामा व पोस्टमार्टम checklist (6 parts) — saved as JSON on the karyvahi row. */
+export async function setKaryvahiSubSteps(id: string, json: string): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync('UPDATE fir_karyvahi SET sub_steps_json = ?, updated_at = ? WHERE id = ?', [json, nowTimestamp(), id]);
 }
 
 export async function updateKaryvahi(id: string, firId: string, name: string, precautions?: string): Promise<void> {

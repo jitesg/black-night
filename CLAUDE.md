@@ -257,7 +257,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   owner's samples; generator `scripts/build_panchayatnama_pm.py`, tests `scripts/test_panchayatnama_pm.ts`): 6 ticks doPan / doPm / doBayanSI /
   doBayanCo / doBayanPanch / doBayanDoc (each prints its part; only-PM wording "की मूल … प्राप्त हुई है जिसका"); Panch = item_group (mahila, own
   text; `copy` Story1/Story2/BodyPlace/DName); docMahila, doViscera, optional DocInjury. `tidyRepeats` drops blank lines at the very top.
-  Plan (owner, चरण 2–6 next): checklist n/6 on the karyvahi card, auto-tick on save, pending until 6/6, prefill remaining, 7-day bell.
+  Plan (owner, चरण 3–6 next): auto-tick on save, pending until 6/6, prefill remaining, 7-day bell.
+  चरण 2 done: karyvahi card checklist — `src/lib/karyvahiSubSteps.ts` (pure; tests `scripts/test_karyvahi_sub_steps.ts`): 6 parts pan/pm/si/co/panch/doc
+  (formatKey doPan…), `isPmKaryvahi` = step_code RTA_PM_DEATH / ABS_INQUEST_PM / CHM_INQUEST_PM / MUR_INQUEST / DWD_INQUEST_SDM or a name with
+  पंचनामा/पंचायतनामा + पोस्टमार्टम/शव परीक्षण (not जब्ती/बरामदगी); column fir_karyvahi.sub_steps_json (`setKaryvahiSubSteps`); card (tabs)/karyvahi.tsx
+  `PmSubStepsPanel`: "चेकलिस्ट n/6" + bar (amber → green at 6/6), rows tap = manual tick, "पर्चा NN" note, "बाकी n लिखें →" opens DiaryActionSheet.
+  Default karyvahi (owner option ख, death cases only): already seeded by the crime-type playbooks — nothing extra added.
 - `sys-fmt-cd-abhiyukt-bayan-35-3` "अभियुक्त का बयान — 07 वर्ष या उससे कम सजा (धारा 35(3) BNSS नोटिस तामील सहित)" (Case Diary, plain text, owner's
   sample): item_group Accused (name, rel, father, addr, mobile, age, mahila, own) — one / woman / many wording like the 60(1) फर्द; Bailable
   tick; per-row "बयान अभियुक्त(ा) — …" para, own text or default "जुर्म से इंकार… सफाई जरिये अधिवक्ता… बता रहे / रही हैं" (nested {?own|…{?mahila|…}…}).

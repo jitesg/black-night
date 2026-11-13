@@ -1190,6 +1190,8 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   // source: 'system' | 'user' — system karyvahi (seeded at FIR creation)
   // are not deletable from the detail screen.
   await _ensureColumn(database, 'fir_karyvahi', 'source', "TEXT DEFAULT 'system'");
+  // पंचनामा व पोस्टमार्टम inner checklist (6 parts; src/lib/karyvahiSubSteps.ts)
+  await _ensureColumn(database, 'fir_karyvahi', 'sub_steps_json', "TEXT DEFAULT '{}'");
 
   // ── Reminders v3: category, priority, case link, custom repeat, early
   // alert, repeat-until-done (nag), snooze, completion time.

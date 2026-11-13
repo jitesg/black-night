@@ -19,7 +19,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import {
-  getKaryvahiByFIR, deleteKaryvahi, updateKaryvahiStatus, updateKaryvahiQueuedFlag,
+  getKaryvahiByFIR, deleteKaryvahi, updateKaryvahiStatus, updateKaryvahiQueuedFlag, setKaryvahiSubSteps,
   nextKaryvahiInstanceId,
   type FIRKaryvahi, type KaryvahiPriority, type KaryvahiStatus,
 } from '@/lib/db/firKaryvahiRepo';
@@ -36,6 +36,9 @@ import { matchDefaultKaryvahi } from '@/lib/karyvahiNames';
 import { getDefaultKnowledge } from '@/lib/defaultKaryvahiKnowledge';
 import { matchesQuery } from '@/lib/searchUtils';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
+import {
+  isPmKaryvahi, parseSubSteps, subStepProgress, toggleSubStep, subStepNote, PM_SUB_STEPS, type SubStepsMap,
+} from '@/lib/karyvahiSubSteps';
 
 type FilterMode = 'all' | 'pending' | 'completed';
 type ActiveView = 'general' | 'diary';
@@ -353,6 +356,82 @@ function ReasonModal({
 }
 
 // ── Karyvahi card (General tab) ───────────────────────────────────────────────
+// ── पंचनामा व पोस्टमार्टम: inner checklist (6 parts, owner) ──────────────────────
+function PmSubStepsPanel({ item, onWrite }: { item: FIRKaryvahi; onWrite: (item: FIRKaryvahi) => void }) {
+  const { colorScheme } = useColorScheme();
+  const c = THEME[colorScheme ?? 'light'];
+  const sem = getSemanticColors(colorScheme ?? 'light');
+  const [open, setOpen] = useState(false);
+  const [map, setMap] = useState<SubStepsMap>(() => parseSubSteps(item.sub_steps_json));
+  useEffect(() => { setMap(parseSubSteps(item.sub_steps_json)); }, [item.sub_steps_json]);
+  const prog = subStepProgress(map);
+  const barColor = prog.complete ? sem.COMPLETED_STATUS.fg : sem.CONDITIONAL.fg;
+
+  const onToggle = (id: string) => {
+    const next = toggleSubStep(map, id);
+    setMap(next);
+    item.sub_steps_json = JSON.stringify(next); // keep the list row in step until the next reload
+    setKaryvahiSubSteps(item.id, item.sub_steps_json).catch((e) => logger.warn('[PmSubSteps] save failed:', e));
+  };
+
+  return (
+    <View className="mb-2.5">
+      <Pressable
+        onPress={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
+        className="flex-row items-center gap-2 rounded-lg px-2.5 py-2 bg-secondary"
+        hitSlop={4}
+        accessibilityLabel={`चेकलिस्ट ${prog.done} में से ${prog.total}`}
+      >
+        <ListChecks size={14} color={barColor} />
+        <Text className="text-xs font-semibold" style={{ color: barColor }}>
+          चेकलिस्ट {prog.done}/{prog.total} {prog.complete ? '✓' : ''}
+        </Text>
+        <View className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: c.border }}>
+          <View style={{ width: `${Math.round((prog.done / prog.total) * 100)}%`, height: '100%', backgroundColor: barColor }} />
+        </View>
+        {open ? <ChevronUp size={14} color={c.mutedForeground} /> : <ChevronDown size={14} color={c.mutedForeground} />}
+      </Pressable>
+
+      {open && (
+        <View className="mt-1.5 gap-0.5">
+          {PM_SUB_STEPS.map((s) => {
+            const st = map[s.id];
+            const isDone = !!st?.done;
+            const note = subStepNote(st);
+            return (
+              <Pressable
+                key={s.id}
+                onPress={(e) => { e.stopPropagation(); onToggle(s.id); }}
+                className="flex-row items-center gap-2 px-1.5 py-1.5 rounded-md"
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: isDone }}
+              >
+                {isDone
+                  ? <CheckCircle2 size={16} color={sem.COMPLETED_STATUS.fg} />
+                  : <Circle size={16} color={c.mutedForeground} />}
+                <Text className={`text-xs flex-1 ${isDone ? 'text-muted-foreground' : 'text-foreground'}`}>{s.label}</Text>
+                {note ? (
+                  <Text className="text-xs font-medium" style={{ color: sem.COMPLETED_STATUS.fg }}>{note}</Text>
+                ) : null}
+              </Pressable>
+            );
+          })}
+          {!prog.complete && (
+            <Pressable
+              onPress={(e) => { e.stopPropagation(); onWrite(item); }}
+              className="self-start flex-row items-center gap-1 mt-1 px-2.5 py-1.5 rounded-lg"
+              style={{ backgroundColor: `${c.primary}18` }}
+            >
+              <BookOpen size={13} color={c.primary} />
+              <Text className="text-xs font-semibold" style={{ color: c.primary }}>बाकी {prog.total - prog.done} लिखें →</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
+    </View>
+  );
+}
+
 function KaryvahiCard({
   item,
   firId,
@@ -361,6 +440,7 @@ function KaryvahiCard({
   onCircleInfo,
   onStatusChange,
   onQueueToggle,
+  onWriteDiary,
   blockerName,
 }: {
   item: FIRKaryvahi;
@@ -370,6 +450,7 @@ function KaryvahiCard({
   onCircleInfo: (item: FIRKaryvahi) => void;
   onStatusChange: (item: FIRKaryvahi, newStatus: KaryvahiStatus) => void;
   onQueueToggle: (item: FIRKaryvahi) => void;
+  onWriteDiary: (item: FIRKaryvahi) => void;
   blockerName?: string;
 }) {
   const { t } = useTranslation();
@@ -549,7 +630,9 @@ function KaryvahiCard({
       subtitle={subtitleContent}
       statusSlot={statusControl}
       badgeSlot={badge}
-      footerSlot={actionsRow}
+      footerSlot={isPmKaryvahi(item)
+        ? <><PmSubStepsPanel item={item} onWrite={onWriteDiary} />{actionsRow}</>
+        : actionsRow}
       bannerSlot={banner}
       dimmed={locked}
       onPress={() => router.push(`/(app)/mukadma/${firId}/karyvahi-detail?karyvahiId=${item.id}` as never)}
@@ -590,7 +673,7 @@ function RadialRing({
 
 function PrioritySection({
   priority, items, firId, diaries, onDelete, onCircleInfo, onStatusChange,
-  onQueueToggle, conditions, allItems,
+  onQueueToggle, onWriteDiary, conditions, allItems,
 }: {
   priority: KaryvahiPriority;
   items: FIRKaryvahi[];
@@ -600,6 +683,7 @@ function PrioritySection({
   onCircleInfo: (item: FIRKaryvahi) => void;
   onStatusChange: (item: FIRKaryvahi, newStatus: KaryvahiStatus) => void;
   onQueueToggle: (item: FIRKaryvahi) => void;
+  onWriteDiary: (item: FIRKaryvahi) => void;
   conditions: ActionCondition[];
   allItems: FIRKaryvahi[];
 }) {
@@ -658,6 +742,7 @@ function PrioritySection({
             onCircleInfo={onCircleInfo}
             onStatusChange={onStatusChange}
             onQueueToggle={onQueueToggle}
+            onWriteDiary={onWriteDiary}
             blockerName={blocker}
           />
         );
@@ -1189,6 +1274,7 @@ function KaryvahiTab() {
     onCircleInfo:   (it: FIRKaryvahi) => setInfoTarget(it),
     onStatusChange: handleStatusChange,
     onQueueToggle:  handleQueueToggle,
+    onWriteDiary:   (it: FIRKaryvahi) => setDiarySheetItem(it),
   };
 
   const latestDiary = diaries.length > 0 ? diaries[0] : null;
