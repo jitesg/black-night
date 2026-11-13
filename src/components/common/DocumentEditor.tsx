@@ -501,6 +501,26 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
   // Derive initial HTML once (migration happens here if needed)
   const initialHtml = useMemo(() => prepareHtml(value), []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // The WebView is created afresh every time the modal opens: start it with the CURRENT text (not the text of the very
+  // first mount), so it doesn't have to be overwritten a moment later.
+  const openHtml = useMemo(() => (visible ? prepareHtml(value) : ''), [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // What the WebView holds right now (its start text, then every edit / programmatic set).
+  const webHtmlRef = useRef<string>('');
+
+  // Owner: the first word came twice ("नकलचिकनकलचिक लिखा"). Replacing the editor's content while the Hindi keyboard is
+  // still composing a word makes the keyboard type that word again. So the content is only replaced when its WORDS
+  // really differ from what the WebView already shows — never just to re-send the same text in other tags.
+  const pushContent = (html: string): boolean => {
+    if (!editorRef.current) return false;
+    if (stripHtml(html) === stripHtml(webHtmlRef.current)) return false;
+    settingExternalRef.current = true;
+    editorRef.current.setContentHTML(html);
+    webHtmlRef.current = html;
+    setTimeout(() => { settingExternalRef.current = false; }, 0);
+    return true;
+  };
+
   // ── External value sync ──────────────────────────────────────────────────
   // Always keep editorHtmlRef up to date, even while modal is closed, so
   // that when the modal opens we always have the latest value ready.
@@ -526,10 +546,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
     if (visible && editorRef.current) {
       // Final stale check before writing to the WebView
       if (changeSeqRef.current !== seqAtStart) return;
-      settingExternalRef.current = true;
-      editorRef.current.setContentHTML(prepared);
-      logger.warn('[DocEditor] SYNC EFFECT called setContentHTML');
-      setTimeout(() => { settingExternalRef.current = false; }, 0);
+      if (pushContent(prepared)) logger.warn('[DocEditor] SYNC EFFECT called setContentHTML');
     }
   }, [value, visible]);
 
@@ -538,21 +555,20 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
   // content after a short delay to let the WebView finish initialising.
   useEffect(() => {
     if (visible && !prevVisibleRef.current) {
+      webHtmlRef.current = openHtml; // the fresh WebView starts with this
       // Capture sequence before the async delay — if the user starts typing
       // before the 100 ms fires, this push is stale and must be aborted.
       const seqAtStart = changeSeqRef.current;
       const t = setTimeout(() => {
         if (editorHtmlRef.current && editorRef.current) {
           if (changeSeqRef.current !== seqAtStart) return; // stale — user already typed
-          settingExternalRef.current = true;
-          editorRef.current.setContentHTML(editorHtmlRef.current);
-          setTimeout(() => { settingExternalRef.current = false; }, 0);
+          pushContent(editorHtmlRef.current); // no-op when the WebView already shows these words
         }
       }, 100);
       return () => clearTimeout(t);
     }
     prevVisibleRef.current = visible;
-  }, [visible]);
+  }, [visible, openHtml]);
 
   // ── Editor-ready handler ─────────────────────────────────────────────────
   // Fires when the WebView/editor signals it is ready to receive content.
@@ -566,10 +582,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
     const seqAtStart = changeSeqRef.current;
     if (editorHtmlRef.current && editorRef.current) {
       if (changeSeqRef.current !== seqAtStart) return;
-      settingExternalRef.current = true;
-      editorRef.current.setContentHTML(editorHtmlRef.current);
-      logger.warn('[DocEditor] onLoad called setContentHTML');
-      setTimeout(() => { settingExternalRef.current = false; }, 0);
+      if (pushContent(editorHtmlRef.current)) logger.warn('[DocEditor] onLoad called setContentHTML');
     }
   }, []);
 
@@ -585,6 +598,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
     // SYNC EFFECT or on-open effect sees the updated value and aborts.
     changeSeqRef.current += 1;
     editorHtmlRef.current = html;
+    webHtmlRef.current = html;
     lastEmittedRef.current = html;
     emittedHistoryRef.current.push(html);
     if (emittedHistoryRef.current.length > 50) emittedHistoryRef.current.shift();
@@ -678,6 +692,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
       settingExternalRef.current = true;
       editorRef.current?.setContentHTML(expanded);
       editorHtmlRef.current = expanded;
+      webHtmlRef.current = expanded;
       lastEmittedRef.current = expanded;
       onChange(expanded);
       setTimeout(() => { settingExternalRef.current = false; }, 0);
@@ -879,7 +894,7 @@ function FullScreenModal({ visible, onClose, value, onChange, title, placeholder
               />
               <RichEditor
                 ref={editorRef}
-                initialContentHTML={initialHtml}
+                initialContentHTML={openHtml}
                 placeholder={placeholder}
                 onChange={handleChange}
                 onLoad={() => {
