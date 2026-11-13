@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { htmlToPlainText } from '@/lib/stringUtils';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { crimeTypeLabel } from '@/lib/db/checklistRepo';
 import { logger } from '@/lib/logger';
@@ -66,7 +67,8 @@ function CollapsibleDocumentBox({
           <Edit2 size={13} color="#9CA3AF" />
         </View>
         <Text className="text-sm text-foreground leading-5" numberOfLines={3}>
-          {value.trim() || placeholder}
+          {/* the editor saves HTML — show the words only (owner: <div> / &nbsp; showed in the strip) */}
+          {htmlToPlainText(value).trim() || placeholder}
         </Text>
       </Pressable>
     );

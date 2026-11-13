@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { htmlToPlainText } from '@/lib/stringUtils';
 import { logger } from '@/lib/logger';
 import {
   BackHandler, View, Text, ScrollView, Pressable, KeyboardAvoidingView,
@@ -105,7 +106,8 @@ function CollapsibleDocumentBox({
           <Edit2 size={13} color="#9CA3AF" />
         </View>
         <Text className="text-sm text-foreground leading-5" numberOfLines={3}>
-          {value.trim() || placeholder}
+          {/* the editor saves HTML — show the words only (owner: <div> / &nbsp; showed in the strip) */}
+          {htmlToPlainText(value).trim() || placeholder}
         </Text>
       </Pressable>
     );
