@@ -37,7 +37,7 @@ import { getDefaultKnowledge } from '@/lib/defaultKaryvahiKnowledge';
 import { matchesQuery } from '@/lib/searchUtils';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import {
-  isPmKaryvahi, isKaryvahiDone, parseSubSteps, subStepProgress, toggleSubStep, subStepNote, PM_SUB_STEPS,
+  isPmKaryvahi, isKaryvahiDone, pmPendingInfo, parseSubSteps, subStepProgress, toggleSubStep, subStepNote, PM_SUB_STEPS,
 } from '@/lib/karyvahiSubSteps';
 
 type FilterMode = 'all' | 'pending' | 'completed';
@@ -496,7 +496,17 @@ function KaryvahiCard({
     </View>
   ) : undefined;
 
-  const badge = count > 0 && done ? (
+  const pmPending = pmPendingInfo(item); // पंचनामा व पोस्टमार्टम not yet 6/6
+  const badge = pmPending ? (
+    <View
+      className="rounded-full items-center justify-center px-2.5 py-1"
+      style={{ backgroundColor: sem.CONDITIONAL.bg, borderWidth: 1, borderColor: sem.CONDITIONAL.border }}
+    >
+      <Text className="text-xs font-bold" numberOfLines={1} style={{ color: sem.CONDITIONAL.fg }}>
+        ⏳ लंबित · {pmPending.done}/{pmPending.total}
+      </Text>
+    </View>
+  ) : count > 0 && done ? (
     <View
       className="rounded-full items-center justify-center px-2.5 py-1"
       style={{
@@ -519,6 +529,11 @@ function KaryvahiCard({
       {subtitleWhat ? (
         <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
           {subtitleWhat}
+        </Text>
+      ) : null}
+      {pmPending && pmPending.done > 0 ? (
+        <Text className="text-xs mt-0.5" style={{ color: sem.CONDITIONAL.fg }}>
+          {pmPending.remaining}
         </Text>
       ) : null}
       {done && diaryNumber !== null && (

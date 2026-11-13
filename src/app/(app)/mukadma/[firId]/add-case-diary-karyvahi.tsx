@@ -32,7 +32,7 @@ import {
   getCaseDiariesByFIR, getParchaNumber, type CaseDiary,
 } from '@/lib/db/caseDiaryRepo';
 import { getKaryvahiByFIR, addExecution, applyPmPartsFromEntry, type FIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
-import { PM_FORMAT_ID, partsFromFormatValues } from '@/lib/karyvahiSubSteps';
+import { PM_FORMAT_ID, partsFromFormatValues, pmPendingInfo } from '@/lib/karyvahiSubSteps';
 import { OPENING_LABEL, SARANSH_LABEL, openingLine } from '@/lib/caseDiaryParcha';
 import { getFIRById, type FIR } from '@/lib/db/firRepo';
 import { FirBasisHintsView } from '@/components/caseDiary/FirBasisHintsView';
@@ -514,7 +514,18 @@ const DiaryEntryCard = memo(function DiaryEntryCard({
                         >
                           {k.name}
                         </Text>
-                        {(k.execution_count ?? 0) > 0 && (
+                        {(() => {
+                          // पंचनामा व पोस्टमार्टम not yet 6/6 → "⏳ 2/6 · 4 बाकी"
+                          const pm = pmPendingInfo(k);
+                          return pm ? (
+                            <View className="bg-amber-50 rounded-full ml-2 px-2.5 py-1 dark:bg-amber-500/15">
+                              <Text className="text-xs" numberOfLines={1} style={{ color: '#B45309' }}>
+                                ⏳ {pm.done}/{pm.total} · {pm.total - pm.done} बाकी
+                              </Text>
+                            </View>
+                          ) : null;
+                        })()}
+                        {(k.execution_count ?? 0) > 0 && !pmPendingInfo(k) && (
                           <View className="bg-green-50 rounded-full ml-2 px-2.5 py-1 dark:bg-green-500/15">
                             <Text textBreakStrategy="simple" className="text-xs" style={{ color: '#15803D' }}>×{k.execution_count}</Text>
                           </View>

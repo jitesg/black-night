@@ -132,3 +132,13 @@ export function isKaryvahiDone(k: { step_code?: string | null; name?: string | n
   if (isPmKaryvahi(k)) return subStepProgress(parseSubSteps(k.sub_steps_json)).complete;
   return (k.execution_count ?? 0) > 0;
 }
+
+/** Unfinished पंचनामा व पोस्टमार्टम karyvahi → progress for the "⏳ लंबित · 3/6" chips; null for others / when 6/6. */
+export function pmPendingInfo(k: { step_code?: string | null; name?: string | null; sub_steps_json?: string | null }):
+  { done: number; total: number; remaining: string } | null {
+  if (!isPmKaryvahi(k)) return null;
+  const map = parseSubSteps(k.sub_steps_json);
+  const p = subStepProgress(map);
+  if (p.complete) return null;
+  return { done: p.done, total: p.total, remaining: remainingText(map) };
+}

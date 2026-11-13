@@ -20,6 +20,7 @@ import {
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { useFIRContext } from '@/context/FIRContext';
 import { logger } from '@/lib/logger';
+import { isKaryvahiDone, pmPendingInfo } from '@/lib/karyvahiSubSteps';
 
 const NAVY = '#6366F1';
 
@@ -41,6 +42,7 @@ function PendingRow({ item, firId }: { item: FIRKaryvahi; firId: string }) {
   const { t } = useTranslation();
   const status  = (item.status as KaryvahiStatus) ?? 'PENDING';
   const overdue = isOverdue(item.due_date);
+  const pm      = pmPendingInfo(item); // पंचनामा व पोस्टमार्टम: 3/6 + what is left
 
   return (
     <Pressable
@@ -66,6 +68,11 @@ function PendingRow({ item, firId }: { item: FIRKaryvahi; firId: string }) {
               {t(`fir.karyvahi.status.${status}`, status)}
             </Text>
           </View>
+          {pm && (
+            <View className="rounded-full px-2.5 py-1 bg-amber-50 dark:bg-amber-500/15">
+              <Text className="text-xs font-semibold" numberOfLines={1} style={{ color: '#B45309' }}>⏳ {pm.done}/{pm.total}</Text>
+            </View>
+          )}
           {/* Due date */}
           {item.due_date && (
             <Text className={`text-xs ${overdue ? 'text-red-600 font-semibold' : 'text-muted-foreground'}`}>
@@ -73,6 +80,7 @@ function PendingRow({ item, firId }: { item: FIRKaryvahi; firId: string }) {
             </Text>
           )}
         </View>
+        {pm && pm.done > 0 ? <Text className="text-xs text-muted-foreground">{pm.remaining}</Text> : null}
       </View>
 
       <ChevronRight size={15} color="#D1D5DB" className="mt-0.5" />
@@ -100,7 +108,7 @@ export default function PendingActionsScreen() {
       // Filter: MANDATORY + not COMPLETED (execution_count=0 AND status ≠ COMPLETED)
       const pending = all.filter(i => {
         const pri    = ((i.priority as KaryvahiPriority) ?? 'MANDATORY') === 'MANDATORY';
-        const done   = (i.execution_count ?? 0) > 0 || (i.status as KaryvahiStatus) === 'COMPLETED';
+        const done   = isKaryvahiDone(i) || (i.status as KaryvahiStatus) === 'COMPLETED'; // PM karyvahi: 6/6
         return pri && !done;
       });
       // Sort: overdue first → has due_date asc → no due_date last

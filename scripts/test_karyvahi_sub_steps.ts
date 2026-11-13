@@ -64,3 +64,12 @@ test('format save → parts with पर्चा; regenerate / delete entry', as
   assert.equal(subStepNote(allDoneLegacy().pan), 'पहले से');
   assert.ok(subStepProgress(allDoneLegacy()).complete);
 });
+
+test('pending chip info', async () => {
+  const { pmPendingInfo } = await import('../src/lib/karyvahiSubSteps.ts');
+  assert.equal(pmPendingInfo({ name: 'घटनास्थल निरीक्षण' }), null);
+  const i = pmPendingInfo({ step_code: 'RTA_PM_DEATH', sub_steps_json: JSON.stringify({ pan: { done: true }, pm: { done: true }, si: { done: true } }) });
+  assert.deepEqual(i, { done: 3, total: 6, remaining: 'बाकी: बयान आरक्षी, बयान पंच गवाहान, बयान चिकित्सक' });
+  const all = Object.fromEntries(PM_SUB_STEPS.map((s) => [s.id, { done: true }]));
+  assert.equal(pmPendingInfo({ step_code: 'RTA_PM_DEATH', sub_steps_json: JSON.stringify(all) }), null);
+});
