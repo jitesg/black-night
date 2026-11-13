@@ -640,7 +640,8 @@ function FIRDetailsTab() {
               className="flex-row items-center gap-1 px-3 py-1.5 rounded-xl bg-primary active:opacity-70"
             >
               <Plus size={14} color="#FFFFFF" />
-              <Text className="text-xs font-bold text-primary-foreground">+ SOP जोड़ें</Text>
+              {/* one line: the icon is the "+" (owner: two plus signs); "जोड़ें" was wrapping onto a hidden 2nd line */}
+              <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-bold text-primary-foreground">SOP जोड़ें</Text>
             </Pressable>
           </View>
 
