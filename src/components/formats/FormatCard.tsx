@@ -116,10 +116,15 @@ export const FormatCard = memo(function FormatCard({
       </View>
       {/* Tags */}
       {format.tags.length > 0 && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
-          {format.tags.slice(0, 6).map((tag, idx) => (
-            <Pill key={`${idx}-${tag}`} label={tag} />
-          ))}
+        // Android: the card itself is a Pressable, so a drag on the (non-touchable) chips was taken by the card and the
+        // row never slid (owner). The chips sit in their own Pressable inside the ScrollView — the native scroll can then
+        // take a sideways drag, and a plain tap still opens the format. All tags are shown (slide to see the rest).
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} nestedScrollEnabled keyboardShouldPersistTaps="handled">
+          <Pressable onPress={onPress} style={{ flexDirection: 'row', gap: 6, paddingRight: 4 }} accessibilityRole="button">
+            {format.tags.map((tag, idx) => (
+              <Pill key={`${idx}-${tag}`} label={tag} />
+            ))}
+          </Pressable>
         </ScrollView>
       )}
       {/* Footer — date + source badge; user cards add edit/delete actions */}

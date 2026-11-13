@@ -388,6 +388,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Full-screen editor (DocumentEditor FullScreenModal) keyboard: on Android NO KeyboardAvoidingView resizing (it flickered when the keyboard
   opened / closed — owner) — `useEditorKeyboardPadding` pads by the keyboard height (grow-only while open, 0 on hide) and
   `suspendKeyboardInset()` stops the root KeyboardInsetView re-padding the hidden screen underneath while the editor is open. iOS keeps KAV.
+- Horizontal chip row INSIDE a pressable card (FormatCard tags): on Android the card took the drag and the row never slid (owner) — put
+  the chips in their own Pressable (same onPress) inside the horizontal ScrollView; all tags shown (no slice).
 - Pressable `style={({ pressed }) => …}` (function form) was ignored on the phone (सूचनाएँ card lost background, border and
   row layout, build 24) — use a plain style object (pressed look via onPressIn/onPressOut state) in new code.
 - ✕ / 📋 in name, father / husband name and address boxes (owner): `useClearCopy` (`components/common/ClearCopyTools.tsx`; icons only
