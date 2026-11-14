@@ -42,7 +42,8 @@ test('179 notice: age limit 60 (BNSS 179), not 65', () => {
 test('179 info note: owner docx text, blocks in order', async () => {
   const { hasFormatInfo, boldParts } = await import('../src/lib/formatInfo.ts');
   assert.equal(hasFormatInfo('sys-fmt-notice-179-bnss'), true);
-  assert.equal(hasFormatInfo('sys-fmt-notice-35-3-bnss'), false);
+  assert.equal(hasFormatInfo('sys-fmt-notice-35-3-bnss'), true);
+  assert.equal(hasFormatInfo('sys-fmt-samanya-patra'), false);
   assert.deepEqual(boldParts('a **b** c'), [{ text: 'a ', bold: false }, { text: 'b', bold: true }, { text: ' c', bold: false }]);
   const info = JSON.parse(readFileSync(new URL('../assets/format-info/sys-fmt-notice-179-bnss.json', import.meta.url), 'utf8'));
   const heads = info.blocks.filter((b: { t: string }) => b.t === 'h').map((b: { x: string }) => b.x);
@@ -53,4 +54,12 @@ test('179 info note: owner docx text, blocks in order', async () => {
   assert.match(all, /60 वर्ष से अधिक आयु का पुरुष।/);
   assert.equal(info.blocks.filter((b: { t: string }) => b.t === 'box').length, 2);
   assert.equal(info.blocks.filter((b: { t: string }) => b.t === 'table')[0].rows.length, 4);
+});
+
+test('35(3) info note: owner text, no 5.x serials', () => {
+  const info = JSON.parse(readFileSync(new URL('../assets/format-info/sys-fmt-notice-35-3-bnss.json', import.meta.url), 'utf8'));
+  const heads = info.blocks.filter((b: { t: string }) => b.t === 'h').map((b: { x: string }) => b.x);
+  assert.deepEqual(heads, ['धारा 35(3): उपस्थित होने का नोटिस', 'धारा 35(4): नोटिस का पालन',
+    'धारा 35(5): नोटिस का पालन करने वाले व्यक्ति की गिरफ्तारी', 'धारा 35(6): नोटिस का पालन न करना']);
+  assert.equal(info.blocks.filter((b: { t: string }) => b.t === 'box')[0].label, 'महत्वपूर्ण');
 });

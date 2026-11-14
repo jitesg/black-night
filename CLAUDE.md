@@ -241,6 +241,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   design #1F4E79 / #EAF2F8 / yellow #FFF2CC, dark shades, "प्रारूप भरें →" = card onPress), ⓘ button (lucide Info) on FormatCard before 👁 — only
   system formats with a note. First: 179 नोटिस = owner's Dhara_179_BNSS_Info_Note.docx text as is (extracted by script, not retyped).
   New notes: owner's docx → JSON with the same block types + one NOTES line. Test in scripts/test_notice_179.ts.
+  35(3) नोटिस too: owner's chat text as is (35(3) / 35(4) / 35(5) / 35(6) headings — the owner's "5.3 / 5.4 / 5.5" serials removed — and
+  the "महत्वपूर्ण" warn box; no docx, head = format title only).
 - `sys-fmt-bayan-183-patra` "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)" (Case Diary, owner's docx +
   text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
   पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)
