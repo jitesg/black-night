@@ -28,7 +28,7 @@ test('179 notice: cards, dates dd/mm/yyyy, officer with rank', () => {
 });
 test('179 notice: empty optional boxes print dots', () => {
   const r: string = generateReport(f.vivran, base, f.keys);
-  assert.match(r, /रो0आम संख्या \/ समय – \.{10}/);
+  assert.doesNotMatch(r, /रो0आम/);  // empty रपट नं0 → the line is left out (owner)
   assert.match(r, /\(यदि कोई हो\) – \.{10}/);
   assert.match(r, /दिनांक – \.{10}/);
   assert.doesNotMatch(r, /\{\{/);
@@ -81,4 +81,24 @@ test('35(3) + 179 notices: age and mobile come from the person card (separate �
 test('179 notice: नोट points numbered 1. / 2. as list lines (no indent, owner)', () => {
   assert.match(f.vivran, /\[\[सूची\]\] \*\*नोटः-\*\*\n1\. इस नोटिस की शर्तों[^\n]*\n2\. वह पुरुष जो/);
   assert.doesNotMatch(f.vivran, /\[\[विवरण\]\] (1|2)\. /);
+});
+
+test('35(3) + 179: रपट नं0 / समय boxes (FIR fill), line left out when empty; 35(3) e-mail (owner)', () => {
+  const n35 = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-notice-35-3-bnss');
+  for (const fm of [n35, f]) {
+    const ks = fm.keys.map((k: { key_name: string }) => k.key_name);
+    assert.ok(ks.includes('RoNo') && ks.includes('RoTime') && !ks.includes('RoAam'));
+    assert.equal(fm.keys.find((k: { key_name: string }) => k.key_name === 'RoNo').default_value, '@FIR.roaam_no');
+  }
+  const card = JSON.stringify([{ name: 'राम', relationType: 'पुत्र', fatherOrHusbandName: 'श्याम', fullAddress: 'ग्राम क', mobile: '9876543210', email: 'a@b.in' }]);
+  const full: string = generateReport(n35.vivran, { AccCard: card, PoliceStation: 'बछरावां', District: 'रायबरेली', RoNo: '22', RoTime: '20:00' }, n35.keys);
+  assert.match(full, /थाना – बछरावां, रो0आम संख्या व समय – रपट नं0 22, समय 20:00 बजे, जनपद – रायबरेली/);
+  assert.match(full, /मो0न0 9876543210, ई-मेल a@b\.in।/);
+  const empty: string = generateReport(n35.vivran, { AccCard: card, PoliceStation: 'बछरावां', District: 'रायबरेली' }, n35.keys);
+  assert.match(empty, /थाना – बछरावां, जनपद – रायबरेली/);
+  assert.doesNotMatch(empty, /रो0आम/);
+  const b1: string = generateReport(f.vivran, { ...base, RoNo: '22', RoTime: '20:00' }, f.keys);
+  assert.match(b1, /रो0आम संख्या \/ समय – रपट नं0 22, समय 20:00 बजे\n/);
+  const b0: string = generateReport(f.vivran, base, f.keys);
+  assert.doesNotMatch(b0, /रो0आम/);
 });

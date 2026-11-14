@@ -233,6 +233,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   केस डायरी कार्यवाही panel; tests `scripts/test_workspace_default.ts` (backup notice_35_3_v8_before_appearat_default.json).
   v10 (owner): age + mobile from the AccCard (expand AccAge "age|वर्ष", AccMobile) → "… {{AccFather}} उम्र 35 वर्ष निवासी … मो0न0 …"; the
   separate Mobile box is gone (179 notice v3 the same: NAge / NMobile / NEmail from NoticeCard). Backup notices_35_3_179_before_age_mobile.json.
+  v11–12 (owner): AccEmail from the card → "मो0न0 …, ई-मेल …" (either alone too). RoAam box replaced in BOTH notices (179 v5) by RoNo
+  ("रो0आम रपट नं0", default @FIR.roaam_no) + RoTime ("रपट का समय", default @FIR.roaam_time, showIf RoNo) → "रपट नं0 22, समय 20:00 बजे";
+  empty RoNo → the रो0आम part (35(3)) / whole line (179) is left out. firFill cases roaam_no / roaam_time. Backups notice_35_3_v10_before_email.json,
+  notices_35_3_179_before_ro_split.json.
   NOW every date field in every format (also ones made in the app) shows / prints dd/mm/yyyy by default (`DEFAULT_DATE_FORMAT`; a key's
   dateFormat can change it), optional ones have ✕, empty box says "तारीख चुनें (dd/mm/yyyy)" (owner).
 - `sys-fmt-notice-179-bnss` "धारा 179 BNSS — तथ्यों से परिचित व्यक्ति को उपस्थिति हेतु नोटिस" (Case Diary, owner's docx, seed_version 1; right after
@@ -500,8 +504,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   card leaves it empty; expand runs before item_group `copy` (DName into पंच rows). न्यायालय fill-format now renders person / accused cards
   (before: plain text box). Backup docs/format-backups/batch2_before_person_cards.json.
 - FIR रो0आम (GD) रपट (owner): boxes "रो0आम रपट संख्या" (number) + "रपट का समय" (time) in a row under सूचना की तारीख / समय on add-fir and the
-  FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Not yet linked to formats (35(3) / 179 RoAam box —
-  an @FIR marker could fill "रपट नं0 12 समय 10:15 बजे" if the owner asks).
+  FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Linked: @FIR.roaam_no / roaam_time fill the
+  35(3) / 179 notices' RoNo / RoTime.
 - केस डायरी date/time (owner): `src/lib/caseDiaryTime.ts` (pure; tests `scripts/test_case_diary_time.ts`) — the FIRST diary opens with the FIR
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end

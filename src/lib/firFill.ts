@@ -11,6 +11,9 @@ export interface FirLike {
   time_of_occurrence?: string | null;
   date_of_information?: string | null;
   time_of_information?: string | null;
+  /** रो0आम (GD) रपट संख्या व समय (owner) */
+  roaam_no?: string | null;
+  roaam_time?: string | null;
   complainant_name?: string | null;
   complainant_father?: string | null;
   complainant_relation?: string | null;
@@ -88,6 +91,8 @@ export function firFillValue(field: string, f: FirLike | null, accused: AccusedL
     case 'section': return t(fir.section);
     case 'ghatnasthal': return t(fir.ghatnasthal);
     case 'fir_date': return hiDate(t(fir.date_of_information));
+    case 'roaam_no': return t(fir.roaam_no);
+    case 'roaam_time': return t(fir.roaam_time);
     case 'occurrence_date': return hiDate(t(fir.date_of_occurrence));
     case 'complainant_name': return t(fir.complainant_name);
     case 'complainant_father': return t(fir.complainant_father);

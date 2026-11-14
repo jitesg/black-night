@@ -51,3 +51,9 @@ test('accused like वादी', () => {
 test('occurrence date + time', () => {
   assert.equal(firFillValue('occurrence_datetime', { date_of_occurrence: '2025-06-30', time_of_occurrence: '20:00' }), '30.06.2025 समय करीब 20:00 बजे');
 });
+
+test('roaam_no / roaam_time from the FIR (owner)', () => {
+  assert.equal(firFillValue('roaam_no', { roaam_no: ' 22 ' } as never), '22');
+  assert.equal(firFillValue('roaam_time', { roaam_time: '20:00' } as never), '20:00');
+  assert.equal(firFillValue('roaam_no', null), '');
+});
