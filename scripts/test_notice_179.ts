@@ -77,3 +77,8 @@ test('35(3) + 179 notices: age and mobile come from the person card (separate �
   assert.match(b, /नाम – रामचन्द्र पुत्र भिखारी उम्र 35 वर्ष/);
   assert.match(b, /\(यदि कोई हो\) – 9876543210/);
 });
+
+test('179 notice: नोट points numbered 1. / 2. as list lines (no indent, owner)', () => {
+  assert.match(f.vivran, /\[\[सूची\]\] \*\*नोटः-\*\*\n1\. इस नोटिस की शर्तों[^\n]*\n2\. वह पुरुष जो/);
+  assert.doesNotMatch(f.vivran, /\[\[विवरण\]\] (1|2)\. /);
+});
