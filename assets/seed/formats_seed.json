@@ -4722,7 +4722,7 @@
     },
     {
       "id": "sys-gd-fmt-rawangi-samanya",
-      "title": "रवानगी उ0नि0(सामान्य)",
+      "title": "रवानगी उ0नि0",
       "format_type": "GD",
       "vivran": "इस समय मैं {{Rank}} {{OfficerName}} {{Hamrah}} क्षेत्र देखभाल, शांति व्यवस्था, संदिग्ध व्यक्ति व वाहन चेकिंग, रोकथाम जुर्म-जरायम तथा लंबित प्रार्थना पत्रों व विवेचनाओं के निस्तारण हेतु क्षेत्र में रवाना हुआ।",
       "is_favorite": 0,
@@ -4730,7 +4730,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "रवानगी",
@@ -4766,7 +4766,7 @@
           "dropdown_options": "{\"hint\": \"\\\"मय हमराह\\\" सहित पूरा लिखें, जैसे: मय हमराह का0 अजय यादव — कोई साथ न हो तो खाली छोड़ें\"}"
         }
       ],
-      "last_updated": "2026-07-17"
+      "last_updated": "2026-11-14"
     },
     {
       "id": "sys-gd-fmt-wapsi",
