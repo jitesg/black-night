@@ -230,6 +230,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   केस डायरी कार्यवाही panel; tests `scripts/test_workspace_default.ts` (backup notice_35_3_v8_before_appearat_default.json).
   NOW every date field in every format (also ones made in the app) shows / prints dd/mm/yyyy by default (`DEFAULT_DATE_FORMAT`; a key's
   dateFormat can change it), optional ones have ✕, empty box says "तारीख चुनें (dd/mm/yyyy)" (owner).
+- `sys-fmt-notice-179-bnss` "धारा 179 BNSS — तथ्यों से परिचित व्यक्ति को उपस्थिति हेतु नोटिस" (Case Diary, owner's docx, seed_version 1; right after
+  the 35(3) notice, keys copied from it): bold-label [[सूची]] header (कार्यालय = Office default "थानाध्यक्ष थाना {{PoliceStation}} जनपद {{District}}",
+  थाना, जनपद, मु0अ0सं0, धारा, FirDate, RoAam, "थाना … दिनांक NoticeDate … जनपद"), centred 179 heading, सेवा मे + NoticeCard (expand NName/NRel/
+  NFather/NAddr) + Mobile, VadiCard (VName…) in "उपरोक्त मामला … की शिकायत पर", appear date/time/place bold, [[दाएँ]] विवेचक block (rank + name,
+  थाना, जनपद, NoticeDate), नोटः- (BNS 208, छूट). Blank optional → "..........". Spelling fixed from the docx. Tests `scripts/test_notice_179.ts`.
 - `sys-fmt-bayan-183-patra` "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)" (Case Diary, owner's docx +
   text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
   पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)
