@@ -73,7 +73,8 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
   const cur = (k: string) => (out ?? values)[k];
   const groupings: { rows: Record<string, string>[]; g: GroupInto }[] = [];
 
-  // Date keys with {"dateFormat": "dd/mm/yyyy"}: the picker's YYYY-MM-DD (or a FIR dd.mm.yyyy default) printed that way.
+  // Date keys (owner: all formats dd/mm/yyyy; a key may set {"dateFormat": "dd.mm.yyyy"}): the picker's YYYY-MM-DD (or a FIR
+  // dd.mm.yyyy default) printed that way.
   for (const kd of keyDefs) {
     if (kd.field_type !== 'date') continue;
     const fmt = dateFormatOf(kd.dropdown_options);
@@ -179,7 +180,7 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
 }
 
 // ── Date fields (owner: 35(3) नोटिस dates as dd/mm/yyyy) — picker stores YYYY-MM-DD, @FIR.fir_date gives dd.mm.yyyy;
-//    a date key with {"dateFormat": "dd/mm/yyyy"} shows and prints that form. Tests scripts/test_format_date.ts.
+//    every date key shows and prints dd/mm/yyyy (owner: all formats; {"dateFormat": …} can change it). Tests scripts/test_format_date.ts.
 
 /** Any of YYYY-MM-DD, dd.mm.yyyy, dd/mm/yyyy, dd-mm-yyyy → [yyyy, mm, dd]; null otherwise. */
 export function dateParts(v: string | null | undefined): [string, string, string] | null {
@@ -198,13 +199,16 @@ export function toIsoDate(v: string | null | undefined): string {
 }
 
 /** The key's dateFormat option, if any ("dd/mm/yyyy" or "dd.mm.yyyy"). */
-export function dateFormatOf(dropdownOptions: string | null | undefined): string | null {
-  if (!dropdownOptions) return null;
+/** Every date field prints dd/mm/yyyy (owner) unless its key says otherwise. */
+export const DEFAULT_DATE_FORMAT = 'dd/mm/yyyy';
+
+export function dateFormatOf(dropdownOptions: string | null | undefined): string {
+  if (!dropdownOptions) return DEFAULT_DATE_FORMAT;
   try {
     const o = JSON.parse(dropdownOptions) as { dateFormat?: unknown };
-    return o && typeof o === 'object' && typeof o.dateFormat === 'string' ? o.dateFormat : null;
+    return o && typeof o === 'object' && typeof o.dateFormat === 'string' ? o.dateFormat : DEFAULT_DATE_FORMAT;
   } catch {
-    return null;
+    return DEFAULT_DATE_FORMAT;
   }
 }
 

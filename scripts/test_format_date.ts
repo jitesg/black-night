@@ -21,6 +21,8 @@ test('dd/mm/yyyy output', () => {
 });
 test('option read', () => {
   assert.equal(dateFormatOf('{"dateFormat":"dd/mm/yyyy","hint":"x"}'), 'dd/mm/yyyy');
-  assert.equal(dateFormatOf('{"hint":"x"}'), null);
-  assert.equal(dateFormatOf('a,b'), null);
+  assert.equal(dateFormatOf('{"hint":"x"}'), 'dd/mm/yyyy');
+  assert.equal(dateFormatOf('a,b'), 'dd/mm/yyyy');
+  assert.equal(dateFormatOf(null), 'dd/mm/yyyy');
+  assert.equal(dateFormatOf('{"dateFormat":"dd.mm.yyyy"}'), 'dd.mm.yyyy');
 });

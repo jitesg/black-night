@@ -128,7 +128,7 @@ test('सामान्य पत्र: empty संलग्नक / दि�
   assert.equal((empty.match(/<p>पैरा/g) ?? []).length, 2);
   const full = P2.renderTextForPrint(generateReport(f.vivran, { ...base, Attachments: 'प्रति - 02 वर्क\nविवरण - 01 वर्क', Date: '29.10.2026' }, f.keys, { keepMarkers: true }));
   assert.match(full, /class="att">1\. प्रति - 02 वर्क/);
-  assert.match(full, /दिनांक: 29\.10\.2026/);
+  assert.match(full, /दिनांक: 29\/10\/2026/);
 });
 
 test('चोरी वाहन फ्लैग पत्र: all fields filled, numbers repeat, आर0सी0 attachment', async () => {
