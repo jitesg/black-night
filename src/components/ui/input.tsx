@@ -767,7 +767,8 @@ const FormatKeyDropdownInput = forwardRef<View, {
               accessibilityState={{ selected: on }}
               accessibilityLabel={o.label}
               style={{
-                minWidth: 96, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, alignItems: 'center',
+                // compact chip, a little bigger than a pill (owner: the old 96px-wide boxes were too big)
+                paddingHorizontal: 14, paddingVertical: 7, borderRadius: 999, alignItems: 'center',
                 borderWidth: on ? 2 : 1, borderColor: on ? green : (error ? c.destructive : c.border),
                 backgroundColor: on ? `${green}14` : c.card,
               }}

@@ -4724,46 +4724,185 @@
       "id": "sys-gd-fmt-rawangi-samanya",
       "title": "रवानगी उ0नि0",
       "format_type": "GD",
-      "vivran": "इस समय मैं {{Rank}} {{OfficerName}} {{Hamrah}} क्षेत्र देखभाल, शांति व्यवस्था, संदिग्ध व्यक्ति व वाहन चेकिंग, रोकथाम जुर्म-जरायम तथा लंबित प्रार्थना पत्रों व विवेचनाओं के निस्तारण हेतु क्षेत्र में रवाना हुआ।",
+      "vivran": "{{if:Kind=क्षेत्र|रवानगी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}}}{{if:Kind=मुकदमा|रवानगी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} मु0अ0सं0 {{FIRNo}} धारा {{Sections}}}}{{if:Kind=उच्च न्यायालय|रवानगी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{if:HCourt=लखनऊ खंडपीठ|मा0 उच्च न्यायालय जनपद लखनऊ}}{{if:HCourt=इलाहाबाद|मा0 उच्च न्यायालय जनपद प्रयागराज}}}}{{if:Kind=जनपद न्यायालय|रवानगी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} मा0 न्यायालय जनपद {{CourtDist}}}}{{if:Kind=गैर प्रान्त|रवानगी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} गैर प्रान्त ({{State}})}}{{if:Kind=वारंट|रवानगी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{if:WType=NBW|वारंटी}}{{if:WType=सम्मन|सम्मन}}{{if:WType=मृत्यु आख्या|मृत्यु आख्या}} सम्बन्धित मु0अ0सं0 {{WFir}} धारा {{WSec}}}}{{if:Kind=अन्य|रवानगी {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}}}\n\n{{if:Kind=क्षेत्र|इस समय मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}}}} क्षेत्र देखभाल, शांति व्यवस्था, संदिग्ध व्यक्ति व वाहन चेकिंग, रोकथाम जुर्म-जरायम तथा लंबित प्रार्थना पत्रों व विवेचनाओं के निस्तारण हेतु क्षेत्र में रवाना हुआ।}}{{if:Kind=मुकदमा|इस समय मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}}}}, मु0अ0सं0 {{FIRNo}} धारा {{Sections}} की विवेचना के क्रम में साक्ष्य संकलन, सुरागरसी-पतारसी तथा वांछित अभियुक्तगण की गिरफ्तारी/तलाश हेतु क्षेत्र/ गैर जनपद/ गैर प्रदेश में रवाना हुआ।}}{{if:Kind=उच्च न्यायालय|इस समय मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}}}}{{if:Purpose| {{Purpose}}}} {{if:HCourt=लखनऊ खंडपीठ|मा0 उच्च न्यायालय जनपद लखनऊ}}{{if:HCourt=इलाहाबाद|मा0 उच्च न्यायालय जनपद प्रयागराज}} रवाना हुआ।}}{{if:Kind=जनपद न्यायालय|इस समय मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}}}}{{if:Purpose| {{Purpose}}}} मा0 न्यायालय जनपद {{CourtDist}} रवाना हुआ।}}{{if:Kind=गैर प्रान्त|इस समय मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}}}}{{if:Purpose| {{Purpose}}}} गैर प्रान्त {{State}} रवाना हुआ।}}{{if:Kind=वारंट|इस समय मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}}}} {{WCourt}} के वाद सं0 {{WCaseNo}} अ0सं0 {{WFir}} शा0 प्रति {{if:WVs|{{WVs}}}}{{ifnot:WVs|{{WName}}}} धारा {{WSec}} से सम्बन्धित {{WName}}{{if:WFather| {{WRel}} {{WFather}}}}{{if:WAddr| निवासी {{WAddr}}}} {{if:WType=NBW|की तलाश मे रवाना हुआ।}}{{if:WType=सम्मन|को सम्मन तामील कराने हेतु रवाना हुआ।}}{{if:WType=मृत्यु आख्या|की मृत्यु के सम्बन्ध में जानकारी कर आख्या हेतु रवाना हुआ।}}}}{{if:Kind=अन्य|इस समय मैं {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} {{OfficerName}}{{if:Hamrah| मय हमराह {{Hamrah}}}} {{Other}} रवाना हुआ।}}",
       "is_favorite": 0,
       "created_by": "system",
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "रवानगी",
-        "सामान्य गश्त",
+        "क्षेत्र",
+        "मुकदमा",
+        "न्यायालय",
+        "गैर प्रान्त",
+        "वारंट",
         "GD"
       ],
       "keys": [
         {
-          "key_name": "Rank",
+          "key_name": "Kind",
+          "label": "रवानगी किस लिए",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "क्षेत्र",
+          "dropdown_options": "{\"options\": [{\"value\": \"क्षेत्र\", \"label\": \"क्षेत्र\"}, {\"value\": \"मुकदमा\", \"label\": \"मुकदमा\"}, {\"value\": \"उच्च न्यायालय\", \"label\": \"उच्च न्यायालय\"}, {\"value\": \"जनपद न्यायालय\", \"label\": \"जनपद न्यायालय\"}, {\"value\": \"गैर प्रान्त\", \"label\": \"गैर प्रान्त\"}, {\"value\": \"वारंट\", \"label\": \"NBW / सम्मन / मृत्यु आख्या\"}, {\"value\": \"अन्य\", \"label\": \"अन्य\"}], \"hint\": \"किस काम से रवाना हो रहे हैं — चुनते ही उसी के box खुलेंगे और हैडिंग व लाइन उसी हिसाब से बनेगी\"}",
+          "sort_order": 0
+        },
+        {
+          "key_name": "pad",
           "label": "पद/रैंक",
-          "field_type": "text",
-          "is_required": 0,
-          "sort_order": 7,
-          "default_value": "उ0नि0",
-          "dropdown_options": "{\"hint\": \"अपना पद छोटे रूप में, जैसे: उ0नि0 / निरीक्षक\"}"
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "उपनिरीक्षक",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें — छपेगा उ0नि0 / निरीक्षक\"}",
+          "sort_order": 1
         },
         {
           "key_name": "OfficerName",
           "label": "अधिकारी का नाम",
           "field_type": "text",
-          "is_required": 0,
-          "sort_order": 8,
-          "default_value": "",
-          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह\"}"
+          "is_required": 1,
+          "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना है)\"}",
+          "sort_order": 2
         },
         {
           "key_name": "Hamrah",
-          "label": "हमराह",
+          "label": "हमराह (वैकल्पिक)",
           "field_type": "text",
           "is_required": 0,
-          "sort_order": 9,
-          "default_value": "मय हमराह का0 अजय यादव",
-          "dropdown_options": "{\"hint\": \"\\\"मय हमराह\\\" सहित पूरा लिखें, जैसे: मय हमराह का0 अजय यादव — कोई साथ न हो तो खाली छोड़ें\"}"
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: का0 अजय यादव\", \"hint\": \"साथ जाने वाले कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — छपेगा \\\"मय हमराह …\\\"; कोई साथ न हो तो खाली छोड़ें\"}",
+          "sort_order": 3
+        },
+        {
+          "key_name": "FIRNo",
+          "label": "मु0अ0सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "@FIR.fir_number",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 284/2025\", \"showIf\": \"Kind=मुकदमा\", \"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 284/2025 — मुकदमा चुनने पर अपने आप भरता है\"}",
+          "sort_order": 4
+        },
+        {
+          "key_name": "Sections",
+          "label": "धारा",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": "@FIR.section",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 115(2), 352 बीएनएस\", \"showIf\": \"Kind=मुकदमा\", \"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352 बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}",
+          "sort_order": 5
+        },
+        {
+          "key_name": "HCourt",
+          "label": "उच्च न्यायालय",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "लखनऊ खंडपीठ",
+          "dropdown_options": "{\"options\": [\"लखनऊ खंडपीठ\", \"इलाहाबाद\"], \"showIf\": \"Kind=उच्च न्यायालय\", \"hint\": \"लखनऊ खंडपीठ = मा0 उच्च न्यायालय जनपद लखनऊ; इलाहाबाद = मा0 उच्च न्यायालय जनपद प्रयागराज\"}",
+          "sort_order": 6
+        },
+        {
+          "key_name": "CourtDist",
+          "label": "न्यायालय का जनपद",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": "{{District}}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: लखनऊ\", \"showIf\": \"Kind=जनपद न्यायालय\", \"hint\": \"किस जनपद के न्यायालय जा रहे हैं — अपने आप आपका जनपद भरता है, अलग हो तो बदलें, जैसे: लखनऊ\"}",
+          "sort_order": 7
+        },
+        {
+          "key_name": "State",
+          "label": "प्रान्त का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: बिहार\", \"showIf\": \"Kind=गैर प्रान्त\", \"hint\": \"किस प्रान्त (राज्य) जा रहे हैं, जैसे: बिहार\"}",
+          "sort_order": 8
+        },
+        {
+          "key_name": "Purpose",
+          "label": "किस काम से (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: मु0अ0सं0 284/2025 की जमानत पैरवी हेतु\", \"showIf\": \"Kind=उच्च न्यायालय/जनपद न्यायालय/गैर प्रान्त\", \"hint\": \"जाने का काम, जैसे: मु0अ0सं0 284/2025 की जमानत पैरवी हेतु — खाली छोड़ें तो नहीं छपेगा\"}",
+          "sort_order": 9
+        },
+        {
+          "key_name": "WType",
+          "label": "प्रकार",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "NBW",
+          "dropdown_options": "{\"options\": [\"NBW\", \"सम्मन\", \"मृत्यु आख्या\"], \"showIf\": \"Kind=वारंट\", \"hint\": \"NBW = वारंटी की तलाश; सम्मन = सम्मन तामील; मृत्यु आख्या = मृत्यु के सम्बन्ध में जानकारी कर आख्या\"}",
+          "sort_order": 10
+        },
+        {
+          "key_name": "WCourt",
+          "label": "न्यायालय का नाम",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: माननीय न्यायालय विशेष न्यायिक मजिस्ट्रेट कोर्ट सं0 25\", \"showIf\": \"Kind=वारंट\", \"hint\": \"जिस न्यायालय से वारंट / सम्मन आया, जैसे: माननीय न्यायालय विशेष न्यायिक मजिस्ट्रेट कोर्ट सं0 25\"}",
+          "sort_order": 11
+        },
+        {
+          "key_name": "WCaseNo",
+          "label": "वाद सं0",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 795/20\", \"showIf\": \"Kind=वारंट\", \"hint\": \"न्यायालय का वाद संख्या, जैसे: 795/20\"}",
+          "sort_order": 12
+        },
+        {
+          "key_name": "WFir",
+          "label": "अ0सं0 (मु0अ0सं0)",
+          "field_type": "text",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 409/18\", \"showIf\": \"Kind=वारंट\", \"hint\": \"सम्बन्धित मुकदमा अपराध संख्या, जैसे: 409/18\"}",
+          "sort_order": 13
+        },
+        {
+          "key_name": "WSec",
+          "label": "धारा",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 60(1) आबकारी अधिनियम\", \"showIf\": \"Kind=वारंट\", \"hint\": \"धारा अधिनियम सहित, जैसे: 60(1) आबकारी अधिनियम\"}",
+          "sort_order": 14
+        },
+        {
+          "key_name": "WCard",
+          "label": "वारंटी / जिसके नाम सम्मन (कार्ड)",
+          "field_type": "person_group",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"single\": true, \"showIf\": \"Kind=वारंट\", \"hint\": \"वारंटी का नाम, सम्बन्ध, पिता का नाम और पूरा पता, जैसे: दिलीप कुमार पुत्र विजय कुमार निवासी असरेंदा पो0 गुनजौली मौरावा उन्नाव\", \"expand\": {\"WName\": \"name\", \"WRel\": \"relationType||पुत्र\", \"WFather\": \"fatherOrHusbandName\", \"WAddr\": \"fullAddress\"}}",
+          "sort_order": 15
+        },
+        {
+          "key_name": "WVs",
+          "label": "शा0 प्रति (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: दिलीप कुमार\", \"showIf\": \"Kind=वारंट\", \"hint\": \"वाद में \\\"शासन प्रति …\\\" वाला नाम — वारंटी ही हो तो खाली छोड़ें, वारंटी का नाम अपने आप छपेगा\"}",
+          "sort_order": 16
+        },
+        {
+          "key_name": "Other",
+          "label": "रवानगी का उद्देश्य लिखें",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: पुलिस लाइन में आयोजित परेड में सम्मिलित होने हेतु पुलिस लाइन\", \"showIf\": \"Kind=अन्य\", \"hint\": \"किस काम से और कहाँ जा रहे हैं, जैसे: पुलिस लाइन में आयोजित परेड में सम्मिलित होने हेतु पुलिस लाइन — लाइन के बाद \\\"रवाना हुआ।\\\" अपने आप लगेगा\"}",
+          "sort_order": 17
         }
       ],
       "last_updated": "2026-11-14"

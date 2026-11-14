@@ -163,6 +163,16 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   विवेचना paragraph has FIRNo/Sections fields. Old v1 in `docs/format-backups/gd_wapsi_v1.json`.
 - GD `sys-gd-fmt-rawangi-mukadma` "रवानगी उ0नि0(मुकदमा)" removed (owner) — dropped from the seed, so the seed manager's orphan clean-up
   soft-deletes it on phones; backup docs/format-backups/gd_rawangi_mukadma_removed.json. "रवानगी उ0नि0(सामान्य)" stays — renamed "रवानगी उ0नि0" (owner, seed_version 3).
+- GD `sys-gd-fmt-rawangi-samanya` "रवानगी उ0नि0" v4 (owner; backup docs/format-backups/gd_rawangi_samanya_v3_before_kinds.json): dropdown `Kind`
+  (values क्षेत्र / मुकदमा / उच्च न्यायालय / जनपद न्यायालय / गैर प्रान्त / वारंट [label "NBW / सम्मन / मृत्यु आख्या"] / अन्य, default क्षेत्र) → heading line
+  + blank line + "इस समय मैं उ0नि0 <name>{ मय हमराह <Hamrah>} …रवाना हुआ।" (pad → उ0नि0 / निरीक्षक in both). मुकदमा: FIRNo / Sections (@FIR);
+  उच्च न्यायालय: HCourt लखनऊ खंडपीठ → "मा0 उच्च न्यायालय जनपद लखनऊ" / इलाहाबाद → "…जनपद प्रयागराज"; जनपद न्यायालय: CourtDist (default {{District}});
+  गैर प्रान्त: State; optional Purpose before the place for those three; वारंट: WType NBW / सम्मन / मृत्यु आख्या (heading "वारंटी / सम्मन / मृत्यु आख्या
+  सम्बन्धित मु0अ0सं0 … धारा …"; ending "की तलाश मे" / "को सम्मन तामील कराने हेतु" / "की मृत्यु के सम्बन्ध में जानकारी कर आख्या हेतु"), WCourt, WCaseNo,
+  WFir, WSec, WCard (expand WName / WRel / WFather / WAddr), optional WVs (शा0 प्रति; empty → WName); अन्य: Other "रवानगी का उद्देश्य लिखें". GD = plain
+  text, so no bold heading. Tests `scripts/test_rawangi.ts`.
+- Format dropdown chips (`FormatKeyDropdownInput`, every format): compact pills (paddingHorizontal 14, paddingVertical 7, radius 999, no minWidth) —
+  owner: the old 96px boxes were too big.
 - GD `sys-gd-fmt-taskara` "तस्करा — पूछताछ / सुपुर्दगी" (replaced 5 old taskara formats; backup docs/format-backups/taskara_old_removed.json):
   dropdowns Stage (बैठाया / सुपुर्दगी) × Reason (मुकदमा / प्रार्थना पत्र / PRV / अन्य) → `{{if:Key=value|…}}`; fields shown only when
   needed via showIf; सुपुर्दगी: GiveMode one receiver (relation incl. दोस्त/पड़ोसी/गाँव के व्यक्ति) or item_group `Givers` per person.
