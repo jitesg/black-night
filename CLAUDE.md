@@ -231,6 +231,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   v9 (owner): AppearAt default "थाना {{PoliceStation}} जनपद {{District}}" — a typed default may hold workspace keys, filled when the form
   opens by `fillWorkspaceDefault` (globalKeyEngine.ts; a missing setting → empty box) in formats/fill, nyayalay + prarthna-patra fill-format and the
   केस डायरी कार्यवाही panel; tests `scripts/test_workspace_default.ts` (backup notice_35_3_v8_before_appearat_default.json).
+  v10 (owner): age + mobile from the AccCard (expand AccAge "age|वर्ष", AccMobile) → "… {{AccFather}} उम्र 35 वर्ष निवासी … मो0न0 …"; the
+  separate Mobile box is gone (179 notice v3 the same: NAge / NMobile / NEmail from NoticeCard). Backup notices_35_3_179_before_age_mobile.json.
   NOW every date field in every format (also ones made in the app) shows / prints dd/mm/yyyy by default (`DEFAULT_DATE_FORMAT`; a key's
   dateFormat can change it), optional ones have ✕, empty box says "तारीख चुनें (dd/mm/yyyy)" (owner).
 - `sys-fmt-notice-179-bnss` "धारा 179 BNSS — तथ्यों से परिचित व्यक्ति को उपस्थिति हेतु नोटिस" (Case Diary, owner's docx, seed_version 1; right after

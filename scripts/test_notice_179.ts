@@ -63,3 +63,17 @@ test('35(3) info note: owner text, no 5.x serials', () => {
     'धारा 35(5): नोटिस का पालन करने वाले व्यक्ति की गिरफ्तारी', 'धारा 35(6): नोटिस का पालन न करना']);
   assert.equal(info.blocks.filter((b: { t: string }) => b.t === 'box')[0].label, 'महत्वपूर्ण');
 });
+
+test('35(3) + 179 notices: age and mobile come from the person card (separate मो0न0 box removed, owner)', () => {
+  const card = (age: string, mobile: string) => JSON.stringify([{ name: 'रामचन्द्र', relationType: 'पुत्र', fatherOrHusbandName: 'भिखारी', fullAddress: 'ग्राम भग्तिन खेड़ा', age, mobile }]);
+  const n35 = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-notice-35-3-bnss');
+  assert.ok(!n35.keys.some((k: { key_name: string }) => k.key_name === 'Mobile'));
+  assert.ok(!f.keys.some((k: { key_name: string }) => k.key_name === 'Mobile'));
+  const a: string = generateReport(n35.vivran, { AccCard: card('35', '9876543210') }, n35.keys);
+  assert.match(a, /रामचन्द्र पुत्र भिखारी उम्र 35 वर्ष निवासी ग्राम भग्तिन खेड़ा मो0न0 9876543210।/);
+  const a2: string = generateReport(n35.vivran, { AccCard: card('', '') }, n35.keys);
+  assert.match(a2, /रामचन्द्र पुत्र भिखारी निवासी ग्राम भग्तिन खेड़ा।/);
+  const b: string = generateReport(f.vivran, { ...base, NoticeCard: card('35', '9876543210') }, f.keys);
+  assert.match(b, /नाम – रामचन्द्र पुत्र भिखारी उम्र 35 वर्ष/);
+  assert.match(b, /\(यदि कोई हो\) – 9876543210/);
+});
