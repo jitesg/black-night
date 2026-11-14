@@ -311,3 +311,16 @@ test('[[सूची अंदर]]: list lines moved in (print class, editor pa
     assert.doesNotMatch(generateReport(f.vivran, {}, f.keys), /\[\[सूची/, f.id);
   }
 });
+
+test('वाहन तकनीकी निरीक्षण: new अतः line (वाहन / वाहनों) and signature 3 lines lower (owner)', async () => {
+  const { generateReport } = await import('../src/lib/templateEngine.ts');
+  const seed = JSON.parse(readFileSync(new URL('../assets/seed/formats_seed.json', import.meta.url), 'utf8'));
+  const f = seed.formats.find((x: { id: string }) => x.id === 'sys-fmt-vehicle-technical-inspection');
+  const base = { FIRNumber: '297/2025', Sections: '281 बीएनएस', VehiclePlace: 'थाना परिसर में', pad: 'उपनिरीक्षक', OfficerName: 'जीतेश सिंह', PoliceStation: 'बछरावां', District: 'रायबरेली' };
+  const one: string = generateReport(f.vivran, { ...base, Vehicles: JSON.stringify([{ role: 'दुर्घटनाकारक', vtype: 'ट्रक', vno: 'UP33 AT 1234' }]) }, f.keys, { keepMarkers: true });
+  assert.match(one, /अतः महोदय से निवेदन है कि उपरोक्त वाहन का तकनीकी मुआयना कराने हेतु संबंधित को आदेशित कर तकनीकी निरीक्षण रिपोर्ट उपलब्ध कराने की कृपा करें, जिससे मुकदमा उपरोक्त का निस्तारण किया जा सके।/);
+  assert.doesNotMatch(one, /कष्ट करें/);
+  assert.match(one, /\[\[हस्ताक्षर\]\] ​\n​\n​\n\(जीतेश सिंह\)/);
+  const two: string = generateReport(f.vivran, { ...base, Vehicles: JSON.stringify([{ role: 'दुर्घटनाकारक', vtype: 'ट्रक', vno: 'A1' }, { role: 'दुर्घटनाग्रस्त', vtype: 'बाइक', vno: 'B2' }]) }, f.keys, { keepMarkers: true });
+  assert.match(two, /अतः महोदय से निवेदन है कि उपरोक्त वाहनों का तकनीकी मुआयना/);
+});

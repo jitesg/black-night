@@ -189,6 +189,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - `sys-fmt-vehicle-technical-inspection` "वाहन तकनीकी निरीक्षण रिपोर्ट हेतु आवेदन" v3 (type Prarthna Patra — owner moved it from Nyayalay):
   to प्रतिसार निरीक्षक; item_group Vehicles (role दुर्घटनाकारक/दुर्घटनाग्रस्त/सम्बन्धित, vtype, vno) — 1 vehicle inline, 2+ = "02 वाहनों" + [[सूची]];
   VehiclePlace (खड़ा/खड़े), optional Mobile. Old v2 in `docs/format-backups/vehicle_technical_inspection_v2.json`.
+  v7 (owner): last request = "अतः महोदय से निवेदन है कि उपरोक्त वाहन / वाहनों का तकनीकी मुआयना कराने हेतु संबंधित को आदेशित कर तकनीकी निरीक्षण
+  रिपोर्ट उपलब्ध कराने की कृपा करें, जिससे मुकदमा उपरोक्त का निस्तारण किया जा सके।" (was "…कष्ट करें।"), signature 3 zero-width lines lower;
+  backup docs/format-backups/vehicle_technical_inspection_v6_before_atah.json; test in scripts/test_format_markers.ts.
 - `sys-fmt-vehicle-release` "वाहन अवमुक्त कराये जाने हेतु आख्या (दुर्घटनाकारक / दुर्घटनाग्रस्त / बरामदशुदा / सीजशुदा)" v3 (Nyayalay):
   item_group Vehicles (role 5 options, vtype, vno — no chassis/engine, owner), KeptAt, Tech dropdown (हो चुका है / नहीं हुआ है /
   आवश्यकता नहीं; no date), Objection (कोई आपत्ति नहीं / आपत्ति है + ObjReason via showIf); no प्रार्थी line (owner). Old v2 in
