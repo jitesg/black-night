@@ -8075,7 +8075,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 7,
+      "seed_version": 8,
       "app_version": "1.0.0",
       "tags": [
         "35(3)",
@@ -8165,8 +8165,8 @@
           "label": "समय",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 11:00 बजे\", \"hint\": \"उपस्थित होने का समय, जैसे: 11:00 बजे\"}",
+          "default_value": "10:00 बजे",
+          "dropdown_options": "{\"placeholder\": \"जैसे: 11:00 बजे\", \"hint\": \"उपस्थित होने का समय — पहले से 10:00 बजे भरा रहता है, बदलना हो तो लिखें, जैसे: 11:00 बजे\"}",
           "sort_order": 13
         },
         {

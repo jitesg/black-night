@@ -224,6 +224,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   v7 (owner): FirDate / NoticeDate / AppearDate are field_type date with `{"dateFormat": "dd/mm/yyyy"}` — box shows and report prints
   dd/mm/yyyy (`formatDateValue` / `dateParts` / `toIsoDate` in formatDerived.ts, applied in deriveFormatValues; picker still stores YYYY-MM-DD;
   optional ones get a ✕ to clear; tests `scripts/test_format_date.ts`; backup docs/format-backups/notice_35_3_v6_before_date_fields.json).
+  v8 (owner): AppearTime default "10:00 बजे" (backup notice_35_3_v7_before_time_default.json).
   NOW every date field in every format (also ones made in the app) shows / prints dd/mm/yyyy by default (`DEFAULT_DATE_FORMAT`; a key's
   dateFormat can change it), optional ones have ✕, empty box says "तारीख चुनें (dd/mm/yyyy)" (owner).
 - `sys-fmt-bayan-183-patra` "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)" (Case Diary, owner's docx +
