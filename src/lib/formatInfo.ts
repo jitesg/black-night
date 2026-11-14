@@ -3,14 +3,14 @@
  * (FormatCard → FormatInfoSheet). Notes live in assets/format-info/<format id>.json — the owner's docx text as is
  * (blue design of the docx). Add a new note: put the JSON there and one line in NOTES below.
  *
- * Blocks: head {label,title,sub} · box {tone info|warn,label,x} · h {x} · p {x} · ul / ol {i: string[]} ·
+ * Blocks: head {label,title,sub,lines} · box {tone info|warn,label,x} · h / h2 {x} · p {x} · ul / ol / check (☐) {i: string[]} ·
  * table {head: string[], rows: string[][]} · qa {rows: [q, a][]}. "**…**" inside text = bold.
  */
 export type InfoBlock =
-  | { t: 'head'; label: string; title: string; sub?: string }
+  | { t: 'head'; label: string; title: string; sub?: string; lines?: string[] }
   | { t: 'box'; tone: 'info' | 'warn'; label: string; x: string }
-  | { t: 'h' | 'p'; x: string }
-  | { t: 'ul' | 'ol'; i: string[] }
+  | { t: 'h' | 'h2' | 'p'; x: string }
+  | { t: 'ul' | 'ol' | 'check'; i: string[] }
   | { t: 'table'; head: string[]; rows: string[][] }
   | { t: 'qa'; rows: string[][] };
 

@@ -17,13 +17,17 @@ import {
 import { useColorScheme } from 'react-native';
 import { THEME } from '@/lib/theme';
 import { type DetailedExplainEntry } from '@/lib/law/detailedAnalysis';
+import type { FormatInfo } from '@/lib/formatInfo';
+import { InfoBlocksView } from '@/components/common/InfoBlocksView';
 
 interface DetailedAnalysisCardProps {
   entry: DetailedExplainEntry;
   isHi?: boolean;
+  /** Owner's notes for this section (src/lib/law/lawNotes.ts) — shown INSTEAD of the generated analysis (owner, BNSS 35). */
+  note?: FormatInfo | null;
 }
 
-export function DetailedAnalysisCard({ entry, isHi = true }: DetailedAnalysisCardProps) {
+export function DetailedAnalysisCard({ entry, isHi = true, note }: DetailedAnalysisCardProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const C = THEME[isDark ? 'dark' : 'light'];
@@ -117,7 +121,13 @@ export function DetailedAnalysisCard({ entry, isHi = true }: DetailedAnalysisCar
         )}
       </Pressable>
 
-      {isCardExpanded && (
+      {isCardExpanded && note ? (
+        <View className="pt-1">
+          <InfoBlocksView blocks={note.blocks} />
+        </View>
+      ) : null}
+
+      {isCardExpanded && !note && (
         <View className="gap-3 pt-1">
           {/* ── 1. सार (s) + मुख्य बिंदु (k) ── */}
           {hasSarBindu && (

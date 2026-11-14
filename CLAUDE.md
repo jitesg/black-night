@@ -534,6 +534,13 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (`components/settings/RealPerfCard.tsx`: first screen ms, seed ms, last search ms, DB size, rows by content_type).
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 
+- Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
+  `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
+  header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared
+  `components/common/InfoBlocksView.tsx` (also used by FormatInfoSheet). Docx → JSON: `python3 -I scripts/docx_to_info_blocks.py <docx> <out.json>`
+  (text as is; Heading 1 → h, Heading 2 → h2, List Bullet/Number → ul/ol, "☐" lines → check, 1×1 table → box, others → table). Tests
+  `scripts/test_law_notes.ts`.
+
 ## SOP library
 - Seeds in `assets/seed/`: `sop_index.json`, `sop_struct_1.json`, `sop_struct_2.json`,
   `sop_explain_1.json` (owner's files, byte-for-byte — except owner-asked fixes: sop-up-b2-01 शारीरिक क्षति "सामान्य कारण"

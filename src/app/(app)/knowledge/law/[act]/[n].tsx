@@ -19,6 +19,7 @@ import { getSimple, type SimpleExplainEntry } from '@/lib/law/simpleExplain';
 import { getDetailedExplain, type DetailedExplainEntry } from '@/lib/law/detailedAnalysis';
 import { getCasesForSection, type CaseLawItem } from '@/lib/law/casesData';
 import { DetailedAnalysisCard } from '@/components/law/DetailedAnalysisCard';
+import { getLawNote } from '@/lib/law/lawNotes';
 import { CaseLawCard } from '@/components/law/CaseLawCard';
 import { openSection } from '@/lib/law/openLaw';
 import { formatSectionSafe } from '@/lib/law/formatSection';
@@ -106,6 +107,9 @@ export default function LawSectionDetailScreen() {
     () => getDetailedExplain(actId, sectionNum),
     [actId, sectionNum]
   );
+
+  // Owner's notes for this section — replace the generated analysis (owner, BNSS 35)
+  const lawNote = useMemo(() => getLawNote(actId, sectionNum), [actId, sectionNum]);
 
   // Verified case law ("महत्वपूर्ण निर्णय") if available
   const cases: CaseLawItem[] = useMemo(
@@ -730,8 +734,8 @@ export default function LawSectionDetailScreen() {
         )}
 
         {/* ── Detailed Analysis Card ("विस्तृत विश्लेषण") ── */}
-        {detailedExplain ? (
-          <DetailedAnalysisCard entry={detailedExplain} isHi={isHi} />
+        {detailedExplain || lawNote ? (
+          <DetailedAnalysisCard entry={detailedExplain ?? {}} isHi={isHi} note={lawNote} />
         ) : null}
 
         {/* ── Verified Case Law Card ("महत्वपूर्ण निर्णय") ── */}
