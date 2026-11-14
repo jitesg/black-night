@@ -212,9 +212,16 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   in dropdown_options, {value,label}; value = ticked values in option order joined by ", " — `src/lib/multiChoice.ts`, tests
   `scripts/test_multi_choice.ts`). Used by `Vivad` "विवाद का प्रकार" (the 16 सामान्य कारण of SOP शारीरिक क्षति) in the
   प्रार्थना पत्र जांच formats → bold line "**विवाद का प्रकार – …**" (जनता दर्शन seed_version 2).
-- `sys-fmt-bail-notice-aakhya` "बेल नोटिस आख्या (19 बिन्दु)" (Nyayalay, owner's scanned form): header [[सूची]] lines + one
-  `[[तालिका]] (6mm) [7/30/63]` table, sub-points joined by ⏎; dropdowns AccStatus / Notice353 / CSStatus open their boxes; 10 group
-  ticks (gDeath, gRecovery, gFsl, gDying, gInjury, gPocso, gScst, gWomen, gGang, gNdps) — unticked → "लागू नहीं।"; नोट line dots when blank.
+- `sys-fmt-bail-notice-aakhya` "स्टेटस रिपोर्ट / बेल नोटिस आख्या (20 बिन्दु)" (Nyayalay, seed_version 6; owner's status_report.pdf replaced the
+  19-point बेल नोटिस आख्या — backup docs/format-backups/bail_notice_19_before_status_report_20.json): [[बीच]] स्टेटस रिपोर्ट, सेवा में by dropdown
+  `Court` (लखनऊ खंडपीठ → "…खंडपीठ लखनऊ, जनपद लखनऊ।" / उच्च न्यायालय इलाहाबाद → "…इलाहाबाद, जनपद प्रयागराज।" / अन्य → `ToAddr` box), one
+  "विषय –" paragraph (बेल नोटिस सं0, AccCard name + AccRel + father + address, बनाम उ0प्र0 राज्य व अन्य, optional दण्ड वाद सं0, मु0अ0सं0/धारा/थाना/जनपद),
+  one `[[तालिका]] (6mm) [7/30/63]` table (sub-points joined by ⏎). Owner's rules: every typed / chosen value prints **bold**; an empty box → bold
+  **निल** (`{{if:X|**{{X}}**}}{{ifnot:X|**निल**}}`); a line ruled out by another answer → bold **लागू नहीं।**; an unticked group (gDeath, gRecovery,
+  gFsl, gDying, gInjury, gPocso, gScst, gWomen, gGang, gNdps) → plain "लागू नहीं।"; नोट (पर्चा 01 से CDTo … कुल वर्क Pages) keeps ".........." when
+  blank. Point 11 adds 5–7 (RecVideo धारा 105 BNSS / RecUpload ई-साक्ष्य / RecCD + RecCDNo, each opening the next on हाँ); new point 20 सी0डी0आर0
+  (Cdr हाँ/नहीं → CdrParcha). Signature: 4 zero-width lines lower, "विवेचनाधिकारी / उ0नि0", "थाना- …, जनपद- …" on one line. Tests
+  `scripts/test_status_report.ts`.
 - `sys-fmt-pp-jaanch-aakhya` "प्रार्थना पत्र जांच आख्या (पुलिस अधीक्षक / जिलाधिकारी / क्षेत्राधिकारी / थानाध्यक्ष)" (owner's RL docx files):
   To dropdown → सेवा में lines (Circle / ToOther via showIf), Avedak आवेदक/आवेदिका, doParties tick → bold [[पक्ष]] lines
   "1. आवेदक… 2. विपक्षी…" (noVip → निल), Vivad, Witness, Findings, doNoAction; left [[सूची]] दिनांक / अक्षांश / देशान्तर (each optional)

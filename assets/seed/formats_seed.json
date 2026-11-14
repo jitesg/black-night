@@ -7054,33 +7054,52 @@
     },
     {
       "id": "sys-fmt-bail-notice-aakhya",
-      "title": "बेल नोटिस आख्या (19 बिन्दु)",
+      "title": "स्टेटस रिपोर्ट / बेल नोटिस आख्या (20 बिन्दु)",
       "format_type": "Nyayalay",
       "is_favorite": 0,
       "created_by": "system",
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 6,
       "app_version": "1.0.0",
       "tags": [
+        "स्टेटस रिपोर्ट",
         "बेल नोटिस",
         "जमानत",
         "आख्या",
-        "19 बिन्दु",
+        "20 बिन्दु",
         "न्यायालय"
       ],
-      "last_updated": "2026-11-03",
-      "vivran": "[[पत्र]]\n[[सूची]] **अभियुक्त का नाम –** {{AccName}}{{if:AccFather|, **पिता का नाम –** {{AccFather}}}}{{if:AccAddr|, **पता –** {{AccAddr}}}}\n**बेल नोटिस सं0 –** {{BailNo}}, **वर्ष –** {{BailYear}}, **मु0अ0सं0 –** {{FIRNo}}{{if:CaseNo|, **दण्ड वाद सं0 / सत्र विचारण संख्या –** {{CaseNo}}}}\n**धारा –** {{Sections}}, **थाना –** {{PoliceStation}}, **जनपद –** {{District}}\n[[तालिका]] (6mm) [7/30/63] क्र0 | विषय | विवरण\n1 | घटना | ए– घटना का दिनांक व समय – {{IncDate}} ⏎ बी– प्रथम सूचना रिपोर्ट का दिनांक व समय – {{FirDate}}\n2 | अभियुक्त की स्थिति | 1– नामित या प्रकाश में आया हुआ – {{AccStatus}} ⏎ 2– यदि प्रकाश में आया अभियुक्त है तो किस साक्ष्य से, केस डायरी के किस पृष्ठ संख्या व सी0डी0 संख्या पर है – {{if:AccStatus=प्रकाश में आया|{{LightEvidence}}}}{{ifnot:AccStatus=प्रकाश में आया|लागू नहीं।}}\n3 | अभियुक्त का आपराधिक इतिहास | 1– सम्पूर्ण आपराधिक इतिहास डीसीआरबी व सीसीटीएनएस के अनुसार – {{CrimHistory}} ⏎ 2– यदि अभियुक्त पूर्व में दोषसिद्ध हुआ हो, तो उसका पूर्ण विवरण – {{Conviction}}\n4 | अभियुक्तगण को धारा 41ए द0प्र0सं0 / धारा 35(3) बीएनएसएस के अन्तर्गत नोटिस के सम्बन्ध में | 1– धारा 41ए सीआरपीसी / धारा 35(3) बीएनएसएस की नोटिस जारी की गयी है अथवा नहीं – {{Notice353}} ⏎ 2– नोटिस जारी करने व तामीला का दिनांक – {{if:Notice353=जारी की गयी है|{{NoticeDate}}}}{{if:Notice353=जारी नहीं की गयी है|लागू नहीं।}}\n5 | अभियुक्त की गिरफ्तारी | 1– गिरफ्तारी का दिनांक – {{ArrestDate}} ⏎ 2– जेल में निरुद्धि की अवधि – {{JailPeriod}} ⏎ 3– धारा 82/83 सीआरपीसी / 84/85 बीएनएसएस जारी हो तो उसका दिनांक सहित उल्लेख – {{Proclaim}}\n6 | आरोप पत्र के सम्बन्ध में | 1– यदि आरोप पत्र कित्ता कर न्यायालय में प्रेषित किया गया हो तो आरोप पत्र संख्या व दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{CSNo}}}}{{ifnot:CSStatus=आरोप पत्र प्रेषित|लागू नहीं।}} ⏎ 2– यदि विवेचना प्रचलित हो तो उसका उल्लेख – {{if:CSStatus=विवेचना प्रचलित|विवेचना प्रचलित है।}}{{ifnot:CSStatus=विवेचना प्रचलित|लागू नहीं।}} ⏎ 3– यदि आरोप पत्र न्यायालय में प्रेषित किया गया है तो प्रसंज्ञान लिये जाने का दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{Cognizance}}}} ⏎ 4– अभियुक्तगण / अभियुक्त के विरुद्ध आरोप विरचित किये जाने का दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{ChargeFramed}}}}\n7 | सहअभियुक्त के सम्बन्ध में | 1– संख्या – {{CoAccCount}}\n8 | सहअभियुक्त के जेल या जमानत के सम्बन्ध में | 1– जेल में निरुद्धि का दिनांक – {{CoJail}} ⏎ 2– जमानत पर रिहा का दिनांक – {{CoBail}}\n9 | पंचायतनामा के सम्बन्ध में | {{if:gDeath|1– पंचायतनामा तैयार करने का दिनांक – {{PanDate}} ⏎ 2– पंचायतनामा तैयार करने वाले का नाम – {{PanBy}} ⏎ 3– पंचों की राय – {{PanOpinion}}}}{{ifnot:gDeath|लागू नहीं।}}\n10 | पोस्टमार्टम रिपोर्ट के सम्बन्ध में | {{if:gDeath|1– मृत्यु का दिनांक – {{DeathDate}} ⏎ 2– मृत्यु का तात्कालिक कारण – {{DeathCause}} ⏎ 3– यदि मृत्युपूर्व चोटें हों तो उसका विवरण – {{AnteInjury}}}}{{ifnot:gDeath|लागू नहीं।}}\n11 | फर्द बरामदगी के सम्बन्ध में | {{if:gRecovery|1– क्या बरामद – {{RecWhat}} ⏎ 2– किसके कब्जे से बरामद – {{RecFrom}} ⏎ 3– किसके निशानदेही पर बरामद – {{RecPoint}} ⏎ 4– बरामदगी के समय मौजूद साक्षी – {{RecWitness}}}}{{ifnot:gRecovery|लागू नहीं।}}\n12 | रासायनिक विशेषज्ञ व अग्नेयास्त्र विशेषज्ञ की रिपोर्ट के सम्बन्ध में | {{if:gFsl|1– विधि विज्ञान प्रयोगशाला / अग्नेयास्त्र विशेषज्ञ की रिपोर्ट प्राप्त करने का दिनांक – {{FslDate}} ⏎ 2– केसडायरी की संख्या व पेज संख्या – {{FslCD}}}}{{ifnot:gFsl|लागू नहीं।}}\n13 | मृत्युकालिक कथन के सम्बन्ध में | {{if:gDying|1– केसडायरी की संख्या व पेज संख्या – {{DyingCD}}}}{{ifnot:gDying|लागू नहीं।}}\n14 | पीड़ित पक्ष की चोट के सम्बन्ध में | {{if:gInjury|1– मजरूबों की संख्या तथा केसडायरी के किस पृष्ठ संख्या व सीडी पर उल्लेख है – {{InjCount}} ⏎ 2– मजरूबों की चोटों की संख्या – {{InjNo}} ⏎ 3– चोट लगने का दिनांक व समय तथा चोटों की प्रकृति – {{InjNature}}}}{{ifnot:gInjury|लागू नहीं।}}\n15 | पॉक्सो एक्ट व एससी/एसटी एक्ट के सम्बन्ध में | {{if:gPocso|1– पीड़ित पक्ष को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक – {{PocsoVictimDate}}}}{{if:gPocso|{{if:gScst| ⏎ }}}}{{if:gScst|2– पीड़ित पक्ष / वादी को सूचना का दिनांक – {{ScstDate}}}}{{ifnot:gPocso|{{ifnot:gScst|लागू नहीं।}}}}\n16 | पॉक्सो एक्ट के सीडब्ल्यूसी के सम्बन्ध में | {{if:gPocso|1– बाल कल्याण समिति को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक – {{CwcDate}} ⏎ 2– यदि पीड़ित पक्ष द्वारा विधिक सहायता की माँग की गयी है तो उसका उल्लेख – {{LegalAid}}}}{{ifnot:gPocso|लागू नहीं।}}\n17 | बलात्कार, अश्लीलता, महिला के विरुद्ध अपराध के सम्बन्ध में | {{if:gWomen|1– धारा 161 सीआरपीसी / धारा 180 बीएनएसएस, सीडी संख्या, पेज संख्या व दिनांक – {{Stmt180}} ⏎ 2– धारा 164 सीआरपीसी / धारा 183 बीएनएसएस, सीडी संख्या, पेज संख्या व दिनांक – {{Stmt183}}}}{{ifnot:gWomen|लागू नहीं।}}\n18 | गैंगचार्ट के सम्बन्ध में | {{if:gGang|1– केसडायरी के पृष्ठ संख्या व सीडी संख्या – {{GangCD}} ⏎ 2– गैंगचार्ट की प्रमाणित प्रति, पेज संख्या – {{GangChart}} ⏎ 3– धारा 14(1) गैंगस्टर एक्ट के अन्तर्गत कार्यवाही का विवरण – {{Gang141}}}}{{ifnot:gGang|लागू नहीं।}}\n19 | एनडीपीएस एक्ट के सम्बन्ध में | {{if:gNdps|1– बरामद मादक पदार्थ का नाम व मात्रा – {{NdpsWhat}} ⏎ 2– बरामद मादक पदार्थ वाणिज्यिक मात्रा के ऊपर या नीचे है – {{NdpsQty}}}}{{ifnot:gNdps|लागू नहीं।}}\n\n[[विवरण]] **नोट :–** प्रमाणित किया जाता है कि केसडायरी के क्रम संख्या 1 लगायत {{if:CDTo|{{CDTo}}}}{{ifnot:CDTo|..........}} कुल वर्क {{if:Pages|{{Pages}}}}{{ifnot:Pages|..........}} की प्रमाणित छायाप्रति संलग्न है।\n[[हस्ताक्षर]] ({{OfficerName}})\nविवेचना अधिकारी\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}\n",
+      "last_updated": "2026-11-14",
+      "vivran": "[[पत्र]]\n[[बीच]] स्टेटस रिपोर्ट\n[[सूची]] सेवा में,\n[[सूची अंदर]] {{if:Court=लखनऊ खंडपीठ|श्रीमान संयुक्त निदेशक अभियोजन,\nमा0 उच्च न्यायालय खंडपीठ लखनऊ,\nजनपद लखनऊ।}}{{if:Court=उच्च न्यायालय इलाहाबाद|श्रीमान संयुक्त निदेशक अभियोजन,\nमा0 उच्च न्यायालय इलाहाबाद,\nजनपद प्रयागराज।}}{{if:Court=अन्य|{{ToAddr}}}}\n[[विवरण]] **विषय –** बेल नोटिस सं0 {{if:BailNo|**{{BailNo}}**}}{{ifnot:BailNo|**निल**}}{{if:BailYear| वर्ष **{{BailYear}}**}} से सम्बन्धित अभि0 का नाम {{if:AccName|**{{AccName}}**}}{{ifnot:AccName|**निल**}}{{if:AccFather| {{AccRel}} **{{AccFather}}**}}{{if:AccAddr| निवासी **{{AccAddr}}**}} बनाम उ0प्र0 राज्य व अन्य{{if:CaseNo|, दण्ड वाद सं0 / सत्र विचारण संख्या **{{CaseNo}}**}}, सम्बन्धित मु0अ0सं0 {{if:FIRNo|**{{FIRNo}}**}}{{ifnot:FIRNo|**निल**}} धारा {{if:Sections|**{{Sections}}**}}{{ifnot:Sections|**निल**}} थाना {{PoliceStation}} जनपद {{District}} का विवरण निम्नवत है।\n[[तालिका]] (6mm) [7/30/63] क्र0 | विषय | विवरण\n1 | घटना | ए– घटना का दिनांक व समय – {{if:IncDate|**{{IncDate}}**}}{{ifnot:IncDate|**निल**}} ⏎ बी– प्रथम सूचना रिपोर्ट का दिनांक व समय – {{if:FirDate|**{{FirDate}}**}}{{ifnot:FirDate|**निल**}}\n2 | अभियुक्त की स्थिति | 1– नामित या प्रकाश में आया हुआ – {{if:AccStatus|**{{AccStatus}}**}}{{ifnot:AccStatus|**निल**}} ⏎ 2– यदि प्रकाश में आया अभियुक्त है तो किस साक्ष्य से, केस डायरी के किस पृष्ठ संख्या व सी0डी0 संख्या पर है – {{if:AccStatus=प्रकाश में आया|{{if:LightEvidence|**{{LightEvidence}}**}}{{ifnot:LightEvidence|**निल**}}}}{{ifnot:AccStatus=प्रकाश में आया|**लागू नहीं।**}}\n3 | अभियुक्त का आपराधिक इतिहास | 1– सम्पूर्ण आपराधिक इतिहास डीसीआरबी व सीसीटीएनएस के अनुसार – {{if:CrimHistory|**{{CrimHistory}}**}}{{ifnot:CrimHistory|**निल**}} ⏎ 2– यदि अभियुक्त पूर्व में दोषसिद्ध हुआ हो, तो उसका पूर्ण विवरण – {{if:Conviction|**{{Conviction}}**}}{{ifnot:Conviction|**निल**}}\n4 | अभियुक्तगण को धारा 41ए द0प्र0सं0 / धारा 35(3) बीएनएसएस के अन्तर्गत नोटिस के सम्बन्ध में | 1– धारा 41ए सीआरपीसी / धारा 35(3) बीएनएसएस की नोटिस जारी की गयी है अथवा नहीं – {{if:Notice353|**{{Notice353}}**}}{{ifnot:Notice353|**निल**}} ⏎ 2– नोटिस जारी करने व तामीला का दिनांक – {{if:Notice353=जारी की गयी है|{{if:NoticeDate|**{{NoticeDate}}**}}{{ifnot:NoticeDate|**निल**}}}}{{if:Notice353=जारी नहीं की गयी है|**लागू नहीं।**}}{{ifnot:Notice353|**निल**}}\n5 | अभियुक्त की गिरफ्तारी | 1– गिरफ्तारी का दिनांक – {{if:ArrestDate|**{{ArrestDate}}**}}{{ifnot:ArrestDate|**निल**}} ⏎ 2– जेल में निरुद्धि की अवधि – {{if:JailPeriod|**{{JailPeriod}}**}}{{ifnot:JailPeriod|**निल**}} ⏎ 3– धारा 82/83 सीआरपीसी / 84/85 बीएनएसएस जारी हो तो उसका दिनांक सहित उल्लेख – {{if:Proclaim|**{{Proclaim}}**}}{{ifnot:Proclaim|**निल**}}\n6 | आरोप पत्र के सम्बन्ध में | 1– यदि आरोप पत्र कित्ता कर न्यायालय में प्रेषित किया गया हो तो आरोप पत्र संख्या व दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{if:CSNo|**{{CSNo}}**}}{{ifnot:CSNo|**निल**}}}}{{ifnot:CSStatus=आरोप पत्र प्रेषित|**लागू नहीं।**}} ⏎ 2– यदि विवेचना प्रचलित हो तो उसका उल्लेख – {{if:CSStatus=विवेचना प्रचलित|**विवेचना प्रचलित है।**}}{{ifnot:CSStatus=विवेचना प्रचलित|**लागू नहीं।**}} ⏎ 3– यदि आरोप पत्र न्यायालय में प्रेषित किया गया है तो प्रसंज्ञान लिये जाने का दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{if:Cognizance|**{{Cognizance}}**}}{{ifnot:Cognizance|**निल**}}}}{{ifnot:CSStatus=आरोप पत्र प्रेषित|**लागू नहीं।**}} ⏎ 4– अभियुक्तगण / अभियुक्त के विरुद्ध आरोप विरचित किये जाने का दिनांक – {{if:CSStatus=आरोप पत्र प्रेषित|{{if:ChargeFramed|**{{ChargeFramed}}**}}{{ifnot:ChargeFramed|**निल**}}}}{{ifnot:CSStatus=आरोप पत्र प्रेषित|**लागू नहीं।**}}\n7 | सहअभियुक्त के सम्बन्ध में | 1– संख्या – {{if:CoAccCount|**{{CoAccCount}}**}}{{ifnot:CoAccCount|**निल**}}\n8 | सहअभियुक्त के जेल या जमानत के सम्बन्ध में | 1– जेल में निरुद्धि का दिनांक – {{if:CoJail|**{{CoJail}}**}}{{ifnot:CoJail|**निल**}} ⏎ 2– जमानत पर रिहा का दिनांक – {{if:CoBail|**{{CoBail}}**}}{{ifnot:CoBail|**निल**}}\n9 | पंचायतनामा के सम्बन्ध में | {{if:gDeath|1– पंचायतनामा तैयार करने का दिनांक – {{if:PanDate|**{{PanDate}}**}}{{ifnot:PanDate|**निल**}} ⏎ 2– पंचायतनामा तैयार करने वाले का नाम – {{if:PanBy|**{{PanBy}}**}}{{ifnot:PanBy|**निल**}} ⏎ 3– पंचों की राय – {{if:PanOpinion|**{{PanOpinion}}**}}{{ifnot:PanOpinion|**निल**}}}}{{ifnot:gDeath|लागू नहीं।}}\n10 | पोस्टमार्टम रिपोर्ट के सम्बन्ध में | {{if:gDeath|1– मृत्यु का दिनांक – {{if:DeathDate|**{{DeathDate}}**}}{{ifnot:DeathDate|**निल**}} ⏎ 2– मृत्यु का तात्कालिक कारण – {{if:DeathCause|**{{DeathCause}}**}}{{ifnot:DeathCause|**निल**}} ⏎ 3– यदि मृत्युपूर्व चोटें हों तो उसका विवरण – {{if:AnteInjury|**{{AnteInjury}}**}}{{ifnot:AnteInjury|**निल**}}}}{{ifnot:gDeath|लागू नहीं।}}\n11 | फर्द बरामदगी के सम्बन्ध में | {{if:gRecovery|1– क्या बरामद – {{if:RecWhat|**{{RecWhat}}**}}{{ifnot:RecWhat|**निल**}} ⏎ 2– किसके कब्जे से बरामद – {{if:RecFrom|**{{RecFrom}}**}}{{ifnot:RecFrom|**निल**}} ⏎ 3– किसके निशानदेही पर बरामद – {{if:RecPoint|**{{RecPoint}}**}}{{ifnot:RecPoint|**निल**}} ⏎ 4– बरामदगी के समय मौजूद साक्षी – {{if:RecWitness|**{{RecWitness}}**}}{{ifnot:RecWitness|**निल**}} ⏎ 5– क्या बीएनएसएस की धारा 105 के अनुपालन में बरामदगी की ऑडियो / वीडियोग्राफी की गयी है – {{if:RecVideo|**{{RecVideo}}**}}{{ifnot:RecVideo|**निल**}} ⏎ 6– क्या ऑडियो / वीडियो रिकॉर्डिंग को ई-साक्ष्य ऐप पर अपलोड किया गया है – {{if:RecVideo=हाँ|{{if:RecUpload|**{{RecUpload}}**}}{{ifnot:RecUpload|**निल**}}}}{{ifnot:RecVideo=हाँ|**लागू नहीं।**}} ⏎ 7– यदि हाँ तो क्या उक्त को केस डायरी का भाग बनाया जा चुका है – {{if:RecUpload=हाँ|{{if:RecVideo=हाँ|{{if:RecCD|**{{RecCD}}**}}{{ifnot:RecCD|**निल**}}{{if:RecCDNo|, पर्चा सं0 **{{RecCDNo}}**}}}}}}{{ifnot:RecUpload=हाँ|**लागू नहीं।**}}{{if:RecUpload=हाँ|{{ifnot:RecVideo=हाँ|**लागू नहीं।**}}}}}}{{ifnot:gRecovery|लागू नहीं।}}\n12 | रासायनिक विशेषज्ञ व अग्नेयास्त्र विशेषज्ञ की रिपोर्ट के सम्बन्ध में | {{if:gFsl|1– विधि विज्ञान प्रयोगशाला / अग्नेयास्त्र विशेषज्ञ की रिपोर्ट प्राप्त करने का दिनांक – {{if:FslDate|**{{FslDate}}**}}{{ifnot:FslDate|**निल**}} ⏎ 2– केसडायरी की संख्या व पेज संख्या – {{if:FslCD|**{{FslCD}}**}}{{ifnot:FslCD|**निल**}}}}{{ifnot:gFsl|लागू नहीं।}}\n13 | मृत्युकालिक कथन के सम्बन्ध में | {{if:gDying|1– केसडायरी की संख्या व पेज संख्या – {{if:DyingCD|**{{DyingCD}}**}}{{ifnot:DyingCD|**निल**}}}}{{ifnot:gDying|लागू नहीं।}}\n14 | पीड़ित पक्ष की चोट के सम्बन्ध में | {{if:gInjury|1– मजरूबों की संख्या तथा केसडायरी के किस पृष्ठ संख्या व सीडी पर उल्लेख है – {{if:InjCount|**{{InjCount}}**}}{{ifnot:InjCount|**निल**}} ⏎ 2– मजरूबों की चोटों की संख्या – {{if:InjNo|**{{InjNo}}**}}{{ifnot:InjNo|**निल**}} ⏎ 3– चोट लगने का दिनांक व समय तथा चोटों की प्रकृति – {{if:InjNature|**{{InjNature}}**}}{{ifnot:InjNature|**निल**}}}}{{ifnot:gInjury|लागू नहीं।}}\n15 | पॉक्सो एक्ट व एससी/एसटी एक्ट के सम्बन्ध में | {{if:gPocso|1– पीड़ित पक्ष को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक – {{if:PocsoVictimDate|**{{PocsoVictimDate}}**}}{{ifnot:PocsoVictimDate|**निल**}}}}{{if:gPocso|{{if:gScst| ⏎ }}}}{{if:gScst|2– पीड़ित पक्ष / वादी को सूचना का दिनांक – {{if:ScstDate|**{{ScstDate}}**}}{{ifnot:ScstDate|**निल**}}}}{{ifnot:gPocso|{{ifnot:gScst|लागू नहीं।}}}}\n16 | पॉक्सो एक्ट के सीडब्ल्यूसी के सम्बन्ध में | {{if:gPocso|1– बाल कल्याण समिति को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक – {{if:CwcDate|**{{CwcDate}}**}}{{ifnot:CwcDate|**निल**}} ⏎ 2– यदि पीड़ित पक्ष द्वारा विधिक सहायता की माँग की गयी है तो उसका उल्लेख – {{if:LegalAid|**{{LegalAid}}**}}{{ifnot:LegalAid|**निल**}}}}{{ifnot:gPocso|लागू नहीं।}}\n17 | बलात्कार, अश्लीलता, महिला के विरुद्ध अपराध के सम्बन्ध में | {{if:gWomen|1– धारा 161 सीआरपीसी / धारा 180 बीएनएसएस, सीडी संख्या, पेज संख्या व दिनांक – {{if:Stmt180|**{{Stmt180}}**}}{{ifnot:Stmt180|**निल**}} ⏎ 2– धारा 164 सीआरपीसी / धारा 183 बीएनएसएस, सीडी संख्या, पेज संख्या व दिनांक – {{if:Stmt183|**{{Stmt183}}**}}{{ifnot:Stmt183|**निल**}}}}{{ifnot:gWomen|लागू नहीं।}}\n18 | गैंगचार्ट के सम्बन्ध में | {{if:gGang|1– केसडायरी के पृष्ठ संख्या व सीडी संख्या – {{if:GangCD|**{{GangCD}}**}}{{ifnot:GangCD|**निल**}} ⏎ 2– गैंगचार्ट की प्रमाणित प्रति, पेज संख्या – {{if:GangChart|**{{GangChart}}**}}{{ifnot:GangChart|**निल**}} ⏎ 3– धारा 14(1) गैंगस्टर एक्ट के अन्तर्गत कार्यवाही का विवरण – {{if:Gang141|**{{Gang141}}**}}{{ifnot:Gang141|**निल**}}}}{{ifnot:gGang|लागू नहीं।}}\n19 | एनडीपीएस एक्ट के सम्बन्ध में | {{if:gNdps|1– बरामद मादक पदार्थ का नाम व मात्रा – {{if:NdpsWhat|**{{NdpsWhat}}**}}{{ifnot:NdpsWhat|**निल**}} ⏎ 2– बरामद मादक पदार्थ वाणिज्यिक मात्रा के ऊपर या नीचे है – {{if:NdpsQty|**{{NdpsQty}}**}}{{ifnot:NdpsQty|**निल**}}}}{{ifnot:gNdps|लागू नहीं।}}\n20 | सी0डी0आर0 के सम्बन्ध में | क्या सुसंगत मो0नं0 का सी0डी0आर0 प्राप्त कर केस डायरी में संलग्न है – ⏎ 1– हाँ अथवा नहीं – {{if:Cdr|**{{Cdr}}**}}{{ifnot:Cdr|**निल**}} ⏎ 2– यदि हाँ तो केस डायरी के किस पर्चे में उल्लेख है – {{if:Cdr=हाँ|{{if:CdrParcha|**{{CdrParcha}}**}}{{ifnot:CdrParcha|**निल**}}}}{{ifnot:Cdr=हाँ|**लागू नहीं।**}}\n\n[[विवरण]] **नोट –** प्रमाणित किया जाता है कि केस डायरी के पर्चा संख्या 01 से पर्चा सं0 {{if:CDTo|{{CDTo}}}}{{ifnot:CDTo|..........}} तक की प्रमाणित प्रति मय संलग्न पत्र कुल वर्क {{if:Pages|{{Pages}}}}{{ifnot:Pages|..........}} की छायाप्रति प्रमाणितशुदा अग्रिम बेल / बेल नोटिस आख्या के साथ संलग्न है।\n[[हस्ताक्षर]] ​\n​\n​\n​\nहस्ताक्षर\n({{OfficerName}})\nविवेचनाधिकारी / {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना- {{PoliceStation}}, जनपद- {{District}}\n",
       "keys": [
+        {
+          "key_name": "Court",
+          "label": "रिपोर्ट किस न्यायालय को",
+          "field_type": "dropdown",
+          "is_required": 1,
+          "default_value": "लखनऊ खंडपीठ",
+          "dropdown_options": "{\"options\": [\"लखनऊ खंडपीठ\", \"उच्च न्यायालय इलाहाबाद\", \"अन्य\"], \"hint\": \"लखनऊ खंडपीठ = मा0 उच्च न्यायालय खंडपीठ लखनऊ, जनपद लखनऊ; इलाहाबाद = मा0 उच्च न्यायालय इलाहाबाद, जनपद प्रयागराज; अन्य = पता खुद लिखें\"}",
+          "sort_order": 0
+        },
+        {
+          "key_name": "ToAddr",
+          "label": "सेवा में — पता (अन्य)",
+          "field_type": "multiline",
+          "is_required": 1,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमान जिला शासकीय अधिवक्ता (फौजदारी),\\nजनपद रायबरेली।\", \"showIf\": \"Court=अन्य\", \"hint\": \"\\\"सेवा में\\\" के नीचे छपने वाला पूरा पता — हर लाइन अलग लिखें\"}",
+          "sort_order": 1
+        },
         {
           "key_name": "AccCard",
           "label": "1. अभियुक्त (कार्ड)",
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"single\": true, \"hint\": \"अभियुक्त का कार्ड — नाम, पिता का नाम और पूरा पता। \\\"📁 मुकदमे से भरें\\\" से मुकदमे का अभियुक्त चुन सकते हैं।\", \"expand\": {\"AccName\": \"name\", \"AccFather\": \"fatherOrHusbandName\", \"AccAddr\": \"fullAddress\"}}",
-          "sort_order": 0
+          "dropdown_options": "{\"single\": true, \"hint\": \"अभियुक्त का कार्ड — नाम, पिता का नाम और पूरा पता। \\\"📁 मुकदमे से भरें\\\" से मुकदमे का अभियुक्त चुन सकते हैं।\", \"expand\": {\"AccName\": \"name\", \"AccRel\": \"relationType||पुत्र\", \"AccFather\": \"fatherOrHusbandName\", \"AccAddr\": \"fullAddress\"}}",
+          "sort_order": 2
         },
         {
           "key_name": "BailNo",
@@ -7398,12 +7417,48 @@
           "sort_order": 37
         },
         {
+          "key_name": "RecVideo",
+          "label": "11(5). धारा 105 BNSS — बरामदगी की ऑडियो / वीडियोग्राफी",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery\", \"hint\": \"बरामदगी की वीडियोग्राफी (धारा 105 BNSS) की गयी है या नहीं — हाँ पर अगला सवाल खुलेगा\"}",
+          "sort_order": 38
+        },
+        {
+          "key_name": "RecUpload",
+          "label": "11(6). रिकॉर्डिंग ई-साक्ष्य ऐप पर अपलोड",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery & RecVideo=हाँ\", \"hint\": \"वीडियो ई-साक्ष्य ऐप पर अपलोड हुआ या नहीं\"}",
+          "sort_order": 39
+        },
+        {
+          "key_name": "RecCD",
+          "label": "11(7). केस डायरी का भाग बनाया जा चुका है",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery & RecVideo=हाँ & RecUpload=हाँ\", \"hint\": \"अपलोड की गयी रिकॉर्डिंग का उल्लेख केस डायरी में हो चुका है या नहीं\"}",
+          "sort_order": 40
+        },
+        {
+          "key_name": "RecCDNo",
+          "label": "पर्चा सं0 (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 05\", \"showIf\": \"gRecovery & RecVideo=हाँ & RecUpload=हाँ & RecCD=हाँ\", \"hint\": \"किस पर्चे में उल्लेख है, जैसे: 05 — खाली छोड़ सकते हैं\"}",
+          "sort_order": 41
+        },
+        {
           "key_name": "gFsl",
           "label": "विधि विज्ञान / अग्नेयास्त्र विशेषज्ञ की रिपोर्ट — बिन्दु 12 भरें",
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 38,
+          "sort_order": 42,
           "dropdown_options": "{\"hint\": \"FSL / अग्नेयास्त्र विशेषज्ञ की रिपोर्ट आयी हो तो टिक — बिन्दु 12\"}"
         },
         {
@@ -7413,7 +7468,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: 10.09.2025\", \"showIf\": \"gFsl\", \"hint\": \"रिपोर्ट प्राप्त करने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 10.09.2025\"}",
-          "sort_order": 39
+          "sort_order": 43
         },
         {
           "key_name": "FslCD",
@@ -7422,7 +7477,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 12 पृष्ठ 3\", \"showIf\": \"gFsl\", \"hint\": \"केस डायरी संख्या व पेज संख्या लिखें — जैसे: सी0डी0 संख्या 12 पृष्ठ 3\"}",
-          "sort_order": 40
+          "sort_order": 44
         },
         {
           "key_name": "gDying",
@@ -7430,7 +7485,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 41,
+          "sort_order": 45,
           "dropdown_options": "{\"hint\": \"मृत्युकालिक कथन हुआ हो तो टिक — बिन्दु 13\"}"
         },
         {
@@ -7440,7 +7495,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 2 पृष्ठ 5\", \"showIf\": \"gDying\", \"hint\": \"मृत्युकालिक कथन — केस डायरी संख्या व पेज संख्या लिखें — जैसे: सी0डी0 संख्या 2 पृष्ठ 5\"}",
-          "sort_order": 42
+          "sort_order": 46
         },
         {
           "key_name": "gInjury",
@@ -7448,7 +7503,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 43,
+          "sort_order": 47,
           "dropdown_options": "{\"hint\": \"पीड़ित पक्ष को चोट हो तो टिक — बिन्दु 14\"}"
         },
         {
@@ -7458,7 +7513,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: 01, सी0डी0 संख्या 1 पृष्ठ 2\", \"showIf\": \"gInjury\", \"hint\": \"मजरूबों की संख्या तथा केस डायरी पृष्ठ / सी0डी0 संख्या लिखें — जैसे: 01, सी0डी0 संख्या 1 पृष्ठ 2\"}",
-          "sort_order": 44
+          "sort_order": 48
         },
         {
           "key_name": "InjNo",
@@ -7467,7 +7522,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: 03\", \"showIf\": \"gInjury\", \"hint\": \"मजरूबों की चोटों की संख्या लिखें — जैसे: 03\"}",
-          "sort_order": 45
+          "sort_order": 49
         },
         {
           "key_name": "InjNature",
@@ -7476,7 +7531,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: 30.06.2025 समय 20:00 बजे, साधारण\", \"showIf\": \"gInjury\", \"hint\": \"चोट लगने का दिनांक व समय तथा चोटों की प्रकृति: तारीख बिंदु लगाकर लिखें — जैसे: 30.06.2025 समय 20:00 बजे, साधारण\"}",
-          "sort_order": 46
+          "sort_order": 50
         },
         {
           "key_name": "gPocso",
@@ -7484,7 +7539,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 47,
+          "sort_order": 51,
           "dropdown_options": "{\"hint\": \"पॉक्सो एक्ट का मामला हो तो टिक — बिन्दु 15, 16\"}"
         },
         {
@@ -7494,7 +7549,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: 12.09.2025\", \"showIf\": \"gPocso\", \"hint\": \"पीड़ित पक्ष को बेल नोटिस की सम्पूर्ण प्रति प्राप्त कराने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 12.09.2025\"}",
-          "sort_order": 48
+          "sort_order": 52
         },
         {
           "key_name": "CwcDate",
@@ -7503,7 +7558,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: 12.09.2025\", \"showIf\": \"gPocso\", \"hint\": \"बाल कल्याण समिति को बेल नोटिस की प्रति प्राप्त कराने का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 12.09.2025\"}",
-          "sort_order": 49
+          "sort_order": 53
         },
         {
           "key_name": "LegalAid",
@@ -7512,7 +7567,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: कोई माँग नहीं की गयी\", \"showIf\": \"gPocso\", \"hint\": \"पीड़ित पक्ष द्वारा विधिक सहायता की माँग लिखें — जैसे: कोई माँग नहीं की गयी (न हो तो खाली छोड़ें)\"}",
-          "sort_order": 50
+          "sort_order": 54
         },
         {
           "key_name": "gScst",
@@ -7520,7 +7575,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 51,
+          "sort_order": 55,
           "dropdown_options": "{\"hint\": \"एससी/एसटी एक्ट का मामला हो तो टिक — बिन्दु 15\"}"
         },
         {
@@ -7530,7 +7585,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: 12.09.2025\", \"showIf\": \"gScst\", \"hint\": \"पीड़ित पक्ष / वादी को सूचना का दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: 12.09.2025\"}",
-          "sort_order": 52
+          "sort_order": 56
         },
         {
           "key_name": "gWomen",
@@ -7538,7 +7593,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 53,
+          "sort_order": 57,
           "dropdown_options": "{\"hint\": \"महिला के विरुद्ध अपराध हो तो टिक — बिन्दु 17\"}"
         },
         {
@@ -7548,7 +7603,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 1 पृष्ठ 3 दिनांक 01.07.2025\", \"showIf\": \"gWomen\", \"hint\": \"धारा 161 सीआरपीसी / 180 बीएनएसएस — सी0डी0 संख्या, पेज संख्या व दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: सी0डी0 संख्या 1 पृष्ठ 3 दिनांक 01.07.2025\"}",
-          "sort_order": 54
+          "sort_order": 58
         },
         {
           "key_name": "Stmt183",
@@ -7557,7 +7612,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 3 पृष्ठ 2 दिनांक 05.07.2025\", \"showIf\": \"gWomen\", \"hint\": \"धारा 164 सीआरपीसी / 183 बीएनएसएस — सी0डी0 संख्या, पेज संख्या व दिनांक: तारीख बिंदु लगाकर लिखें — जैसे: सी0डी0 संख्या 3 पृष्ठ 2 दिनांक 05.07.2025\"}",
-          "sort_order": 55
+          "sort_order": 59
         },
         {
           "key_name": "gGang",
@@ -7565,7 +7620,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 56,
+          "sort_order": 60,
           "dropdown_options": "{\"hint\": \"गैंगस्टर एक्ट हो तो टिक — बिन्दु 18\"}"
         },
         {
@@ -7575,7 +7630,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: सी0डी0 संख्या 4 पृष्ठ 2\", \"showIf\": \"gGang\", \"hint\": \"केसडायरी के पृष्ठ संख्या व सी0डी0 संख्या लिखें — जैसे: सी0डी0 संख्या 4 पृष्ठ 2\"}",
-          "sort_order": 57
+          "sort_order": 61
         },
         {
           "key_name": "GangChart",
@@ -7584,7 +7639,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: पृष्ठ 1 ता 4\", \"showIf\": \"gGang\", \"hint\": \"गैंगचार्ट की प्रमाणित प्रति, पेज संख्या लिखें — जैसे: पृष्ठ 1 ता 4\"}",
-          "sort_order": 58
+          "sort_order": 62
         },
         {
           "key_name": "Gang141",
@@ -7593,7 +7648,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: कार्यवाही प्रचलित\", \"showIf\": \"gGang\", \"hint\": \"धारा 14(1) गैंगस्टर एक्ट के अन्तर्गत कार्यवाही का विवरण लिखें — जैसे: कार्यवाही प्रचलित\"}",
-          "sort_order": 59
+          "sort_order": 63
         },
         {
           "key_name": "gNdps",
@@ -7601,7 +7656,7 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 60,
+          "sort_order": 64,
           "dropdown_options": "{\"hint\": \"NDPS एक्ट हो तो टिक — बिन्दु 19\"}"
         },
         {
@@ -7611,7 +7666,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: नाजायज चरस 1.2 किग्रा\", \"showIf\": \"gNdps\", \"hint\": \"बरामद मादक पदार्थ का नाम व मात्रा लिखें — जैसे: नाजायज चरस 1.2 किग्रा\"}",
-          "sort_order": 61
+          "sort_order": 65
         },
         {
           "key_name": "NdpsQty",
@@ -7620,16 +7675,34 @@
           "is_required": 0,
           "default_value": "",
           "dropdown_options": "{\"options\": [\"ऊपर है\", \"नीचे है\"], \"showIf\": \"gNdps\", \"hint\": \"बरामद मात्रा वाणिज्यिक मात्रा से कम है या ज़्यादा\"}",
-          "sort_order": 62
+          "sort_order": 66
         },
         {
-          "key_name": "CDTo",
-          "label": "नोट: केसडायरी क्रम संख्या 1 लगायत … (वैकल्पिक)",
+          "key_name": "Cdr",
+          "label": "20. सी0डी0आर0 प्राप्त कर केस डायरी में संलग्न",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "",
+          "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"hint\": \"सुसंगत मोबाइल नम्बर का सी0डी0आर0 केस डायरी में लगा है या नहीं — हाँ पर पर्चे का बॉक्स खुलेगा\"}",
+          "sort_order": 67
+        },
+        {
+          "key_name": "CdrParcha",
+          "label": "किस पर्चे में उल्लेख है",
           "field_type": "text",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 12\", \"hint\": \"नोट में \\\"केस डायरी क्रम संख्या 1 लगायत …\\\" — आखिरी केस डायरी नम्बर, जैसे: 12 (खाली = बिंदु छपेंगे)\"}",
-          "sort_order": 63
+          "dropdown_options": "{\"placeholder\": \"जैसे: पर्चा सं0 07\", \"showIf\": \"Cdr=हाँ\", \"hint\": \"केस डायरी के किस पर्चे में सी0डी0आर0 का उल्लेख है, जैसे: पर्चा सं0 07\"}",
+          "sort_order": 68
+        },
+        {
+          "key_name": "CDTo",
+          "label": "नोट: पर्चा संख्या 01 से पर्चा सं0 … तक (वैकल्पिक)",
+          "field_type": "text",
+          "is_required": 0,
+          "default_value": null,
+          "dropdown_options": "{\"placeholder\": \"जैसे: 12\", \"hint\": \"नोट में \\\"पर्चा संख्या 01 से पर्चा सं0 …\\\" — आखिरी पर्चा नम्बर, जैसे: 12 (खाली = बिंदु छपेंगे)\"}",
+          "sort_order": 69
         },
         {
           "key_name": "Pages",
@@ -7638,7 +7711,7 @@
           "is_required": 0,
           "default_value": null,
           "dropdown_options": "{\"placeholder\": \"जैसे: 48\", \"hint\": \"कुल पन्ने (वर्क), जैसे: 48 — खाली = बिंदु छपेंगे\"}",
-          "sort_order": 64
+          "sort_order": 70
         },
         {
           "key_name": "pad",
@@ -7647,7 +7720,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
-          "sort_order": 65
+          "sort_order": 71
         },
         {
           "key_name": "OfficerName",
@@ -7655,7 +7728,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 66,
+          "sort_order": 72,
           "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
         },
         {
@@ -7664,7 +7737,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 67,
+          "sort_order": 73,
           "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
         },
         {
@@ -7673,7 +7746,7 @@
           "field_type": "text",
           "is_required": 1,
           "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
-          "sort_order": 68,
+          "sort_order": 74,
           "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
         }
       ]

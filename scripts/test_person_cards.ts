@@ -58,7 +58,7 @@ test('converted formats print the card people (वापसी, तस्कर�
 test('batch 2: बेल नोटिस, 35(3) नोटिस, पंचायतनामा/PM, फार्म 33, PM रिपोर्ट पत्र print the card', () => {
   const acc = JSON.stringify([P('रामचन्द्र', 'पुत्र', 'भिखारी', 'ग्राम भग्तिन खेड़ा थाना बछरावां जनपद रायबरेली')]);
   const b = fmt('sys-fmt-bail-notice-aakhya');
-  assert.match(generateReport(b.vivran, { AccCard: acc }, b.keys), /अभियुक्त का नाम –\*?\*? ?रामचन्द्र, \*?\*?पिता का नाम –\*?\*? ?भिखारी, \*?\*?पता –\*?\*? ?ग्राम भग्तिन खेड़ा/);
+  assert.match(generateReport(b.vivran, { AccCard: acc }, b.keys), /अभि0 का नाम रामचन्द्र पुत्र भिखारी निवासी ग्राम भग्तिन खेड़ा/);
   const n = fmt('sys-fmt-notice-35-3-bnss');
   const rn = generateReport(n.vivran, { AccCard: acc }, n.keys);
   assert.match(rn, /रामचन्द्र पुत्र भिखारी निवासी ग्राम भग्तिन खेड़ा थाना बछरावां जनपद रायबरेली/);
