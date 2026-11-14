@@ -73,6 +73,14 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
   const cur = (k: string) => (out ?? values)[k];
   const groupings: { rows: Record<string, string>[]; g: GroupInto }[] = [];
 
+  // Date keys with {"dateFormat": "dd/mm/yyyy"}: the picker's YYYY-MM-DD (or a FIR dd.mm.yyyy default) printed that way.
+  for (const kd of keyDefs) {
+    if (kd.field_type !== 'date') continue;
+    const fmt = dateFormatOf(kd.dropdown_options);
+    const v = values[kd.key_name];
+    if (fmt && v) { const f = formatDateValue(v, fmt); if (f !== v) set(kd.key_name, f); }
+  }
+
   // Person card → the format's old single keys (owner: person details as cards; template text unchanged). Done first,
   // so a group's "copy" can use a value a card fills (e.g. DName). dropdown_options {"expand": {"VName": "name",
   //   "Rel": "relationType||पुत्र", "VFather": "fatherOrHusbandName", "VAddr": "fullAddress", "VAge": "age|वर्ष"}} —
@@ -168,4 +176,43 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
     set(g.key!, JSON.stringify(filled));
   }
   return out ?? values;
+}
+
+// ── Date fields (owner: 35(3) नोटिस dates as dd/mm/yyyy) — picker stores YYYY-MM-DD, @FIR.fir_date gives dd.mm.yyyy;
+//    a date key with {"dateFormat": "dd/mm/yyyy"} shows and prints that form. Tests scripts/test_format_date.ts.
+
+/** Any of YYYY-MM-DD, dd.mm.yyyy, dd/mm/yyyy, dd-mm-yyyy → [yyyy, mm, dd]; null otherwise. */
+export function dateParts(v: string | null | undefined): [string, string, string] | null {
+  const s = String(v ?? '').trim();
+  let m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s);
+  if (m) return [m[1], m[2].padStart(2, '0'), m[3].padStart(2, '0')];
+  m = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/.exec(s);
+  if (m) return [m[3], m[2].padStart(2, '0'), m[1].padStart(2, '0')];
+  return null;
+}
+
+/** "YYYY-MM-DD" for the picker ('' when the value is not a date). */
+export function toIsoDate(v: string | null | undefined): string {
+  const p = dateParts(v);
+  return p ? `${p[0]}-${p[1]}-${p[2]}` : '';
+}
+
+/** The key's dateFormat option, if any ("dd/mm/yyyy" or "dd.mm.yyyy"). */
+export function dateFormatOf(dropdownOptions: string | null | undefined): string | null {
+  if (!dropdownOptions) return null;
+  try {
+    const o = JSON.parse(dropdownOptions) as { dateFormat?: unknown };
+    return o && typeof o === 'object' && typeof o.dateFormat === 'string' ? o.dateFormat : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Value written in `fmt` (dd/mm/yyyy, dd.mm.yyyy, dd-mm-yyyy); not a date → unchanged. */
+export function formatDateValue(v: string | null | undefined, fmt: string): string {
+  const s = String(v ?? '');
+  const p = dateParts(s);
+  if (!p) return s;
+  const sep = fmt.includes('.') ? '.' : fmt.includes('-') ? '-' : '/';
+  return `${p[2]}${sep}${p[1]}${sep}${p[0]}`;
 }

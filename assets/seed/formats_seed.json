@@ -8075,7 +8075,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 6,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "35(3)",
@@ -8109,10 +8109,10 @@
         {
           "key_name": "FirDate",
           "label": "मुकदमा पंजीकरण का दिनांक (वैकल्पिक)",
-          "field_type": "text",
+          "field_type": "date",
           "is_required": 0,
           "default_value": "@FIR.fir_date",
-          "dropdown_options": "{\"placeholder\": \"जैसे: 01.07.2025\", \"hint\": \"मुकदमा दर्ज होने की तारीख, जैसे: 01.07.2025 — न हो तो खाली\"}",
+          "dropdown_options": "{\"dateFormat\": \"dd/mm/yyyy\", \"hint\": \"मुकदमा दर्ज होने की तारीख कैलेंडर से चुनें (मुकदमा चुनने पर अपने आप भर जाती है), छपेगी जैसे: 01/07/2025 — न हो तो ✕ दबाकर खाली करें\"}",
           "sort_order": 2
         },
         {
@@ -8127,10 +8127,10 @@
         {
           "key_name": "NoticeDate",
           "label": "नोटिस का दिनांक (वैकल्पिक — खाली = हाथ से भरें)",
-          "field_type": "text",
+          "field_type": "date",
           "is_required": 0,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 05.07.2025\", \"hint\": \"नोटिस की तारीख, जैसे: 05.07.2025 — खाली छोड़ें तो नोटिस पर हाथ से भरने की जगह (….) छपेगी\"}",
+          "dropdown_options": "{\"dateFormat\": \"dd/mm/yyyy\", \"hint\": \"नोटिस की तारीख कैलेंडर से चुनें, छपेगी जैसे: 05/07/2025 — खाली छोड़ें तो नोटिस पर हाथ से भरने की जगह (….) छपेगी\"}",
           "sort_order": 4
         },
         {
@@ -8154,10 +8154,10 @@
         {
           "key_name": "AppearDate",
           "label": "उपस्थित होने का दिनांक",
-          "field_type": "text",
+          "field_type": "date",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: 08.07.2025\", \"hint\": \"अभियुक्त किस तारीख को उपस्थित हो, जैसे: 08.07.2025\"}",
+          "dropdown_options": "{\"dateFormat\": \"dd/mm/yyyy\", \"hint\": \"अभियुक्त किस तारीख को उपस्थित हो, कैलेंडर से चुनें, छपेगी जैसे: 08/07/2025\"}",
           "sort_order": 12
         },
         {

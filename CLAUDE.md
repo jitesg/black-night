@@ -221,6 +221,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   default @FIR.*): one justified bold-label header paragraph, notice para (appear date/time bold), 10 शर्तें [[सूची]] (10th = OtherCond or
   "कोई नहीं।"), [[दाएँ]] officer block, पावती, [[दोनों ओर]] signatures; blank optional fields → ".........."; spacing by zero-width
   [[सूची]] lines (3 before the officer block, 1 before पावती, 3 before the last signature line — owner).
+  v7 (owner): FirDate / NoticeDate / AppearDate are field_type date with `{"dateFormat": "dd/mm/yyyy"}` — box shows and report prints
+  dd/mm/yyyy (`formatDateValue` / `dateParts` / `toIsoDate` in formatDerived.ts, applied in deriveFormatValues; picker still stores YYYY-MM-DD;
+  optional ones get a ✕ to clear; tests `scripts/test_format_date.ts`; backup docs/format-backups/notice_35_3_v6_before_date_fields.json).
+  Other formats' date fields have no dateFormat → they still print YYYY-MM-DD.
 - `sys-fmt-bayan-183-patra` "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)" (Case Diary, owner's docx +
   text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
   पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)

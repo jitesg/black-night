@@ -41,6 +41,7 @@ import { SentenceFieldInput } from './SentenceFieldInput';
 import { HintLink, LabelWithHint } from './FieldHintLink';
 import type { KeyDefForRender } from '@/lib/templateEngine';
 import { multiChoiceSelected, multiChoiceToggle } from '@/lib/multiChoice';
+import { dateFormatOf, formatDateValue, toIsoDate } from '@/lib/formatDerived';
 
 // ─── Input Type Definitions ───────────────────────────────────────────────────
 
@@ -920,7 +921,10 @@ const FormatKeyDateInput = forwardRef<View, FormatKeyDateInputProps>(
     const [showPicker, setShowPicker] = useState(false);
 
     const borderColor = error ? C.borderError : C.border;
-    const displayText = value || '';
+    // {"dateFormat": "dd/mm/yyyy"} (owner, 35(3) नोटिस) → the box shows the date that way; the picker always gets YYYY-MM-DD.
+    const dateFmt = dateFormatOf(keyDef.dropdown_options);
+    const displayText = dateFmt ? formatDateValue(value || '', dateFmt) : (value || '');
+    const pickerValue = dateFmt ? toIsoDate(value) : value;
 
     return (
       <View ref={ref} style={{ gap: T.space.xs }}>
@@ -960,9 +964,15 @@ const FormatKeyDateInput = forwardRef<View, FormatKeyDateInputProps>(
             } as TextStyle}
             numberOfLines={1}
           >
-            {displayText || `Select ${displayLabel}`}
+            {displayText || (dateFmt ? 'तारीख चुनें (dd/mm/yyyy)' : `Select ${displayLabel}`)}
           </Text>
-          <ChevronDown size={15} color={C.iconMuted} />
+          {dateFmt && !required && displayText ? (
+            <Pressable onPress={() => onChange(keyDef.key_name, '')} hitSlop={10} accessibilityLabel="तारीख हटाएँ">
+              <X size={16} color={C.iconMuted} />
+            </Pressable>
+          ) : (
+            <ChevronDown size={15} color={C.iconMuted} />
+          )}
         </Pressable>
 
         {/* Inline error */}
@@ -973,7 +983,7 @@ const FormatKeyDateInput = forwardRef<View, FormatKeyDateInputProps>(
         {/* Date picker modal — reuses the same shared component used app-wide */}
         <DatePickerModal
           visible={showPicker}
-          value={value}
+          value={pickerValue}
           label={displayLabel}
           onConfirm={(v) => {
             onChange(keyDef.key_name, v);
