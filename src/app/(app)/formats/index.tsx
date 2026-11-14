@@ -93,6 +93,9 @@ export default function FormatsScreen() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formats, setFormats] = useState<FormatWithMeta[]>([]);
   const [allFormats, setAllFormats] = useState<FormatWithMeta[]>([]);
+  // Same search, but without the type / special filter — the filter chips count from this, so every chip keeps its
+  // number while one is chosen (owner: the other counts used to vanish).
+  const [baseFormats, setBaseFormats] = useState<FormatWithMeta[]>([]);
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>('All');
@@ -112,7 +115,13 @@ export default function FormatsScreen() {
   // ── Per-category counts — derived from allFormats + current sourceFilter ──
   // Recomputed whenever the full dataset or source tab changes so badges stay
   // accurate without any extra DB query.
-  const filterCounts = buildFilterCounts(allFormats, sourceFilter);
+  const filterCounts = buildFilterCounts(baseFormats, sourceFilter);
+  // System / User chips count the list as it is after the type filter (before the source filter).
+  const sourceCounts = {
+    all: allFormats.length,
+    System: allFormats.filter((f) => f.source === 'system').length,
+    User: allFormats.filter((f) => f.source !== 'system').length,
+  };
 
   const loadData = useCallback(async (
     q = queryRef.current,
@@ -128,6 +137,9 @@ export default function FormatsScreen() {
         : sf === 'User' ? results.filter(f => f.source !== 'system')
         : results;
       setAllFormats(results);
+      setBaseFormats(filter !== 'All'
+        ? (q.trim() ? await searchPublishedFormats(q, 'All', 'me') : await getPublishedFormats('me'))
+        : results);
       setFormats(filtered);
     } catch (e) {
       logger.warn('[Formats] Load error:', e);
@@ -214,17 +226,20 @@ export default function FormatsScreen() {
   // ── Design C filter sheet: the same type / special filter (one at a time) + System / User ──
   const filterGroups = useMemo<FilterGroupDef[]>(() => [
     {
-      key: 'f', label: t('format.list.filterBtn'),
+      key: 'f', label: t('format.list.filterBtn'), allCount: filterCounts.All ?? 0,
       options: FILTER_OPTIONS.filter((f) => f !== 'All').map((f) => {
         const n = filterCounts[f];
         return { value: f, label: n ? `${getFilterOptionLabel(f, t)} (${n})` : getFilterOptionLabel(f, t) };
       }),
     },
     {
-      key: 'source', label: t('filter.type', 'प्रकार'),
-      options: [{ value: 'System', label: t('format.list.sourceSystem') }, { value: 'User', label: t('format.list.sourceUser') }],
+      key: 'source', label: t('filter.type', 'प्रकार'), allCount: sourceCounts.all,
+      options: [
+        { value: 'System', label: `${t('format.list.sourceSystem')} (${sourceCounts.System})` },
+        { value: 'User', label: `${t('format.list.sourceUser')} (${sourceCounts.User})` },
+      ],
     },
-  ], [t, filterCounts]);
+  ], [t, filterCounts, sourceCounts.all, sourceCounts.System, sourceCounts.User]);
   const filterValues = useMemo<FilterValues>(
     () => ({ f: activeFilter === 'All' ? null : activeFilter, source: sourceFilter === 'All' ? null : sourceFilter }),
     [activeFilter, sourceFilter],

@@ -17,6 +17,8 @@ export interface FilterGroupDef {
   key: string; label: string; options: FilterOption[];
   /** A choice that is always set (e.g. sort order): no "सभी" chip, never counted / shown as a chip while it is `defaultValue`. */
   noAll?: boolean;
+  /** Count shown on the "सभी" chip — "सभी (n)" (formats: the total, owner). */
+  allCount?: number;
   defaultValue?: string;
   /** Text of the ✕ chip when it is more than the option label (e.g. a chosen date range). */
   chipLabel?: (values: FilterValues) => string | null;
@@ -134,7 +136,7 @@ export function FilterSheet({
                   {g.noAll ? null : (
                     <Pressable onPress={() => setDraft((d) => ({ ...d, [g.key]: null }))} style={chip(cur == null)}>
                       <Text style={{ fontSize: 13.5, fontWeight: cur == null ? '700' : '500', color: cur == null ? '#FFFFFF' : C.foreground }}>
-                        {t('common.all', 'सभी')}
+                        {t('common.all', 'सभी')}{g.allCount != null ? ` (${g.allCount})` : ''}
                       </Text>
                     </Pressable>
                   )}

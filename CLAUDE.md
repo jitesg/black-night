@@ -379,8 +379,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   NK search box no longer collapsible. हल्का search (`halka/search.tsx`): प्रकार (6 types) filters the results (old quick chips that typed
   the type name removed); हल्का lists (`halka/analytics`): ग्राम पंचायत + प्रकार (badge) groups built from the rows.
   Design C everywhere (owner): मुकदमा (स्थिति + क्रम — sort is a `noAll` group with `defaultValue: 'newest'`), GD (one group = the old
-  single filter), न्यायालय (स्थिति / तारीख / प्रकार), प्रार्थना पत्र (स्थिति / तारीख / प्रकार, accent #2D52B8), प्रारूप (filter with counts +
-  System/User), ज्ञानकोष list (उप-श्रेणी, SOP with counts + System/User), चेकलिस्ट (System/User), जाँच गाइड (अपराध प्रकार); ज्ञानकोष
+  single filter), न्यायालय (स्थिति / तारीख / प्रकार), प्रार्थना पत्र (स्थिति / तारीख / प्रकार, accent #2D52B8), प्रारूप (filter with counts — counts from the search result without the type filter, so every chip keeps its number; "सभी (n)" via FilterSheet group `allCount`; System/User chips counted after the type filter, owner), ज्ञानकोष list (उप-श्रेणी, SOP with counts + System/User), चेकलिस्ट (System/User), जाँच गाइड (अपराध प्रकार); ज्ञानकोष
   home + फर्द = search only. No search box is `collapsible` any more. Same filter rules as before — only the UI moved into the sheet.
   Card ⋮ = small floating popup (Modal at the button, opens upwards near the bottom) संपादित/Word/हटाएं; press-and-hold = selection mode (header: सभी चुनें, batch Word export via
   `exportKaryvahisDocx` — one file, each report on a new page — and batch delete); back clears the selection.
