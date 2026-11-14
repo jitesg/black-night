@@ -3,11 +3,13 @@
  * (FormatInfoSheet) and the law "विस्तृत विश्लेषण" card when a section has the owner's notes (src/lib/law/lawNotes.ts).
  * Dark theme uses darker shades of the same colours.
  */
-import React from 'react';
-import { Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Pressable, Text, View } from 'react-native';
+import { Check } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { boldParts, type InfoBlock } from '@/lib/formatInfo';
+import { NOTE_IMAGES } from '@/lib/law/lawNotes';
 
 export const INFO_LIGHT = {
   navy: '#1F4E79', navyText: '#1F4E79', label: '#5A5A5A', sub: '#646464', line: '#D6E4F0', cellLine: '#BFD3E6',
@@ -19,6 +21,44 @@ export const INFO_DARK = {
   infoBg: '#14273A', infoText: '#BFDBFE', warnBg: '#3A2E0B', warnText: '#FDE68A', warnBar: '#D6A000', keyBg: '#16222F',
   headText: '#FFFFFF',
 };
+
+/** Tickable checklist (owner, BNSS 194 Inquest Duty Checklist): ticks live only while the screen is open, like the
+ *  "आवश्यक तत्व" checklist; "n/total" + bar + रीसेट करें. */
+function CheckList({ items, title, C, txt }: { items: string[]; title?: string; C: typeof INFO_LIGHT; txt: object }) {
+  const [done, setDone] = useState<Set<number>>(new Set());
+  const toggle = (j: number) => setDone((prev) => { const n = new Set(prev); if (n.has(j)) n.delete(j); else n.add(j); return n; });
+  const all = done.size === items.length && items.length > 0;
+  return (
+    <View style={{ borderWidth: 1, borderColor: C.cellLine, borderRadius: 10, padding: 12, marginVertical: 6, gap: 8 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+        <Text style={{ flex: 1, fontSize: 15.5, fontWeight: '700', color: C.navyText }}>{title ?? 'चेकलिस्ट'}</Text>
+        <View style={{ borderRadius: 999, paddingHorizontal: 10, paddingVertical: 2, backgroundColor: all ? '#16A34A' : C.infoBg }}>
+          <Text style={{ fontSize: 13, fontWeight: '700', color: all ? '#FFFFFF' : C.infoText }}>{done.size}/{items.length}</Text>
+        </View>
+      </View>
+      <View style={{ height: 5, borderRadius: 3, backgroundColor: C.line, overflow: 'hidden' }}>
+        <View style={{ height: 5, width: `${items.length ? (done.size * 100) / items.length : 0}%`, backgroundColor: all ? '#16A34A' : C.navy }} />
+      </View>
+      {items.map((item, j) => {
+        const on = done.has(j);
+        return (
+          <Pressable key={j} onPress={() => toggle(j)} accessibilityRole="checkbox" accessibilityState={{ checked: on }}
+            style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start', paddingVertical: 2 }}>
+            <View style={{ width: 22, height: 22, borderRadius: 11, borderWidth: 2, marginTop: 2, alignItems: 'center', justifyContent: 'center',
+              borderColor: on ? '#16A34A' : C.cellLine, backgroundColor: on ? '#16A34A' : 'transparent' }}>
+              {on ? <Check size={14} color="#FFFFFF" strokeWidth={3} /> : null}
+            </View>
+            <View style={{ flex: 1 }}><Rich s={item} style={{ ...txt, ...(on ? { opacity: 0.6 } : {}) }} /></View>
+          </Pressable>
+        );
+      })}
+      <Pressable onPress={() => setDone(new Set())} accessibilityRole="button"
+        style={{ borderWidth: 1, borderColor: C.cellLine, borderRadius: 10, paddingVertical: 8, alignItems: 'center', marginTop: 2 }}>
+        <Text style={{ fontSize: 14, color: C.sub }}>रीसेट करें</Text>
+      </Pressable>
+    </View>
+  );
+}
 
 function Rich({ s, style }: { s: string; style: object }) {
   return (
@@ -71,9 +111,35 @@ export function InfoBlocksView({ blocks }: { blocks: InfoBlock[] }) {
         return <Text key={i} style={{ fontSize: 15, lineHeight: 24, fontWeight: '700', color: C.navyText, marginTop: 10, marginBottom: 2 }}>{b.x}</Text>;
       case 'p':
         return <Rich key={i} s={b.x} style={{ ...txt, marginVertical: 3 }} />;
+      case 'tag':
+        return (
+          <View key={i} style={{ alignSelf: 'flex-start', backgroundColor: C.infoBg, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3, marginVertical: 4 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.infoText }}>{b.x}</Text>
+          </View>
+        );
+      case 'card':
+        return (
+          <View key={i} style={{ borderWidth: 1, borderColor: C.cellLine, backgroundColor: C.keyBg, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6, marginVertical: 6 }}>
+            <InfoBlocksView blocks={b.blocks} />
+          </View>
+        );
+      case 'img': {
+        const src = NOTE_IMAGES[b.key];
+        if (!src) return null;
+        const meta = Image.resolveAssetSource(src);
+        const ratio = meta?.width && meta?.height ? meta.width / meta.height : 1.6;
+        return (
+          <View key={i} style={{ marginVertical: 8, gap: 4 }}>
+            <Image source={src} style={{ width: '100%', aspectRatio: ratio, borderRadius: 8 }} resizeMode="contain" accessibilityLabel={b.caption} />
+            {b.caption ? <Text style={{ fontSize: 12.5, color: C.sub, textAlign: 'center' }}>{b.caption}</Text> : null}
+          </View>
+        );
+      }
+      case 'check':
+        if (b.interactive) return <CheckList key={i} items={b.i} title={b.title} C={C} txt={txt} />;
+      // falls through — a plain (non-tickable) ☐ list
       case 'ul':
       case 'ol':
-      case 'check':
         return (
           <View key={i} style={{ marginVertical: 3, gap: 3 }}>
             {b.i.map((item, j) => (

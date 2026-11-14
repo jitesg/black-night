@@ -540,6 +540,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `components/common/InfoBlocksView.tsx` (also used by FormatInfoSheet). Docx → JSON: `python3 -I scripts/docx_to_info_blocks.py <docx> <out.json>`
   (text as is; Heading 1 → h, Heading 2 → h2, List Bullet/Number → ul/ol, "☐" lines → check, 1×1 table → box, others → table). Tests
   `scripts/test_law_notes.ts`.
+  BNSS 194 (owner): note = owner's 194/195 study notes from photos (docs/photo-texts/notes.md → `python3 -I scripts/md_to_info_blocks.py
+  docs/photo-texts/notes.md assets/law-notes/BNSS-194.json`; Claude's "(…)" notes and photo headers dropped), `keep: ['mist','ex']` → the card
+  still shows the generated "आम गलतियाँ" + "उदाहरण" accordions under the note (DetailedAnalysisCard `old(key)`). New blocks: tag, card (nested
+  blocks), img (`NOTE_IMAGES` in lawNotes.ts, cropped flow charts assets/law-notes/img/bnss194-flow.jpg), check `interactive` + title →
+  tickable checklist (n/17, bar, रीसेट करें; session-only like आवश्यक तत्व).
 
 ## SOP library
 - Seeds in `assets/seed/`: `sop_index.json`, `sop_struct_1.json`, `sop_struct_2.json`,

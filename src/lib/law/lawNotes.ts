@@ -7,6 +7,7 @@ import type { FormatInfo } from '@/lib/formatInfo';
 
 const NOTES: Record<string, () => FormatInfo> = {
   'BNSS-35': () => require('../../../assets/law-notes/BNSS-35.json') as FormatInfo,
+  'BNSS-194': () => require('../../../assets/law-notes/BNSS-194.json') as FormatInfo,
 };
 
 export function getLawNote(act: string, n: number): FormatInfo | null {
@@ -14,3 +15,8 @@ export function getLawNote(act: string, n: number): FormatInfo | null {
   if (!(k in NOTES)) return null;
   try { return NOTES[k](); } catch { return null; }
 }
+
+/** Pictures used by notes ({t:'img', key}) — bundled assets. */
+export const NOTE_IMAGES: Record<string, number> = {
+  'bnss194-flow': require('../../../assets/law-notes/img/bnss194-flow.jpg') as number,
+};

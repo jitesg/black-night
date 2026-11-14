@@ -10,11 +10,16 @@ export type InfoBlock =
   | { t: 'head'; label: string; title: string; sub?: string; lines?: string[] }
   | { t: 'box'; tone: 'info' | 'warn'; label: string; x: string }
   | { t: 'h' | 'h2' | 'p'; x: string }
-  | { t: 'ul' | 'ol' | 'check'; i: string[] }
+  | { t: 'ul' | 'ol'; i: string[] }
+  | { t: 'check'; i: string[]; interactive?: boolean; title?: string }
+  | { t: 'tag'; x: string }
+  | { t: 'card'; blocks: InfoBlock[] }
+  | { t: 'img'; key: string; caption?: string }
   | { t: 'table'; head: string[]; rows: string[][] }
   | { t: 'qa'; rows: string[][] };
 
-export interface FormatInfo { v: number; blocks: InfoBlock[] }
+/** keep = parts of the generated law analysis still shown under a law note (e.g. ['mist', 'ex'] — आम गलतियाँ, उदाहरण). */
+export interface FormatInfo { v: number; blocks: InfoBlock[]; keep?: string[] }
 
 const NOTES: Record<string, () => FormatInfo> = {
   'sys-fmt-notice-179-bnss': () => require('../../assets/format-info/sys-fmt-notice-179-bnss.json') as FormatInfo,

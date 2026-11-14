@@ -70,15 +70,18 @@ export function DetailedAnalysisCard({ entry, isHi = true, note }: DetailedAnaly
     });
   }, []);
 
-  const hasSarBindu = Boolean(entry.s) || (Array.isArray(entry.k) && entry.k.length > 0);
-  const hasElements = Array.isArray(entry.el) && entry.el.length > 0;
-  const hasFIR = Array.isArray(entry.fir) && entry.fir.length > 0;
-  const hasEvidence = Array.isArray(entry.ev) && entry.ev.length > 0;
-  const hasDifferences = Array.isArray(entry.df) && entry.df.length > 0;
-  const hasMistakes = Array.isArray(entry.mist) && entry.mist.length > 0;
-  const hasPoliceNote = Boolean(entry.p);
-  const hasQuestions = Array.isArray(entry.q) && entry.q.length > 0;
-  const hasExamples = Array.isArray(entry.ex) && entry.ex.length > 0;
+  // Owner's note replaces the generated analysis, except the parts it lists in `keep` (BNSS 194: आम गलतियाँ + उदाहरण)
+  const keep = note?.keep ?? [];
+  const old = (k: string) => !note || keep.includes(k);
+  const hasSarBindu = old('s') && (Boolean(entry.s) || (Array.isArray(entry.k) && entry.k.length > 0));
+  const hasElements = old('el') && Array.isArray(entry.el) && entry.el.length > 0;
+  const hasFIR = old('fir') && Array.isArray(entry.fir) && entry.fir.length > 0;
+  const hasEvidence = old('ev') && Array.isArray(entry.ev) && entry.ev.length > 0;
+  const hasDifferences = old('df') && Array.isArray(entry.df) && entry.df.length > 0;
+  const hasMistakes = old('mist') && Array.isArray(entry.mist) && entry.mist.length > 0;
+  const hasPoliceNote = old('p') && Boolean(entry.p);
+  const hasQuestions = old('q') && Array.isArray(entry.q) && entry.q.length > 0;
+  const hasExamples = old('ex') && Array.isArray(entry.ex) && entry.ex.length > 0;
 
   const filteredExamples = (entry.ex || []).filter((item) => {
     if (exampleFilter === 'all') return true;
@@ -127,7 +130,7 @@ export function DetailedAnalysisCard({ entry, isHi = true, note }: DetailedAnaly
         </View>
       ) : null}
 
-      {isCardExpanded && !note && (
+      {isCardExpanded && (!note || keep.length > 0) && (
         <View className="gap-3 pt-1">
           {/* ── 1. सार (s) + मुख्य बिंदु (k) ── */}
           {hasSarBindu && (
