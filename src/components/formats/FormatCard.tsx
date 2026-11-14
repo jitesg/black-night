@@ -2,15 +2,17 @@
  * FormatCard — the format card of the Predefined Formats screen, shared with the
  * "प्रारूप से जोड़ें" pickers (GD / निरोधात्मक / न्यायालय / प्रार्थना पत्र) so both look the same.
  */
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
-import { Star, Eye, Clock, Edit2, Trash2, Shield, User } from 'lucide-react-native';
+import { Star, Eye, Clock, Edit2, Trash2, Shield, User, Info } from 'lucide-react-native';
 import { THEME } from '@/lib/theme';
 import { HighlightText } from '@/components/HighlightText';
 import { Pill } from '@/components/ui/ds/Pill';
 import type { FormatWithMeta } from '@/lib/db/predefinedFormatRepo';
+import { hasFormatInfo } from '@/lib/formatInfo';
+import { FormatInfoSheet } from '@/components/formats/FormatInfoSheet';
 
 const INDIGO = '#6366F1';
 // One colour per format type (7 types), light + dark shade so the pill reads on both themes.
@@ -69,8 +71,12 @@ export const FormatCard = memo(function FormatCard({
   const { t } = useTranslation();
   const isDark = colorScheme === 'dark';
   const palette = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  // ⓘ प्रारूप की जानकारी (owner) — only formats that have an info note (src/lib/formatInfo.ts)
+  const showInfo = isSystem && hasFormatInfo(format.id);
+  const [infoOpen, setInfoOpen] = useState(false);
 
   return (
+    <>
     <Pressable
       onPress={onPress}
       className="bg-card border border-border rounded-2xl p-4 gap-3 active:opacity-75"
@@ -86,6 +92,16 @@ export const FormatCard = memo(function FormatCard({
             style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, flexShrink: 1 }}
           />
         </View>
+        {showInfo ? <Pressable
+          onPress={() => setInfoOpen(true)}
+          className="items-center justify-center active:opacity-60"
+          style={{ width: 36, height: 36 }}
+          hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
+          accessibilityLabel="प्रारूप की जानकारी"
+          accessibilityRole="button"
+        >
+          <Info size={20} color={isDark ? '#60A5FA' : '#1F4E79'} />
+        </Pressable> : null}
         {/* Eye preview — 44dp touch target via padding + hitSlop */}
         {onPreview ? <Pressable
           onPress={onPreview}
@@ -173,6 +189,10 @@ export const FormatCard = memo(function FormatCard({
         )}
       </View>
     </Pressable>
+    {showInfo ? (
+      <FormatInfoSheet formatId={format.id} visible={infoOpen} onClose={() => setInfoOpen(false)} onFill={onPress} />
+    ) : null}
+    </>
   );
 });
 

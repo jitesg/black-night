@@ -33,3 +33,24 @@ test('179 notice: empty optional boxes print dots', () => {
   assert.match(r, /दिनांक – \.{10}/);
   assert.doesNotMatch(r, /\{\{/);
 });
+
+test('179 notice: age limit 60 (BNSS 179), not 65', () => {
+  assert.match(f.vivran, /60 वर्ष से अधिक/);
+  assert.doesNotMatch(f.vivran, /65 वर्ष/);
+});
+
+test('179 info note: owner docx text, blocks in order', async () => {
+  const { hasFormatInfo, boldParts } = await import('../src/lib/formatInfo.ts');
+  assert.equal(hasFormatInfo('sys-fmt-notice-179-bnss'), true);
+  assert.equal(hasFormatInfo('sys-fmt-notice-35-3-bnss'), false);
+  assert.deepEqual(boldParts('a **b** c'), [{ text: 'a ', bold: false }, { text: 'b', bold: true }, { text: ' c', bold: false }]);
+  const info = JSON.parse(readFileSync(new URL('../assets/format-info/sys-fmt-notice-179-bnss.json', import.meta.url), 'utf8'));
+  const heads = info.blocks.filter((b: { t: string }) => b.t === 'h').map((b: { x: string }) => b.x);
+  assert.equal(heads.length, 10);
+  assert.equal(heads[0], '1. धारा 179 BNSS क्या है?');
+  assert.equal(heads[9], '10. कानूनी संदर्भ एवं उपयोग संबंधी नोट');
+  const all = JSON.stringify(info);
+  assert.match(all, /60 वर्ष से अधिक आयु का पुरुष।/);
+  assert.equal(info.blocks.filter((b: { t: string }) => b.t === 'box').length, 2);
+  assert.equal(info.blocks.filter((b: { t: string }) => b.t === 'table')[0].rows.length, 4);
+});

@@ -235,6 +235,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   थाना, जनपद, मु0अ0सं0, धारा, FirDate, RoAam, "थाना … दिनांक NoticeDate … जनपद"), centred 179 heading, सेवा मे + NoticeCard (expand NName/NRel/
   NFather/NAddr) + Mobile, VadiCard (VName…) in "उपरोक्त मामला … की शिकायत पर", appear date/time/place bold, [[दाएँ]] विवेचक block (rank + name,
   थाना, जनपद, NoticeDate), नोटः- (BNS 208, छूट). Blank optional → "..........". Spelling fixed from the docx. Tests `scripts/test_notice_179.ts`.
+  v2 (owner): note says "60 वर्ष" (BNSS 179), was 65 from the first docx (backup notice_179_v1_before_60.json).
+- "ⓘ प्रारूप की जानकारी" (owner): info note per predefined format — `src/lib/formatInfo.ts` (registry NOTES id → assets/format-info/<id>.json;
+  blocks head / box info|warn / h / p / ul / ol / table / qa, "**…**" bold), sheet `components/formats/FormatInfoSheet.tsx` (bottom Modal, docx blue
+  design #1F4E79 / #EAF2F8 / yellow #FFF2CC, dark shades, "प्रारूप भरें →" = card onPress), ⓘ button (lucide Info) on FormatCard before 👁 — only
+  system formats with a note. First: 179 नोटिस = owner's Dhara_179_BNSS_Info_Note.docx text as is (extracted by script, not retyped).
+  New notes: owner's docx → JSON with the same block types + one NOTES line. Test in scripts/test_notice_179.ts.
 - `sys-fmt-bayan-183-patra` "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)" (Case Diary, owner's docx +
   text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
   पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)
