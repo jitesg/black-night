@@ -161,6 +161,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   रवानगी समय / वापसी समय removed — owner),
   one checkbox per activity (do*) → its paragraph; order words by `{{seq|सर्वप्रथम|तत्पश्चात…|वहाँ से…|…}}` (`_applySeqTokens`, after if);
   विवेचना paragraph has FIRNo/Sections fields. Old v1 in `docs/format-backups/gd_wapsi_v1.json`.
+- GD `sys-gd-fmt-rawangi-mukadma` "रवानगी उ0नि0(मुकदमा)" removed (owner) — dropped from the seed, so the seed manager's orphan clean-up
+  soft-deletes it on phones; backup docs/format-backups/gd_rawangi_mukadma_removed.json. "रवानगी उ0नि0(सामान्य)" stays.
 - GD `sys-gd-fmt-taskara` "तस्करा — पूछताछ / सुपुर्दगी" (replaced 5 old taskara formats; backup docs/format-backups/taskara_old_removed.json):
   dropdowns Stage (बैठाया / सुपुर्दगी) × Reason (मुकदमा / प्रार्थना पत्र / PRV / अन्य) → `{{if:Key=value|…}}`; fields shown only when
   needed via showIf; सुपुर्दगी: GiveMode one receiver (relation incl. दोस्त/पड़ोसी/गाँव के व्यक्ति) or item_group `Givers` per person.

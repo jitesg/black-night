@@ -1,0 +1,71 @@
+{
+  "formats": [
+    {
+      "id": "sys-gd-fmt-rawangi-mukadma",
+      "title": "रवानगी उ0नि0(मुकदमा)",
+      "format_type": "GD",
+      "vivran": "इस समय मैं {{Rank}} {{OfficerName}} {{Hamrah}}, मु0अ0सं0 {{FIRNo}} धारा {{Sections}} की विवेचना के क्रम में साक्ष्य संकलन, सुरागरसी-पतारसी तथा वांछित अभियुक्तगण की गिरफ्तारी/तलाश हेतु क्षेत्र/ गैर जनपद/ गैर प्रदेश में रवाना हुआ।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 4,
+      "app_version": "1.0.0",
+      "tags": [
+        "रवानगी",
+        "विवेचना",
+        "मुकदमा",
+        "GD"
+      ],
+      "keys": [
+        {
+          "key_name": "FIRNo",
+          "label": "FIR No. दर्ज करें",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 3,
+          "default_value": "@FIR.fir_number",
+          "dropdown_options": "{\"hint\": \"मु0अ0सं0 / वर्ष, जैसे: 123/2026 — मुकदमा चुनने पर अपने आप भरता है\"}"
+        },
+        {
+          "key_name": "Sections",
+          "label": "धाराएं",
+          "field_type": "multiline",
+          "is_required": 0,
+          "sort_order": 4,
+          "default_value": "@FIR.section",
+          "dropdown_options": "{\"hint\": \"धाराएँ अधिनियम सहित, जैसे: 115(2), 352, 351(3) बीएनएस — मुकदमा चुनने पर अपने आप भरता है\"}"
+        },
+        {
+          "key_name": "Rank",
+          "label": "पद/रैंक",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 7,
+          "default_value": "उ0नि0",
+          "dropdown_options": "{\"hint\": \"अपना पद छोटे रूप में, जैसे: उ0नि0 / निरीक्षक\"}"
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 8,
+          "default_value": "",
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह\"}"
+        },
+        {
+          "key_name": "Hamrah",
+          "label": "हमराह",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 9,
+          "default_value": "मय हमराह का0 अजय यादव",
+          "dropdown_options": "{\"hint\": \"\\\"मय हमराह\\\" सहित पूरा लिखें, जैसे: मय हमराह का0 अजय यादव — कोई साथ न हो तो खाली छोड़ें\"}"
+        }
+      ],
+      "last_updated": "2026-07-17"
+    }
+  ]
+}
