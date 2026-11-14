@@ -457,6 +457,8 @@ export default function AddFIRScreen() {
   const [timeOccurrence, setTimeOccurrence] = useState('');
   const [dateInformation, setDateInformation] = useState('');
   const [timeInformation, setTimeInformation] = useState('');
+  const [roaamNo, setRoaamNo] = useState('');
+  const [roaamTime, setRoaamTime] = useState('');
   // Accused
   const [accusedType, setAccusedType] = useState<'known' | 'unknown'>('known');
   const [knownAccused, setKnownAccused] = useState<KnownAccused[]>([mkAccused()]);
@@ -622,6 +624,8 @@ export default function AddFIRScreen() {
           time_of_occurrence: timeOccurrence,
           date_of_information: dateInformation,
           time_of_information: timeInformation,
+          roaam_no: roaamNo.trim(),
+          roaam_time: roaamTime,
           nakal_chick: nakalChick,
           nakal_rapat: nakalRapat,
           mukadma_saransh: mukadmaSaransh.trim() || undefined,
@@ -909,6 +913,19 @@ export default function AddFIRScreen() {
               <View className="flex-1">
                 <Field label={t('fir.addFir.fieldTimeInformation')}>
                   <Input type="time" value={timeInformation} onChangeText={(v) => { isDirty.current = true; setTimeInformation(v); }} />
+                </Field>
+              </View>
+            </View>
+            {/* रो0आम (GD) रपट संख्या व समय (owner) */}
+            <View className="flex-row gap-3">
+              <View className="flex-1">
+                <Field label="रो0आम रपट संख्या">
+                  <Input type="number" value={roaamNo} placeholder="जैसे: 12" onChangeText={(v) => { isDirty.current = true; setRoaamNo(v); }} />
+                </Field>
+              </View>
+              <View className="flex-1">
+                <Field label="रपट का समय">
+                  <Input type="time" value={roaamTime} onChangeText={(v) => { isDirty.current = true; setRoaamTime(v); }} />
                 </Field>
               </View>
             </View>

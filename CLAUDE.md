@@ -491,6 +491,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (v6 `{{DeadCard#prose}}`). Option `"single": true` = one card only (all 4 fill screens). expand spec `"relationType||पुत्र"` = fallback when the
   card leaves it empty; expand runs before item_group `copy` (DName into पंच rows). न्यायालय fill-format now renders person / accused cards
   (before: plain text box). Backup docs/format-backups/batch2_before_person_cards.json.
+- FIR रो0आम (GD) रपट (owner): boxes "रो0आम रपट संख्या" (number) + "रपट का समय" (time) in a row under सूचना की तारीख / समय on add-fir and the
+  FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Not yet linked to formats (35(3) / 179 RoAam box —
+  an @FIR marker could fill "रपट नं0 12 समय 10:15 बजे" if the owner asks).
 - केस डायरी date/time (owner): `src/lib/caseDiaryTime.ts` (pure; tests `scripts/test_case_diary_time.ts`) — the FIRST diary opens with the FIR
   सूचना की तारीख (`newDiaryDefaultDate`; add-case-diary + the karyvahi quick "नई डायरी"), hint under the date; on that date the
   start time (or end time when no start) must not be before the FIR time_of_information (`checkDiaryTime`, in add-case-diary save; end

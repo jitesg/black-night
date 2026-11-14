@@ -1102,6 +1102,9 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'firs', 'complainant_father',   'TEXT');
   await _ensureColumn(database, 'firs', 'complainant_relation', 'TEXT');
   await _ensureColumn(database, 'firs', 'complainant_gender',   'TEXT');
+  // रो0आम (GD) रपट संख्या व समय of the FIR (owner) — next to सूचना की तारीख / समय on add-fir and the details tab
+  await _ensureColumn(database, 'firs', 'roaam_no',   'TEXT');
+  await _ensureColumn(database, 'firs', 'roaam_time', 'TEXT');
   await _ensureColumn(database, 'fir_accused', 'father',   'TEXT');
   await _ensureColumn(database, 'fir_accused', 'relation', 'TEXT');
   await _ensureColumn(database, 'fir_accused', 'gender',   'TEXT');

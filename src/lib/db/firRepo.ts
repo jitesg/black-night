@@ -24,6 +24,9 @@ export interface FIR {
   time_of_information?: string;
   nakal_chick?: string;
   nakal_rapat?: string;
+  /** रो0आम (GD) रपट संख्या व समय (owner), e.g. "12" / "10:15". */
+  roaam_no?: string;
+  roaam_time?: string;
   mukadma_saransh?: string;
   unknown_accused_count: number;
   status: 'Pending' | 'Finished';
@@ -118,8 +121,8 @@ export async function createFIR(input: FIRInput): Promise<FIR> {
       complainant_mobile, complainant_alt_mobile, complainant_jati, complainant_age,
       ghatnasthal, crime_type, date_of_occurrence, time_of_occurrence,
       date_of_information, time_of_information, nakal_chick, nakal_rapat, mukadma_saransh,
-      unknown_accused_count, complainant_father, complainant_relation, complainant_gender, status, created_at, updated_at, version)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, 1)`,
+      unknown_accused_count, complainant_father, complainant_relation, complainant_gender, roaam_no, roaam_time, status, created_at, updated_at, version)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, 1)`,
     [
       id, input.fir_number, input.section, input.complainant_name,
       input.complainant_address ?? null, input.complainant_mobile ?? null,
@@ -131,6 +134,7 @@ export async function createFIR(input: FIRInput): Promise<FIR> {
       input.nakal_rapat ?? null, input.mukadma_saransh ?? null,
       input.unknown_accused_count ?? 0,
       input.complainant_father ?? null, input.complainant_relation ?? null, input.complainant_gender ?? null,
+      input.roaam_no ?? null, input.roaam_time ?? null,
       now, now,
     ]
   );
@@ -147,7 +151,7 @@ export async function updateFIR(id: string, input: Partial<FIRInput & { status: 
     'complainant_age', 'ghatnasthal', 'crime_type', 'date_of_occurrence',
     'time_of_occurrence', 'date_of_information', 'time_of_information',
     'nakal_chick', 'nakal_rapat', 'mukadma_saransh', 'unknown_accused_count', 'status',
-    'complainant_father', 'complainant_relation', 'complainant_gender',
+    'complainant_father', 'complainant_relation', 'complainant_gender', 'roaam_no', 'roaam_time',
   ];
   const entries = Object.entries(input).filter(([k]) => allowed.includes(k));
   if (!entries.length) return;

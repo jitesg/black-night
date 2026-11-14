@@ -221,6 +221,8 @@ function FIRDetailsTab() {
   const [timeOccurrence, setTimeOccurrence] = useState('');
   const [dateInformation, setDateInformation] = useState('');
   const [timeInformation, setTimeInformation] = useState('');
+  const [roaamNo, setRoaamNo] = useState('');
+  const [roaamTime, setRoaamTime] = useState('');
   const [nakalChick, setNakalChick] = useState('');
   const [nakalRapat, setNakalRapat] = useState('');
   const [mukadmaSaransh, setMukadmaSaransh] = useState('');
@@ -335,6 +337,8 @@ function FIRDetailsTab() {
           setTimeOccurrence(f.time_of_occurrence ?? '');
           setDateInformation(f.date_of_information ?? '');
           setTimeInformation(f.time_of_information ?? '');
+          setRoaamNo(f.roaam_no ?? '');
+          setRoaamTime(f.roaam_time ?? '');
           setNakalChick(f.nakal_chick ?? '');
           setNakalRapat(f.nakal_rapat ?? '');
           setMukadmaSaransh(f.mukadma_saransh ?? '');
@@ -392,6 +396,7 @@ function FIRDetailsTab() {
         ghatnasthal,
         date_of_occurrence: dateOccurrence, time_of_occurrence: timeOccurrence,
         date_of_information: dateInformation, time_of_information: timeInformation,
+        roaam_no: roaamNo.trim(), roaam_time: roaamTime,
         nakal_chick: nakalChick, nakal_rapat: nakalRapat,
         mukadma_saransh: mukadmaSaransh,
       });
@@ -570,6 +575,11 @@ function FIRDetailsTab() {
           <View className="flex-row gap-3">
             <View className="flex-1"><DateField label={t('fir.dateOfInformation')} value={dateInformation} onChange={setDateInformation} /></View>
             <View className="flex-1"><Field label={t('fir.time')}><Input type="time" value={timeInformation} onChangeText={setTimeInformation} /></Field></View>
+          </View>
+          {/* रो0आम (GD) रपट संख्या व समय (owner) */}
+          <View className="flex-row gap-3">
+            <View className="flex-1"><Field label="रो0आम रपट संख्या"><Input type="number" value={roaamNo} placeholder="जैसे: 12" onChangeText={setRoaamNo} /></Field></View>
+            <View className="flex-1"><Field label="रपट का समय"><Input type="time" value={roaamTime} onChangeText={setRoaamTime} /></Field></View>
           </View>
         </View>
 
