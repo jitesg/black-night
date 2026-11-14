@@ -88,7 +88,8 @@ export function firFillValue(field: string, f: FirLike | null, accused: AccusedL
   const has = !!t(fir.complainant_name);
   switch (field) {
     case 'fir_number': return t(fir.fir_number);
-    case 'section': return t(fir.section);
+    // formats already write "धारा {{Sections}}" — a FIR box typed as "धारा 115(2) …" would print "धारा धारा" (owner)
+    case 'section': return t(fir.section).replace(/^(?:धाराएं|धाराएँ|धारायें|धाराओं|धारा|u\/s|U\/S)\s*[:\-–]?\s*/, '');
     case 'ghatnasthal': return t(fir.ghatnasthal);
     case 'fir_date': return hiDate(t(fir.date_of_information));
     case 'roaam_no': return t(fir.roaam_no);

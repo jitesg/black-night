@@ -57,3 +57,10 @@ test('roaam_no / roaam_time from the FIR (owner)', () => {
   assert.equal(firFillValue('roaam_time', { roaam_time: '20:00' } as never), '20:00');
   assert.equal(firFillValue('roaam_no', null), '');
 });
+
+test('section: a leading "धारा" typed in the FIR box is dropped (formats already write "धारा", owner)', () => {
+  assert.equal(firFillValue('section', { section: 'धारा 115(2), 352 बीएनएस' } as never), '115(2), 352 बीएनएस');
+  assert.equal(firFillValue('section', { section: 'धाराएं: 103(1) BNS' } as never), '103(1) BNS');
+  assert.equal(firFillValue('section', { section: 'u/s 303(2) BNS' } as never), '303(2) BNS');
+  assert.equal(firFillValue('section', { section: '115(2), धारा 352 बीएनएस' } as never), '115(2), धारा 352 बीएनएस');
+});

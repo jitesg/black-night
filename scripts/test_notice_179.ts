@@ -102,3 +102,10 @@ test('35(3) + 179: रपट नं0 / समय boxes (FIR fill), line left out
   const b0: string = generateReport(f.vivran, base, f.keys);
   assert.doesNotMatch(b0, /रो0आम/);
 });
+
+test('"धारा धारा" in any report becomes one "धारा" (owner)', () => {
+  const n35 = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-notice-35-3-bnss');
+  const r: string = generateReport(n35.vivran, { FIRNo: '297/2025', Sections: 'धारा 115(2), 352 बीएनएस' }, n35.keys);
+  assert.doesNotMatch(r, /धारा\s+धारा/);
+  assert.match(r, /मु0अ0सं0 297\/2025 दिनांक \.+ धारा 115\(2\), 352 बीएनएस के अधीन/);
+});
