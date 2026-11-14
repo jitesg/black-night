@@ -1,0 +1,52 @@
+{
+  "formats": [
+    {
+      "id": "sys-gd-fmt-rawangi-samanya",
+      "title": "रवानगी उ0नि0",
+      "format_type": "GD",
+      "vivran": "इस समय मैं {{Rank}} {{OfficerName}} {{Hamrah}} क्षेत्र देखभाल, शांति व्यवस्था, संदिग्ध व्यक्ति व वाहन चेकिंग, रोकथाम जुर्म-जरायम तथा लंबित प्रार्थना पत्रों व विवेचनाओं के निस्तारण हेतु क्षेत्र में रवाना हुआ।",
+      "is_favorite": 0,
+      "created_by": "system",
+      "source": "system",
+      "editable": 0,
+      "content_type": "format",
+      "seed_version": 3,
+      "app_version": "1.0.0",
+      "tags": [
+        "रवानगी",
+        "सामान्य गश्त",
+        "GD"
+      ],
+      "keys": [
+        {
+          "key_name": "Rank",
+          "label": "पद/रैंक",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 7,
+          "default_value": "उ0नि0",
+          "dropdown_options": "{\"hint\": \"अपना पद छोटे रूप में, जैसे: उ0नि0 / निरीक्षक\"}"
+        },
+        {
+          "key_name": "OfficerName",
+          "label": "अधिकारी का नाम",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 8,
+          "default_value": "",
+          "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह\"}"
+        },
+        {
+          "key_name": "Hamrah",
+          "label": "हमराह",
+          "field_type": "text",
+          "is_required": 0,
+          "sort_order": 9,
+          "default_value": "मय हमराह का0 अजय यादव",
+          "dropdown_options": "{\"hint\": \"\\\"मय हमराह\\\" सहित पूरा लिखें, जैसे: मय हमराह का0 अजय यादव — कोई साथ न हो तो खाली छोड़ें\"}"
+        }
+      ],
+      "last_updated": "2026-11-14"
+    }
+  ]
+}
