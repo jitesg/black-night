@@ -81,7 +81,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (`searchLaw`, section-like queries first) + फर्द + checklists + BNS संदर्भ rows; used by knowledge index and home.
   Law: `parseBareSectionNumber` ("धारा 103", "u/s 35(3)", १०३); Act screen filter understands it. bns-ref takes ?mode=&q=.
 - Format layout marks (पहचान चिह्न): `src/lib/formatMarkers.ts` — line-start `[[पत्र]] [[शीर्षक]] [[सेवा में]] [[विषय]]
-  [[पक्ष]] [[महोदय]] [[विवरण]] [[समापन]] [[गवाह]] [[संलग्नक]] (lines "item | signature") [[हस्ताक्षर]] [[बीच]] [[दाएँ]]
+  [[पक्ष]] [[महोदय]] [[विवरण]] [[समापन]] [[गवाह]] [[संलग्नक]] (lines "item | signature") [[हस्ताक्षर]] [[बीच]] [[बीच रेखा]] (underlined) [[दाएँ]]
   [[दोनों ओर]] ("left | right") [[सूची]] (lines one per line, left, no indent; bodyBlock kind 'line')`. `[[सूची अंदर]]` = the same lines moved in by the paragraph indent
   (bodyBlock kind 'line' + `indent`; print class doc-line-in, Word indentLeft, editor data-fmt "सूची अंदर" + padding) — used for the names in the
   धारा 130 notices of the six 126/135 formats (owner; seed_version +1: beat/yaksh 22, thanabhraman 24, mukadma 23, ncr 19, prarthna 10;
@@ -254,6 +254,15 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   थाना, जनपद, NoticeDate), नोटः- (BNS 208, छूट). Blank optional → "..........". Spelling fixed from the docx. Tests `scripts/test_notice_179.ts`.
   v2 (owner): note says "60 वर्ष" (BNSS 179), was 65 from the first docx (backup notice_179_v1_before_60.json).
   v4 (owner): the two नोट points numbered "1." / "2." as [[सूची]] lines under **नोटः-** (no indent; backup notice_179_v3_before_note_numbers.json).
+- `sys-fmt-notice-suchna-vadi` "नोटिस सूचना वादी / वादिनी / पीड़ित / पीड़िता (उच्च न्यायालय में जमानत / पुनरीक्षण / अपील की नियत तिथि)" (Case Diary,
+  owner's PDF, seed_version 1, right after the 179 notice): dropdown `Who` वादी ही पीड़ित / वादी और पीड़ित अलग (opens `PCard`) / सिर्फ़ वादी; words from
+  the card relation (पुत्र → वादी / पीड़ित, else वादिनी / पीड़िता) → heading "नोटिस सूचना वादिनी/पीड़िता" / "वादी व पीड़िता" / "वादी", name labels,
+  "पति / पिता का नाम" (पत्नी → पति), sign lines ("<वादी> मुकदमा का हस्ताक्षर –" + "<पीड़िता> का हस्ताक्षर –" when different). VCard expand VName / VRel /
+  VFather / VMobile / VAddr, VThana / VDistrict default {{PoliceStation}} / {{District}}, FIRNo one box (no separate वर्ष, owner), AccCard + optional
+  AccThana / AccDistrict, Court (लखनऊ खंडपीठ / उच्च न्यायालय इलाहाबाद / अन्य → CourtOther; printed twice), CaseType (जमानत प्रार्थना पत्र / क्रिमिनल
+  पुनरीक्षण / क्रिमिनल अपील), CaseNo, HearDate (date); blank → ".........."; [[दोनों ओर]] signature rows, officer block flush right (owner).
+  New mark `[[बीच रेखा]]` = [[बीच]] + underline (bodyBlock center + `underline`; print class doc-center-u, Word underline, editor data-fmt
+  "बीच रेखा" with <b><u>) — used for this heading only; [[बीच]] unchanged. Tests `scripts/test_notice_suchna.ts`.
 - "ⓘ प्रारूप की जानकारी" (owner): info note per predefined format — `src/lib/formatInfo.ts` (registry NOTES id → assets/format-info/<id>.json;
   blocks head / box info|warn / h / p / ul / ol / table / qa, "**…**" bold), sheet `components/formats/FormatInfoSheet.tsx` (bottom Modal, docx blue
   design #1F4E79 / #EAF2F8 / yellow #FFF2CC, dark shades, "प्रारूप भरें →" = card onPress), ⓘ button (lucide Info) on FormatCard before 👁 — only

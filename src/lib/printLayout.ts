@@ -114,7 +114,7 @@ export function renderLetterHtml(model: DocumentModel): string {
     const blocks = model.bodyBlocks ?? [];
     if (blocks.length) {
       out.push(`<div class="doc-body">${blocks.map((b) => {
-        if (b.kind === 'center') return `<p class="doc-center">${esc(b.text)}</p>`;
+        if (b.kind === 'center') return `<p class="doc-center${b.underline ? ' doc-center-u' : ''}">${esc(b.text)}</p>`;
         if (b.kind === 'right') return `<p class="doc-right">${esc(b.text)}</p>`;
         if (b.kind === 'line') return `<p class="doc-line${b.indent ? ' doc-line-in' : ''}">${inlineBoldHtml(esc(b.text))}</p>`;
         if (b.kind === 'image') {
@@ -234,6 +234,7 @@ export const LETTER_SHEET_CSS = `
   .letters .doc-body p { text-align: justify; text-indent: var(--doc-indent); margin: 0 0 0.3em; }
   .letters .doc-closing { text-align: center; margin-top: 0.6em; }
   .letters .doc-body p.doc-center { text-align: center; text-indent: 0; font-weight: bold; margin: 0 0 0.2em; }
+  .letters .doc-body p.doc-center-u { text-decoration: underline; }
   .letters .doc-body p.doc-right { text-align: right; text-indent: 0; margin: 0.6em 0 0; }
   .letters .doc-body p.doc-right + p.doc-right { margin-top: 0; }
   /* one blank line between a right-aligned signature line and the paragraph below it (प्रतिलिपि) */

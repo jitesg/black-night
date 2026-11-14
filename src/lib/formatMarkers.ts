@@ -16,6 +16,7 @@
  *   [[संलग्नक]] …       attachments; each following line = "item | signature part"
  *   [[हस्ताक्षर]] …     signature lines (right)
  *   [[बीच]] …           centred bold line(s) (court notice titles)
+ *   [[बीच रेखा]] …      the same, underlined too (notice headings)
  *   [[दाएँ]] …          right-aligned line(s) (e.g. "उपजिला मजिस्ट्रेट …")
  *   [[तालिका]] a | b …  bordered table: one row per line, cells split by "|", first row = heading (bold);
  *                       a blank line ends the table (police form 33). "(12mm) a | b" on the first row = height
@@ -38,7 +39,7 @@ import type { DocumentModel } from './formatParsingEngine';
 export type MarkRole =
   | 'letter' | 'header' | 'sewa' | 'subject' | 'party' | 'salutation'
   | 'body' | 'closing' | 'witness' | 'attachments' | 'signature'
-  | 'center' | 'right' | 'split' | 'list' | 'listIn' | 'table' | 'image';
+  | 'center' | 'centerU' | 'right' | 'split' | 'list' | 'listIn' | 'table' | 'image';
 
 export const MARK_ROLES: Record<string, MarkRole> = {
   'पत्र': 'letter',
@@ -54,6 +55,7 @@ export const MARK_ROLES: Record<string, MarkRole> = {
   'संलग्नक': 'attachments',
   'हस्ताक्षर': 'signature',
   'बीच': 'center',
+  'बीच रेखा': 'centerU',
   'दाएँ': 'right',
   'दाये': 'right',
   'दायें': 'right',
@@ -68,7 +70,7 @@ const ROLE_NAME: Record<MarkRole, string> = {
   letter: 'पत्र', header: 'शीर्षक', sewa: 'सेवा में', subject: 'विषय', party: 'पक्ष',
   salutation: 'महोदय', body: 'विवरण', closing: 'समापन', witness: 'गवाह',
   attachments: 'संलग्नक', signature: 'हस्ताक्षर',
-  center: 'बीच', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची', listIn: 'सूची अंदर', table: 'तालिका', image: 'चित्र',
+  center: 'बीच', centerU: 'बीच रेखा', right: 'दाएँ', split: 'दोनों ओर', list: 'सूची', listIn: 'सूची अंदर', table: 'तालिका', image: 'चित्र',
 };
 
 /** Hindi name of a role, as written in the mark. */
@@ -256,6 +258,10 @@ export function parseMarkedLetter(text: string): DocumentModel {
       case 'signature': model.signatureLines!.push(t); break;
       case 'center': case 'right': case 'split':
         model.bodyBlocks!.push({ kind: role, text: clean(t) });
+        break;
+      // [[बीच रेखा]]: centred, bold and underlined (owner: notice सूचना heading).
+      case 'centerU':
+        model.bodyBlocks!.push({ kind: 'center', text: clean(t), underline: true });
         break;
       // [[सूची]]: every line stays its own line (left, no indent) — names one per line.
       case 'list':
