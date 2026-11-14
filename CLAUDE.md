@@ -171,6 +171,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   सम्बन्धित मु0अ0सं0 … धारा …"; ending "की तलाश मे" / "को सम्मन तामील कराने हेतु" / "की मृत्यु के सम्बन्ध में जानकारी कर आख्या हेतु"), WCourt, WCaseNo,
   WFir, WSec, WCard (expand WName / WRel / WFather / WAddr), optional WVs (शा0 प्रति; empty → WName); अन्य: Other "रवानगी का उद्देश्य लिखें". GD = plain
   text, so no bold heading. Tests `scripts/test_rawangi.ts`.
+  ⓘ note (owner): assets/format-info/sys-gd-fmt-rawangi-samanya.json = owner's Formatted_Police_Log.docx (37 रवानगी / आमद GD samples: 2 h
+  sections, each "(n) …" title → h2, body p as is; masked names [AO] etc. → "………", owner) + one NOTES line in formatInfo.ts.
 - Format dropdown chips (`FormatKeyDropdownInput`, every format): compact pills (paddingHorizontal 14, paddingVertical 7, radius 999, no minWidth) —
   owner: the old 96px boxes were too big.
 - GD `sys-gd-fmt-taskara` "तस्करा — पूछताछ / सुपुर्दगी" (replaced 5 old taskara formats; backup docs/format-backups/taskara_old_removed.json):

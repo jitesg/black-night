@@ -24,6 +24,7 @@ export interface FormatInfo { v: number; blocks: InfoBlock[]; keep?: string[] }
 const NOTES: Record<string, () => FormatInfo> = {
   'sys-fmt-notice-179-bnss': () => require('../../assets/format-info/sys-fmt-notice-179-bnss.json') as FormatInfo,
   'sys-fmt-notice-35-3-bnss': () => require('../../assets/format-info/sys-fmt-notice-35-3-bnss.json') as FormatInfo,
+  'sys-gd-fmt-rawangi-samanya': () => require('../../assets/format-info/sys-gd-fmt-rawangi-samanya.json') as FormatInfo,
 };
 
 export function hasFormatInfo(formatId: string | null | undefined): boolean {

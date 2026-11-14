@@ -40,3 +40,12 @@ test('NBW / सम्मन / मृत्यु आख्या', () => {
   assert.match(gen({ ...w, WType: 'सम्मन', WVs: 'रामू आदि' }), /^रवानगी उ0नि0 सम्मन सम्बन्धित[\s\S]*शा0 प्रति रामू आदि धारा[\s\S]*को सम्मन तामील कराने हेतु रवाना हुआ।$/);
   assert.match(gen({ ...w, WType: 'मृत्यु आख्या' }), /^रवानगी उ0नि0 मृत्यु आख्या सम्बन्धित[\s\S]*की मृत्यु के सम्बन्ध में जानकारी कर आख्या हेतु रवाना हुआ।$/);
 });
+
+test('ⓘ note = owner Formatted_Police_Log.docx (names masked)', () => {
+  const n = JSON.parse(readFileSync('assets/format-info/sys-gd-fmt-rawangi-samanya.json', 'utf8'));
+  assert.equal(n.blocks[0].title, 'पुलिस दैनिक रपट / रवानगी एवं आमद विवरण');
+  assert.equal(n.blocks.filter((b: { t: string }) => b.t === 'h').length, 2);
+  assert.equal(n.blocks.filter((b: { t: string }) => b.t === 'h2').length, 37);
+  assert.ok(!JSON.stringify(n).match(/\[[A-Z]{1,2}\]/));
+  assert.match(readFileSync('src/lib/formatInfo.ts', 'utf8'), /'sys-gd-fmt-rawangi-samanya': \(\) => require\('..\/..\/assets\/format-info\/sys-gd-fmt-rawangi-samanya.json'\)/);
+});
