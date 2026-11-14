@@ -96,3 +96,38 @@
 - चोटों की स्थिति एवं स्थान।
 - चोट किस प्रकार या किस हथियार/उपकरण से पहुंचाई गई प्रतीत होती है।
 
+## 07  (file: 43798.jpg — फोटो में 2 चित्र भी हैं, फोटो की copy: images/07.jpg)
+
+यहां एक महत्वपूर्ण बात है:
+
+**पुलिस को मृत्यु का Apparent Cause of Death दर्ज करना है, अंतिम वैज्ञानिक Cause of Death निर्धारित करना नहीं।**
+
+उदाहरण:
+
+यदि मृतक के शरीर पर गर्दन में रस्सी का निशान है, तो पुलिस गर्दन पर मिले निशान का विवरण दर्ज करेगी। लेकिन मृत्यु वास्तव में फांसी से हुई या पहले गला घोंटा गया और बाद में शव लटकाया गया, इसका अंतिम चिकित्सकीय निष्कर्ष पोस्टमार्टम एवं अन्य साक्ष्यों से निकलेगा।
+
+**[चित्र 1 — अंग्रेज़ी flow chart, जैसा लिखा है]**
+
+| क्रम | खाना | नीचे लिखा |
+|---|---|---|
+| 2 | IO inquest | BNSS s.196 or s.198 · panch + SOCO + video |
+| 3 | Requisition for PM | body to mortuary, sealed CoC begins |
+| 4 | Autopsy report | cause + manner + sample requisitions |
+| 5 | FSL workup | toxicology, DNA, trace, ballistics |
+| 6 | IO compiles file | inquest + PM + FSL reports collated |
+| 7 | Section 193 report | final police report filed in court |
+
+Custodial transitions: scene to mortuary, mortuary to FSL, FSL to IO
+Each transition is sealed, signed, dated and entered in the CoC register
+Section 105 videography overlays each transition
+
+(चित्र में खाना "1." दिखाई नहीं दे रहा — कटा हुआ है।)
+
+**[चित्र 2 — POLICE INQUEST (flow, ऊपर से नीचे)]**
+
+SUDDEN DEATH OCCURS → IO INFORMS MAGISTRATE → REACHES CRIME SCENE → CONDUCTS INQIRY → MAKES INQUEST REPORT WITH HELP OF PANCHAS → REPORT SIGNED BY IO AND PANCHAS → दो रास्ते:
+- NO FOUL PLAY – DEATH CERTIFICATE ISSUED
+- FOUL PLAY SUSPECTED – SENT FOR PM
+
+(चित्र में "INQIRY" ऐसे ही लिखा है।)
+
