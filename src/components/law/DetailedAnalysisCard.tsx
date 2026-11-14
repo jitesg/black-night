@@ -19,6 +19,7 @@ import { THEME } from '@/lib/theme';
 import { type DetailedExplainEntry } from '@/lib/law/detailedAnalysis';
 import type { FormatInfo } from '@/lib/formatInfo';
 import { InfoBlocksView } from '@/components/common/InfoBlocksView';
+import { InfoSearchBox, useInfoSearch } from '@/components/common/InfoSearch';
 
 interface DetailedAnalysisCardProps {
   entry: DetailedExplainEntry;
@@ -72,6 +73,7 @@ export function DetailedAnalysisCard({ entry, isHi = true, note }: DetailedAnaly
 
   // Owner's note replaces the generated analysis, except the parts it lists in `keep` (BNSS 194: आम गलतियाँ + उदाहरण)
   const keep = note?.keep ?? [];
+  const search = useInfoSearch(note?.blocks);
   const old = (k: string) => !note || keep.includes(k);
   const hasSarBindu = old('s') && (Boolean(entry.s) || (Array.isArray(entry.k) && entry.k.length > 0));
   const hasElements = old('el') && Array.isArray(entry.el) && entry.el.length > 0;
@@ -125,8 +127,12 @@ export function DetailedAnalysisCard({ entry, isHi = true, note }: DetailedAnaly
       </Pressable>
 
       {isCardExpanded && note ? (
-        <View className="pt-1">
-          <InfoBlocksView blocks={note.blocks} />
+        <View className="pt-1 gap-2">
+          {search.long ? (
+            <InfoSearchBox q={search.q} setQ={search.setQ} count={search.count}
+              active={!!search.q.trim()} placeholder="इस विश्लेषण में खोजें…" />
+          ) : null}
+          <InfoBlocksView blocks={search.filtered} highlight={search.q} />
         </View>
       ) : null}
 

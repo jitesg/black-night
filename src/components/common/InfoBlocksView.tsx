@@ -3,13 +3,28 @@
  * (FormatInfoSheet) and the law "विस्तृत विश्लेषण" card when a section has the owner's notes (src/lib/law/lawNotes.ts).
  * Dark theme uses darker shades of the same colours.
  */
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import { Check } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { boldParts, type InfoBlock } from '@/lib/formatInfo';
 import { NOTE_IMAGES } from '@/lib/law/lawNotes';
+import { buildHighlightSegments } from '@/lib/searchUtils';
+
+/** Words being searched (🔍 in a long note, src/lib/infoSearch.ts) — marked yellow in every text of the note. */
+const HighlightCtx = createContext<{ q: string; dark: boolean }>({ q: '', dark: false });
+
+function useHl() {
+  const { q, dark } = useContext(HighlightCtx);
+  const mark = dark ? { backgroundColor: '#A16207', color: '#FFFFFF' } : { backgroundColor: '#FDE68A', color: '#111827' };
+  return function highlightText(s: string, key?: React.Key): React.ReactNode {
+    if (!q.trim() || !s) return s;
+    const segs = buildHighlightSegments(s, q);
+    if (segs.length === 1 && !segs[0].highlighted) return s;
+    return <React.Fragment key={key}>{segs.map((g, i) => (g.highlighted ? <Text key={i} style={mark}>{g.text}</Text> : g.text))}</React.Fragment>;
+  };
+}
 
 export const INFO_LIGHT = {
   navy: '#1F4E79', navyText: '#1F4E79', label: '#5A5A5A', sub: '#646464', line: '#D6E4F0', cellLine: '#BFD3E6',
@@ -61,16 +76,31 @@ function CheckList({ items, title, C, txt }: { items: string[]; title?: string; 
 }
 
 function Rich({ s, style }: { s: string; style: object }) {
+  const hl = useHl();
   return (
     <Text style={style}>
-      {boldParts(s).map((p, i) => (p.bold ? <Text key={i} style={{ fontWeight: '700' }}>{p.text}</Text> : p.text))}
+      {boldParts(s).map((p, i) => (p.bold ? <Text key={i} style={{ fontWeight: '700' }}>{hl(p.text)}</Text> : hl(p.text, i)))}
     </Text>
   );
 }
 
-export function InfoBlocksView({ blocks }: { blocks: InfoBlock[] }) {
+/** highlight = the 🔍 search words (yellow marks); nested cards inherit it. */
+export function InfoBlocksView({ blocks, highlight }: { blocks: InfoBlock[]; highlight?: string }) {
   const { colorScheme } = useColorScheme();
   const dark = colorScheme === 'dark';
+  const outer = useContext(HighlightCtx);
+  const q = highlight ?? outer.q;
+  return (
+    <HighlightCtx.Provider value={{ q, dark }}>
+      <InfoBlocksInner blocks={blocks} />
+    </HighlightCtx.Provider>
+  );
+}
+
+function InfoBlocksInner({ blocks }: { blocks: InfoBlock[] }) {
+  const { colorScheme } = useColorScheme();
+  const dark = colorScheme === 'dark';
+  const hl = useHl();
   const th = THEME[dark ? 'dark' : 'light'];
   const C = dark ? INFO_DARK : INFO_LIGHT;
   const txt = { fontSize: 15, lineHeight: 25, color: th.foreground };
@@ -82,7 +112,7 @@ export function InfoBlocksView({ blocks }: { blocks: InfoBlock[] }) {
         return (
           <View key={i} style={{ alignItems: 'center', marginBottom: 10 }}>
             {b.label ? <Text style={{ fontSize: 11, letterSpacing: 2, fontWeight: '700', color: C.label, textAlign: 'center' }}>{b.label}</Text> : null}
-            {b.title ? <Text style={{ fontSize: 18, lineHeight: 28, fontWeight: '700', color: C.navyText, textAlign: 'center' }}>{b.title}</Text> : null}
+            {b.title ? <Text style={{ fontSize: 18, lineHeight: 28, fontWeight: '700', color: C.navyText, textAlign: 'center' }}>{hl(b.title)}</Text> : null}
             {b.sub ? <Text style={{ fontSize: 13, lineHeight: 20, color: C.sub, textAlign: 'center' }}>{b.sub}</Text> : null}
             {(b.lines ?? []).map((l, j) => (
               <Text key={j} style={{ fontSize: j === 0 ? 15 : 13, lineHeight: j === 0 ? 24 : 20, fontWeight: j === 0 ? '700' : '400',
@@ -96,7 +126,7 @@ export function InfoBlocksView({ blocks }: { blocks: InfoBlock[] }) {
           <View key={i} style={{ backgroundColor: warn ? C.warnBg : C.infoBg, borderLeftWidth: 4, borderLeftColor: warn ? C.warnBar : C.navy,
             borderRadius: 8, paddingHorizontal: 12, paddingVertical: 9, marginVertical: 8 }}>
             <Text style={{ fontSize: 14.5, lineHeight: 24, color: warn ? C.warnText : C.infoText }}>
-              {b.label ? <Text style={{ fontWeight: '700' }}>{b.label}: </Text> : null}{b.x}
+              {b.label ? <Text style={{ fontWeight: '700' }}>{hl(b.label)}: </Text> : null}{hl(b.x)}
             </Text>
           </View>
         );
@@ -104,11 +134,11 @@ export function InfoBlocksView({ blocks }: { blocks: InfoBlock[] }) {
       case 'h':
         return (
           <View key={i} style={{ marginTop: 14, marginBottom: 4, paddingBottom: 3, borderBottomWidth: 1, borderBottomColor: C.line }}>
-            <Text style={{ fontSize: 16, lineHeight: 25, fontWeight: '700', color: C.navyText }}>{b.x}</Text>
+            <Text style={{ fontSize: 16, lineHeight: 25, fontWeight: '700', color: C.navyText }}>{hl(b.x)}</Text>
           </View>
         );
       case 'h2':
-        return <Text key={i} style={{ fontSize: 15, lineHeight: 24, fontWeight: '700', color: C.navyText, marginTop: 10, marginBottom: 2 }}>{b.x}</Text>;
+        return <Text key={i} style={{ fontSize: 15, lineHeight: 24, fontWeight: '700', color: C.navyText, marginTop: 10, marginBottom: 2 }}>{hl(b.x)}</Text>;
       case 'p':
         return <Rich key={i} s={b.x} style={{ ...txt, marginVertical: 3 }} />;
       case 'tag':
@@ -158,7 +188,7 @@ export function InfoBlocksView({ blocks }: { blocks: InfoBlock[] }) {
             <View style={{ flexDirection: 'row', backgroundColor: C.navy }}>
               {b.head.map((h, j) => (
                 <View key={j} style={{ flex: 1, padding: 6, borderLeftWidth: j ? 1 : 0, borderLeftColor: '#ffffff33' }}>
-                  <Text style={{ ...cell, color: C.headText, fontWeight: '700' }}>{h}</Text>
+                  <Text style={{ ...cell, color: C.headText, fontWeight: '700' }}>{hl(h)}</Text>
                 </View>
               ))}
             </View>
@@ -166,7 +196,7 @@ export function InfoBlocksView({ blocks }: { blocks: InfoBlock[] }) {
               <View key={ri} style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: C.cellLine }}>
                 {r.map((c, j) => (
                   <View key={j} style={{ flex: 1, padding: 6, borderLeftWidth: j ? 1 : 0, borderLeftColor: C.cellLine, ...(j === 0 ? { backgroundColor: C.keyBg } : {}) }}>
-                    <Text style={{ ...cell, ...(j === 0 ? { fontWeight: '700' } : {}) }}>{c}</Text>
+                    <Text style={{ ...cell, ...(j === 0 ? { fontWeight: '700' } : {}) }}>{hl(c)}</Text>
                   </View>
                 ))}
               </View>
@@ -179,10 +209,10 @@ export function InfoBlocksView({ blocks }: { blocks: InfoBlock[] }) {
             {b.rows.map((r, ri) => (
               <View key={ri} style={{ flexDirection: 'row', borderTopWidth: ri ? 1 : 0, borderTopColor: C.cellLine }}>
                 <View style={{ width: '42%', padding: 6, backgroundColor: C.infoBg }}>
-                  <Text style={{ ...cell, fontWeight: '700', color: C.infoText }}>{r[0]}</Text>
+                  <Text style={{ ...cell, fontWeight: '700', color: C.infoText }}>{hl(r[0])}</Text>
                 </View>
                 <View style={{ flex: 1, padding: 6, borderLeftWidth: 1, borderLeftColor: C.cellLine }}>
-                  <Text style={cell}>{r[1]}</Text>
+                  <Text style={cell}>{hl(r[1])}</Text>
                 </View>
               </View>
             ))}

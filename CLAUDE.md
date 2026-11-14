@@ -284,6 +284,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   New notes: owner's docx → JSON with the same block types + one NOTES line. Test in scripts/test_notice_179.ts.
   35(3) नोटिस too: owner's chat text as is (35(3) / 35(4) / 35(5) / 35(6) headings — the owner's "5.3 / 5.4 / 5.5" serials removed — and
   the "महत्वपूर्ण" warn box; no docx, head = format title only).
+- 🔍 inside long info notes (owner): `src/lib/infoSearch.ts` (pure; tests `scripts/test_info_search.ts`) — `isLongInfo` (text ≥ 8000 chars:
+  रवानगी samples, BNSS 35 / 194; not 179 / 35(3)), `filterInfoBlocks` (parts = h / h2 + blocks under them, kept when smartMatch matches;
+  an h2 part brings its h section heading; count = parts). UI `components/common/InfoSearch.tsx` (`useInfoSearch`, `InfoSearchBox` with
+  "n भाग मिले" / "कुछ नहीं मिला"); InfoBlocksView `highlight` (yellow marks via buildHighlightSegments, context so nested cards follow).
+  FormatInfoSheet: 🔍 in the blue bar opens the box; DetailedAnalysisCard (law note): box always at the top "इस विश्लेषण में खोजें…".
 - `sys-fmt-bayan-183-patra` "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)" (Case Diary, owner's docx +
   text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
   पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)

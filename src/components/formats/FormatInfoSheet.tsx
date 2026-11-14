@@ -5,12 +5,13 @@
  */
 import React from 'react';
 import { Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
-import { X } from 'lucide-react-native';
+import { Search, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import { getFormatInfo } from '@/lib/formatInfo';
 import { InfoBlocksView, INFO_DARK, INFO_LIGHT } from '@/components/common/InfoBlocksView';
+import { InfoSearchBox, useInfoSearch } from '@/components/common/InfoSearch';
 
 export function FormatInfoSheet({ formatId, visible, onClose, onFill }: {
   formatId: string; visible: boolean; onClose: () => void; onFill?: () => void;
@@ -21,6 +22,7 @@ export function FormatInfoSheet({ formatId, visible, onClose, onFill }: {
   const C = dark ? INFO_DARK : INFO_LIGHT;
   const { height } = useWindowDimensions();
   const info = visible ? getFormatInfo(formatId) : null;
+  const search = useInfoSearch(info?.blocks);
   if (!visible) return null;
   const txt = { fontSize: 15, lineHeight: 25, color: th.foreground };
 
@@ -34,10 +36,20 @@ export function FormatInfoSheet({ formatId, visible, onClose, onFill }: {
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: C.navy, paddingHorizontal: 16, paddingVertical: 10 }}>
             <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: C.headText }}>ⓘ प्रारूप की जानकारी</Text>
+            {search.long ? (
+              <Pressable onPress={search.toggle} hitSlop={12} accessibilityLabel="इस पन्ने में खोजें" style={{ marginRight: 14 }}>
+                <Search size={20} color={C.headText} />
+              </Pressable>
+            ) : null}
             <Pressable onPress={onClose} hitSlop={12} accessibilityLabel="बंद करें"><X size={20} color={C.headText} /></Pressable>
           </View>
-          <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
-            {info ? <InfoBlocksView blocks={info.blocks} /> : (
+          {search.open ? (
+            <View style={{ paddingHorizontal: 16, paddingTop: 10 }}>
+              <InfoSearchBox q={search.q} setQ={search.setQ} count={search.count} active={search.active} onClose={search.close} autoFocus />
+            </View>
+          ) : null}
+          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
+            {info ? <InfoBlocksView blocks={search.shown} highlight={search.active ? search.q : ''} /> : (
               <Text style={{ ...txt, color: th.mutedForeground }}>इस प्रारूप की जानकारी अभी उपलब्ध नहीं है।</Text>
             )}
           </ScrollView>
