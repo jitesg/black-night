@@ -31,7 +31,7 @@ import { fixFormat } from '@/lib/formatFixingEngine';
 import { renderTextForPrint } from '@/lib/printLayout';
 import { stripFormatMarkers } from '@/lib/formatMarkers';
 import {
-  resolveGlobalKeys, filterDynamicKeys,
+  resolveGlobalKeys, filterDynamicKeys, fillWorkspaceDefault,
   GLOBAL_KEY_LABELS,
 } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
@@ -170,7 +170,7 @@ export default function FillScreen() {
                 !(key.default_value.startsWith('__FROM_') && key.default_value.endsWith('__'))
               ) {
                 // Static default — use literally
-                defaults[key.key_name] = key.default_value;
+                defaults[key.key_name] = fillWorkspaceDefault(key.default_value, workspace);
               }
               // "@..." and "__FROM_*__" markers are resolved below via resolveContextDefaults
             }

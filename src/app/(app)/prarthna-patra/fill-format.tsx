@@ -23,7 +23,7 @@ import {
   type PredefinedFormat, type FormatKey,
 } from '@/lib/db/predefinedFormatRepo';
 import { generateReport } from '@/lib/templateEngine';
-import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS } from '@/lib/globalKeyEngine';
+import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS, fillWorkspaceDefault } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput, keyHint } from '@/components/ui/input';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
@@ -90,7 +90,7 @@ export default function PPFillFormatScreen() {
         } else if (key.field_type === 'person_group') {
           defaults[key.key_name] = initPersonGroup();
         } else if (literalDefault(key.default_value)) {
-          defaults[key.key_name] = literalDefault(key.default_value);
+          defaults[key.key_name] = fillWorkspaceDefault(literalDefault(key.default_value), workspace);
         }
       }
       const merged = { ...defaults, ...resolved };

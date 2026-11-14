@@ -30,7 +30,7 @@ import {
 } from '@/lib/db/predefinedFormatRepo';
 import { getNyayalayDocWithDetails } from '@/lib/db/nyayalayRepo';
 import { generateReport } from '@/lib/templateEngine';
-import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS, resolveNyayalayKeys, NYAYALAY_KEY_LABELS } from '@/lib/globalKeyEngine';
+import { resolveGlobalKeys, filterDynamicKeys, fillWorkspaceDefault, GLOBAL_KEY_LABELS, resolveNyayalayKeys, NYAYALAY_KEY_LABELS } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput, keyHint } from '@/components/ui/input';
 import { AccusedGroupInput, initAccusedGroup } from '@/components/ui/AccusedGroupInput';
@@ -124,7 +124,7 @@ export default function NyayalayFillFormatScreen() {
       for (const key of dynKeys) {
         if (key.field_type === 'accused_group') defaults[key.key_name] = initAccusedGroup();
         else if (key.field_type === 'person_group') defaults[key.key_name] = initPersonGroup();
-        else if (literalDefault(key.default_value)) defaults[key.key_name] = literalDefault(key.default_value);
+        else if (literalDefault(key.default_value)) defaults[key.key_name] = fillWorkspaceDefault(literalDefault(key.default_value), wsSnapshot);
       }
       // Merge order: defaults < workspace < nyayalay (most specific wins)
       const merged = { ...defaults, ...wsResolved, ...nylResolved };

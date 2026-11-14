@@ -20,8 +20,8 @@
  *   • resolveNyayalayKeys() will automatically pick it up at report generation time.
  */
 
-import { type WorkspaceSettings } from './db/workspaceRepo';
-import { type NyayalayDocument } from './db/nyayalayRepo';
+import type { WorkspaceSettings } from './db/workspaceRepo';
+import type { NyayalayDocument } from './db/nyayalayRepo';
 
 // ─── Workspace Registry ────────────────────────────────────────────────────
 // Maps template key name → WorkspaceSettings field.
@@ -208,4 +208,16 @@ export function isGlobalKey(keyName: string): boolean {
 /** Returns true when the given key_name is a Nyayalay auto-fill key. */
 export function isNyayalayKey(keyName: string): boolean {
   return keyName in NYAYALAY_KEY_REGISTRY;
+}
+
+/**
+ * A field's typed default may hold workspace keys (owner, 35(3) नोटिस "कहाँ उपस्थित हों" = "थाना {{PoliceStation}} जनपद {{District}}"):
+ * filled from the settings when the form opens. Any of them empty in the settings → '' (the box opens empty, as before).
+ * Text without "{{" is returned unchanged.
+ */
+export function fillWorkspaceDefault(text: string, workspace: WorkspaceSettings): string {
+  if (!text.includes('{{')) return text;
+  const { autoValues, missingWorkspaceFields } = resolveGlobalKeys(text, workspace);
+  if (missingWorkspaceFields.length) return '';
+  return text.replace(/\{\{([A-Za-z0-9_]+)\}\}/g, (all, k: string) => autoValues[k] ?? all);
 }

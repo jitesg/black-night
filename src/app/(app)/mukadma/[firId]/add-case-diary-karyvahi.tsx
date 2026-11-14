@@ -44,7 +44,7 @@ import {
 } from '@/lib/db/predefinedFormatRepo';
 import { getPublishedFormatsByType } from '@/lib/db/sysFormatRepo';
 import { generateReport } from '@/lib/templateEngine';
-import { filterDynamicKeys, resolveGlobalKeys } from '@/lib/globalKeyEngine';
+import { filterDynamicKeys, fillWorkspaceDefault, resolveGlobalKeys } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { isKeyVisible } from '@/lib/formatShowIf';
 import { useWorkspace } from '@/context/WorkspaceContext';
@@ -138,7 +138,7 @@ function FormatFillPanel({
             !k.default_value.startsWith('@') &&
             !(k.default_value.startsWith('__FROM_') && k.default_value.endsWith('__'))
           ) {
-            defaults[k.key_name] = k.default_value;
+            defaults[k.key_name] = fillWorkspaceDefault(k.default_value, workspace);
           }
         }
         const contextDefaults = await resolveContextDefaults(dyn, firId);

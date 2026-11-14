@@ -8075,7 +8075,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 8,
+      "seed_version": 9,
       "app_version": "1.0.0",
       "tags": [
         "35(3)",
@@ -8183,8 +8183,8 @@
           "label": "कहाँ उपस्थित हों (थाना / कार्यालय)",
           "field_type": "text",
           "is_required": 1,
-          "default_value": null,
-          "dropdown_options": "{\"placeholder\": \"जैसे: थाना बछरावां जनपद रायबरेली\", \"hint\": \"कहाँ उपस्थित हो, जैसे: थाना बछरावां जनपद रायबरेली\"}",
+          "default_value": "थाना {{PoliceStation}} जनपद {{District}}",
+          "dropdown_options": "{\"placeholder\": \"जैसे: थाना बछरावां जनपद रायबरेली\", \"hint\": \"कहाँ उपस्थित हो — सेटिंग्स के थाना / जनपद से अपने आप भरता है, बदलना हो तो लिखें, जैसे: क्षेत्राधिकारी कार्यालय बछरावां\"}",
           "sort_order": 15
         },
         {
