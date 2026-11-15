@@ -80,6 +80,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Knowledge search = `src/lib/knowledgeSearchAll.ts` (`searchAllKnowledge`): knowledge entries + BNS/BNSS/BSA sections
   (`searchLaw`, section-like queries first) + फर्द + checklists + BNS संदर्भ rows; used by knowledge index and home.
   Law: `parseBareSectionNumber` ("धारा 103", "u/s 35(3)", १०३); Act screen filter understands it. bns-ref takes ?mode=&q=.
+  Act screen (`knowledge/law/[act]/index.tsx`, owner): ONE search box (old "धारा: ___ देखें" jump row removed; own placeholder key
+  knowledge.law.actSearchPlaceholder) — a typed section number shows a "<Act> धारा n सीधे खोलें ›" strip and keyboard search / Enter opens it;
+  ⚙︎ filter (design C FilterSheet, accent = Act colour): सामग्री सरल व्याख्या / विस्तृत विश्लेषण (explain or owner note) / न्यायिक निर्णय वाली,
+  and for BNS संज्ञेय / असंज्ञेय + जमानतीय / अजमानतीय from the BNSS First Schedule (`getAllOffenceClassification`; rules `src/lib/law/lawFilter.ts`:
+  any row counts, mixed sections in both, "According as…" in neither; tests `scripts/test_law_filter.ts`). Counts on every chip.
 - Format layout marks (पहचान चिह्न): `src/lib/formatMarkers.ts` — line-start `[[पत्र]] [[शीर्षक]] [[सेवा में]] [[विषय]]
   [[पक्ष]] [[महोदय]] [[विवरण]] [[समापन]] [[गवाह]] [[संलग्नक]] (lines "item | signature") [[हस्ताक्षर]] [[बीच]] [[बीच रेखा]] (underlined) [[दाएँ]]
   [[दोनों ओर]] ("left | right") [[सूची]] (lines one per line, left, no indent; bodyBlock kind 'line')`. `[[सूची अंदर]]` = the same lines moved in by the paragraph indent

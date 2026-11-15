@@ -63,6 +63,7 @@
       "jumpToSection": "धारा पर जाएं",
       "jumpPlaceholder": "धारा संख्या दर्ज करें…",
       "jumpBtn": "देखें",
+      "actSearchPlaceholder": "धारा नंबर या शब्द खोजें…",
       "sectionCount": "कुल {{count}} धाराएं",
       "noSections": "कोई धारा नहीं मिली",
       "fontSize": "फ़ॉन्ट",

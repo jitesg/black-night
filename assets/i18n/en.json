@@ -63,6 +63,7 @@
       "jumpToSection": "Jump to Section",
       "jumpPlaceholder": "Enter section number…",
       "jumpBtn": "Go",
+      "actSearchPlaceholder": "Section number or word…",
       "sectionCount": "Total {{count}} sections",
       "noSections": "No sections found",
       "fontSize": "Font",

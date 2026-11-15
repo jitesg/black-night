@@ -684,6 +684,17 @@ export function getOffenceClassification(bnsSection: number | string): Classific
   }
 }
 
+/** All BNSS First Schedule offence rows (BNS sections' cognizable / bailable / court) — for the Act list filter. */
+export function getAllOffenceClassification(): ClassificationRow[] {
+  try {
+    const bnss = loadActData('BNSS');
+    const rows = bnss.length > 0 ? bnss[bnss.length - 1]?.classification_of_offences : null;
+    return Array.isArray(rows) ? rows : [];
+  } catch {
+    return [];
+  }
+}
+
 /** Returns the Second Schedule Forms text from BNSS Section 531 */
 export function getSecondScheduleForms(): string {
   try {

@@ -1,16 +1,23 @@
-import { useState, useMemo, useCallback } from 'react';
-import { View, Text, Pressable, FlatList, TextInput } from 'react-native';
+import { useState, useMemo, useCallback, useRef } from 'react';
+import { View, Text, Pressable, FlatList } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
-import { ChevronRight, ArrowRight } from 'lucide-react-native';
+import { ChevronRight } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { THEME } from '@/lib/theme';
 import {
-  ACTS, getSections, parseBareSectionNumber, parseSectionRef, type ActId, type SectionItem,
+  ACTS, getAllOffenceClassification, getSections, parseBareSectionNumber, parseSectionRef, type ActId, type SectionItem,
 } from '@/lib/law/lawLibrary';
 import { getSimple, hasSimple } from '@/lib/law/simpleExplain';
+import { hasDetailedExplain } from '@/lib/law/detailedAnalysis';
+import { hasCasesForSection } from '@/lib/law/casesData';
+import { getLawNote } from '@/lib/law/lawNotes';
+import { classFlagsBySection, passesLawFilters, type SectionFacts } from '@/lib/law/lawFilter';
+import {
+  ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues,
+} from '@/components/common/FilterSheet';
 import { matchesQuery } from '@/lib/searchUtils';
 
 export default function LawActSectionsScreen() {
@@ -25,13 +32,49 @@ export default function LawActSectionsScreen() {
   const isHi = i18n.language === 'hi';
 
   const [filterText, setFilterText] = useState('');
-  const [jumpNumber, setJumpNumber] = useState('');
+  // Latest typed text — the keyboard 🔍 / Enter opens a section number directly (owner: one box instead of the old
+  // "धारा: ___ देखें" jump row). Kept in a ref: with instant search off, onChangeText and the submit come together.
+  const lastQuery = useRef('');
 
   const allSections = useMemo(() => getSections(actId), [actId]);
 
+  // Filter (owner): सामग्री for every Act + संज्ञेय / जमानतीय for BNS (BNSS First Schedule) — src/lib/law/lawFilter.ts
+  const [filterValues, setFilterValues] = useState<FilterValues>({});
+  const [showFilters, setShowFilters] = useState(false);
+  const facts = useMemo(() => {
+    const cls = actId === 'BNS' ? classFlagsBySection(getAllOffenceClassification()) : null;
+    const m = new Map<number, SectionFacts>();
+    for (const s of allSections) {
+      m.set(s.n, {
+        simple: hasSimple(actId, s.n),
+        detailed: hasDetailedExplain(actId, s.n) || !!getLawNote(actId, s.n),
+        cases: hasCasesForSection(actId, s.n),
+        cls: cls?.get(s.n),
+      });
+    }
+    return m;
+  }, [actId, allSections]);
+  const countOf = useCallback((v: FilterValues) => allSections.filter((s) => passesLawFilters(facts.get(s.n)!, v)).length, [allSections, facts]);
+  const filterGroups = useMemo<FilterGroupDef[]>(() => {
+    const opt = (key: string, value: string, label: string) => ({ value, label: `${label} (${countOf({ [key]: value })})` });
+    const groups: FilterGroupDef[] = [{
+      key: 'have', label: 'सामग्री', allCount: allSections.length,
+      options: [opt('have', 'simple', 'सरल व्याख्या वाली'), opt('have', 'detailed', 'विस्तृत विश्लेषण वाली'), opt('have', 'cases', 'न्यायिक निर्णय वाली')],
+    }];
+    if (actId === 'BNS') {
+      groups.push(
+        { key: 'cog', label: 'संज्ञेय / असंज्ञेय', allCount: allSections.length, options: [opt('cog', 'cog', 'संज्ञेय'), opt('cog', 'noncog', 'असंज्ञेय')] },
+        { key: 'bail', label: 'जमानतीय / अजमानतीय', allCount: allSections.length, options: [opt('bail', 'bail', 'जमानतीय'), opt('bail', 'nonbail', 'अजमानतीय')] },
+      );
+    }
+    return groups;
+  }, [actId, allSections.length, countOf]);
+  const filtersOn = activeFilterCount(filterValues, filterGroups) > 0;
+
   const filteredSections = useMemo(() => {
     const raw = filterText.trim();
-    if (!raw) return allSections;
+    const base = filtersOn ? allSections.filter((s) => passesLawFilters(facts.get(s.n)!, filterValues)) : allSections;
+    if (!raw) return base;
 
     // A section number, with or without "धारा" / "section" / this Act's name:
     // "103", "धारा 103", "BNS 103", "103(1)", "धारा १०३".
@@ -39,24 +82,32 @@ export default function LawActSectionsScreen() {
     const num = ref && ref.act === actId ? ref.n : ref ? null : parseBareSectionNumber(raw);
     if (num != null) {
       const q = String(num);
-      const exact = allSections.filter((s) => s.n === num);
-      const rest = allSections.filter((s) => s.n !== num && String(s.n).startsWith(q));
+      const exact = base.filter((s) => s.n === num);
+      const rest = base.filter((s) => s.n !== num && String(s.n).startsWith(q));
       return [...exact, ...rest];
     }
 
     // Words: title (English) + सरल व्याख्या and keywords (Hindi), word-by-word.
-    return allSections.filter((s) => {
+    return base.filter((s) => {
       const simple = getSimple(actId, s.n);
       return matchesQuery(raw, s.title, simple?.s, (simple?.k ?? []).join(' '));
     });
-  }, [allSections, filterText, actId]);
+  }, [allSections, filterText, actId, filtersOn, facts, filterValues]);
 
-  const handleJump = useCallback(() => {
-    const n = parseInt(jumpNumber.trim(), 10);
-    if (!isNaN(n) && n >= 1 && n <= meta.total) {
-      router.push(`/(app)/knowledge/law/${actId}/${n}` as never);
-    }
-  }, [jumpNumber, actId, meta.total]);
+  /** The typed text as a section number of this Act that exists, else null. */
+  const sectionOf = useCallback((text: string): number | null => {
+    const raw = text.trim();
+    if (!raw) return null;
+    const ref = parseSectionRef(raw);
+    const n = ref ? (ref.act === actId ? ref.n : null) : parseBareSectionNumber(raw);
+    return n != null && allSections.some((s) => s.n === n) ? n : null;
+  }, [actId, allSections]);
+  const openSection = useCallback((n: number) => router.push(`/(app)/knowledge/law/${actId}/${n}` as never), [actId]);
+  const handleSubmit = useCallback(() => {
+    const n = sectionOf(lastQuery.current);
+    if (n != null) openSection(n);
+  }, [sectionOf, openSection]);
+  const typedSection = sectionOf(filterText);
 
   const actColor = actId === 'BNS' ? '#1D4ED8' : actId === 'BNSS' ? '#0F766E' : '#B45309';
 
@@ -72,49 +123,29 @@ export default function LawActSectionsScreen() {
       <View className="px-4 pt-3 pb-2 border-b border-border bg-background gap-2.5">
         <SearchBar
           value={filterText}
-          onChangeText={setFilterText}
-          placeholder={t('knowledge.law.searchPlaceholder', 'धारा नंबर या शीर्षक खोजें…')}
+          onChangeText={(q) => { lastQuery.current = q; setFilterText(q); }}
+          onSubmitEditing={handleSubmit}
+          returnKeyType="search"
+          placeholder={t('knowledge.law.actSearchPlaceholder', 'धारा नंबर या शब्द खोजें…')}
           variant="light"
-          accessibilityLabel={t('knowledge.law.searchPlaceholder', 'धारा नंबर या शीर्षक खोजें')}
+          accessibilityLabel={t('knowledge.law.actSearchPlaceholder', 'धारा नंबर या शब्द खोजें')}
+          trailing={<FilterSearchButton count={activeFilterCount(filterValues, filterGroups)} onPress={() => setShowFilters(true)} accent={actColor} />}
         />
-
-        {/* Jump-to-number input row */}
-        <View className="flex-row items-center gap-2">
-          <View
-            className="flex-1 flex-row items-center bg-card border border-border rounded-xl px-3 h-11"
-            style={{ borderCurve: 'continuous' }}
-          >
-            <Text className="text-xs text-muted-foreground mr-1.5 font-medium">
-              {isHi ? 'धारा:' : 'Sec:'}
-            </Text>
-            <TextInput
-              value={jumpNumber}
-              onChangeText={setJumpNumber}
-              placeholder={`1–${meta.total}`}
-              placeholderTextColor={C.mutedForeground}
-              keyboardType="number-pad"
-              returnKeyType="go"
-              onSubmitEditing={handleJump}
-              className="flex-1 text-sm text-foreground p-0"
-              style={{ height: '100%' }}
-            />
-          </View>
+        <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={(k) => setFilterValues((v) => ({ ...v, [k]: null }))} accent={actColor} />
+        {/* A number typed → one tap opens that section (replaces the old "धारा: ___ देखें" row) */}
+        {typedSection != null ? (
           <Pressable
-            onPress={handleJump}
-            disabled={!jumpNumber.trim()}
-            className="flex-row items-center justify-center px-4 h-11 rounded-xl bg-primary active:opacity-80"
-            style={{
-              borderCurve: 'continuous',
-              opacity: jumpNumber.trim() ? 1 : 0.5,
-              minWidth: 44,
-            }}
+            onPress={() => openSection(typedSection)}
+            accessibilityRole="button"
+            className="flex-row items-center justify-between rounded-xl px-3.5 h-11 active:opacity-80"
+            style={{ backgroundColor: `${actColor}14`, borderWidth: 1, borderColor: `${actColor}55`, borderCurve: 'continuous' }}
           >
-            <Text className="text-xs font-semibold text-primary-foreground mr-1">
-              {t('knowledge.law.jumpBtn', 'देखें')}
+            <Text className="text-sm font-semibold" style={{ color: actColor }}>
+              {isHi ? `${actId} धारा ${typedSection} सीधे खोलें` : `Open ${actId} section ${typedSection}`}
             </Text>
-            <ArrowRight size={14} color={C.primaryForeground} />
+            <ChevronRight size={18} color={actColor} />
           </Pressable>
-        </View>
+        ) : null}
       </View>
 
       {/* Section list with virtualization */}
@@ -127,7 +158,7 @@ export default function LawActSectionsScreen() {
         contentContainerClassName="px-4 py-3 gap-2 pb-28"
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
-          filterText.trim() ? (
+          filterText.trim() || filtersOn ? (
             <Text className="text-xs font-semibold text-muted-foreground mb-1">
               {t('knowledge.resultCount', { count: filteredSections.length, defaultValue: `${filteredSections.length} धाराएं मिलीं` })}
             </Text>
@@ -182,6 +213,15 @@ export default function LawActSectionsScreen() {
             </Text>
           </View>
         }
+      />
+      <FilterSheet
+        visible={showFilters}
+        groups={filterGroups}
+        values={filterValues}
+        onApply={(v) => { setFilterValues(v); setShowFilters(false); }}
+        onClose={() => setShowFilters(false)}
+        accent={actColor}
+        previewCount={countOf}
       />
     </View>
   );
