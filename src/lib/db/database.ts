@@ -1317,6 +1317,15 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'prarthna_patra_accused',     'jati',              "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'age',               "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'gender',            "TEXT DEFAULT ''");
+  // Owner: only one "done" state for प्रार्थना पत्र — निस्तारित. Old 'Finished' (बीट सूचना / NCR "समाप्त") rows become 'Nistarit'
+  // (idempotent; disposal date = the day it was last changed when none is set).
+  try {
+    await database.runAsync(
+      `UPDATE prarthna_patra SET status='Nistarit',
+         disposal_date=COALESCE(NULLIF(disposal_date,''), date(updated_at,'unixepoch','localtime'))
+       WHERE status='Finished'`,
+    );
+  } catch { /* ignore */ }
 
   // ── v140: Knowledge Module — section_number ───────────────────────────────
   // Stores a reference number such as "BNS Section 302" or "SOP-04".

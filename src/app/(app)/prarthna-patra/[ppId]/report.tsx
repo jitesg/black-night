@@ -195,7 +195,7 @@ export default function ReportScreen() {
         <View className="flex-1 bg-background">
           <AppHeader
             title={pp?.report ? t('prarthnaPatra.report.editTitle') : t('prarthnaPatra.report.addTitle')}
-            subtitle={pp?.registration_number ?? ''}
+            subtitle={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : ''}
             onBack={handleBack}
             rightActions={
               editorVisible ? (
@@ -224,7 +224,6 @@ export default function ReportScreen() {
               <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
                 {t('prarthnaPatra.report.sectionPetitionDetails')}
               </Text>
-              <DetailRow label={t('prarthnaPatra.report.labelRegNo')} value={pp?.registration_number} />
               <DetailRow label={t('prarthnaPatra.report.labelType')} value={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : undefined} />
               <DetailRow label={t('prarthnaPatra.report.labelDateOfReceipt')} value={pp?.date_of_receipt} />
               <DetailRow label={t('prarthnaPatra.report.labelDeadline')} value={pp?.deadline_date} />
@@ -354,7 +353,7 @@ export default function ReportScreen() {
       <View className="flex-1 bg-background">
         <AppHeader
           title={pp?.report ? t('prarthnaPatra.report.editTitle') : t('prarthnaPatra.report.addTitle')}
-          subtitle={pp?.registration_number ?? ''}
+          subtitle={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : ''}
           onBack={handleBack}
           rightActions={
             <Pressable onPress={handleSave} disabled={saving} className="bg-primary rounded-xl px-4 py-2 active:opacity-70">
@@ -375,7 +374,7 @@ export default function ReportScreen() {
               style={{ borderCurve: 'continuous' }}
             >
               <Text className="text-xs text-muted-foreground">
-                {pp.registration_number} · {PETITION_TYPE_LABELS[pp.petition_type]}
+                {PETITION_TYPE_LABELS[pp.petition_type]}
               </Text>
               {pp.complainants[0]?.name ? (
                 <Text className="text-xs text-muted-foreground mt-0.5">

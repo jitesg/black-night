@@ -309,7 +309,7 @@ export default function NyayalayReportScreen() {
                 </View>
                 <View className="flex-1" style={{ minWidth: 0 }}>
                   <Text className="text-sm font-semibold text-foreground" numberOfLines={1}>
-                    {doc.registration_number}
+                    {doc.court_name || doc.document_title || doc.vad_sankhya || (DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type)}
                   </Text>
                   <Text className="text-xs text-muted-foreground">
                     {DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type}{doc.sub_type ? ` · ${doc.sub_type}` : ''}
@@ -326,7 +326,7 @@ export default function NyayalayReportScreen() {
                     className="text-[10px] font-semibold"
                     style={{ color: doc.status === 'Finished' ? '#065F46' : '#92400E' }}
                   >
-                    {doc.status === 'Finished' ? t('fir.list.filterFinished') : t('fir.list.filterPending')}
+                    {doc.status === 'Finished' ? t('nyayalay.status.nistarit') : t('fir.list.filterPending')}
                   </Text>
                 </View>
               </View>
@@ -447,11 +447,11 @@ export default function NyayalayReportScreen() {
             onSave={async (v) => { setReportContent(v); setIsDirty(true); }}
             sharePrefix={
               doc
-                ? `${doc.registration_number} · ${DOC_TYPE_LABELS[doc.doc_type]}`
+                ? `${DOC_TYPE_LABELS[doc.doc_type]}${doc.vad_sankhya ? ` · वाद सं0 ${doc.vad_sankhya}` : ''}`
                 : undefined
             }
           />
-          <FardCheckButton text={reportContent} title={formatTitle || doc?.registration_number} className="mt-2" />
+          <FardCheckButton text={reportContent} title={formatTitle || doc?.document_title || undefined} className="mt-2" />
           {errors.reportContent ? (
             <Text className="text-xs text-destructive mt-1">{errors.reportContent}</Text>
           ) : null}
@@ -459,7 +459,7 @@ export default function NyayalayReportScreen() {
           {/* Final Save note */}
           <View className="mt-4 bg-muted rounded-xl p-3" style={{ borderCurve: 'continuous' }}>
             <Text className="text-xs text-muted-foreground">
-              {t('nyayalay.report.finalSaveNotePrefix')} <Text className="font-semibold">{t('fir.list.filterFinished')}</Text>.
+              {t('nyayalay.report.finalSaveNotePrefix')} <Text className="font-semibold">{t('nyayalay.status.nistarit')}</Text>.
             </Text>
           </View>
         </ScrollView>

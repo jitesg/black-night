@@ -75,7 +75,7 @@ export const TimelineTool: AITool<TimelineInput, TimelineOutput> = {
         events.push({
           date: doc.deadline_date ?? new Date(doc.created_at * 1000).toISOString().split('T')[0],
           type: 'Court',
-          title: `Court: ${doc.doc_type} — ${doc.registration_number}`,
+          title: `Court: ${doc.doc_type} — ${doc.vad_sankhya || doc.court_name || ''}`,
           description: doc.court_name ?? '',
         });
       });

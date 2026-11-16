@@ -35,8 +35,10 @@ export interface NoticeCard {
   action?: string;
 }
 
-export interface CourtDocRow { id: string; registration_number: string; doc_type: string; sub_type?: string | null; writ_type?: string | null; deadline_date: string }
-export interface PetitionRow { id: string; registration_number: string; petition_type: string; deadline_date: string }
+/** `ref` = what identifies the paper to the officer (वाद सं0 / मु0अ0सं0; the पंजीकरण सं0 is never shown — owner). */
+export interface CourtDocRow { id: string; ref?: string | null; doc_type: string; sub_type?: string | null; writ_type?: string | null; deadline_date: string }
+/** `ref` = the first आवेदक's name (the पंजीकरण सं0 is never shown — owner). */
+export interface PetitionRow { id: string; ref?: string | null; petition_type: string; deadline_date: string }
 export interface ReminderRow { id: string; title: string; due_at: number; fir_label?: string | null }
 
 export const DUE_SOON_DAYS = 3;
@@ -82,7 +84,7 @@ export function dueLabel(days: number): string {
 }
 
 function deadlineCard(
-  kind: 'court' | 'petition', id: string, label: string, task: string, reg: string,
+  kind: 'court' | 'petition', id: string, label: string, task: string, ref: string | null | undefined,
   deadline: string, route: string, now: Date, horizon: number = DUE_SOON_DAYS,
 ): NoticeCard | null {
   const d = parseLocalDate(deadline);
@@ -97,8 +99,8 @@ function deadlineCard(
       : `${task} की अंतिम तिथि ${fmtDate(d)} है — ${days === 1 ? 'कल' : `${days} दिन बाकी`}।`;
   return {
     id: `${kind}-${id}`, kind, level: over || days === 0 ? 'over' : 'warn',
-    title: `${label} — सं0 ${reg}`, body, when: dueLabel(days), route, rank: days,
-    meta: [`सं0 ${reg}`, `अंतिम तिथि ${fmtDate(d)}`],
+    title: ref ? `${label} — ${ref}` : label, body, when: dueLabel(days), route, rank: days,
+    meta: [...(ref ? [ref] : []), `अंतिम तिथि ${fmtDate(d)}`],
     action: kind === 'court' ? 'दस्तावेज़ खोलें' : 'प्रार्थना पत्र खोलें',
   };
 }
@@ -170,13 +172,13 @@ export function buildNoticeCards(input: {
   }
 
   for (const d of input.courtDocs ?? []) {
-    const c = deadlineCard('court', d.id, courtLabel(d), COURT_TASK[d.doc_type] ?? 'आख्या', d.registration_number,
+    const c = deadlineCard('court', d.id, courtLabel(d), COURT_TASK[d.doc_type] ?? 'आख्या', d.ref,
       d.deadline_date, `/(app)/nyayalay/${d.id}`, now, d.doc_type === 'High_Court_Documents' ? HC_DUE_SOON_DAYS : DUE_SOON_DAYS);
     if (c) out.push(c);
   }
 
   for (const p of input.petitions ?? []) {
-    const c = deadlineCard('petition', p.id, p.petition_type, petitionTask(p.petition_type), p.registration_number,
+    const c = deadlineCard('petition', p.id, p.petition_type, petitionTask(p.petition_type), p.ref,
       p.deadline_date, `/(app)/prarthna-patra/${p.id}`, now);
     if (c) out.push(c);
   }

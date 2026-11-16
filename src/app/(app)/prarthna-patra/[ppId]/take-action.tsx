@@ -5,7 +5,7 @@
  * NCR: adds action-type dropdown (सुलह-समझौता | BNSS Karyavahi).
  *
  * On save:
- *   is_complete=true  → status becomes Finished
+ *   is_complete=true  → status becomes Nistarit (owner: one "done" state — निस्तारित)
  *   is_complete=false → status stays Pending (draft)
  */
 import { useState, useCallback, useEffect, useRef } from 'react';
@@ -227,7 +227,7 @@ export default function TakeActionScreen() {
       className="flex-1"
     >
       <View className="flex-1 bg-background">
-        <AppHeader title={t('prarthnaPatra.action.title')} subtitle={pp?.registration_number ?? ''}
+        <AppHeader title={t('prarthnaPatra.action.title')} subtitle={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : ''}
           onBack={handleBack}
         />
 
@@ -240,7 +240,7 @@ export default function TakeActionScreen() {
           {pp && (
             <View className="bg-muted rounded-xl px-3 py-2.5 mt-4">
               <Text className="text-xs text-muted-foreground">
-                {PETITION_TYPE_LABELS[pp.petition_type]} · {pp.registration_number}
+                {PETITION_TYPE_LABELS[pp.petition_type]}
               </Text>
               {pp.complainants[0]?.name ? (
                 <Text className="text-xs text-muted-foreground mt-0.5">

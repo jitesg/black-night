@@ -101,7 +101,7 @@ export class ContradictionEngine {
           id: makeId(),
           type: 'critical',
           title: `Overdue Court Action: ${doc.doc_type}`,
-          description: `Court document "${doc.doc_type}" (${doc.registration_number}) was due on ${doc.deadline_date} and is still pending.`,
+          description: `Court document "${doc.doc_type}"${doc.vad_sankhya ? ` (वाद सं0 ${doc.vad_sankhya})` : ''} was due on ${doc.deadline_date} and is still pending.`,
           modulesInvolved: ['Nyayalay', 'Court'],
           recommendation: `Take immediate action on ${doc.doc_type}. Court deadline has passed.`,
           legalImplication: 'Non-compliance with court orders may result in adverse orders or contempt.',

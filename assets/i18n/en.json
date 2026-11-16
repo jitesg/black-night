@@ -2046,7 +2046,8 @@
     "noDocs": "No court documents",
     "noDocsHint": "Track court dates, High Court writs, sessions cases and responses.",
     "status": {
-      "overdue": "Overdue"
+      "overdue": "Overdue",
+      "nistarit": "Nistarit"
     },
     "checklist": {
       "title": "Checklist",
@@ -2332,7 +2333,7 @@
     "analytics": {
       "title": "Analytics",
       "toggle": "Toggle analytics",
-      "summary": "{{total}} Total · {{pending}} Pending · {{nistarit}} Nistarit · {{finished}} Finished",
+      "summary": "{{total}} Total · {{pending}} Pending · {{nistarit}} Nistarit",
       "filtered": "Filtered: {{type}}",
       "clearFilter": "Clear filter",
       "overall": "Overall",

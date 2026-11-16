@@ -407,7 +407,7 @@ function buildTimeline(
     events.push({
       date: c.deadline_date,
       type: 'Court',
-      title: `${c.doc_type} — ${c.registration_number}`,
+      title: `${c.doc_type} — ${c.vad_sankhya || c.court_name || ''}`,
       description: c.court_name,
       isCompleted: c.status === 'Finished',
       isCritical: overdue,
@@ -456,7 +456,7 @@ function computeCaseHealth(
     .filter((k) => /evidence|panchnama|seizure|seizure|report|fsl|medical/i.test(k.name))
     .map((k) => k.name);
 
-  const courtActionsRequired = overdueCourtDocs.map((c) => `${c.doc_type} — ${c.registration_number} (OVERDUE)`);
+  const courtActionsRequired = overdueCourtDocs.map((c) => `${c.doc_type} — ${c.vad_sankhya || c.court_name || ''} (OVERDUE)`);
 
   return {
     score,
@@ -495,7 +495,7 @@ function buildNextActions(
         category: 'court',
         priority: 'critical',
         title: `Overdue Court Action: ${c.doc_type}`,
-        description: `${c.registration_number} at ${c.court_name} — deadline was ${c.deadline_date}`,
+        description: `${c.vad_sankhya ? `वाद सं0 ${c.vad_sankhya} ` : ''}at ${c.court_name} — deadline was ${c.deadline_date}`,
         deadline: c.deadline_date,
         daysRemaining: daysDiff(c.deadline_date),
       });

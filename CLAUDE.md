@@ -221,6 +221,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Head प्रधानाध्यापक/प्रधानाचार्य, optional age / सत्र / कक्षा (sentence shortens), JJ Act 2015 धारा 94 line. Old v2 in docs/format-backups/.
 - Fields that appear only when needed (option values must not contain "/" — it means "or"): `{"showIf":"Key=A/B & doX & !doY"}` in a key's dropdown_options (dropdown list under
   "options"); `src/lib/formatShowIf.ts` (`isKeyVisible`), used by the 3 fill screens + the केस डायरी कार्यवाही panel + validation (hidden = not required).
+- प्रार्थना पत्र / न्यायालय (owner, before the कार्यालय app): ONE done state "निस्तारित" — प्रार्थना पत्र 'Finished' (बीट सूचना / NCR take-action)
+  now saves 'Nistarit' + disposal_date (one-time UPDATE in database.ts turns old 'Finished' rows into 'Nistarit'); lists / detail / filters / counts show
+  only लंबित · निस्तारित; न्यायालय keeps DB 'Finished' but every label is i18n `nyayalay.status.nistarit` (was fir.list.filterFinished "समाप्त").
+  पंजीकरण सं0 (registration_number) is never shown (owner): removed from both modules' cards, detail, report, take-action, dialogs, search
+  suggestions, dashboard fallbacks, AI context; सूचनाएँ / phone alerts use `ref` (न्यायालय: वाद सं0 / मु0अ0सं0, प्रार्थना पत्र: first आवेदक's name).
+  The column still exists (unique key), and formats' NBW_NO / SUMMON_NO keys still read it.
 - प्रार्थना पत्र report screen (`prarthna-patra/[ppId]/report.tsx`): every type except बीट सूचना / NCR (those = take-action) uses the inline flow
   (full petition details, "रिपोर्ट लगाएं", "प्रारूप से जोड़ें") — `REPORT_PETITION_TYPES` now also has थाना प्रार्थना पत्र / RTI / अन्य (owner);
   an old HTML report is turned into plain text for the inline box.

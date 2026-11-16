@@ -62,7 +62,7 @@ export class TimelinePredictionEngine {
       const status: TimelineItemStatus = isDone ? 'completed' : isOverdue ? 'overdue' : 'pending';
       const item: IntelTimelineItem = {
         id: mkId(), date: c.deadline_date, module: 'Court',
-        title: `${c.doc_type} — ${c.registration_number}`,
+        title: `${c.doc_type} — ${c.vad_sankhya || c.court_name || ''}`,
         status, isCritical: isOverdue, isPredicted: false,
       };
       if (isDone) completed.push(item);

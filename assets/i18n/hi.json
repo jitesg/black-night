@@ -2046,7 +2046,8 @@
     "noDocs": "कोई न्यायालय दस्तावेज नहीं",
     "noDocsHint": "कोर्ट की तारीखें, उच्च न्यायालय रिट, सत्र मामले और जवाब ट्रैक करें।",
     "status": {
-      "overdue": "अतिदेय"
+      "overdue": "अतिदेय",
+      "nistarit": "निस्तारित"
     },
     "checklist": {
       "title": "चेकलिस्ट",
@@ -2332,7 +2333,7 @@
     "analytics": {
       "title": "विश्लेषण",
       "toggle": "विश्लेषण टॉगल करें",
-      "summary": "{{total}} कुल · {{pending}} विचाराधीन · {{nistarit}} निस्तारित · {{finished}} समाप्त",
+      "summary": "{{total}} कुल · {{pending}} विचाराधीन · {{nistarit}} निस्तारित",
       "filtered": "फ़िल्टर: {{type}}",
       "clearFilter": "फ़िल्टर हटाएं",
       "overall": "समग्र",

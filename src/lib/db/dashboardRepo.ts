@@ -298,7 +298,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
       reminders.push({
         id: doc.id,
         module: 'Nyayalay',
-        title: `${DOC_TYPE_LABELS[doc.doc_type] ?? doc.doc_type} — ${doc.court_name || doc.registration_number || doc.id.slice(0, 8)}`,
+        title: `${DOC_TYPE_LABELS[doc.doc_type] ?? doc.doc_type} — ${doc.court_name || doc.vad_sankhya || doc.document_title || '—'}`,
         daysLeft: days,
         route: `/(app)/nyayalay/${doc.id}`,
         color: MODULE_COLORS.Nyayalay,
@@ -314,7 +314,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
       reminders.push({
         id: pp.id,
         module: 'Prarthna Patra',
-        title: `${pp.petition_type} — ${pp.matter || pp.registration_number || pp.id.slice(0, 8)}`,
+        title: `${pp.petition_type} — ${pp.matter || '—'}`,
         daysLeft: days,
         route: `/(app)/prarthna-patra/${pp.id}`,
         color: MODULE_COLORS['Prarthna Patra'],
@@ -334,7 +334,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
       overdue.push({
         id: doc.id,
         module: 'Nyayalay',
-        title: `${DOC_TYPE_LABELS[doc.doc_type] ?? doc.doc_type} — ${doc.court_name || doc.registration_number || doc.id.slice(0, 8)}`,
+        title: `${DOC_TYPE_LABELS[doc.doc_type] ?? doc.doc_type} — ${doc.court_name || doc.vad_sankhya || doc.document_title || '—'}`,
         daysOverdue: Math.abs(days),
         route: `/(app)/nyayalay/${doc.id}`,
         color: MODULE_COLORS.Nyayalay,
@@ -350,7 +350,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
       overdue.push({
         id: pp.id,
         module: 'Prarthna Patra',
-        title: `${pp.petition_type} — ${pp.matter || pp.registration_number || pp.id.slice(0, 8)}`,
+        title: `${pp.petition_type} — ${pp.matter || '—'}`,
         daysOverdue: Math.abs(days),
         route: `/(app)/prarthna-patra/${pp.id}`,
         color: MODULE_COLORS['Prarthna Patra'],
@@ -387,7 +387,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
     activities.push({
       id: p.id,
       label: 'Prarthna Patra Added',
-      subtitle: `${p.petition_type} · ${p.matter || p.registration_number || '—'}`,
+      subtitle: `${p.petition_type} · ${p.matter || '—'}`,
       time: p.created_at,
       route: `/(app)/prarthna-patra/${p.id}`,
       color: MODULE_COLORS['Prarthna Patra'],
@@ -542,7 +542,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       id: d.id,
       module: 'Nyayalay',
       title: `${DOC_TYPE_LABELS[d.doc_type] ?? d.doc_type}`,
-      subtitle: d.court_name || d.registration_number || '—',
+      subtitle: d.court_name || d.vad_sankhya || '—',
       route: `/(app)/nyayalay/${d.id}`,
       color: MODULE_COLORS.Nyayalay,
     })
@@ -552,7 +552,7 @@ export async function universalSearch(query: string): Promise<UniversalSearchIte
       id: p.id,
       module: 'Prarthna Patra',
       title: p.petition_type,
-      subtitle: p.matter || p.registration_number || '—',
+      subtitle: p.matter || '—',
       route: `/(app)/prarthna-patra/${p.id}`,
       color: MODULE_COLORS['Prarthna Patra'],
     })

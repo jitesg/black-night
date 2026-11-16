@@ -88,7 +88,7 @@ function ReminderPanel({
     : '#065F46';
 
   const statusLabelText = info.statusLabel === 'Finished'
-    ? t('fir.list.filterFinished')
+    ? t('nyayalay.status.nistarit')
     : info.statusLabel === 'Overdue'
     ? t('nyayalay.status.overdue')
     : t('nyayalay.reminder.active');
@@ -333,13 +333,13 @@ export default function NyayalayDocDetailScreen() {
   const isOverdue = !isFinished && days < 0;
 
   const statusLabel = isFinished
-    ? t('fir.list.filterFinished')
+    ? t('nyayalay.status.nistarit')
     : isOverdue
     ? t('nyayalay.status.overdue')
     : t('fir.list.filterPending');
 
   const dayLabel = isFinished
-    ? t('fir.list.filterFinished')
+    ? t('nyayalay.status.nistarit')
     : days > 0
     ? t('nyayalay.daysLeft', { count: days, days })
     : days === 0
@@ -374,7 +374,6 @@ export default function NyayalayDocDetailScreen() {
           </Text>
         </View>
 
-        <DetailRow label={t('nyayalay.detail.regNumber')} value={doc.registration_number} />
         <DetailRow label={t('nyayalay.detail.courtName')} value={doc.court_name} />
         <DetailRow label={t('nyayalay.detail.vadSankhya')} value={doc.vad_sankhya} />
         <DetailRow label={t('nyayalay.detail.apradhSankhya')} value={doc.apradh_sankhya} />
@@ -597,7 +596,7 @@ export default function NyayalayDocDetailScreen() {
   return (
     <View className="flex-1 bg-background">
       <AppHeader
-        title={doc.court_name || doc.document_title || doc.registration_number}
+        title={doc.court_name || doc.document_title || (DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type)}
         subtitle={`${DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type}${doc.sub_type ? ` — ${doc.sub_type}` : ''}`}
         onBack={handleBack}
         rightActions={

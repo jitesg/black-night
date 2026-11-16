@@ -39,19 +39,11 @@ function SectionHeader({ title }: { title: string }) {
 function StatusChip({ pp }: { pp: PPWithDetails }) {
   const { t } = useTranslation();
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
-  if (pp.status === 'Nistarit') {
+  if (pp.status === 'Nistarit' || pp.status === 'Finished') { // owner: one "done" state — निस्तारित
     return (
       <View className="flex-row items-center gap-1.5 rounded-full px-2.5 py-1" style={{ backgroundColor: '#D1FAE5' }}>
         <CheckCircle size={13} color="#065F46" />
         <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
-      </View>
-    );
-  }
-  if (pp.status === 'Finished') {
-    return (
-      <View className="flex-row items-center gap-1.5 rounded-full px-2.5 py-1" style={{ backgroundColor: '#EDE9FE' }}>
-        <CheckCircle size={13} color="#5B21B6" />
-        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{t('fir.list.filterFinished')}</Text>
       </View>
     );
   }
@@ -125,7 +117,7 @@ export default function PPDetailScreen() {
     <View className="flex-1 bg-background">
       <AppHeader
         title={PETITION_TYPE_LABELS[pp.petition_type]}
-        subtitle={pp.registration_number}
+        subtitle={pp.date_of_receipt ? `प्राप्ति ${pp.date_of_receipt}` : undefined}
         onBack={() => router.back()}
         variant="navy"
         rightActions={
@@ -163,7 +155,6 @@ export default function PPDetailScreen() {
           className="bg-card border border-border rounded-2xl p-4"
           style={{ borderCurve: 'continuous' }}
         >
-          <InfoRow label={t('prarthnaPatra.detail.regNo')} value={pp.registration_number} />
           <InfoRow label={t('prarthnaPatra.detail.petitionType')} value={PETITION_TYPE_LABELS[pp.petition_type]} />
           <InfoRow label={t('prarthnaPatra.detail.dateOfReceipt')} value={pp.date_of_receipt} />
           <InfoRow label={t('prarthnaPatra.detail.deadlineDate')} value={pp.deadline_date} />
@@ -292,7 +283,7 @@ export default function PPDetailScreen() {
                   style={{ backgroundColor: action.is_complete ? '#EDE9FE' : '#FEF3C7' }}>
                   <Text textBreakStrategy="simple" className="text-xs font-semibold"
                     style={{ color: action.is_complete ? '#5B21B6' : '#92400E' }}>
-                    {action.is_complete ? t('fir.list.filterFinished') : t('fir.list.filterPending')}
+                    {action.is_complete ? t('prarthnaPatra.status.nistarit') : t('fir.list.filterPending')}
                   </Text>
                 </View>
               </View>

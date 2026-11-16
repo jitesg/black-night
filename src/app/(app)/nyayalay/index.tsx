@@ -47,7 +47,7 @@ const STATUS_TEXT = { light: { Finished: '#065F46', Overdue: '#991B1B', Pending:
 const DAY_COLOR   = { light: { finished: '#065F46', positive: '#1D4ED8', overdue: '#DC2626' }, dark: { finished: '#6EE7B7', positive: '#93C5FD', overdue: '#F87171' } } as const;
 
 const STATUS_LABEL_KEY = {
-  Finished: 'fir.list.filterFinished',
+  Finished: 'nyayalay.status.nistarit',
   Overdue: 'nyayalay.status.overdue',
   Pending: 'fir.list.filterPending',
 } as const;
@@ -128,7 +128,7 @@ const DocCard = memo(function DocCard({
   const isOverdue = !isFinished && doc.deadline_date < today;
 
   const dayLabel = isFinished
-    ? t('fir.list.filterFinished')
+    ? t('nyayalay.status.nistarit')
     : days > 0 ? t('nyayalay.daysLeft', { count: days })
     : days === 0 ? t('nyayalay.dueToday')
     : t('nyayalay.daysOverdue', { count: Math.abs(days) });
@@ -253,7 +253,7 @@ export default function NyayalayScreen() {
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const filterGroups = useMemo<FilterGroupDef[]>(() => [
     { key: 'status', label: t('filter.status', 'स्थिति'), options: [
-      { value: 'Pending', label: t('fir.list.filterPending') }, { value: 'Finished', label: t('fir.list.filterFinished') },
+      { value: 'Pending', label: t('fir.list.filterPending') }, { value: 'Finished', label: t('nyayalay.status.nistarit') },
     ] },
     { key: 'time', label: t('filter.date', 'तारीख'), options: [
       { value: 'Due Today', label: t('nyayalay.filterDueToday') }, { value: 'Overdue', label: t('nyayalay.status.overdue') },
@@ -472,7 +472,7 @@ export default function NyayalayScreen() {
                     numberOfLines={1}
                     className="text-xs text-muted-foreground mt-1"
                   >
-                    {`${analytics.overall.total} ${t('nyayalay.analyticsTotal')} · ${analytics.overall.pending} ${t('fir.list.filterPending')} · ${analytics.overall.finished} ${t('fir.list.filterFinished')} · ${analytics.overall.overdue} ${t('nyayalay.status.overdue')}`}
+                    {`${analytics.overall.total} ${t('nyayalay.analyticsTotal')} · ${analytics.overall.pending} ${t('fir.list.filterPending')} · ${analytics.overall.finished} ${t('nyayalay.status.nistarit')} · ${analytics.overall.overdue} ${t('nyayalay.status.overdue')}`}
                   </Text>
                 )}
               </Pressable>
@@ -515,7 +515,7 @@ export default function NyayalayScreen() {
                       {[
                         { label: t('nyayalay.analyticsTotal'),   val: analytics.overall.total,    colorKey: 'cardForeground' as const },
                         { label: t('fir.list.filterPending'), val: analytics.overall.pending,  colorKey: null, statusKey: 'Pending' as const },
-                        { label: t('fir.list.filterFinished'),val: analytics.overall.finished, colorKey: null, statusKey: 'Finished' as const },
+                        { label: t('nyayalay.status.nistarit'),val: analytics.overall.finished, colorKey: null, statusKey: 'Finished' as const },
                         { label: t('nyayalay.status.overdue'), val: analytics.overall.overdue,  colorKey: null, statusKey: 'Overdue' as const },
                       ].map(({ label, val, colorKey, statusKey }) => (
                         <View key={label} className="flex-1 items-center">

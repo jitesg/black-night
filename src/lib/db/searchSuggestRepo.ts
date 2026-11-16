@@ -43,13 +43,11 @@ const LOADERS: Record<Exclude<SuggestScope, null | 'all'>, () => Promise<string[
     col(`SELECT name AS v FROM fir_accused WHERE deleted_at IS NULL`),
   ])).flat(),
   nyayalay: async () => (await Promise.all([
-    col(`SELECT registration_number AS v FROM nyayalay_documents WHERE deleted_at IS NULL`),
     col(`SELECT DISTINCT court_name AS v FROM nyayalay_documents WHERE deleted_at IS NULL`),
     col(`SELECT fir_number AS v FROM nyayalay_documents WHERE deleted_at IS NULL`),
     col(`SELECT name AS v FROM nyayalay_persons WHERE deleted_at IS NULL`),
   ])).flat(),
   pp: async () => (await Promise.all([
-    col(`SELECT registration_number AS v FROM prarthna_patra WHERE deleted_at IS NULL`),
     col(`SELECT DISTINCT petition_type AS v FROM prarthna_patra WHERE deleted_at IS NULL`),
     col(`SELECT name AS v FROM prarthna_patra_complainants WHERE deleted_at IS NULL`),
     col(`SELECT DISTINCT village AS v FROM prarthna_patra_complainants WHERE deleted_at IS NULL`),

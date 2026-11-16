@@ -21,11 +21,11 @@ test('due labels', () => {
 test('court + petition: overdue and due in 3 days only', () => {
   const cards = buildNoticeCards({
     courtDocs: [
-      { id: 'c1', registration_number: '12/26', doc_type: 'NBW', deadline_date: '2026-10-23' },
-      { id: 'c2', registration_number: '13/26', doc_type: 'High_Court_Documents', sub_type: 'Writ', writ_type: 'CRLP', deadline_date: '2026-10-27' },
-      { id: 'c3', registration_number: '14/26', doc_type: 'Summons', deadline_date: '2026-11-10' },
+      { id: 'c1', ref: 'वाद सं0 12/26', doc_type: 'NBW', deadline_date: '2026-10-23' },
+      { id: 'c2', ref: 'वाद सं0 13/26', doc_type: 'High_Court_Documents', sub_type: 'Writ', writ_type: 'CRLP', deadline_date: '2026-10-27' },
+      { id: 'c3', ref: 'वाद सं0 14/26', doc_type: 'Summons', deadline_date: '2026-11-10' },
     ],
-    petitions: [{ id: 'p1', registration_number: '5/26', petition_type: 'RTI', deadline_date: '2026-10-25' }],
+    petitions: [{ id: 'p1', ref: 'रेनू', petition_type: 'RTI', deadline_date: '2026-10-25' }],
   }, now);
   assert.deepEqual(cards.map((c) => c.id), ['court-c1', 'petition-p1', 'court-c2']);
   assert.match(cards[0].body, /NBW तामील की अंतिम तिथि 23\.10\.2026 2 दिन पहले/);
@@ -56,11 +56,11 @@ test('case diary pending from day 7; reminders due today or missed', () => {
 test('card extras: cd progress, deadline meta + action', () => {
   const cards = buildNoticeCards({
     firs: [{ id: 'f1', fir_number: '12/26', date_of_information: '2026-10-15', last_diary_date: null }],
-    courtDocs: [{ id: 'c1', registration_number: '12/26', doc_type: 'NBW', deadline_date: '2026-10-26' }],
+    courtDocs: [{ id: 'c1', ref: 'वाद सं0 12/26', doc_type: 'NBW', deadline_date: '2026-10-26' }],
   }, now);
   const cd = cards.find((c) => c.kind === 'cd');
   assert.ok(cd?.progress && cd.progress.value > 0 && cd.progress.value <= 1);
   const court = cards.find((c) => c.kind === 'court');
-  assert.deepEqual(court?.meta, ['सं0 12/26', 'अंतिम तिथि 26.10.2026']);
+  assert.deepEqual(court?.meta, ['वाद सं0 12/26', 'अंतिम तिथि 26.10.2026']);
   assert.equal(court?.action, 'दस्तावेज़ खोलें');
 });

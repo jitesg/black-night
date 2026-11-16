@@ -72,17 +72,11 @@ function startOfWeekStr() {
 function StatusBadge({ pp }: { pp: PrarthnaPatra }) {
   const { t } = useTranslation();
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
-  if (pp.status === 'Nistarit') {
+  // Owner: one "done" state — निस्तारित (an old 'Finished' row shows the same).
+  if (pp.status === 'Nistarit' || pp.status === 'Finished') {
     return (
       <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#D1FAE5' }}>
         <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
-      </View>
-    );
-  }
-  if (pp.status === 'Finished') {
-    return (
-      <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#EDE9FE' }}>
-        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{t('fir.list.filterFinished')}</Text>
       </View>
     );
   }
@@ -110,7 +104,6 @@ function AnalyticsCard({
   selected?: boolean; onPress?: () => void;
 }) {
   const { t } = useTranslation();
-  const hasActionWorkflow = finished > 0 || (dueToday !== undefined);
   return (
     <Pressable
       onPress={onPress}
@@ -132,17 +125,10 @@ function AnalyticsCard({
           <Text className="text-xs font-semibold" style={{ color: '#92400E' }}>{pending}</Text>
           <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('fir.list.filterPending')}</Text>
         </View>
-        {hasActionWorkflow ? (
-          <View>
-            <Text className="text-xs font-semibold" style={{ color: '#5B21B6' }}>{finished}</Text>
-            <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('prarthnaPatra.analytics.statDone')}</Text>
-          </View>
-        ) : (
-          <View>
-            <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{nistarit}</Text>
-            <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('prarthnaPatra.analytics.statNist')}</Text>
-          </View>
-        )}
+        <View>
+          <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{nistarit + finished}</Text>
+          <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('prarthnaPatra.analytics.statNist')}</Text>
+        </View>
         {overdue !== undefined && overdue > 0 && (
           <View>
             <Text className="text-xs font-semibold" style={{ color: '#DC2626' }}>{overdue}</Text>
@@ -167,12 +153,11 @@ const PPCard = memo(function PPCard({
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
 
   const dayLabel = (pp.status === 'Nistarit' || pp.status === 'Finished')
-    ? t(STATUS_LABEL_KEY[pp.status])
+    ? t('prarthnaPatra.status.nistarit')
     : days > 0 ? t('prarthnaPatra.dayLabel.daysLeft', { count: days })
     : days === 0 ? t('prarthnaPatra.dayLabel.dueToday')
     : t('prarthnaPatra.dayLabel.daysOverdue', { count: Math.abs(days) });
-  const dayColor = pp.status === 'Nistarit' ? '#6B7280'
-    : pp.status === 'Finished' ? '#5B21B6'
+  const dayColor = (pp.status === 'Nistarit' || pp.status === 'Finished') ? '#6B7280'
     : days > 0 ? '#2D52B8' : '#DC2626';
 
   return (
@@ -186,9 +171,6 @@ const PPCard = memo(function PPCard({
         {/* Header row */}
         <View className="flex-row items-start justify-between gap-3 mb-2">
           <View className="flex-1">
-            <Text className="text-xs text-muted-foreground font-medium tracking-widest uppercase">
-              {pp.registration_number}
-            </Text>
             {highlight
               ? <HighlightText text={PETITION_TYPE_LABELS[pp.petition_type]} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, marginTop: 2 }} numberOfLines={1} typoTolerant={typoTolerant} />
               : <Text style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, marginTop: 2 }} numberOfLines={1}>{PETITION_TYPE_LABELS[pp.petition_type]}</Text>
@@ -211,7 +193,7 @@ const PPCard = memo(function PPCard({
       <AlertDialog open={menuOpen} onOpenChange={setMenuOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{pp.registration_number}</AlertDialogTitle>
+            <AlertDialogTitle>{PETITION_TYPE_LABELS[pp.petition_type]}</AlertDialogTitle>
             <AlertDialogDescription>{t('prarthnaPatra.list.menuTitle')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -250,7 +232,7 @@ const PPCard = memo(function PPCard({
           <AlertDialogHeader>
             <AlertDialogTitle>{t('prarthnaPatra.list.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('prarthnaPatra.list.deleteDesc', { regNo: pp.registration_number })}
+              {t('prarthnaPatra.list.deleteDesc', { regNo: PETITION_TYPE_LABELS[pp.petition_type] })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -292,7 +274,7 @@ export default function PrarthnaPatraScreen() {
   // Design C (owner): स्थिति, तारीख, प्रकार — the same filters as the old chip row, now in the filter sheet.
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const filterGroups = useMemo<FilterGroupDef[]>(() => [
-    { key: 'status', label: t('filter.status', 'स्थिति'), options: (['Pending', 'Nistarit', 'Finished'] as StatusFilter[]).map((f) => ({ value: f, label: t(STATUS_LABEL_KEY[f]) })) },
+    { key: 'status', label: t('filter.status', 'स्थिति'), options: (['Pending', 'Nistarit'] as StatusFilter[]).map((f) => ({ value: f, label: t(STATUS_LABEL_KEY[f]) })) },
     { key: 'time', label: t('filter.date', 'तारीख'), options: (['Today', 'This Week', 'Overdue'] as NonNullable<TimeFilter>[]).map((v) => ({ value: v, label: t(TIME_FILTER_KEYS[v]) })) },
     { key: 'type', label: t('filter.type', 'प्रकार'), options: PETITION_TYPES.map((v) => ({ value: v, label: v })) },
   ], [t]);
@@ -411,7 +393,7 @@ export default function PrarthnaPatraScreen() {
     let list: PrarthnaPatra[] = searchResults ?? items;
 
     if (statusFilter !== 'All') {
-      list = list.filter((p) => p.status === statusFilter);
+      list = list.filter((p) => (statusFilter === 'Nistarit' ? p.status === 'Nistarit' || p.status === 'Finished' : p.status === statusFilter));
     }
 
     if (timeFilter === 'Today') {
@@ -505,8 +487,7 @@ export default function PrarthnaPatraScreen() {
                         {t('prarthnaPatra.analytics.summary', {
                           total: analytics.overall.total,
                           pending: analytics.overall.pending,
-                          nistarit: analytics.overall.nistarit,
-                          finished: analytics.overall.finished,
+                          nistarit: analytics.overall.nistarit + analytics.overall.finished,
                         })}
                       </Text>
                     )}
@@ -559,13 +540,8 @@ export default function PrarthnaPatraScreen() {
                         </View>
                         <View className="w-px bg-border" />
                         <View className="flex-1 items-center">
-                          <Text className="text-base font-bold" style={{ color: '#065F46' }}>{analytics.overall.nistarit}</Text>
+                          <Text className="text-base font-bold" style={{ color: '#065F46' }}>{analytics.overall.nistarit + analytics.overall.finished}</Text>
                           <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>{t('prarthnaPatra.status.nistarit')}</Text>
-                        </View>
-                        <View className="w-px bg-border" />
-                        <View className="flex-1 items-center">
-                          <Text className="text-base font-bold" style={{ color: '#5B21B6' }}>{analytics.overall.finished}</Text>
-                          <Text style={{ ...T.micro, color: '#9CA3AF', marginTop: 1 }}>{t('fir.list.filterFinished')}</Text>
                         </View>
                       </View>
                     </View>

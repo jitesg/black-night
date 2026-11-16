@@ -423,7 +423,7 @@ export interface SaveActionInput {
 /**
  * Upsert a Take Action record for a Beat / NCR petition.
  * If the petition already has an action, it is updated; otherwise a new one is inserted.
- * The petition's status is updated to 'Finished' when is_complete=true, else 'Pending'.
+ * The petition's status is updated to 'Nistarit' (निस्तारित, owner) when is_complete=true, else 'Pending'.
  */
 export async function saveAction(input: SaveActionInput): Promise<void> {
   const db = await getDatabase();
@@ -463,12 +463,13 @@ export async function saveAction(input: SaveActionInput): Promise<void> {
     );
   }
 
-  const newStatus: PPStatus = input.is_complete ? 'Finished' : 'Pending';
+  // Owner: only one "done" state — निस्तारित (was 'Finished' / समाप्त for बीट सूचना / NCR).
+  const newStatus: PPStatus = input.is_complete ? 'Nistarit' : 'Pending';
   await db.runAsync(
     `UPDATE prarthna_patra
-     SET status=?, updated_at=?, version=version+1, sync_status='pending'
+     SET status=?, disposal_date=?, updated_at=?, version=version+1, sync_status='pending'
      WHERE id=?`,
-    [newStatus, now, input.prarthna_patra_id]
+    [newStatus, input.is_complete ? input.action_date : null, now, input.prarthna_patra_id]
   );
   resyncDeadlineAlerts();
 }
@@ -544,14 +545,12 @@ export async function getDashboardAnalytics(): Promise<PPDashboardAnalytics> {
   for (const pp of all) {
     overall.total++;
     if (pp.status === 'Pending') overall.pending++;
-    else if (pp.status === 'Finished') overall.finished++;
-    else overall.nistarit++;
+    else overall.nistarit++; // 'Finished' (old) counts as निस्तारित (owner)
 
     const t = pp.petition_type as PetitionType;
     if (byType[t]) {
       byType[t].total++;
       if (pp.status === 'Pending') byType[t].pending++;
-      else if (pp.status === 'Finished') byType[t].finished++;
       else byType[t].nistarit++;
 
       // Deadline tracking for Beat and Thana petition types

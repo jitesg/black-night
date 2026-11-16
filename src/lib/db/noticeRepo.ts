@@ -29,7 +29,10 @@ export async function getPendingFirsWithLastDiary(): Promise<CdFirRow[]> {
 export async function getPendingCourtDocs(): Promise<CourtDocRow[]> {
   const db = await getDatabase();
   return db.getAllAsync<CourtDocRow>(
-    `SELECT id, registration_number, doc_type, sub_type, writ_type, deadline_date
+    `SELECT id, doc_type, sub_type, writ_type, deadline_date,
+            CASE WHEN TRIM(COALESCE(vad_sankhya,'')) <> '' THEN 'वाद सं0 ' || TRIM(vad_sankhya)
+                 WHEN TRIM(COALESCE(apradh_sankhya,'')) <> '' THEN 'मु0अ0सं0 ' || TRIM(apradh_sankhya)
+                 ELSE NULL END AS ref
        FROM nyayalay_documents WHERE deleted_at IS NULL AND status = 'Pending'`,
   );
 }
@@ -37,8 +40,10 @@ export async function getPendingCourtDocs(): Promise<CourtDocRow[]> {
 export async function getPendingPetitions(): Promise<PetitionRow[]> {
   const db = await getDatabase();
   return db.getAllAsync<PetitionRow>(
-    `SELECT id, registration_number, petition_type, deadline_date
-       FROM prarthna_patra WHERE deleted_at IS NULL AND status = 'Pending'`,
+    `SELECT p.id, p.petition_type, p.deadline_date,
+            (SELECT NULLIF(TRIM(c.name),'') FROM prarthna_patra_complainants c
+              WHERE c.prarthna_patra_id = p.id AND c.deleted_at IS NULL ORDER BY c.created_at LIMIT 1) AS ref
+       FROM prarthna_patra p WHERE p.deleted_at IS NULL AND p.status = 'Pending'`,
   );
 }
 

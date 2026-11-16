@@ -206,7 +206,7 @@ function buildPrarthnaPatraReply(ctx: InvestigationContext): DraftSection[] {
   const pp      = ctx.prarthnaPatra[0];
   return [
     section('pp-header', 'Prarthna Patra Reply Header',
-      `REPLY TO PETITION\nPetition No.: ${pp?.registration_number ?? placeholder('Petition Number')}\n` +
+      `REPLY TO PETITION\n` +
       `Date of Receipt: ${pp?.date_of_receipt ?? placeholder('Date')}\nDate: ${today()}`),
     section('pp-facts', 'Facts of the Matter',
       placeholder('Summarise the petition and investigation findings'), true),
