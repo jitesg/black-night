@@ -56,6 +56,10 @@ export interface NyayalayDocument {
   deleted_at: number | null;
   version: number;
   sync_status: string;
+  /** कार्यालय app (चरण ग): Supabase task id / what the office sent / 1 until opened */
+  office_task_id?: string | null;
+  office_json?: string | null;
+  office_new?: number | null;
 }
 
 export interface NyayalayPerson {
@@ -197,6 +201,8 @@ interface CreateNyayalayInput {
 /** Deadline / status changed → move the न्यायालय / प्रार्थना पत्र phone alerts (lazy import). */
 function resyncDeadlineAlerts(): void {
   import('@/lib/deadlineAlertService').then((m) => m.resyncDeadlineAlertsSoon()).catch(() => {});
+  // a कार्यालय कागज़ got निस्तारित / changed → its status goes back to the office (no-op when not joined)
+  import('@/office/officerSync').then((m) => m.queueOfficeSync()).catch(() => {});
 }
 
 export async function createNyayalayDocument(input: CreateNyayalayInput): Promise<string> {
@@ -351,6 +357,7 @@ export async function deleteNyayalayDocument(id: string): Promise<void> {
     [now, id]
   );
   await import('./attachmentRepo').then((m) => m.deleteAttachmentsOf('court', id)).catch(() => {});
+  void import('@/office/officerSync').then((m) => m.queueOfficeSync()).catch(() => {});
   await db.runAsync(
     `UPDATE nyayalay_persons SET deleted_at=? WHERE doc_id=? AND deleted_at IS NULL`,
     [now, id]

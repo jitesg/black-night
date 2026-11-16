@@ -14,6 +14,7 @@ import Animated, {
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { attachmentCounts } from '@/lib/db/attachmentRepo';
+import { OFFICE_BLUE, OFFICE_DELETE_WARNING, OfficeCardTag, isFromOffice } from '@/office/OfficeOrigin';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
@@ -169,7 +170,7 @@ const PPCard = memo(function PPCard({
         onPress={() => router.push(`/(app)/prarthna-patra/${pp.id}` as never)}
         onLongPress={() => setMenuOpen(true)}
         className="bg-card border border-border rounded-2xl p-4 mb-3 active:opacity-70"
-        style={{ borderCurve: 'continuous' }}
+        style={{ borderCurve: 'continuous', ...(isFromOffice(pp) ? { borderWidth: 2, borderColor: OFFICE_BLUE.light } : {}) }}
       >
         {/* Header row */}
         <View className="flex-row items-start justify-between gap-3 mb-2">
@@ -191,6 +192,8 @@ const PPCard = memo(function PPCard({
           </View>
           <Text className="text-xs font-semibold" style={{ color: dayColor }}>{dayLabel}</Text>
         </View>
+        {/* कार्यालय से आया (चरण ग) */}
+        <OfficeCardTag row={pp} />
       </Pressable>
 
       {/* Long-press menu */}
@@ -237,6 +240,7 @@ const PPCard = memo(function PPCard({
             <AlertDialogTitle>{t('prarthnaPatra.list.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
               {t('prarthnaPatra.list.deleteDesc', { regNo: PETITION_TYPE_LABELS[pp.petition_type] })}
+              {isFromOffice(pp) ? `\n\n${OFFICE_DELETE_WARNING}` : ''}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -57,6 +57,9 @@ export default function KaryalayJoinScreen() {
         office, joinedAt: new Date().toISOString(),
       };
       setOfficerLink(next); setLink(next); setCode(''); setJustJoined(true);
+      // start the कागज़ check (now + every ~15–30 min in the background)
+      void import('@/office/officeBackgroundTask').then((m) => m.setOfficeBackgroundSync(true)).catch(() => {});
+      void import('@/office/officerSync').then((m) => m.runOfficerSync({ notify: true })).catch(() => {});
     } catch (e) {
       setErr(friendlyError(e));
     } finally {
@@ -69,6 +72,7 @@ export default function KaryalayJoinScreen() {
     try {
       await leaveThana();
       setOfficerLink(null); setLink(null); setConfirmLeave(false); setJustJoined(false);
+      void import('@/office/officeBackgroundTask').then((m) => m.setOfficeBackgroundSync(false)).catch(() => {});
     } catch (e) {
       setErr(friendlyError(e));
     } finally {

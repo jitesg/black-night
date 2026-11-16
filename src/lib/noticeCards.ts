@@ -12,7 +12,7 @@ import { nkDate, nkPendingDays, nkPlace, type NkPendingRow } from './nkChalani';
 import { PM_BAYAN_OVER_DAYS, pmBayanDue, pmBayanRoute, type PmBayanRow } from './pmBayan';
 import { SCENE_OVER_DAYS, sceneDue, sceneRoute, type SceneRow } from './sceneAlert';
 
-export type NoticeKind = 'cd' | 'court' | 'petition' | 'reminder' | 'nk' | 'pm' | 'scene';
+export type NoticeKind = 'cd' | 'court' | 'petition' | 'reminder' | 'nk' | 'pm' | 'scene' | 'office';
 export type NoticeLevel = 'over' | 'warn' | 'info';
 
 export interface NoticeCard {
@@ -39,6 +39,9 @@ export interface NoticeCard {
 export interface CourtDocRow { id: string; ref?: string | null; doc_type: string; sub_type?: string | null; writ_type?: string | null; deadline_date: string }
 /** `ref` = the first आवेदक's name (the पंजीकरण सं0 is never shown — owner). */
 export interface PetitionRow { id: string; ref?: string | null; petition_type: string; deadline_date: string }
+/** कार्यालय से आया कागज़ not yet opened (चरण ग). */
+export interface OfficeNewRow { id: string; module: 'pp' | 'court'; label: string; who?: string | null; deadline_date?: string | null; from?: string | null }
+
 export interface ReminderRow { id: string; title: string; due_at: number; fir_label?: string | null }
 
 export const DUE_SOON_DAYS = 3;
@@ -107,9 +110,22 @@ function deadlineCard(
 
 export function buildNoticeCards(input: {
   firs?: CdFirRow[]; courtDocs?: CourtDocRow[]; petitions?: PetitionRow[]; reminders?: ReminderRow[];
-  nkPending?: NkPendingRow[]; pmBayan?: PmBayanRow[]; scene?: SceneRow[];
+  nkPending?: NkPendingRow[]; pmBayan?: PmBayanRow[]; scene?: SceneRow[]; officeNew?: OfficeNewRow[];
 }, now: Date = new Date()): NoticeCard[] {
   const out: NoticeCard[] = [];
+
+  // कार्यालय से नया कागज़ — until the officer opens it (owner, चरण ग)
+  for (const r of input.officeNew ?? []) {
+    const d = r.deadline_date ? parseLocalDate(r.deadline_date) : null;
+    out.push({
+      id: `office-${r.module}-${r.id}`, kind: 'office', level: 'warn',
+      title: `📥 कार्यालय से नया कागज़ — ${r.label}`,
+      body: [r.who, d ? `अंतिम तिथि ${fmtDate(d)}` : ''].filter(Boolean).join(' · ') || 'खोलकर देखें',
+      when: 'नया', route: r.module === 'pp' ? `/(app)/prarthna-patra/${r.id}` : `/(app)/nyayalay/${r.id}`, rank: -1e9,
+      meta: [r.from ?? '', d ? `अंतिम तिथि ${fmtDate(d)}` : ''].filter(Boolean),
+      action: 'खोलें',
+    });
+  }
 
   // घटनास्थल निरीक्षण: 3+ days after the FIR and ई-साक्ष्य / नक्शा नजरी not yet written in the case diary.
   for (const p of sceneDue(input.scene ?? [], now)) {

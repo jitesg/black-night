@@ -151,6 +151,9 @@ importers:
       expo-asset:
         specifier: ~55.0.8
         version: 55.0.17(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+      expo-background-task:
+        specifier: ~55.0.22
+        version: 55.0.22(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))
       expo-clipboard:
         specifier: ~55.0.8
         version: 55.0.15(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0)
@@ -3823,6 +3826,11 @@ packages:
       expo: '*'
       react: '*'
       react-native: '*'
+
+  expo-background-task@55.0.22:
+    resolution: {integrity: sha512-Fy6GRM73RJVsCxMAE2ICQCYC/1CW2mX2wcYwrPAWen1IHSzzLs3gV5kfK+GQCu753gPLrmiMnQAgRzxbn8MI2Q==}
+    peerDependencies:
+      expo: '*'
 
   expo-clipboard@55.0.15:
     resolution: {integrity: sha512-1TQ5wx3l8WJauFCuvL5NDEnB9VMboi9IUc5XM2/3/wf4sAKwif9TlFkB5GRah1a4U1yqUWJVT9hJa3rUFrHc8g==}
@@ -10616,6 +10624,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+
+  expo-background-task@55.0.22(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0)):
+    dependencies:
+      expo: 55.0.6(patch_hash=d2507f55976f6c5da8f35d26906f4bd46415e042570afc3bd7c543c86abc5a61)(@babel/core@7.29.7)(@expo/dom-webview@55.0.6)(@expo/metro-runtime@55.0.11)(expo-router@55.0.5)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+      expo-task-manager: 55.0.20(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))
+    transitivePeerDependencies:
+      - react-native
 
   expo-clipboard@55.0.15(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0):
     dependencies:

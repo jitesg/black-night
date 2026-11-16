@@ -7,6 +7,9 @@ import './src/lib/selectableText';
 if (process.env.EXPO_PUBLIC_APP_VARIANT !== 'office') {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require('./src/lib/reminderBackgroundTask');
+  // कार्यालय कागज़ check every ~15–30 min (only does work while the phone is joined to a कार्यालय)
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('./src/office/officeBackgroundTask');
 }
 // after the task above (an `import` here would be hoisted above the `if`)
 // eslint-disable-next-line @typescript-eslint/no-require-imports

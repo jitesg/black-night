@@ -1317,6 +1317,14 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'prarthna_patra_accused',     'jati',              "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'age',               "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'gender',            "TEXT DEFAULT ''");
+  // कार्यालय app (owner, चरण ग): a प्रार्थना पत्र / न्यायालय कागज़ sent by the थाना कार्यालय — its Supabase task id, what the office
+  // sent (office_json: from, sentAt, note, cancelled, updatedAt, files[], status) and office_new = 1 until the officer opens it.
+  await _ensureColumn(database, 'prarthna_patra',     'office_task_id', 'TEXT');
+  await _ensureColumn(database, 'prarthna_patra',     'office_json',    'TEXT');
+  await _ensureColumn(database, 'prarthna_patra',     'office_new',     'INTEGER DEFAULT 0');
+  await _ensureColumn(database, 'nyayalay_documents', 'office_task_id', 'TEXT');
+  await _ensureColumn(database, 'nyayalay_documents', 'office_json',    'TEXT');
+  await _ensureColumn(database, 'nyayalay_documents', 'office_new',     'INTEGER DEFAULT 0');
   // सम्बन्ध पुत्र / पुत्री / पत्नी (owner: आवेदक / विपक्षी cards) — '' on old rows
   await _ensureColumn(database, 'prarthna_patra_complainants','relation',          "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'relation',          "TEXT DEFAULT ''");

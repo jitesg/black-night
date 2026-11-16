@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { ArrowRight, Bell, CalendarClock, ClipboardList, MapPin, FileText, FileWarning, NotebookPen, Scale, Scroll } from 'lucide-react-native';
+import { ArrowRight, Bell, CalendarClock, ClipboardList, MapPin, FileText, FileWarning, Landmark, NotebookPen, Scale, Scroll } from 'lucide-react-native';
 import { THEME } from '@/lib/theme';
 import type { NoticeCard, NoticeKind, NoticeLevel } from '@/lib/noticeCards';
 
@@ -20,6 +20,7 @@ export const KIND_META: Record<NoticeKind, { label: string; icon: typeof Bell; t
   nk:       { label: 'निरोधात्मक',     icon: FileWarning, tile: '#EF4444', soft: { light: '#DC2626', dark: '#FCA5A5' } },
   scene:    { label: 'घटनास्थल',       icon: MapPin,      tile: '#F97316', soft: { light: '#C2410C', dark: '#FDBA74' } },
   pm:       { label: 'पंचनामा बयान',   icon: ClipboardList, tile: '#06B6D4', soft: { light: '#0E7490', dark: '#67E8F9' } },
+  office:   { label: 'कार्यालय',       icon: Landmark,    tile: '#1F4E79', soft: { light: '#1F4E79', dark: '#93C5FD' } },
 };
 
 const LEVEL_COLOR: Record<NoticeLevel, { light: string; dark: string }> = {

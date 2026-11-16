@@ -260,7 +260,7 @@ function AppNavigator({
       const data = response.notification.request.content.data as Record<string, unknown> | undefined;
       if (data?.kind === CD_GAP_KIND && typeof data.firId === 'string') return `/(app)/mukadma/${data.firId}/case-diary`;
       // न्यायालय / प्रार्थना पत्र deadline alerts carry the screen to open.
-      if ((data?.kind === DEADLINE_KIND || data?.kind === NK_CHALANI_KIND || data?.kind === PM_BAYAN_KIND || data?.kind === SCENE_GAP_KIND) && typeof data.route === 'string' && data.route.startsWith('/(app)/')) return data.route;
+      if ((data?.kind === 'office' || data?.kind === DEADLINE_KIND || data?.kind === NK_CHALANI_KIND || data?.kind === PM_BAYAN_KIND || data?.kind === SCENE_GAP_KIND) && typeof data.route === 'string' && data.route.startsWith('/(app)/')) return data.route;
       return null;
     };
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {
@@ -402,6 +402,21 @@ function InvestRootLayout() {
     })();
   }, []);
 
+  // कार्यालय कागज़ (चरण ग): pull new / changed papers + send statuses when the app opens (only when joined)
+  useEffect(() => {
+    if (!dbReady) return;
+    (async () => {
+      try {
+        const { getOfficerLink } = await import('@/office/officerLink');
+        if (!getOfficerLink()) return;
+        const { setOfficeBackgroundSync } = await import('@/office/officeBackgroundTask');
+        await setOfficeBackgroundSync(true);
+        const { runOfficerSync } = await import('@/office/officerSync');
+        await runOfficerSync({ notify: true });
+      } catch { /* offline — next time */ }
+    })();
+  }, [dbReady]);
+
   useEffect(() => {
     const sub = AppState.addEventListener('change', (next: AppStateStatus) => {
       const prev = appStateRef.current;
@@ -426,6 +441,8 @@ function InvestRootLayout() {
         (async () => {
           try {
             await syncAppNotifications();
+            // कार्यालय कागज़ check on coming back (only when joined; one run at a time)
+            void import('@/office/officerSync').then((m) => m.runOfficerSync({ notify: true })).catch(() => {});
             // Top up repeat-until-done alerts (at most every 10 minutes).
             if (Date.now() - lastReminderResyncRef.current > 10 * 60000) {
               lastReminderResyncRef.current = Date.now();

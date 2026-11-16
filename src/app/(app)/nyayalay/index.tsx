@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { attachmentCounts } from '@/lib/db/attachmentRepo';
+import { OFFICE_BLUE, OFFICE_DELETE_WARNING, OfficeCardTag, isFromOffice } from '@/office/OfficeOrigin';
 import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
@@ -152,7 +153,7 @@ const DocCard = memo(function DocCard({
     <Pressable
       onPress={onPress}
       className="bg-card border border-border rounded-2xl p-4 mb-3 active:opacity-70"
-      style={{ borderCurve: 'continuous' }}
+      style={{ borderCurve: 'continuous', ...(isFromOffice(doc) ? { borderWidth: 2, borderColor: OFFICE_BLUE[scheme] } : {}) }}
     >
       <View className="flex-row items-start justify-between gap-3">
         <View className="flex-1">
@@ -201,6 +202,8 @@ const DocCard = memo(function DocCard({
             {attachCount ? <Text className="text-xs text-muted-foreground">📎 {attachCount}</Text> : null}
             <Text className="text-xs text-muted-foreground ml-auto">{doc.deadline_date}</Text>
           </View>
+          {/* कार्यालय से आया (चरण ग) */}
+          <OfficeCardTag row={doc} />
         </View>
 
         {/* Actions: 36×36dp + hitSlop 4 = 44dp minimum touch target */}
@@ -602,6 +605,7 @@ export default function NyayalayScreen() {
             <AlertDialogTitle>{t('nyayalay.dialog.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
               {t('nyayalay.dialog.deleteDesc')}
+              {docs.find((d) => d.id === deleteTarget && isFromOffice(d)) ? `\n\n${OFFICE_DELETE_WARNING}` : ''}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

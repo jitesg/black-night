@@ -658,7 +658,18 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   like SentenceFieldInput) as paddingBottom, maxHeight = window − kb − top inset, focused box scrolled into view (TextInput.State.currentlyFocusedInput +
   measureLayout), main button in `footer` (stays above the keyboard). All office sheets use it (members add / actions, कागज़ filter, file pick, confirms).
   Tab labels = own `TabLabel` Text (default label cut Devanagari matras); Tabs `safeAreaInsets={{ bottom: 0 }}` (root KeyboardInsetView pads).
-  Next: ग — कागज़ InvestSuite में आना (pp / court rows with source 'office'), 🔔, status back (received / seen / done / removed).
+- चरण ग done (owner sample, option क = app open / foreground + background every ~15–30 min; no push server): rules
+  `src/office/officerSyncCore.ts` (pure; tests `scripts/test_officer_sync.ts`: taskToPetition / taskToCourt, OfficeMeta, planTask create / restore /
+  skip / keep, desiredStatus received / seen / done / removed, notices), engine `src/office/officerSync.ts` (`runOfficerSync` one run at a time: officer's
+  tasks via `task_assignees!inner` → create PP / court rows with office_task_id + office_new = 1, files → documentDirectory/attachments + module_attachments
+  source 'office', local notification kind 'office' with data.route (root _layout routes it), office edits → header fields only (people stay), cancelled →
+  meta.cancelled, "दोबारा भेजें" after removal → row restored; status back by updating task_assignees.status), `markOfficeSeen` (detail screens),
+  `queueOfficeSync` (repos: resyncDeadlineAlerts + delete). Columns prarthna_patra / nyayalay_documents office_task_id, office_json, office_new
+  (_ensureColumn). Background: dep `expo-background-task` ~55.0.22, `src/office/officeBackgroundTask.ts` (task INVESTSUITE_OFFICE_SYNC, minimumInterval 15,
+  defined from index.ts for InvestSuite only; registered at app start while joined / after joining, unregistered on अलग करें). Root _layout runs the sync
+  after dbReady and on every return to the foreground. UI `src/office/OfficeOrigin.tsx`: list cards blue border + "📥 कार्यालय से" + नया / रद्द (कार्यालय),
+  detail banner (time, from, टिप्पणी, रद्द), delete dialogs add OFFICE_DELETE_WARNING. सूचनाएँ: kind 'office' card (noticeCards `officeNew`, noticeRepo
+  `getOfficeNewRows`, NoticeItem Landmark tile, filter chip).
 
 ## SOP library
 - Seeds in `assets/seed/`: `sop_index.json`, `sop_struct_1.json`, `sop_struct_2.json`,

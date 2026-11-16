@@ -30,6 +30,7 @@ import {
 } from '@/lib/db/nyayalayRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AttachmentsSection } from '@/components/common/AttachmentsSection';
+import { OfficeOriginBanner, isFromOffice } from '@/office/OfficeOrigin';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const MODULE_COLOR = '#1D4ED8';
@@ -239,6 +240,10 @@ export default function NyayalayDocDetailScreen() {
         getNyayalayReport(docId),
       ]);
       setDoc(d);
+      // office कागज़ opened → no longer "नया"; the कार्यालय sees "देखा" (चरण ग)
+      if (d?.office_task_id && d.office_new) {
+        void import('@/office/officerSync').then((m) => m.markOfficeSeen('court', d.id)).catch(() => {});
+      }
       setReport(r);
       if (d) setChecklistItems(d.checklist);
     } finally {
@@ -612,6 +617,8 @@ export default function NyayalayDocDetailScreen() {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
       >
+        {/* कार्यालय से आया (चरण ग) */}
+        {isFromOffice(doc) ? <View className="mb-4"><OfficeOriginBanner row={doc} /></View> : null}
         {/* BUG-6 fix: call as plain functions, not JSX components */}
         {/* NBW + Summons: compact detail card; all other types: generic long-form */}
         {doc.doc_type === 'NBW'

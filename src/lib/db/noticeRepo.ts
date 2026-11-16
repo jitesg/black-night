@@ -10,9 +10,9 @@ import type { PmBayanRow } from '@/lib/pmBayan';
 import type { SceneRow } from '@/lib/sceneAlert';
 import { isPmKaryvahi, isSceneKaryvahi } from '@/lib/karyvahiSubSteps';
 import { extractKaryvahiFacts } from '@/lib/nirodhatmak/extractKaryvahi';
-import { buildNoticeCards, type CourtDocRow, type NoticeCard, type PetitionRow, type ReminderRow } from '@/lib/noticeCards';
+import { buildNoticeCards, type CourtDocRow, type NoticeCard, type OfficeNewRow, type PetitionRow, type ReminderRow } from '@/lib/noticeCards';
 
-export interface NoticeInput { firs: CdFirRow[]; courtDocs: CourtDocRow[]; petitions: PetitionRow[]; reminders: ReminderRow[]; nkPending: NkPendingRow[]; pmBayan: PmBayanRow[]; scene: SceneRow[] }
+export interface NoticeInput { firs: CdFirRow[]; courtDocs: CourtDocRow[]; petitions: PetitionRow[]; reminders: ReminderRow[]; nkPending: NkPendingRow[]; pmBayan: PmBayanRow[]; scene: SceneRow[]; officeNew: OfficeNewRow[] }
 
 /** Pending FIRs with the date of their latest case diary. */
 export async function getPendingFirsWithLastDiary(): Promise<CdFirRow[]> {
@@ -110,8 +110,32 @@ export async function getSceneRows(): Promise<SceneRow[]> {
   return out;
 }
 
+/** कार्यालय से आये कागज़ not opened yet (चरण ग). */
+export async function getOfficeNewRows(): Promise<OfficeNewRow[]> {
+  const db = await getDatabase();
+  const meta = (raw: string | null) => { try { return (JSON.parse(raw ?? '{}') as { from?: string }).from ?? null; } catch { return null; } };
+  const pp = await db.getAllAsync<{ id: string; petition_type: string; deadline_date: string; office_json: string | null; who: string | null }>(
+    `SELECT p.id, p.petition_type, p.deadline_date, p.office_json,
+       (SELECT c.name FROM prarthna_patra_complainants c WHERE c.prarthna_patra_id = p.id AND c.deleted_at IS NULL ORDER BY c.created_at LIMIT 1) AS who
+     FROM prarthna_patra p WHERE p.deleted_at IS NULL AND p.office_task_id IS NOT NULL AND p.office_new = 1`,
+  ).catch(() => []);
+  const court = await db.getAllAsync<{ id: string; doc_type: string; deadline_date: string; office_json: string | null; vad_sankhya: string; apradh_sankhya: string }>(
+    `SELECT id, doc_type, deadline_date, office_json, vad_sankhya, apradh_sankhya FROM nyayalay_documents
+     WHERE deleted_at IS NULL AND office_task_id IS NOT NULL AND office_new = 1`,
+  ).catch(() => []);
+  const COURT: Record<string, string> = { NBW: 'NBW', Summons: 'सम्मन', Bail_Lower_Court: 'जमानत (निचली अदालत)', High_Court_Documents: 'उच्च न्यायालय', Anya: 'न्यायालय' };
+  return [
+    ...pp.map((r) => ({ id: r.id, module: 'pp' as const, label: r.petition_type, who: r.who, deadline_date: r.deadline_date, from: meta(r.office_json) })),
+    ...court.map((r) => ({
+      id: r.id, module: 'court' as const, label: COURT[r.doc_type] ?? r.doc_type,
+      who: r.vad_sankhya ? `वाद सं0 ${r.vad_sankhya}` : r.apradh_sankhya ? `मु0अ0सं0 ${r.apradh_sankhya}` : null,
+      deadline_date: r.deadline_date, from: meta(r.office_json),
+    })),
+  ];
+}
+
 export async function loadNoticeInput(): Promise<NoticeInput> {
-  const [firs, courtDocs, petitions, reminders, nkPending, pmBayan, scene] = await Promise.all([
+  const [firs, courtDocs, petitions, reminders, nkPending, pmBayan, scene, officeNew] = await Promise.all([
     getPendingFirsWithLastDiary().catch(() => [] as CdFirRow[]),
     getPendingCourtDocs().catch(() => [] as CourtDocRow[]),
     getPendingPetitions().catch(() => [] as PetitionRow[]),
@@ -119,9 +143,10 @@ export async function loadNoticeInput(): Promise<NoticeInput> {
     getPendingNkChalani().catch(() => [] as NkPendingRow[]),
     getPmBayanRows().catch(() => [] as PmBayanRow[]),
     getSceneRows().catch(() => [] as SceneRow[]),
+    getOfficeNewRows().catch(() => [] as OfficeNewRow[]),
   ]);
   return {
-    firs, courtDocs, petitions, nkPending, pmBayan, scene,
+    firs, courtDocs, petitions, nkPending, pmBayan, scene, officeNew,
     // A snoozed reminder counts from its snooze time.
     reminders: reminders.map((r) => ({
       id: r.id, title: r.title, fir_label: r.fir_label,

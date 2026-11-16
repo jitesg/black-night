@@ -64,3 +64,12 @@ test('card extras: cd progress, deadline meta + action', () => {
   assert.deepEqual(court?.meta, ['वाद सं0 12/26', 'अंतिम तिथि 26.10.2026']);
   assert.equal(court?.action, 'दस्तावेज़ खोलें');
 });
+
+test('कार्यालय से नया कागज़ card (चरण ग)', () => {
+  const cards = buildNoticeCards({ officeNew: [{ id: 'p1', module: 'pp', label: 'जनता दर्शन', who: 'रेनू', deadline_date: '2026-11-26', from: 'संजय (CM)' }] }, new Date(2026, 10, 16));
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].kind, 'office');
+  assert.equal(cards[0].title, '📥 कार्यालय से नया कागज़ — जनता दर्शन');
+  assert.equal(cards[0].route, '/(app)/prarthna-patra/p1');
+  assert.match(cards[0].body, /रेनू · अंतिम तिथि 26/);
+});

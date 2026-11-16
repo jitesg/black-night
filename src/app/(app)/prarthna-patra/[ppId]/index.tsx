@@ -9,6 +9,7 @@ import {
 } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AttachmentsSection } from '@/components/common/AttachmentsSection';
+import { OfficeOriginBanner, isFromOffice } from '@/office/OfficeOrigin';
 import {
   getPPWithDetails,
   daysUntilDeadline,
@@ -78,6 +79,10 @@ export default function PPDetailScreen() {
       try {
         const data = ppId ? await getPPWithDetails(ppId) : null;
         setPP(data);
+        // office कागज़ opened → no longer "नया"; the कार्यालय sees "देखा" (चरण ग)
+        if (data?.office_task_id && data.office_new) {
+          void import('@/office/officerSync').then((m) => m.markOfficeSeen('pp', data.id)).catch(() => {});
+        }
       } finally {
         setLoading(false);
       }
@@ -137,6 +142,9 @@ export default function PPDetailScreen() {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
       >
+        {/* ── कार्यालय से आया (चरण ग) ── */}
+        {isFromOffice(pp) ? <View className="mt-4"><OfficeOriginBanner row={pp} /></View> : null}
+
         {/* ── Status banner ── */}
         <View
           className="border border-border rounded-2xl p-4 mt-4 flex-row items-center gap-3"
