@@ -12,7 +12,7 @@ import { avedakCardWord, fatherLabelOf, genderOfRelation } from '@/lib/ppPeople'
 import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachmentRepo';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { Plus, Trash2, ChevronDown, Calendar, Copy, Sparkles } from 'lucide-react-native';
+import { Plus, Trash2, ChevronDown, Calendar, Sparkles } from 'lucide-react-native';
 import { OcrScanModal } from '@/components/common/OcrScanModal';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import {
@@ -33,14 +33,11 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 // ── Constants ─────────────────────────────────────────────────────────────────
 // BORDER and surface colour are theme-reactive — computed inside the component.
 
-/** The 5 "Same As" fields shared between Complainant and Accused */
-const SAME_AS_FIELDS = ['full_address', 'village', 'police_station', 'district', 'jati'] as const;
-
 const PP_OCR_FIELDS = [
-  { key: 'complainant_name', label: 'वादी का नाम (Complainant Name)' },
+  { key: 'complainant_name', label: 'आवेदक का नाम (Complainant Name)' },
   { key: 'complainant_father', label: 'पिता/पति का नाम (Father/Husband Name)' },
   { key: 'complainant_mobile', label: 'मोबाइल नंबर (Mobile Number)' },
-  { key: 'complainant_address', label: 'वादी का पता (Address)' },
+  { key: 'complainant_address', label: 'आवेदक का पता (Address)' },
   { key: 'complainant_village', label: 'गाँव/मोहल्ला (Village)' },
   { key: 'complainant_police_station', label: 'थाना (Police Station)' },
   { key: 'accused_name', label: 'विपक्षी/आरोपी का नाम (Accused Name)' },
@@ -438,33 +435,6 @@ export default function AddPrarthnaPatraScreen() {
     if (!savedRef.current) setIsDirty(true);
   }, [petitionType, dateOfReceipt, deadlineDate, matter, investigatorName, complainants, accused]);
 
-  // Feature 1: "Same As" one-time copy between Complainant[0] and Accused[0]
-  const handleSameAs = () => {
-    const c0 = complainants[0];
-    const a0 = accused[0];
-    if (!c0 && !a0) return;
-
-    // Determine which side is more filled (complainant wins ties)
-    const cFilled = SAME_AS_FIELDS.filter((f) => c0?.[f]?.trim()).length;
-    const aFilled = SAME_AS_FIELDS.filter((f) => a0?.[f]?.trim()).length;
-
-    if (cFilled >= aFilled) {
-      // Copy complainant → accused[0] (create accused if none)
-      const patch: Partial<AccusedForm> = {};
-      SAME_AS_FIELDS.forEach((f) => { patch[f] = c0?.[f] ?? ''; });
-      if (accused.length === 0) {
-        setAccused([{ ...emptyAccused(), ...patch }]);
-      } else {
-        setAccused((prev) => prev.map((a, i) => i === 0 ? { ...a, ...patch } : a));
-      }
-    } else {
-      // Copy accused[0] → complainant[0]
-      const patch: Partial<ComplainantForm> = {};
-      SAME_AS_FIELDS.forEach((f) => { patch[f] = a0?.[f] ?? ''; });
-      setComplainants((prev) => prev.map((c, i) => i === 0 ? { ...c, ...patch } : c));
-    }
-  };
-
   // Feature 1: village autocomplete helpers
   const getVillageMatches = (query: string): string[] => {
     if (!query.trim()) return [];
@@ -829,22 +799,6 @@ export default function AddPrarthnaPatraScreen() {
           >
             <Plus size={14} color={palette.mutedForeground} />
             <Text style={{ ...T.footnote, color: palette.mutedForeground }}>{t('prarthnaPatra.form.addAnotherComplainant')}</Text>
-          </Pressable>
-
-          {/* ── Same As Toggle ── */}
-          <Pressable
-            onPress={handleSameAs}
-            style={{
-              flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-              gap: T.space.sm - 2, paddingVertical: T.space.sm + 2,
-              borderWidth: 1, borderColor: BORDER, borderRadius: 10,
-              backgroundColor: SURFACE, marginVertical: T.space.sm,
-            }}
-          >
-            <Copy size={13} color={palette.foreground} />
-            <Text style={{ ...T.footnote, color: palette.foreground, fontWeight: T.weight.medium }}>
-              {t('prarthnaPatra.form.sameAs')}
-            </Text>
           </Pressable>
 
           {/* ── Matter ── */}

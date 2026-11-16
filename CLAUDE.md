@@ -259,7 +259,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (roleConfigOf / roleWord …), PP helpers `src/lib/ppPeople.ts` (ppCards: PP rows → cards, ग्राम/थाना/जनपद added; tests `scripts/test_pp_people.ts`).
   PersonGroupInput `role` (all 4 fill screens): आवेदक / आवेदिका badge per card, "+ आवेदक / विपक्षी जोड़ें", `PPPeopleButton` "प्रार्थना पत्र से भरें"
   (only in `PPPeopleContext` = prarthna-patra/fill-format, which reads `ppId` and fills role groups from that PP when the format opens).
-  PP add form: सम्बन्ध chips पुत्र / पुत्री / पत्नी on आवेदक + विपक्षी cards (columns prarthna_patra_complainants/_accused.relation) → लिंग + पिता/पति
+  PP add form + detail say "आवेदक" (was वादी: section, card title, + अन्य आवेदक जोड़ें, error); the "वादी के समान (पता … कॉपी करें)" button
+  is removed (owner). PP add form: सम्बन्ध chips पुत्र / पुत्री / पत्नी on आवेदक + विपक्षी cards (columns prarthna_patra_complainants/_accused.relation) → लिंग + पिता/पति
   label; आवेदक card badge. First format: जांच आख्या v3 (Avedak dropdown removed, VipKind added, parties lines "**1. {{Avedak}} –** …" /
   "**2. {{VipWord}} –** …"; backup docs/format-backups/pp_jaanch_aakhya_v2_before_role_groups.json). Next: other PP formats batch by batch.
 - `sys-fmt-pp-jaanch-aakhya` "प्रार्थना पत्र जांच आख्या (पुलिस अधीक्षक / जिलाधिकारी / क्षेत्राधिकारी / थानाध्यक्ष)" (owner's RL docx files):
