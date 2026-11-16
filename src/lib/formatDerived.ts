@@ -86,6 +86,13 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
   // so a group's "copy" can use a value a card fills (e.g. DName). dropdown_options {"expand": {"VName": "name",
   //   "Rel": "relationType||पुत्र", "VFather": "fatherOrHusbandName", "VAddr": "fullAddress", "VAge": "age|वर्ष"}} —
   //   "field|suffix" appends a word to a non-empty value, "field||fallback" = word when the card leaves it empty; card N = "#2:name".
+  // आवेदक / विपक्षी समूह (owner): {"role": "avedak" | "vipakshi", "wordKey": …} → the word (आवेदिका, विपक्षीगण, आरोपी …) — ppPeople.ts
+  for (const kd of keyDefs) {
+    if (kd.field_type !== 'person_group') continue;
+    const cfg = roleConfigOf(kd.key_name, kd.dropdown_options);
+    if (cfg) set(cfg.wordKey, roleWord(cfg, values[kd.key_name], values));
+  }
+
   for (const kd of keyDefs) {
     if (kd.field_type === 'person_group' || kd.field_type === 'accused_group') {
       const ex = (parseJson(kd.dropdown_options) as { expand?: Record<string, string> } | null)?.expand;
@@ -219,4 +226,77 @@ export function formatDateValue(v: string | null | undefined, fmt: string): stri
   if (!p) return s;
   const sep = fmt.includes('.') ? '.' : fmt.includes('-') ? '-' : '/';
   return `${p[2]}${sep}${p[1]}${sep}${p[0]}`;
+}
+
+// ── आवेदक समूह / विपक्षी समूह (owner) — see ppPeople.ts ─────────────────────────────────────────────
+
+export type GroupRole = 'avedak' | 'vipakshi';
+
+export interface RoleConfig {
+  role: GroupRole;
+  wordKey: string;
+  kindKey?: string;
+  nilKey?: string;
+}
+
+const str = (v: unknown) => (v == null ? '' : String(v).trim());
+
+function parseObj(raw: string | null | undefined): Record<string, unknown> | null {
+  if (!raw) return null;
+  try {
+    const v = JSON.parse(raw);
+    return v && typeof v === 'object' && !Array.isArray(v) ? v as Record<string, unknown> : null;
+  } catch { return null; }
+}
+
+/** The role of a person_group key, or null for an ordinary person group. */
+export function roleConfigOf(keyName: string, dropdownOptions: string | null | undefined): RoleConfig | null {
+  const o = parseObj(dropdownOptions);
+  const role = o?.role;
+  if (role !== 'avedak' && role !== 'vipakshi') return null;
+  return {
+    role,
+    wordKey: str(o?.wordKey) || `${keyName}Word`,
+    ...(str(o?.kindKey) ? { kindKey: str(o?.kindKey) } : {}),
+    ...(str(o?.nilKey) ? { nilKey: str(o?.nilKey) } : {}),
+  };
+}
+
+type Card = Record<string, unknown>;
+
+export function namedCards(json: string | null | undefined): Card[] {
+  try {
+    const v = JSON.parse(json || '[]');
+    return Array.isArray(v) ? v.filter((c) => c && typeof c === 'object' && str((c as Card).name)) : [];
+  } catch { return []; }
+}
+
+/** पुत्री / पत्नी, or gender महिला. */
+export function isWomanCard(c: Card): boolean {
+  const rel = str(c.relationType ?? c.relation);
+  return rel === 'पुत्री' || rel === 'पत्नी' || str(c.gender) === 'महिला';
+}
+
+/** Word on one आवेदक card: आवेदक / आवेदिका. */
+export function avedakCardWord(c: Card): string {
+  return isWomanCard(c) ? 'आवेदिका' : 'आवेदक';
+}
+
+/** आवेदक / आवेदिका (one person), आवेदकगण (2+), आवेदक when empty. */
+export function avedakWord(cards: Card[]): string {
+  if (cards.length >= 2) return 'आवेदकगण';
+  return cards.length === 1 ? avedakCardWord(cards[0]) : 'आवेदक';
+}
+
+/** विपक्षी / आरोपी (kind = officer's choice, default विपक्षी) + "गण" for 2+; nil → the singular word. */
+export function vipakshiWord(cards: Card[], kind?: string | null, nil?: boolean): string {
+  const base = str(kind) === 'आरोपी' ? 'आरोपी' : 'विपक्षी';
+  return !nil && cards.length >= 2 ? `${base}गण` : base;
+}
+
+/** The word a role group gives, from the form values. */
+export function roleWord(cfg: RoleConfig, groupJson: string | null | undefined, values: Record<string, string>): string {
+  const cards = namedCards(groupJson);
+  if (cfg.role === 'avedak') return avedakWord(cards);
+  return vipakshiWord(cards, cfg.kindKey ? values[cfg.kindKey] : '', cfg.nilKey ? !!str(values[cfg.nilKey]) : false);
 }

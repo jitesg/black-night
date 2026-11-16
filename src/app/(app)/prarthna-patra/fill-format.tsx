@@ -5,6 +5,9 @@
  *   - mode=action (default): generates text → ppActionDraftStore → back to take-action
  *   - mode=report: generates text → ppReportDraftStore → back to report screen
  */
+import { ppCards, roleConfigOf } from '@/lib/ppPeople';
+import { PPPeopleContext, type PPPeopleCtx } from '@/components/formats/PPPeopleButton';
+import { getPPWithDetails } from '@/lib/db/prarthnaPatraRepo';
 import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { isKeyVisible } from '@/lib/formatShowIf';
 import { literalDefault } from '@/lib/firFill';
@@ -47,7 +50,9 @@ const MODULE_COLOR = '#7C3AED';
 
 export default function PPFillFormatScreen() {
   const { t } = useTranslation();
-  const { formatId, mode } = useLocalSearchParams<{ formatId: string; mode?: string }>();
+  const { formatId, mode, ppId } = useLocalSearchParams<{ formatId: string; mode?: string; ppId?: string }>();
+  // आवेदक / विपक्षी of this प्रार्थना पत्र → the format's आवेदक / विपक्षी समूह (owner)
+  const [ppPeople, setPPPeople] = useState<PPPeopleCtx | null>(null);
   const isReportMode = mode === 'report';
   const { workspace } = useWorkspace();
 
@@ -93,6 +98,23 @@ export default function PPFillFormatScreen() {
           defaults[key.key_name] = fillWorkspaceDefault(literalDefault(key.default_value), workspace);
         }
       }
+      // आवेदक / विपक्षी समूह (owner): filled from this प्रार्थना पत्र when the format opens
+      let people: PPPeopleCtx | null = null;
+      if (ppId) {
+        try {
+          const pp = await getPPWithDetails(ppId);
+          if (pp) people = { applicants: ppCards(pp.complainants, false), opponents: ppCards(pp.accused, true) };
+        } catch { /* no prarthna patra → groups stay empty */ }
+      }
+      setPPPeople(people);
+      if (people) {
+        for (const key of dynKeys) {
+          if (key.field_type !== 'person_group') continue;
+          const cfg = roleConfigOf(key.key_name, key.dropdown_options);
+          const cards = cfg ? (cfg.role === 'avedak' ? people.applicants : people.opponents) : [];
+          if (cards.length) defaults[key.key_name] = JSON.stringify(cards);
+        }
+      }
       const merged = { ...defaults, ...resolved };
       setValues(merged);
       setInitialValues(merged);
@@ -101,7 +123,7 @@ export default function PPFillFormatScreen() {
       setBannerError('');
       setPendingDraft(await loadFillDraft('PP', formatId, mode ?? null));
     })();
-  }, [formatId, workspace, mode]));
+  }, [formatId, workspace, mode, ppId]));
 
   const isDirty = dynamicKeys.some(
     (k) => (values[k.key_name] ?? '') !== (initialValues[k.key_name] ?? '')
@@ -203,6 +225,7 @@ export default function PPFillFormatScreen() {
 
   return (
     <FirPeopleContext.Provider value={{ firId: pickedFir?.id ?? null, onPickFir: (fir) => { void pickFir(fir); } }}>
+    <PPPeopleContext.Provider value={ppPeople}>
     <View className="flex-1 bg-background">
       <AppHeader
         title={format.title}
@@ -320,6 +343,7 @@ export default function PPFillFormatScreen() {
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
                     <PersonGroupInput
                       hint={keyHint(key.dropdown_options)}
+                      role={roleConfigOf(key.key_name, key.dropdown_options)?.role}
                       keyName={key.key_name}
                       single={/"single"\s*:\s*true/.test(key.dropdown_options ?? '')}
                       addressOptional={/"addressOptional"\s*:\s*true/.test(key.dropdown_options ?? '')}
@@ -400,6 +424,7 @@ export default function PPFillFormatScreen() {
         </AlertDialogContent>
       </AlertDialog>
     </View>
+    </PPPeopleContext.Provider>
     </FirPeopleContext.Provider>
   );
 }

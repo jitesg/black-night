@@ -8,6 +8,7 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { avedakCardWord, fatherLabelOf, genderOfRelation } from '@/lib/ppPeople';
 import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachmentRepo';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
@@ -69,20 +70,20 @@ interface ComplainantForm {
   _key: string; id?: string;
   name: string; father_husband_name: string; mobile: string; alternate_mobile: string;
   full_address: string; village: string; police_station: string; district: string;
-  age: string; gender: string; jati: string;
+  age: string; gender: string; jati: string; relation: string;
 }
 interface AccusedForm {
   _key: string; id?: string;
   name: string; father_name: string; mobile: string; alternate_mobile: string;
   full_address: string; village: string; police_station: string; district: string;
-  jati: string; age: string; gender: string; remarks: string;
+  jati: string; age: string; gender: string; remarks: string; relation: string;
 }
 function emptyComplainant(): ComplainantForm {
   return {
     _key: Math.random().toString(36).slice(2),
     name: '', father_husband_name: '', mobile: '', alternate_mobile: '',
     full_address: '', village: '', police_station: '', district: '',
-    age: '', gender: '', jati: '',
+    age: '', gender: '', jati: '', relation: '',
   };
 }
 function emptyAccused(): AccusedForm {
@@ -90,11 +91,37 @@ function emptyAccused(): AccusedForm {
     _key: Math.random().toString(36).slice(2),
     name: '', father_name: '', mobile: '', alternate_mobile: '',
     full_address: '', village: '', police_station: '', district: '',
-    jati: '', age: '', gender: '', remarks: '',
+    jati: '', age: '', gender: '', remarks: '', relation: '',
   };
 }
 
 // ── UI atoms ───────────────────────────────────────────────────────────────────
+
+/** सम्बन्ध पुत्र / पुत्री / पत्नी (owner) — sets लिंग and the "पिता / पति का नाम" label; tap again = clear. */
+function RelationChips({ value, onChange }: { value: string; onChange: (rel: string) => void }) {
+  const { colorScheme } = useColorScheme();
+  const pal = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  return (
+    <View style={{ marginBottom: T.space.sm }}>
+      <Text style={{ ...T.caption2, color: pal.mutedForeground, marginBottom: 4 }}>सम्बन्ध (लिंग अपने आप)</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+        {['पुत्र', 'पुत्री', 'पत्नी'].map((r) => {
+          const on = value === r;
+          return (
+            <Pressable key={r} onPress={() => onChange(on ? '' : r)} accessibilityLabel={r}>
+              <View style={{
+                borderWidth: 1, borderColor: on ? pal.primary : pal.border, backgroundColor: on ? pal.primary : pal.card,
+                borderRadius: 999, paddingHorizontal: 14, paddingVertical: 6,
+              }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: on ? pal.primaryForeground : pal.foreground }}>{r}</Text>
+              </View>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
 
 function useMuted(): string {
   const { colorScheme } = useColorScheme();
@@ -383,7 +410,7 @@ export default function AddPrarthnaPatraScreen() {
               mobile: c.mobile, alternate_mobile: c.alternate_mobile,
               full_address: c.full_address, village: c.village,
               police_station: c.police_station, district: c.district,
-              age: c.age, gender: c.gender, jati: c.jati,
+              age: c.age, gender: c.gender, jati: c.jati, relation: c.relation ?? '',
             }))
           : [emptyComplainant()]
       );
@@ -394,7 +421,7 @@ export default function AddPrarthnaPatraScreen() {
           mobile: a.mobile, alternate_mobile: a.alternate_mobile,
           full_address: a.full_address, village: a.village,
           police_station: a.police_station, district: a.district,
-          jati: a.jati, age: a.age, gender: a.gender, remarks: a.remarks,
+          jati: a.jati, age: a.age, gender: a.gender, remarks: a.remarks, relation: a.relation ?? '',
         }))
       );
       // Fix 2: wrap in setTimeout so the dirty-state useEffect cannot fire
@@ -492,6 +519,7 @@ export default function AddPrarthnaPatraScreen() {
           age: c.age,
           gender: c.gender,
           jati: c.jati,
+          relation: c.relation,
         }));
       const aPayload = accused
         .filter((a) => a.name && a.name.trim() !== '')
@@ -509,6 +537,7 @@ export default function AddPrarthnaPatraScreen() {
           age: a.age,
           gender: a.gender,
           remarks: a.remarks,
+          relation: a.relation,
         }));
 
       if (isEdit && editId) {
@@ -670,6 +699,13 @@ export default function AddPrarthnaPatraScreen() {
                   <Text style={{ ...T.footnote, fontWeight: T.weight.semibold, color: palette.foreground }}>
                     {t('prarthnaPatra.form.complainantCardTitle', { number: idx + 1 })}
                   </Text>
+                  {c.name.trim() ? (
+                    <View style={{ backgroundColor: '#FEF3C7', borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2, marginLeft: 8, marginRight: 'auto' }}>
+                      <Text style={{ fontSize: 11.5, fontWeight: '700', color: '#92400E' }}>
+                        {avedakCardWord({ relationType: c.relation, gender: c.gender })}
+                      </Text>
+                    </View>
+                  ) : null}
                   {complainants.length > 1 && (
                     <Pressable onPress={() => removeComplainant(idx)}>
                       <Trash2 size={15} color="#DC2626" />
@@ -688,7 +724,11 @@ export default function AddPrarthnaPatraScreen() {
                     placeholder={t('prarthnaPatra.form.fieldFullName')}
                   />
                 </Field>
-                <Field label={t('prarthnaPatra.form.fieldFatherHusband')}>
+                <RelationChips
+                  value={c.relation}
+                  onChange={(rel) => { updateComplainant(idx, 'relation', rel); const g = genderOfRelation(rel); if (g) updateComplainant(idx, 'gender', g); }}
+                />
+                <Field label={c.relation ? fatherLabelOf(c.relation) : t('prarthnaPatra.form.fieldFatherHusband')}>
                   <Input clearCopy value={c.father_husband_name} onChangeText={(v) => updateComplainant(idx, 'father_husband_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherHusband')} />
                 </Field>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>
@@ -861,7 +901,11 @@ export default function AddPrarthnaPatraScreen() {
                 <Field label={t('prarthnaPatra.form.fieldNameOptional')}>
                   <Input clearCopy value={a.name} onChangeText={(v) => updateAccused(idx, 'name', v)} placeholder={t('prarthnaPatra.form.fieldFullName')} />
                 </Field>
-                <Field label={t('prarthnaPatra.form.fieldFatherName')}>
+                <RelationChips
+                  value={a.relation}
+                  onChange={(rel) => { updateAccused(idx, 'relation', rel); const g = genderOfRelation(rel); if (g) updateAccused(idx, 'gender', g); }}
+                />
+                <Field label={a.relation ? fatherLabelOf(a.relation) : t('prarthnaPatra.form.fieldFatherName')}>
                   <Input clearCopy value={a.father_name} onChangeText={(v) => updateAccused(idx, 'father_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherName')} />
                 </Field>
                 <View style={{ flexDirection: 'row', gap: T.space.sm }}>

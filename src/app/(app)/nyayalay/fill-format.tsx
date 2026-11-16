@@ -9,6 +9,7 @@
  *   formatId  – the selected PredefinedFormat id
  *   docId     – the nyayalay document id (passed through for context)
  */
+import { roleConfigOf } from '@/lib/ppPeople';
 import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { isKeyVisible } from '@/lib/formatShowIf';
 import { literalDefault } from '@/lib/firFill';
@@ -340,6 +341,7 @@ export default function NyayalayFillFormatScreen() {
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
                     <PersonGroupInput
                       hint={keyHint(key.dropdown_options)}
+                      role={roleConfigOf(key.key_name, key.dropdown_options)?.role}
                       keyName={key.key_name}
                       single={/"single"\s*:\s*true/.test(key.dropdown_options ?? '')}
                       addressOptional={/"addressOptional"\s*:\s*true/.test(key.dropdown_options ?? '')}

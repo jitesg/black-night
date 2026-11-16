@@ -7832,7 +7832,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "प्रार्थना पत्र",
@@ -7843,7 +7843,7 @@
         "थानाध्यक्ष"
       ],
       "last_updated": "2026-11-03",
-      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}।\n\n[[सेवा में]] सेवा में,\n{{if:To=पुलिस अधीक्षक|श्रीमान पुलिस अधीक्षक महोदय\nजनपद {{District}}।}}{{if:To=जिलाधिकारी|श्रीमान जिलाधिकारी महोदय\nजनपद {{District}}।}}{{if:To=क्षेत्राधिकारी|श्रीमान क्षेत्राधिकारी महोदय\nसर्किल {{Circle}} जनपद {{District}}।}}{{if:To=थानाध्यक्ष|श्रीमान थानाध्यक्ष महोदय\nथाना {{PoliceStation}} जनपद {{District}}।}}{{if:To=अन्य|{{ToOther}}}}\n{{if:doParties|[[पक्ष]] **1. आवेदक/शिकायतकर्ता का नाम/पिता का नाम पता व मोबाइल नम्बर –** {{Applicant}}।\n**2. विपक्षी का नाम पता व मो0नं0 –** {{if:noVip|निल}}{{ifnot:noVip|{{Vipakshi}}}}।\n}}{{if:Vivad|[[पक्ष]] **विवाद का प्रकार – {{Vivad}}**\n}}[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{Avedak}} {{if:doParties|उपरोक्त}}{{ifnot:doParties|{{Applicant}}}} द्वारा प्रेषित प्रार्थना पत्र की जांच मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा मौके पर जाकर{{if:Witness| व समक्ष गवाहान {{Witness}} से पूछताछ कर}} की गयी तो ज्ञात हुआ कि {{Findings}}{{if:doNoAction| महोदय उक्त प्रकरण में अन्य कोई कार्यवाही समीचीन प्रतीत नहीं हो रही है।}}\n[[बीच]] रिपोर्ट सादर सेवा में प्रेषित है।\n{{if:doDate|[[सूची]] दिनांक –\n}}{{if:Lat|[[सूची]] अक्षांश – {{Lat}}\n}}{{if:Long|[[सूची]] देशान्तर – {{Long}}\n}}[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}\n{{if:Mobile|मो0नं0 {{Mobile}}}}\n",
+      "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}।\n\n[[सेवा में]] सेवा में,\n{{if:To=पुलिस अधीक्षक|श्रीमान पुलिस अधीक्षक महोदय\nजनपद {{District}}।}}{{if:To=जिलाधिकारी|श्रीमान जिलाधिकारी महोदय\nजनपद {{District}}।}}{{if:To=क्षेत्राधिकारी|श्रीमान क्षेत्राधिकारी महोदय\nसर्किल {{Circle}} जनपद {{District}}।}}{{if:To=थानाध्यक्ष|श्रीमान थानाध्यक्ष महोदय\nथाना {{PoliceStation}} जनपद {{District}}।}}{{if:To=अन्य|{{ToOther}}}}\n{{if:doParties|[[पक्ष]] **1. {{Avedak}} –** {{Applicant}}।\n**2. {{VipWord}} –** {{if:noVip|निल}}{{ifnot:noVip|{{Vipakshi}}}}।\n}}{{if:Vivad|[[पक्ष]] **विवाद का प्रकार – {{Vivad}}**\n}}[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{Avedak}} {{if:doParties|उपरोक्त}}{{ifnot:doParties|{{Applicant}}}} द्वारा प्रेषित प्रार्थना पत्र की जांच मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा मौके पर जाकर{{if:Witness| व समक्ष गवाहान {{Witness}} से पूछताछ कर}} की गयी तो ज्ञात हुआ कि {{Findings}}{{if:doNoAction| महोदय उक्त प्रकरण में अन्य कोई कार्यवाही समीचीन प्रतीत नहीं हो रही है।}}\n[[बीच]] रिपोर्ट सादर सेवा में प्रेषित है।\n{{if:doDate|[[सूची]] दिनांक –\n}}{{if:Lat|[[सूची]] अक्षांश – {{Lat}}\n}}{{if:Long|[[सूची]] देशान्तर – {{Long}}\n}}[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}\n{{if:Mobile|मो0नं0 {{Mobile}}}}\n",
       "keys": [
         {
           "key_name": "To",
@@ -7873,22 +7873,13 @@
           "sort_order": 2
         },
         {
-          "key_name": "Avedak",
-          "label": "आवेदक या आवेदिका",
-          "field_type": "dropdown",
-          "is_required": 1,
-          "default_value": "आवेदक",
-          "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\"\"}",
-          "sort_order": 3
-        },
-        {
           "key_name": "Applicant",
-          "label": "आवेदक / आवेदिका (नाम, पिता/पति, पता, मोबाइल)",
+          "label": "आवेदक / आवेदिका",
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "sort_order": 4,
-          "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड — नाम, पिता/पति, उम्र, पता व मोबाइल। एक से ज़्यादा हों तो \\\"+\\\" से जोड़ें\"}"
+          "sort_order": 3,
+          "dropdown_options": "{\"role\": \"avedak\", \"wordKey\": \"Avedak\", \"hint\": \"हर व्यक्ति का अलग कार्ड — नाम, सम्बन्ध, पिता/पति, उम्र, पता व मोबाइल। प्रार्थना पत्र से खोलने पर अपने आप भरता है। शब्द अपने आप: पुत्र → आवेदक, पुत्री/पत्नी → आवेदिका, 2 या ज़्यादा → आवेदकगण\"}"
         },
         {
           "key_name": "doParties",
@@ -7896,8 +7887,17 @@
           "field_type": "checkbox",
           "is_required": 0,
           "default_value": "",
-          "sort_order": 5,
+          "sort_order": 4,
           "dropdown_options": "{\"hint\": \"आख्या के ऊपर \\\"1. आवेदक … 2. विपक्षी …\\\" वाला विवरण चाहिए तो टिक करें\"}"
+        },
+        {
+          "key_name": "VipKind",
+          "label": "रिपोर्ट में क्या लिखें — विपक्षी या आरोपी",
+          "field_type": "dropdown",
+          "is_required": 0,
+          "default_value": "विपक्षी",
+          "dropdown_options": "{\"options\": [\"विपक्षी\", \"आरोपी\"], \"showIf\": \"doParties\", \"hint\": \"दूसरे पक्ष को रिपोर्ट में \\\"विपक्षी\\\" लिखना है या \\\"आरोपी\\\" — जैसे: विपक्षीगण – 1. सुरेश … 2. मुकेश …\"}",
+          "sort_order": 5
         },
         {
           "key_name": "noVip",
@@ -7910,11 +7910,11 @@
         },
         {
           "key_name": "Vipakshi",
-          "label": "विपक्षी",
+          "label": "विपक्षी / आरोपी",
           "field_type": "person_group",
           "is_required": 1,
           "default_value": null,
-          "dropdown_options": "{\"showIf\": \"doParties & !noVip\", \"hint\": \"हर व्यक्ति का अलग कार्ड — नाम, पिता/पति, उम्र, पता व मोबाइल। एक से ज़्यादा हों तो \\\"+\\\" से जोड़ें\"}",
+          "dropdown_options": "{\"role\": \"vipakshi\", \"wordKey\": \"VipWord\", \"kindKey\": \"VipKind\", \"nilKey\": \"noVip\", \"showIf\": \"doParties & !noVip\", \"hint\": \"हर व्यक्ति का अलग कार्ड — नाम, सम्बन्ध, पिता/पति, उम्र, पता व मोबाइल। प्रार्थना पत्र से खोलने पर अपने आप भरता है। 2 या ज़्यादा हों तो विपक्षीगण / आरोपीगण छपेगा\"}",
           "sort_order": 7
         },
         {

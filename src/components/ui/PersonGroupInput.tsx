@@ -24,6 +24,8 @@
  */
 
 import { FirPeopleButton } from '@/components/formats/FirPeopleButton';
+import { PPPeopleButton } from '@/components/formats/PPPeopleButton';
+import { avedakCardWord, type GroupRole } from '@/lib/ppPeople';
 import { LabelWithHint } from './FieldHintLink';
 import { insertIntoGroup, toCard } from '@/lib/firPeople';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -328,13 +330,15 @@ interface PersonCardProps {
   allEntries: PersonEntry[];
   genderLabels: [string, string, string];
   t: (key: string, opts?: Record<string, unknown>) => string;
+  /** आवेदक समूह: "आवेदक" / "आवेदिका" on the card (owner) */
+  roleBadge?: string;
 }
 
 const PersonCard = memo(({
   C, index, entry, collapsed, cardErrors, touched,
   onToggleCollapse, onChange, onBlur, onRemove, canRemove,
   onScanPress, isScanning, scanError, onDismissScanError,
-  allEntries, genderLabels, t,
+  allEntries, genderLabels, t, roleBadge,
 }: PersonCardProps) => {
   const priorEntries = allEntries.slice(0, index);
   const [showPicker, setShowPicker] = useState(false);
@@ -380,6 +384,11 @@ const PersonCard = memo(({
           </Text>
         </View>
         <Text style={{ flex: 1, fontSize: 14, fontWeight: '500', color: C.text }} numberOfLines={1}>{summary}</Text>
+        {roleBadge ? (
+          <View style={{ backgroundColor: '#FEF3C7', borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2 }}>
+            <Text style={{ fontSize: 11.5, fontWeight: '700', color: '#92400E' }}>{roleBadge}</Text>
+          </View>
+        ) : null}
         <Pressable
           onPress={() => onScanPress(index)}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -579,10 +588,12 @@ export interface PersonGroupInputProps {
   addressOptional?: boolean;
   /** format field tip → "ⓘ कैसे भरें?" on the label line */
   hint?: string;
+  /** आवेदक / विपक्षी समूह (key option {"role": …}, ppPeople.ts): word badge, own add label, "प्रार्थना पत्र से भरें" */
+  role?: GroupRole;
 }
 
 export const PersonGroupInput = memo(({
-  label, value, onChange, onValidChange, keyName, error, single, addressOptional, hint,
+  label, value, onChange, onValidChange, keyName, error, single, addressOptional, hint, role,
 }: PersonGroupInputProps) => {
   const C = useGroupTokens();
   const { t } = useTranslation();
@@ -826,6 +837,12 @@ export const PersonGroupInput = memo(({
           ? JSON.stringify([toCard(people[0], false, 0)])
           : insertIntoGroup(value, people.map((p, n) => toCard(p, false, n))))}
       />
+      {role ? (
+        <PPPeopleButton
+          role={role}
+          onInsert={(cards) => onChange(keyName, single ? JSON.stringify(cards.slice(0, 1)) : insertIntoGroup(value, cards))}
+        />
+      ) : null}
 
       {/* Toast / Snackbar banner */}
       {toastMsg ? (
@@ -871,6 +888,7 @@ export const PersonGroupInput = memo(({
           allEntries={entries}
           genderLabels={genderLabels}
           t={t}
+          roleBadge={role === 'avedak' && entry.name.trim() ? avedakCardWord(entry as unknown as Record<string, unknown>) : undefined}
         />
       ))}
 
@@ -881,7 +899,9 @@ export const PersonGroupInput = memo(({
           borderRadius: 12, paddingVertical: 12, backgroundColor: C.addBg,
         }}>
           <UserPlus size={15} color={C.addText} />
-          <Text style={{ fontSize: 14, fontWeight: '600', color: C.addText }}>{t('group.person.addBtn')}</Text>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.addText }}>
+            {role === 'avedak' ? '+ आवेदक जोड़ें' : role === 'vipakshi' ? '+ विपक्षी जोड़ें' : t('group.person.addBtn')}
+          </Text>
         </Pressable>
       )}
 

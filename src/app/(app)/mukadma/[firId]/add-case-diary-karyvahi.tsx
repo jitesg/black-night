@@ -9,6 +9,7 @@
  * No forced narrative-before-karyvahi rule.
  * Route: /(app)/mukadma/[firId]/add-case-diary-karyvahi?diaryId=<uuid>
  */
+import { roleConfigOf } from '@/lib/ppPeople';
 import { PersonGroupInput, initPersonGroup } from '@/components/ui/PersonGroupInput';
 import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { resolveContextDefaults } from '@/lib/contextDefaultResolver';
@@ -232,6 +233,7 @@ function FormatFillPanel({
               <View key={key.id} className="gap-1">
                 <PersonGroupInput
                   hint={keyHint(key.dropdown_options)}
+                  role={roleConfigOf(key.key_name, key.dropdown_options)?.role}
                   keyName={key.key_name}
                   label={key.label || key.key_name}
                   value={values[key.key_name] ?? initPersonGroup()}

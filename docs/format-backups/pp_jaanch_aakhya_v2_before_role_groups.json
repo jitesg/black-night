@@ -1,0 +1,204 @@
+{
+ "id": "sys-fmt-pp-jaanch-aakhya",
+ "title": "प्रार्थना पत्र जांच आख्या (पुलिस अधीक्षक / जिलाधिकारी / क्षेत्राधिकारी / थानाध्यक्ष)",
+ "format_type": "Prarthna Patra",
+ "is_favorite": 0,
+ "created_by": "system",
+ "source": "system",
+ "editable": 1,
+ "content_type": "format",
+ "seed_version": 2,
+ "app_version": "1.0.0",
+ "tags": [
+  "प्रार्थना पत्र",
+  "जांच आख्या",
+  "पुलिस अधीक्षक",
+  "जिलाधिकारी",
+  "क्षेत्राधिकारी",
+  "थानाध्यक्ष"
+ ],
+ "last_updated": "2026-11-03",
+ "vivran": "[[पत्र]]\n[[शीर्षक]] रिपोर्ट थाना {{PoliceStation}} जनपद {{District}}।\n\n[[सेवा में]] सेवा में,\n{{if:To=पुलिस अधीक्षक|श्रीमान पुलिस अधीक्षक महोदय\nजनपद {{District}}।}}{{if:To=जिलाधिकारी|श्रीमान जिलाधिकारी महोदय\nजनपद {{District}}।}}{{if:To=क्षेत्राधिकारी|श्रीमान क्षेत्राधिकारी महोदय\nसर्किल {{Circle}} जनपद {{District}}।}}{{if:To=थानाध्यक्ष|श्रीमान थानाध्यक्ष महोदय\nथाना {{PoliceStation}} जनपद {{District}}।}}{{if:To=अन्य|{{ToOther}}}}\n{{if:doParties|[[पक्ष]] **1. आवेदक/शिकायतकर्ता का नाम/पिता का नाम पता व मोबाइल नम्बर –** {{Applicant}}।\n**2. विपक्षी का नाम पता व मो0नं0 –** {{if:noVip|निल}}{{ifnot:noVip|{{Vipakshi}}}}।\n}}{{if:Vivad|[[पक्ष]] **विवाद का प्रकार – {{Vivad}}**\n}}[[महोदय]] महोदय,\n[[विवरण]] सादर अवगत कराना है कि {{Avedak}} {{if:doParties|उपरोक्त}}{{ifnot:doParties|{{Applicant}}}} द्वारा प्रेषित प्रार्थना पत्र की जांच मुझ {{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}} द्वारा मौके पर जाकर{{if:Witness| व समक्ष गवाहान {{Witness}} से पूछताछ कर}} की गयी तो ज्ञात हुआ कि {{Findings}}{{if:doNoAction| महोदय उक्त प्रकरण में अन्य कोई कार्यवाही समीचीन प्रतीत नहीं हो रही है।}}\n[[बीच]] रिपोर्ट सादर सेवा में प्रेषित है।\n{{if:doDate|[[सूची]] दिनांक –\n}}{{if:Lat|[[सूची]] अक्षांश – {{Lat}}\n}}{{if:Long|[[सूची]] देशान्तर – {{Long}}\n}}[[हस्ताक्षर]] ({{OfficerName}})\n{{if:pad=उपनिरीक्षक|उ0नि0}}{{if:pad=निरीक्षक|निरीक्षक}}\nथाना {{PoliceStation}}\nजनपद {{District}}\n{{if:Mobile|मो0नं0 {{Mobile}}}}\n",
+ "keys": [
+  {
+   "key_name": "To",
+   "label": "रिपोर्ट किसको (सेवा में)",
+   "field_type": "dropdown",
+   "is_required": 1,
+   "default_value": "पुलिस अधीक्षक",
+   "dropdown_options": "{\"options\": [\"पुलिस अधीक्षक\", \"जिलाधिकारी\", \"क्षेत्राधिकारी\", \"थानाध्यक्ष\", \"अन्य\"], \"hint\": \"आख्या किसको भेजनी है — उसी हिसाब से \\\"सेवा में\\\" की लाइनें बनती हैं (\\\"अन्य\\\" चुनें तो खुद लिखें)\"}",
+   "sort_order": 0
+  },
+  {
+   "key_name": "Circle",
+   "label": "सर्किल",
+   "field_type": "text",
+   "is_required": 1,
+   "default_value": null,
+   "dropdown_options": "{\"placeholder\": \"जैसे: महराजगंज\", \"showIf\": \"To=क्षेत्राधिकारी\", \"hint\": \"क्षेत्राधिकारी का सर्किल, जैसे: महराजगंज\"}",
+   "sort_order": 1
+  },
+  {
+   "key_name": "ToOther",
+   "label": "सेवा में के नीचे की लाइनें",
+   "field_type": "multiline",
+   "is_required": 1,
+   "default_value": null,
+   "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमान अपर पुलिस अधीक्षक महोदय\\nजनपद रायबरेली।\", \"showIf\": \"To=अन्य\", \"hint\": \"\\\"सेवा में\\\" के नीचे की लाइनें, हर लाइन अलग, जैसे: श्रीमान अपर पुलिस अधीक्षक महोदय ⏎ जनपद रायबरेली।\"}",
+   "sort_order": 2
+  },
+  {
+   "key_name": "Avedak",
+   "label": "आवेदक या आवेदिका",
+   "field_type": "dropdown",
+   "is_required": 1,
+   "default_value": "आवेदक",
+   "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\"\"}",
+   "sort_order": 3
+  },
+  {
+   "key_name": "Applicant",
+   "label": "आवेदक / आवेदिका (नाम, पिता/पति, पता, मोबाइल)",
+   "field_type": "person_group",
+   "is_required": 1,
+   "default_value": null,
+   "sort_order": 4,
+   "dropdown_options": "{\"hint\": \"हर व्यक्ति का अलग कार्ड — नाम, पिता/पति, उम्र, पता व मोबाइल। एक से ज़्यादा हों तो \\\"+\\\" से जोड़ें\"}"
+  },
+  {
+   "key_name": "doParties",
+   "label": "ऊपर आवेदक व विपक्षी का विवरण (1. 2.) भी लिखें",
+   "field_type": "checkbox",
+   "is_required": 0,
+   "default_value": "",
+   "sort_order": 5,
+   "dropdown_options": "{\"hint\": \"आख्या के ऊपर \\\"1. आवेदक … 2. विपक्षी …\\\" वाला विवरण चाहिए तो टिक करें\"}"
+  },
+  {
+   "key_name": "noVip",
+   "label": "विपक्षी नहीं है (निल)",
+   "field_type": "checkbox",
+   "is_required": 0,
+   "default_value": "",
+   "dropdown_options": "{\"showIf\": \"doParties\", \"hint\": \"कोई विपक्षी नहीं है तो टिक करें — \\\"विपक्षी – निल\\\" छपेगा\"}",
+   "sort_order": 6
+  },
+  {
+   "key_name": "Vipakshi",
+   "label": "विपक्षी",
+   "field_type": "person_group",
+   "is_required": 1,
+   "default_value": null,
+   "dropdown_options": "{\"showIf\": \"doParties & !noVip\", \"hint\": \"हर व्यक्ति का अलग कार्ड — नाम, पिता/पति, उम्र, पता व मोबाइल। एक से ज़्यादा हों तो \\\"+\\\" से जोड़ें\"}",
+   "sort_order": 7
+  },
+  {
+   "key_name": "Vivad",
+   "label": "विवाद का प्रकार (जो लागू हों, टिक करें — रिपोर्ट में बोल्ड छपेगा)",
+   "field_type": "multi_choice",
+   "is_required": 0,
+   "default_value": null,
+   "dropdown_options": "{\"options\": [{\"value\": \"भूमि विवाद\", \"label\": \"भूमि विवाद\"}, {\"value\": \"पारिवारिक विवाद\", \"label\": \"पारिवारिक विवाद\"}, {\"value\": \"विवाहेत्तर संबंध\", \"label\": \"विवाहेत्तर संबंध\"}, {\"value\": \"दीर्घकालिक पूर्ण शत्रुता\", \"label\": \"दीर्घकालिक पूर्ण शत्रुता\"}, {\"value\": \"राजनैतिक वर्चस्व का विवाद\", \"label\": \"राजनैतिक वर्चस्व का विवाद\"}, {\"value\": \"दलगत विवाद\", \"label\": \"दलगत विवाद\"}, {\"value\": \"आर्थिक कारण\", \"label\": \"आर्थिक कारण\"}, {\"value\": \"जुआ\", \"label\": \"जुआ\"}, {\"value\": \"नशा\", \"label\": \"नशा\"}, {\"value\": \"व्यापारिक प्रतिस्पर्धा\", \"label\": \"व्यापारिक प्रतिस्पर्धा\"}, {\"value\": \"गैंगवार\", \"label\": \"गैंगवार\"}, {\"value\": \"माफिया गिरोह\", \"label\": \"माफिया गिरोह\"}, {\"value\": \"अराजक तत्वों द्वारा क्षेत्र में वर्चस्व प्राप्ति का प्रयास\", \"label\": \"अराजक तत्वों द्वारा क्षेत्र में वर्चस्व प्राप्ति का प्रयास\"}, {\"value\": \"अकस्मात उत्तेजना\", \"label\": \"अकस्मात उत्तेजना\"}, {\"value\": \"छुद्र कारण\", \"label\": \"छुद्र कारण (घर के सामने कूड़ा फेंकना / बच्चों के विवाद में बड़ों का हस्तक्षेप / पेयजल सम्बन्धी विवाद)\"}, {\"value\": \"सामान्य उपद्रव\", \"label\": \"सामान्य उपद्रव (पड़ोसियों से विवाद / महिलाओं से छेड़छाड़ / मारपीट में बीच-बचाव के समय चोट)\"}], \"hint\": \"जो-जो विवाद के प्रकार लागू हों उन पर टिक करें — आख्या में मोटे अक्षरों में \\\"विवाद का प्रकार – …\\\" छपेगा\"}",
+   "sort_order": 8
+  },
+  {
+   "key_name": "Witness",
+   "label": "गवाहान — न हों तो खाली",
+   "field_type": "multiline",
+   "is_required": 0,
+   "default_value": null,
+   "dropdown_options": "{\"placeholder\": \"जैसे: 1. संतोष कुमार पुत्र नन्हू उम्र 34 मो0 9118359439 2. अखिलेश कुमार पुत्र स्व0 विनोद कुमार उम्र 35 निवासीगण बन्नावां थाना बछरावां जनपद रायबरेली\", \"hint\": \"गवाह क्रम से, हर एक का नाम-पिता-उम्र-मोबाइल, जैसे: 1. कुंज बिहारी पुत्र गयादीन उम्र 47 2. … — न हों तो खाली\"}",
+   "sort_order": 9
+  },
+  {
+   "key_name": "Findings",
+   "label": "जांच में क्या ज्ञात हुआ (पूरा विवरण)",
+   "field_type": "multiline",
+   "is_required": 1,
+   "default_value": null,
+   "dropdown_options": "{\"placeholder\": \"जैसे: आवेदिका व विपक्षीगण के मध्य गाटा सं0 1208 के सीमांकन को लेकर विवाद है। उभय पक्षों को राजस्व टीम से पैमाइश कराने हेतु बताया गया। मौके पर शांति व्यवस्था कायम है।\", \"hint\": \"जाँच में जो पाया — पूरे वाक्यों में, जैसा आख्या में छपना है (कौन, किस बात पर विवाद, क्या किया गया, अभी स्थिति क्या है)\"}",
+   "sort_order": 10
+  },
+  {
+   "key_name": "doNoAction",
+   "label": "अंत में लिखें: \"उक्त प्रकरण में अन्य कोई कार्यवाही समीचीन प्रतीत नहीं हो रही है\"",
+   "field_type": "checkbox",
+   "is_required": 0,
+   "default_value": "हाँ",
+   "sort_order": 11,
+   "dropdown_options": "{\"hint\": \"आख्या के अंत में \\\"अन्य कोई कार्यवाही समीचीन प्रतीत नहीं…\\\" वाली लाइन चाहिए तो टिक रहने दें\"}"
+  },
+  {
+   "key_name": "doDate",
+   "label": "नीचे \"दिनांक –\" की लाइन (हाथ से भरने को)",
+   "field_type": "checkbox",
+   "is_required": 0,
+   "default_value": "हाँ",
+   "sort_order": 12,
+   "dropdown_options": "{\"hint\": \"नीचे \\\"दिनांक –\\\" की खाली लाइन (हाथ से भरने को) चाहिए तो टिक रहने दें\"}"
+  },
+  {
+   "key_name": "Lat",
+   "label": "अक्षांश (वैकल्पिक)",
+   "field_type": "text",
+   "is_required": 0,
+   "default_value": null,
+   "dropdown_options": "{\"placeholder\": \"जैसे: 26.443659\", \"hint\": \"GPS अक्षांश दशमलव सहित, जैसे: 26.454217 — मोबाइल के नक्शे से देखें; न हो तो खाली\"}",
+   "sort_order": 13
+  },
+  {
+   "key_name": "Long",
+   "label": "देशान्तर (वैकल्पिक)",
+   "field_type": "text",
+   "is_required": 0,
+   "default_value": null,
+   "dropdown_options": "{\"placeholder\": \"जैसे: 81.091426\", \"hint\": \"GPS देशान्तर दशमलव सहित, जैसे: 81.190763 — न हो तो खाली\"}",
+   "sort_order": 14
+  },
+  {
+   "key_name": "Mobile",
+   "label": "आपका मोबाइल नं0 — हस्ताक्षर के नीचे (वैकल्पिक)",
+   "field_type": "text",
+   "is_required": 0,
+   "default_value": null,
+   "dropdown_options": "{\"placeholder\": \"जैसे: 9651677904\", \"hint\": \"10 अंकों का अपना मोबाइल नम्बर — हस्ताक्षर के नीचे छपता है; न देना हो तो खाली छोड़ें\"}",
+   "sort_order": 15
+  },
+  {
+   "key_name": "pad",
+   "label": "पद/रैंक",
+   "field_type": "dropdown",
+   "is_required": 1,
+   "default_value": "उपनिरीक्षक",
+   "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+   "sort_order": 16
+  },
+  {
+   "key_name": "OfficerName",
+   "label": "अधिकारी का नाम",
+   "field_type": "text",
+   "is_required": 1,
+   "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+   "sort_order": 17,
+   "dropdown_options": "{\"hint\": \"सिर्फ़ अपना नाम, जैसे: राम सिंह (पद अलग से चुना / लिखा है)\"}"
+  },
+  {
+   "key_name": "PoliceStation",
+   "label": "थाना",
+   "field_type": "text",
+   "is_required": 1,
+   "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+   "sort_order": 18,
+   "dropdown_options": "{\"hint\": \"सिर्फ़ थाने का नाम, जैसे: बछरावां (\\\"थाना\\\" न लिखें)\"}"
+  },
+  {
+   "key_name": "District",
+   "label": "जनपद",
+   "field_type": "text",
+   "is_required": 1,
+   "default_value": "__FROM_APP_UNIVERSAL_KEYS__",
+   "sort_order": 19,
+   "dropdown_options": "{\"hint\": \"सिर्फ़ जनपद का नाम, जैसे: रायबरेली (\\\"जनपद\\\" न लिखें)\"}"
+  }
+ ]
+}
