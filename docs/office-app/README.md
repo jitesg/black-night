@@ -37,3 +37,9 @@ Owner (2026-11-16): a separate app for the थाना कार्यालय
 
 सार: सिपाही के 3 काम — (1) कार्यालय को सूचनाएँ देना (कार्यालय के काम 3 का जवाब); (2) अपनी ड्यूटी देखना (कार्यालय के काम 4 से);
 (3) सम्मन / नोटिस की तामील करवाना. विस्तार: docs/office-app/PLAN-karyalay.md, भाग "सिपाही".
+
+### 4. (2026-11-16)
+> हाँ अधिकारी भी भेज सके, चरण 1 का sample दिखाओ
+
+सार: अधिकारी भी अपने InvestSuite से बना 35(3) / 179 नोटिस सिपाही को तामील के लिए भेज सके (बाद का चरण). चरण 1 sample:
+screens = docs/office-app/phase1-screens-sample.html (6 screens), database = docs/office-app/sql/001_init.sql (DRAFT, not run).
