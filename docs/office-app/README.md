@@ -43,3 +43,8 @@ Owner (2026-11-16): a separate app for the थाना कार्यालय
 
 सार: अधिकारी भी अपने InvestSuite से बना 35(3) / 179 नोटिस सिपाही को तामील के लिए भेज सके (बाद का चरण). चरण 1 sample:
 screens = docs/office-app/phase1-screens-sample.html (6 screens), database = docs/office-app/sql/001_init.sql (DRAFT, not run).
+
+### 5. (2026-11-16)
+> मुख्य screen पर डैशबोर्ड से  आज आये को... इस हफ्ते आये दिखाओ
+
+सार: मुख्य screen की पहली टाइल "आज आए" → "इस हफ़्ते आए".
