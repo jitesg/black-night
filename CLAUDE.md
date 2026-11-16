@@ -635,8 +635,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Office code: `src/office/` (officeCore.ts pure + `scripts/test_office_core.ts`, officeApi.ts supabase-js client with anonymous sign-in, session in
   expo-sqlite localStorage key investsuite-karyalay-auth; useMe.ts; ui.tsx navy kit; OfficeRoot.tsx), screens `src/app/office/` (index gate → welcome /
   (tabs)/dashboard; new-thana, join; tabs dashboard · कागज़ (placeholder) · सदस्य (list सभी/अधिकारी/कार्यालय, add sheet → 6-digit code + WhatsApp
-  wa.me invite, tap → resend / new code / remove) · सेटिंग). चरण 1 done = these screens (owner-approved sample). Next: कागज़ भेजना, डैशबोर्ड counts,
-  InvestSuite "सेटिंग → कार्यालय से जुड़ें".
+  wa.me invite, tap → resend / new code / remove) · सेटिंग). चरण 1 done = these screens (owner-approved sample).
+- चरण 2 क done (owner sample): InvestSuite सेटिंग top card `KaryalayCard` (settings/index.tsx; navy border, green when joined) →
+  `(app)/settings/karyalay.tsx`: 6-digit code → `claimCode(code, 'officer')` (wrong / other_app messages), joined view थाना / जनपद / आप / कार्यालय
+  (`officeNames`), "इस फ़ोन को कार्यालय से अलग करें" (confirm) → `leaveThana` = SQL `004_leave.sql` (officer/constable only; office then sees "कोड नहीं").
+  Link cached on the phone `src/office/officerLink.ts` (localStorage `investsuite:karyalay_link`), refreshed from the server on focus (removed → cleared).
+  Next: ख कागज़ भेजना (office), ग कागज़ InvestSuite में आना + 🔔 + स्थिति वापस.
 
 ## SOP library
 - Seeds in `assets/seed/`: `sop_index.json`, `sop_struct_1.json`, `sop_struct_2.json`,

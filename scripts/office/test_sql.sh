@@ -18,5 +18,7 @@ for n in 1 2 3 4; do "${PSQL[@]}" -f "$ROOT/docs/office-app/sql/001_part$n.sql";
 echo "the 4 parts ran again without errors"
 "${PSQL[@]}" -f "$ROOT/docs/office-app/sql/003_claim_for_app.sql"
 "${PSQL[@]}" -f "$ROOT/docs/office-app/sql/003_claim_for_app.sql"
+"${PSQL[@]}" -f "$ROOT/docs/office-app/sql/004_leave.sql"
+"${PSQL[@]}" -f "$ROOT/docs/office-app/sql/004_leave.sql"
 "${PSQL[@]}" -f "$ROOT/docs/office-app/sql/002_check.sql"
 "${PSQL[@]}" -f "$ROOT/scripts/office/test_rls.sql" 2>&1 | grep -E "ok:|FAILED|PASSED|ERROR" || true

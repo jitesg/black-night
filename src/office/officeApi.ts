@@ -112,3 +112,17 @@ export async function updateMember(memberId: string, patch: { name?: string; ran
   const { error } = await officeClient().from('members').update(patch).eq('id', memberId);
   if (error) throw error;
 }
+
+/** InvestSuite: this officer's phone leaves the थाना (004 leave_thana). */
+export async function leaveThana(): Promise<void> {
+  await ensureSession();
+  const { error } = await officeClient().rpc('leave_thana');
+  if (error) throw error;
+}
+
+/** Names of the कार्यालय (CM / HM) of my थाना — "संजय (CM)". */
+export async function officeNames(): Promise<string[]> {
+  const { data, error } = await officeClient().from('members').select('name, role').in('role', ['cm', 'hm']).eq('active', true);
+  if (error) throw error;
+  return (data ?? []).map((m) => `${m.name} (${String(m.role).toUpperCase()})`);
+}

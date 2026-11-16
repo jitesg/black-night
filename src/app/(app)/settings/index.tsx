@@ -12,13 +12,14 @@ import { useTranslation } from 'react-i18next';
 import {
   Search, User, Globe, Palette, Bell,
   Clock, SlidersHorizontal, Sparkles, Database, Download,
-  Shield, Info, HelpCircle, ChevronRight, Settings,
+  Shield, Info, HelpCircle, ChevronRight, Settings, Landmark,
 } from 'lucide-react-native';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import { SearchBar } from '@/components/SearchBar';
 import { matchesQuery } from '@/lib/searchUtils';
+import { getOfficerLink, type OfficerLink } from '@/office/officerLink';
 
 
 // ── Setting Item Definition ───────────────────────────────────────────────
@@ -184,6 +185,33 @@ function SettingRow({ item, isLast }: { item: SettingItem; isLast: boolean }) {
   );
 }
 
+// ── कार्यालय link card ─────────────────────────────────────────────────────
+function KaryalayCard() {
+  const [link, setLink] = useState<OfficerLink | null>(null);
+  useFocusEffect(useCallback(() => { setLink(getOfficerLink()); }, []));
+  return (
+    <Pressable onPress={() => router.push('/(app)/settings/karyalay' as never)} accessibilityLabel="कार्यालय से जुड़ें">
+      <View
+        className="flex-row items-center gap-3 rounded-2xl px-4 py-3 mb-5 bg-card"
+        style={{ borderWidth: 2, borderColor: link ? '#16A34A' : '#1E3A5F', borderCurve: 'continuous' }}
+      >
+        <View className="w-9 h-9 rounded-xl items-center justify-center" style={{ backgroundColor: '#1E3A5F' }}>
+          <Landmark size={17} color="#FFFFFF" />
+        </View>
+        <View className="flex-1">
+          <Text className="text-sm font-semibold text-foreground">{link ? 'कार्यालय से जुड़े हैं ✓' : 'कार्यालय से जुड़ें'}</Text>
+          <Text className="text-xs text-muted-foreground mt-0.5 leading-4">
+            {link
+              ? `थाना ${link.thana} · ${link.office.join(', ') || 'कार्यालय'}`
+              : 'थाना कार्यालय से मिला 6 अंक का कोड डालें — फिर कागज़ सीधे app में आएँगे'}
+          </Text>
+        </View>
+        <ChevronRight size={15} color="#D1D5DB" />
+      </View>
+    </Pressable>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────
 export default function SettingsScreen() {
   const { t } = useTranslation();
@@ -257,6 +285,9 @@ export default function SettingsScreen() {
           contentContainerStyle={{ padding: 18, paddingBottom: 60 }}
           showsVerticalScrollIndicator={false}
         >
+          {/* कार्यालय से जुड़ें (owner, चरण 2 क) — on top */}
+          <KaryalayCard />
+
           {/* Summary strip */}
           <View
             className="flex-row items-center gap-4 bg-card border border-border rounded-2xl px-4 py-3 mb-5"

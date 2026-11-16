@@ -67,6 +67,15 @@ do $$ begin update public.tasks set title = 'x'; if found then raise exception '
 exception when insufficient_privilege then raise notice 'ok: officer cannot edit a task'; end $$;
 select pg_temp.check((select count(*) from storage.objects) = 1, 'officer sees the task file');
 
+-- 004: the officer leaves → his row has no phone; CM A's leave does nothing (office role)
+select pg_temp.as_phone('00000000-0000-0000-0000-00000000000b');
+select public.leave_thana();
+select pg_temp.check(public.my_member_id() is null, 'officer left the थाना');
+select pg_temp.as_phone('00000000-0000-0000-0000-00000000000a');
+select public.leave_thana();
+select pg_temp.check(public.is_office(), 'CM cannot leave by leave_thana');
+select pg_temp.check((select user_id is null from public.members where role = 'officer'), 'office sees officer without phone');
+
 -- CM of another थाना sees nothing of A
 select pg_temp.as_phone('00000000-0000-0000-0000-00000000000c');
 select (public.create_thana('लालगंज', 'रायबरेली', 'सीता (CM)', 'cm')).id is not null as made_b;
