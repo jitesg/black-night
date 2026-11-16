@@ -37,6 +37,7 @@ create table public.tasks (
   id            uuid primary key default gen_random_uuid(),
   thana_id      uuid not null references public.thanas(id) on delete cascade,
   kind          text not null check (kind in ('court','petition','info','duty','tamil')),
+  subtype       text not null,               -- प्रकार: NBW / सम्मन / आख्या माँगी / जनता दर्शन / RL … (counts + filters)
   title         text not null,               -- short line for lists
   fields        jsonb not null default '{}', -- the form values (न्यायालय, वाद सं0, आवेदक …)
   received_on   date,
@@ -45,6 +46,8 @@ create table public.tasks (
   created_at    timestamptz not null default now(),
   closed        boolean not null default false
 );
+
+create index tasks_thana_kind_subtype on public.tasks(thana_id, kind, subtype);
 
 -- ── किसे दिया + उसकी स्थिति ─────────────────────────────────────────────────────
 create table public.task_assignees (
