@@ -242,7 +242,8 @@ export default function NyayalayFillFormatScreen() {
         behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
-        {hasFirMarkers(dynamicKeys) ? (
+        {(pickedFir || hasFirMarkers(dynamicKeys.filter((key) => isKeyVisible(key, values)))) ? (
+          // "मुकदमा चुनें" only while a मुकदमा box is showing (owner: रवानगी "क्षेत्र" needs none); stays once one is picked
           <FirPickBanner
             picked={pickedFir}
             onPick={pickFir}

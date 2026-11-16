@@ -516,7 +516,8 @@ export default function FillScreen() {
             </View>
           )}
 
-          {!firId && hasFirMarkers(dynamicKeys) ? (
+          {!firId && (pickedFir || hasFirMarkers(dynamicKeys.filter((key) => isKeyVisible(key, values)))) ? (
+            // "मुकदमा चुनें" only while a मुकदमा box is showing (owner: रवानगी "क्षेत्र" needs none); stays once one is picked
             <FirPickBanner
               picked={pickedFir}
               onPick={pickFir}
