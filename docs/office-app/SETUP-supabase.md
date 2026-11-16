@@ -9,6 +9,8 @@ Supabase dashboard → बाएँ **Authentication** → **Sign In / Providers
 
 ## कदम 2 — database बनाएँ
 बाएँ **SQL Editor** → **New query** → `sql/001_init.sql` की पूरी लिखावट चिपकाएँ → **Run**।
+फ़ोन पर पूरी फ़ाइल copy नहीं होती (पहली बार सिर्फ़ ऊपर की टिप्पणियाँ चलीं) → वही SQL 4 हिस्सों में: `sql/001_part1.sql` … `001_part4.sql`,
+क्रम से एक-एक करके चलाएँ; हर हिस्सा पूरा चला तो नीचे "भाग n/4 पूरा" आता है।
 नीचे **"Success. No rows returned"** आना चाहिए। लाल error आए तो उसकी फ़ोटो भेजें।
 (दोबारा चलाने से कुछ नहीं बिगड़ता।)
 

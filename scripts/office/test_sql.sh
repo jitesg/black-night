@@ -14,5 +14,7 @@ PSQL=("${RUN[@]}" psql -h "$TMP" -p 55432 -U postgres -d postgres -v ON_ERROR_ST
 "${PSQL[@]}" -f "$ROOT/docs/office-app/sql/001_init.sql"
 "${PSQL[@]}" -f "$ROOT/docs/office-app/sql/001_init.sql"
 echo "001_init.sql ran twice without errors"
+for n in 1 2 3 4; do "${PSQL[@]}" -f "$ROOT/docs/office-app/sql/001_part$n.sql"; done
+echo "the 4 parts ran again without errors"
 "${PSQL[@]}" -f "$ROOT/docs/office-app/sql/002_check.sql"
 "${PSQL[@]}" -f "$ROOT/scripts/office/test_rls.sql" 2>&1 | grep -E "ok:|FAILED|PASSED|ERROR" || true
