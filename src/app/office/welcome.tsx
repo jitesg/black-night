@@ -1,8 +1,8 @@
 /** ① first open: नया थाना बनाएँ / कोड से जुड़ें (owner-approved sample). */
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Building2, ChevronRight, KeyRound, Landmark } from 'lucide-react-native';
+import { Building2, ChevronRight, KeyRound } from 'lucide-react-native';
 import { OfficeCard, useOfficeColors } from '@/office/ui';
 
 export default function OfficeWelcome() {
@@ -23,9 +23,8 @@ export default function OfficeWelcome() {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: C.bg }} contentContainerStyle={{ padding: 16, paddingTop: insets.top + 40, gap: 12 }}>
       <View style={{ alignItems: 'center', gap: 6, marginBottom: 18 }}>
-        <View style={{ width: 76, height: 76, borderRadius: 22, backgroundColor: C.head, alignItems: 'center', justifyContent: 'center' }}>
-          <Landmark size={38} color="#fff" />
-        </View>
+        {/* eslint-disable-next-line @typescript-eslint/no-require-imports */}
+        <Image source={require('../../../assets/office/icon.png')} style={{ width: 84, height: 84, borderRadius: 22 }} />
         <Text style={{ fontSize: 22, fontWeight: '700', color: C.text }}>InvestSuite कार्यालय</Text>
         <Text style={{ fontSize: 13.5, color: C.muted }}>थाना कार्यालय — कागज़ भेजें, स्थिति देखें</Text>
       </View>

@@ -1,0 +1,19 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#1E3A5F"/>
+  <circle cx="256" cy="256" r="210" fill="#24476F"/>
+  <path d="M256 70l150 52v112c0 104-66 176-150 210-84-34-150-106-150-210V122z" fill="#F5B300"/>
+  <path d="M256 98l124 43v93c0 88-54 150-124 180-70-30-124-92-124-180v-93z" fill="#1E3A5F"/>
+  <!-- building -->
+  <path d="M168 220l88-46 88 46z" fill="#FFFFFF"/>
+  <rect x="178" y="228" width="156" height="14" fill="#FFFFFF"/>
+  <rect x="190" y="248" width="20" height="74" rx="4" fill="#FFFFFF"/><rect x="230" y="248" width="20" height="74" rx="4" fill="#FFFFFF"/>
+  <rect x="262" y="248" width="20" height="74" rx="4" fill="#FFFFFF"/><rect x="302" y="248" width="20" height="74" rx="4" fill="#FFFFFF"/>
+  <rect x="170" y="326" width="172" height="16" rx="4" fill="#FFFFFF"/>
+  <!-- paper going out -->
+  <g transform="rotate(12 360 360)">
+    <rect x="318" y="300" width="90" height="112" rx="10" fill="#FFFFFF" stroke="#0F172A" stroke-width="6"/>
+    <rect x="334" y="324" width="58" height="8" rx="4" fill="#94A3B8"/><rect x="334" y="344" width="46" height="8" rx="4" fill="#94A3B8"/><rect x="334" y="364" width="52" height="8" rx="4" fill="#94A3B8"/>
+    <circle cx="390" cy="394" r="14" fill="#16A34A"/>
+    <path d="M383 394l5 5 9-10" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

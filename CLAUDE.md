@@ -652,6 +652,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   ?member= / ?state= from the dashboard), `office/send.tsx` (2 steps + step bar + sticky actions; `?id=` edit; officer radio list with लंबित count and
   "not joined" warning; success screen), `office/task/[id].tsx` (status track भेजा→मिला→देखा→निस्तारित, details, files open / hold to delete, रद्द /
   फिर से चालू, दोबारा भेजें when removed), (tabs)/dashboard (4 tiles → filtered list, प्रकार chips, अधिकारी-वार table → that officer's list, overdue list).
+  App icon (owner chose B of 3 flat samples): badge + थाना भवन + कागज़ ✓ — assets/office/icon.png (1024), adaptive-icon.png (content in the 66%
+  safe zone, bg #1E3A5F), source icon.svg; set only for APP_VARIANT=office in app.config.ts; also the welcome screen logo.
   Tab labels = own `TabLabel` Text (default label cut Devanagari matras); Tabs `safeAreaInsets={{ bottom: 0 }}` (root KeyboardInsetView pads).
   Next: ग — कागज़ InvestSuite में आना (pp / court rows with source 'office'), 🔔, status back (received / seen / done / removed).
 
