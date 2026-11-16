@@ -253,6 +253,15 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   blank. Point 11 adds 5–7 (RecVideo धारा 105 BNSS / RecUpload ई-साक्ष्य / RecCD + RecCDNo, each opening the next on हाँ); new point 20 सी0डी0आर0
   (Cdr हाँ/नहीं → CdrParcha). Signature: 4 zero-width lines lower, "विवेचनाधिकारी / उ0नि0", "थाना- …, जनपद- …" on one line. Tests
   `scripts/test_status_report.ts`.
+- आवेदक समूह / विपक्षी समूह (owner): field_type stays person_group, key option `{"role": "avedak", "wordKey": "Avedak"}` /
+  `{"role": "vipakshi", "wordKey": "VipWord", "kindKey": "VipKind", "nilKey": "noVip"}` → deriveFormatValues writes the word (आवेदक / आवेदिका /
+  आवेदकगण from the cards; विपक्षी(गण) or आरोपी(गण) by the officer's VipKind dropdown; nil → singular) — logic in `formatDerived.ts`
+  (roleConfigOf / roleWord …), PP helpers `src/lib/ppPeople.ts` (ppCards: PP rows → cards, ग्राम/थाना/जनपद added; tests `scripts/test_pp_people.ts`).
+  PersonGroupInput `role` (all 4 fill screens): आवेदक / आवेदिका badge per card, "+ आवेदक / विपक्षी जोड़ें", `PPPeopleButton` "प्रार्थना पत्र से भरें"
+  (only in `PPPeopleContext` = prarthna-patra/fill-format, which reads `ppId` and fills role groups from that PP when the format opens).
+  PP add form: सम्बन्ध chips पुत्र / पुत्री / पत्नी on आवेदक + विपक्षी cards (columns prarthna_patra_complainants/_accused.relation) → लिंग + पिता/पति
+  label; आवेदक card badge. First format: जांच आख्या v3 (Avedak dropdown removed, VipKind added, parties lines "**1. {{Avedak}} –** …" /
+  "**2. {{VipWord}} –** …"; backup docs/format-backups/pp_jaanch_aakhya_v2_before_role_groups.json). Next: other PP formats batch by batch.
 - `sys-fmt-pp-jaanch-aakhya` "प्रार्थना पत्र जांच आख्या (पुलिस अधीक्षक / जिलाधिकारी / क्षेत्राधिकारी / थानाध्यक्ष)" (owner's RL docx files):
   To dropdown → सेवा में lines (Circle / ToOther via showIf), Avedak आवेदक/आवेदिका, doParties tick → bold [[पक्ष]] lines
   "1. आवेदक… 2. विपक्षी…" (noVip → निल), Vivad, Witness, Findings, doNoAction; left [[सूची]] दिनांक / अक्षांश / देशान्तर (each optional)
