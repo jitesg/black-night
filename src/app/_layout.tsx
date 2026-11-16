@@ -46,6 +46,8 @@ import { SCENE_GAP_KIND } from '@/lib/sceneAlertService';
 import { AIProviderManager } from '@/ai/level5/AIProviderManager';
 import { LearningEngine } from '@/ai/level5/LearningEngine';
 import { NAV_THEME } from '@/lib/theme';
+import { IS_OFFICE } from '@/office/config';
+import { OfficeRoot } from '@/office/OfficeRoot';
 import "../global.css";
 
 // ── Background re-lock threshold ──────────────────────────────────────────────
@@ -308,7 +310,12 @@ function AppNavigator({
   );
 }
 
+// Two apps from one repo (owner): the "InvestSuite कार्यालय" build mounts only the office screens.
 export default function RootLayout() {
+  return IS_OFFICE ? <OfficeRoot /> : <InvestRootLayout />;
+}
+
+function InvestRootLayout() {
   // dbReady: true once getDatabase() + seedSystemContent() + restoreDevContent()
   // have all resolved. Screens that read from the DB must not mount until this
   // is true — otherwise they race the seeding writes and may see an empty DB.

@@ -11,10 +11,19 @@ on:
         description: 'CPU types (arm64-v8a = all phones from ~2017; add armeabi-v7a for very old 32-bit phones — slower build)'
         required: false
         default: 'arm64-v8a'
+      variant:
+        description: 'Which app: investsuite (officers) or office (InvestSuite कार्यालय for CM / HM)'
+        required: false
+        default: 'investsuite'
 
 env:
   # faster build (owner): only the 64-bit CPU type by default — every phone of the last ~8 years
   ABIS: ${{ github.event.inputs.abis || 'arm64-v8a' }}
+  # two apps from one repo (owner): "office" → InvestSuite कार्यालय (own package id, installs next to InvestSuite).
+  # app.config.ts reads APP_VARIANT, the JS bundle (built inside assembleRelease) reads EXPO_PUBLIC_APP_VARIANT.
+  APP_VARIANT: ${{ github.event.inputs.variant == 'office' && 'office' || '' }}
+  EXPO_PUBLIC_APP_VARIANT: ${{ github.event.inputs.variant == 'office' && 'office' || '' }}
+  APK_NAME: ${{ github.event.inputs.variant == 'office' && 'InvestSuite-Karyalay.apk' || 'InvestSuite.apk' }}
 
 permissions:
   contents: write
@@ -67,20 +76,20 @@ jobs:
           GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx6g -XX:MaxMetaspaceSize=1g"
 
       - name: Rename APK
-        run: cp android/app/build/outputs/apk/release/app-release.apk InvestSuite.apk
+        run: cp android/app/build/outputs/apk/release/app-release.apk ${{ env.APK_NAME }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: InvestSuite-apk
-          path: InvestSuite.apk
+          name: ${{ env.APK_NAME }}
+          path: ${{ env.APK_NAME }}
 
       - name: Publish as GitHub release
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-build-${{ github.run_number }}
-          name: InvestSuite APK (build ${{ github.run_number }})
+          name: ${{ env.APK_NAME }} (build ${{ github.run_number }})
           prerelease: true
           target_commitish: ${{ github.sha }}
-          files: InvestSuite.apk
-          body: Android APK built from ${{ github.sha }}. Download InvestSuite.apk below and open it on your phone to install.
+          files: ${{ env.APK_NAME }}
+          body: Android APK built from ${{ github.sha }}. Download ${{ env.APK_NAME }} below and open it on your phone to install.

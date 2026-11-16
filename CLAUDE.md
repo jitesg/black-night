@@ -621,6 +621,22 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   blocks), img (`NOTE_IMAGES` in lawNotes.ts, cropped flow charts assets/law-notes/img/bnss194-flow.jpg), check `interactive` + title →
   tickable checklist (n/17, bar, रीसेट करें; session-only like आवश्यक तत्व).
 
+## InvestSuite कार्यालय (second app, same repo — owner)
+- Plan / owner's words: `docs/office-app/` (README, PLAN-karyalay.md, SETUP-supabase.md). Supabase = owner's project
+  `pmezkxwkehjbyzxomlre` (publishable key in `src/office/config.ts`; NEVER the secret key / DB password). SQL: `docs/office-app/sql/001_init.sql`
+  (also as 001_part1..4 for the phone), `002_check.sql`, `003_claim_for_app.sql` (claim_member_for: office app takes only CM/HM codes, InvestSuite
+  only officer codes; a wrong-app code is not used up). Local test on a throw-away Postgres with Supabase stubs: `bash scripts/office/test_sql.sh`
+  (RLS scenarios in scripts/office/test_rls.sql). Owner ran 001 + 002 (all ठीक) on 16/11/2026; 003 not yet confirmed.
+- Variant: `APP_VARIANT=office` (app.config.ts → name "InvestSuite कार्यालय", package `<id>.karyalay`, scheme investsuitekaryalay) +
+  `EXPO_PUBLIC_APP_VARIANT=office` (JS: `IS_OFFICE`) — CI workflow input `variant` (investsuite | office → InvestSuite-Karyalay.apk).
+  Root `_layout.tsx` default export = `IS_OFFICE ? <OfficeRoot/> : <InvestRootLayout/>` (office build: no SQLite/seed/reminders; index.ts loads the
+  reminder task only for InvestSuite, entry via require so it runs after it); `src/app/index.tsx` redirects to /office or /home.
+- Office code: `src/office/` (officeCore.ts pure + `scripts/test_office_core.ts`, officeApi.ts supabase-js client with anonymous sign-in, session in
+  expo-sqlite localStorage key investsuite-karyalay-auth; useMe.ts; ui.tsx navy kit; OfficeRoot.tsx), screens `src/app/office/` (index gate → welcome /
+  (tabs)/dashboard; new-thana, join; tabs dashboard · कागज़ (placeholder) · सदस्य (list सभी/अधिकारी/कार्यालय, add sheet → 6-digit code + WhatsApp
+  wa.me invite, tap → resend / new code / remove) · सेटिंग). चरण 1 done = these screens (owner-approved sample). Next: कागज़ भेजना, डैशबोर्ड counts,
+  InvestSuite "सेटिंग → कार्यालय से जुड़ें".
+
 ## SOP library
 - Seeds in `assets/seed/`: `sop_index.json`, `sop_struct_1.json`, `sop_struct_2.json`,
   `sop_explain_1.json` (owner's files, byte-for-byte — except owner-asked fixes: sop-up-b2-01 शारीरिक क्षति "सामान्य कारण"

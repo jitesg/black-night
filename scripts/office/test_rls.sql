@@ -26,10 +26,15 @@ select pg_temp.check((select count(*) from public.member_codes) = 1, 'CM sees th
 do $$ begin perform public.create_thana('x', 'y', 'z', 'cm'); raise exception 'FAILED: second thana allowed';
 exception when raise_exception then if sqlerrm like 'FAILED%' then raise; end if; raise notice 'ok: second thana refused'; end $$;
 
+-- 003: an officer code typed in the office app is refused and NOT used up
+select pg_temp.as_phone('00000000-0000-0000-0000-00000000000b');
+select pg_temp.check(public.claim_member_for((select code from t_code), 'office')->>'status' = 'other_app', 'officer code refused by office app');
+select pg_temp.check(public.claim_member_for('999999', 'officer')->>'status' = 'wrong', 'wrong code → wrong');
+reset role; delete from public.claim_attempts; set role authenticated;  -- (test only) reset the tries
 -- officer claims the code
 select pg_temp.as_phone('00000000-0000-0000-0000-00000000000b');
 select pg_temp.check(public.claim_member('000000x') is null, 'wrong code → null');
-select pg_temp.check((public.claim_member((select code from t_code))).name = 'उ0नि0 श्याम', 'officer claims the code');
+select pg_temp.check(public.claim_member_for((select code from t_code), 'officer')->>'status' = 'ok', 'officer claims the code in InvestSuite');
 select pg_temp.check(not public.is_office(), 'officer is not office');
 select pg_temp.check((select count(*) from public.member_codes) = 0, 'officer sees no codes');
 select pg_temp.check((select count(*) from public.members) = 2, 'officer sees the 2 members of his थाना');

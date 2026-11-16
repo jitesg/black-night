@@ -36,3 +36,5 @@ Supabase dashboard → बाएँ **Authentication** → **Sign In / Providers
 
 ## स्थिति
 - 16/11/2026: मालिक ने कदम 1 (anonymous sign-ins ON) और कदम 2 (4 भाग) किए; 002_check.sql → पाँचों "ठीक"। Supabase चरण 1 तैयार।
+- कदम 5 (कार्यालय app चरण 1 के साथ): `sql/003_claim_for_app.sql` चलाएँ → नीचे "003 पूरा" आना चाहिए। (कार्यालय app CM / HM के कोड लेता है;
+  अधिकारी का कोड गलती से डाल दें तो वह खर्च नहीं होता।)
