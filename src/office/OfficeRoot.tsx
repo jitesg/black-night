@@ -3,6 +3,7 @@
  * InvestSuite — only the office screens under src/app/office.
  */
 import { Platform } from 'react-native';
+import '@/lib/i18n'; // date picker labels (InvestSuite's I18nProvider is not mounted here)
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';

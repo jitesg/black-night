@@ -640,7 +640,20 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `(app)/settings/karyalay.tsx`: 6-digit code → `claimCode(code, 'officer')` (wrong / other_app messages), joined view थाना / जनपद / आप / कार्यालय
   (`officeNames`), "इस फ़ोन को कार्यालय से अलग करें" (confirm) → `leaveThana` = SQL `004_leave.sql` (officer/constable only; office then sees "कोड नहीं").
   Link cached on the phone `src/office/officerLink.ts` (localStorage `investsuite:karyalay_link`), refreshed from the server on focus (removed → cleared).
-  Next: ख कागज़ भेजना (office), ग कागज़ InvestSuite में आना + 🔔 + स्थिति वापस.
+- चरण 2 ख done (owner sample; one कागज़ = one अधिकारी, office can edit + cancel): rules `src/office/taskCore.ts` (pure; tests
+  `scripts/test_office_tasks.ts`: PETITION_SUBTYPES = InvestSuite PetitionType values, COURT_SUBTYPES = DocType values + Hindi labels, form ↔ tasks row
+  (fields: matter, note, applicants / opponents / accused [{name, relation, father, address, mobile}], court_name, vad_sankhya, apradh_sankhya,
+  applicable_sections, document_title — named like InvestSuite columns for step ग), titles, states sent/received/seen/done/removed + cancelled (= tasks.closed),
+  filters, dashboard (इस हफ़्ते = created Mon–today), storagePath `<thana>/<task>/<time>_<name>`, b64ToBytes). Data `src/office/taskApi.ts` (list with
+  embedded task_assignees + task_files ids, send / update (officer change = new assignee row) / cancel / resend / files via Storage "task-files" as
+  ArrayBuffer + signed URLs), `useOfficeData` (tasks + members cache). UI kit 2 `src/office/ui2.tsx` (Section, Segmented, StatusPill, DateField = InvestSuite
+  DatePickerModal — OfficeRoot imports '@/lib/i18n' for it, PersonCards with सम्बन्ध chips + small labels once filled, BottomSheet, NoteField). Screens:
+  (tabs)/kagaz (segment सभी/न्यायालय/प्रार्थना पत्र, state chips लंबित/समय निकला/निस्तारित/रद्द, ⚙︎ sheet प्रकार/अधिकारी/तारीख, overdue red border, FAB; params
+  ?member= / ?state= from the dashboard), `office/send.tsx` (2 steps + step bar + sticky actions; `?id=` edit; officer radio list with लंबित count and
+  "not joined" warning; success screen), `office/task/[id].tsx` (status track भेजा→मिला→देखा→निस्तारित, details, files open / hold to delete, रद्द /
+  फिर से चालू, दोबारा भेजें when removed), (tabs)/dashboard (4 tiles → filtered list, प्रकार chips, अधिकारी-वार table → that officer's list, overdue list).
+  Tab labels = own `TabLabel` Text (default label cut Devanagari matras); Tabs `safeAreaInsets={{ bottom: 0 }}` (root KeyboardInsetView pads).
+  Next: ग — कागज़ InvestSuite में आना (pp / court rows with source 'office'), 🔔, status back (received / seen / done / removed).
 
 ## SOP library
 - Seeds in `assets/seed/`: `sop_index.json`, `sop_struct_1.json`, `sop_struct_2.json`,

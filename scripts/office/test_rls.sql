@@ -67,6 +67,17 @@ do $$ begin update public.tasks set title = 'x'; if found then raise exception '
 exception when insufficient_privilege then raise notice 'ok: officer cannot edit a task'; end $$;
 select pg_temp.check((select count(*) from storage.objects) = 1, 'officer sees the task file');
 
+-- चरण 2 ख: office cancels / re-opens, edits, resends, adds a file row
+select pg_temp.as_phone('00000000-0000-0000-0000-00000000000a');
+update public.tasks set closed = true;
+select pg_temp.check((select closed from public.tasks limit 1), 'office cancels a कागज़');
+update public.tasks set closed = false, title = 'NBW — वाद सं0 413/2026', fields = '{"court_name":"CJM"}';
+select pg_temp.check((select title from public.tasks limit 1) = 'NBW — वाद सं0 413/2026', 'office edits a कागज़');
+update public.task_assignees set status = 'sent', status_note = null;
+select pg_temp.check((select status from public.task_assignees limit 1) = 'sent', 'office resends');
+insert into public.task_files(task_id, path, name, mime) select id, public.my_thana_id() || '/' || id || '/x.jpg', 'x.jpg', 'image/jpeg' from public.tasks;
+select pg_temp.check((select count(*) from public.task_files) = 1, 'office adds a file row');
+
 -- 004: the officer leaves → his row has no phone; CM A's leave does nothing (office role)
 select pg_temp.as_phone('00000000-0000-0000-0000-00000000000b');
 select public.leave_thana();
