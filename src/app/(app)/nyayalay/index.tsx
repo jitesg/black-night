@@ -8,6 +8,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import { attachmentCounts } from '@/lib/db/attachmentRepo';
 import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
@@ -109,8 +110,10 @@ function AnalyticsCard({
 }
 
 const DocCard = memo(function DocCard({
-  doc, query, highlight, typoTolerant, onPress, onEdit, onDelete, scheme,
+  doc, query, highlight, typoTolerant, onPress, onEdit, onDelete, scheme, attachCount,
 }: {
+  /** संलग्न कागज़ count (owner) → "📎 n" */
+  attachCount?: number;
   doc: NyayalayDocument;
   query: string;
   highlight: boolean;
@@ -195,6 +198,7 @@ const DocCard = memo(function DocCard({
               <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: statusColor }}>{statusLabel}</Text>
             </View>
             <Text className="text-xs font-medium" style={{ color: dayColor }}>{dayLabel}</Text>
+            {attachCount ? <Text className="text-xs text-muted-foreground">📎 {attachCount}</Text> : null}
             <Text className="text-xs text-muted-foreground ml-auto">{doc.deadline_date}</Text>
           </View>
         </View>
@@ -287,13 +291,17 @@ export default function NyayalayScreen() {
 
   const today = todayStr();
 
+  const [attachCounts, setAttachCounts] = useState<Record<string, number>>({});
   const firstLoadRef = useRef(true);
   const load = useCallback(async () => {
     // Spinner only on the first load; later visits refresh in place so the
     // list isn't torn down (keeps scroll position, no flash).
     if (firstLoadRef.current) { firstLoadRef.current = false; setLoading(true); }
     try {
-      const all = await getAllNyayalayDocuments();
+      const [all, counts] = await Promise.all([
+        getAllNyayalayDocuments(), attachmentCounts('court').catch(() => ({})),
+      ]);
+      setAttachCounts(counts);
       setDocs(all);
     } catch (e) {
       logger.error('[NyayalayIndex] load error:', e);
@@ -392,10 +400,11 @@ export default function NyayalayScreen() {
         onPress={() => router.push(`/(app)/nyayalay/${item.id}` as never)}
         onEdit={() => router.push(`/(app)/nyayalay/add?editId=${item.id}` as never)}
         onDelete={() => setDeleteTarget(item.id)}
+        attachCount={attachCounts[item.id]}
       />
     </View>
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ), [query, settings.highlightMatches, settings.typoTolerance, scheme]);
+  ), [query, settings.highlightMatches, settings.typoTolerance, scheme, attachCounts]);
 
   return (
     <View className="flex-1 bg-background">

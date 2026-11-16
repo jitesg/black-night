@@ -364,6 +364,7 @@ export async function deletePrarthnaPatra(id: string): Promise<void> {
     'UPDATE prarthna_patra SET deleted_at=?, updated_at=?, sync_status=? WHERE id=?',
     [now, now, 'pending', id]
   );
+  await import('./attachmentRepo').then((m) => m.deleteAttachmentsOf('pp', id)).catch(() => {});
   resyncDeadlineAlerts();
 }
 

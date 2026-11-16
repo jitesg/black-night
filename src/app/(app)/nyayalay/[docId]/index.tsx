@@ -29,6 +29,7 @@ import {
   type NyayalayChecklistItem,
 } from '@/lib/db/nyayalayRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
 const MODULE_COLOR = '#1D4ED8';
@@ -618,6 +619,11 @@ export default function NyayalayDocDetailScreen() {
           : doc.doc_type === 'Summons'
           ? renderSummonsDetails()
           : renderCommonDetails()}
+
+        {/* संलग्न कागज़ (owner) */}
+        <View className="mt-2">
+          <AttachmentsSection module="court" parentId={doc.id} accent={MODULE_COLOR} />
+        </View>
 
         <View className="my-4 border-t border-border" />
 

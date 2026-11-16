@@ -18,6 +18,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { addDaysNyl, createNyayalayDocument, getNyayalayDocWithDetails, todayStr, updateNyayalayDocument, DOC_TYPES, WRIT_TYPES, type DocType, type SubType, type WritType } from '@/lib/db/nyayalayRepo';
+import { AttachmentsSection } from '@/components/common/AttachmentsSection';
+import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachmentRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 
@@ -358,6 +360,7 @@ export default function AddNyayalayScreen() {
 
   // Matter (HC Writ)
   const [matter, setMatter] = useState('');
+  const [pendingFiles, setPendingFiles] = useState<PendingAttachment[]>([]);
 
   // Document title (Anya)
   const [documentTitle, setDocumentTitle] = useState('');
@@ -533,7 +536,8 @@ export default function AddNyayalayScreen() {
       if (isEdit && editId) {
         await updateNyayalayDocument(editId, payload);
       } else {
-        await createNyayalayDocument(payload);
+        const newId = await createNyayalayDocument(payload);
+        if (pendingFiles.length) await addPendingAttachments('court', newId, pendingFiles);
       }
       savedRef.current = true;
       setIsDirty(false);
@@ -813,6 +817,17 @@ export default function AddNyayalayScreen() {
                 error={errors.deadlineDate}
                 hint={showHC ? t('nyayalay.form.hcDeadlineHint') : undefined}
               />
+
+              {/* संलग्न कागज़ (owner) — edit: saved at once; new: kept until सहेजें */}
+              <View className="mt-4">
+                <AttachmentsSection
+                  module="court"
+                  parentId={isEdit ? editId : null}
+                  pending={pendingFiles}
+                  onPendingChange={(f) => { setPendingFiles(f); markDirty(); }}
+                  accent="#1D4ED8"
+                />
+              </View>
             </>
           )}
         </ScrollView>

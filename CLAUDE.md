@@ -227,6 +227,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   पंजीकरण सं0 (registration_number) is never shown (owner): removed from both modules' cards, detail, report, take-action, dialogs, search
   suggestions, dashboard fallbacks, AI context; सूचनाएँ / phone alerts use `ref` (न्यायालय: वाद सं0 / मु0अ0सं0, प्रार्थना पत्र: first आवेदक's name).
   The column still exists (unique key), and formats' NBW_NO / SUMMON_NO keys still read it.
+- "संलग्न कागज़" (owner): photos / PDFs on प्रार्थना पत्र + न्यायालय — table `module_attachments` (module 'pp' | 'court', parent_id, uri,
+  name, mime, size, source 'self' | 'office', soft delete; database.ts), repo `src/lib/db/attachmentRepo.ts` (list / add / delete /
+  `attachmentCounts` / `addPendingAttachments`; parent delete → `deleteAttachmentsOf`), UI `components/common/AttachmentsSection.tsx`
+  (3-column grid, "+ फ़ोटो / PDF" tile, sheet कैमरा / गैलरी (multi) / PDF-फ़ाइल, photos quality 0.6, tap = openFile, hold = साझा करें / हटाएँ;
+  source 'office' → warning "सिर्फ़ आपके फ़ोन से हटेगा"). On both detail screens and add forms (new paper: files kept as `pending`,
+  saved after create; edit: saved at once); list cards show "📎 n".
 - प्रार्थना पत्र report screen (`prarthna-patra/[ppId]/report.tsx`): every type except बीट सूचना / NCR (those = take-action) uses the inline flow
   (full petition details, "रिपोर्ट लगाएं", "प्रारूप से जोड़ें") — `REPORT_PETITION_TYPES` now also has थाना प्रार्थना पत्र / RTI / अन्य (owner);
   an old HTML report is turned into plain text for the inline box.

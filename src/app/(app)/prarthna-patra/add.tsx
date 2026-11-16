@@ -8,6 +8,8 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { AttachmentsSection } from '@/components/common/AttachmentsSection';
+import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachmentRepo';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Plus, Trash2, ChevronDown, Calendar, Copy, Sparkles } from 'lucide-react-native';
 import { OcrScanModal } from '@/components/common/OcrScanModal';
@@ -254,6 +256,7 @@ export default function AddPrarthnaPatraScreen() {
   // Feature 2: default deadline = today + 10 for all types
   const [deadlineDate, setDeadlineDate] = useState(() => addDays(_todayString(), 10));
   const [matter, setMatter] = useState('');
+  const [pendingFiles, setPendingFiles] = useState<PendingAttachment[]>([]);
   const [investigatorName, setInvestigatorName] = useState('');
   const [complainants, setComplainants] = useState<ComplainantForm[]>([emptyComplainant()]);
   const [accused, setAccused] = useState<AccusedForm[]>([]);
@@ -517,13 +520,14 @@ export default function AddPrarthnaPatraScreen() {
           accused: aPayload as Parameters<typeof updatePrarthnaPatra>[1]['accused'],
         });
       } else {
-        await createPrarthnaPatra({
+        const created = await createPrarthnaPatra({
           petition_type: petitionType!, date_of_receipt: dateOfReceipt,
           deadline_date: deadlineDate, matter,
           investigator_name: investigatorName,
           complainants: cPayload,
           accused: aPayload,
         });
+        if (pendingFiles.length) await addPendingAttachments('pp', created.id, pendingFiles);
       }
       savedRef.current = true;
       setIsDirty(false);
@@ -820,6 +824,17 @@ export default function AddPrarthnaPatraScreen() {
               accessibilityLabel={t('prarthnaPatra.form.matterTitle')}
             />
             {errors.matter ? <Text style={{ ...T.caption2, color: '#DC2626', marginTop: 3 }}>{errors.matter}</Text> : null}
+          </View>
+
+          {/* ── संलग्न कागज़ (owner) — edit: saved at once; new: kept until सहेजें ── */}
+          <View style={{ marginTop: T.space.sm, marginBottom: T.space.xs }}>
+            <AttachmentsSection
+              module="pp"
+              parentId={isEdit ? editId : null}
+              pending={pendingFiles}
+              onPendingChange={(f) => { setPendingFiles(f); setIsDirty(true); }}
+              accent="#2D52B8"
+            />
           </View>
 
           {/* ── Accused ── */}

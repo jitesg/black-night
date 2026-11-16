@@ -13,6 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import { attachmentCounts } from '@/lib/db/attachmentRepo';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
@@ -143,9 +144,11 @@ function AnalyticsCard({
 // ── Petition card ─────────────────────────────────────────────────────────
 
 const PPCard = memo(function PPCard({
-  pp, query, highlight, typoTolerant, onDelete,
+  pp, query, highlight, typoTolerant, onDelete, attachCount,
 }: {
   pp: PrarthnaPatra; query: string; highlight: boolean; typoTolerant?: boolean; onDelete: (id: string) => void;
+  /** संलग्न कागज़ count (owner) → "📎 n" */
+  attachCount?: number;
 }) {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -184,6 +187,7 @@ const PPCard = memo(function PPCard({
           <View className="flex-1">
             <Text className="text-xs text-muted-foreground">{t('prarthnaPatra.list.receipt', { date: pp.date_of_receipt })}</Text>
             <Text className="text-xs text-muted-foreground">{t('prarthnaPatra.list.deadline', { date: pp.deadline_date })}</Text>
+            {attachCount ? <Text className="text-xs text-muted-foreground">📎 {attachCount}</Text> : null}
           </View>
           <Text className="text-xs font-semibold" style={{ color: dayColor }}>{dayLabel}</Text>
         </View>
@@ -301,14 +305,18 @@ export default function PrarthnaPatraScreen() {
     transform: [{ rotate: `${progress.value * 180}deg` }],
   }));
 
+  const [attachCounts, setAttachCounts] = useState<Record<string, number>>({});
   const firstLoadRef = useRef(true);
   const load = useCallback(async () => {
     // Spinner only on the first load; later visits refresh in place so the
     // list isn't torn down (keeps scroll position, no flash).
     if (firstLoadRef.current) { firstLoadRef.current = false; setLoading(true); }
     try {
-      const [all, dash] = await Promise.all([getAllPrarthnaPatra(), getDashboardAnalytics()]);
+      const [all, dash, counts] = await Promise.all([
+        getAllPrarthnaPatra(), getDashboardAnalytics(), attachmentCounts('pp').catch(() => ({})),
+      ]);
       setItems(all);
+      setAttachCounts(counts);
       setAnalytics(dash);
     } catch (e) {
       logger.error('[PrarthnaPatra] Failed to load data:', e);
@@ -600,7 +608,7 @@ export default function PrarthnaPatraScreen() {
             {loading && <ActivityIndicator className="my-8" />}
           </View>
         }
-        renderItem={({ item }) => <PPCard pp={item} query={query} highlight={settings.highlightMatches} typoTolerant={settings.typoTolerance} onDelete={handleDelete} />}
+        renderItem={({ item }) => <PPCard pp={item} query={query} highlight={settings.highlightMatches} typoTolerant={settings.typoTolerance} onDelete={handleDelete} attachCount={attachCounts[item.id]} />}
         ListEmptyComponent={
           !loading ? (
             <View className="items-center py-16 gap-3">

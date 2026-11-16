@@ -8,6 +8,7 @@ import {
   Pencil, Calendar, Clock, CheckCircle, AlertCircle, User, Users, Zap,
 } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import {
   getPPWithDetails,
   daysUntilDeadline,
@@ -160,6 +161,11 @@ export default function PPDetailScreen() {
           <InfoRow label={t('prarthnaPatra.detail.deadlineDate')} value={pp.deadline_date} />
           <InfoRow label={t('prarthnaPatra.detail.investigator')} value={pp.investigator_name} />
           {pp.disposal_date && <InfoRow label={t('prarthnaPatra.detail.disposalDate')} value={pp.disposal_date} />}
+        </View>
+
+        {/* ── संलग्न कागज़ (owner) ── */}
+        <View className="mt-4">
+          <AttachmentsSection module="pp" parentId={pp.id} accent="#2D52B8" />
         </View>
 
         {/* ── Complainants ── */}

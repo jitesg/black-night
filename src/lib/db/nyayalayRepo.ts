@@ -350,6 +350,7 @@ export async function deleteNyayalayDocument(id: string): Promise<void> {
     `UPDATE nyayalay_documents SET deleted_at=?, sync_status='pending' WHERE id=?`,
     [now, id]
   );
+  await import('./attachmentRepo').then((m) => m.deleteAttachmentsOf('court', id)).catch(() => {});
   await db.runAsync(
     `UPDATE nyayalay_persons SET deleted_at=? WHERE doc_id=? AND deleted_at IS NULL`,
     [now, id]

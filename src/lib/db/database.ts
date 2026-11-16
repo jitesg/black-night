@@ -1317,6 +1317,25 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'prarthna_patra_accused',     'jati',              "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'age',               "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'gender',            "TEXT DEFAULT ''");
+  // "संलग्न कागज़" (owner): photos / PDFs of a प्रार्थना पत्र (module 'pp') or a न्यायालय document ('court') — attachmentRepo.ts
+  try {
+    await database.execAsync(`
+      CREATE TABLE IF NOT EXISTS module_attachments (
+        id TEXT PRIMARY KEY,
+        module TEXT NOT NULL,
+        parent_id TEXT NOT NULL,
+        uri TEXT NOT NULL,
+        name TEXT NOT NULL DEFAULT '',
+        mime TEXT NOT NULL DEFAULT '',
+        size INTEGER NOT NULL DEFAULT 0,
+        source TEXT NOT NULL DEFAULT 'self',
+        created_at INTEGER NOT NULL,
+        deleted_at INTEGER
+      );
+      CREATE INDEX IF NOT EXISTS idx_module_attachments_parent ON module_attachments(module, parent_id);
+    `);
+  } catch { /* ignore */ }
+
   // Owner: only one "done" state for प्रार्थना पत्र — निस्तारित. Old 'Finished' (बीट सूचना / NCR "समाप्त") rows become 'Nistarit'
   // (idempotent; disposal date = the day it was last changed when none is set).
   try {
