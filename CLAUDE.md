@@ -627,6 +627,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (also as 001_part1..4 for the phone), `002_check.sql`, `003_claim_for_app.sql` (claim_member_for: office app takes only CM/HM codes, InvestSuite
   only officer codes; a wrong-app code is not used up). Local test on a throw-away Postgres with Supabase stubs: `bash scripts/office/test_sql.sh`
   (RLS scenarios in scripts/office/test_rls.sql). Owner ran 001 + 002 (all ठीक) on 16/11/2026; 003 not yet confirmed.
+  Build 38 (office) works on the owner's phone: थाना + CM + 2 officers created, rows seen in Supabase.
 - Variant: `APP_VARIANT=office` (app.config.ts → name "InvestSuite कार्यालय", package `<id>.karyalay`, scheme investsuitekaryalay) +
   `EXPO_PUBLIC_APP_VARIANT=office` (JS: `IS_OFFICE`) — CI workflow input `variant` (investsuite | office → InvestSuite-Karyalay.apk).
   Root `_layout.tsx` default export = `IS_OFFICE ? <OfficeRoot/> : <InvestRootLayout/>` (office build: no SQLite/seed/reminders; index.ts loads the
