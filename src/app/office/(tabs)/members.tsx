@@ -1,30 +1,18 @@
 /** ③ सदस्य — list (सभी / अधिकारी / कार्यालय), ④ सदस्य जोड़ें → 6-digit code + WhatsApp; tap a member → actions. */
 import { useCallback, useMemo, useState } from 'react';
-import { Linking, Modal, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
+import { Linking, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { UserPlus } from 'lucide-react-native';
-import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import { addMember, listMembers, removeMember, resetCode, type MemberRow } from '@/office/officeApi';
 import {
   daysLeft, friendlyError, initials, inviteText, isOfficeRole, memberState, memberTitle, newMemberError, OFFICER_RANKS,
   ROLE_LABEL, sortMembers, spacedCode, STATE_LABEL, whatsappUrl, type MemberRole,
 } from '@/office/officeCore';
 import { useMe } from '@/office/useMe';
-import { Chips, ErrorText, Field, OfficeButton, OfficeCard, OfficeHeader, useOfficeColors, type OfficeColors } from '@/office/ui';
+import { Chips, ErrorText, Field, OfficeButton, OfficeCard, OfficeHeader, useOfficeColors } from '@/office/ui';
+import { BottomSheet } from '@/office/ui2';
 
 type Filter = 'all' | 'officer' | 'office';
-
-function Sheet({ visible, onClose, children, C }: { visible: boolean; onClose: () => void; children: React.ReactNode; C: OfficeColors }) {
-  return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable style={{ flex: 1, backgroundColor: '#0008' }} onPress={onClose} />
-      <View style={{ backgroundColor: C.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, maxHeight: '88%', paddingBottom: NAV_BAR_INSET }}>
-        <View style={{ width: 44, height: 5, borderRadius: 3, backgroundColor: C.border, alignSelf: 'center', marginTop: 10 }} />
-        <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }} keyboardShouldPersistTaps="handled">{children}</ScrollView>
-      </View>
-    </Modal>
-  );
-}
 
 export default function OfficeMembers() {
   const C = useOfficeColors();
@@ -149,8 +137,8 @@ export default function OfficeMembers() {
       </Pressable>
 
       {/* ④ सदस्य जोड़ें */}
-      <Sheet visible={adding} onClose={() => setAdding(false)} C={C}>
-        <Text style={{ fontSize: 18, fontWeight: '700', color: C.text }}>सदस्य जोड़ें</Text>
+      <BottomSheet visible={adding} onClose={() => setAdding(false)} title="सदस्य जोड़ें"
+        footer={made ? undefined : <OfficeButton label="जोड़ें और कोड बनाएँ" onPress={() => void save()} busy={busy} />}>
         {made ? (
           <>
             <Text style={{ fontSize: 15, fontWeight: '700', color: C.text }}>✓ {made.name} — सदस्य बन गया। इनका कोड:</Text>
@@ -176,16 +164,14 @@ export default function OfficeMembers() {
             <Field label="नाम" value={name} onChange={setName} placeholder="जैसे: श्याम सिंह" />
             <Field label="मोबाइल (WhatsApp के लिए)" value={mobile} onChange={setMobile} placeholder="10 अंक" keyboardType="phone-pad" maxLength={13} />
             <ErrorText text={formErr} />
-            <OfficeButton label="जोड़ें और कोड बनाएँ" onPress={() => void save()} busy={busy} />
           </>
         )}
-      </Sheet>
+      </BottomSheet>
 
       {/* actions on a member */}
-      <Sheet visible={!!sel} onClose={() => setSel(null)} C={C}>
+      <BottomSheet visible={!!sel} onClose={() => setSel(null)} title={sel ? memberTitle(sel) : ''}>
         {sel ? (
           <>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: C.text }}>{memberTitle(sel)}</Text>
             <Text style={{ fontSize: 13.5, color: C.muted }}>{ROLE_LABEL[sel.role]}{sel.mobile ? ` · ${sel.mobile}` : ''} · {STATE_LABEL[memberState(sel, sel.code)]}</Text>
             {newCode ? (
               <>
@@ -216,7 +202,7 @@ export default function OfficeMembers() {
             <OfficeButton label="बंद करें" kind="outline" onPress={() => setSel(null)} />
           </>
         ) : null}
-      </Sheet>
+      </BottomSheet>
     </>
   );
 }

@@ -654,6 +654,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   फिर से चालू, दोबारा भेजें when removed), (tabs)/dashboard (4 tiles → filtered list, प्रकार chips, अधिकारी-वार table → that officer's list, overdue list).
   App icon (owner chose B of 3 flat samples): badge + थाना भवन + कागज़ ✓ — assets/office/icon.png (1024), adaptive-icon.png (content in the 66%
   safe zone, bg #1E3A5F), source icon.svg; set only for APP_VARIANT=office in app.config.ts; also the welcome screen logo.
+  Sheets above the keyboard (owner: सदस्य जोड़ें hid behind it): ui2 `BottomSheet` = Modal statusBarTranslucent + `useSheetKeyboard` (grow-only kb height,
+  like SentenceFieldInput) as paddingBottom, maxHeight = window − kb − top inset, focused box scrolled into view (TextInput.State.currentlyFocusedInput +
+  measureLayout), main button in `footer` (stays above the keyboard). All office sheets use it (members add / actions, कागज़ filter, file pick, confirms).
   Tab labels = own `TabLabel` Text (default label cut Devanagari matras); Tabs `safeAreaInsets={{ bottom: 0 }}` (root KeyboardInsetView pads).
   Next: ग — कागज़ InvestSuite में आना (pp / court rows with source 'office'), 🔔, status back (received / seen / done / removed).
 

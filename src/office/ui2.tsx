@@ -2,8 +2,9 @@
  * InvestSuite कार्यालय — more UI pieces for the कागज़ screens (date field, person cards, status pill, segmented
  * control, bottom sheet, section card). Plain style objects; Modal content pads by NAV_BAR_INSET (CLAUDE.md).
  */
-import { useState, type ReactNode } from 'react';
-import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Keyboard, Modal, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CalendarDays, Plus, X } from 'lucide-react-native';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
@@ -150,19 +151,67 @@ export function PersonCards({ people, onChange, addLabel, cardLabel, min = 0, wi
   );
 }
 
+/**
+ * Keyboard height while a sheet is open (owner: the सदस्य जोड़ें sheet hid behind the keyboard). A Modal is its own
+ * window — the root KeyboardInsetView does not move it — so the sheet pads itself (same as SentenceFieldInput, which
+ * works on the phone). Grow-only while open: the suggestion strip coming and going must not make the sheet jump.
+ */
+export function useSheetKeyboard(visible: boolean): number {
+  const [kb, setKb] = useState(0);
+  const kbRef = useRef(0);
+  useEffect(() => {
+    if (!visible) return;
+    const set = (h: number) => { kbRef.current = h; setKb(h); };
+    const show = Keyboard.addListener('keyboardDidShow', (e) => {
+      const h = Math.round(e.endCoordinates?.height ?? 0);
+      if (h > kbRef.current) set(h);
+    });
+    const hide = Keyboard.addListener('keyboardDidHide', () => set(0));
+    return () => { show.remove(); hide.remove(); set(0); };
+  }, [visible]);
+  return kb;
+}
+
+/**
+ * Bottom sheet that stays above the keyboard: the sheet sits on top of it, its height shrinks so the title stays on
+ * screen, the box being typed in is scrolled into view, and the footer (main button) stays visible above the keyboard.
+ */
 export function BottomSheet({ visible, onClose, title, children, footer }: { visible: boolean; onClose: () => void; title: string; children: ReactNode; footer?: ReactNode }) {
   const C = useOfficeColors();
+  const kb = useSheetKeyboard(visible);
+  const { height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const scrollRef = useRef<ScrollView>(null);
+  const innerRef = useRef<View>(null);
+
+  // bring the focused box into view once the keyboard is up
+  useEffect(() => {
+    if (!kb) return;
+    const t = setTimeout(() => {
+      const input = TextInput.State.currentlyFocusedInput?.() as unknown as { measureLayout?: (rel: unknown, ok: (x: number, y: number) => void, fail?: () => void) => void } | null;
+      if (!input?.measureLayout || !innerRef.current) return;
+      try {
+        input.measureLayout(innerRef.current, (_x, y) => scrollRef.current?.scrollTo({ y: Math.max(0, y - 60), animated: true }), () => {});
+      } catch { /* the box is not inside this sheet */ }
+    }, 80);
+    return () => clearTimeout(t);
+  }, [kb]);
+
+  const bottomPad = Math.max(NAV_BAR_INSET, kb);
+  const maxH = Math.max(260, height - kb - insets.top - 24);
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={{ flex: 1, backgroundColor: '#0008' }} onPress={onClose} />
-      <View style={{ backgroundColor: C.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, maxHeight: '85%', paddingBottom: NAV_BAR_INSET }}>
+      <View style={{ backgroundColor: C.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, maxHeight: kb ? maxH : '85%', paddingBottom: bottomPad }}>
         <View style={{ width: 44, height: 5, borderRadius: 3, backgroundColor: C.border, alignSelf: 'center', marginTop: 10 }} />
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 10, paddingBottom: 4 }}>
           <Text style={{ flex: 1, fontSize: 17, fontWeight: '700', color: C.text }}>{title}</Text>
           <Pressable onPress={onClose} hitSlop={10} accessibilityLabel="बंद करें"><X size={22} color={C.muted} /></Pressable>
         </View>
-        <ScrollView contentContainerStyle={{ padding: 16, gap: 14 }} keyboardShouldPersistTaps="handled">{children}</ScrollView>
-        {footer ? <View style={{ padding: 16, paddingTop: 8, borderTopWidth: 1, borderTopColor: C.border }}>{footer}</View> : null}
+        <ScrollView ref={scrollRef} style={{ flexShrink: 1 }} contentContainerStyle={{ padding: 16, gap: 14 }} keyboardShouldPersistTaps="handled">
+          <View ref={innerRef} collapsable={false} style={{ gap: 14 }}>{children}</View>
+        </ScrollView>
+        {footer ? <View style={{ padding: 16, paddingTop: 10, borderTopWidth: 1, borderTopColor: C.border }}>{footer}</View> : null}
       </View>
     </Modal>
   );
