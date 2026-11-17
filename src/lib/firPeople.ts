@@ -27,7 +27,8 @@ const tenDigits = (m: string) => {
   const d = m.replace(/\D/g, '');
   return d.length === 12 && d.startsWith('91') ? d.slice(2) : d;
 };
-const womanBy = (gender: string, relation: string) => gender === 'महिला' || relation === 'पत्नी' || relation === 'पुत्री';
+const womanBy = (gender: string, relation: string) =>
+  gender === 'महिला' || gender === 'ट्रांसजेंडर' || ['पत्नी', 'पुत्री', 'दत्तक पुत्री', 'संतान', 'गुरु'].includes(relation);
 
 /** वादी first, then every named अभियुक्त (unknown / deleted left out). */
 export function firPeople(fir: (FirLike & { complainant_jati?: string | null }) | null, accused: AccusedLike[] = []): FirPerson[] {
@@ -100,8 +101,12 @@ export function toItemRow(p: FirPerson, columns: { key: string; type?: string; d
 }
 
 /** A card / row nobody typed in yet (the empty one a group opens with) — replaced by the picked people. */
+/** Prefilled parts of a new person card (थाना / जनपद from सेटिंग) don't make it "filled". */
+const CARD_DEFAULT_KEYS = ['addrMode', 'villageKind', 'thana', 'district'];
 function isBlank(o: Record<string, unknown>, ignore: string[] = []): boolean {
-  return Object.entries(o).every(([k, v]) => k.startsWith('_') || ignore.includes(k) || s(v) === '');
+  const onlyDefaults = o.addrMode === 'parts' && !s(o.village) && !s(o.house);
+  return Object.entries(o).every(([k, v]) => k.startsWith('_') || ignore.includes(k) || s(v) === ''
+    || (onlyDefaults && (CARD_DEFAULT_KEYS.includes(k) || k === 'fullAddress')));
 }
 
 /**

@@ -54,3 +54,11 @@ test('owner (ख): group fields are not filled by themselves from the FIR', () =
   assert.ok(!skipPersonMarker('text', '@FIR.complainant_name')); // loose boxes keep it until they become groups
   assert.ok(!skipPersonMarker('person_group', '@FIR.fir_number'));
 });
+
+test('new card with only prefilled थाना / जनपद counts as blank', () => {
+  const cur = JSON.stringify([{ _id: 'a', name: '', fatherOrHusbandName: '', fullAddress: 'थाना बछरावां जनपद रायबरेली', addrMode: 'parts',
+    villageKind: 'ग्राम', thana: 'बछरावां', district: 'रायबरेली', village: '', house: '' }]);
+  const out = JSON.parse(insertIntoGroup(cur, [{ name: 'रामू', fatherOrHusbandName: 'श्याम' }]));
+  assert.equal(out.length, 1);
+  assert.equal(out[0].name, 'रामू');
+});

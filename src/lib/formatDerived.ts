@@ -274,7 +274,8 @@ export function namedCards(json: string | null | undefined): Card[] {
 /** पुत्री / पत्नी, or gender महिला. */
 export function isWomanCard(c: Card): boolean {
   const rel = str(c.relationType ?? c.relation);
-  return rel === 'पुत्री' || rel === 'पत्नी' || str(c.gender) === 'महिला';
+  // ट्रांसजेंडर (संतान / गुरु) = स्त्रीलिंग grammar (owner) — same rule as personCard.isFeminine
+  return ['पुत्री', 'पत्नी', 'दत्तक पुत्री', 'संतान', 'गुरु'].includes(rel) || ['महिला', 'ट्रांसजेंडर'].includes(str(c.gender));
 }
 
 /** Word on one आवेदक card: आवेदक / आवेदिका. */

@@ -8,11 +8,12 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
-import { avedakCardWord, fatherLabelOf, genderOfRelation } from '@/lib/ppPeople';
+import { PersonGroupInput, initPersonGroup, parsePersonGroup, type PersonEntry } from '@/components/ui/PersonGroupInput';
+import { cardFromPPRow, ppRowFromCard, composeAddress } from '@/lib/personCard';
 import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachmentRepo';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { Plus, Trash2, ChevronDown, Calendar, Sparkles } from 'lucide-react-native';
+import { ChevronDown, Calendar, Sparkles } from 'lucide-react-native';
 import { OcrScanModal } from '@/components/common/OcrScanModal';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import {
@@ -25,9 +26,6 @@ import {
   _todayString,
   type PetitionType,
 } from '@/lib/db/prarthnaPatraRepo';
-import { getWorkspaceSettings } from '@/lib/db/workspaceRepo';
-import { getAllGramPanchayats } from '@/lib/db/gramPanchayatRepo';
-import { getAllHamlets } from '@/lib/db/hamletRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -61,64 +59,29 @@ function formatDisplay(s: string): string {
   return `${d}/${m}/${y}`;
 }
 
-// ── Form types ────────────────────────────────────────────────────────────────
+// ── People = group cards (owner, 2026-11-17: the format group card) ─────────────
 
-interface ComplainantForm {
-  _key: string; id?: string;
-  name: string; father_husband_name: string; mobile: string; alternate_mobile: string;
-  full_address: string; village: string; police_station: string; district: string;
-  age: string; gender: string; jati: string; relation: string;
+/** Saved rows → group JSON (old rows keep their typed address). */
+function rowsToGroup(rows: Array<Parameters<typeof cardFromPPRow>[0]>): string {
+  return rows.length ? JSON.stringify(rows.map((r) => cardFromPPRow(r))) : initPersonGroup();
 }
-interface AccusedForm {
-  _key: string; id?: string;
-  name: string; father_name: string; mobile: string; alternate_mobile: string;
-  full_address: string; village: string; police_station: string; district: string;
-  jati: string; age: string; gender: string; remarks: string; relation: string;
-}
-function emptyComplainant(): ComplainantForm {
-  return {
-    _key: Math.random().toString(36).slice(2),
-    name: '', father_husband_name: '', mobile: '', alternate_mobile: '',
-    full_address: '', village: '', police_station: '', district: '',
-    age: '', gender: '', jati: '', relation: '',
-  };
-}
-function emptyAccused(): AccusedForm {
-  return {
-    _key: Math.random().toString(36).slice(2),
-    name: '', father_name: '', mobile: '', alternate_mobile: '',
-    full_address: '', village: '', police_station: '', district: '',
-    jati: '', age: '', gender: '', remarks: '', relation: '',
-  };
+
+/** Put OCR text into the first card (empty boxes only). */
+function ocrIntoFirst(json: string, x: { name?: string; father?: string; mobile?: string; address?: string }): string {
+  const list = parsePersonGroup(json);
+  const f: PersonEntry = { ...list[0] };
+  if (x.name && !f.name.trim()) f.name = x.name;
+  if (x.father && !f.fatherOrHusbandName.trim()) f.fatherOrHusbandName = x.father;
+  if (x.mobile && !f.mobile.trim()) f.mobile = x.mobile.replace(/\D/g, '').slice(-10);
+  if (x.address && !(f.village ?? '').trim() && !(f.house ?? '').trim()) {
+    f.addrMode = 'free';
+    f.fullAddress = x.address;
+  }
+  if (f.addrMode === 'parts') f.fullAddress = composeAddress(f);
+  return JSON.stringify([f, ...list.slice(1)]);
 }
 
 // ── UI atoms ───────────────────────────────────────────────────────────────────
-
-/** सम्बन्ध पुत्र / पुत्री / पत्नी (owner) — sets लिंग and the "पिता / पति का नाम" label; tap again = clear. */
-function RelationChips({ value, onChange }: { value: string; onChange: (rel: string) => void }) {
-  const { colorScheme } = useColorScheme();
-  const pal = colorScheme === 'dark' ? THEME.dark : THEME.light;
-  return (
-    <View style={{ marginBottom: T.space.sm }}>
-      <Text style={{ ...T.caption2, color: pal.mutedForeground, marginBottom: 4 }}>सम्बन्ध (लिंग अपने आप)</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-        {['पुत्र', 'पुत्री', 'पत्नी'].map((r) => {
-          const on = value === r;
-          return (
-            <Pressable key={r} onPress={() => onChange(on ? '' : r)} accessibilityLabel={r}>
-              <View style={{
-                borderWidth: 1, borderColor: on ? pal.primary : pal.border, backgroundColor: on ? pal.primary : pal.card,
-                borderRadius: 999, paddingHorizontal: 14, paddingVertical: 6,
-              }}>
-                <Text style={{ fontSize: 13, fontWeight: '600', color: on ? pal.primaryForeground : pal.foreground }}>{r}</Text>
-              </View>
-            </Pressable>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
 
 function useMuted(): string {
   const { colorScheme } = useColorScheme();
@@ -282,13 +245,15 @@ export default function AddPrarthnaPatraScreen() {
   const [matter, setMatter] = useState('');
   const [pendingFiles, setPendingFiles] = useState<PendingAttachment[]>([]);
   const [investigatorName, setInvestigatorName] = useState('');
-  const [complainants, setComplainants] = useState<ComplainantForm[]>([emptyComplainant()]);
-  const [accused, setAccused] = useState<AccusedForm[]>([]);
+  const [complainants, setComplainants] = useState<string>(() => initPersonGroup());
+  const [accused, setAccused] = useState<string>(() => initPersonGroup());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [backDialogOpen, setBackDialogOpen] = useState(false);
   const savedRef = useRef(false);
+  /** ids of the rows read for edit — a card with one of these updates that row */
+  const originalIds = useRef<Set<string>>(new Set());
   const isInitializing = useRef(true);
   const savingRef = useRef(false);
   const [ocrModalVisible, setOcrModalVisible] = useState(false);
@@ -298,78 +263,15 @@ export default function AddPrarthnaPatraScreen() {
     if (extracted.matter && extracted.matter.trim()) {
       setMatter((prev) => (prev ? `${prev}\n${extracted.matter}` : extracted.matter));
     }
-    setComplainants((prev) => {
-      const first = prev[0] ?? emptyComplainant();
-      const updated: ComplainantForm = {
-        ...first,
-        name: extracted.complainant_name || first.name,
-        father_husband_name: extracted.complainant_father || first.father_husband_name,
-        mobile: extracted.complainant_mobile || first.mobile,
-        full_address: extracted.complainant_address || first.full_address,
-        village: extracted.complainant_village || first.village,
-        police_station: extracted.complainant_police_station || first.police_station,
-      };
-      return [updated, ...prev.slice(1)];
-    });
+    const addr = [extracted.complainant_address, extracted.complainant_village ? `ग्राम ${extracted.complainant_village}` : '',
+      extracted.complainant_police_station ? `थाना ${extracted.complainant_police_station}` : ''].filter((v) => v && v.trim()).join(' ');
+    setComplainants((prev) => ocrIntoFirst(prev, {
+      name: extracted.complainant_name, father: extracted.complainant_father, mobile: extracted.complainant_mobile, address: addr,
+    }));
     if (extracted.accused_name && extracted.accused_name.trim()) {
-      setAccused((prev) => {
-        const first = prev[0] ?? emptyAccused();
-        const updated: AccusedForm = {
-          ...first,
-          name: extracted.accused_name || first.name,
-          father_name: extracted.accused_father || first.father_name,
-          full_address: extracted.accused_address || first.full_address,
-        };
-        return [updated, ...prev.slice(1)];
-      });
+      setAccused((prev) => ocrIntoFirst(prev, { name: extracted.accused_name, father: extracted.accused_father, address: extracted.accused_address }));
     }
   };
-
-  // Feature 1: village suggestions from Halka (GP names + hamlet names)
-  const [villageSuggestions, setVillageSuggestions] = useState<string[]>([]);
-  // activeVillageField: { side: 'complainant'|'accused', idx, field }
-  const [activeVillageField, setActiveVillageField] = useState<{
-    side: 'complainant' | 'accused'; idx: number;
-  } | null>(null);
-
-  // Feature 1: load all GP + hamlet names once on mount
-  useFocusEffect(useCallback(() => {
-    (async () => {
-      const [gps, hamlets] = await Promise.all([
-        getAllGramPanchayats(),
-        // getAllHamlets returns HamletWithGP which has .name
-        getAllHamlets ? getAllHamlets() : Promise.resolve([]),
-      ]);
-      const names = [
-        ...gps.map((g) => g.name),
-        ...hamlets.map((h: { name: string }) => h.name),
-      ];
-      // deduplicate
-      setVillageSuggestions([...new Set(names)]);
-    })();
-  }, []));
-
-  // Feature 1: workspace defaults for police_station + district
-  useFocusEffect(useCallback(() => {
-    if (isEdit) return; // edit mode: keep existing values
-    (async () => {
-      const ws = await getWorkspaceSettings();
-      if (!ws) return;
-      const ps = ws.police_station ?? '';
-      const dist = ws.district ?? '';
-      if (!ps && !dist) return;
-      setComplainants((prev) => prev.map((c, i) =>
-        i === 0
-          ? {
-              ...c,
-              police_station: c.police_station || ps,
-              district: c.district || dist,
-            }
-          : c
-      ));
-    })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []));
 
   // Feature 2: auto-set deadline = dateOfReceipt + 10 on every type / receipt change
   const handleTypeChange = (t: PetitionType) => {
@@ -399,28 +301,9 @@ export default function AddPrarthnaPatraScreen() {
       setDeadlineDate(pp.deadline_date);
       setMatter(pp.matter);
       setInvestigatorName(pp.investigator_name);
-      setComplainants(
-        pp.complainants.length > 0
-          ? pp.complainants.map((c) => ({
-              _key: c.id, id: c.id,
-              name: c.name, father_husband_name: c.father_husband_name,
-              mobile: c.mobile, alternate_mobile: c.alternate_mobile,
-              full_address: c.full_address, village: c.village,
-              police_station: c.police_station, district: c.district,
-              age: c.age, gender: c.gender, jati: c.jati, relation: c.relation ?? '',
-            }))
-          : [emptyComplainant()]
-      );
-      setAccused(
-        pp.accused.map((a) => ({
-          _key: a.id, id: a.id,
-          name: a.name, father_name: a.father_name,
-          mobile: a.mobile, alternate_mobile: a.alternate_mobile,
-          full_address: a.full_address, village: a.village,
-          police_station: a.police_station, district: a.district,
-          jati: a.jati, age: a.age, gender: a.gender, remarks: a.remarks, relation: a.relation ?? '',
-        }))
-      );
+      originalIds.current = new Set([...pp.complainants.map((c) => c.id), ...pp.accused.map((a) => a.id)]);
+      setComplainants(rowsToGroup(pp.complainants.map((c) => ({ ...c, father: c.father_husband_name }))));
+      setAccused(rowsToGroup(pp.accused.map((a) => ({ ...a, father: a.father_name }))));
       // Fix 2: wrap in setTimeout so the dirty-state useEffect cannot fire
       // before React has flushed the batched setState calls above. Without
       // this, isInitializing.current flips to false synchronously inside the
@@ -434,13 +317,6 @@ export default function AddPrarthnaPatraScreen() {
     if (isInitializing.current) return;
     if (!savedRef.current) setIsDirty(true);
   }, [petitionType, dateOfReceipt, deadlineDate, matter, investigatorName, complainants, accused]);
-
-  // Feature 1: village autocomplete helpers
-  const getVillageMatches = (query: string): string[] => {
-    if (!query.trim()) return [];
-    const q = query.toLowerCase();
-    return villageSuggestions.filter((s) => s.toLowerCase().includes(q)).slice(0, 8);
-  };
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -459,7 +335,7 @@ export default function AddPrarthnaPatraScreen() {
     if (!petitionType) e.petitionType = t('prarthnaPatra.form.errorPetitionType');
     if (!dateOfReceipt) e.dateOfReceipt = t('prarthnaPatra.form.errorDateOfReceipt');
     if (!matter.trim()) e.matter = t('prarthnaPatra.form.errorMatter');
-    if (!complainants[0]?.name.trim()) e.complainant0 = t('prarthnaPatra.form.errorComplainantRequired');
+    if (!parsePersonGroup(complainants)[0]?.name.trim()) e.complainant0 = t('prarthnaPatra.form.errorComplainantRequired');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -474,41 +350,19 @@ export default function AddPrarthnaPatraScreen() {
     try {
       // Fix 3: safe payload — omit undefined id, strict name filter on accused,
       // keep age as string (DB column is TEXT DEFAULT '').
-      const cPayload = complainants
-        .filter((c, i) => i === 0 || (c.name && c.name.trim() !== ''))
-        .map((c) => ({
-          ...(c.id ? { id: c.id } : {}),
-          name: (c.name || '').trim(),
-          father_husband_name: c.father_husband_name,
-          mobile: c.mobile,
-          alternate_mobile: c.alternate_mobile,
-          full_address: c.full_address,
-          village: c.village,
-          police_station: c.police_station,
-          district: c.district,
-          age: c.age,
-          gender: c.gender,
-          jati: c.jati,
-          relation: c.relation,
-        }));
-      const aPayload = accused
-        .filter((a) => a.name && a.name.trim() !== '')
-        .map((a) => ({
-          ...(a.id ? { id: a.id } : {}),
-          name: (a.name || '').trim(),
-          father_name: a.father_name,
-          mobile: a.mobile,
-          alternate_mobile: a.alternate_mobile,
-          full_address: a.full_address,
-          village: a.village,
-          police_station: a.police_station,
-          district: a.district,
-          jati: a.jati,
-          age: a.age,
-          gender: a.gender,
-          remarks: a.remarks,
-          relation: a.relation,
-        }));
+      const ids = (e: PersonEntry) => (originalIds.current.has(e._id ?? '') ? { id: e._id as string } : {});
+      const cPayload = parsePersonGroup(complainants)
+        .filter((c, i) => i === 0 || c.name.trim() !== '')
+        .map((c) => {
+          const { father, remarks: _r, ...row } = ppRowFromCard(c, false);
+          return { ...ids(c), ...row, father_husband_name: father };
+        });
+      const aPayload = parsePersonGroup(accused)
+        .filter((a) => a.name.trim() !== '')
+        .map((a) => {
+          const { father, ...row } = ppRowFromCard(a, true);
+          return { ...ids(a), ...row, father_name: father, remarks: row.remarks ?? '' };
+        });
 
       if (isEdit && editId) {
         await updatePrarthnaPatra(editId, {
@@ -542,23 +396,6 @@ export default function AddPrarthnaPatraScreen() {
       setSaving(false);
     }
   };
-
-  // Complainant helpers
-  const updateComplainant = (idx: number, field: keyof ComplainantForm, val: string) => {
-    setComplainants((prev) => prev.map((c, i) => i === idx ? { ...c, [field]: val } : c));
-  };
-  const addComplainant = () => setComplainants((p) => [...p, emptyComplainant()]);
-  const removeComplainant = (idx: number) => {
-    if (complainants.length === 1) return;
-    setComplainants((p) => p.filter((_, i) => i !== idx));
-  };
-
-  // Accused helpers
-  const updateAccused = (idx: number, field: keyof AccusedForm, val: string) => {
-    setAccused((prev) => prev.map((a, i) => i === idx ? { ...a, [field]: val } : a));
-  };
-  const addAccused = () => setAccused((p) => [...p, emptyAccused()]);
-  const removeAccused = (idx: number) => setAccused((p) => p.filter((_, i) => i !== idx));
 
   return (
     <KeyboardAvoidingView
@@ -654,152 +491,21 @@ export default function AddPrarthnaPatraScreen() {
 
           {/* ── Complainants ── */}
           <Section title={petitionType === 'बीट सूचना' ? t('prarthnaPatra.form.sectionComplainantSourceDetails') : t('prarthnaPatra.form.sectionComplainantDetails')} />
-          {complainants.map((c, idx) => {
-            const villageMatches = getVillageMatches(c.village);
-            const showVillageSug = activeVillageField?.side === 'complainant' && activeVillageField.idx === idx && villageMatches.length > 0;
-            return (
-              <View
-                key={c._key}
-                style={{
-                  borderWidth: 1, borderColor: BORDER, borderRadius: 14,
-                  padding: T.space.md - 2, marginBottom: T.space.sm + 2, backgroundColor: SURFACE,
-                }}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: T.space.sm + 2 }}>
-                  <Text style={{ ...T.footnote, fontWeight: T.weight.semibold, color: palette.foreground }}>
-                    {t('prarthnaPatra.form.complainantCardTitle', { number: idx + 1 })}
-                  </Text>
-                  {c.name.trim() ? (
-                    <View style={{ backgroundColor: '#FEF3C7', borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2, marginLeft: 8, marginRight: 'auto' }}>
-                      <Text style={{ fontSize: 11.5, fontWeight: '700', color: '#92400E' }}>
-                        {avedakCardWord({ relationType: c.relation, gender: c.gender })}
-                      </Text>
-                    </View>
-                  ) : null}
-                  {complainants.length > 1 && (
-                    <Pressable onPress={() => removeComplainant(idx)}>
-                      <Trash2 size={15} color="#DC2626" />
-                    </Pressable>
-                  )}
-                </View>
-                <Field label={t('prarthnaPatra.form.fieldName')} error={idx === 0 ? errors.complainant0 : undefined}>
-                  <Input
-                    clearCopy
-                    value={c.name}
-                    onChangeText={(v) => {
-                      updateComplainant(idx, 'name', v);
-                      // Fix 5: clear complainant0 error as soon as the user types
-                      if (idx === 0 && errors.complainant0) setErrors((prev) => ({ ...prev, complainant0: '' }));
-                    }}
-                    placeholder={t('prarthnaPatra.form.fieldFullName')}
-                  />
-                </Field>
-                <RelationChips
-                  value={c.relation}
-                  onChange={(rel) => { updateComplainant(idx, 'relation', rel); const g = genderOfRelation(rel); if (g) updateComplainant(idx, 'gender', g); }}
-                />
-                <Field label={c.relation ? fatherLabelOf(c.relation) : t('prarthnaPatra.form.fieldFatherHusband')}>
-                  <Input clearCopy value={c.father_husband_name} onChangeText={(v) => updateComplainant(idx, 'father_husband_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherHusband')} />
-                </Field>
-                <View style={{ flexDirection: 'row', gap: T.space.sm }}>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldMobile')}>
-                      <Input type="mobile" value={c.mobile} onChangeText={(v) => updateComplainant(idx, 'mobile', v)} placeholder={t('prarthnaPatra.form.fieldMobile')} />
-                    </Field>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldAltMobile')}>
-                      <Input type="mobile" value={c.alternate_mobile} onChangeText={(v) => updateComplainant(idx, 'alternate_mobile', v)} placeholder={t('prarthnaPatra.form.fieldAltMobile')} />
-                    </Field>
-                  </View>
-                </View>
-                <Field label={t('prarthnaPatra.form.fieldFullAddress')}>
-                  <Input clearCopy type="multiline" value={c.full_address} onChangeText={(v) => updateComplainant(idx, 'full_address', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldFullAddress')} />
-                </Field>
-                {/* Village with autocomplete */}
-                <View>
-                  <Field label={t('prarthnaPatra.form.fieldVillage')}>
-                    <Input
-                      value={c.village}
-                      onChangeText={(v) => {
-                        updateComplainant(idx, 'village', v);
-                        setActiveVillageField({ side: 'complainant', idx });
-                      }}
-                      onFocus={() => setActiveVillageField({ side: 'complainant', idx })}
-                      onBlur={() => setActiveVillageField(null)}
-                      placeholder={t('prarthnaPatra.form.placeholderVillage')}
-                    />
-                  </Field>
-                  {showVillageSug && (
-                    <View style={{
-                      position: 'absolute', top: '100%', left: 0, right: 0,
-                      zIndex: 999,
-                      borderWidth: 1, borderColor: BORDER, borderRadius: 10,
-                      backgroundColor: SURFACE, marginTop: 2,
-                      overflow: 'hidden',
-                    }}>
-                      {villageMatches.map((s) => (
-                        <Pressable
-                          key={s}
-                          onPress={() => {
-                            updateComplainant(idx, 'village', s);
-                            setActiveVillageField(null);
-                          }}
-                          onPressIn={() => {
-                            updateComplainant(idx, 'village', s);
-                            setActiveVillageField(null);
-                          }}
-                          style={{ paddingHorizontal: 12, paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: BORDER }}
-                        >
-                          <Text style={{ ...T.footnote, color: palette.foreground }}>{s}</Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  )}
-                </View>
-                <View style={{ flexDirection: 'row', gap: T.space.sm }}>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldDistrict')}>
-                      <Input value={c.district} onChangeText={(v) => updateComplainant(idx, 'district', v)} placeholder={t('prarthnaPatra.form.fieldDistrict')} />
-                    </Field>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldPoliceStation')}>
-                      <Input value={c.police_station} onChangeText={(v) => updateComplainant(idx, 'police_station', v)} placeholder={t('prarthnaPatra.form.fieldPoliceStation')} />
-                    </Field>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'row', gap: T.space.sm }}>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldCaste')}>
-                      <Input value={c.jati} onChangeText={(v) => updateComplainant(idx, 'jati', v)} placeholder={t('prarthnaPatra.form.fieldCaste')} />
-                    </Field>
-                  </View>
-                  <View style={{ width: 68 }}>
-                    <Field label={t('prarthnaPatra.form.fieldAge')}>
-                      <Input type="age" value={c.age} onChangeText={(v) => updateComplainant(idx, 'age', v)} placeholder={t('prarthnaPatra.form.fieldAge')} />
-                    </Field>
-                  </View>
-                  <View style={{ width: 84 }}>
-                    <Field label={t('prarthnaPatra.form.fieldGender')}>
-                      <Input value={c.gender} onChangeText={(v) => updateComplainant(idx, 'gender', v)} placeholder={t('prarthnaPatra.form.placeholderGender')} />
-                    </Field>
-                  </View>
-                </View>
-              </View>
-            );
-          })}
-          <Pressable
-            onPress={addComplainant}
-            style={{
-              borderWidth: 1, borderStyle: 'dashed', borderColor: BORDER,
-              borderRadius: 10, padding: T.space.sm + 3, alignItems: 'center',
-              flexDirection: 'row', justifyContent: 'center', gap: T.space.sm - 2, marginBottom: T.space.xs,
-            }}
-          >
-            <Plus size={14} color={palette.mutedForeground} />
-            <Text style={{ ...T.footnote, color: palette.mutedForeground }}>{t('prarthnaPatra.form.addAnotherComplainant')}</Text>
-          </Pressable>
+          {errors.complainant0 ? (
+            <Text style={{ ...T.caption2, color: '#DC2626', marginBottom: 4 }}>{errors.complainant0}</Text>
+          ) : null}
+          <View style={{ marginBottom: T.space.xs }}>
+            <PersonGroupInput
+              keyName="pp_avedak"
+              value={complainants}
+              onChange={(_k, v) => {
+                setComplainants(v);
+                if (errors.complainant0 && parsePersonGroup(v)[0]?.name.trim()) setErrors((prev) => ({ ...prev, complainant0: '' }));
+              }}
+              role="avedak"
+              addressOptional
+            />
+          </View>
 
           {/* ── Matter ── */}
           <Section title={petitionType === 'NCR' ? t('prarthnaPatra.form.sectionComplaintDetails') : t('prarthnaPatra.form.sectionMatter')} />
@@ -833,137 +539,15 @@ export default function AddPrarthnaPatraScreen() {
 
           {/* ── Accused ── */}
           <Section title={t('prarthnaPatra.form.sectionAccusedDetails')} />
-          {accused.map((a, idx) => {
-            const villageMatches = getVillageMatches(a.village);
-            const showVillageSug = activeVillageField?.side === 'accused' && activeVillageField.idx === idx && villageMatches.length > 0;
-            return (
-              <View
-                key={a._key}
-                style={{
-                  borderWidth: 1, borderColor: BORDER, borderRadius: 14,
-                  padding: T.space.md - 2, marginBottom: T.space.sm + 2, backgroundColor: SURFACE,
-                }}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: T.space.sm + 2 }}>
-                  <Text style={{ ...T.footnote, fontWeight: T.weight.semibold, color: palette.foreground }}>
-                    {t('prarthnaPatra.form.accusedCardTitle', { number: idx + 1 })}
-                  </Text>
-                  <Pressable onPress={() => removeAccused(idx)}>
-                    <Trash2 size={15} color="#DC2626" />
-                  </Pressable>
-                </View>
-                <Field label={t('prarthnaPatra.form.fieldNameOptional')}>
-                  <Input clearCopy value={a.name} onChangeText={(v) => updateAccused(idx, 'name', v)} placeholder={t('prarthnaPatra.form.fieldFullName')} />
-                </Field>
-                <RelationChips
-                  value={a.relation}
-                  onChange={(rel) => { updateAccused(idx, 'relation', rel); const g = genderOfRelation(rel); if (g) updateAccused(idx, 'gender', g); }}
-                />
-                <Field label={a.relation ? fatherLabelOf(a.relation) : t('prarthnaPatra.form.fieldFatherName')}>
-                  <Input clearCopy value={a.father_name} onChangeText={(v) => updateAccused(idx, 'father_name', v)} placeholder={t('prarthnaPatra.form.placeholderFatherName')} />
-                </Field>
-                <View style={{ flexDirection: 'row', gap: T.space.sm }}>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldMobile')}>
-                      <Input type="mobile" value={a.mobile} onChangeText={(v) => updateAccused(idx, 'mobile', v)} placeholder={t('prarthnaPatra.form.fieldMobile')} />
-                    </Field>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldAltMobile')}>
-                      <Input type="mobile" value={a.alternate_mobile} onChangeText={(v) => updateAccused(idx, 'alternate_mobile', v)} placeholder={t('prarthnaPatra.form.fieldAltMobile')} />
-                    </Field>
-                  </View>
-                </View>
-                <Field label={t('prarthnaPatra.form.fieldFullAddress')}>
-                  <Input clearCopy type="multiline" value={a.full_address} onChangeText={(v) => updateAccused(idx, 'full_address', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldFullAddress')} />
-                </Field>
-                {/* Village with autocomplete */}
-                <View>
-                  <Field label={t('prarthnaPatra.form.fieldVillage')}>
-                    <Input
-                      value={a.village}
-                      onChangeText={(v) => {
-                        updateAccused(idx, 'village', v);
-                        setActiveVillageField({ side: 'accused', idx });
-                      }}
-                      onFocus={() => setActiveVillageField({ side: 'accused', idx })}
-                      onBlur={() => setActiveVillageField(null)}
-                      placeholder={t('prarthnaPatra.form.placeholderVillage')}
-                    />
-                  </Field>
-                  {showVillageSug && (
-                    <View style={{
-                      position: 'absolute', top: '100%', left: 0, right: 0,
-                      zIndex: 999,
-                      borderWidth: 1, borderColor: BORDER, borderRadius: 10,
-                      backgroundColor: SURFACE, marginTop: 2,
-                      overflow: 'hidden',
-                    }}>
-                      {villageMatches.map((s) => (
-                        <Pressable
-                          key={s}
-                          onPress={() => {
-                            updateAccused(idx, 'village', s);
-                            setActiveVillageField(null);
-                          }}
-                          onPressIn={() => {
-                            updateAccused(idx, 'village', s);
-                            setActiveVillageField(null);
-                          }}
-                          style={{ paddingHorizontal: 12, paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: BORDER }}
-                        >
-                          <Text style={{ ...T.footnote, color: palette.foreground }}>{s}</Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  )}
-                </View>
-                <View style={{ flexDirection: 'row', gap: T.space.sm }}>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldDistrict')}>
-                      <Input value={a.district} onChangeText={(v) => updateAccused(idx, 'district', v)} placeholder={t('prarthnaPatra.form.fieldDistrict')} />
-                    </Field>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldPoliceStation')}>
-                      <Input value={a.police_station} onChangeText={(v) => updateAccused(idx, 'police_station', v)} placeholder={t('prarthnaPatra.form.fieldPoliceStation')} />
-                    </Field>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'row', gap: T.space.sm }}>
-                  <View style={{ flex: 1 }}>
-                    <Field label={t('prarthnaPatra.form.fieldCaste')}>
-                      <Input value={a.jati} onChangeText={(v) => updateAccused(idx, 'jati', v)} placeholder={t('prarthnaPatra.form.fieldCaste')} />
-                    </Field>
-                  </View>
-                  <View style={{ width: 72 }}>
-                    <Field label={t('prarthnaPatra.form.fieldAge')}>
-                      <Input type="age" value={a.age} onChangeText={(v) => updateAccused(idx, 'age', v)} placeholder={t('prarthnaPatra.form.fieldAge')} />
-                    </Field>
-                  </View>
-                  <View style={{ width: 84 }}>
-                    <Field label={t('prarthnaPatra.form.fieldGender')}>
-                      <Input value={a.gender} onChangeText={(v) => updateAccused(idx, 'gender', v)} placeholder={t('prarthnaPatra.form.placeholderGender')} />
-                    </Field>
-                  </View>
-                </View>
-                <Field label={t('prarthnaPatra.form.fieldRemarks')}>
-                  <Input type="multiline" value={a.remarks} onChangeText={(v) => updateAccused(idx, 'remarks', v)} numberOfLines={2} placeholder={t('prarthnaPatra.form.fieldRemarks')} />
-                </Field>
-              </View>
-            );
-          })}
-          <Pressable
-            onPress={addAccused}
-            style={{
-              borderWidth: 1, borderStyle: 'dashed', borderColor: BORDER,
-              borderRadius: 10, padding: T.space.sm + 3, alignItems: 'center',
-              flexDirection: 'row', justifyContent: 'center', gap: T.space.sm - 2, marginBottom: T.space.xs,
-            }}
-          >
-            <Plus size={14} color={palette.mutedForeground} />
-            <Text style={{ ...T.footnote, color: palette.mutedForeground }}>{t('prarthnaPatra.form.addAnotherAccused')}</Text>
-          </Pressable>
+          <View style={{ marginBottom: T.space.xs }}>
+            <PersonGroupInput
+              keyName="pp_vipakshi"
+              value={accused}
+              onChange={(_k, v) => setAccused(v)}
+              role="vipakshi"
+              addressOptional
+            />
+          </View>
 
           {/* Status note */}
           <View style={{ marginTop: T.space.md, backgroundColor: palette.muted, borderRadius: 10, padding: T.space.sm + 2 }}>

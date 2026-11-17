@@ -20,6 +20,7 @@
  * the selected branch are resolved against `values` before output.
  */
 import { deriveFormatValues } from './formatDerived';
+import { KNOWN_RELATIONS, isFeminine } from './personCard';
 import { stripFormatMarkers } from './formatMarkers';
 import { composeSentence, parseSentenceConfig } from './sentenceField';
 import { joinDhara, minusDhara } from './dharaMath';
@@ -140,7 +141,8 @@ function _parseAccusedEntries(jsonStr: string): AccusedEntry[] {
  */
 function _resolveConnector(entry: { relationType?: string; gender?: string }): string {
   const rt = (entry.relationType ?? '').trim();
-  if (rt === 'पुत्र' || rt === 'पुत्री' || rt === 'पत्नी') return rt;
+  // पुत्र / पुत्री / पत्नी + (owner, 2026-11-17) संतान / गुरु (ट्रांसजेंडर), दत्तक पुत्र / दत्तक पुत्री — printed as is
+  if (KNOWN_RELATIONS.includes(rt)) return rt;
   // Legacy gender fallback
   if ((entry.gender ?? '') === 'महिला') return 'पुत्री';
   return 'पुत्र';
@@ -195,7 +197,7 @@ function _buildGroupProse(
     // Singular header
     if (groupType === 'accused_group') {
       // अभियुक्त / अभियुक्ता based on gender (not relationType — this is the heading, not the connector)
-      tokens.push((e.gender ?? '') === 'महिला' ? 'अभियुक्ता' : 'अभियुक्त');
+      tokens.push(isFeminine(e) ? 'अभियुक्ता' : 'अभियुक्त');
     }
 
     if (s(e.name))               tokens.push(s(e.name));
@@ -305,8 +307,7 @@ function _resolveGroupAgreement(
   if (!entries.length) return branchMap['एक-पुरुष'] ?? '';
   if (entries.length > 1) return branchMap['बहु'] ?? '';
   // 'महिला' → feminine branch; 'पुरुष', 'अन्य', '' or unset → masculine/default
-  const gender = entries[0].gender ?? '';
-  if (gender === 'महिला') return branchMap['एक-महिला'] ?? '';
+  if (isFeminine(entries[0] as { gender?: string; relationType?: string })) return branchMap['एक-महिला'] ?? '';
   return branchMap['एक-पुरुष'] ?? '';
 }
 
@@ -781,7 +782,7 @@ function _statusGroups(values: Record<string, string>, key: string) {
 
 function _statusList(sub: StatusEntry[], groupType: string | undefined): string {
   if (!sub.length) return '';
-  const head = sub.length > 1 ? 'अभियुक्तगण' : (sub[0].gender === 'महिला' ? 'अभियुक्ता' : 'अभियुक्त');
+  const head = sub.length > 1 ? 'अभियुक्तगण' : (isFeminine(sub[0] as { gender?: string; relationType?: string }) ? 'अभियुक्ता' : 'अभियुक्त');
   return `${head} ${_resolveProjection(sub, [], ['name', 'fatherOrHusbandName'], groupType)}`;
 }
 

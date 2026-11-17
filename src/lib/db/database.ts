@@ -1328,6 +1328,9 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   // सम्बन्ध पुत्र / पुत्री / पत्नी (owner: आवेदक / विपक्षी cards) — '' on old rows
   await _ensureColumn(database, 'prarthna_patra_complainants','relation',          "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'relation',          "TEXT DEFAULT ''");
+  // group card "＋ और जानकारी" (owner): ई-मेल / पहचान पत्र / टिप्पणी as JSON
+  await _ensureColumn(database, 'prarthna_patra_complainants','extra_json',        "TEXT DEFAULT ''");
+  await _ensureColumn(database, 'prarthna_patra_accused',     'extra_json',        "TEXT DEFAULT ''");
   // "संलग्न कागज़" (owner): photos / PDFs of a प्रार्थना पत्र (module 'pp') or a न्यायालय document ('court') — attachmentRepo.ts
   try {
     await database.execAsync(`

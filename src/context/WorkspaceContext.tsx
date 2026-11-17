@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { setPersonCardDefaults } from '@/lib/personCard';
 import { getWorkspaceSettings, saveWorkspaceSettings, WorkspaceSettings } from '@/lib/db/workspaceRepo';
 
 interface WorkspaceContextType {
@@ -31,6 +32,11 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       setIsLoaded(true);
     })();
   }, []);
+
+  // नये व्यक्ति card: थाना / जनपद पहले से भरे (owner)
+  useEffect(() => {
+    setPersonCardDefaults({ thana: workspace.police_station, district: workspace.district });
+  }, [workspace.police_station, workspace.district]);
 
   const updateWorkspace = async (settings: WorkspaceSettings) => {
     await saveWorkspaceSettings(settings);

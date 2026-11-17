@@ -568,6 +568,16 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (v6 `{{DeadCard#prose}}`). Option `"single": true` = one card only (all 4 fill screens). expand spec `"relationType||पुत्र"` = fallback when the
   card leaves it empty; expand runs before item_group `copy` (DName into पंच rows). न्यायालय fill-format now renders person / accused cards
   (before: plain text box). Backup docs/format-backups/batch2_before_person_cards.json.
+- Group person card v2 (owner, PersonGroupInput — every format, FIR वादी, प्रार्थना पत्र): rules `src/lib/personCard.ts` (pure; tests
+  `scripts/test_person_card.ts`). सम्बन्ध chips पुत्र / पुत्री / पत्नी / ट्रांसजेंडर (sub-chips संतान / अभिभावक-गुरु) / दत्तक (sub-chips पुत्र / पुत्री);
+  relationType = the PRINT word ("सोनम गुरु रेखा", "रामू दत्तक पुत्र श्याम लाल"; `KNOWN_RELATIONS` in templateEngine `_resolveConnector`).
+  NO लिंग buttons: gender from the सम्बन्ध (`genderOfRelation`; empty relation → old gender kept); ट्रांसजेंडर = स्त्रीलिंग grammar (`isFeminine`, also in
+  formatDerived / firPeople / firFill). पता = मकान नं0 / मोहल्ला + ग्राम / मजरा (ग्राम / कस्बा chip, हल्का village suggestions) + थाना + जनपद (new cards
+  prefilled from सेटिंग via `setPersonCardDefaults` in WorkspaceProvider) → `fullAddress = composeAddress(…)` so formats need no change; preview "📍 …";
+  old cards (one typed address) = addrMode 'free', print as typed; a card with only the prefilled थाना / जनपद counts as blank (firPeople isBlank,
+  firComplainant address ''). "＋ और जानकारी" (open when filled): altMobile, idType + idNumber, email, remarks. प्रार्थना पत्र add/edit now uses two
+  PersonGroupInput (role avedak / vipakshi, addressOptional); rows ↔ cards via `cardFromPPRow` / `ppRowFromCard` (columns full_address = मकान,
+  village, police_station, district; new column extra_json = email / पहचान / टिप्पणी of आवेदक). Next: office "कागज़ भेजें" (sample first).
 - FIR रो0आम (GD) रपट (owner): boxes "रो0आम रपट संख्या" (number) + "रपट का समय" (time) in a row under सूचना की तारीख / समय on add-fir and the
   FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Linked: @FIR.roaam_no / roaam_time fill the
   35(3) / 179 notices' RoNo / RoTime.

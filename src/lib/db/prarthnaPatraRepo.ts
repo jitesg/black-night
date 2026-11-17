@@ -8,14 +8,14 @@ import { getDatabase, generateUUID, nowTimestamp } from './database';
 // inline ALTER TABLE ADD COLUMN and retry once — making every session
 // self-healing without requiring a cold start.
 async function _ensureComplainantColumns(db: Awaited<ReturnType<typeof getDatabase>>): Promise<void> {
-  for (const col of ["age TEXT DEFAULT ''", "gender TEXT DEFAULT ''", "relation TEXT DEFAULT ''"]) {
+  for (const col of ["age TEXT DEFAULT ''", "gender TEXT DEFAULT ''", "relation TEXT DEFAULT ''", "extra_json TEXT DEFAULT ''"]) {
     try {
       await db.execAsync(`ALTER TABLE prarthna_patra_complainants ADD COLUMN ${col};`);
     } catch { /* duplicate column — already present, ignore */ }
   }
 }
 async function _ensureAccusedColumns(db: Awaited<ReturnType<typeof getDatabase>>): Promise<void> {
-  for (const col of ["jati TEXT DEFAULT ''", "age TEXT DEFAULT ''", "gender TEXT DEFAULT ''", "relation TEXT DEFAULT ''"]) {
+  for (const col of ["jati TEXT DEFAULT ''", "age TEXT DEFAULT ''", "gender TEXT DEFAULT ''", "relation TEXT DEFAULT ''", "extra_json TEXT DEFAULT ''"]) {
     try {
       await db.execAsync(`ALTER TABLE prarthna_patra_accused ADD COLUMN ${col};`);
     } catch { /* duplicate column — already present, ignore */ }
@@ -114,8 +114,10 @@ export interface PPComplainant {
   age: string;
   gender: string;
   jati: string;
-  /** पुत्र / पुत्री / पत्नी ('' on old rows) */
+  /** पुत्र / पुत्री / पत्नी / संतान / गुरु / दत्तक पुत्र / दत्तक पुत्री ('' on old rows) */
   relation?: string;
+  /** card "＋ और जानकारी": {"email","idType","idNumber","remarks"} as JSON ('' = none) */
+  extra_json?: string;
   created_at: number;
   updated_at: number;
   deleted_at: number | null;
@@ -136,8 +138,10 @@ export interface PPAccused {
   age: string;
   gender: string;
   remarks: string;
-  /** पुत्र / पुत्री / पत्नी ('' on old rows) */
+  /** पुत्र / पुत्री / पत्नी / संतान / गुरु / दत्तक पुत्र / दत्तक पुत्री ('' on old rows) */
   relation?: string;
+  /** card "＋ और जानकारी": {"email","idType","idNumber","remarks"} as JSON ('' = none) */
+  extra_json?: string;
   created_at: number;
   updated_at: number;
   deleted_at: number | null;
@@ -729,18 +733,19 @@ async function _diffUpdateComplainants(
         prev.age                !== c.age ||
         prev.gender             !== c.gender ||
         (prev.relation ?? '')   !== (c.relation ?? '') ||
+        (prev.extra_json ?? '') !== (c.extra_json ?? '') ||
         prev.jati               !== c.jati;
       if (changed) {
         await db.runAsync(
           `UPDATE prarthna_patra_complainants
            SET name=?, father_husband_name=?, mobile=?, alternate_mobile=?,
                full_address=?, village=?, police_station=?, district=?,
-               age=?, gender=?, jati=?, relation=?, updated_at=?
+               age=?, gender=?, jati=?, relation=?, extra_json=?, updated_at=?
            WHERE id=?`,
           [
             c.name, c.father_husband_name, c.mobile, c.alternate_mobile,
             c.full_address, c.village, c.police_station, c.district,
-            c.age, c.gender, c.jati, c.relation ?? '', now, c.id,
+            c.age, c.gender, c.jati, c.relation ?? '', c.extra_json ?? '', now, c.id,
           ]
         );
       }
@@ -791,18 +796,19 @@ async function _diffUpdateAccused(
         prev.age              !== a.age ||
         prev.gender           !== a.gender ||
         (prev.relation ?? '') !== (a.relation ?? '') ||
+        (prev.extra_json ?? '') !== (a.extra_json ?? '') ||
         prev.remarks          !== a.remarks;
       if (changed) {
         await db.runAsync(
           `UPDATE prarthna_patra_accused
            SET name=?, father_name=?, mobile=?, alternate_mobile=?,
                full_address=?, village=?, police_station=?, district=?,
-               jati=?, age=?, gender=?, remarks=?, relation=?, updated_at=?
+               jati=?, age=?, gender=?, remarks=?, relation=?, extra_json=?, updated_at=?
            WHERE id=?`,
           [
             a.name, a.father_name, a.mobile, a.alternate_mobile,
             a.full_address, a.village, a.police_station, a.district,
-            a.jati, a.age, a.gender, a.remarks, a.relation ?? '', now, a.id,
+            a.jati, a.age, a.gender, a.remarks, a.relation ?? '', a.extra_json ?? '', now, a.id,
           ]
         );
       }
@@ -822,14 +828,14 @@ async function _insertComplainant(
 ): Promise<void> {
   const sql = `INSERT INTO prarthna_patra_complainants
        (id, prarthna_patra_id, name, father_husband_name, mobile, alternate_mobile,
-        full_address, village, police_station, district, age, gender, jati, relation,
+        full_address, village, police_station, district, age, gender, jati, relation, extra_json,
         created_at, updated_at, deleted_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)`;
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)`;
   const params = [
     id, ppId,
     c.name ?? '', c.father_husband_name ?? '', c.mobile ?? '', c.alternate_mobile ?? '',
     c.full_address ?? '', c.village ?? '', c.police_station ?? '', c.district ?? '',
-    c.age ?? '', c.gender ?? '', c.jati ?? '', c.relation ?? '',
+    c.age ?? '', c.gender ?? '', c.jati ?? '', c.relation ?? '', c.extra_json ?? '',
     now, now,
   ];
   try {
@@ -855,14 +861,14 @@ async function _insertAccused(
 ): Promise<void> {
   const sql = `INSERT INTO prarthna_patra_accused
        (id, prarthna_patra_id, name, father_name, mobile, alternate_mobile,
-        full_address, village, police_station, district, jati, age, gender, remarks, relation,
+        full_address, village, police_station, district, jati, age, gender, remarks, relation, extra_json,
         created_at, updated_at, deleted_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)`;
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)`;
   const params = [
     id, ppId,
     a.name ?? '', a.father_name ?? '', a.mobile ?? '', a.alternate_mobile ?? '',
     a.full_address ?? '', a.village ?? '', a.police_station ?? '', a.district ?? '',
-    a.jati ?? '', a.age ?? '', a.gender ?? '', a.remarks ?? '', a.relation ?? '',
+    a.jati ?? '', a.age ?? '', a.gender ?? '', a.remarks ?? '', a.relation ?? '', a.extra_json ?? '',
     now, now,
   ];
   try {

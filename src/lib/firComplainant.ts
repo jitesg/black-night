@@ -53,6 +53,7 @@ export function groupToComplainant(json: string): ComplainantFields {
     complainant_age: s(e.age).trim(),
     complainant_jati: s(e.caste).trim(),
     complainant_mobile: s(e.mobile).trim(),
-    complainant_address: s(e.fullAddress).trim(),
+    // a new card holds only the prefilled थाना / जनपद until ग्राम or मकान is typed → no address yet
+    complainant_address: e.addrMode === 'parts' && !s(e.village).trim() && !s(e.house).trim() ? '' : s(e.fullAddress).trim(),
   };
 }

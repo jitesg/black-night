@@ -66,7 +66,8 @@ export function accusedFull(a: AccusedLike, ageWord = 'उम्र करीब
   return [t(a.name), father ? `${t(a.relation) || 'पुत्र'} ${father}` : '', addr ? `निवासी ${addr}` : '', age ? `${ageWord} ${age} वर्ष` : '']
     .filter(Boolean).join(' ');
 }
-const isWoman = (a: AccusedLike) => t(a.gender) === 'महिला' || t(a.relation) === 'पत्नी' || t(a.relation) === 'पुत्री';
+const isWoman = (a: AccusedLike) =>
+  ['महिला', 'ट्रांसजेंडर'].includes(t(a.gender)) || ['पत्नी', 'पुत्री', 'दत्तक पुत्री', 'संतान', 'गुरु'].includes(t(a.relation));
 /** "बबलू", "बबलू व नीरज", "बबलू, नीरज व राजू" */
 function joinNames(names: string[]): string {
   return names.length <= 1 ? (names[0] ?? '') : `${names.slice(0, -1).join(', ')} व ${names[names.length - 1]}`;
@@ -84,7 +85,7 @@ function accusedCards(list: AccusedLike[], withStatus: boolean): string {
 /** Value for "@FIR.<field>", or null when the field is unknown. */
 export function firFillValue(field: string, f: FirLike | null, accused: AccusedLike[] = []): string | null {
   const fir = f ?? {};
-  const woman = t(fir.complainant_gender) === 'महिला';
+  const woman = ['महिला', 'ट्रांसजेंडर'].includes(t(fir.complainant_gender)) || ['पत्नी', 'पुत्री', 'दत्तक पुत्री', 'संतान', 'गुरु'].includes(t(fir.complainant_relation));
   const has = !!t(fir.complainant_name);
   switch (field) {
     case 'fir_number': return t(fir.fir_number);
