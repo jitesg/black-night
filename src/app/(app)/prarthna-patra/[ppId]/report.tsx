@@ -2,8 +2,8 @@
  * Report screen — Feature 3
  *
  * For petition types in REPORT_PETITION_TYPES ("RL", "जनता दर्शन", "CO पेशी", "SDM", "DM"):
- *   - Shows full selectable petition details at top
- *   - "रिपोर्ट लगाएं" button reveals inline editor + "Add from Format" button
+ *   - Header subtitle = प्रकार · first आवेदक
+ *   - Opens straight on the आख्या form (owner: no details card / "रिपोर्ट लगाएं" step) + "Add from Format" button
  *   - Format picker navigates to select-format filtered to "Prarthna Patra"
  *   - Generated format text is injected via ppReportDraftStore
  *   - आख्या box = DocumentEditor (owner): compact card + full-screen rich editor; its पूर्वावलोकन = A4 sheet.
@@ -38,7 +38,7 @@ import { ppReportDraftStore } from '@/lib/ppReportDraftStore';
 import { htmlToPlainText } from '@/lib/stringUtils';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
-import { CalendarDays, FileText, Download } from 'lucide-react-native';
+import { CalendarDays, Download } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
@@ -46,17 +46,6 @@ import { DatePickerModal } from '@/components/common/DatePickerModal';
 /** Petition types that use the inline report-attach flow */
 // थाना प्रार्थना पत्र / RTI / अन्य added (owner): same screen with "प्रारूप से जोड़ें" for every petition except बीट सूचना / NCR.
 const REPORT_PETITION_TYPES = new Set(['RL', 'जनता दर्शन', 'CO पेशी', 'SDM', 'DM', 'थाना प्रार्थना पत्र', 'RTI', 'अन्य']);
-
-// ── Selectable field row ──────────────────────────────────────────────────────
-function DetailRow({ label, value }: { label: string; value?: string | null }) {
-  if (!value) return null;
-  return (
-    <View style={{ flexDirection: 'row', paddingVertical: 5, gap: 8 }}>
-      <Text style={{ fontSize: 12, color: '#6B7280', width: 110, flexShrink: 0 }}>{label}</Text>
-      <Text selectable className="text-foreground" style={{ fontSize: 12, flex: 1, lineHeight: 18 }}>{value}</Text>
-    </View>
-  );
-}
 
 // ── Main screen ───────────────────────────────────────────────────────────────
 /** "2026-11-17" → "17/11/2026" (owner: dates as dd/mm/yyyy everywhere); anything else unchanged. */
@@ -157,8 +146,7 @@ export default function ReportScreen() {
   const [backDialogOpen, setBackDialogOpen] = useState(false);
   const savedRef = useRef(false);
 
-  // Feature 3: inline-editor reveal state
-  const [editorVisible, setEditorVisible] = useState(false);
+  // keeps the ScrollView ref (scroll position)
   const scrollRef = useRef<ScrollView>(null);
 
   const initialLoadDone = useRef(false);
@@ -185,7 +173,6 @@ export default function ReportScreen() {
               : toEditorHtml(rc);
             setReportContent(shown);
             contentRef.current = shown; // a draft consumed below in this same run appends to it
-            setEditorVisible(true);
           }
         } finally {
           setLoading(false);
@@ -202,7 +189,6 @@ export default function ReportScreen() {
         const next = htmlToPlainText(prev).trim() ? `${toEditorHtml(prev)}<p><br></p>${added}` : added;
         setReportContent(next);
         contentRef.current = next;
-        setEditorVisible(true);
         setIsDirty(true);
       }
     })();
@@ -260,12 +246,6 @@ export default function ReportScreen() {
     );
   };
 
-  const handleRevealEditor = () => {
-    setEditorVisible(true);
-    // Give layout time then scroll to bottom
-    setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 150);
-  };
-
   if (loading) {
     return (
       <View className="flex-1 bg-background items-center justify-center">
@@ -287,7 +267,7 @@ export default function ReportScreen() {
         <View className="flex-1 bg-background">
           <AppHeader
             title={pp?.report ? t('prarthnaPatra.report.editTitle') : t('prarthnaPatra.report.addTitle')}
-            subtitle={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : ''}
+            subtitle={[pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : '', pp?.complainants[0]?.name ?? ''].filter(Boolean).join(' · ')}
             onBack={handleBack}
             // owner: one सहेजें only — the big button under the आख्या box (the header one was a second copy).
             // .doc at the top right (after 🤖 / 🔔, which AppHeader adds itself).
@@ -300,48 +280,13 @@ export default function ReportScreen() {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            {/* ── Selectable petition details ── */}
-            <View className="bg-card border border-border rounded-2xl p-4 mt-4"
-              style={{ borderCurve: 'continuous' }}>
-              <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
-                {t('prarthnaPatra.report.sectionPetitionDetails')}
-              </Text>
-              <DetailRow label={t('prarthnaPatra.report.labelType')} value={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : undefined} />
-              <DetailRow label={t('prarthnaPatra.report.labelDateOfReceipt')} value={showDate(pp?.date_of_receipt)} />
-              <DetailRow label={t('prarthnaPatra.report.labelDeadline')} value={showDate(pp?.deadline_date)} />
-              <DetailRow label={t('prarthnaPatra.report.labelInvestigator')} value={pp?.investigator_name} />
-              {/* the matter is written in the rich editor (HTML) — show it as plain text (owner: "<div>…</div>" showed) */}
-              <DetailRow label={t('prarthnaPatra.report.labelMatter')} value={pp?.matter ? htmlToPlainText(pp.matter) : undefined} />
-              {pp?.complainants.map((c, i) => (
-                <DetailRow key={c.id} label={t('prarthnaPatra.report.labelComplainant', { number: i + 1 })}
-                  value={[c.name, c.mobile, c.full_address].filter(Boolean).join(' · ')} />
-              ))}
-              {pp?.accused.map((a, i) => (
-                <DetailRow key={a.id} label={t('prarthnaPatra.report.labelAccused', { number: i + 1 })}
-                  value={[a.name, a.mobile, a.full_address].filter(Boolean).join(' · ')} />
-              ))}
-            </View>
-
+            {/* owner: no "प्रार्थना पत्र विवरण" card and no "रिपोर्ट लगाएं" step — the detail screen already shows all of it;
+                the header's small line says whose आख्या it is (प्रकार · first आवेदक) */}
             {errors.general ? (
               <Text className="text-sm text-destructive mt-3">{errors.general}</Text>
             ) : null}
 
-            {/* ── "रिपोर्ट लगाएं" trigger button ── */}
-            {!editorVisible && (
-              <Pressable
-                onPress={handleRevealEditor}
-                className="mt-5 bg-primary rounded-xl py-4 items-center justify-center flex-row gap-2 active:opacity-70"
-                style={{ borderCurve: 'continuous' }}
-              >
-                <FileText size={16} color="#fff" />
-                <Text className="text-base font-bold text-primary-foreground">
-                  {t('prarthnaPatra.report.btnAttachReport')}
-                </Text>
-              </Pressable>
-            )}
-
             {/* ── Inline editor ── */}
-            {editorVisible && (
               <View className="mt-5 gap-3">
                 {/* आख्या की तिथि — calendar picker (owner), shown dd/mm/yyyy, stored YYYY-MM-DD as before */}
                 <ReportDateField
@@ -383,7 +328,6 @@ export default function ReportScreen() {
                   </Text>
                 </Pressable>
               </View>
-            )}
           </ScrollView>
         </View>
 
