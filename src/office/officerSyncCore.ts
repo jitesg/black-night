@@ -4,6 +4,7 @@
  * Only the status goes back to the office, never the आख्या text (owner).
  */
 import type { AssigneeStatus, TaskPerson } from './taskCore';
+import { genderOfRelation, ppRowFromCard, type CardLike } from '../lib/personCard';
 
 export type OfficeModule = 'pp' | 'court';
 
@@ -52,9 +53,19 @@ const str = (f: Record<string, unknown> | null, k: string) => (f && typeof f[k] 
 const people = (f: Record<string, unknown> | null, k: string): TaskPerson[] =>
   (f && Array.isArray(f[k]) ? (f[k] as Partial<TaskPerson>[]) : [])
     .filter((p) => (p.name ?? '').trim())
-    .map((p) => ({ name: (p.name ?? '').trim(), relation: p.relation ?? '', father: p.father ?? '', address: p.address ?? '', mobile: p.mobile ?? '' }));
+    .map((p) => ({ ...p, name: (p.name ?? '').trim(), relation: p.relation ?? '', father: p.father ?? '', address: p.address ?? '', mobile: p.mobile ?? '' }));
 
-const genderOf = (rel: string) => (rel === 'पुत्र' ? 'पुरुष' : rel === 'पुत्री' || rel === 'पत्नी' ? 'महिला' : '');
+/** Office person → InvestSuite card (an old कागज़ = one typed address → 'free'). */
+function toCard(p: TaskPerson): CardLike {
+  const parts = p.addrMode === 'parts';
+  return {
+    name: p.name, fatherOrHusbandName: p.father, fullAddress: p.address, age: p.age ?? '', mobile: p.mobile, caste: '',
+    gender: p.gender || genderOfRelation(p.relation), relationType: p.relation, email: p.email ?? '',
+    addrMode: parts ? 'parts' : 'free', house: p.house ?? '', village: p.village ?? '', villageKind: p.villageKind ?? 'ग्राम',
+    thana: parts ? p.thana ?? '' : '', district: parts ? p.district ?? '' : '',
+    altMobile: p.altMobile ?? '', idType: p.idType ?? '', idNumber: p.idNumber ?? '', remarks: p.remarks ?? '',
+  };
+}
 
 /** Task → the प्रार्थना पत्र create input (InvestSuite repo shape). */
 export function taskToPetition(t: RemoteTask, investigator: string) {
@@ -65,14 +76,14 @@ export function taskToPetition(t: RemoteTask, investigator: string) {
     deadline_date: t.due_on ?? '',
     matter,
     investigator_name: investigator,
-    complainants: people(t.fields, 'applicants').map((p) => ({
-      name: p.name, father_husband_name: p.father, mobile: p.mobile, alternate_mobile: '', full_address: p.address,
-      village: '', police_station: '', district: '', age: '', gender: genderOf(p.relation), jati: '', relation: p.relation,
-    })),
-    accused: people(t.fields, 'opponents').map((p) => ({
-      name: p.name, father_name: p.father, mobile: p.mobile, alternate_mobile: '', full_address: p.address,
-      village: '', police_station: '', district: '', jati: '', age: '', gender: genderOf(p.relation), remarks: '', relation: p.relation,
-    })),
+    complainants: people(t.fields, 'applicants').map((p) => {
+      const { father, remarks: _r, ...row } = ppRowFromCard(toCard(p), false);
+      return { ...row, father_husband_name: father };
+    }),
+    accused: people(t.fields, 'opponents').map((p) => {
+      const { father, ...row } = ppRowFromCard(toCard(p), true);
+      return { ...row, father_name: father, remarks: row.remarks ?? '' };
+    }),
   };
 }
 
@@ -88,7 +99,7 @@ export function taskToCourt(t: RemoteTask) {
     document_title: str(t.fields, 'document_title'),
     deadline_date: t.due_on ?? '',
     persons: people(t.fields, 'accused').map((p) => ({
-      person_type: 'accused' as const, name: p.name, father_name: p.father, mobile: p.mobile, address: p.address, remarks: '',
+      person_type: 'accused' as const, name: p.name, father_name: p.father, mobile: p.mobile, address: p.address, remarks: p.remarks ?? '',
     })),
   };
 }

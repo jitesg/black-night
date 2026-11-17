@@ -577,7 +577,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   old cards (one typed address) = addrMode 'free', print as typed; a card with only the prefilled थाना / जनपद counts as blank (firPeople isBlank,
   firComplainant address ''). "＋ और जानकारी" (open when filled): altMobile, idType + idNumber, email, remarks. प्रार्थना पत्र add/edit now uses two
   PersonGroupInput (role avedak / vipakshi, addressOptional); rows ↔ cards via `cardFromPPRow` / `ppRowFromCard` (columns full_address = मकान,
-  village, police_station, district; new column extra_json = email / पहचान / टिप्पणी of आवेदक). Next: office "कागज़ भेजें" (sample first).
+  village, police_station, district; new column extra_json = email / पहचान / टिप्पणी of आवेदक).
+  Office app too (owner): ui2 `PersonCards` = the same card in navy (`OfficePersonCard`, rules from personCard.ts; no हल्का suggestions — office
+  has no SQLite); new cards get थाना / जनपद from me.thana (`newOfficePerson`, `fillPersonDefaults` in send.tsx). TaskPerson carries the extra fields
+  (address = composed full address, so old phones still work); officerSyncCore `toCard` + `ppRowFromCard` → PP columns (old कागज़ = free address).
 - FIR रो0आम (GD) रपट (owner): boxes "रो0आम रपट संख्या" (number) + "रपट का समय" (time) in a row under सूचना की तारीख / समय on add-fir and the
   FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Linked: @FIR.roaam_no / roaam_time fill the
   35(3) / 179 notices' RoNo / RoTime.

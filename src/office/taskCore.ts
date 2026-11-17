@@ -68,7 +68,16 @@ export function daysLabel(n: number | null): string {
 
 // ── the form ──────────────────────────────────────────────────────────────────
 
-export interface TaskPerson { name: string; relation: string; father: string; address: string; mobile: string }
+/**
+ * One person on a कागज़ (owner: the InvestSuite group card — lib/personCard.ts). `address` always holds the full printed address
+ * (built from the parts on new cards), so older phones and titles keep working; the parts travel too.
+ */
+export interface TaskPerson {
+  name: string; relation: string; father: string; address: string; mobile: string;
+  gender?: string; age?: string;
+  addrMode?: 'parts' | 'free'; house?: string; village?: string; villageKind?: string; thana?: string; district?: string;
+  altMobile?: string; idType?: string; idNumber?: string; email?: string; remarks?: string;
+}
 
 export const emptyPerson = (): TaskPerson => ({ name: '', relation: '', father: '', address: '', mobile: '' });
 
@@ -98,9 +107,17 @@ export function newTaskForm(kind: TaskKind = 'petition', today = isoToday()): Ta
 }
 
 const named = (list: TaskPerson[]) => list.filter((p) => p.name.trim());
-const cleanPeople = (list: TaskPerson[]) => named(list).map((p) => ({
-  name: p.name.trim(), relation: p.relation, father: p.father.trim(), address: p.address.trim(), mobile: p.mobile.replace(/\D/g, '').slice(-10),
-}));
+const EXTRA_KEYS = ['gender', 'age', 'addrMode', 'house', 'village', 'villageKind', 'thana', 'district', 'altMobile', 'idType', 'idNumber', 'email', 'remarks'] as const;
+const cleanPeople = (list: TaskPerson[]) => named(list).map((p) => {
+  const out: TaskPerson = {
+    name: p.name.trim(), relation: p.relation, father: p.father.trim(), address: p.address.trim(), mobile: p.mobile.replace(/\D/g, '').slice(-10),
+  };
+  for (const k of EXTRA_KEYS) {
+    const v = (p[k] ?? '').toString().trim();
+    if (v) (out as unknown as Record<string, string>)[k] = k === 'altMobile' ? v.replace(/\D/g, '').slice(-10) : v;
+  }
+  return out;
+});
 
 /** Hindi error for step 1, or '' when it can go on. */
 export function taskFormError(f: TaskForm): string {
@@ -114,6 +131,8 @@ export function taskFormError(f: TaskForm): string {
   for (const p of [...f.applicants, ...f.opponents, ...f.accused]) {
     const m = p.mobile.replace(/\D/g, '');
     if (m && m.length !== 10 && !(m.length === 12 && m.startsWith('91'))) return `${p.name || 'व्यक्ति'} का मोबाइल 10 अंकों का लिखें`;
+    const a = (p.altMobile ?? '').replace(/\D/g, '');
+    if (a && a.length !== 10) return `${p.name || 'व्यक्ति'} का दूसरा मोबाइल 10 अंकों का लिखें`;
   }
   return '';
 }

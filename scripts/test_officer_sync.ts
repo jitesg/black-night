@@ -1,7 +1,11 @@
 /** चरण ग — office कागज़ on the officer's phone. Run: node --experimental-strip-types --test scripts/test_officer_sync.ts */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import * as s from '../src/office/officerSyncCore.ts';
+import { register } from 'node:module';
+register('data:text/javascript,' + encodeURIComponent(
+  "export async function resolve(s, c, next) { try { return await next(s, c); } catch (e) { if (s.startsWith('.') && !/\\.[a-z]+$/.test(s)) return next(s + '.ts', c); throw e; } }",
+));
+const s = await import('../src/office/officerSyncCore.ts');
 
 const T = (p: Partial<s.RemoteTask> = {}): s.RemoteTask => ({
   id: 't1', kind: 'petition', subtype: 'जनता दर्शन', title: 'जनता दर्शन — रेनू पत्नी धीरज', received_on: '2026-11-16', due_on: '2026-11-26',
@@ -61,4 +65,23 @@ test('meta + edits + notices', () => {
   assert.equal(s.newPaperNotice(T()).body, 'जनता दर्शन — रेनू पत्नी धीरज · अंतिम तिथि 26/11/2026');
   assert.equal(s.editedNotice(T({ closed: true })).title, '✖ कार्यालय ने कागज़ रद्द किया');
   assert.equal(s.routeFor('court', 'x'), '/(app)/nyayalay/x');
+});
+
+test('new card parts → PP columns (owner: group card in कार्यालय ऐप)', () => {
+  const p = s.taskToPetition(T({ fields: {
+    applicants: [{ name: 'सोनम', relation: 'गुरु', father: 'रेखा', address: 'ग्राम भग्तिन खेड़ा थाना बछरावां जनपद रायबरेली', mobile: '',
+      addrMode: 'parts', village: 'भग्तिन खेड़ा', villageKind: 'ग्राम', thana: 'बछरावां', district: 'रायबरेली', age: '28', idType: 'आधार', idNumber: '4321' }],
+    opponents: [{ name: 'रामू', relation: 'दत्तक पुत्र', father: 'श्याम लाल', address: '', mobile: '', remarks: 'पहले भी शिकायत', altMobile: '9999999999' }],
+  } }), 'उ0नि0 अजय');
+  const c = p.complainants[0];
+  assert.equal(c.village, 'भग्तिन खेड़ा');
+  assert.equal(c.police_station, 'बछरावां');
+  assert.equal(c.full_address, '');
+  assert.equal(c.gender, 'ट्रांसजेंडर');
+  assert.equal(c.age, '28');
+  assert.deepEqual(JSON.parse(c.extra_json), { idType: 'आधार', idNumber: '4321' });
+  const a = p.accused[0];
+  assert.equal(a.gender, 'पुरुष');
+  assert.equal(a.remarks, 'पहले भी शिकायत');
+  assert.equal(a.alternate_mobile, '9999999999');
 });

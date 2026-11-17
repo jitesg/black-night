@@ -10,6 +10,10 @@ import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { NAV_BAR_INSET } from '@/lib/navBarInset';
 import { showDate, STATUS_LABEL, emptyPerson, type TaskPerson, type TaskState } from './taskCore';
 import { useOfficeColors, type OfficeColors } from './ui';
+import {
+  ADOPT_SUBS, ID_TYPES, RELATION_CHIPS, TRANS_SUBS, chipOf, composeAddress, fatherLabel, genderOfRelation, isFeminine, relationWord,
+  type RelationChip,
+} from '@/lib/personCard';
 
 export function Section({ title, right, children }: { title: string; right?: ReactNode; children: ReactNode }) {
   const C = useOfficeColors();
@@ -87,7 +91,7 @@ export function DateField({ label, value, onChange, hint, error }: { label: stri
 }
 
 function SmallInput({ value, onChange, placeholder, keyboardType, C, flex }: {
-  value: string; onChange: (v: string) => void; placeholder: string; keyboardType?: 'phone-pad'; C: OfficeColors; flex?: boolean;
+  value: string; onChange: (v: string) => void; placeholder: string; keyboardType?: 'phone-pad' | 'number-pad' | 'email-address'; C: OfficeColors; flex?: boolean;
 }) {
   // small label above the box once it is filled (the placeholder is gone then)
   return (
@@ -101,47 +105,178 @@ function SmallInput({ value, onChange, placeholder, keyboardType, C, flex }: {
   );
 }
 
-const RELATIONS = ['पुत्र', 'पुत्री', 'पत्नी'];
+/** New person card (owner): पता in parts, थाना / जनपद from the कार्यालय's थाना. */
+export function newOfficePerson(d: { thana?: string; district?: string } = {}): TaskPerson {
+  const p: TaskPerson = { ...emptyPerson(), addrMode: 'parts', house: '', village: '', villageKind: 'ग्राम', thana: d.thana ?? '', district: d.district ?? '' };
+  return { ...p, address: composeAddress(p) };
+}
 
-/** Person cards (owner: like InvestSuite — सम्बन्ध chips decide "पिता / पति का नाम"). */
-export function PersonCards({ people, onChange, addLabel, cardLabel, min = 0, withRelation = true }: {
+/** Cards that still hold nothing typed get the थाना / जनपद (form opened before the थाना was known). */
+export function fillPersonDefaults(list: TaskPerson[], d: { thana?: string; district?: string }): TaskPerson[] {
+  return list.map((p) => {
+    if (p.addrMode || p.address.trim()) return p;
+    const fresh = newOfficePerson(d);
+    return { ...p, addrMode: fresh.addrMode, house: '', village: '', villageKind: 'ग्राम', thana: fresh.thana, district: fresh.district, address: fresh.address };
+  });
+}
+
+function OChip({ C, label, on, onPress, small }: { C: OfficeColors; label: string; on: boolean; onPress: () => void; small?: boolean }) {
+  return (
+    <Pressable onPress={onPress} accessibilityLabel={label} style={small ? undefined : { flexGrow: 1 }}>
+      <View style={{
+        borderWidth: 1, borderColor: on ? C.navy : C.border, backgroundColor: on ? C.navy : C.card, alignItems: 'center',
+        borderRadius: small ? 999 : 10, paddingHorizontal: small ? 10 : 11, paddingVertical: small ? 3 : 7,
+      }}>
+        <Text style={{ fontSize: small ? 12 : 13.5, color: on ? C.onNavy : C.text, fontWeight: on ? '700' : '400' }}>{label}</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+/** सम्बन्ध: पुत्र / पुत्री / पत्नी / ट्रांसजेंडर (संतान / अभिभावक-गुरु) / दत्तक (पुत्र / पुत्री) — same as InvestSuite. */
+function RelationRow({ C, value, onChange }: { C: OfficeColors; value: string; onChange: (r: string) => void }) {
+  const { chip, sub } = chipOf(value);
+  const [open, setOpen] = useState<RelationChip | ''>(chip);
+  useEffect(() => { if (chip) setOpen(chip); }, [chip]);
+  const shown = chip || open;
+  const subs = shown === 'ट्रांसजेंडर' ? TRANS_SUBS : shown === 'दत्तक' ? ADOPT_SUBS : null;
+  return (
+    <View style={{ gap: 6 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+        {RELATION_CHIPS.map((r) => (
+          <OChip key={r} C={C} label={r} on={shown === r} onPress={() => {
+            setOpen(r);
+            onChange(r === 'ट्रांसजेंडर' || r === 'दत्तक' ? relationWord(r, chip === r ? sub : '') : r);
+          }} />
+        ))}
+      </View>
+      {subs ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, borderWidth: 1, borderStyle: 'dashed',
+          borderColor: C.dark ? '#3B5B8A' : '#93C5FD', backgroundColor: C.dark ? '#16243A' : '#EFF6FF', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 6 }}>
+          <Text style={{ fontSize: 11.5, color: C.navy }}>{shown === 'दत्तक' ? 'दत्तक:' : 'किसके नाम से:'}</Text>
+          {subs.map((x) => (
+            <OChip key={x} C={C} small label={x === 'गुरु' ? 'अभिभावक / गुरु' : x} on={chip === shown && sub === x}
+              onPress={() => onChange(relationWord(shown as RelationChip, x))} />
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
+function OfficePersonCard({ C, p, i, cardLabel, set, onRemove, withRelation, avedak }: {
+  C: OfficeColors; p: TaskPerson; i: number; cardLabel: string; set: (patch: Partial<TaskPerson>) => void; onRemove?: () => void;
+  withRelation: boolean; avedak: boolean;
+}) {
+  const parts = p.addrMode === 'parts' || (!p.addrMode && !p.address.trim());
+  const [more, setMore] = useState(() => !!((p.altMobile ?? '') || (p.idNumber ?? '') || (p.email ?? '') || (p.remarks ?? '')));
+  /** a पता part changed → full address rebuilt */
+  const setAddr = (patch: Partial<TaskPerson>) => {
+    const next = { ...p, ...patch, addrMode: 'parts' as const };
+    set({ ...patch, addrMode: 'parts', address: composeAddress(next) });
+  };
+  const fem = isFeminine({ gender: p.gender, relationType: p.relation });
+  const badge = avedak && p.name.trim() ? (fem ? 'आवेदिका' : 'आवेदक') : '';
+  const gender = p.gender || genderOfRelation(p.relation);
+  return (
+    <View style={{ borderWidth: 1, borderColor: C.border, borderRadius: 14, backgroundColor: C.card, overflow: 'hidden' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 12, paddingVertical: 9,
+        backgroundColor: C.dark ? '#162033' : '#F8FAFC', borderBottomWidth: 1, borderBottomColor: C.border }}>
+        <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: C.navy, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.onNavy }}>{i + 1}</Text>
+        </View>
+        <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: C.text }} numberOfLines={1}>
+          {p.name.trim() ? `${p.name.trim()}${gender ? ` (${gender})` : ''}` : `${cardLabel} ${i + 1}`}
+        </Text>
+        {badge ? (
+          <View style={{ backgroundColor: '#FEF3C7', borderRadius: 999, paddingHorizontal: 8, paddingVertical: 1 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: '#92400E' }}>{badge}</Text>
+          </View>
+        ) : null}
+        {onRemove ? (
+          <Pressable onPress={onRemove} hitSlop={10} accessibilityLabel={`${cardLabel} ${i + 1} हटाएँ`}>
+            <X size={18} color={C.muted} />
+          </Pressable>
+        ) : null}
+      </View>
+      <View style={{ padding: 12, gap: 8 }}>
+        <SmallInput C={C} value={p.name} onChange={(v) => set({ name: v })} placeholder="नाम" />
+        {withRelation ? (
+          <RelationRow C={C} value={p.relation} onChange={(r) => {
+            const g = genderOfRelation(r);
+            set(g ? { relation: r, gender: g } : { relation: r });
+          }} />
+        ) : null}
+        <SmallInput C={C} value={p.father} onChange={(v) => set({ father: v })} placeholder={withRelation ? fatherLabel(p.relation) : 'पिता / पति का नाम'} />
+        {parts ? (
+          <View style={{ gap: 8 }}>
+            <SmallInput C={C} value={p.house ?? ''} onChange={(v) => setAddr({ house: v })} placeholder="मकान नं0 / मोहल्ला (वैकल्पिक)" />
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={{ flex: 1, fontSize: 12, color: C.muted }}>{p.villageKind === 'कस्बा' ? 'कस्बा' : 'ग्राम / मजरा'}</Text>
+              {['ग्राम', 'कस्बा'].map((k) => (
+                <OChip key={k} C={C} small label={k} on={(p.villageKind === 'कस्बा' ? 'कस्बा' : 'ग्राम') === k} onPress={() => setAddr({ villageKind: k })} />
+              ))}
+            </View>
+            <SmallInput C={C} value={p.village ?? ''} onChange={(v) => setAddr({ village: v })} placeholder={p.villageKind === 'कस्बा' ? 'कस्बे का नाम' : 'गाँव / मजरे का नाम'} />
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <SmallInput C={C} flex value={p.thana ?? ''} onChange={(v) => setAddr({ thana: v })} placeholder="थाना" />
+              <SmallInput C={C} flex value={p.district ?? ''} onChange={(v) => setAddr({ district: v })} placeholder="जनपद" />
+            </View>
+            {p.address.trim() ? (
+              <View style={{ borderWidth: 1, borderStyle: 'dashed', borderColor: C.dark ? '#3B5B8A' : '#93C5FD', backgroundColor: C.dark ? '#16243A' : '#EFF6FF',
+                borderRadius: 10, paddingHorizontal: 10, paddingVertical: 7 }}>
+                <Text style={{ fontSize: 13, color: C.navy }}>📍 {p.address}</Text>
+              </View>
+            ) : null}
+          </View>
+        ) : (
+          <SmallInput C={C} value={p.address} onChange={(v) => set({ address: v })} placeholder="पता" />
+        )}
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <View style={{ width: 90 }}>
+            <SmallInput C={C} value={p.age ?? ''} onChange={(v) => set({ age: v.replace(/\D/g, '').slice(0, 3) })} placeholder="उम्र" keyboardType="number-pad" />
+          </View>
+          <SmallInput C={C} flex value={p.mobile} onChange={(v) => set({ mobile: v })} placeholder="मोबाइल (वैकल्पिक)" keyboardType="phone-pad" />
+        </View>
+        <Pressable onPress={() => setMore((v) => !v)} accessibilityLabel="और जानकारी">
+          <View style={{ borderWidth: 1.5, borderStyle: 'dashed', borderColor: more ? C.navy : C.border, borderRadius: 10, paddingVertical: 8, alignItems: 'center' }}>
+            <Text style={{ fontSize: 13.5, fontWeight: '700', color: more ? C.navy : C.muted }}>{more ? '− और जानकारी छिपाएँ' : '＋ और जानकारी'}</Text>
+          </View>
+        </Pressable>
+        {more ? (
+          <View style={{ gap: 8, borderWidth: 1, borderColor: C.border, borderRadius: 12, padding: 10 }}>
+            <SmallInput C={C} value={p.altMobile ?? ''} onChange={(v) => set({ altMobile: v.replace(/\D/g, '').slice(0, 10) })} placeholder="दूसरा मोबाइल" keyboardType="phone-pad" />
+            <Text style={{ fontSize: 12, color: C.muted }}>पहचान पत्र</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 5 }}>
+              {ID_TYPES.map((t) => (
+                <OChip key={t} C={C} small label={t} on={p.idType === t} onPress={() => set({ idType: p.idType === t ? '' : t })} />
+              ))}
+            </View>
+            <SmallInput C={C} value={p.idNumber ?? ''} onChange={(v) => set({ idNumber: v })} placeholder="पहचान पत्र नंबर" />
+            <SmallInput C={C} value={p.email ?? ''} onChange={(v) => set({ email: v.trim() })} placeholder="ई-मेल" keyboardType="email-address" />
+            <SmallInput C={C} value={p.remarks ?? ''} onChange={(v) => set({ remarks: v })} placeholder="टिप्पणी" />
+          </View>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
+/** Person cards (owner: the InvestSuite group card — सम्बन्ध, पता के खाने, और जानकारी). */
+export function PersonCards({ people, onChange, addLabel, cardLabel, min = 0, withRelation = true, avedak = false, defaults }: {
   people: TaskPerson[]; onChange: (p: TaskPerson[]) => void; addLabel: string; cardLabel: string; min?: number; withRelation?: boolean;
+  /** आवेदक / आवेदिका badge */ avedak?: boolean;
+  /** थाना / जनपद for new cards */ defaults?: { thana?: string; district?: string };
 }) {
   const C = useOfficeColors();
   const set = (i: number, patch: Partial<TaskPerson>) => onChange(people.map((p, j) => (j === i ? { ...p, ...patch } : p)));
   return (
     <View style={{ gap: 10 }}>
       {people.map((p, i) => (
-        <View key={i} style={{ borderWidth: 1, borderColor: C.border, borderRadius: 14, padding: 12, gap: 8, backgroundColor: C.dark ? '#162033' : '#FAFBFD' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 13, fontWeight: '700', color: C.text }}>{cardLabel} {i + 1}</Text>
-            {people.length > min ? (
-              <Pressable onPress={() => onChange(people.filter((_, j) => j !== i))} hitSlop={10} accessibilityLabel={`${cardLabel} ${i + 1} हटाएँ`}>
-                <X size={18} color={C.muted} />
-              </Pressable>
-            ) : null}
-          </View>
-          <SmallInput C={C} value={p.name} onChange={(v) => set(i, { name: v })} placeholder="नाम" />
-          {withRelation ? (
-            <View style={{ flexDirection: 'row', gap: 6 }}>
-              {RELATIONS.map((r) => {
-                const on = p.relation === r;
-                return (
-                  <Pressable key={r} onPress={() => set(i, { relation: on ? '' : r })} accessibilityLabel={r}>
-                    <View style={{ borderWidth: 1, borderColor: on ? C.navy : C.border, backgroundColor: on ? C.navy : C.card, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 6 }}>
-                      <Text style={{ fontSize: 13.5, color: on ? C.onNavy : C.text, fontWeight: on ? '700' : '400' }}>{r}</Text>
-                    </View>
-                  </Pressable>
-                );
-              })}
-            </View>
-          ) : null}
-          <SmallInput C={C} value={p.father} onChange={(v) => set(i, { father: v })} placeholder={p.relation === 'पत्नी' ? 'पति का नाम' : p.relation ? 'पिता का नाम' : 'पिता / पति का नाम'} />
-          <SmallInput C={C} value={p.address} onChange={(v) => set(i, { address: v })} placeholder="पता / ग्राम" />
-          <SmallInput C={C} value={p.mobile} onChange={(v) => set(i, { mobile: v })} placeholder="मोबाइल (वैकल्पिक)" keyboardType="phone-pad" />
-        </View>
+        <OfficePersonCard key={i} C={C} p={p} i={i} cardLabel={cardLabel} set={(patch) => set(i, patch)} withRelation={withRelation} avedak={avedak}
+          onRemove={people.length > min ? () => onChange(people.filter((_, j) => j !== i)) : undefined} />
       ))}
-      <Pressable onPress={() => onChange([...people, emptyPerson()])} accessibilityLabel={addLabel}>
+      <Pressable onPress={() => onChange([...people, newOfficePerson(defaults)])} accessibilityLabel={addLabel}>
         <View style={{ borderWidth: 1.5, borderStyle: 'dashed', borderColor: C.navy, borderRadius: 12, paddingVertical: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 6 }}>
           <Plus size={16} color={C.navy} />
           <Text style={{ fontSize: 14, fontWeight: '700', color: C.navy }}>{addLabel}</Text>

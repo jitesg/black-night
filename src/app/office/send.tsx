@@ -17,7 +17,7 @@ import {
 import { useMe } from '@/office/useMe';
 import { invalidateOfficeData, useOfficeData } from '@/office/useOfficeData';
 import { Chips, ErrorText, Field, OfficeButton, OfficeHeader, useOfficeColors } from '@/office/ui';
-import { BottomSheet, DateField, NoteField, PersonCards, Section, Segmented } from '@/office/ui2';
+import { BottomSheet, DateField, NoteField, PersonCards, Section, Segmented, fillPersonDefaults } from '@/office/ui2';
 
 export default function SendKagaz() {
   const C = useOfficeColors();
@@ -50,6 +50,13 @@ export default function SendKagaz() {
     })();
   }, [id]);
 
+  // नये card: थाना / जनपद कार्यालय वाले थाने से (owner)
+  const defaults = useMemo(() => ({ thana: me?.thana.name ?? '', district: me?.thana.district ?? '' }), [me]);
+  useEffect(() => {
+    if (!defaults.thana && !defaults.district) return;
+    setForm((f) => ({ ...f, applicants: fillPersonDefaults(f.applicants, defaults) }));
+  }, [defaults]);
+
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (step === 2 && !done) { setStep(1); return true; }
@@ -64,7 +71,7 @@ export default function SendKagaz() {
   const switchKind = (k: TaskKind) => {
     if (k === form.kind) return;
     const fresh = newTaskForm(k);
-    setForm({ ...fresh, received_on: form.received_on, note: form.note, matter: form.matter, due_on: k === 'petition' && form.received_on ? addDaysIso(form.received_on, 10) : '' });
+    setForm({ ...fresh, applicants: fillPersonDefaults(fresh.applicants, defaults), received_on: form.received_on, note: form.note, matter: form.matter, due_on: k === 'petition' && form.received_on ? addDaysIso(form.received_on, 10) : '' });
   };
 
   const next = () => {
@@ -131,7 +138,7 @@ export default function SendKagaz() {
           <Text style={{ fontSize: 13, color: C.muted, textAlign: 'center', lineHeight: 20 }}>
             अधिकारी के InvestSuite में अपने आप पहुँचने वाला हिस्सा अगले चरण में जुड़ेगा — तब तक स्थिति “भेजा” रहेगी।
           </Text>
-          {!editing ? <OfficeButton label="एक और कागज़ भेजें" onPress={() => { setForm(newTaskForm(form.kind)); setFiles([]); setMemberId(''); setStep(1); setDone(null); }} /> : null}
+          {!editing ? <OfficeButton label="एक और कागज़ भेजें" onPress={() => { const f0 = newTaskForm(form.kind); setForm({ ...f0, applicants: fillPersonDefaults(f0.applicants, defaults) }); setFiles([]); setMemberId(''); setStep(1); setDone(null); }} /> : null}
           <OfficeButton label="कागज़ सूची पर जाएँ" kind="outline" onPress={() => router.back()} />
         </ScrollView>
       </View>
@@ -169,10 +176,10 @@ export default function SendKagaz() {
             {form.kind === 'petition' ? (
               <>
                 <Section title="आवेदक / आवेदिका">
-                  <PersonCards people={form.applicants} onChange={(p) => set({ applicants: p })} addLabel="आवेदक जोड़ें" cardLabel="आवेदक" min={1} />
+                  <PersonCards people={form.applicants} onChange={(p) => set({ applicants: p })} addLabel="आवेदक जोड़ें" cardLabel="आवेदक" min={1} avedak defaults={defaults} />
                 </Section>
                 <Section title="विपक्षी / आरोपी (वैकल्पिक)">
-                  <PersonCards people={form.opponents} onChange={(p) => set({ opponents: p })} addLabel="विपक्षी जोड़ें" cardLabel="विपक्षी" />
+                  <PersonCards people={form.opponents} onChange={(p) => set({ opponents: p })} addLabel="विपक्षी जोड़ें" cardLabel="विपक्षी" defaults={defaults} />
                 </Section>
               </>
             ) : (
@@ -187,7 +194,7 @@ export default function SendKagaz() {
                   <Field label="धारा" value={form.applicable_sections} onChange={(v) => set({ applicable_sections: v })} placeholder="जैसे: 115(2), 352 BNS" />
                 </Section>
                 <Section title="अभियुक्त / व्यक्ति (वैकल्पिक)">
-                  <PersonCards people={form.accused} onChange={(p) => set({ accused: p })} addLabel="व्यक्ति जोड़ें" cardLabel="व्यक्ति" withRelation={false} />
+                  <PersonCards people={form.accused} onChange={(p) => set({ accused: p })} addLabel="व्यक्ति जोड़ें" cardLabel="व्यक्ति" withRelation={false} defaults={defaults} />
                 </Section>
               </>
             )}
