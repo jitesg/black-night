@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A4026"/><stop offset="1" stop-color="#24180C"/></linearGradient></defs>
+<rect width="1024" height="1024" fill="url(#bg)"/>
+<circle cx="512" cy="470" r="330" fill="#F3E7D3" opacity=".08"/>
+<!-- shoulders / shirt -->
+<path d="M262 760 q10 -170 170 -200 h160 q160 30 170 200z" fill="#C8A96A"/>
+<path d="M512 560 l-40 60 l40 120 l40 -120z" fill="#F3E7D3"/>
+<path d="M512 590 l-16 30 l16 120 l16 -120z" fill="#3A2B22"/>
+<rect x="300" y="600" width="90" height="26" rx="8" fill="#8C6A35" transform="rotate(-14 345 613)"/>
+<rect x="634" y="600" width="90" height="26" rx="8" fill="#8C6A35" transform="rotate(14 679 613)"/>
+<path d="M630 650 l30 0 l0 40 l-15 12 l-15 -12z" fill="#F2C14E"/>
+<!-- neck + head -->
+<rect x="470" y="500" width="84" height="80" fill="#E3A97E"/>
+<ellipse cx="512" cy="420" rx="118" ry="128" fill="#EDB98E"/>
+<ellipse cx="394" cy="430" rx="20" ry="30" fill="#E3A97E"/><ellipse cx="630" cy="430" rx="20" ry="30" fill="#E3A97E"/>
+<circle cx="468" cy="430" r="12" fill="#2A1C0F"/><circle cx="556" cy="430" r="12" fill="#2A1C0F"/>
+<path d="M440 400 q28 -14 56 0 M528 400 q28 -14 56 0" stroke="#4A2E16" stroke-width="10" fill="none" stroke-linecap="round"/>
+<path d="M480 490 q32 20 64 0" stroke="#7A4A2A" stroke-width="10" fill="none" stroke-linecap="round"/>
+<path d="M470 470 q42 -14 84 0 q-42 10 -84 0z" fill="#3A2412"/>
+<!-- cap -->
+<path d="M352 330 q160 -170 320 0z" fill="#C8A96A"/>
+<rect x="372" y="318" width="280" height="44" rx="10" fill="#3A2B22"/>
+<rect x="372" y="334" width="280" height="10" fill="#B07A2A"/>
+<path d="M380 362 q132 50 264 0 v18 q-132 46 -264 0z" fill="#1E140A"/>
+<circle cx="512" cy="270" r="34" fill="#F2C14E"/>
+<path d="M512 248 l7 15 h16 l-13 10 l5 16 l-15 -10 l-15 10 l5 -16 l-13 -10 h16z" fill="#8B1E1E"/>
+<!-- laptop (back of screen, in front) -->
+<path d="M300 690 h424 l30 170 h-484z" fill="#2B2420"/>
+<circle cx="512" cy="775" r="20" fill="#F2C14E"/>
+<rect x="240" y="860" width="544" height="26" rx="10" fill="#3A322D"/>
+<!-- files on the right -->
+<rect x="770" y="800" width="160" height="26" rx="5" fill="#F3E7D3"/>
+<rect x="770" y="826" width="160" height="24" rx="5" fill="#D9653B"/>
+<rect x="770" y="850" width="160" height="26" rx="5" fill="#F3E7D3"/>
+<!-- cup left -->
+<path d="M110 800 h70 v40 q0 18 -18 18 h-34 q-18 0 -18 -18z" fill="#D9653B"/>
+<path d="M180 810 q22 0 22 16 q0 16 -22 16" stroke="#D9653B" stroke-width="8" fill="none"/>
+<!-- desk -->
+<rect x="60" y="884" width="904" height="30" rx="10" fill="#F5F0E6"/>
+</svg>

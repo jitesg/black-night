@@ -43,6 +43,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   with `openFile` (ACTION_VIEW intent).
 - Dialog buttons: `AlertDialogAction/Cancel` wrap labels in the themed Text.
 - `plugins/withHighRefreshRate.js` requests the max display refresh rate.
+- App icon (owner chose B of 3 flat samples, from the owner's "officer at desk" picture): officer with star cap behind a laptop, cup + files,
+  brown gradient — source `assets/icon.svg` → icon.png (1024), adaptive-icon-bg.png (gradient), adaptive-icon.png (figure scaled 0.66 into the
+  safe zone, transparent), favicon.png (48). Rendered with Playwright (file:// svg with width/height). Office app keeps its own icon.
 - Release builds silence console.log/info/debug (`src/lib/debugLogStore.ts`).
 - Report print layout (fixed A4): `src/lib/printLayout.ts` — `renderTextForPrint` (letters → one sheet per
   सेवा में letter; other text → `doc-plain` sheet: note/title/paras/signature), `LETTER_FIT_SCRIPT` shrinks
