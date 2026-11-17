@@ -142,6 +142,30 @@ export function resolveGlobalKeys(
 }
 
 /**
+ * The workspace keys of a format with their values — a key the settings don't fill comes back as '' (owner: show it as an
+ * empty box at the bottom of the form that must be filled, instead of only blocking the report).
+ */
+export function withEmptyWorkspaceKeys(template: string, resolved: Record<string, string>): Record<string, string> {
+  const out: Record<string, string> = { ...resolved };
+  const keyPattern = /\{\{([A-Za-z0-9_]+)\}\}/g;
+  let m: RegExpExecArray | null;
+  while ((m = keyPattern.exec(template)) !== null) {
+    if (m[1] in GLOBAL_KEY_REGISTRY && !(m[1] in out)) out[m[1]] = '';
+  }
+  return out;
+}
+
+/** A key filled from the workspace settings (थाना / जनपद / अधिकारी का नाम / राज्य). */
+export function isWorkspaceKey(key: string): boolean {
+  return key in GLOBAL_KEY_REGISTRY;
+}
+
+/** Workspace keys (थाना / जनपद / अधिकारी का नाम / राज्य) still empty in the form — they are required (owner). */
+export function emptyWorkspaceKeys(values: Record<string, string>): string[] {
+  return Object.keys(values).filter((k) => k in GLOBAL_KEY_REGISTRY && !(values[k] ?? '').trim());
+}
+
+/**
  * Resolves Nyayalay document auto-fill keys from a NyayalayDocument.
  *
  * Handles the special `accused_names` virtual key by joining all accused

@@ -1,5 +1,5 @@
 import { applyPickedFir, hasFirMarkers, mergeContextDefaults, resolveContextDefaults } from '@/lib/contextDefaultResolver';
-import { AutoValuePills } from '@/components/formats/AutoValuePills';
+import { AutoValuePills, AUTO_PILL_LABELS_HI } from '@/components/formats/AutoValuePills';
 import { roleConfigOf } from '@/lib/ppPeople';
 import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { isKeyVisible } from '@/lib/formatShowIf';
@@ -35,6 +35,7 @@ import { stripFormatMarkers } from '@/lib/formatMarkers';
 import {
   resolveGlobalKeys, filterDynamicKeys, fillWorkspaceDefault,
   GLOBAL_KEY_LABELS,
+  emptyWorkspaceKeys, isWorkspaceKey, withEmptyWorkspaceKeys,
 } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput, keyHint } from '@/components/ui/input';
@@ -154,7 +155,8 @@ export default function FillScreen() {
             setFormat(f);
             const { autoValues: resolved, missingWorkspaceFields: missing } =
               resolveGlobalKeys(f.vivran, workspace);
-            setAutoValues(resolved);
+            // an empty setting still gets its (required) box at the bottom of the form
+            setAutoValues(withEmptyWorkspaceKeys(f.vivran, resolved));
             setMissingWorkspaceFields(missing);
             const dynKeys = filterDynamicKeys(k);
             setDynamicKeys(dynKeys);
@@ -234,8 +236,10 @@ export default function FillScreen() {
     setGenerating(true);
     setBannerError('');
     try {
-      if (missingWorkspaceFields.length > 0) {
-        setBannerError(t('format.fill.errorWorkspace', { fields: missingWorkspaceFields.join(', ') }));
+      // अधिकारी का नाम / थाना / जनपद are required (owner) — checked in the boxes at the bottom of the form (filled there or in the settings)
+      const emptyWs = emptyWorkspaceKeys(autoValues);
+      if (emptyWs.length > 0) {
+        setBannerError(`नीचे ये खाने भरें: ${emptyWs.map((k) => AUTO_PILL_LABELS_HI[k] ?? k).join(', ')}`);
         return;
       }
       // Block save if any group card has validation errors
@@ -543,14 +547,6 @@ export default function FillScreen() {
             />
           ) : null}
 
-          {/* ── Auto-filled Global Keys pill row (shared, editable — owner) ── */}
-          <AutoValuePills
-            title={t('format.fill.autoFilledLabel')}
-            values={autoValues}
-            fallbackLabels={GLOBAL_KEY_LABELS}
-            onChange={(k, v) => { setAutoValues((prev) => ({ ...prev, [k]: v })); setValue(k, v); }}
-          />
-
           {/* ── Dynamic Key Engine — user-input fields ────────────── */}
           {dynamicKeys.length === 0 && autoFilledKeyNames.length === 0 ? (
             <View className="items-center py-10 gap-3">
@@ -608,6 +604,15 @@ export default function FillScreen() {
               )}
             </>
           ) : null}
+
+          {/* ── Auto-filled Global Keys pill row (shared, editable — owner) ── */}
+          <AutoValuePills
+            title={t('format.fill.autoFilledLabel')}
+            values={autoValues}
+            fallbackLabels={GLOBAL_KEY_LABELS}
+            isRequired={isWorkspaceKey}
+            onChange={(k, v) => { setAutoValues((prev) => ({ ...prev, [k]: v })); setValue(k, v); }}
+          />
 
           {/* ── Validation banner ────────────────────────────────── */}
           {bannerError ? (

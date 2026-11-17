@@ -6,7 +6,7 @@
  *   - mode=report: generates text → ppReportDraftStore → back to report screen
  */
 import { htmlToPlainText } from '@/lib/stringUtils';
-import { AutoValuePills } from '@/components/formats/AutoValuePills';
+import { AutoValuePills, AUTO_PILL_LABELS_HI } from '@/components/formats/AutoValuePills';
 import { ppCards, roleConfigOf } from '@/lib/ppPeople';
 import { PPPeopleContext, type PPPeopleCtx } from '@/components/formats/PPPeopleButton';
 import { getPPWithDetails } from '@/lib/db/prarthnaPatraRepo';
@@ -28,7 +28,7 @@ import {
   type PredefinedFormat, type FormatKey,
 } from '@/lib/db/predefinedFormatRepo';
 import { generateReport } from '@/lib/templateEngine';
-import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS, fillWorkspaceDefault } from '@/lib/globalKeyEngine';
+import { resolveGlobalKeys, filterDynamicKeys, GLOBAL_KEY_LABELS, fillWorkspaceDefault, emptyWorkspaceKeys, isWorkspaceKey, withEmptyWorkspaceKeys } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput, keyHint } from '@/components/ui/input';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
@@ -86,7 +86,8 @@ export default function PPFillFormatScreen() {
       setFormat(f);
       const { autoValues: resolved, missingWorkspaceFields: missing } =
         resolveGlobalKeys(f.vivran, workspace);
-      setAutoValues(resolved);
+      // an empty setting still gets its (required) box at the bottom of the form
+      setAutoValues(withEmptyWorkspaceKeys(f.vivran, resolved));
       setMissingWorkspaceFields(missing);
       const dynKeys = filterDynamicKeys(k);
       setDynamicKeys(dynKeys);
@@ -148,8 +149,10 @@ export default function PPFillFormatScreen() {
 
   const handleGenerate = async () => {
     if (!format) return;
-    if (missingWorkspaceFields.length > 0) {
-      setBannerError(t('format.fill.errorWorkspace', { fields: missingWorkspaceFields.join(', ') }));
+    // अधिकारी का नाम / थाना / जनपद are required (owner) — checked in the boxes at the bottom of the form (filled there or in the settings)
+    const emptyWs = emptyWorkspaceKeys(autoValues);
+    if (emptyWs.length > 0) {
+      setBannerError(`नीचे ये खाने भरें: ${emptyWs.map((k) => AUTO_PILL_LABELS_HI[k] ?? k).join(', ')}`);
       return;
     }
     // Block save if any group card has validation errors
@@ -293,14 +296,6 @@ export default function PPFillFormatScreen() {
             </View>
           )}
 
-          {/* Auto-filled global keys — editable (owner): the edit goes into the report, not into the settings */}
-          <AutoValuePills
-            title={t('format.fill.autoFilledLabel')}
-            values={autoValues}
-            fallbackLabels={GLOBAL_KEY_LABELS}
-            onChange={(k, v) => { setAutoValues((prev) => ({ ...prev, [k]: v })); setValue(k, v); }}
-          />
-
           {/* Dynamic user-input fields */}
           {dynamicKeys.length === 0 && autoFilledKeyNames.length === 0 ? (
             <View className="items-center py-10 gap-3">
@@ -358,6 +353,15 @@ export default function PPFillFormatScreen() {
               )}
             </>
           ) : null}
+
+          {/* Auto-filled global keys — editable (owner): the edit goes into the report, not into the settings */}
+          <AutoValuePills
+            title={t('format.fill.autoFilledLabel')}
+            values={autoValues}
+            fallbackLabels={GLOBAL_KEY_LABELS}
+            isRequired={isWorkspaceKey}
+            onChange={(k, v) => { setAutoValues((prev) => ({ ...prev, [k]: v })); setValue(k, v); }}
+          />
 
           {/* Validation banner */}
           {bannerError ? (

@@ -468,6 +468,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   from DocumentEditor + .doc via exportReportToDocx; size large / small, `wordOnly`): PP आख्या box, PP detail आख्या card (report_marked first),
   बीट सूचना / NCR take-action (.doc only). न्यायालय आख्या: GeneratedReportView `editorHtml` from report_marked + `wordExport` + new `a4Preview`
   prop (edit → marked cleared, the editor HTML carries the marks).
+  Look (owner, later): rectangular boxes, one per line (label above — like थाना / जनपद on the person card), order अधिकारी का नाम → थाना → जनपद
+  then the rest, placed at the BOTTOM of the form (just above the error banner / generate button). Workspace keys are REQUIRED (owner: "बदल सकें,
+  पर खाली न छोड़ सकें"): an empty setting now still gets its box (`withEmptyWorkspaceKeys`), red border + "भरें" while empty (`isRequired` =
+  `isWorkspaceKey`), and generate is blocked by `emptyWorkspaceKeys(autoValues)` ("नीचे ये खाने भरें: …") instead of the old settings-only check.
+  कागज़ values on न्यायालय stay optional. Tests in scripts/test_workspace_default.ts.
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,
   0.5in margins, marks/data-fmt honoured; `exportReportToDocx` → share sheet). निरोधात्मक: card long-press menu + editor
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.

@@ -10,7 +10,7 @@
  *   docId     – the nyayalay document id (passed through for context)
  */
 import { htmlToPlainText } from '@/lib/stringUtils';
-import { AutoValuePills } from '@/components/formats/AutoValuePills';
+import { AutoValuePills, AUTO_PILL_LABELS_HI } from '@/components/formats/AutoValuePills';
 import { roleConfigOf } from '@/lib/ppPeople';
 import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { isKeyVisible } from '@/lib/formatShowIf';
@@ -33,7 +33,7 @@ import {
 } from '@/lib/db/predefinedFormatRepo';
 import { getNyayalayDocWithDetails } from '@/lib/db/nyayalayRepo';
 import { generateReport } from '@/lib/templateEngine';
-import { resolveGlobalKeys, filterDynamicKeys, fillWorkspaceDefault, GLOBAL_KEY_LABELS, resolveNyayalayKeys, NYAYALAY_KEY_LABELS } from '@/lib/globalKeyEngine';
+import { resolveGlobalKeys, filterDynamicKeys, fillWorkspaceDefault, GLOBAL_KEY_LABELS, resolveNyayalayKeys, NYAYALAY_KEY_LABELS, emptyWorkspaceKeys, isWorkspaceKey, withEmptyWorkspaceKeys } from '@/lib/globalKeyEngine';
 import { validateRequiredFields, clearFieldError } from '@/lib/templateValidation';
 import { FormatKeyInput, keyHint } from '@/components/ui/input';
 import { AccusedGroupInput, initAccusedGroup } from '@/components/ui/AccusedGroupInput';
@@ -112,7 +112,8 @@ export default function NyayalayFillFormatScreen() {
       } as typeof workspace;
       const { autoValues: wsResolved, missingWorkspaceFields: missing } =
         resolveGlobalKeys(f.vivran, wsSnapshot);
-      setAutoValues(wsResolved);
+      // an empty setting still gets its (required) box at the bottom of the form
+      setAutoValues(withEmptyWorkspaceKeys(f.vivran, wsResolved));
       setMissingWorkspaceFields(missing);
 
       // Step 1b: Nyayalay document auto-fill keys
@@ -162,8 +163,10 @@ export default function NyayalayFillFormatScreen() {
 
   const handleGenerate = async () => {
     if (!format) return;
-    if (missingWorkspaceFields.length > 0) {
-      setBannerError(t('nyayalay.format.workspaceIncompleteBanner', { fields: missingWorkspaceFields.join(', ') }));
+    // अधिकारी का नाम / थाना / जनपद are required (owner) — checked in the boxes at the bottom of the form (filled there or in the settings)
+    const emptyWs = emptyWorkspaceKeys(autoValues);
+    if (emptyWs.length > 0) {
+      setBannerError(`नीचे ये खाने भरें: ${emptyWs.map((k) => AUTO_PILL_LABELS_HI[k] ?? k).join(', ')}`);
       return;
     }
     const invalidGroups = Object.entries(groupValid).filter(([k, valid]) =>
@@ -293,18 +296,6 @@ export default function NyayalayFillFormatScreen() {
             </View>
           )}
 
-          {/* Auto-filled keys (workspace + nyayalay document combined) — editable (owner); edits go into the report only */}
-          <AutoValuePills
-            title={t('nyayalay.format.autoFilledFromDoc')}
-            values={allAutoFilled}
-            fallbackLabels={{ ...GLOBAL_KEY_LABELS, ...NYAYALAY_KEY_LABELS }}
-            onChange={(k, v) => {
-              if (k in nyayalayAutoValues) setNyayalayAutoValues((prev) => ({ ...prev, [k]: v }));
-              else setAutoValues((prev) => ({ ...prev, [k]: v }));
-              setValue(k, v);
-            }}
-          />
-
           {/* Dynamic fields */}
           {dynamicKeys.length === 0 && allAutoFilledKeys.length === 0 ? (
             <View className="items-center py-10 gap-3">
@@ -362,6 +353,19 @@ export default function NyayalayFillFormatScreen() {
               )}
             </>
           ) : null}
+
+          {/* Auto-filled keys (workspace + nyayalay document combined) — editable (owner); edits go into the report only */}
+          <AutoValuePills
+            title={t('nyayalay.format.autoFilledFromDoc')}
+            values={allAutoFilled}
+            fallbackLabels={{ ...GLOBAL_KEY_LABELS, ...NYAYALAY_KEY_LABELS }}
+            isRequired={isWorkspaceKey}
+            onChange={(k, v) => {
+              if (k in nyayalayAutoValues) setNyayalayAutoValues((prev) => ({ ...prev, [k]: v }));
+              else setAutoValues((prev) => ({ ...prev, [k]: v }));
+              setValue(k, v);
+            }}
+          />
 
           {/* Validation banner */}
           {bannerError ? (
