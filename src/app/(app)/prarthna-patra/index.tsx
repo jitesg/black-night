@@ -36,6 +36,8 @@ import {
   type PPDashboardAnalytics,
   type PetitionType,
 } from '@/lib/db/prarthnaPatraRepo';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 
@@ -153,6 +155,8 @@ const PPCard = memo(function PPCard({
 }) {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const [deleteOpen, setDeleteOpen] = useState(false);
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
 
@@ -203,31 +207,35 @@ const PPCard = memo(function PPCard({
             <AlertDialogTitle>{PETITION_TYPE_LABELS[pp.petition_type]}</AlertDialogTitle>
             <AlertDialogDescription>{t('prarthnaPatra.list.menuTitle')}</AlertDialogDescription>
           </AlertDialogHeader>
+          {/* The footer lays its buttons out bottom-up (flex-col-reverse), so they are written here in reverse: on screen
+              देखें → संपादित करें → हटाएं → रद्द करें (owner: हटाएं was on top). Colours from THEME (the label was dark on green). */}
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setMenuOpen(false)}>
               <Text>{t('common.cancel')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
-              onPress={() => {
-                setMenuOpen(false);
-                router.push(`/(app)/prarthna-patra/${pp.id}` as never);
-              }}
+              className="bg-destructive"
+              onPress={() => { setMenuOpen(false); setDeleteOpen(true); }}
             >
-              <Text>{t('common.view')}</Text>
+              <Text style={{ color: C.destructiveForeground }}>{t('common.delete')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
+              style={{ backgroundColor: C.card, borderWidth: 1.5, borderColor: C.primary }}
               onPress={() => {
                 setMenuOpen(false);
                 router.push(`/(app)/prarthna-patra/add?editId=${pp.id}` as never);
               }}
             >
-              <Text>{t('common.edit')}</Text>
+              <Text style={{ color: C.primary }}>{t('common.edit')}</Text>
             </AlertDialogAction>
             <AlertDialogAction
-              className="bg-destructive"
-              onPress={() => { setMenuOpen(false); setDeleteOpen(true); }}
+              style={{ backgroundColor: C.primary }}
+              onPress={() => {
+                setMenuOpen(false);
+                router.push(`/(app)/prarthna-patra/${pp.id}` as never);
+              }}
             >
-              <Text className="text-destructive-foreground">{t('common.delete')}</Text>
+              <Text style={{ color: C.primaryForeground }}>{t('common.view')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

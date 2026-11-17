@@ -34,7 +34,9 @@ function AlertDialogOverlay({
           className
         )}
         {...props}>
+        {/* full width (owner): without it this wrapper shrank to its content, so a dialog with short text (a menu) opened narrow */}
         <NativeOnlyAnimatedView
+          style={{ width: '100%', alignItems: 'center' }}
           entering={FadeIn.duration(200).delay(50)}
           exiting={FadeOut.duration(150)}>
           <>{children}</>

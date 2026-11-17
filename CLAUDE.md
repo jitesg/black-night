@@ -51,6 +51,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Picked files/photos: copy with `persistPickedFile` (cache can be cleared); open
   with `openFile` (ACTION_VIEW intent).
 - Dialog buttons: `AlertDialogAction/Cancel` wrap labels in the themed Text.
+- AlertDialog width (owner): the NativeOnlyAnimatedView inside AlertDialogOverlay has `width: '100%'` — without it a dialog with short text
+  (a menu) shrank to its content and opened narrow. AlertDialogFooter is flex-col-reverse: write buttons in REVERSE of the on-screen order.
+  प्रार्थना पत्र card long-press menu: देखें (primary) → संपादित करें (green outline) → हटाएं (red) → रद्द करें, colours via THEME style
+  (the className label colour came out dark on green on the phone).
 - `plugins/withHighRefreshRate.js` requests the max display refresh rate.
 - App icon (owner chose B of 3 flat samples, from the owner's "officer at desk" picture): officer with star cap behind a laptop, cup + files,
   brown gradient — source `assets/icon.svg` → icon.png (1024), adaptive-icon-bg.png (gradient), adaptive-icon.png (figure scaled 0.66 into the
