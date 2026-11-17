@@ -184,7 +184,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (values क्षेत्र / मुकदमा / उच्च न्यायालय / जनपद न्यायालय / गैर प्रान्त / वारंट [label "NBW / सम्मन / मृत्यु आख्या"] / अन्य, default क्षेत्र) → heading line
   + blank line + "इस समय मैं उ0नि0 <name>{ मय हमराह <Hamrah>} …रवाना हुआ।" (pad → उ0नि0 / निरीक्षक in both). मुकदमा: FIRNo / Sections (@FIR);
   उच्च न्यायालय: HCourt लखनऊ खंडपीठ → "मा0 उच्च न्यायालय जनपद लखनऊ" / इलाहाबाद → "…जनपद प्रयागराज"; जनपद न्यायालय: CourtDist (default {{District}});
-  गैर प्रान्त: State; optional Purpose before the place for those three; वारंट: WType NBW / सम्मन / मृत्यु आख्या (heading "वारंटी / सम्मन / मृत्यु आख्या
+  गैर प्रान्त: DestState (was `State` — that name is the workspace राज्य key, so the box was hidden and the settings राज्य printed /
+  blocked every रवानगी; renamed, seed_version 5, backup gd_rawangi_samanya_v4_before_deststate.json; never name a format key State /
+  District / PoliceStation / OfficerName unless it IS that workspace value); optional Purpose before the place for those three; वारंट: WType NBW / सम्मन / मृत्यु आख्या (heading "वारंटी / सम्मन / मृत्यु आख्या
   सम्बन्धित मु0अ0सं0 … धारा …"; ending "की तलाश मे" / "को सम्मन तामील कराने हेतु" / "की मृत्यु के सम्बन्ध में जानकारी कर आख्या हेतु"), WCourt, WCaseNo,
   WFir, WSec, WCard (expand WName / WRel / WFather / WAddr), optional WVs (शा0 प्रति; empty → WName); अन्य: Other "रवानगी का उद्देश्य लिखें". GD = plain
   text, so no bold heading. Tests `scripts/test_rawangi.ts`.

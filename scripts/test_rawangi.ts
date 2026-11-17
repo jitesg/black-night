@@ -29,7 +29,7 @@ test('मुकदमा, न्यायालय, गैर प्रान्
   assert.match(gen({ Kind: 'उच्च न्यायालय', HCourt: 'लखनऊ खंडपीठ', Purpose: 'जमानत पैरवी हेतु' }), /^रवानगी उ0नि0 मा0 उच्च न्यायालय जनपद लखनऊ\n\n.*अजय यादव जमानत पैरवी हेतु मा0 उच्च न्यायालय जनपद लखनऊ रवाना हुआ।$/);
   assert.match(gen({ Kind: 'उच्च न्यायालय', HCourt: 'इलाहाबाद' }), /यादव मा0 उच्च न्यायालय जनपद प्रयागराज रवाना हुआ।$/);
   assert.match(gen({ Kind: 'जनपद न्यायालय', CourtDist: 'लखनऊ' }), /^रवानगी उ0नि0 मा0 न्यायालय जनपद लखनऊ\n\n.*यादव मा0 न्यायालय जनपद लखनऊ रवाना हुआ।$/);
-  assert.match(gen({ Kind: 'गैर प्रान्त', State: 'बिहार' }), /^रवानगी उ0नि0 गैर प्रान्त \(बिहार\)\n\n.*यादव गैर प्रान्त बिहार रवाना हुआ।$/);
+  assert.match(gen({ Kind: 'गैर प्रान्त', DestState: 'बिहार' }), /^रवानगी उ0नि0 गैर प्रान्त \(बिहार\)\n\n.*यादव गैर प्रान्त बिहार रवाना हुआ।$/);
   assert.match(gen({ Kind: 'अन्य', Other: 'परेड हेतु पुलिस लाइन' }), /^रवानगी उ0नि0\n\n.*यादव परेड हेतु पुलिस लाइन रवाना हुआ।$/);
 });
 
@@ -48,4 +48,16 @@ test('ⓘ note = owner Formatted_Police_Log.docx (names masked)', () => {
   assert.equal(n.blocks.filter((b: { t: string }) => b.t === 'h2').length, 37);
   assert.ok(!JSON.stringify(n).match(/\[[A-Z]{1,2}\]/));
   assert.match(readFileSync('src/lib/formatInfo.ts', 'utf8'), /'sys-gd-fmt-rawangi-samanya': \(\) => require\('..\/..\/assets\/format-info\/sys-gd-fmt-rawangi-samanya.json'\)/);
+});
+
+test('प्रान्त का नाम = the format own box, not the settings राज्य (owner)', async () => {
+  const g = await import('../src/lib/globalKeyEngine.ts');
+  // the box shows in the form (State was taken for the workspace key and hidden)
+  assert.ok(g.filterDynamicKeys(f.keys).some((k: { key_name: string }) => k.key_name === 'DestState'));
+  assert.doesNotMatch(f.vivran, /\{\{State\}\}/);
+  // the settings राज्य is neither used nor required by this format
+  const ws = { police_station: 'बछरावां', district: 'रायबरेली', state: '', halka: '', beat: '', officer_name: 'जीतेश सिंह' };
+  const r = g.resolveGlobalKeys(f.vivran, ws);
+  assert.deepEqual(g.emptyWorkspaceKeys(g.withEmptyWorkspaceKeys(f.vivran, r.autoValues)), []);
+  assert.match(gen({ Kind: 'गैर प्रान्त', DestState: 'बिहार' }), /गैर प्रान्त बिहार रवाना हुआ।$/);
 });
