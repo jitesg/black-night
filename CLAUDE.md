@@ -458,6 +458,16 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   shown in हाल के कार्य as "अधूरा" → "आगे भरें" opens formats/fill?draftId=…; generating deletes the draft row. Home counts skip drafts.
   Universal-key pills (थाना / जनपद / नाम) on formats/fill: an edit goes into values AND autoValues; generate merges `{...values, ...autoValues}`
   so the pill text is what the report gets (workspace setting unchanged). केस डायरी कार्यवाही panel keeps its own in-screen draft.
+- Fill screens made alike (owner; केस डायरी कार्यवाही panel NOT touched): shared `components/formats/AutoValuePills.tsx` = the editable
+  "वर्कस्पेस से स्वतः भरा गया" pills (Hindi names `AUTO_PILL_LABELS_HI`: थाना / जनपद / अधिकारी का नाम, वाद सं0 …; an edit goes into the report
+  values, never the settings) on formats/fill, prarthna-patra + nyayalay fill-format (न्यायालय: कागज़ values too). प्रार्थना पत्र / न्यायालय
+  fill-format now also send `markedText` (keepMarkers) in their draft stores; `src/lib/reportLayout.ts` (pure; tests `scripts/test_report_layout.ts`):
+  LayoutTrack {plain, marked}, `appendTrack`, `markedToSave` (only while the box text is unchanged), `layoutSource` → `markedToEditorHtml` (data-fmt
+  editor HTML, same as formats/fill) so A4 / .doc keep तालिका / bold / बीच … Column `report_marked` on prarthna_patra_reports + nyayalay_reports
+  (saveReport / saveNyayalayReport optional last arg). `components/common/ReportExportButtons.tsx` (A4 प्रीव्यू = exported `PrintPreviewModal`
+  from DocumentEditor + .doc via exportReportToDocx; size large / small, `wordOnly`): PP आख्या box, PP detail आख्या card (report_marked first),
+  बीट सूचना / NCR take-action (.doc only). न्यायालय आख्या: GeneratedReportView `editorHtml` from report_marked + `wordExport` + new `a4Preview`
+  prop (edit → marked cleared, the editor HTML carries the marks).
 - Report → Word: `src/lib/reportDocxExport.ts` (`buildReportDocx` mirrors renderLetterHtml: page per letter, Kokila 16pt,
   0.5in margins, marks/data-fmt honoured; `exportReportToDocx` → share sheet). निरोधात्मक: card long-press menu + editor
   header button via `src/lib/nirodhatmak/karyvahiDocx.ts`.

@@ -427,6 +427,8 @@ export interface NyayalayReport {
   id: string;
   doc_id: string;
   report_content: string;
+  /** the format's marked text (layout) while report_content is unchanged; '' otherwise */
+  report_marked?: string;
   report_date: string;
   format_title: string;
   format_id: string | null;
@@ -448,7 +450,8 @@ export async function saveNyayalayReport(
   reportContent: string,
   reportDate: string,
   formatTitle: string,
-  formatId: string | null
+  formatId: string | null,
+  reportMarked = ''
 ): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
@@ -458,18 +461,18 @@ export async function saveNyayalayReport(
   if (existing) {
     await db.runAsync(
       `UPDATE nyayalay_reports
-       SET report_content=?, report_date=?, format_title=?, format_id=?,
+       SET report_content=?, report_marked=?, report_date=?, format_title=?, format_id=?,
            updated_at=?, version=version+1
        WHERE id=?`,
-      [reportContent, reportDate, formatTitle, formatId ?? null, now, existing.id]
+      [reportContent, reportMarked, reportDate, formatTitle, formatId ?? null, now, existing.id]
     );
   } else {
     await db.runAsync(
       `INSERT INTO nyayalay_reports
-       (id, doc_id, report_content, report_date, format_title, format_id,
+       (id, doc_id, report_content, report_marked, report_date, format_title, format_id,
         created_at, updated_at, deleted_at, version)
-       VALUES (?,?,?,?,?,?,?,?,NULL,1)`,
-      [generateUUID(), docId, reportContent, reportDate, formatTitle, formatId ?? null, now, now]
+       VALUES (?,?,?,?,?,?,?,?,?,NULL,1)`,
+      [generateUUID(), docId, reportContent, reportMarked, reportDate, formatTitle, formatId ?? null, now, now]
     );
   }
 }

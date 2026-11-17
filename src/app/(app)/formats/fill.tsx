@@ -1,4 +1,5 @@
 import { applyPickedFir, hasFirMarkers, mergeContextDefaults, resolveContextDefaults } from '@/lib/contextDefaultResolver';
+import { AutoValuePills } from '@/components/formats/AutoValuePills';
 import { roleConfigOf } from '@/lib/ppPeople';
 import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { isKeyVisible } from '@/lib/formatShowIf';
@@ -11,10 +12,10 @@ import type { FIR } from '@/lib/db/firRepo';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  BackHandler, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View,
+  BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View,
 } from 'react-native';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { Zap, AlertCircle, Settings2, CheckCircle2, Pencil, Printer } from 'lucide-react-native';
+import { Zap, AlertCircle, Settings2, Printer } from 'lucide-react-native';
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
@@ -542,55 +543,13 @@ export default function FillScreen() {
             />
           ) : null}
 
-          {/* ── Auto-filled Global Keys pill row ─────────────────── */}
-          {autoFilledKeyNames.length > 0 && (
-            <View className="gap-2">
-              <Text style={{ fontSize: 11, color: C.mutedForeground, fontWeight: '500', letterSpacing: 0.8, textTransform: 'uppercase' }}>
-                {t('format.fill.autoFilledLabel')}
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {autoFilledKeyNames.map((k) => (
-                  <View
-                    key={k}
-                    style={{
-                      flexDirection: 'row', alignItems: 'center', gap: 6,
-                      borderRadius: 20, paddingHorizontal: 10, paddingVertical: 6,
-                      backgroundColor: C.secondary,
-                      borderWidth: 0.5, borderColor: C.border,
-                    }}
-                  >
-                    <CheckCircle2 size={11} color="#4ADE80" />
-                    <Text style={{ fontSize: 12, color: C.foreground, fontWeight: '500' }}>
-                      {GLOBAL_KEY_LABELS[k] ?? k}:
-                    </Text>
-                    <TextInput
-                      value={autoValues[k]}
-                      onChangeText={(v) => { setAutoValues((prev) => ({ ...prev, [k]: v })); setValue(k, v); }}
-                      style={[
-                        {
-                          fontSize: 12,
-                          color: C.foreground,
-                          minWidth: 60,
-                          // Hindi needs vertical room: zero padding clipped the
-                          // lower part of letters (e.g. बछरावा, रायबरेली) on Android.
-                          paddingHorizontal: 0,
-                          paddingTop: 2,
-                          paddingBottom: 3,
-                          minHeight: 26,
-                          textAlignVertical: 'center',
-                          includeFontPadding: true,
-                          borderBottomWidth: 1,
-                          borderBottomColor: C.border,
-                        },
-                        Platform.OS === 'web' ? { outlineStyle: 'none', outlineWidth: 0 } as never : {},
-                      ]}
-                    />
-                    <Pencil size={10} color={C.mutedForeground} />
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
+          {/* ── Auto-filled Global Keys pill row (shared, editable — owner) ── */}
+          <AutoValuePills
+            title={t('format.fill.autoFilledLabel')}
+            values={autoValues}
+            fallbackLabels={GLOBAL_KEY_LABELS}
+            onChange={(k, v) => { setAutoValues((prev) => ({ ...prev, [k]: v })); setValue(k, v); }}
+          />
 
           {/* ── Dynamic Key Engine — user-input fields ────────────── */}
           {dynamicKeys.length === 0 && autoFilledKeyNames.length === 0 ? (

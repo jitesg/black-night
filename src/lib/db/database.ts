@@ -1331,6 +1331,9 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   // group card "＋ और जानकारी" (owner): ई-मेल / पहचान पत्र / टिप्पणी as JSON
   await _ensureColumn(database, 'prarthna_patra_complainants','extra_json',        "TEXT DEFAULT ''");
   await _ensureColumn(database, 'prarthna_patra_accused',     'extra_json',        "TEXT DEFAULT ''");
+  // आख्या made from a format: its marked text (layout for A4 / .doc) while the text is unchanged — reportLayout.ts
+  await _ensureColumn(database, 'prarthna_patra_reports',     'report_marked',     "TEXT DEFAULT ''");
+  await _ensureColumn(database, 'nyayalay_reports',           'report_marked',     "TEXT DEFAULT ''");
   // "संलग्न कागज़" (owner): photos / PDFs of a प्रार्थना पत्र (module 'pp') or a न्यायालय document ('court') — attachmentRepo.ts
   try {
     await database.execAsync(`

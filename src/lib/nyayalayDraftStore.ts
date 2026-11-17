@@ -8,6 +8,8 @@ interface NyayalayDraft {
   generatedText: string;
   formatTitle: string;
   formatId: string;
+  /** the same report with the format's layout marks ([[…]]) — reportLayout.ts */
+  markedText?: string;
 }
 
 let _pending: NyayalayDraft | null = null;

@@ -25,12 +25,12 @@ import * as Clipboard from 'expo-clipboard';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import {
-  CheckCircle, Copy, Edit3, FileDown, FileText, Save, Share2, X,
+  CheckCircle, Copy, Edit3, FileDown, FileText, Printer, Save, Share2, X,
 } from 'lucide-react-native';
 import { hasEditorMarks } from '@/lib/formatMarkers';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { DocumentEditor, PrintPreviewModal } from '@/components/common/DocumentEditor';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { renderMarkdown } from '@/lib/markdownRenderer';
 import { useTranslation } from 'react-i18next';
@@ -65,6 +65,8 @@ interface GeneratedReportViewProps {
   sharePrefix?: string;
   /** Show a Word (.docx) export button instead of the PDF one (formats → generated report, owner's choice). */
   wordExport?: boolean;
+  /** Show an "A4" print-preview button (न्यायालय आख्या — owner). Same sheet / same layout rule as the .doc export. */
+  a4Preview?: boolean;
 }
 
 export function GeneratedReportView({
@@ -75,6 +77,7 @@ export function GeneratedReportView({
   onSave,
   sharePrefix,
   wordExport,
+  a4Preview,
 }: GeneratedReportViewProps) {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
@@ -87,6 +90,7 @@ export function GeneratedReportView({
   const [saving, setSaving]         = useState(false);
   const [copied, setCopied]         = useState(false);
   const [exporting, setExporting]   = useState(false);
+  const [showA4, setShowA4]         = useState(false);
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Clear the copy-feedback timer on unmount to prevent setState on unmounted component.
@@ -148,16 +152,18 @@ export function GeneratedReportView({
     }
   };
 
+  // Unedited marked format → its editor HTML (keeps the layout marks); after an edit the content itself.
+  // Used by the .doc export and the A4 preview alike.
+  const unedited = !hasEditorMarks(content) && !/<[a-z][\s\S]*?>/i.test(content);
+  const layoutSrc = unedited && editorHtml && hasEditorMarks(editorHtml) ? editorHtml : content;
+
   // ── Word (.docx) export — same layout as the A4 print (reportDocxExport) ──
   const handleExportWord = async () => {
     if (exporting) return;
     setExporting(true);
     try {
-      // Unedited marked format → its editor HTML (keeps the layout marks); after an edit the content itself.
-      const unedited = !hasEditorMarks(content) && !/<[a-z][\s\S]*?>/i.test(content);
-      const source = unedited && editorHtml && hasEditorMarks(editorHtml) ? editorHtml : content;
       const { exportReportToDocx } = await import('@/lib/reportDocxExport');
-      await exportReportToDocx(source, title);
+      await exportReportToDocx(layoutSrc, title);
     } catch (e) {
       Alert.alert('Word फ़ाइल नहीं बनी', e instanceof Error ? e.message : String(e));
     } finally {
@@ -280,6 +286,18 @@ export function GeneratedReportView({
           <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-medium text-foreground">{t('common.share')}</Text>
         </Pressable>
 
+        {a4Preview ? (
+          <Pressable
+            onPress={() => setShowA4(true)}
+            className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card active:opacity-70"
+            style={{ borderCurve: 'continuous' }}
+            accessibilityLabel="A4 प्रीव्यू"
+          >
+            <Printer size={13} color={C.foreground} />
+            <Text numberOfLines={1} textBreakStrategy="simple" className="text-xs font-medium text-foreground">A4</Text>
+          </Pressable>
+        ) : null}
+
         {wordExport ? (
           <Pressable
             onPress={handleExportWord}
@@ -333,6 +351,7 @@ export function GeneratedReportView({
           : <Text className="text-sm text-muted-foreground italic">Report content will appear here.</Text>
         }
       </View>
+      {a4Preview ? <PrintPreviewModal visible={showA4} onClose={() => setShowA4(false)} value={layoutSrc} title={title} /> : null}
     </View>
   );
 }

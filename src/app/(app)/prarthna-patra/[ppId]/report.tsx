@@ -11,6 +11,8 @@
  *
  * For all other types: unchanged original report-editor behaviour.
  */
+import { ReportExportButtons } from '@/components/common/ReportExportButtons';
+import { appendTrack, layoutSource, markedToSave, type LayoutTrack } from '@/lib/reportLayout';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -61,6 +63,13 @@ export default function ReportScreen() {
 
   const [reportDate, setReportDate] = useState(_todayString());
   const [reportContent, setReportContent] = useState('');
+  // the format's layout (marked text) behind the box text — A4 / .doc use it while the text is unchanged (reportLayout.ts)
+  const [layoutTrack, setLayoutTrack] = useState<LayoutTrack | null>(null);
+  // latest values for the focus callback (it is created once per ppId)
+  const contentRef = useRef('');
+  contentRef.current = reportContent;
+  const trackRef = useRef<LayoutTrack | null>(null);
+  trackRef.current = layoutTrack;
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDirty, setIsDirty] = useState(false);
   const [backDialogOpen, setBackDialogOpen] = useState(false);
@@ -88,7 +97,12 @@ export default function ReportScreen() {
             // Strict assignment — no `prev ||` fallback so users can clear the field.
             // Reports written in the old screen's rich editor are HTML → plain text for the inline box.
             const rc = data.report.report_content ?? '';
-            setReportContent(REPORT_PETITION_TYPES.has(data.petition_type) && /<[a-z][\s\S]*?>/i.test(rc) ? htmlToPlainText(rc) : rc);
+            const shown = REPORT_PETITION_TYPES.has(data.petition_type) && /<[a-z][\s\S]*?>/i.test(rc) ? htmlToPlainText(rc) : rc;
+            setReportContent(shown);
+            contentRef.current = shown; // a draft consumed below in this same run appends to it
+            const saved = data.report.report_marked ? { plain: shown, marked: data.report.report_marked } : null;
+            setLayoutTrack(saved);
+            trackRef.current = saved;
             setEditorVisible(true);
           }
         } finally {
@@ -100,7 +114,9 @@ export default function ReportScreen() {
       // 2. Consume draft — runs on initial load AND when returning from format screen
       const draft = ppReportDraftStore.consume();
       if (draft) {
-        setReportContent((prev) => prev.trim() ? `${prev}\n\n${draft.generatedText}` : draft.generatedText);
+        const prev = contentRef.current;
+        setLayoutTrack(appendTrack(trackRef.current, prev, draft.generatedText, draft.markedText ?? ''));
+        setReportContent(prev.trim() ? `${prev}\n\n${draft.generatedText}` : draft.generatedText);
         setEditorVisible(true);
         setIsDirty(true);
       }
@@ -141,7 +157,7 @@ export default function ReportScreen() {
     if (!validate() || !ppId) return;
     setSaving(true);
     try {
-      await saveReport(ppId, reportDate, reportContent.trim());
+      await saveReport(ppId, reportDate, reportContent.trim(), markedToSave(layoutTrack, reportContent));
       savedRef.current = true;
       setIsDirty(false);
       router.back();
@@ -301,6 +317,12 @@ export default function ReportScreen() {
                 {errors.reportContent ? (
                   <Text className="text-xs text-destructive">{errors.reportContent}</Text>
                 ) : null}
+
+                {/* A4 प्रीव्यू + .doc (owner) — the format's layout while the text is unchanged */}
+                <ReportExportButtons
+                  source={layoutSource(layoutTrack, reportContent)}
+                  title={pp?.petition_type ? `${PETITION_TYPE_LABELS[pp.petition_type]} आख्या` : 'आख्या'}
+                />
 
                 {/* Save button */}
                 <Pressable

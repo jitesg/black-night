@@ -152,6 +152,8 @@ export interface PPReport {
   prarthna_patra_id: string;
   report_preparation_date: string;  // YYYY-MM-DD
   report_content: string;
+  /** the format's marked text (layout) while report_content is unchanged; '' otherwise */
+  report_marked?: string;
   created_at: number;
   updated_at: number;
   deleted_at: number | null;
@@ -504,7 +506,8 @@ export async function getLatestAction(ppId: string): Promise<PPAction | null> {
 export async function saveReport(
   ppId: string,
   reportPreparationDate: string,
-  reportContent: string
+  reportContent: string,
+  reportMarked = ''
 ): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
@@ -517,17 +520,17 @@ export async function saveReport(
   if (existing) {
     await db.runAsync(
       `UPDATE prarthna_patra_reports
-       SET report_preparation_date=?, report_content=?, updated_at=?, version=version+1
+       SET report_preparation_date=?, report_content=?, report_marked=?, updated_at=?, version=version+1
        WHERE id=?`,
-      [reportPreparationDate, reportContent, now, existing.id]
+      [reportPreparationDate, reportContent, reportMarked, now, existing.id]
     );
   } else {
     await db.runAsync(
       `INSERT INTO prarthna_patra_reports
-         (id, prarthna_patra_id, report_preparation_date, report_content,
+         (id, prarthna_patra_id, report_preparation_date, report_content, report_marked,
           created_at, updated_at, deleted_at, version)
-       VALUES (?, ?, ?, ?, ?, ?, NULL, 1)`,
-      [generateUUID(), ppId, reportPreparationDate, reportContent, now, now]
+       VALUES (?, ?, ?, ?, ?, ?, ?, NULL, 1)`,
+      [generateUUID(), ppId, reportPreparationDate, reportContent, reportMarked, now, now]
     );
   }
 

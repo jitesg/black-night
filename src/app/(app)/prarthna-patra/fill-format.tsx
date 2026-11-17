@@ -5,6 +5,8 @@
  *   - mode=action (default): generates text → ppActionDraftStore → back to take-action
  *   - mode=report: generates text → ppReportDraftStore → back to report screen
  */
+import { htmlToPlainText } from '@/lib/stringUtils';
+import { AutoValuePills } from '@/components/formats/AutoValuePills';
 import { ppCards, roleConfigOf } from '@/lib/ppPeople';
 import { PPPeopleContext, type PPPeopleCtx } from '@/components/formats/PPPeopleButton';
 import { getPPWithDetails } from '@/lib/db/prarthnaPatraRepo';
@@ -19,7 +21,7 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import {
-  AlertCircle, CheckCircle2, LayoutTemplate, Settings2,
+  AlertCircle, LayoutTemplate, Settings2,
 } from 'lucide-react-native';
 import {
   getFormatById, getFormatKeys,
@@ -174,13 +176,17 @@ export default function PPFillFormatScreen() {
     setSaving(true);
     try {
       const generatedText = generateReport(format.vivran, values, dynamicKeys);
+      // same report WITH the layout marks → A4 / .doc keep the format's look (owner); the box still gets the plain text
+      const markedRaw = generateReport(format.vivran, values, dynamicKeys, { keepMarkers: true });
+      const markedText = htmlToPlainText(markedRaw);
       clearFillDraft('PP', format.id, mode ?? null);
-      void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Prarthna Patra', markedText: generateReport(format.vivran, values, dynamicKeys, { keepMarkers: true }), values });
+      void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Prarthna Patra', markedText: markedRaw, values });
       if (isReportMode) {
         ppReportDraftStore.set({
           generatedText,
           formatTitle: format.title,
           formatId: format.id,
+          markedText,
         });
       } else {
         ppActionDraftStore.set({
@@ -287,30 +293,13 @@ export default function PPFillFormatScreen() {
             </View>
           )}
 
-          {/* Auto-filled global keys */}
-          {autoFilledKeyNames.length > 0 && (
-            <View className="gap-2">
-              <Text className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                {t('format.fill.autoFilledLabel')}
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {autoFilledKeyNames.map((k) => (
-                  <View
-                    key={k}
-                    className="flex-row items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5"
-                  >
-                    <CheckCircle2 size={11} color="#059669" />
-                    <Text textBreakStrategy="simple" className="text-xs text-foreground font-medium">
-                      {GLOBAL_KEY_LABELS[k] ?? k}:
-                    </Text>
-                    <Text textBreakStrategy="simple" className="text-xs text-muted-foreground" numberOfLines={1}>
-                      {autoValues[k]}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
+          {/* Auto-filled global keys — editable (owner): the edit goes into the report, not into the settings */}
+          <AutoValuePills
+            title={t('format.fill.autoFilledLabel')}
+            values={autoValues}
+            fallbackLabels={GLOBAL_KEY_LABELS}
+            onChange={(k, v) => { setAutoValues((prev) => ({ ...prev, [k]: v })); setValue(k, v); }}
+          />
 
           {/* Dynamic user-input fields */}
           {dynamicKeys.length === 0 && autoFilledKeyNames.length === 0 ? (

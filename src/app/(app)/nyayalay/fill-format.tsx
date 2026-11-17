@@ -9,6 +9,8 @@
  *   formatId  – the selected PredefinedFormat id
  *   docId     – the nyayalay document id (passed through for context)
  */
+import { htmlToPlainText } from '@/lib/stringUtils';
+import { AutoValuePills } from '@/components/formats/AutoValuePills';
 import { roleConfigOf } from '@/lib/ppPeople';
 import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
 import { isKeyVisible } from '@/lib/formatShowIf';
@@ -21,7 +23,7 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import {
-  AlertCircle, CheckCircle2, LayoutTemplate, Settings2,
+  AlertCircle, LayoutTemplate, Settings2,
 } from 'lucide-react-native';
 import {
   getFormatById,
@@ -186,12 +188,16 @@ export default function NyayalayFillFormatScreen() {
     setSaving(true);
     try {
       const generatedText = generateReport(format.vivran, values, dynamicKeys);
+      // same report WITH the layout marks → A4 / .doc keep the format's look (owner)
+      const markedRaw = generateReport(format.vivran, values, dynamicKeys, { keepMarkers: true });
+      const markedText = htmlToPlainText(markedRaw);
       clearFillDraft('Nyayalay', format.id, docId);
-      void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Nyayalay', markedText: generateReport(format.vivran, values, dynamicKeys, { keepMarkers: true }), values });
+      void saveReportRecord({ formatId: format.id, formatTitle: format.title, module: 'Nyayalay', markedText: markedRaw, values });
       nyayalayDraftStore.set({
         generatedText,
         formatTitle: format.title,
         formatId: format.id,
+        markedText,
       });
       // Two backs: skip select-format.tsx and land directly on report.tsx,
       // which reads nyayalayDraftStore.consume() in its useFocusEffect.
@@ -287,28 +293,17 @@ export default function NyayalayFillFormatScreen() {
             </View>
           )}
 
-          {/* Auto-filled keys (workspace + nyayalay document combined) */}
-          {allAutoFilledKeys.length > 0 && (
-            <View className="gap-2">
-              <Text className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                {t('nyayalay.format.autoFilledFromDoc')}
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {allAutoFilledKeys.map((k) => (
-                  <View key={k}
-                    className="flex-row items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5">
-                    <CheckCircle2 size={11} color="#059669" />
-                    <Text textBreakStrategy="simple" className="text-xs text-foreground font-medium">
-                      {NYAYALAY_KEY_LABELS[k] ?? GLOBAL_KEY_LABELS[k] ?? k}:
-                    </Text>
-                    <Text textBreakStrategy="simple" className="text-xs text-muted-foreground" numberOfLines={1}>
-                      {allAutoFilled[k]}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
+          {/* Auto-filled keys (workspace + nyayalay document combined) — editable (owner); edits go into the report only */}
+          <AutoValuePills
+            title={t('nyayalay.format.autoFilledFromDoc')}
+            values={allAutoFilled}
+            fallbackLabels={{ ...GLOBAL_KEY_LABELS, ...NYAYALAY_KEY_LABELS }}
+            onChange={(k, v) => {
+              if (k in nyayalayAutoValues) setNyayalayAutoValues((prev) => ({ ...prev, [k]: v }));
+              else setAutoValues((prev) => ({ ...prev, [k]: v }));
+              setValue(k, v);
+            }}
+          />
 
           {/* Dynamic fields */}
           {dynamicKeys.length === 0 && allAutoFilledKeys.length === 0 ? (

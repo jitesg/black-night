@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react';
+import { ReportExportButtons } from '@/components/common/ReportExportButtons';
+import { markedToEditorHtml } from '@/lib/reportLayout';
 import { useTranslation } from 'react-i18next';
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { stripHtmlTags } from '@/lib/stringUtils';
@@ -261,6 +263,12 @@ export default function PPDetailScreen() {
                 </Text>
               </View>
               <Text className="text-sm text-foreground leading-6">{stripHtmlTags(pp.report.report_content)}</Text>
+              {/* A4 प्रीव्यू + .doc without opening the आख्या (owner); the format's layout when it was saved unchanged */}
+              <ReportExportButtons
+                size="small"
+                source={pp.report.report_marked ? markedToEditorHtml(pp.report.report_marked) : pp.report.report_content}
+                title={`${PETITION_TYPE_LABELS[pp.petition_type]} आख्या`}
+              />
             </View>
           </>
         )}

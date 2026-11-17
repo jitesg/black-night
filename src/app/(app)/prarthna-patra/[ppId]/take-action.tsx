@@ -8,6 +8,7 @@
  *   is_complete=true  → status becomes Nistarit (owner: one "done" state — निस्तारित)
  *   is_complete=false → status stays Pending (draft)
  */
+import { ReportExportButtons } from '@/components/common/ReportExportButtons';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -301,6 +302,10 @@ export default function TakeActionScreen() {
           {errors.actionContent ? (
             <Text className="text-xs text-destructive mt-1">{errors.actionContent}</Text>
           ) : null}
+          {/* .doc (owner) — the editor above already has its own A4 preview */}
+          <View style={{ marginTop: 10 }}>
+            <ReportExportButtons wordOnly source={actionContent} title={t('prarthnaPatra.action.editorTitle')} />
+          </View>
 
           {/* ── Info note ── */}
           <View className="mt-4 bg-muted rounded-xl p-3">

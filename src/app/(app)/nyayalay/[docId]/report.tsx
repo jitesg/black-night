@@ -12,6 +12,7 @@
  *   • Prompt 3 — Report content already uses GeneratedReportView (kept as-is).
  *                Draft from fill-format auto-populates the editor on focus.
  */
+import { markedToEditorHtml } from '@/lib/reportLayout';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -148,6 +149,8 @@ export default function NyayalayReportScreen() {
 
   const [actionDate, setActionDate] = useState(todayStr());
   const [reportContent, setReportContent] = useState('');
+  // the format's marked text (layout) — used for A4 / .doc / the editor while reportContent is unchanged (reportLayout.ts)
+  const [reportMarked, setReportMarked] = useState('');
   const [formatTitle, setFormatTitle] = useState('');
   const [formatId, setFormatId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -174,11 +177,13 @@ export default function NyayalayReportScreen() {
 
         if (draft) {
           setReportContent(draft.generatedText);
+          setReportMarked(draft.markedText ?? '');
           setFormatTitle(draft.formatTitle);
           setFormatId(draft.formatId);
           setActionDate(todayStr());
         } else if (r) {
           setReportContent(r.report_content);
+          setReportMarked(r.report_marked ?? '');
           setFormatTitle(r.format_title);
           setFormatId(r.format_id);
           setActionDate(r.report_date);
@@ -227,7 +232,9 @@ export default function NyayalayReportScreen() {
         reportContent.trim(),
         actionDate,
         formatTitle,
-        formatId
+        formatId,
+        // '' after an edit (onSave clears it) — the editor's own HTML then carries the layout marks
+        reportMarked
       );
       await markNyayalayFinished(docId);
       savedRef.current = true;
@@ -443,8 +450,11 @@ export default function NyayalayReportScreen() {
           </Text>
           <GeneratedReportView
             content={reportContent}
+            editorHtml={reportMarked ? markedToEditorHtml(reportMarked) : undefined}
+            wordExport
+            a4Preview
             title={t('nyayalay.report.courtReportTitle')}
-            onSave={async (v) => { setReportContent(v); setIsDirty(true); }}
+            onSave={async (v) => { setReportContent(v); setReportMarked(''); setIsDirty(true); }}
             sharePrefix={
               doc
                 ? `${DOC_TYPE_LABELS[doc.doc_type]}${doc.vad_sankhya ? ` · वाद सं0 ${doc.vad_sankhya}` : ''}`

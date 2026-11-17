@@ -355,7 +355,7 @@ interface PrintPreviewProps {
 /** Paragraphs start at the left edge, first line too. */
 const NO_INDENT_CSS = '<style>.doc-body p { text-indent: 0 !important; }</style>';
 
-function PrintPreviewModal({ visible, onClose, value, title, noIndent }: PrintPreviewProps) {
+export function PrintPreviewModal({ visible, onClose, value, title, noIndent }: PrintPreviewProps) {
   const { t } = useTranslation();
   const html = useMemo(() => {
     // Every report prints in the fixed A4 layout (letters: one sheet each).
