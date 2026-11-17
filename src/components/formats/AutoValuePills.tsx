@@ -6,7 +6,7 @@
  */
 import { memo, useState } from 'react';
 import { Platform, Text, TextInput, View } from 'react-native';
-import { CheckCircle2, Pencil } from 'lucide-react-native';
+import { CheckCircle2 } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 
@@ -79,7 +79,7 @@ export const AutoValuePills = memo(function AutoValuePills({ title, values, fall
             </Text>
             <View
               style={{
-                flexDirection: 'row', alignItems: 'center', gap: 8,
+                flexDirection: 'row', alignItems: 'center',
                 borderWidth: focused === k || missing ? 1.5 : 1, borderColor,
                 borderRadius: 10, paddingHorizontal: 12, minHeight: 44,
                 backgroundColor: focused === k ? C.card : C.background,
@@ -99,7 +99,6 @@ export const AutoValuePills = memo(function AutoValuePills({ title, values, fall
                   Platform.OS === 'web' ? ({ outlineStyle: 'none', outlineWidth: 0 } as never) : {},
                 ]}
               />
-              <Pencil size={13} color={C.mutedForeground} />
             </View>
             {missing ? <Text style={{ fontSize: 11, color: C.destructive }}>यह खाना रिपोर्ट में छपता है — भरना ज़रूरी है</Text> : null}
           </View>
