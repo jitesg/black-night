@@ -61,7 +61,7 @@ function HSFormCard({
       {/* Name With Full Address */}
       <View className="gap-1.5">
         <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldNameAddress')}</Text>
-        <Input type="multiline" value={form.address} onChangeText={onChange('address')}
+        <Input type="multiline" autoGrow value={form.address} onChangeText={onChange('address')}
           placeholder={t('halka.person.placeholderNameAddress')} numberOfLines={2} />
       </View>
 
@@ -92,7 +92,7 @@ function HSFormCard({
       {/* Remarks */}
       <View className="gap-1.5">
         <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldRemarks')}</Text>
-        <Input type="multiline" value={form.remarks} onChangeText={onChange('remarks')}
+        <Input type="multiline" autoGrow value={form.remarks} onChangeText={onChange('remarks')}
           placeholder={t('halka.person.placeholderRemarks')} numberOfLines={2} />
       </View>
     </View>
@@ -318,7 +318,7 @@ export default function AddPersonScreen() {
           {/* Address */}
           <View className="gap-1.5">
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldFullAddress')}</Text>
-            <Input type="multiline" value={form.address} onChangeText={updateSingle('address')}
+            <Input type="multiline" autoGrow value={form.address} onChangeText={updateSingle('address')}
               placeholder={t('halka.person.placeholderFullAddress')} numberOfLines={2} />
           </View>
 
@@ -337,7 +337,7 @@ export default function AddPersonScreen() {
           {/* Remarks */}
           <View className="gap-1.5">
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldRemarks')}</Text>
-            <Input type="multiline" value={form.remarks} onChangeText={updateSingle('remarks')}
+            <Input type="multiline" autoGrow value={form.remarks} onChangeText={updateSingle('remarks')}
               placeholder={t('halka.person.placeholderRemarks')} numberOfLines={2} />
           </View>
 

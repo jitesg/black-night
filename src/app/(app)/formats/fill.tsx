@@ -590,7 +590,7 @@ export default function FillScreen() {
                     />
                   </View>
                 ) : (
-                  <FormatKeyInput
+                  <FormatKeyInput autoGrow
                     key={key.id}
                     ref={(r) => { fieldRefs.current[key.key_name] = r; }}
                     keyDef={key}

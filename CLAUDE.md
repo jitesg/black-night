@@ -55,6 +55,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (a menu) shrank to its content and opened narrow. AlertDialogFooter is flex-col-reverse: write buttons in REVERSE of the on-screen order.
   प्रार्थना पत्र card long-press menu: देखें (primary) → संपादित करें (green outline) → हटाएं (red) → रद्द करें, colours via THEME style
   (the className label colour came out dark on green on the phone).
+- Flexible multi-line boxes (owner): `<Input autoGrow>` (multiline only) = min 2 lines, no numberOfLines, scrollEnabled false → the box grows
+  with its text (page scrolls); FormatKeyInput `autoGrow` passes it to multiline format fields (else the old fixed 5 lines). Opted in: formats/fill,
+  prarthna-patra + nyayalay fill-format, nyayalay/add, हल्का (add-gp, add-hamlet, add-person, add-religious, add-shop, add-institution),
+  knowledge add-checklist / add-guide, sys-format-manager + sys-knowledge-manager editors. NOT मुकदमा (add-fir, details) and NOT the केस डायरी
+  कार्यवाही panel (owner) — they keep the fixed height.
 - `plugins/withHighRefreshRate.js` requests the max display refresh rate.
 - App icon (owner chose B of 3 flat samples, from the owner's "officer at desk" picture): officer with star cap behind a laptop, cup + files,
   brown gradient — source `assets/icon.svg` → icon.png (1024), adaptive-icon-bg.png (gradient), adaptive-icon.png (figure scaled 0.66 into the

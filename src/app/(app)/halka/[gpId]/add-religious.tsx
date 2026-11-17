@@ -72,6 +72,7 @@ function Field({
       onChangeText={onChange}
       placeholder={placeholder || label}
       numberOfLines={multiline ? 2 : undefined}
+      autoGrow={!!multiline}
     />
   );
 }

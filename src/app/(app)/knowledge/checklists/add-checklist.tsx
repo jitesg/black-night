@@ -469,7 +469,7 @@ export default function AddChecklistScreen() {
           />
 
           <Input
-            type="multiline"
+            type="multiline" autoGrow
             label={t('knowledge.checklist.fieldBrief')}
             placeholder={t('knowledge.checklist.briefPlaceholder')}
             value={brief}

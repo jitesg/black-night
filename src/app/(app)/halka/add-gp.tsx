@@ -138,7 +138,7 @@ export default function AddGramPanchayatScreen() {
           {/* Remarks */}
           <View className="gap-1.5">
             <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.fieldRemarks')}</Text>
-            <Input type="multiline" value={form.remarks} onChangeText={update('remarks')}
+            <Input type="multiline" autoGrow value={form.remarks} onChangeText={update('remarks')}
               placeholder={t('halka.placeholderRemarks')} numberOfLines={3} />
           </View>
 

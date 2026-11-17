@@ -193,6 +193,11 @@ export interface InputProps {
   editable?: boolean;
   multiline?: boolean;
   numberOfLines?: number;
+  /**
+   * Multiline only (owner: "flexible box"): start small (2 lines, or as tall as the placeholder example) and grow line by line
+   * with the text instead of a fixed numberOfLines height. Opt-in per screen (मुकदमा + केस डायरी keep the old fixed height).
+   */
+  autoGrow?: boolean;
   maxLength?: number;
 
   // Decorators
@@ -243,6 +248,7 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
     editable,
     multiline: multilineProp,
     numberOfLines = 3,   // single-line default; multiline type uses 5 via FormatKeyInput
+    autoGrow = false,
     maxLength: maxLengthProp,
     leftIcon,
     rightIcon,
@@ -349,7 +355,8 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
     paddingHorizontal: T.space.md,
     paddingVertical: 11,
     backgroundColor: isDisabled ? C.bgDisabled : C.bg,
-    minHeight: isMultiline ? numberOfLines * 24 + 22 : T.minTouchTarget,
+    // autoGrow: 2 lines minimum, then the box follows its text (no fixed number of lines)
+    minHeight: isMultiline ? (autoGrow ? 2 * 24 + 22 : numberOfLines * 24 + 22) : T.minTouchTarget,
     gap: T.space.xs,
     ...(Platform.OS !== 'web' ? { borderCurve: 'continuous' } as unknown as ViewStyle : {}),
   };
@@ -441,7 +448,9 @@ export const Input = memo(forwardRef<TextInput, InputProps>(function Input(
           keyboardType={effectiveKB}
           secureTextEntry={secure}
           multiline={isMultiline}
-          numberOfLines={isMultiline ? numberOfLines : undefined}
+          numberOfLines={isMultiline && !autoGrow ? numberOfLines : undefined}
+          // grow with the text instead of scrolling inside the box (the page scrolls)
+          scrollEnabled={isMultiline && autoGrow ? false : undefined}
           textAlignVertical={isMultiline ? 'top' : 'center'}
           editable={!isDisabled}
           maxLength={effectiveMaxLength}
@@ -551,6 +560,8 @@ export interface FormatKeyInputProps {
   /** sentence fields: the whole form (other tokens in the card text are shown filled). */
   allValues?: Record<string, string>;
   allKeys?: KeyDefForRender[];
+  /** multiline boxes start small and grow with the text (owner) — passed by the fill screens that want it. */
+  autoGrow?: boolean;
 }
 
 function fieldTypeToInputType(ft: string | undefined): InputType {
@@ -580,7 +591,7 @@ export function keyHint(raw: string | null | undefined, fieldType?: string | nul
 export const FormatKeyInput = forwardRef<View, FormatKeyInputProps>((props, ref) => <FormatKeyField ref={ref} {...props} />);
 
 const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
-  ({ keyDef, value, onChange, error, allValues, allKeys }, ref) => {
+  ({ keyDef, value, onChange, error, allValues, allKeys, autoGrow }, ref) => {
     const fieldType = keyDef.field_type ?? 'text';
     const displayLabel = keyDef.label || keyDef.key_name;
     const required = Boolean(keyDef.is_required);
@@ -726,7 +737,7 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
           required={required}
           // ✕ / 📋 in every typed format box (owner)
           clearCopy={inputType !== 'date'}
-          {...(multilineLines !== undefined ? { numberOfLines: multilineLines } : {})}
+          {...(multilineLines !== undefined ? (autoGrow ? { autoGrow: true } : { numberOfLines: multilineLines }) : {})}
         />
       </View>
     );

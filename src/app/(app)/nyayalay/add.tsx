@@ -179,7 +179,7 @@ function PersonCard({
         </View>
       </View>
       <Field label={t('nyayalay.form.address')}>
-        <Input type="multiline" value={person.address} onChangeText={(v) => onUpdate('address', v)} numberOfLines={2} placeholder={t('nyayalay.form.addressPlaceholder')} />
+        <Input type="multiline" autoGrow value={person.address} onChangeText={(v) => onUpdate('address', v)} numberOfLines={2} placeholder={t('nyayalay.form.addressPlaceholder')} />
       </Field>
       <Field label={t('nyayalay.form.remarks')}>
         <Input value={person.remarks} onChangeText={(v) => onUpdate('remarks', v)} placeholder={t('nyayalay.form.remarksPlaceholder')} />
@@ -643,7 +643,7 @@ export default function AddNyayalayScreen() {
                 </View>
               </View>
               <Field label={t('nyayalay.form.applicableSectionsRequired')} error={errors.applicableSections}>
-                <Input type="multiline" value={applicableSections} onChangeText={(v) => { setApplicableSections(v); markDirty(); }} placeholder={t('nyayalay.form.applicableSectionsPlaceholder')} numberOfLines={2} />
+                <Input type="multiline" autoGrow value={applicableSections} onChangeText={(v) => { setApplicableSections(v); markDirty(); }} placeholder={t('nyayalay.form.applicableSectionsPlaceholder')} numberOfLines={2} />
               </Field>
 
               <Section title={t('nyayalay.form.sectionAccusedDetails')} />

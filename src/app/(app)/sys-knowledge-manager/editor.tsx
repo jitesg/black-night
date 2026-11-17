@@ -300,7 +300,7 @@ export default function SysKnowledgeEditor() {
               <View className="gap-1">
                 <FieldLabel label="Content (Rich Text / Markdown)" />
                 <Input
-                  type="multiline"
+                  type="multiline" autoGrow
                   value={form.content}
                   onChangeText={set('content')}
                   placeholder={"# Heading 1\n## Heading 2\n\n**Bold**, *Italic*, `Code`\n\n- Bullet list\n1. Numbered list\n\n> Blockquote\n\n---\n\nFull article content here…"}

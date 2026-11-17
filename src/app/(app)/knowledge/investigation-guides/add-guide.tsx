@@ -257,7 +257,7 @@ export default function AddGuideScreen() {
 
           {/* ── Main Content ── */}
           <Input
-            type="multiline"
+            type="multiline" autoGrow
             label={`${contentLabel} *`}
             placeholder={contentPlaceholder}
             value={description}

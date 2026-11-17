@@ -33,6 +33,7 @@ function Field({ label, value, onChange, placeholder, multiline, inputType, requ
       onChangeText={onChange}
       placeholder={placeholder || label}
       numberOfLines={multiline ? 2 : undefined}
+      autoGrow={!!multiline}
     />
   );
 }

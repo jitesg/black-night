@@ -509,7 +509,7 @@ export default function SysFormatEditorScreen() {
             </View>
             <Input
               ref={vivranRef}
-              type="multiline"
+              type="multiline" autoGrow
               value={vivran}
               onChangeText={handleVivranChange}
               placeholder={t('sysFormat.editor.templatePlaceholder', { open: '{{', close: '}}' })}
@@ -656,7 +656,7 @@ export default function SysFormatEditorScreen() {
           <View className="gap-1.5">
             <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{t('sysFormat.editor.changeNotesSection')}</Text>
             <Input
-              type="multiline"
+              type="multiline" autoGrow
               value={changeNotes}
               onChangeText={setChangeNotes}
               placeholder={t('sysFormat.editor.changeNotesPlaceholder')}

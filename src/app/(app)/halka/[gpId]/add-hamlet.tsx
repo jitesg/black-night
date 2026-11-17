@@ -96,7 +96,7 @@ function EditHamletScreen({ gpId, editId }: { gpId: string; editId: string }) {
 
             <View className="gap-1.5">
               <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldRemarks')}</Text>
-              <Input type="multiline" value={form.remarks} onChangeText={update('remarks')}
+              <Input type="multiline" autoGrow value={form.remarks} onChangeText={update('remarks')}
                 placeholder={t('halka.person.placeholderRemarks')} numberOfLines={2} />
             </View>
           </View>
@@ -262,7 +262,7 @@ function AddHamletBatchScreen({ gpId }: { gpId: string }) {
 
               <View className="gap-1.5">
                 <Text className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t('halka.person.fieldRemarks')}</Text>
-                <Input type="multiline" value={h.remarks} onChangeText={(v) => updateField(idx, 'remarks', v)}
+                <Input type="multiline" autoGrow value={h.remarks} onChangeText={(v) => updateField(idx, 'remarks', v)}
                   placeholder={t('halka.person.placeholderRemarks')} numberOfLines={2} />
               </View>
             </View>
