@@ -3,7 +3,7 @@ import { ReportExportButtons } from '@/components/common/ReportExportButtons';
 import { markedToEditorHtml } from '@/lib/reportLayout';
 import { useTranslation } from 'react-i18next';
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
-import { stripHtmlTags } from '@/lib/stringUtils';
+import { htmlToPlainText, stripHtmlTags } from '@/lib/stringUtils';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -262,7 +262,7 @@ export default function PPDetailScreen() {
                   {t('prarthnaPatra.detail.reportDate', { date: pp.report.report_preparation_date })}
                 </Text>
               </View>
-              <Text className="text-sm text-foreground leading-6">{stripHtmlTags(pp.report.report_content)}</Text>
+              <Text className="text-sm text-foreground leading-6">{/* editor HTML → keep its line breaks */}{htmlToPlainText(pp.report.report_content).trim()}</Text>
               {/* A4 प्रीव्यू + .doc without opening the आख्या (owner); the format's layout when it was saved unchanged */}
               <ReportExportButtons
                 size="small"
