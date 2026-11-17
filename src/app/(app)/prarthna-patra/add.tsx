@@ -26,6 +26,7 @@ import {
   type PetitionType,
 } from '@/lib/db/prarthnaPatraRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { useWorkspace } from '@/context/WorkspaceContext';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 // BORDER and surface colour are theme-reactive — computed inside the component.
@@ -59,12 +60,13 @@ function useMuted(): string {
   return (colorScheme === 'dark' ? THEME.dark : THEME.light).mutedForeground;
 }
 
-function Section({ title }: { title: string }) {
+/** owner: less empty space — smaller gap above a heading (none for the first one) */
+function Section({ title, first }: { title: string; first?: boolean }) {
   const muted = useMuted();
   return (
     <Text style={{
       ...T.micro, letterSpacing: 1.2, textTransform: 'uppercase',
-      color: muted, marginTop: T.space.lg, marginBottom: T.space.sm,
+      color: muted, marginTop: first ? T.space.sm : T.space.md, marginBottom: T.space.xs + 2,
     }}>
       {title}
     </Text>
@@ -216,6 +218,15 @@ export default function AddPrarthnaPatraScreen() {
   const [matter, setMatter] = useState('');
   const [pendingFiles, setPendingFiles] = useState<PendingAttachment[]>([]);
   const [investigatorName, setInvestigatorName] = useState('');
+  // owner: a new प्रार्थना पत्र opens with the settings' "अधिकारी का नाम" (universal key OfficerName); editable.
+  // Edit keeps the saved name. Once the officer types / clears the box it is never refilled.
+  const { workspace } = useWorkspace();
+  const settingOfficer = (workspace.officer_name ?? '').trim();
+  const investigatorTouched = useRef(false);
+  useEffect(() => {
+    if (isEdit || investigatorTouched.current || !settingOfficer) return;
+    setInvestigatorName((cur) => (cur.trim() ? cur : settingOfficer));
+  }, [isEdit, settingOfficer]);
   const [complainants, setComplainants] = useState<string>(() => initPersonGroup());
   const [accused, setAccused] = useState<string>(() => initPersonGroup());
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -389,21 +400,23 @@ export default function AddPrarthnaPatraScreen() {
           ) : null}
 
           {/* ── Petition Type ── */}
-          <Section title={t('prarthnaPatra.form.sectionPetitionType')} />
+          <Section title={t('prarthnaPatra.form.sectionPetitionType')} first />
           <TypePicker value={petitionType} onChange={handleTypeChange} error={errors.petitionType} />
 
-          {/* ── Petition Info ── */}
-          <Section title={t('prarthnaPatra.form.sectionPetitionDetails')} />
-          <Field label={t('prarthnaPatra.form.investigatorLabel')}>
+          {/* ── जांचकर्ता (owner: no separate "प्रार्थना पत्र विवरण" heading; settings' अधिकारी का नाम by default) ── */}
+          <View style={{ height: T.space.md }} />
+          <Field label="जांचकर्ता का नाम">
             <Input
               value={investigatorName}
-              onChangeText={setInvestigatorName}
+              onChangeText={(v) => { investigatorTouched.current = true; setInvestigatorName(v); }}
               placeholder={t('prarthnaPatra.form.investigatorPlaceholder')}
+              clearCopy
+              helperText={!isEdit && settingOfficer && investigatorName === settingOfficer
+                ? '✓ सेटिंग के "अधिकारी का नाम" से भरा — बदल सकते हैं' : undefined}
             />
           </Field>
 
-          {/* ── Dates ── */}
-          <Section title={t('prarthnaPatra.form.sectionDates')} />
+          {/* ── Dates (no separate "तिथियां" heading — the box labels say it) ── */}
           <View style={{ flexDirection: 'row', gap: T.space.sm + 2 }}>
             <View style={{ flex: 1 }}>
               <DatePickerField
@@ -461,17 +474,6 @@ export default function AddPrarthnaPatraScreen() {
             {errors.matter ? <Text style={{ ...T.caption2, color: '#DC2626', marginTop: 3 }}>{errors.matter}</Text> : null}
           </View>
 
-          {/* ── संलग्न कागज़ (owner) — edit: saved at once; new: kept until सहेजें ── */}
-          <View style={{ marginTop: T.space.sm, marginBottom: T.space.xs }}>
-            <AttachmentsSection
-              module="pp"
-              parentId={isEdit ? editId : null}
-              pending={pendingFiles}
-              onPendingChange={(f) => { setPendingFiles(f); setIsDirty(true); }}
-              accent="#2D52B8"
-            />
-          </View>
-
           {/* ── Accused ── */}
           <Section title={t('prarthnaPatra.form.sectionAccusedDetails')} />
           <View style={{ marginBottom: T.space.xs }}>
@@ -481,6 +483,17 @@ export default function AddPrarthnaPatraScreen() {
               onChange={(_k, v) => setAccused(v)}
               role="vipakshi"
               addressOptional
+            />
+          </View>
+
+          {/* ── संलग्न कागज़ (owner: at the very bottom, after विपक्षी) — edit: saved at once; new: kept until सहेजें ── */}
+          <View style={{ marginTop: T.space.md, marginBottom: T.space.xs }}>
+            <AttachmentsSection
+              module="pp"
+              parentId={isEdit ? editId : null}
+              pending={pendingFiles}
+              onPendingChange={(f) => { setPendingFiles(f); setIsDirty(true); }}
+              accent="#2D52B8"
             />
           </View>
 

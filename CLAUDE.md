@@ -256,6 +256,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (3-column grid, "+ फ़ोटो / PDF" tile, sheet कैमरा / गैलरी (multi) / PDF-फ़ाइल, photos quality 0.6, tap = openFile, hold = साझा करें / हटाएँ;
   source 'office' → warning "सिर्फ़ आपके फ़ोन से हटेगा"). On both detail screens and add forms (new paper: files kept as `pending`,
   saved after create; edit: saved at once); list cards show "📎 n".
+  PP add form (owner): order प्रकार → जांचकर्ता → तिथियाँ → आवेदक → विवरण → विपक्षी → संलग्न कागज़ (bottom); no "प्रार्थना पत्र विवरण" /
+  "तिथियां" headings, smaller Section gaps; जांचकर्ता = settings officer_name for a NEW पत्र (editable, not refilled once touched; edit keeps saved).
 - प्रार्थना पत्र report screen (`prarthna-patra/[ppId]/report.tsx`): every type except बीट सूचना / NCR (those = take-action) uses the inline flow
   (full petition details, "रिपोर्ट लगाएं", "प्रारूप से जोड़ें") — `REPORT_PETITION_TYPES` now also has थाना प्रार्थना पत्र / RTI / अन्य (owner);
   an old HTML report is turned into plain text for the inline box.
