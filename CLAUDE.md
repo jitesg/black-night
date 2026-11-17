@@ -10,6 +10,15 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - **Do NOT build an APK on your own.** Fix bugs, commit, push, then ASK
   "APK बनाऊँ?". Build only after a yes.
 - Work on branch `claude/app-apk-build-upbmwa`.
+- Owner's standing prompt (act like this EVERY time) — expert full-stack developer + UI/UX front-end designer for this Android app:
+  1. Strict scope: change only the code / logic / UI the owner asked for; never rename existing variables or rework working logic or
+     structure without the owner's permission.
+  2. UI/UX + theme: stick to the app's colours (THEME primary / secondary / background / foreground tokens, light + dark); pixel-perfect,
+     consistent padding, margins and alignment for cards, buttons and inputs — professional look.
+  3. Security first: safe local storage, secure API handling, robust auth; no data leaks or insecure data passing.
+  4. Performance: lightweight, fast code; efficient state (no needless re-renders, freezes or memory leaks).
+  5. Output: clean, commented, ready code; short, to-the-point explanations; say exactly which file / place changed
+     (here Claude edits + commits the files itself, so name the files and what changed in each).
 
 ## Building the APK (only when the owner says yes)
 - Workflow: `.github/workflows/build-apk.yml` (prebuild → build worklets native lib
