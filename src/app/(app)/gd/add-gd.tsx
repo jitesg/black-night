@@ -4,8 +4,7 @@ import { logger } from '@/lib/logger';
 import { BackHandler, KeyboardAvoidingView, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { Calendar, ChevronDown, Save, AlertCircle, Sparkles } from 'lucide-react-native';
-import { OcrScanModal } from '@/components/common/OcrScanModal';
+import { Calendar, ChevronDown, Save, AlertCircle } from 'lucide-react-native';
 import { DatePickerModal, dateStrToObj } from '@/components/common/DatePickerModal';
 import {
   createGdEntry, updateGdEntry, getGdById, GD_TYPES, type GdType,
@@ -34,11 +33,6 @@ const GD_TYPE_KEYS: Record<string, string> = {
   'तस्करा': 'taskara',
   'अन्य':   'other',
 };
-
-const GD_OCR_FIELDS = [
-  { key: 'gd_type', label: 'जीडी प्रकार (रवानगी / वापसी / तस्करा / अन्य)' },
-  { key: 'vivran', label: 'जीडी विवरण (GD Content / Details)' },
-];
 
 function todayDateObj(): Date {
   const d = new Date();
@@ -71,20 +65,6 @@ export default function AddGdScreen() {
   const [gdType, setGdType] = useState<GdType>('रवानगी');
   const [vivran, setVivran] = useState('');
   const [formatId, setFormatId] = useState<string | undefined>(undefined);
-  const [ocrModalVisible, setOcrModalVisible] = useState(false);
-
-  const handleOcrApply = (extracted: Record<string, string>) => {
-    isDirty.current = true;
-    if (extracted.gd_type) {
-      const match = GD_TYPES.find((t) => t.toLowerCase() === extracted.gd_type.trim().toLowerCase() || extracted.gd_type.includes(t));
-      if (match) {
-        setGdType(match);
-      }
-    }
-    if (extracted.vivran && extracted.vivran.trim()) {
-      setVivran((prev) => (prev ? `${prev}\n${extracted.vivran}` : extracted.vivran));
-    }
-  };
 
   // UI state
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -460,26 +440,6 @@ export default function AddGdScreen() {
           showsVerticalScrollIndicator={false}
         >
 
-          {/* ── OCR Auto-fill Action ── */}
-          <Pressable
-            onPress={() => setOcrModalVisible(true)}
-            className="flex-row items-center justify-between p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 active:opacity-75"
-            style={{ borderCurve: 'continuous' }}
-          >
-            <View className="flex-1 flex-row items-center gap-3 mr-3">
-              <View className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/50 items-center justify-center">
-                <Sparkles size={18} color={GD_COLOR} />
-              </View>
-              <View className="flex-1">
-                <Text className="text-xs font-bold text-foreground">{t('gd.form.ocrBannerTitle')}</Text>
-                <Text className="text-[11px] text-muted-foreground">{t('gd.form.ocrBannerSubtitle')}</Text>
-              </View>
-            </View>
-            <View className="shrink-0 px-3 py-1.5 rounded-xl" style={{ backgroundColor: GD_COLOR }}>
-              <Text className="text-xs font-semibold text-white">{t('gd.form.scanBtn')}</Text>
-            </View>
-          </Pressable>
-
           {/* ── Preparation Date ─────────────────────────────────── */}
           <View className="gap-1.5">
             <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -687,13 +647,6 @@ export default function AddGdScreen() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <OcrScanModal
-        visible={ocrModalVisible}
-        onClose={() => setOcrModalVisible(false)}
-        fields={GD_OCR_FIELDS}
-        onApply={handleOcrApply}
-        title={t('gd.form.ocrModalTitle')}
-      />
     </View>
   );
 }

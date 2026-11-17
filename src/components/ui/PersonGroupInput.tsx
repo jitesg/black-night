@@ -33,9 +33,8 @@ import {
 import { LabelWithHint } from './FieldHintLink';
 import { insertIntoGroup, toCard } from '@/lib/firPeople';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Platform, Pressable, Text, TextInput, ToastAndroid, View } from 'react-native';
-import { ChevronDown, ChevronUp, Copy, ScanLine, Sparkles, Trash2, UserPlus, X } from 'lucide-react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { Pressable, Text, TextInput, View } from 'react-native';
+import { ChevronDown, ChevronUp, Copy, Trash2, UserPlus, X } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
@@ -43,16 +42,6 @@ import { AutocompleteInput } from '@/components/common/AutocompleteInput';
 import { FIELD_KEYS } from '@/lib/db/fieldValueHistoryRepo';
 import { getAllGramPanchayats } from '@/lib/db/gramPanchayatRepo';
 import { getAllHamlets } from '@/lib/db/hamletRepo';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 
 function useGroupTokens() {
   const { colorScheme } = useColorScheme();
@@ -464,10 +453,6 @@ interface PersonCardProps {
   onBlur: (i: number, field: keyof PersonEntry) => void;
   onRemove: (i: number) => void;
   canRemove: boolean;
-  onScanPress: (i: number) => void;
-  isScanning: boolean;
-  scanError?: string;
-  onDismissScanError?: () => void;
   /** Full entries array — card slices internally to derive priorEntries */
   allEntries: PersonEntry[];
   t: (key: string, opts?: Record<string, unknown>) => string;
@@ -478,7 +463,6 @@ interface PersonCardProps {
 const PersonCard = memo(({
   C, index, entry, collapsed, cardErrors, touched,
   onToggleCollapse, onChange, onBlur, onRemove, canRemove,
-  onScanPress, isScanning, scanError, onDismissScanError,
   allEntries, t, roleBadge,
 }: PersonCardProps) => {
   const priorEntries = allEntries.slice(0, index);
@@ -543,18 +527,6 @@ const PersonCard = memo(({
             <Text style={{ fontSize: 11.5, fontWeight: '700', color: '#92400E' }}>{roleBadge}</Text>
           </View>
         ) : null}
-        <Pressable
-          onPress={() => onScanPress(index)}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          style={{ padding: 4 }}
-          accessibilityLabel={t('group.scan.button')}
-        >
-          {isScanning ? (
-            <ActivityIndicator size={16} color={C.selectedText} />
-          ) : (
-            <ScanLine size={16} color={C.muted} />
-          )}
-        </Pressable>
         {canRemove && (
           <Pressable onPress={() => onRemove(index)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} style={{ padding: 4 }}>
             <Trash2 size={16} color={C.accent} />
@@ -566,44 +538,6 @@ const PersonCard = memo(({
       {/* Body */}
       {!collapsed && (
         <View style={{ padding: 14, gap: 14 }}>
-          {isScanning && (
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 8,
-              backgroundColor: C.selectedBg,
-              borderRadius: 10,
-              padding: 10,
-              borderWidth: 1,
-              borderColor: C.selectedBorder,
-            }}>
-              <ActivityIndicator size="small" color={C.selectedText} />
-              <Text style={{ fontSize: 12, color: C.selectedText, fontWeight: '500' }}>
-                {t('group.scan.scanning')}
-              </Text>
-            </View>
-          )}
-
-          {scanError ? (
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              backgroundColor: C.bg,
-              borderRadius: 10,
-              padding: 10,
-              borderWidth: 1,
-              borderColor: C.cardBorderErr,
-              gap: 8,
-            }}>
-              <Text style={{ fontSize: 12, color: C.errorText, flex: 1 }}>{scanError}</Text>
-              {onDismissScanError && (
-                <Pressable onPress={onDismissScanError} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                  <X size={14} color={C.muted} />
-                </Pressable>
-              )}
-            </View>
-          ) : null}
           <FieldRow C={C} label={t('group.fields.name')} required error={fieldErr('name')}>
             <AutocompleteInput
               fieldKey={FIELD_KEYS.person_name}
@@ -826,24 +760,6 @@ export const PersonGroupInput = memo(({
   );
   const [touchedSets, setTouchedSets] = React.useState<Set<string>[]>(() => entries.map(() => new Set<string>()));
 
-  // Scan state per card
-  const [scanTargetIndex, setScanTargetIndex] = useState<number | null>(null);
-  const [scanningIndex, setScanningIndex] = useState<number | null>(null);
-  const [scanErrorMap, setScanErrorMap] = useState<Record<number, string>>({});
-  const [toastMsg, setToastMsg] = useState('');
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const showToast = useCallback((msg: string) => {
-    setToastMsg(msg);
-    if (Platform.OS === 'android') {
-      try {
-        ToastAndroid.show(msg, ToastAndroid.SHORT);
-      } catch { /* ignore on non-android */ }
-    }
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    toastTimerRef.current = setTimeout(() => setToastMsg(''), 4500);
-  }, []);
-
   const prevLenRef = useRef(entries.length);
   useEffect(() => {
     if (prevLenRef.current !== entries.length) {
@@ -913,106 +829,6 @@ export const PersonGroupInput = memo(({
     setTouchedSets((prev) => prev.map((s, idx) => idx === i ? new Set([...s, field as string]) : s));
   }, []);
 
-  const handleOpenScanDialog = useCallback((i: number) => {
-    setScanTargetIndex(i);
-    setScanErrorMap((prev) => ({ ...prev, [i]: '' }));
-  }, []);
-
-  const handleDismissScanError = useCallback((i: number) => {
-    setScanErrorMap((prev) => ({ ...prev, [i]: '' }));
-  }, []);
-
-  const handleScan = useCallback(async (targetIdx: number, source: 'camera' | 'gallery') => {
-    try {
-      let result: ImagePicker.ImagePickerResult;
-      if (source === 'camera') {
-        const perm = await ImagePicker.requestCameraPermissionsAsync();
-        if (!perm.granted) {
-          setScanErrorMap((prev) => ({ ...prev, [targetIdx]: t('group.scan.permissionDenied') }));
-          return;
-        }
-        result = await ImagePicker.launchCameraAsync({
-          base64: true,
-          quality: 0.7,
-        });
-      } else {
-        const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!perm.granted) {
-          setScanErrorMap((prev) => ({ ...prev, [targetIdx]: t('group.scan.permissionDenied') }));
-          return;
-        }
-        result = await ImagePicker.launchImageLibraryAsync({
-          base64: true,
-          quality: 0.7,
-        });
-      }
-
-      if (result.canceled || !result.assets || !result.assets[0]?.base64) {
-        return;
-      }
-
-      setScanningIndex(targetIdx);
-      setScanErrorMap((prev) => ({ ...prev, [targetIdx]: '' }));
-
-      const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
-      const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/ocr-extract-fields`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
-          imageBase64: result.assets[0].base64,
-          mimeType: 'image/jpeg',
-          fields: [
-            { key: 'name', label: 'Full name' },
-            { key: 'fatherOrHusbandName', label: "Father's or husband's name" },
-            { key: 'fullAddress', label: 'Full address' },
-            { key: 'age', label: 'Age in years' },
-            { key: 'mobile', label: '10-digit mobile number' },
-          ],
-        }),
-      });
-
-      if (!res.ok) {
-        const errJson = await res.json().catch(() => null);
-        throw new Error(errJson?.error || `Request failed with status ${res.status}`);
-      }
-
-      const json = await res.json();
-      if (json.error) {
-        throw new Error(json.error);
-      }
-
-      if (json.fields && typeof json.fields === 'object') {
-        const currentCard = entriesRef.current[targetIdx];
-        if (currentCard) {
-          const fieldKeys: Array<keyof PersonEntry> = ['name', 'fatherOrHusbandName', 'fullAddress', 'age', 'mobile'];
-          for (const key of fieldKeys) {
-            const returnedVal = (json.fields as Record<string, unknown>)[key];
-            if (typeof returnedVal === 'string' && returnedVal.trim()) {
-              const existingVal = currentCard[key];
-              const empty = key === 'fullAddress' ? !hasAddress(currentCard) : typeof existingVal === 'string' && !existingVal.trim();
-              if (empty) {
-                let formatted = returnedVal.trim();
-                if (key === 'age') formatted = formatted.replace(/\D/g, '').slice(0, 3);
-                if (key === 'mobile') formatted = formatted.replace(/\D/g, '').slice(0, 10);
-                handleChange(targetIdx, key, formatted);
-              }
-            }
-          }
-        }
-        showToast(t('group.scan.successToast'));
-      }
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : t('group.scan.error');
-      setScanErrorMap((prev) => ({ ...prev, [targetIdx]: msg }));
-    } finally {
-      setScanningIndex(null);
-    }
-  }, [handleChange, showToast, t]);
-
   const handleAdd = useCallback(() => {
     setCollapsedSet(new Set(entries.map((_, i) => i)));
     setTouchedSets((prev) => [...prev, new Set<string>()]);
@@ -1064,29 +880,6 @@ export const PersonGroupInput = memo(({
         />
       ) : null}
 
-      {/* Toast / Snackbar banner */}
-      {toastMsg ? (
-        <View style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: C.selectedBg,
-          borderColor: C.selectedBorder,
-          borderWidth: 1,
-          borderRadius: 10,
-          paddingHorizontal: 12,
-          paddingVertical: 10,
-          gap: 8,
-        }}>
-          <Sparkles size={16} color={C.selectedText} />
-          <Text style={{ fontSize: 12, color: C.selectedText, fontWeight: '500', flex: 1 }}>
-            {toastMsg}
-          </Text>
-          <Pressable onPress={() => setToastMsg('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <X size={14} color={C.muted} />
-          </Pressable>
-        </View>
-      ) : null}
-
       {entries.map((entry, i) => (
         <PersonCard
           key={entry._id ?? i}
@@ -1101,10 +894,6 @@ export const PersonGroupInput = memo(({
           onBlur={handleBlur}
           onRemove={handleRemove}
           canRemove={entries.length > 1}
-          onScanPress={handleOpenScanDialog}
-          isScanning={scanningIndex === i}
-          scanError={scanErrorMap[i]}
-          onDismissScanError={() => handleDismissScanError(i)}
           allEntries={entries}
           t={t}
           roleBadge={role === 'avedak' && entry.name.trim() ? avedakCardWord(entry as unknown as Record<string, unknown>) : undefined}
@@ -1126,61 +915,6 @@ export const PersonGroupInput = memo(({
 
       {error ? <Text style={{ fontSize: 12, color: C.accent }}>{error}</Text> : null}
 
-      {/* Scan Document AlertDialog */}
-      <AlertDialog
-        open={scanTargetIndex !== null}
-        onOpenChange={(open) => {
-          if (!open) setScanTargetIndex(null);
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('group.scan.dialogTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('group.scan.dialogDescription')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
-            <AlertDialogCancel onPress={() => setScanTargetIndex(null)}>
-              <Text>{t('group.scan.cancel')}</Text>
-            </AlertDialogCancel>
-            <Pressable
-              onPress={() => {
-                const idx = scanTargetIndex;
-                setScanTargetIndex(null);
-                if (idx !== null) {
-                  handleScan(idx, 'gallery');
-                }
-              }}
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: C.border,
-                backgroundColor: C.cardBg,
-                paddingHorizontal: 16,
-                paddingVertical: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text style={{ fontSize: 14, fontWeight: '500', color: C.text }}>
-                {t('group.scan.chooseGallery')}
-              </Text>
-            </Pressable>
-            <AlertDialogAction
-              onPress={() => {
-                const idx = scanTargetIndex;
-                setScanTargetIndex(null);
-                if (idx !== null) {
-                  handleScan(idx, 'camera');
-                }
-              }}
-            >
-              <Text className="text-white font-semibold">{t('group.scan.takePhoto')}</Text>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </View>
   );
 });

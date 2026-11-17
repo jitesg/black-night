@@ -11,9 +11,8 @@ import {
   navigateToFIRTab,
 } from '@/lib/firNavigation';
 import {
-  Plus, Trash2, ChevronDown, User, MapPin, Edit2, Sparkles,
+  Plus, Trash2, ChevronDown, User, MapPin, Edit2,
 } from 'lucide-react-native';
-import { OcrScanModal } from '@/components/common/OcrScanModal';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { createFIR } from '@/lib/db/firRepo';
 import { createAccused } from '@/lib/db/firAccusedRepo';
@@ -33,18 +32,6 @@ import { PersonGroupInput } from '@/components/ui/PersonGroupInput';
 import { complainantToGroup, groupToComplainant } from '@/lib/firComplainant';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
-const FIR_OCR_FIELDS = [
-  { key: 'fir_number', label: 'मुकदमा/FIR संख्या (FIR Number)' },
-  { key: 'section', label: 'धाराएं (Sections / Acts)' },
-  { key: 'complainant_name', label: 'वादी का नाम (Complainant Name)' },
-  { key: 'complainant_address', label: 'वादी का पता (Complainant Address)' },
-  { key: 'complainant_mobile', label: 'वादी का मोबाइल (Complainant Mobile)' },
-  { key: 'ghatnasthal', label: 'घटनास्थल (Place of Occurrence)' },
-  { key: 'accused_name', label: 'आरोपी/अभियुक्त का नाम (Accused Name)' },
-  { key: 'accused_address', label: 'आरोपी का पता (Accused Address)' },
-  { key: 'mukadma_saransh', label: 'मुकदमा सारांश (FIR Summary)' },
-];
 
 interface KnownAccused {
   id: string;
@@ -477,37 +464,6 @@ export default function AddFIRScreen() {
   // ── Unsaved-changes protection ───────────────────────────────────────────
   const isDirty = useRef(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
-  const [ocrModalVisible, setOcrModalVisible] = useState(false);
-
-  const handleOcrApply = (extracted: Record<string, string>) => {
-    isDirty.current = true;
-    if (extracted.fir_number) setFirNumber(extracted.fir_number);
-    if (extracted.section) setSection(extracted.section);
-    if (extracted.complainant_name || extracted.complainant_address || extracted.complainant_mobile) {
-      setCPerson((prev) => {
-        const cur = groupToComplainant(prev);
-        return complainantToGroup({
-          ...cur,
-          complainant_name: extracted.complainant_name || cur.complainant_name,
-          complainant_address: extracted.complainant_address || cur.complainant_address,
-          complainant_mobile: extracted.complainant_mobile || cur.complainant_mobile,
-        });
-      });
-    }
-    if (extracted.ghatnasthal) setGhatnasthal(extracted.ghatnasthal);
-    if (extracted.mukadma_saransh) setMukadmaSaransh(extracted.mukadma_saransh);
-    if (extracted.accused_name && extracted.accused_name.trim()) {
-      setKnownAccused((prev) => {
-        const first = prev[0] ?? mkAccused();
-        const updated: KnownAccused = {
-          ...first,
-          name: extracted.accused_name || first.name,
-          address: extracted.accused_address || first.address,
-        };
-        return [updated, ...prev.slice(1)];
-      });
-    }
-  };
 
   useEffect(() => {
     setFlatCrimeTypes(getFlatCrimeTypes());
@@ -801,26 +757,6 @@ export default function AddFIRScreen() {
           </View>
         ) : null}
 
-        {/* ── OCR Auto-fill Action ── */}
-        <Pressable
-          onPress={() => setOcrModalVisible(true)}
-          className="flex-row items-center justify-between p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/40 active:opacity-75"
-          style={{ borderCurve: 'continuous' }}
-        >
-          <View className="flex-1 flex-row items-center gap-3 mr-3">
-            <View className="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 items-center justify-center">
-              <Sparkles size={18} color="#6366F1" />
-            </View>
-            <View className="flex-1">
-              <Text className="text-xs font-bold text-foreground">OCR स्कैन से स्वतः भरें</Text>
-              <Text className="text-[11px] text-muted-foreground">तहरीर या FIR को AI से स्कैन करें</Text>
-            </View>
-          </View>
-          <View className="shrink-0 px-3 py-1.5 rounded-xl bg-indigo-600">
-            <Text className="text-xs font-semibold text-white">स्कैन</Text>
-          </View>
-        </Pressable>
-
         {/* Basic Info */}
         <View>
           <SectionHeader title={t('fir.addFir.sectionBasic')} />
@@ -1015,13 +951,6 @@ export default function AddFIRScreen() {
         </View>
       </ScrollView>
 
-      <OcrScanModal
-        visible={ocrModalVisible}
-        onClose={() => setOcrModalVisible(false)}
-        fields={FIR_OCR_FIELDS}
-        onApply={handleOcrApply}
-        title="FIR / मुकदमा OCR स्कैनर"
-      />
     </KeyboardAvoidingView>
   );
 }

@@ -668,6 +668,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (`<Name>WithBoundary` default exports). `src/lib/perfLog.ts` (first import in index.ts) → Dev options → Performance "Measured (real)"
   (`components/settings/RealPerfCard.tsx`: first screen ms, seed ms, last search ms, DB size, rows by content_type).
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
+- OCR scan removed app-wide (owner): the "OCR स्कैन से स्वतः भरें" banners on मुकदमा add-fir, GD add-gd and प्रार्थना पत्र add, and the
+  per-card scan button (Supabase ocr-extract-fields) on PersonGroupInput / AccusedGroupInput; OcrScanModal.tsx + ocrService.ts deleted
+  (old i18n keys ocr.* / *.ocr* / group.scan.* left unused). Don't add OCR back unless the owner asks.
 
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card

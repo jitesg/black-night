@@ -9,12 +9,11 @@ import { THEME } from '@/lib/theme';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { PersonGroupInput, initPersonGroup, parsePersonGroup, type PersonEntry } from '@/components/ui/PersonGroupInput';
-import { cardFromPPRow, ppRowFromCard, composeAddress } from '@/lib/personCard';
+import { cardFromPPRow, ppRowFromCard } from '@/lib/personCard';
 import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachmentRepo';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { ChevronDown, Calendar, Sparkles } from 'lucide-react-native';
-import { OcrScanModal } from '@/components/common/OcrScanModal';
+import { ChevronDown, Calendar } from 'lucide-react-native';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import {
   createPrarthnaPatra,
@@ -30,19 +29,6 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 // BORDER and surface colour are theme-reactive — computed inside the component.
-
-const PP_OCR_FIELDS = [
-  { key: 'complainant_name', label: 'आवेदक का नाम (Complainant Name)' },
-  { key: 'complainant_father', label: 'पिता/पति का नाम (Father/Husband Name)' },
-  { key: 'complainant_mobile', label: 'मोबाइल नंबर (Mobile Number)' },
-  { key: 'complainant_address', label: 'आवेदक का पता (Address)' },
-  { key: 'complainant_village', label: 'गाँव/मोहल्ला (Village)' },
-  { key: 'complainant_police_station', label: 'थाना (Police Station)' },
-  { key: 'accused_name', label: 'विपक्षी/आरोपी का नाम (Accused Name)' },
-  { key: 'accused_father', label: 'विपक्षी के पिता का नाम (Accused Father)' },
-  { key: 'accused_address', label: 'विपक्षी का पता (Accused Address)' },
-  { key: 'matter', label: 'प्रार्थना पत्र का विवरण (Complaint Matter)' },
-];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -64,21 +50,6 @@ function formatDisplay(s: string): string {
 /** Saved rows → group JSON (old rows keep their typed address). */
 function rowsToGroup(rows: Array<Parameters<typeof cardFromPPRow>[0]>): string {
   return rows.length ? JSON.stringify(rows.map((r) => cardFromPPRow(r))) : initPersonGroup();
-}
-
-/** Put OCR text into the first card (empty boxes only). */
-function ocrIntoFirst(json: string, x: { name?: string; father?: string; mobile?: string; address?: string }): string {
-  const list = parsePersonGroup(json);
-  const f: PersonEntry = { ...list[0] };
-  if (x.name && !f.name.trim()) f.name = x.name;
-  if (x.father && !f.fatherOrHusbandName.trim()) f.fatherOrHusbandName = x.father;
-  if (x.mobile && !f.mobile.trim()) f.mobile = x.mobile.replace(/\D/g, '').slice(-10);
-  if (x.address && !(f.village ?? '').trim() && !(f.house ?? '').trim()) {
-    f.addrMode = 'free';
-    f.fullAddress = x.address;
-  }
-  if (f.addrMode === 'parts') f.fullAddress = composeAddress(f);
-  return JSON.stringify([f, ...list.slice(1)]);
 }
 
 // ── UI atoms ───────────────────────────────────────────────────────────────────
@@ -256,22 +227,6 @@ export default function AddPrarthnaPatraScreen() {
   const originalIds = useRef<Set<string>>(new Set());
   const isInitializing = useRef(true);
   const savingRef = useRef(false);
-  const [ocrModalVisible, setOcrModalVisible] = useState(false);
-
-  const handleOcrApply = (extracted: Record<string, string>) => {
-    setIsDirty(true);
-    if (extracted.matter && extracted.matter.trim()) {
-      setMatter((prev) => (prev ? `${prev}\n${extracted.matter}` : extracted.matter));
-    }
-    const addr = [extracted.complainant_address, extracted.complainant_village ? `ग्राम ${extracted.complainant_village}` : '',
-      extracted.complainant_police_station ? `थाना ${extracted.complainant_police_station}` : ''].filter((v) => v && v.trim()).join(' ');
-    setComplainants((prev) => ocrIntoFirst(prev, {
-      name: extracted.complainant_name, father: extracted.complainant_father, mobile: extracted.complainant_mobile, address: addr,
-    }));
-    if (extracted.accused_name && extracted.accused_name.trim()) {
-      setAccused((prev) => ocrIntoFirst(prev, { name: extracted.accused_name, father: extracted.accused_father, address: extracted.accused_address }));
-    }
-  };
 
   // Feature 2: auto-set deadline = dateOfReceipt + 10 on every type / receipt change
   const handleTypeChange = (t: PetitionType) => {
@@ -433,26 +388,6 @@ export default function AddPrarthnaPatraScreen() {
             <Text style={{ ...T.footnote, color: '#DC2626', marginTop: T.space.sm }}>{errors.general}</Text>
           ) : null}
 
-          {/* ── OCR Auto-fill Action ── */}
-          <Pressable
-            onPress={() => setOcrModalVisible(true)}
-            className="flex-row items-center justify-between p-3.5 mb-4 rounded-2xl bg-primary/10 border border-primary/25 active:opacity-75"
-            style={{ borderCurve: 'continuous' }}
-          >
-            <View className="flex-1 flex-row items-center gap-3 mr-3">
-              <View className="w-9 h-9 rounded-xl bg-primary/20 items-center justify-center">
-                <Sparkles size={18} color="#2D52B8" />
-              </View>
-              <View className="flex-1">
-                <Text className="text-xs font-bold text-foreground">{t('prarthnaPatra.form.ocrScanBtn')}</Text>
-                <Text className="text-[11px] text-muted-foreground">{t('prarthnaPatra.form.ocrScanDesc')}</Text>
-              </View>
-            </View>
-            <View className="shrink-0 px-3 py-1.5 rounded-xl bg-primary">
-              <Text className="text-xs font-semibold text-white">{t('prarthnaPatra.form.ocrScan')}</Text>
-            </View>
-          </Pressable>
-
           {/* ── Petition Type ── */}
           <Section title={t('prarthnaPatra.form.sectionPetitionType')} />
           <TypePicker value={petitionType} onChange={handleTypeChange} error={errors.petitionType} />
@@ -581,13 +516,6 @@ export default function AddPrarthnaPatraScreen() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <OcrScanModal
-        visible={ocrModalVisible}
-        onClose={() => setOcrModalVisible(false)}
-        fields={PP_OCR_FIELDS}
-        onApply={handleOcrApply}
-        title={t('prarthnaPatra.form.ocrModalTitle')}
-      />
     </KeyboardAvoidingView>
   );
 }
