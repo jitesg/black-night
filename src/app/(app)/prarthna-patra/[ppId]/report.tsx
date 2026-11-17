@@ -36,7 +36,10 @@ import { ppReportDraftStore } from '@/lib/ppReportDraftStore';
 import { htmlToPlainText } from '@/lib/stringUtils';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
-import { FileText } from 'lucide-react-native';
+import { CalendarDays, FileText } from 'lucide-react-native';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
+import { DatePickerModal } from '@/components/common/DatePickerModal';
 
 /** Petition types that use the inline report-attach flow */
 // थाना प्रार्थना पत्र / RTI / अन्य added (owner): same screen with "प्रारूप से जोड़ें" for every petition except बीट सूचना / NCR.
@@ -54,6 +57,47 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
 }
 
 // ── Main screen ───────────────────────────────────────────────────────────────
+/** "2026-11-17" → "17/11/2026" (owner: dates as dd/mm/yyyy everywhere); anything else unchanged. */
+function showDate(v: string | null | undefined): string | undefined {
+  if (!v) return undefined;
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : v;
+}
+
+/** Date box that opens the app's calendar (DatePickerModal) — same look as the other form boxes. */
+function ReportDateField({ label, value, onChange, error }: {
+  label: string; value: string; onChange: (v: string) => void; error?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const { colorScheme } = useColorScheme();
+  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  return (
+    <View style={{ gap: 6 }}>
+      <Text style={{ fontSize: 13, color: C.mutedForeground, fontWeight: '500' }}>{label}</Text>
+      <Pressable onPress={() => setOpen(true)} accessibilityLabel={`${label} चुनें`}>
+        <View style={{
+          flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+          borderWidth: 1, borderColor: error ? C.destructive : C.border, borderRadius: 12,
+          paddingHorizontal: 14, minHeight: 48, backgroundColor: C.card,
+        }}>
+          <Text style={{ fontSize: 15, color: value ? C.foreground : C.mutedForeground }}>
+            {value ? showDate(value) : 'तारीख चुनें (dd/mm/yyyy)'}
+          </Text>
+          <CalendarDays size={18} color={C.mutedForeground} />
+        </View>
+      </Pressable>
+      {error ? <Text style={{ fontSize: 12, color: C.destructive }}>{error}</Text> : null}
+      <DatePickerModal
+        visible={open}
+        value={value}
+        label={label}
+        onConfirm={(v) => { onChange(v); setOpen(false); }}
+        onClose={() => setOpen(false)}
+      />
+    </View>
+  );
+}
+
 export default function ReportScreen() {
   const { t } = useTranslation();
   const { ppId } = useLocalSearchParams<{ ppId: string }>();
@@ -213,19 +257,7 @@ export default function ReportScreen() {
             title={pp?.report ? t('prarthnaPatra.report.editTitle') : t('prarthnaPatra.report.addTitle')}
             subtitle={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : ''}
             onBack={handleBack}
-            rightActions={
-              editorVisible ? (
-                <Pressable
-                  onPress={handleSave}
-                  disabled={saving}
-                  className="bg-primary rounded-xl px-4 py-2 active:opacity-70"
-                >
-                  <Text className="text-sm font-semibold text-primary-foreground">
-                    {saving ? t('common.saving') : t('prarthnaPatra.report.btnSave')}
-                  </Text>
-                </Pressable>
-              ) : null
-            }
+            // owner: one सहेजें only — the big button under the आख्या box (the header one was a second copy)
           />
 
           <ScrollView
@@ -241,10 +273,11 @@ export default function ReportScreen() {
                 {t('prarthnaPatra.report.sectionPetitionDetails')}
               </Text>
               <DetailRow label={t('prarthnaPatra.report.labelType')} value={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : undefined} />
-              <DetailRow label={t('prarthnaPatra.report.labelDateOfReceipt')} value={pp?.date_of_receipt} />
-              <DetailRow label={t('prarthnaPatra.report.labelDeadline')} value={pp?.deadline_date} />
+              <DetailRow label={t('prarthnaPatra.report.labelDateOfReceipt')} value={showDate(pp?.date_of_receipt)} />
+              <DetailRow label={t('prarthnaPatra.report.labelDeadline')} value={showDate(pp?.deadline_date)} />
               <DetailRow label={t('prarthnaPatra.report.labelInvestigator')} value={pp?.investigator_name} />
-              <DetailRow label={t('prarthnaPatra.report.labelMatter')} value={pp?.matter} />
+              {/* the matter is written in the rich editor (HTML) — show it as plain text (owner: "<div>…</div>" showed) */}
+              <DetailRow label={t('prarthnaPatra.report.labelMatter')} value={pp?.matter ? htmlToPlainText(pp.matter) : undefined} />
               {pp?.complainants.map((c, i) => (
                 <DetailRow key={c.id} label={t('prarthnaPatra.report.labelComplainant', { number: i + 1 })}
                   value={[c.name, c.mobile, c.full_address].filter(Boolean).join(' · ')} />
@@ -276,14 +309,12 @@ export default function ReportScreen() {
             {/* ── Inline editor ── */}
             {editorVisible && (
               <View className="mt-5 gap-3">
-                {/* Report date */}
-                <Input
-                  type="date"
+                {/* आख्या की तिथि — calendar picker (owner), shown dd/mm/yyyy, stored YYYY-MM-DD as before */}
+                <ReportDateField
                   label={t('prarthnaPatra.report.fieldReportDate')}
-                  placeholder="YYYY-MM-DD"
                   value={reportDate}
-                  onChangeText={setReportDate}
-                  errorText={errors.reportDate}
+                  onChange={setReportDate}
+                  error={errors.reportDate}
                 />
 
                 {/* Add from Format button */}

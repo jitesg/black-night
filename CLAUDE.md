@@ -259,6 +259,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - प्रार्थना पत्र report screen (`prarthna-patra/[ppId]/report.tsx`): every type except बीट सूचना / NCR (those = take-action) uses the inline flow
   (full petition details, "रिपोर्ट लगाएं", "प्रारूप से जोड़ें") — `REPORT_PETITION_TYPES` now also has थाना प्रार्थना पत्र / RTI / अन्य (owner);
   an old HTML report is turned into plain text for the inline box.
+  Owner's clean-up of that screen: title "आख्या संपादित करें / आख्या लगाएँ", "आवेदक n", matter shown as plain text (htmlToPlainText — it is
+  rich-editor HTML), dates dd/mm/yyyy (`showDate`), "आख्या की तिथि" = calendar picker (`ReportDateField` → DatePickerModal, stores YYYY-MM-DD),
+  "प्रारूप से जोड़ें", placeholder "आख्या यहाँ लिखें…", ONE सहेजें (the header save button removed). आवेदक / विपक्षी rows unchanged (owner).
 - `sys-fmt-pp-janta-darshan-aakhya` "जनता दर्शन / शिकायत प्रकोष्ठ प्रार्थना पत्र — जांच आख्या (14 बिन्दु)" (Prarthna Patra, owner's docx):
   bold header lines via `**…**` in [[सूची]] (supported in list lines too), optional गवाह / Lat / Long, doNoAction tick, बिन्दु ticks
   p1–p11 each opening `pNText` (showIf) → "✓ – विवरण" in the printed list. Owner's file has 11 points under a "14 बिन्दु" heading.
