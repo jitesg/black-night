@@ -17,7 +17,7 @@ import {
   deleteCustomCategory, type SysCustomCategory,
 } from '@/lib/db/sysKnowledgeRepo';
 import { isDevSessionActive } from '@/lib/devOptionsAuth';
-import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import { KNOWLEDGE_CATEGORIES } from '@/lib/knowledgeConstants';
 import {
@@ -100,13 +100,7 @@ export default function SysKnowledgeCategories() {
         variant="navy"
         onBack={() => router.back()}
         rightActions={
-          <Pressable
-            onPress={openCreate}
-            className="w-9 h-9 rounded-full items-center justify-center active:opacity-70"
-            style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
-          >
-            <Plus size={20} color="#fff" />
-          </Pressable>
+          <HeaderIconBtn icon={Plus} onPress={openCreate} label="नई श्रेणी" />
         }
       />
 

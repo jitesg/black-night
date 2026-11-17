@@ -7,7 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import {
   Pencil, Calendar, Clock, CheckCircle, AlertCircle, User, Users, Zap,
 } from 'lucide-react-native';
-import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import { OfficeOriginBanner, isFromOffice } from '@/office/OfficeOrigin';
 import {
@@ -127,13 +127,12 @@ export default function PPDetailScreen() {
         onBack={() => router.back()}
         variant="navy"
         rightActions={
-          <Pressable
+          // was a white pencil on a white header — invisible on the phone (owner); theme colour now
+          <HeaderIconBtn
+            icon={Pencil}
             onPress={() => router.push(`/(app)/prarthna-patra/add?editId=${pp.id}` as never)}
-            className="w-9 h-9 rounded-xl items-center justify-center active:opacity-70"
-            style={{ backgroundColor: '#ffffff18' }}
-          >
-            <Pencil size={17} color="#fff" />
-          </Pressable>
+            label="प्रार्थना पत्र संपादित करें"
+          />
         }
       />
 

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react-native';
 import { getAnalytics, getAllGramPanchayats, type GramPanchayat } from '@/lib/db/gramPanchayatRepo';
 import { useWorkspace } from '@/context/WorkspaceContext';
-import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 
 const STAT_CONFIG = [
@@ -131,13 +131,7 @@ export default function HalkaHomeScreen() {
         onMenuPress={() => setDrawerOpen(true)}
         rightActions={
           <>
-            <Pressable
-              onPress={() => router.push('/(app)/halka/search' as never)}
-              className="w-9 h-9 rounded-xl items-center justify-center active:opacity-60"
-              style={{ backgroundColor: '#ffffff18' }}
-            >
-              <Search size={17} color="#fff" />
-            </Pressable>
+            <HeaderIconBtn icon={Search} onPress={() => router.push('/(app)/halka/search' as never)} label="हल्का में खोजें" />
             <Pressable
               onPress={() => router.push('/(app)/halka/add-gp' as never)}
               className="flex-row items-center gap-1.5 rounded-xl px-3 py-2 active:opacity-70"

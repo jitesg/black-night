@@ -518,6 +518,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `suspendKeyboardInset()` stops the root KeyboardInsetView re-padding the hidden screen underneath while the editor is open. iOS keeps KAV.
 - Horizontal chip row INSIDE a pressable card (FormatCard tags): on Android the card took the drag and the row never slid (owner) — put
   the chips in their own Pressable (same onPress) inside the horizontal ScrollView; all tags shown (no slice).
+- AppHeader is white (its `variant="navy"` is ignored): header buttons use `HeaderIconBtn` (theme colour) — white icons on a
+  '#ffffff18' tile were invisible (owner: प्रार्थना पत्र detail ✏️; also हल्का 🔍, ज्ञानकोष manager +).
 - Pressable `style={({ pressed }) => …}` (function form) was ignored on the phone (सूचनाएँ card lost background, border and
   row layout, build 24) — use a plain style object (pressed look via onPressIn/onPressOut state) in new code.
 - ✕ / 📋 in name, father / husband name and address boxes (owner): `useClearCopy` (`components/common/ClearCopyTools.tsx`; icons only

@@ -14,7 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Plus, Search, Filter, ChevronDown, MoreVertical, Edit2, Copy, Archive, RotateCcw, Trash2, CheckCircle2, FileEdit, History, Download } from 'lucide-react-native';
 import { getSysKnowledgeList, publishSysKnowledge, unpublishSysKnowledge, archiveSysKnowledge, restoreSysKnowledge, deleteSysKnowledge, duplicateSysKnowledge, exportSysKnowledgeJSON, type SysKnowledgeArticle, type KnowledgeStatus } from '@/lib/db/sysKnowledgeRepo';
 import { isDevSessionActive } from '@/lib/devOptionsAuth';
-import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import { KNOWLEDGE_CATEGORIES } from '@/lib/knowledgeConstants';
 import { HighlightText } from '@/components/HighlightText';
@@ -200,13 +200,8 @@ export default function SysKnowledgeList() {
         variant="navy"
         onBack={() => router.back()}
         rightActions={
-          <Pressable
-            onPress={() => router.push({ pathname: '/(app)/sys-knowledge-manager/editor' as never, params: { articleId: '' } })}
-            className="w-9 h-9 rounded-full items-center justify-center active:opacity-70"
-            style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
-          >
-            <Plus size={20} color="#fff" />
-          </Pressable>
+          <HeaderIconBtn icon={Plus} label="नया लेख"
+            onPress={() => router.push({ pathname: '/(app)/sys-knowledge-manager/editor' as never, params: { articleId: '' } })} />
         }
       />
 
