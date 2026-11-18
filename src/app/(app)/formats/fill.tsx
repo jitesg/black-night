@@ -550,9 +550,7 @@ export default function FillScreen() {
             </View>
           ) : dynamicKeys.length > 0 ? (
             <>
-              <Text style={{ fontSize: 11, color: '#5C5C60', fontWeight: '500', letterSpacing: 0.8, textTransform: 'uppercase' }}>
-                {t('format.fill.fillFieldsLabel')}
-              </Text>
+              {/* (the "नीचे दिए क्षेत्र भरें" heading was removed — owner: it said nothing the boxes don't) */}
               {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) =>
                 key.field_type === 'accused_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>

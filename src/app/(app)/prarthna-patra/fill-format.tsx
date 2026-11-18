@@ -299,9 +299,7 @@ export default function PPFillFormatScreen() {
             </View>
           ) : dynamicKeys.length > 0 ? (
             <>
-              <Text className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                {t('format.fill.fillFieldsLabel')}
-              </Text>
+              {/* (the "नीचे दिए क्षेत्र भरें" heading was removed — owner: it said nothing the boxes don't) */}
               {dynamicKeys.filter((key) => isKeyVisible(key, values)).map((key) =>
                 key.field_type === 'accused_group' ? (
                   <View key={key.id} ref={(r) => { fieldRefs.current[key.key_name] = r; }}>
