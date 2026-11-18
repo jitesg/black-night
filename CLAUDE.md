@@ -196,7 +196,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   blocked every रवानगी; renamed, seed_version 5, backup gd_rawangi_samanya_v4_before_deststate.json; never name a format key State /
   District / PoliceStation / OfficerName unless it IS that workspace value); optional Purpose before the place for those three; वारंट: WType NBW / सम्मन / मृत्यु आख्या (heading "वारंटी / सम्मन / मृत्यु आख्या
   सम्बन्धित मु0अ0सं0 … धारा …"; ending "की तलाश मे" / "को सम्मन तामील कराने हेतु" / "की मृत्यु के सम्बन्ध में जानकारी कर आख्या हेतु"), WCourt, WCaseNo,
-  WFir, WSec, WCard (expand WName / WRel / WFather / WAddr), optional WVs (शा0 प्रति; empty → WName); अन्य: Other "रवानगी का उद्देश्य लिखें". GD = plain
+  WFir, WSec, WCard (expand WName / WRel / WFather / WAddr), optional WVs; Purpose "किस काम से" = multiline (owner, seed_version 7, backup gd_rawangi_purpose_before_multiline.json) (शा0 प्रति; empty → WName); अन्य: Other "रवानगी का उद्देश्य लिखें". GD = plain
   text, so no bold heading. Tests `scripts/test_rawangi.ts`.
   ⓘ note (owner): assets/format-info/sys-gd-fmt-rawangi-samanya.json = owner's Formatted_Police_Log.docx (37 रवानगी / आमद GD samples: 2 h
   sections, each "(n) …" title → h2, body p as is; masked names [AO] etc. → "………", owner) + one NOTES line in formatInfo.ts.

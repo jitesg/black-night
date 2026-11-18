@@ -1,0 +1,13 @@
+{
+  "id": "sys-gd-fmt-rawangi-samanya",
+  "seed_version": 6,
+  "key": {
+    "key_name": "Purpose",
+    "label": "किस काम से (वैकल्पिक)",
+    "field_type": "text",
+    "is_required": 0,
+    "default_value": null,
+    "dropdown_options": "{\"placeholder\": \"जैसे: मु0अ0सं0 284/2025 की जमानत पैरवी हेतु\", \"showIf\": \"Kind=उच्च न्यायालय/जनपद न्यायालय/गैर प्रान्त\", \"hint\": \"जाने का काम, जैसे: मु0अ0सं0 284/2025 की जमानत पैरवी हेतु — खाली छोड़ें तो नहीं छपेगा\"}",
+    "sort_order": 9
+  }
+}
