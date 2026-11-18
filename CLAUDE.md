@@ -228,6 +228,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Gender मृतक/मृतका), नमूना सील (blank space, signature low), पुलिस फार्म 33 = two `[[तालिका]]` tables (5 + 4 columns) on one sheet.
 - `sys-fmt-avkash-patra` "अवकाश प्रार्थना पत्र (आरक्षी / मुख्य आरक्षी / उ0नि0)" (type Any, owner's docx): `[[सूची]]` lines with
   blank (zero-width) lines between, संस्तुति table `(14mm)` + `#` heading + full-width note row, CO / थाना प्रभारी signature low; no प्रार्थी block (owner).
+  v3 (owner): `Days` "कुल दिवस" is worked out, never typed — key option `{"daysFrom": "FromDate", "daysTo": "ToDate"}` → formatDerived
+  `daysBetweenInclusive` (both days counted, "03"; missing / wrong-way dates → '' so "(कुल … दिवस)" is left out) in deriveFormatValues (before the
+  dd/mm/yyyy step; a typed value never wins) and a locked box in FormatKeyInput (`FormatKeyDaysBox`, 🔒, "✓ अपने-आप", red line when कब तक < कब से);
+  कारण prints bold (`**{{Reason}}**`). Backup docs/format-backups/avkash_patra_v2_before_auto_days.json; tests in test_template_adi / test_format_derived.
 - `sys-fmt-vehicle-technical-inspection` "वाहन तकनीकी निरीक्षण रिपोर्ट हेतु आवेदन" v3 (type Prarthna Patra — owner moved it from Nyayalay):
   to प्रतिसार निरीक्षक; item_group Vehicles (role दुर्घटनाकारक/दुर्घटनाग्रस्त/सम्बन्धित, vtype, vno) — 1 vehicle inline, 2+ = "02 वाहनों" + [[सूची]];
   VehiclePlace (खड़ा/खड़े), optional Mobile. Old v2 in `docs/format-backups/vehicle_technical_inspection_v2.json`.

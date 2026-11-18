@@ -364,9 +364,14 @@ test('अवकाश प्रार्थना पत्र: one sheet, स�
   const f = d.formats.find((x: { id: string }) => x.id === 'sys-fmt-avkash-patra');
   const v = { Post: 'आरक्षी', EmpName: 'राम', PoliceStation: 'क', District: 'ख', FromDate: '01.11.2026', ToDate: '03.11.2026', Reason: 'घरेलू कार्य हेतु' };
   const marked = generateReport(f.vivran, v, f.keys, { keepMarkers: true });
-  assert.doesNotMatch(marked, /\{\{|\}\}|कुल/);
+  assert.doesNotMatch(marked, /\{\{|\}\}/);
   assert.match(marked, /संख्या – \.{10,}/);
-  assert.match(generateReport(f.vivran, { ...v, Days: '03' }, f.keys), /तक \(कुल 03 दिवस\)/);
+  // कुल दिवस is worked out from the two dates (owner) — a typed value never wins; कारण prints bold
+  assert.match(generateReport(f.vivran, v, f.keys), /तक \(कुल 03 दिवस\)/);
+  assert.match(generateReport(f.vivran, { ...v, Days: '09', FromDate: '2026-11-20', ToDate: '2026-11-22' }, f.keys), /तक \(कुल 03 दिवस\)/);
+  assert.doesNotMatch(generateReport(f.vivran, { ...v, ToDate: '' }, f.keys), /कुल/);
+  assert.doesNotMatch(generateReport(f.vivran, { ...v, ToDate: '31.10.2026' }, f.keys), /कुल/);
+  assert.match(marked, /कारण – \*\*घरेलू कार्य हेतु\*\*/);
   const html = P2.renderTextForPrint(marked);
   assert.equal((html.match(/class="doc-letter"/g) ?? []).length, 1);
   assert.equal((html.match(/<th>/g) ?? []).length, 8);

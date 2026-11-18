@@ -29,7 +29,7 @@ import {
   Platform, Pressable, Text, TextInput, View,
   type KeyboardTypeOptions, type ReturnKeyTypeOptions, type TextStyle, type ViewStyle,
 } from 'react-native';
-import { Calendar, ChevronDown, Eye, EyeOff, X } from 'lucide-react-native';
+import { Calendar, ChevronDown, Eye, EyeOff, Lock, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { T } from '@/lib/typography';
 import { THEME } from '@/lib/theme';
@@ -41,7 +41,7 @@ import { SentenceFieldInput } from './SentenceFieldInput';
 import { HintLink, LabelWithHint } from './FieldHintLink';
 import type { KeyDefForRender } from '@/lib/templateEngine';
 import { multiChoiceSelected, multiChoiceToggle } from '@/lib/multiChoice';
-import { dateFormatOf, formatDateValue, toIsoDate } from '@/lib/formatDerived';
+import { dateFormatOf, daysBetweenInclusive, daysSpecOf, formatDateValue, toIsoDate } from '@/lib/formatDerived';
 
 // ─── Input Type Definitions ───────────────────────────────────────────────────
 
@@ -598,6 +598,19 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
     // "ⓘ कैसे भरें?" at the right end of the label line (owner, design B)
     const hint = keyHint(keyDef.dropdown_options, fieldType);
 
+    // ── कुल दिवस (owner): worked out from two dates, locked — the report gets it from formatDerived ──
+    const daysSpec = daysSpecOf(keyDef.dropdown_options);
+    if (daysSpec) {
+      return (
+        <FormatKeyDaysBox
+          ref={ref}
+          displayLabel={displayLabel}
+          days={daysBetweenInclusive(allValues?.[daysSpec.from], allValues?.[daysSpec.to])}
+          bothSet={!!toIsoDate(allValues?.[daysSpec.from]) && !!toIsoDate(allValues?.[daysSpec.to])}
+        />
+      );
+    }
+
     // ── Date field — dedicated date-picker trigger + modal ───────────────────
     if (fieldType === 'date') {
       return (
@@ -742,6 +755,41 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
       </View>
     );
   }
+);
+
+// ── FormatKeyDaysBox — locked "कुल दिवस" (owner: filled from the two dates, the officer cannot change it) ──
+
+const FormatKeyDaysBox = forwardRef<View, { displayLabel: string; days: string; bothSet: boolean }>(
+  ({ displayLabel, days, bothSet }, ref) => {
+    const { colorScheme } = useColorScheme();
+    const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
+    const wrong = bothSet && !days; // "कब तक" before "कब से"
+    return (
+      <View ref={ref} style={{ gap: 6 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text style={{ fontSize: 13, fontWeight: '500', color: c.mutedForeground }}>{displayLabel}</Text>
+          <Lock size={14} color={c.mutedForeground} />
+        </View>
+        <View
+          accessibilityLabel={days ? `${displayLabel} ${days} दिवस` : displayLabel}
+          style={{
+            flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 48, paddingHorizontal: 14,
+            borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: wrong ? c.destructive : c.border, backgroundColor: c.muted,
+          }}
+        >
+          {days ? (
+            <>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: c.foreground }}>{days} दिवस</Text>
+              <Text style={{ fontSize: 12, color: c.primary }}>✓ अपने-आप</Text>
+            </>
+          ) : (
+            <Text style={{ fontSize: 14, color: c.mutedForeground }}>दोनों तारीख चुनें — अपने-आप भरेगा</Text>
+          )}
+        </View>
+        {wrong ? <Text style={{ fontSize: 12, color: c.destructive }}>"कब तक" की तारीख "कब से" के बाद की होनी चाहिए</Text> : null}
+      </View>
+    );
+  },
 );
 
 // ── FormatKeyDropdownInput — option chips for field_type=dropdown ────────────

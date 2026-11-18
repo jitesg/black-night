@@ -88,3 +88,15 @@ test('weight + copy', async () => {
   assert.equal(rows[0].wt, '01 किलो 200 ग्राम'); assert.equal(rows[1].wt, '850 ग्राम'); assert.equal(rows[0].Drug, 'गांजा');
   assert.equal(v.TotalWt, '02 किलो 50 ग्राम');
 });
+
+test('कुल दिवस: days from → to, both days counted, "03"; locked spec from dropdown_options', async () => {
+  const { daysBetweenInclusive, daysSpecOf } = await import('../src/lib/formatDerived.ts');
+  assert.equal(daysBetweenInclusive('2026-11-20', '2026-11-22'), '03');
+  assert.equal(daysBetweenInclusive('20/11/2026', '20/11/2026'), '01');
+  assert.equal(daysBetweenInclusive('2026-02-25', '2026-03-05'), '09');
+  assert.equal(daysBetweenInclusive('2026-01-01', '2026-04-10'), '100');
+  assert.equal(daysBetweenInclusive('2026-11-22', '2026-11-20'), '');
+  assert.equal(daysBetweenInclusive('', '2026-11-20'), '');
+  assert.deepEqual(daysSpecOf('{"daysFrom":"A","daysTo":"B"}'), { from: 'A', to: 'B' });
+  assert.equal(daysSpecOf('{"hint":"x"}'), null);
+});

@@ -73,6 +73,12 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
   const cur = (k: string) => (out ?? values)[k];
   const groupings: { rows: Record<string, string>[]; g: GroupInto }[] = [];
 
+  // कुल दिवस (owner): worked out from the two dates — before they are re-written as dd/mm/yyyy below; a typed value never wins
+  for (const kd of keyDefs) {
+    const sp = daysSpecOf(kd.dropdown_options);
+    if (sp) set(kd.key_name, daysBetweenInclusive(values[sp.from], values[sp.to]));
+  }
+
   // Date keys (owner: all formats dd/mm/yyyy; a key may set {"dateFormat": "dd.mm.yyyy"}): the picker's YYYY-MM-DD (or a FIR
   // dd.mm.yyyy default) printed that way.
   for (const kd of keyDefs) {
@@ -226,6 +232,25 @@ export function formatDateValue(v: string | null | undefined, fmt: string): stri
   if (!p) return s;
   const sep = fmt.includes('.') ? '.' : fmt.includes('-') ? '-' : '/';
   return `${p[2]}${sep}${p[1]}${sep}${p[0]}`;
+}
+
+// ── कुल दिवस अपने-आप (owner, अवकाश प्रार्थना पत्र) ─────────────────────────────────────────────────
+// dropdown_options {"daysFrom": "FromDate", "daysTo": "ToDate"} → the key is worked out, never typed: days from → to, both days
+// counted (20 → 22 = 3), written "03". Missing / wrong-way dates → ''.
+
+/** {from, to} keys of a "days between" field, else null. */
+export function daysSpecOf(dropdownOptions: string | null | undefined): { from: string; to: string } | null {
+  const o = parseJson(dropdownOptions) as { daysFrom?: unknown; daysTo?: unknown } | null;
+  return o && typeof o.daysFrom === 'string' && typeof o.daysTo === 'string' ? { from: o.daysFrom, to: o.daysTo } : null;
+}
+
+/** Days from → to, both days counted, as "03" (2 digits at least); '' when a date is missing or to is before from. */
+export function daysBetweenInclusive(from: string | null | undefined, to: string | null | undefined): string {
+  const a = toIsoDate(from), b = toIsoDate(to);
+  if (!a || !b) return '';
+  const n = Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10))
+    - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000) + 1;
+  return n >= 1 ? String(n).padStart(2, '0') : '';
 }
 
 // ── आवेदक समूह / विपक्षी समूह (owner) — see ppPeople.ts ─────────────────────────────────────────────
