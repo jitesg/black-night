@@ -30,6 +30,8 @@ import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { AutocompleteInput } from '@/components/common/AutocompleteInput';
+import { FilledFromStrip, PeopleSuggest } from '@/components/common/PeopleSuggest';
+import { applyHitToCard, type PeopleSource, type PersonHit } from '@/lib/peopleRegistry';
 import { FIELD_KEYS } from '@/lib/db/fieldValueHistoryRepo';
 
 function useGroupTokens() {
@@ -381,6 +383,8 @@ interface AccusedCardProps {
   onChange: (i: number, field: keyof AccusedEntry, value: string) => void;
   onBlur: (i: number, field: keyof AccusedEntry) => void;
   onRemove: (i: number) => void;
+  /** "पूरे app से सुझाव" (owner): put a whole card in at once (fill from a suggestion / undo it) */
+  onReplace: (i: number, entry: AccusedEntry) => void;
   canRemove: boolean;
   /** Full entries array — card slices internally to derive priorEntries */
   allEntries: AccusedEntry[];
@@ -392,9 +396,25 @@ interface AccusedCardProps {
 
 const AccusedCard = memo(({
   C, index, entry, collapsed, cardErrors, touched,
-  onToggleCollapse, onChange, onBlur, onRemove, canRemove,
+  onToggleCollapse, onChange, onBlur, onRemove, canRemove, onReplace,
   allEntries, genderLabels, t, showStatus,
 }: AccusedCardProps) => {
+  // "पूरे app से सुझाव" (owner) — same as the person card
+  const [nameFocused, setNameFocused] = useState(false);
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (blurTimer.current) clearTimeout(blurTimer.current); }, []);
+  const [filledFrom, setFilledFrom] = useState<{ src: PeopleSource; before: AccusedEntry } | null>(null);
+  const fillFromHit = (h: PersonHit) => {
+    setFilledFrom({ src: h.sources[0], before: entry });
+    setNameFocused(false);
+    // the accused card has one address box and three सम्बन्ध: map the shared card fill onto it
+    const c = applyHitToCard({ name: entry.name, fatherOrHusbandName: entry.fatherOrHusbandName, relationType: entry.relationType,
+      gender: entry.gender, age: entry.age, mobile: entry.mobile, fullAddress: entry.fullAddress }, h);
+    const rel = (['पुत्र', 'पुत्री', 'पत्नी'] as const).find((r) => r === c.relationType) ?? entry.relationType;
+    const gender = (['पुरुष', 'महिला', 'अन्य'] as const).find((g) => g === c.gender) ?? entry.gender;
+    onReplace(index, { ...entry, name: c.name ?? entry.name, fatherOrHusbandName: c.fatherOrHusbandName ?? '', relationType: rel, gender,
+      age: c.age ?? '', mobile: c.mobile ?? '', fullAddress: c.fullAddress ?? '' });
+  };
   const priorEntries = allEntries.slice(0, index);
   const hasErr = hasCardErrors(cardErrors);
   const fieldErr = (f: keyof AccusedEntry) =>
@@ -465,14 +485,25 @@ const AccusedCard = memo(({
       {!collapsed && (
         <View style={{ padding: 14, gap: 14 }}>
           <FieldRow C={C} label={t('group.fields.name')} required error={fieldErr('name')}>
+            {filledFrom ? (
+              <View style={{ marginBottom: 6 }}>
+                <FilledFromStrip src={filledFrom.src} onUndo={() => { onReplace(index, filledFrom.before); setFilledFrom(null); }} />
+              </View>
+            ) : null}
             <AutocompleteInput
               fieldKey={FIELD_KEYS.person_name}
               value={entry.name}
               onChangeText={(v) => onChange(index, 'name', v)}
-              onBlur={() => onBlur(index, 'name')}
+              onBlur={() => {
+                onBlur(index, 'name');
+                blurTimer.current = setTimeout(() => setNameFocused(false), 200);
+              }}
+              onFocus={() => { if (blurTimer.current) clearTimeout(blurTimer.current); setNameFocused(true); }}
               placeholder={t('group.accused.namePlaceholder')}
               hasError={!!fieldErr('name')}
+              disableSuggestions
             />
+            <PeopleSuggest query={entry.name} active={nameFocused} onPick={fillFromHit} />
           </FieldRow>
 
           {showStatus ? (
@@ -708,6 +739,12 @@ export const AccusedGroupInput = memo(({
     emit(updated);
   }, [emit]);
 
+  const handleReplace = useCallback((i: number, entry: AccusedEntry) => {
+    const updated = entriesRef.current.map((e, idx) => (idx === i ? { ...entry, _id: e._id } : e));
+    entriesRef.current = updated;
+    emit(updated);
+  }, [emit]);
+
   const handleBlur = useCallback((i: number, field: keyof AccusedEntry) => {
     setTouchedSets((prev) => {
       const next = prev.map((s, idx) => idx === i ? new Set([...s, field as string]) : s);
@@ -767,6 +804,7 @@ export const AccusedGroupInput = memo(({
           onChange={handleChange}
           onBlur={handleBlur}
           onRemove={handleRemove}
+          onReplace={handleReplace}
           canRemove={entries.length > 1}
           allEntries={entries}
           genderLabels={genderLabels}

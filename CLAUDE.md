@@ -641,6 +641,16 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   Office app too (owner): ui2 `PersonCards` = the same card in navy (`OfficePersonCard`, rules from personCard.ts; no हल्का suggestions — office
   has no SQLite); new cards get थाना / जनपद from me.thana (`newOfficePerson`, `fillPersonDefaults` in send.tsx). TaskPerson carries the extra fields
   (address = composed full address, so old phones still work); officerSyncCore `toCard` + `ppRowFromCard` → PP columns (old कागज़ = free address).
+- "पूरे app से सुझाव" + व्यक्ति रजिस्टर (owner, sample approved; step 1 of 2): typing 2+ letters in the NAME box of any person card
+  (PersonGroupInput — every format, FIR वादी on add-fir / details, प्रार्थना पत्र add — and AccusedGroupInput) shows up to 5 people from the
+  whole app: `src/lib/db/peopleRegistryRepo.ts` `searchPeople` reads at search time (no extra table) मुकदमा वादी + अभियुक्त, प्रार्थना पत्र
+  आवेदक + विपक्षी, न्यायालय persons, हल्का persons, and person cards inside निरोधात्मक / हाल के कार्य values_json (each source in its own
+  try); rules `src/lib/peopleRegistry.ts` (pure; tests `scripts/test_people_registry.ts`): same person = same 10-digit mobile, else name +
+  father + village normalised (`mergePeople`), `rankPeople` (every word, starts-with first, more places, newest), `applyHitToCard`
+  (parts address when the village is known). UI `components/common/PeopleSuggest.tsx`: list under the name box (source chips per module
+  colour, "+n जगह" → sheet "card में भरें"), tap = that card only (`onReplace`), strip "✓ … से भरा · हटाएँ" (undo = card as before). The old
+  "typed before" name list is off on these name boxes (`disableSuggestions`; AutocompleteInput got `onFocus`). The केस डायरी कार्यवाही panel
+  uses the same PersonGroupInput, so it shows the list too. "मुकदमा चुनें" strip + "मुकदमे से भरें" stay until the owner says the new way works.
 - FIR रो0आम (GD) रपट (owner): boxes "रो0आम रपट संख्या" (number) + "रपट का समय" (time) in a row under सूचना की तारीख / समय on add-fir and the
   FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Linked: @FIR.roaam_no / roaam_time fill the
   35(3) / 179 notices' RoNo / RoTime.

@@ -39,6 +39,8 @@ import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { AutocompleteInput } from '@/components/common/AutocompleteInput';
+import { FilledFromStrip, PeopleSuggest } from '@/components/common/PeopleSuggest';
+import { applyHitToCard, type PeopleSource, type PersonHit } from '@/lib/peopleRegistry';
 import { FIELD_KEYS } from '@/lib/db/fieldValueHistoryRepo';
 import { getAllGramPanchayats } from '@/lib/db/gramPanchayatRepo';
 import { getAllHamlets } from '@/lib/db/hamletRepo';
@@ -453,6 +455,8 @@ interface PersonCardProps {
   onBlur: (i: number, field: keyof PersonEntry) => void;
   onRemove: (i: number) => void;
   canRemove: boolean;
+  /** "पूरे app से सुझाव" (owner): put a whole card in at once (fill from a suggestion / undo it) */
+  onReplace: (i: number, entry: PersonEntry) => void;
   /** Full entries array — card slices internally to derive priorEntries */
   allEntries: PersonEntry[];
   t: (key: string, opts?: Record<string, unknown>) => string;
@@ -462,9 +466,19 @@ interface PersonCardProps {
 
 const PersonCard = memo(({
   C, index, entry, collapsed, cardErrors, touched,
-  onToggleCollapse, onChange, onBlur, onRemove, canRemove,
+  onToggleCollapse, onChange, onBlur, onRemove, canRemove, onReplace,
   allEntries, t, roleBadge,
 }: PersonCardProps) => {
+  // "पूरे app से सुझाव" (owner): list under the name box while it is focused; after a pick, the strip "… से भरा · हटाएँ"
+  const [nameFocused, setNameFocused] = useState(false);
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (blurTimer.current) clearTimeout(blurTimer.current); }, []);
+  const [filledFrom, setFilledFrom] = useState<{ src: PeopleSource; before: PersonEntry } | null>(null);
+  const fillFromHit = (h: PersonHit) => {
+    setFilledFrom({ src: h.sources[0], before: entry });
+    setNameFocused(false);
+    onReplace(index, applyHitToCard(entry, h));
+  };
   const priorEntries = allEntries.slice(0, index);
   const [showPicker, setShowPicker] = useState(false);
   const hasErr = hasCardErrors(cardErrors);
@@ -539,14 +553,27 @@ const PersonCard = memo(({
       {!collapsed && (
         <View style={{ padding: 14, gap: 14 }}>
           <FieldRow C={C} label={t('group.fields.name')} required error={fieldErr('name')}>
+            {filledFrom ? (
+              <View style={{ marginBottom: 6 }}>
+                <FilledFromStrip src={filledFrom.src} onUndo={() => { onReplace(index, filledFrom.before); setFilledFrom(null); }} />
+              </View>
+            ) : null}
             <AutocompleteInput
               fieldKey={FIELD_KEYS.person_name}
               value={entry.name}
               onChangeText={(v) => onChange(index, 'name', v)}
-              onBlur={() => onBlur(index, 'name')}
+              onBlur={() => {
+                onBlur(index, 'name');
+                // a little later, so a tap on a suggestion lands first
+                blurTimer.current = setTimeout(() => setNameFocused(false), 200);
+              }}
+              onFocus={() => { if (blurTimer.current) clearTimeout(blurTimer.current); setNameFocused(true); }}
               placeholder={t('group.person.namePlaceholder')}
               hasError={!!fieldErr('name')}
+              // the old "typed before" list is replaced by the people list below (owner)
+              disableSuggestions
             />
+            <PeopleSuggest query={entry.name} active={nameFocused} onPick={fillFromHit} />
           </FieldRow>
 
           <FieldRow C={C} label={t('group.fields.relationType')}>
@@ -825,6 +852,12 @@ export const PersonGroupInput = memo(({
     emit(updated);
   }, [emit]);
 
+  const handleReplace = useCallback((i: number, entry: PersonEntry) => {
+    const updated = entriesRef.current.map((e, idx) => (idx === i ? { ...entry, _id: e._id } : e));
+    entriesRef.current = updated;
+    emit(updated);
+  }, [emit]);
+
   const handleBlur = useCallback((i: number, field: keyof PersonEntry) => {
     setTouchedSets((prev) => prev.map((s, idx) => idx === i ? new Set([...s, field as string]) : s));
   }, []);
@@ -893,6 +926,7 @@ export const PersonGroupInput = memo(({
           onChange={handleChange}
           onBlur={handleBlur}
           onRemove={handleRemove}
+          onReplace={handleReplace}
           canRemove={entries.length > 1}
           allEntries={entries}
           t={t}

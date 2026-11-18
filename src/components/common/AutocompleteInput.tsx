@@ -55,6 +55,8 @@ export interface AutocompleteInputProps {
   value: string;
   onChangeText: (v: string) => void;
   onBlur?: () => void;
+  /** box got focus (PersonGroupInput uses it to show the "पूरे app से सुझाव" list) */
+  onFocus?: () => void;
   placeholder?: string;
   multiline?: boolean;
   keyboardType?: 'default' | 'number-pad' | 'email-address' | 'phone-pad';
@@ -75,6 +77,7 @@ export const AutocompleteInput = memo(({
   value,
   onChangeText,
   onBlur,
+  onFocus,
   placeholder,
   multiline,
   keyboardType,
@@ -173,6 +176,7 @@ export const AutocompleteInput = memo(({
           value={value}
           onChangeText={handleChangeText}
           onBlur={handleBlur}
+          onFocus={onFocus}
           placeholder={placeholder}
           placeholderTextColor={C.placeholder}
           multiline={multiline}
