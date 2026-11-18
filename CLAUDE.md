@@ -694,6 +694,13 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (`components/settings/SecurityCheckCard.tsx`, read-only). Per-screen ErrorBoundary on the 3 FIR tabs + knowledge note viewer
   (`<Name>WithBoundary` default exports). `src/lib/perfLog.ts` (first import in index.ts) → Dev options → Performance "Measured (real)"
   (`components/settings/RealPerfCard.tsx`: first screen ms, seed ms, last search ms, DB size, rows by content_type).
+- 🧪 टेस्ट डेटा (owner): Developer options → Test Utilities, top card `components/settings/TestDataCard.tsx` → `src/lib/db/testDataRepo.ts`
+  `fillTestData({thana, district, officer})` (settings values; made-up Hindi names) creates through the normal repos: 2 GP + मजरा + 6 हल्का
+  persons, 6 FIRs (accused, seedFIRKaryvahi, 4 केस डायरी with 2 narrative entries each), 10 प्रार्थना पत्र (every type; overdue / today /
+  future; 2 निस्तारित via saveReport), 6 न्यायालय (1 finished), 4 निरोधात्मक (real sys-fmt-bnss126-* format ids, person cards in values_json,
+  2 चलानी प्रेषित), 5 GD, 3 reminders (reminderService.saveReminder) — रामपाल पुत्र श्यामलाल (ग्राम अघौरा, 9876500001) is in several modules
+  for the "पूरे app से सुझाव" test. Ids kept in app_settings `test_data_ids`; `removeTestData` deletes only those (normal delete functions).
+  One set at a time. Checked on the real schema with node:sqlite (48 rows in, all out).
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 - OCR scan removed app-wide (owner): the "OCR स्कैन से स्वतः भरें" banners on मुकदमा add-fir, GD add-gd and प्रार्थना पत्र add, and the
   per-card scan button (Supabase ocr-extract-fields) on PersonGroupInput / AccusedGroupInput; OcrScanModal.tsx + ocrService.ts deleted

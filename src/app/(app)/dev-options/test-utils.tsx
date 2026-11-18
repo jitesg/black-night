@@ -12,6 +12,7 @@ import {
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { _addAudit } from '@/lib/devOptionsStore';
 import { getDiagnosticsSnapshot } from '@/lib/db/devDiagnosticsRepo';
+import { TestDataCard } from '@/components/settings/TestDataCard';
 
 if (!__DEV__) { /* production gate */ }
 
@@ -83,6 +84,8 @@ export default function TestUtilsScreen() {
       />
 
       <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 40 }}>
+        {/* 🧪 टेस्ट डेटा (owner): fill / remove made-up entries in every module */}
+        <TestDataCard />
         {TESTS.map(({ label, icon: Icon }) => {
           const res = results[label];
           const isRunning = running === label;
