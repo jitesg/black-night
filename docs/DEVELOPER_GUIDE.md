@@ -138,6 +138,7 @@ Most of the value is in **predefined formats**: an officer fills a few boxes and
 | Values worked out before rendering (dates, days, person cards, tidy-up) | `src/lib/formatDerived.ts` (`deriveFormatValues`) |
 | Layout marks (`[[सेवा में]]`, `[[तालिका]]` …) → print / Word / editor | `src/lib/formatMarkers.ts`, `printLayout.ts`, `reportDocxExport.ts` |
 | Rich editor (WebView) + A4 preview | `src/components/common/DocumentEditor.tsx` |
+| List card ⋮ menu / press-and-hold selection (☑ सभी, one Word, delete) | `src/components/common/CardActionMenu.tsx`, `CardSelection.tsx`, `src/lib/batchReportExport.ts` |
 
 **Template tokens** (in `vivran`): `{{Key}}`, `{{if:Key|text}}` / `{{ifnot:…}}`, `{{if:Key=value|…}}`, person-group
 tokens `{{Key#list}}` / `#inline` / `#name` …, item-group tokens `{{each:…}}` / `{{count:…}}` / `{{sum:…}}`, sequence

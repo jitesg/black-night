@@ -10,6 +10,8 @@ import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { attachmentCounts } from '@/lib/db/attachmentRepo';
 import { CardActionMenu, CardMenuButton, dmy, useCardMenu } from '@/components/common/CardActionMenu';
+import { BatchDeleteDialog, SelectTick, SelectionHeader, runBatchExport, useCardSelection } from '@/components/common/CardSelection';
+import { exportNyayalayBatch } from '@/lib/batchReportExport';
 import { OFFICE_BLUE, OFFICE_DELETE_WARNING, OfficeCardTag, isFromOffice } from '@/office/OfficeOrigin';
 import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
@@ -112,8 +114,12 @@ function AnalyticsCard({
 }
 
 const DocCard = memo(function DocCard({
-  doc, query, highlight, typoTolerant, onPress, onEdit, onDelete, scheme, attachCount,
+  doc, query, highlight, typoTolerant, onPress, onEdit, onDelete, scheme, attachCount, selecting, selected, onToggle,
 }: {
+  /** press-and-hold selection (owner): tick instead of ⋮, a tap chooses / un-chooses */
+  selecting?: boolean;
+  selected?: boolean;
+  onToggle?: (id: string) => void;
   /** संलग्न कागज़ count (owner) → "📎 n" */
   attachCount?: number;
   doc: NyayalayDocument;
@@ -162,10 +168,18 @@ const DocCard = memo(function DocCard({
 
   return (
     <Pressable
-      onPress={onPress}
-      onLongPress={menu.openAt}
+      onPress={selecting ? () => onToggle?.(doc.id) : onPress}
+      // owner: press-and-hold = choose the card (the menu stays on ⋮)
+      onLongPress={() => onToggle?.(doc.id)}
+      delayLongPress={350}
       className="bg-card border border-border rounded-2xl p-4 mb-3 active:opacity-70"
-      style={{ borderCurve: 'continuous', ...(isFromOffice(doc) ? { borderWidth: 2, borderColor: OFFICE_BLUE[scheme] } : {}) }}
+      style={{
+        borderCurve: 'continuous',
+        ...(isFromOffice(doc) ? { borderWidth: 2, borderColor: OFFICE_BLUE[scheme] } : {}),
+        // chosen: module blue ring + faint blue tint (works on both themes)
+        ...(selected ? { borderWidth: 2, borderColor: NYL_COLOR, backgroundColor: `${NYL_COLOR}14` } : {}),
+      }}
+      accessibilityState={selecting ? { selected: !!selected } : undefined}
     >
       {/* Top: type (+ sub type) · status · ⋮ */}
       <View className="flex-row items-center gap-2">
@@ -182,7 +196,9 @@ const DocCard = memo(function DocCard({
         <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: statusBg, marginLeft: 'auto' }}>
           <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: statusColor }}>{statusWord}</Text>
         </View>
-        <CardMenuButton btnRef={menu.btnRef} onPress={menu.openAt} />
+        {selecting
+          ? <SelectTick selected={!!selected} accent={NYL_COLOR} />
+          : <CardMenuButton btnRef={menu.btnRef} onPress={menu.openAt} />}
       </View>
 
       {/* Big name = न्यायालय (else the कागज़ title) */}
@@ -295,10 +311,13 @@ export default function NyayalayScreen() {
   );
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
+  // set below once the list is known — the back handler reads it (registered once on focus)
+  const selectionBackRef = useRef<() => boolean>(() => false);
 
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (selectionBackRef.current()) return true; // back first ends the choosing
       router.replace('/(app)/home' as never);
       return true;
     });
@@ -356,6 +375,33 @@ export default function NyayalayScreen() {
     });
   }, [docs, searchResults, statusFilter, typeFilter, timeFilter, today]);
 
+  // Press-and-hold selection (owner): ☑ सभी चुनें · ⬇ one Word file · 🗑 delete the chosen ones.
+  const shownIds = useMemo(() => filtered.map((d) => d.id), [filtered]);
+  const sel = useCardSelection(shownIds);
+  selectionBackRef.current = sel.handleBack;
+  const [batchDeleteOpen, setBatchDeleteOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const chosenFromOffice = useMemo(() => filtered.some((d) => sel.selectedIds.has(d.id) && isFromOffice(d)), [filtered, sel.selectedIds]);
+  const handleBatchExport = useCallback(async () => {
+    if (exporting) return;
+    setExporting(true);
+    await runBatchExport(() => exportNyayalayBatch([...sel.selectedIds]), { noun: 'कागज़', report: 'रिपोर्ट' });
+    setExporting(false);
+    sel.clear();
+  }, [exporting, sel]);
+  const handleBatchDelete = useCallback(async () => {
+    setBatchDeleteOpen(false);
+    for (const id of sel.selectedIds) {
+      try { await deleteNyayalayDocument(id); } catch { /* keep going */ }
+    }
+    sel.clear();
+    if (query.trim()) {
+      const results = await searchNyayalayDocuments(query, settings.typoTolerance ? { typoTolerance: true } : undefined).catch(() => null);
+      if (results) setSearchResults(results);
+    }
+    load();
+  }, [sel, load, query, settings.typoTolerance]);
+
   const handleDeleteConfirm = useCallback(async () => {
     if (!deleteTarget) return;
     await deleteNyayalayDocument(deleteTarget);
@@ -378,14 +424,27 @@ export default function NyayalayScreen() {
         onEdit={() => router.push(`/(app)/nyayalay/add?editId=${item.id}` as never)}
         onDelete={() => setDeleteTarget(item.id)}
         attachCount={attachCounts[item.id]}
+        selecting={sel.selecting}
+        selected={sel.selectedIds.has(item.id)}
+        onToggle={sel.toggle}
       />
     </View>
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  ), [query, settings.highlightMatches, settings.typoTolerance, scheme, attachCounts]);
+  ), [query, settings.highlightMatches, settings.typoTolerance, scheme, attachCounts, sel.selecting, sel.selectedIds, sel.toggle]);
 
   return (
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      {sel.selecting ? (
+        <SelectionHeader
+          count={sel.selectedIds.size}
+          allChosen={sel.allChosen}
+          onBack={sel.clear}
+          onToggleAll={sel.toggleAll}
+          onExport={handleBatchExport}
+          onDelete={() => setBatchDeleteOpen(true)}
+          exporting={exporting}
+        />
+      ) : (
       <AppHeader
         title={t('nyayalay.title')}
         subtitle={filtered.length === 1 ? t('nyayalay.docCount_one', { count: filtered.length }) : t('nyayalay.docCount_other', { count: filtered.length })}
@@ -399,6 +458,7 @@ export default function NyayalayScreen() {
           />
         }
       />
+      )}
 
       {/* Toolbar */}
       <View className="px-4 pt-3 pb-2 gap-2 bg-background border-b border-border">
@@ -595,6 +655,14 @@ export default function NyayalayScreen() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <BatchDeleteDialog
+        open={batchDeleteOpen}
+        title={`${sel.selectedIds.size} न्यायालय कागज़ हटाएँ?`}
+        description={`इनकी रिपोर्ट, चेकलिस्ट और संलग्न कागज़ भी हट जाएँगे। यह वापस नहीं होगा।${chosenFromOffice ? `\n\n${OFFICE_DELETE_WARNING}` : ''}`}
+        onCancel={() => setBatchDeleteOpen(false)}
+        onConfirm={handleBatchDelete}
+      />
     </View>
   );
 }

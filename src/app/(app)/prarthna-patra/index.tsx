@@ -15,6 +15,8 @@ import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { attachmentCounts } from '@/lib/db/attachmentRepo';
 import { CardActionMenu, CardMenuButton, dmy, useCardMenu } from '@/components/common/CardActionMenu';
+import { BatchDeleteDialog, SelectTick, SelectionHeader, runBatchExport, useCardSelection } from '@/components/common/CardSelection';
+import { exportPrarthnaPatraBatch } from '@/lib/batchReportExport';
 import { OFFICE_BLUE, OFFICE_DELETE_WARNING, OfficeCardTag, isFromOffice } from '@/office/OfficeOrigin';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
@@ -136,13 +138,17 @@ const PP_STATUS = {
 const PP_DAY = { light: { done: '#065F46', left: '#1D4ED8', over: '#DC2626' }, dark: { done: '#6EE7B7', left: '#93C5FD', over: '#F87171' } } as const;
 
 const PPCard = memo(function PPCard({
-  pp, query, highlight, typoTolerant, onDelete, attachCount, person,
+  pp, query, highlight, typoTolerant, onDelete, attachCount, person, selecting, selected, onToggle,
 }: {
   pp: PrarthnaPatra; query: string; highlight: boolean; typoTolerant?: boolean; onDelete: (id: string) => void;
   /** संलग्न कागज़ count (owner) → "📎 n" */
   attachCount?: number;
   /** first आवेदक + village + how many (ppCardPeople) */
   person?: PPCardPerson;
+  /** press-and-hold selection (owner): tick instead of ⋮, a tap chooses / un-chooses */
+  selecting?: boolean;
+  selected?: boolean;
+  onToggle?: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
@@ -171,14 +177,23 @@ const PPCard = memo(function PPCard({
   const subLine = [person?.village ? `ग्राम ${person.village}` : '', `प्राप्ति ${dmy(pp.date_of_receipt)}`].filter(Boolean).join(' · ');
   const titleStyle = { fontSize: 16, fontWeight: '700' as const, lineHeight: 24, color: C.cardForeground, marginTop: 8 };
   const view = () => router.push(`/(app)/prarthna-patra/${pp.id}` as never);
+  const toggle = () => onToggle?.(pp.id);
 
   return (
     <>
       <Pressable
-        onPress={view}
-        onLongPress={menu.openAt}
+        onPress={selecting ? toggle : view}
+        // owner: press-and-hold = choose the card (the menu stays on ⋮)
+        onLongPress={toggle}
+        delayLongPress={350}
         className="bg-card border border-border rounded-2xl p-4 mb-3 active:opacity-70"
-        style={{ borderCurve: 'continuous', ...(isFromOffice(pp) ? { borderWidth: 2, borderColor: OFFICE_BLUE[scheme] } : {}) }}
+        style={{
+          borderCurve: 'continuous',
+          ...(isFromOffice(pp) ? { borderWidth: 2, borderColor: OFFICE_BLUE[scheme] } : {}),
+          // chosen: PP blue ring + faint blue tint (works on both themes)
+          ...(selected ? { borderWidth: 2, borderColor: PP_FILTER_ACCENT, backgroundColor: `${PP_FILTER_ACCENT}14` } : {}),
+        }}
+        accessibilityState={selecting ? { selected: !!selected } : undefined}
       >
         {/* Top: type · status · ⋮ */}
         <View className="flex-row items-center gap-2">
@@ -188,7 +203,9 @@ const PPCard = memo(function PPCard({
           <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: badgeBg, marginLeft: 'auto' }}>
             <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: badgeFg }}>{statusWord}</Text>
           </View>
-          <CardMenuButton btnRef={menu.btnRef} onPress={menu.openAt} />
+          {selecting
+            ? <SelectTick selected={!!selected} accent={PP_FILTER_ACCENT} />
+            : <CardMenuButton btnRef={menu.btnRef} onPress={menu.openAt} />}
         </View>
 
         {highlight
@@ -206,7 +223,7 @@ const PPCard = memo(function PPCard({
         <OfficeCardTag row={pp} />
       </Pressable>
 
-      {/* ⋮ / press-and-hold menu (owner: देखें / संपादित करें / हटाएँ) */}
+      {/* ⋮ menu (owner: देखें / संपादित करें / हटाएँ) */}
       <CardActionMenu
         anchor={menu.anchor}
         onClose={menu.close}
@@ -258,6 +275,8 @@ export default function PrarthnaPatraScreen() {
   // null means "no active query" — fall back to full items list.
   const [searchResults, setSearchResults] = useState<PrarthnaPatra[] | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('All');
+  // set below once the list is known — the back handler reads it (registered once on focus)
+  const selectionBackRef = useRef<() => boolean>(() => false);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>(null);
   const [categoryFilter, setCategoryFilter] = useState<PetitionType | null>(null);
   const [analyticsExpanded, setAnalyticsExpanded] = useState(false);
@@ -320,6 +339,7 @@ export default function PrarthnaPatraScreen() {
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (selectionBackRef.current()) return true; // back first ends the choosing
       router.replace('/(app)/home' as never);
       return true;
     });
@@ -409,6 +429,32 @@ export default function PrarthnaPatraScreen() {
     return list;
   }, [searchResults, items, statusFilter, timeFilter, categoryFilter, today, weekStart]);
 
+  // Press-and-hold selection (owner): ☑ सभी चुनें · ⬇ one Word file · 🗑 delete the chosen ones.
+  const shownIds = useMemo(() => filtered.map((p) => p.id), [filtered]);
+  const sel = useCardSelection(shownIds);
+  selectionBackRef.current = sel.handleBack;
+  const [batchDeleteOpen, setBatchDeleteOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const chosenFromOffice = useMemo(() => filtered.some((p) => sel.selectedIds.has(p.id) && isFromOffice(p)), [filtered, sel.selectedIds]);
+  const handleBatchExport = useCallback(async () => {
+    if (exporting) return;
+    setExporting(true);
+    await runBatchExport(() => exportPrarthnaPatraBatch([...sel.selectedIds]), { noun: 'पत्र', report: 'आख्या' });
+    setExporting(false);
+    sel.clear();
+  }, [exporting, sel]);
+  const handleBatchDelete = useCallback(async () => {
+    setBatchDeleteOpen(false);
+    for (const id of sel.selectedIds) {
+      try { await deletePrarthnaPatra(id); } catch (e) { logger.warn('[PrarthnaPatra] batch delete:', e); }
+    }
+    sel.clear();
+    await load();
+    if (query.trim()) {
+      setSearchResults(await searchPrarthnaPatra(query.trim(), settings.typoTolerance ? { typoTolerance: true } : undefined));
+    }
+  }, [sel, load, query, settings.typoTolerance]);
+
   return (
     <View className="flex-1 bg-background">
       <AppDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
@@ -420,6 +466,17 @@ export default function PrarthnaPatraScreen() {
         onClose={() => setShowFilterSheet(false)}
         accent={PP_FILTER_ACCENT}
       />
+      {sel.selecting ? (
+        <SelectionHeader
+          count={sel.selectedIds.size}
+          allChosen={sel.allChosen}
+          onBack={sel.clear}
+          onToggleAll={sel.toggleAll}
+          onExport={handleBatchExport}
+          onDelete={() => setBatchDeleteOpen(true)}
+          exporting={exporting}
+        />
+      ) : (
       <AppHeader
         title={t('prarthnaPatra.title')}
         subtitle={t('prarthnaPatra.list.count', { count: filtered.length })}
@@ -432,6 +489,7 @@ export default function PrarthnaPatraScreen() {
           />
         }
       />
+      )}
 
       <FlatList keyboardShouldPersistTaps="handled"
         data={filtered}
@@ -598,7 +656,8 @@ export default function PrarthnaPatraScreen() {
             {loading && <ActivityIndicator className="my-8" />}
           </View>
         }
-        renderItem={({ item }) => <PPCard pp={item} query={query} highlight={settings.highlightMatches} typoTolerant={settings.typoTolerance} onDelete={handleDelete} attachCount={attachCounts[item.id]} person={people[item.id]} />}
+        extraData={sel.selectedIds}
+        renderItem={({ item }) => <PPCard pp={item} query={query} highlight={settings.highlightMatches} typoTolerant={settings.typoTolerance} onDelete={handleDelete} attachCount={attachCounts[item.id]} person={people[item.id]} selecting={sel.selecting} selected={sel.selectedIds.has(item.id)} onToggle={sel.toggle} />}
         ListEmptyComponent={
           !loading ? (
             <View className="items-center py-16 gap-3">
@@ -614,6 +673,13 @@ export default function PrarthnaPatraScreen() {
         }
       />
 
+      <BatchDeleteDialog
+        open={batchDeleteOpen}
+        title={`${sel.selectedIds.size} प्रार्थना पत्र हटाएँ?`}
+        description={`इनकी आख्या, कार्यवाही और संलग्न कागज़ भी हट जाएँगे। यह वापस नहीं होगा।${chosenFromOffice ? `\n\n${OFFICE_DELETE_WARNING}` : ''}`}
+        onCancel={() => setBatchDeleteOpen(false)}
+        onConfirm={handleBatchDelete}
+      />
     </View>
   );
 }

@@ -272,7 +272,12 @@ detailed working log. Keep the guide up to date when the architecture changes.
   List cards न्यायालय + प्रार्थना पत्र = ONE design (owner, card design B): top type badge (accent) · status pill लंबित / समय निकला / निस्तारित (per-theme
   colours) · ⋮; big name (न्यायालय: court_name / document_title; प्रार्थना पत्र: first आवेदक "व n अन्य" via `ppCardPeople()` in prarthnaPatraRepo, else the
   type label); small line (वाद सं0 · मु0अ0सं0 / ग्राम · प्राप्ति dd/mm/yyyy); bottom strip days ("n दिन ऊपर") · 📎 · "अंतिम dd/mm/yyyy"; ⋮ or press-and-hold →
-  `components/common/CardActionMenu.tsx` popup देखें / संपादित करें / हटाएँ (like निरोधात्मक; `useCardMenu`, `dmy`). Same status rules as before
+  `components/common/CardActionMenu.tsx` popup देखें / संपादित करें / हटाएँ (like निरोधात्मक; `useCardMenu`, `dmy`). NOW (owner, sample approved): the menu
+  opens ONLY from ⋮ — press-and-hold CHOOSES the card (like निरोधात्मक): `components/common/CardSelection.tsx` (`useCardSelection` — tap toggles while
+  choosing, back ends it via `handleBack` in the screen's BackHandler; `SelectTick` in the ⋮ place; `SelectionHeader` "n चुने गए" ☑ सभी चुनें / ⬇ Word / 🗑;
+  `BatchDeleteDialog` (+ OFFICE_DELETE_WARNING when an office paper is chosen); `runBatchExport`) + `src/lib/batchReportExport.ts` (one .doc, each paper's
+  report on a new page: PP = आख्या + कार्यवाही oldest first, न्यायालय = रिपोर्ट; papers without one skipped → toast "n पत्र में आख्या नहीं — छोड़ा गया").
+  Chosen card = module blue ring + faint tint. Same status rules as before
   (न्यायालय overdue after the date, प्रार्थना पत्र from the deadline day).
   PP add form (owner): order प्रकार → जांचकर्ता → तिथियाँ → आवेदक → विवरण → विपक्षी → संलग्न कागज़ (bottom); no "प्रार्थना पत्र विवरण" /
   "तिथियां" headings, smaller Section gaps; जांचकर्ता = settings officer_name for a NEW पत्र (editable, not refilled once touched; edit keeps saved).
