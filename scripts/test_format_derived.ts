@@ -141,3 +141,18 @@ test('बढ़ने वाले box: flow / lines tidy', async () => {
   assert.equal(out.Findings, 'की जांच');
   assert.equal(out.ToOther, 'क\nख');
 });
+
+test('सामान्य पत्र: किसको + जनपद box → सेवा में lines', async () => {
+  const { addresseeWithDistrict } = await import('../src/lib/formatDerived.ts');
+  assert.equal(addresseeWithDistrict('श्रीमान पुलिस अधीक्षक महोदय', 'रायबरेली'), 'श्रीमान पुलिस अधीक्षक महोदय,\nजनपद रायबरेली।');
+  assert.equal(addresseeWithDistrict('श्रीमान क्षेत्राधिकारी महोदय\nसर्किल बछरावां', 'लखनऊ'), 'श्रीमान क्षेत्राधिकारी महोदय,\nसर्किल बछरावां,\nजनपद लखनऊ।');
+  assert.equal(addresseeWithDistrict('श्रीमान पुलिस अधीक्षक महोदय,', 'जनपद रायबरेली'), 'श्रीमान पुलिस अधीक्षक महोदय,\nजनपद रायबरेली।');
+  assert.equal(addresseeWithDistrict('श्रीमान पुलिस अधीक्षक महोदय', ''), 'श्रीमान पुलिस अधीक्षक महोदय।');
+  // old typed "जनपद …" line gives way to the box
+  assert.equal(addresseeWithDistrict('श्रीमान पुलिस अधीक्षक महोदय,\nजनपद रायबरेली।', 'उन्नाव'), 'श्रीमान पुलिस अधीक्षक महोदय,\nजनपद उन्नाव।');
+  const out = deriveFormatValues({ Addressee: 'श्रीमान पुलिस अधीक्षक महोदय', ToDistrict: 'रायबरेली' }, [
+    { key_name: 'Addressee', field_type: 'multiline', label: 'किसको (पद / कार्यालय)', dropdown_options: '{"withDistrict": "ToDistrict"}' },
+    { key_name: 'ToDistrict', field_type: 'text', label: 'जनपद' },
+  ] as never);
+  assert.equal(out.Addressee, 'श्रीमान पुलिस अधीक्षक महोदय,\nजनपद रायबरेली।');
+});

@@ -90,6 +90,14 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
     if (c !== v) set(kd.key_name, c);
   }
 
+  // सेवा में + its own जनपद box (owner, सामान्य पत्र): {"withDistrict": "ToDistrict"} on the "किसको" key
+  for (const kd of keyDefs) {
+    const dk = withDistrictOf(kd.dropdown_options);
+    if (!dk) continue;
+    const c = addresseeWithDistrict(cur(kd.key_name), cur(dk));
+    if (c !== cur(kd.key_name)) set(kd.key_name, c);
+  }
+
   // Date keys (owner: all formats dd/mm/yyyy; a key may set {"dateFormat": "dd.mm.yyyy"}): the picker's YYYY-MM-DD (or a FIR
   // dd.mm.yyyy default) printed that way.
   for (const kd of keyDefs) {
@@ -318,6 +326,28 @@ export function tidyLines(v: string | null | undefined): string {
 /** One running paragraph per blank-line block: "की\nजांच" → "की जांच"; a blank line = new paragraph. */
 export function tidyFlow(v: string | null | undefined): string {
   return tidyLines(v).split(/\n\n/).map((p) => p.split('\n').filter(Boolean).join(' ')).filter(Boolean).join('\n\n');
+}
+
+// ── सेवा में + जनपद (owner, सामान्य पत्र) ─────────────────────────────────────────────────────────────
+// The "किसको" box (pad / office, one or more lines) + its own जनपद box (only the name) → the सेवा में lines:
+// every line ends with ",", then "जनपद <name>।" (no जनपद → the last line ends with "।"). Key option {"withDistrict": "ToDistrict"}.
+
+/** Key option {"withDistrict": "<key>"} → that key, else null. */
+export function withDistrictOf(dropdownOptions: string | null | undefined): string | null {
+  const o = parseJson(dropdownOptions) as { withDistrict?: unknown } | null;
+  return o && typeof o.withDistrict === 'string' ? o.withDistrict : null;
+}
+
+/** "श्रीमान पुलिस अधीक्षक महोदय" + "रायबरेली" → "श्रीमान पुलिस अधीक्षक महोदय,\nजनपद रायबरेली।" */
+export function addresseeWithDistrict(addressee: string | null | undefined, district: string | null | undefined): string {
+  const strip = (l: string) => l.replace(/[\s,।.]+$/u, '').trim();
+  const dist = strip(String(district ?? '').replace(/\s+/g, ' ').replace(/^\s*जनपद\s*[-–:]?\s*/u, ''));
+  let lines = String(addressee ?? '').split(/\r?\n/).map((l) => strip(l.replace(/[ \t\u00A0]+/g, ' '))).filter(Boolean);
+  // an old typed "जनपद …" line gives way to the जनपद box
+  if (dist) lines = lines.filter((l) => !/^जनपद\s/u.test(l));
+  if (dist) lines.push(`जनपद ${dist}`);
+  if (!lines.length) return '';
+  return lines.map((l, i) => (i === lines.length - 1 ? `${l}।` : `${l},`)).join('\n');
 }
 
 // ── आवेदक समूह / विपक्षी समूह (owner) — see ppPeople.ts ─────────────────────────────────────────────
