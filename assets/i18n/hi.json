@@ -1649,7 +1649,25 @@
     "justNow": "अभी",
     "minutesAgo": "{{count}} मिनट पहले",
     "hoursAgo": "{{count}} घंटे पहले",
-    "daysAgo": "{{count}} दिन पहले"
+    "daysAgo": "{{count}} दिन पहले",
+    "activity": {
+      "firLabel": "मुकदमा दर्ज",
+      "firBadge": "मु",
+      "courtLabel": "न्यायालय कागज़ जोड़ा",
+      "courtBadge": "न्या",
+      "ppLabel": "प्रार्थना पत्र जोड़ा",
+      "ppBadge": "प्रा",
+      "gdLabel": "GD बनाई",
+      "gdBadge": "GD",
+      "nkLabel": "निरोधात्मक कार्यवाही",
+      "nkBadge": "नि",
+      "vad": "वाद सं0 {{no}}",
+      "fir": "मु0अ0सं0 {{no}}"
+    },
+    "reminderModule": {
+      "Nyayalay": "न्यायालय",
+      "Prarthna Patra": "प्रार्थना पत्र"
+    }
   },
   "workspace": {
     "title": "उपयोगकर्ता प्रोफ़ाइल",

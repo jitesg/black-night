@@ -1649,7 +1649,25 @@
     "justNow": "Just now",
     "minutesAgo": "{{count}} minutes ago",
     "hoursAgo": "{{count}} hours ago",
-    "daysAgo": "{{count}} days ago"
+    "daysAgo": "{{count}} days ago",
+    "activity": {
+      "firLabel": "FIR registered",
+      "firBadge": "FIR",
+      "courtLabel": "Court paper added",
+      "courtBadge": "CT",
+      "ppLabel": "Petition added",
+      "ppBadge": "PP",
+      "gdLabel": "GD created",
+      "gdBadge": "GD",
+      "nkLabel": "Preventive action",
+      "nkBadge": "NK",
+      "vad": "Case no. {{no}}",
+      "fir": "FIR {{no}}"
+    },
+    "reminderModule": {
+      "Nyayalay": "Court",
+      "Prarthna Patra": "Petition"
+    }
   },
   "workspace": {
     "title": "User Profile",

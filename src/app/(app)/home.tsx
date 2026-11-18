@@ -130,8 +130,6 @@ function QuickAction({ label, icon: Icon, color, onPress }: {
 }
 
 // ── ReminderRow ──────────────────────────────────────────────────────────────
-/** module key (kept in English — used for colours / grouping) → the Hindi word on the स्मरणपत्र row (owner) */
-const REMINDER_MODULE_HI: Record<string, string> = { Nyayalay: 'न्यायालय', 'Prarthna Patra': 'प्रार्थना पत्र' };
 
 function ReminderRow({ item }: { item: ReminderItem }) {
   const { t } = useTranslation();
@@ -155,7 +153,8 @@ function ReminderRow({ item }: { item: ReminderItem }) {
         <Text style={{ ...T.footnote, fontWeight: '600', color: C.text }} numberOfLines={1}>
           {item.title}
         </Text>
-        <Text style={{ ...T.caption1, color: C.textMuted, marginTop: 2 }}>{REMINDER_MODULE_HI[item.module] ?? item.module}</Text>
+        <Text style={{ ...T.caption1, color: C.textMuted, marginTop: 2 }}>{/* module key stays English (colours / grouping); the word follows the app language (owner) */}
+          {t(`home.reminderModule.${item.module}`, { defaultValue: item.module })}</Text>
       </View>
       <StatusChip label={badge} variant={variant} />
     </Pressable>
@@ -308,7 +307,7 @@ export default function HomeScreen() {
     divider:   palette.muted,
   };
   const statusBarStyle = scheme === 'dark' ? 'light' : 'dark';
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { workspace } = useWorkspace();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -372,7 +371,9 @@ export default function HomeScreen() {
       }
     })();
     return () => { cancelled = true; };
-  }, []));
+    // the rows carry words in the app language (owner) — a language change reloads them while Home is open
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18n.language]));
 
   const searchSeqRef = useRef(0);
   useEffect(() => { perfMarkOnce('firstScreenMs'); }, []);

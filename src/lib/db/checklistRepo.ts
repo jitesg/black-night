@@ -235,10 +235,12 @@ export function getFlatCrimeTypes(): CrimeTypeMeta[] {
  * names for display: "सड़क दुर्घटना, हत्या". Unknown / old free-text values are
  * shown as they are.
  */
-export function crimeTypeLabel(encoded: string | null | undefined): string {
+export function crimeTypeLabel(encoded: string | null | undefined, lang: 'hi' | 'en' = 'hi'): string {
   const raw = String(encoded ?? '').trim();
   if (!raw) return '';
-  const byId = new Map((crimeTaxonomySeed.crimeTypes as CrimeTypeMeta[]).map((c) => [c.id.toLowerCase(), c.name_hi]));
+  // lang 'en' (home "कार्य जारी रखें" when the app language is English) → the English names; default Hindi as before
+  const byId = new Map((crimeTaxonomySeed.crimeTypes as CrimeTypeMeta[])
+    .map((c) => [c.id.toLowerCase(), lang === 'en' ? (c.name_en || c.name_hi) : c.name_hi]));
   const names = [...new Set(parseCrimeTypePairs(raw).map((p) => p.crimeType))]
     .map((id) => byId.get(id.toLowerCase()) ?? id);
   return names.length ? names.join(', ') : raw;
