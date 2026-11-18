@@ -676,6 +676,13 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   CourtOther (seed_version +1; backup docs/format-backups/court_names_before_suggest.json), and न्यायालय add/edit "न्यायालय का नाम" (NBW / सम्मन;
   remembered on save). NOT DCRB HighCourtBench (it is a High Court bench, "… के {{HighCourtBench}} पीठ"). tidyRepeats "श्रीमान श्रीमान" → "श्रीमान"
   ("न्यायालय श्रीमान {{CourtName}}" + a picked "श्रीमान …").
+- "सेवा में" — सुझाव (owner, sample of all 6 approved): `src/lib/sewaNames.ts` `SEWA_NAMES` = owner's 90 officers / offices as sent (incl.
+  "श्रीमान पुलिस अधीक्षक, रायबरेली" and both "जिला प्रोबेशन अधिकारी" spellings) + `matchSewaNames` / `addCustomSewa` (shared `matchNames` /
+  `addCustomName` in courtNames.ts) — a list apart from the न्यायालय one. Keys `{"sewa": true}` → `FormatSewaInput` (input.tsx): suggestions for the
+  LINE being typed (`changedLineIndex`), a pick replaces only that line (`replaceLine`) so "सर्किल … जनपद …" lines stay. 6 boxes: सामान्य पत्र
+  Addressee, FIR संस्तुति Addressee, RTO DL/RC Addressee, मेडिकल प्रपत्र Hospital, स्टेटस रिपोर्ट ToAddr, PP जांच आख्या ToOther (seed_version +1; backup
+  docs/format-backups/sewa_me_before_suggest.json). Own names: courtNameStore `getCustomNames('sewa')` / `rememberName` (key investsuite:sewa_names_custom;
+  saveReportRecord remembers the box's FIRST line). CourtSuggest `kind="sewa"` (📮 header). Tests in scripts/test_court_names.ts.
 - FIR रो0आम (GD) रपट (owner): boxes "रो0आम रपट संख्या" (number) + "रपट का समय" (time) in a row under सूचना की तारीख / समय on add-fir and the
   FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Linked: @FIR.roaam_no / roaam_time fill the
   35(3) / 179 notices' RoNo / RoTime.

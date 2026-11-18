@@ -51,6 +51,18 @@ const clean = (s: string) => String(s ?? '').replace(/\s+/g, ' ').trim();
  * Own names first, then the owner's list; the name already in the box is not offered. Nothing for an empty box.
  */
 export function matchCourtNames(query: string, custom: readonly string[], limit = 6): CourtHit[] {
+  return matchNames(query, custom, COURT_NAMES, limit);
+}
+
+/** The own-names list after a box was used with `name`: added on top (new), moved on top (known), list names skipped. */
+export function addCustomCourt(custom: readonly string[], name: string): string[] {
+  return addCustomName(custom, name, COURT_NAMES);
+}
+
+// ── shared by every name list (न्यायालय, सेवा में — sewaNames.ts) ──────────────────────────────────────────
+
+/** `matchCourtNames` for any list: own names first, then `base`. */
+export function matchNames(query: string, custom: readonly string[], base: readonly string[], limit = 6): CourtHit[] {
   const tokens = queryTokens(query);
   if (!tokens.length) return [];
   const typed = searchNormalize(query);
@@ -63,15 +75,15 @@ export function matchCourtNames(query: string, custom: readonly string[], limit 
     if (tokens.every((t) => n.includes(t))) out.push({ name, custom: isCustom });
   };
   for (const c of custom) consider(c, true);
-  for (const c of COURT_NAMES) consider(c, false);
+  for (const c of base) consider(c, false);
   return out.slice(0, limit);
 }
 
-/** The own-names list after a box was used with `name`: added on top (new), moved on top (known), list names skipped. */
-export function addCustomCourt(custom: readonly string[], name: string): string[] {
-  const v = clean(name);
+/** `addCustomCourt` for any list (a trailing "," / "।" is dropped from the stored name). */
+export function addCustomName(custom: readonly string[], name: string, base: readonly string[]): string[] {
+  const v = clean(name).replace(/[\s,।]+$/u, '');
   const n = searchNormalize(v);
   if (n.replace(/\s/g, '').length < 4) return [...custom];
-  if (COURT_NAMES.some((c) => searchNormalize(c) === n)) return [...custom];
+  if (base.some((c) => searchNormalize(c) === n)) return [...custom];
   return [v, ...custom.filter((c) => searchNormalize(c) !== n)].slice(0, MAX_CUSTOM_COURTS);
 }

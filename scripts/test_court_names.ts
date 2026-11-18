@@ -47,3 +47,20 @@ test('court key + "श्रीमान श्रीमान" tidy', () => {
   assert.equal(isCourtKey(null), false);
   assert.equal(tidyRepeats('न्यायालय श्रीमान श्रीमान मुख्य न्यायिक मजिस्ट्रेट (CJM)'), 'न्यायालय श्रीमान मुख्य न्यायिक मजिस्ट्रेट (CJM)');
 });
+
+test('सेवा में list: 90 names, own list apart, line-wise pick', async () => {
+  const { SEWA_NAMES, matchSewaNames, addCustomSewa, isSewaKey, changedLineIndex, replaceLine } = await import('../src/lib/sewaNames.ts');
+  assert.equal(SEWA_NAMES.length, 90);
+  assert.deepEqual(matchSewaNames('co', []).map((h) => h.name), ['श्रीमान क्षेत्राधिकारी (CO)']);
+  assert.deepEqual(matchSewaNames('cms', []).map((h) => h.name), ['मुख्य चिकित्सा अधीक्षक (CMS)']);
+  assert.ok(matchSewaNames('jio', []).some((h) => h.name === 'नोडल अधिकारी, Jio'));
+  // the court list never shows here
+  assert.ok(!matchSewaNames('cjm', []).length);
+  assert.ok(!matchCourtNames('क्षेत्राधिकारी', []).length);
+  assert.deepEqual(addCustomSewa([], 'श्रीमान क्षेत्राधिकारी महोदय,'), ['श्रीमान क्षेत्राधिकारी महोदय']);
+  assert.deepEqual(addCustomSewa([], 'जेलर'), []);
+  assert.equal(isSewaKey('{"sewa":true}'), true);
+  assert.equal(changedLineIndex('क\nसर्किल', 'कo\nसर्किल'), 0);
+  assert.equal(changedLineIndex('क\nसर्किल', 'क\nसर्किल ब'), 1);
+  assert.equal(replaceLine('co\nसर्किल महराजगंज, जनपद रायबरेली।', 0, 'श्रीमान क्षेत्राधिकारी (CO)'), 'श्रीमान क्षेत्राधिकारी (CO)\nसर्किल महराजगंज, जनपद रायबरेली।');
+});

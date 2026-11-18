@@ -44,6 +44,7 @@ import { multiChoiceSelected, multiChoiceToggle } from '@/lib/multiChoice';
 import { CaseSuggest } from '@/components/common/CaseSuggest';
 import { CourtSuggest } from '@/components/common/CourtSuggest';
 import { isCourtKey } from '@/lib/courtNames';
+import { changedLineIndex, isSewaKey, replaceLine } from '@/lib/sewaNames';
 import type { CaseHit } from '@/lib/db/peopleRegistryRepo';
 import { dateFormatOf, daysBetweenInclusive, daysSpecOf, formatDateValue, toIsoDate } from '@/lib/formatDerived';
 
@@ -741,6 +742,23 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
     const inputType = fieldTypeToInputType(fieldType);
     // multiline fields get 5 rows (~120 px) so police report text has breathing room
     const multilineLines = fieldType === 'multiline' ? 5 : undefined;
+    // सेवा में (owner): {"sewa": true} boxes list the owner's officers / offices for the line being typed
+    if (isSewaKey(keyDef.dropdown_options) && inputType !== 'date') {
+      return (
+        <FormatSewaInput
+          ref={ref}
+          keyDef={keyDef}
+          value={value}
+          onChange={onChange}
+          error={error}
+          displayLabel={displayLabel}
+          hint={hint}
+          required={required}
+          inputType={inputType}
+          multilineProps={multilineLines !== undefined ? (autoGrow ? { autoGrow: true } : { numberOfLines: multilineLines }) : {}}
+        />
+      );
+    }
     // न्यायालय के नाम (owner): court-name boxes ({"court": true}) list the owner's courts + own names while typing
     if (isCourtKey(keyDef.dropdown_options) && inputType !== 'date') {
       return (
@@ -876,6 +894,48 @@ const FormatCourtInput = forwardRef<View, {
   );
 });
 FormatCourtInput.displayName = 'FormatCourtInput';
+
+// ── FormatSewaInput — "सेवा में" box with officer / office suggestions (owner) ─────────────────────────
+// A सेवा में box may hold several lines (पद, सर्किल, जनपद …): the list follows the line being typed and a pick
+// replaces only that line (sewaNames.changedLineIndex / replaceLine).
+
+const FormatSewaInput = forwardRef<View, {
+  keyDef: FormatKeyDef; value: string; onChange: (keyName: string, value: string) => void; error?: string;
+  displayLabel: string; hint?: string; required: boolean; inputType: InputType;
+  multilineProps: { autoGrow?: boolean; numberOfLines?: number };
+}>(({ keyDef, value, onChange, error, displayLabel, hint, required, inputType, multilineProps }, ref) => {
+  const [focused, setFocused] = useState(false);
+  const [line, setLine] = useState(0);
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (blurTimer.current) clearTimeout(blurTimer.current); }, []);
+  const lines = String(value ?? '').split('\n');
+  const query = lines[Math.min(line, lines.length - 1)] ?? '';
+  return (
+    <View ref={ref}>
+      <Input
+        type={inputType}
+        label={displayLabel}
+        labelHint={hint}
+        placeholder={keyPlaceholder(keyDef.dropdown_options) ?? (isMarkerDefault(keyDef.default_value) ? undefined : keyDef.default_value) ?? `Enter ${displayLabel}`}
+        value={value}
+        onChangeText={(v) => { setLine(changedLineIndex(String(value ?? ''), v)); onChange(keyDef.key_name, v); }}
+        onFocus={() => { if (blurTimer.current) clearTimeout(blurTimer.current); setFocused(true); }}
+        onBlur={() => { blurTimer.current = setTimeout(() => setFocused(false), 200); }}
+        errorText={error}
+        required={required}
+        clearCopy
+        {...multilineProps}
+      />
+      <CourtSuggest
+        kind="sewa"
+        query={query}
+        active={focused}
+        onPick={(name) => { setFocused(false); onChange(keyDef.key_name, replaceLine(String(value ?? ''), line, name)); }}
+      />
+    </View>
+  );
+});
+FormatSewaInput.displayName = 'FormatSewaInput';
 
 // ── FormatKeyDaysBox — locked "कुल दिवस" (owner: filled from the two dates, the officer cannot change it) ──
 

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "sys-fmt-samanya-patra",
+    "seed_version": 3,
+    "keys": [
+      {
+        "key_name": "Addressee",
+        "label": "किसको (पद / कार्यालय)",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": "श्रीमान पुलिस अधीक्षक महोदय",
+        "sort_order": 0,
+        "dropdown_options": "{\"hint\": \"\\\"सेवा में\\\" के नीचे पद / कार्यालय, जैसे: श्रीमान पुलिस अधीक्षक महोदय — दो लाइन भी लिख सकते हैं (जैसे: श्रीमान क्षेत्राधिकारी महोदय ⏎ सर्किल बछरावां); comma और जनपद अपने-आप लगेंगे\", \"withDistrict\": \"ToDistrict\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-pp-fir-sanstuti",
+    "seed_version": 3,
+    "keys": [
+      {
+        "key_name": "Addressee",
+        "label": "किसको (सेवा में के नीचे की लाइनें)",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": "श्रीमान क्षेत्राधिकारी महोदय,\nसर्किल महराजगंज, जनपद रायबरेली।",
+        "sort_order": 0,
+        "dropdown_options": "{\"hint\": \"\\\"सेवा में\\\" के नीचे की लाइनें, हर लाइन अलग, जैसे: श्रीमान क्षेत्राधिकारी महोदय, ⏎ सर्किल महराजगंज\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-rto-dl-rc",
+    "seed_version": 4,
+    "keys": [
+      {
+        "key_name": "Addressee",
+        "label": "किसको (सेवा में के नीचे की लाइनें)",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": "प्रभारी संभागीय परिवहन अधिकारी महोदय,\nजनपद लखनऊ, उत्तर प्रदेश।",
+        "sort_order": 0,
+        "dropdown_options": "{\"hint\": \"\\\"सेवा में\\\" के नीचे की लाइनें, हर लाइन अलग — पद, कार्यालय, जनपद, जैसे: श्रीमान पुलिस अधीक्षक महोदय, ⏎ जनपद रायबरेली।\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-medical-patra",
+    "seed_version": 4,
+    "keys": [
+      {
+        "key_name": "Hospital",
+        "label": "किसको (सेवा में के नीचे की लाइनें)",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": "श्रीमान मुख्य चिकित्साधीक्षक महोदय,\nजिला अस्पताल रायबरेली।",
+        "sort_order": 3,
+        "dropdown_options": "{\"hint\": \"\\\"सेवा में\\\" के नीचे की लाइनें, जैसे: श्रीमान मुख्य चिकित्साधीक्षक महोदय, ⏎ जिला अस्पताल रायबरेली।\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-bail-notice-aakhya",
+    "seed_version": 6,
+    "keys": [
+      {
+        "key_name": "ToAddr",
+        "label": "सेवा में — पता (अन्य)",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमान जिला शासकीय अधिवक्ता (फौजदारी),\\nजनपद रायबरेली।\", \"showIf\": \"Court=अन्य\", \"hint\": \"\\\"सेवा में\\\" के नीचे छपने वाला पूरा पता — हर लाइन अलग लिखें\"}",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-pp-jaanch-aakhya",
+    "seed_version": 3,
+    "keys": [
+      {
+        "key_name": "ToOther",
+        "label": "सेवा में के नीचे की लाइनें",
+        "field_type": "multiline",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: श्रीमान अपर पुलिस अधीक्षक महोदय\\nजनपद रायबरेली।\", \"showIf\": \"To=अन्य\", \"hint\": \"\\\"सेवा में\\\" के नीचे की लाइनें, हर लाइन अलग, जैसे: श्रीमान अपर पुलिस अधीक्षक महोदय ⏎ जनपद रायबरेली।\"}",
+        "sort_order": 2
+      }
+    ]
+  }
+]
