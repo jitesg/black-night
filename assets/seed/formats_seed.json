@@ -5842,7 +5842,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "पत्र",
@@ -5873,7 +5873,7 @@
         {
           "key_name": "Subject",
           "label": "विषय",
-          "field_type": "text",
+          "field_type": "multiline",
           "is_required": 1,
           "default_value": null,
           "sort_order": 2,

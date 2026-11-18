@@ -165,7 +165,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   उभयपक्षीय = 170 बनाम प्रथम पक्ष, 170 बनाम द्वितीय पक्ष, 135(3) × 2 (same body). Accused list `#block`, body `#inline` then
   `#short` + "उपरोक्त", "( बनाम- … )" centred/bold/underlined, checkbox `Remand` → bold 14 दिवस रिमांड निवेदन in the 170
   letter. Tests in `scripts/test_template_adi.ts`.
-- `sys-fmt-samanya-patra` "सामान्य पत्र (किसी को भी)" (type Any): सेवा में = "किसको (पद / कार्यालय)" Addressee (multiline) + own box ToDistrict "जनपद" (default {{District}}; key option {"withDistrict": "ToDistrict"} → formatDerived `addresseeWithDistrict`: each line ends ",", then "जनपद X।", old typed जनपद line dropped; v3 owner, backup samanya_patra_v2_before_district_box.json), विषय, मज़मून (blank line = new
+- `sys-fmt-samanya-patra` "सामान्य पत्र (किसी को भी)" (type Any): सेवा में = "किसको (पद / कार्यालय)" Addressee (multiline) + own box ToDistrict "जनपद" (default {{District}}; key option {"withDistrict": "ToDistrict"} → formatDerived `addresseeWithDistrict`: each line ends ",", then "जनपद X।", old typed जनपद line dropped; v3 owner, backup samanya_patra_v2_before_district_box.json), विषय (multiline since v5, owner; backup samanya_patra_subject_before_multiline.json), मज़मून (blank line = new
   para), closing, optional संलग्नक / दिनांक via `{{if:…}}`, signature right.
 - `sys-fmt-vahan-flag` "चोरी वाहन को पोर्टल पर फ्लैग कराने हेतु पत्र (RTO)" (type Any; संलग्नक आर0सी0 + FIR copies).
 - `sys-fmt-pp-fir-sanstuti` "प्रार्थना पत्र जांच — मुकदमा पंजीकृत करने की संस्तुति" (type Prarthna Patra).

@@ -1,0 +1,13 @@
+{
+  "id": "sys-fmt-samanya-patra",
+  "seed_version": 4,
+  "key": {
+    "key_name": "Subject",
+    "label": "विषय",
+    "field_type": "text",
+    "is_required": 1,
+    "default_value": null,
+    "sort_order": 2,
+    "dropdown_options": "{\"hint\": \"\\\"विषय:\\\" के बाद वाला छोटा वाक्य, जैसे: मु0अ0सं0 123/2026 में CDR उपलब्ध कराने के सम्बन्ध में\"}"
+  }
+}
