@@ -129,6 +129,15 @@ function QuickAction({ label, icon: Icon, color, onPress }: {
   );
 }
 
+// ── Hero date ────────────────────────────────────────────────────────────────
+const HI_DAYS = ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+const HI_MONTHS = ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितम्बर', 'अक्टूबर', 'नवम्बर', 'दिसम्बर'];
+/** "गुरुवार, 19 नवम्बर 2026" (built by hand — no Intl needed on the phone) / English "Thursday, 19 November 2026". */
+function heroDate(d: Date, en: boolean): string {
+  if (en) return d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  return `${HI_DAYS[d.getDay()]}, ${d.getDate()} ${HI_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
 // ── ReminderRow ──────────────────────────────────────────────────────────────
 
 function ReminderRow({ item }: { item: ReminderItem }) {
@@ -404,9 +413,11 @@ export default function HomeScreen() {
     setSearchResults([]);
   }, []);
 
-  const todayFmt = useMemo(() => new Date().toLocaleDateString('en-IN', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-  }), []);
+  // Hero card (owner, design C): date in the app language + a greeting by the time of day
+  const lang = i18n.language;
+  const todayFmt = useMemo(() => heroDate(new Date(), String(lang || '').startsWith('en')), [lang]);
+  const hour = new Date().getHours();
+  const greeting = t(hour < 12 ? 'home.greetingMorning' : hour < 17 ? 'home.helloWord' : 'home.greetingEvening');
 
   // ── Group search results by module for SectionList ─────────────────────
   const searchSections = useMemo(() => {
@@ -565,59 +576,24 @@ export default function HomeScreen() {
             style={{
               backgroundColor: C.action,
               borderRadius: 20,
-              padding: 14,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
               borderCurve: 'continuous',
-              gap: 10,
+              gap: 4,
             } as object}
           >
-            {/* Greeting row */}
-            <View style={{ gap: 1 }}>
-              <Text style={{ fontSize: 11, fontWeight: '500', color: palette.primaryForeground, opacity: 0.75 }}>
-                {todayFmt}
-              </Text>
-              <Text style={{ fontSize: 17, fontWeight: '700', color: palette.primaryForeground, letterSpacing: -0.3, lineHeight: 22 }}>
-                {workspace.officer_name ? t('home.helloOfficer', { name: workspace.officer_name }) : t('home.goodMorningOfficer')}
-              </Text>
-              {workspace.police_station ? (
-                <Text style={{ fontSize: 11, fontWeight: '400', color: palette.primaryForeground, opacity: 0.7, marginTop: 1 }}>
-                  {workspace.police_station}{workspace.district ? `  ·  ${workspace.district}` : ''}
-                </Text>
-              ) : null}
-            </View>
-
-            {/* Active investigations stat + CTA row */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <View style={{
-                flex: 1,
-                backgroundColor: `${palette.primaryForeground}26`,
-                borderRadius: 12,
-                padding: 10,
-                gap: 2,
-              }}>
-                <Text style={{ fontSize: 22, fontWeight: '800', color: palette.primaryForeground, lineHeight: 26 }}>
-                  {today.activeCase}
-                </Text>
-                <Text style={{ fontSize: 10, fontWeight: '500', color: palette.primaryForeground, opacity: 0.8 }}>
-                  {t('home.activeInvestigations')}
-                </Text>
-              </View>
-              <Pressable
-                onPress={() => router.push('/(app)/mukadma' as never)}
-                style={{
-                  backgroundColor: C.surface,
-                  borderRadius: 12,
-                  paddingHorizontal: 14,
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 3,
-                }}
-                className="active:opacity-80"
-              >
-                <TrendingUp size={16} color={C.action} />
-                <Text style={{ fontSize: 10, fontWeight: '700', color: C.action }}>{t('home.viewAll')}</Text>
-              </Pressable>
-            </View>
+            {/* Greeting (owner, design C — the "सक्रिय जांच" box + "सभी देखें" are gone: the same count is the लंबित FIR tile below) */}
+            <Text style={{ fontSize: 19, fontWeight: '700', color: palette.primaryForeground, letterSpacing: -0.3, lineHeight: 26 }}>
+              {workspace.officer_name
+                ? t('home.greetName', { greeting, name: workspace.officer_name })
+                : t('home.greetOfficer', { greeting })}
+            </Text>
+            <Text style={{ fontSize: 12.5, fontWeight: '500', color: palette.primaryForeground, opacity: 0.95, lineHeight: 19 }}>
+              {`📅 ${todayFmt}`}
+              {workspace.police_station
+                ? `  ·  📍 ${workspace.police_station}${workspace.district ? `, ${workspace.district}` : ''}`
+                : ''}
+            </Text>
           </View>
 
           {/* ── Today's Summary ── */}

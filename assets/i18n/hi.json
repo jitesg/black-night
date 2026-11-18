@@ -1667,7 +1667,10 @@
     "reminderModule": {
       "Nyayalay": "न्यायालय",
       "Prarthna Patra": "प्रार्थना पत्र"
-    }
+    },
+    "greetName": "{{greeting}}, {{name}} 👋",
+    "greetOfficer": "{{greeting}}, अधिकारी महोदय 👋",
+    "helloWord": "नमस्ते"
   },
   "workspace": {
     "title": "उपयोगकर्ता प्रोफ़ाइल",

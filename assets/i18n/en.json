@@ -1667,7 +1667,10 @@
     "reminderModule": {
       "Nyayalay": "Court",
       "Prarthna Patra": "Petition"
-    }
+    },
+    "greetName": "{{greeting}}, {{name}} 👋",
+    "greetOfficer": "{{greeting}}, Officer 👋",
+    "helloWord": "Hello"
   },
   "workspace": {
     "title": "User Profile",

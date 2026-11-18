@@ -76,6 +76,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
   15-day warning; tests `scripts/test_case_diary_gap.ts`), scheduler `caseDiaryGapService.ts` (cancel + reschedule
   `kind: cd_gap`; run from syncAppNotifications and after case diary / FIR changes via lazy import in the repos),
   tap → `/(app)/mukadma/<firId>/case-diary` (root `_layout.tsx`), setting `notifCaseDiaryGap`, badge in mukadma list.
+- Home hero card (owner, design C): greeting by time (`home.greetName` / `greetOfficer` + greetingMorning < 12 / helloWord < 17 / greetingEvening),
+  one line "📅 <date> · 📍 थाना, जनपद" (`heroDate`: Hindi day / month names by hand, English via toLocaleDateString); the "सक्रिय जांच" box and
+  "सभी देखें" removed (same count = लंबित FIR tile). Home "कार्य जारी रखें" / स्मरणपत्र rows follow the app language (home.activity.*,
+  home.reminderModule.*, crimeTypeLabel(…, 'en')), reload on a language change.
 - Home bell → `(app)/notifications.tsx` (सूचनाएँ): cards `components/notifications/NoticeItem.tsx` (icon tile, title + time, body, extras: progress / meta / action from the card) built live from `src/lib/noticeCards.ts` (pure; केस डायरी लंबित,
   न्यायालय/प्रार्थना पत्र overdue or due in 3 days, reminders due today/missed; tests `scripts/test_notice_cards.ts`),
   data via `src/lib/db/noticeRepo.ts`; bell badge = `noticeBadgeCount`.
