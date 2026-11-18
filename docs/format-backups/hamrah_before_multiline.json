@@ -1,0 +1,191 @@
+[
+  {
+    "id": "sys-fmt-fard-60-1-daru",
+    "seed_version": 7,
+    "keys": [
+      {
+        "key_name": "TeamMembers",
+        "label": "1. मौजूदगी — हमराहियान (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार सोनकर\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार — कोई न हो तो खाली छोड़ें\"}",
+        "sort_order": 3
+      },
+      {
+        "key_name": "LadyConstable",
+        "label": "1. मौजूदगी — हमराह महिला आरक्षी (कोई अभियुक्ता हो तो)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: राखी\", \"hint\": \"महिला आरक्षी का सिर्फ़ नाम, जैसे: राखी — कोई अभियुक्ता (महिला) हो तभी भरें, नहीं तो खाली\"}",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-fard-peedita-baramadgi",
+    "seed_version": 3,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "1. मौजूदगी — हमराह (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: का0 मनोज यादव\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार — कोई न हो तो खाली छोड़ें\"}",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-fard-maal-masruka-shastra",
+    "seed_version": 2,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "1. मौजूदगी — हमराह (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: का0 अभिषेक\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: हे0का0 योगेन्द्र सिंह, का0 मनोज कुमार — कोई न हो तो खाली छोड़ें\"}",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-fard-ndps",
+    "seed_version": 2,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "1. मौजूदगी — हमराही (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: कां0 3880 शिवम सिंह, कां0 242 भोलाराम व रि0कां0 2150 कृष्ण कुमार\", \"hint\": \"साथ गए कर्मचारी पद व नम्बर सहित, जैसे: कां0 3880 शिवम सिंह, कां0 242 भोलाराम — कोई न हो तो खाली\"}",
+        "sort_order": 5
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-bnss126-thanabhraman",
+    "seed_version": 24,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "हमराह (साथ गए कर्मचारी) — न हो तो खाली छोड़ें",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "sort_order": 6,
+        "dropdown_options": "{\"placeholder\": \"जैसे: का0 सुखराम\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 सुखराम, का0 विजय यादव — पत्र में \\\"मय हमराह का0 सुखराम के थाना हाजा से रवाना होकर…\\\" छपेगा; खाली छोड़ें तो सिर्फ़ \\\"मय हमराह थाना हाजा…\\\"\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-bnss170-kshetra-ek",
+    "seed_version": 2,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "हमराह (जैसे: का0 मेहताब आलम, का0 विजय यादव)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 0,
+        "dropdown_options": "{\"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 मेहताब आलम, का0 विजय यादव\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-bnss170-kshetra",
+    "seed_version": 2,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "हमराह (जैसे: का0 मेहताब आलम, का0 विजय यादव)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "sort_order": 0,
+        "dropdown_options": "{\"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 मेहताब आलम, का0 विजय यादव\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-gd-fmt-abhiyukt-dakhila",
+    "seed_version": 7,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "हमराह (जैसे: हे0का0 मनोज कुमार) — न हो तो खाली",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — कोई साथ न हो तो खाली छोड़ें\"}",
+        "sort_order": 8
+      }
+    ]
+  },
+  {
+    "id": "sys-gd-fmt-vivechana-parivartan",
+    "seed_version": 5,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "हमराह — न हो तो खाली",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — कोई साथ न हो तो खाली छोड़ें\"}",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "id": "sys-gd-fmt-vahan-dakhila",
+    "seed_version": 5,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "हमराह — न हो तो खाली",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "sort_order": 2,
+        "dropdown_options": "{\"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — कोई साथ न हो तो खाली छोड़ें\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-gd-fmt-rawangi-samanya",
+    "seed_version": 5,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "हमराह (वैकल्पिक)",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: का0 अजय यादव\", \"hint\": \"साथ जाने वाले कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — छपेगा \\\"मय हमराह …\\\"; कोई साथ न हो तो खाली छोड़ें\"}",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "id": "sys-gd-fmt-wapsi",
+    "seed_version": 13,
+    "keys": [
+      {
+        "key_name": "Hamrah",
+        "label": "हमराह (जैसे: का0 अजय यादव, का0 …) — न हो तो खाली छोड़ें",
+        "field_type": "text",
+        "is_required": 0,
+        "default_value": null,
+        "sort_order": 3,
+        "dropdown_options": "{\"showIf\": \"doWapsi\", \"hint\": \"साथ गए कर्मचारी पद सहित, जैसे: का0 अजय यादव, हे0का0 मनोज कुमार — कोई साथ न हो तो खाली छोड़ें\"}"
+      }
+    ]
+  }
+]

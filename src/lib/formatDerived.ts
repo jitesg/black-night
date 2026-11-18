@@ -79,6 +79,13 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
     if (sp) set(kd.key_name, daysBetweenInclusive(values[sp.from], values[sp.to]));
   }
 
+  // हमराह boxes (owner): typed over several lines → one clean line in the report
+  for (const kd of keyDefs) {
+    if (!isOneLineKey(kd.dropdown_options)) continue;
+    const v = values[kd.key_name];
+    if (v) { const c = oneLineText(v); if (c !== v) set(kd.key_name, c); }
+  }
+
   // Date keys (owner: all formats dd/mm/yyyy; a key may set {"dateFormat": "dd.mm.yyyy"}): the picker's YYYY-MM-DD (or a FIR
   // dd.mm.yyyy default) printed that way.
   for (const kd of keyDefs) {
@@ -251,6 +258,30 @@ export function daysBetweenInclusive(from: string | null | undefined, to: string
   const n = Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10))
     - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000) + 1;
   return n >= 1 ? String(n).padStart(2, '0') : '';
+}
+
+// ── एक साफ़ लाइन (owner, हमराह boxes) ───────────────────────────────────────────────────────────────
+// dropdown_options {"oneLine": true} → the box may be typed over several lines (it grows), the report gets ONE clean line:
+// lines joined with ", ", extra spaces / blank lines / ",," dropped, no space before a comma, no comma at the ends.
+
+/** True when the key asks for its text printed as one clean line. */
+export function isOneLineKey(dropdownOptions: string | null | undefined): boolean {
+  const o = parseJson(dropdownOptions) as { oneLine?: unknown } | null;
+  return !!o && o.oneLine === true;
+}
+
+/** "का0 अजय  यादव\n\nका0 विजय ,\nहे0का0 मनोज" → "का0 अजय यादव, का0 विजय, हे0का0 मनोज". */
+export function oneLineText(v: string | null | undefined): string {
+  const parts = String(v ?? '')
+    .split(/\r?\n/)
+    .map((l) => l.replace(/[ \t\u00A0]+/g, ' ').trim().replace(/^[,\s]+|[,\s]+$/g, ''))
+    .filter(Boolean);
+  return parts.join(', ')
+    .replace(/\s+,/g, ',')
+    .replace(/,(\s*,)+/g, ',')
+    .replace(/,(?=\S)/g, ', ')
+    .replace(/ {2,}/g, ' ')
+    .trim();
 }
 
 // ── आवेदक समूह / विपक्षी समूह (owner) — see ppPeople.ts ─────────────────────────────────────────────

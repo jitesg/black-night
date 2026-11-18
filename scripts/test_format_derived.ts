@@ -100,3 +100,21 @@ test('कुल दिवस: days from → to, both days counted, "03"; locked 
   assert.deepEqual(daysSpecOf('{"daysFrom":"A","daysTo":"B"}'), { from: 'A', to: 'B' });
   assert.equal(daysSpecOf('{"hint":"x"}'), null);
 });
+
+test('हमराह box: one clean line (oneLine)', async () => {
+  const { oneLineText, isOneLineKey } = await import('../src/lib/formatDerived.ts');
+  assert.equal(oneLineText('का0 अजय  यादव\n\nका0 विजय कुमार ,\nहे0का0 मनोज कुमार, म0का0 सुनीता देवी'),
+    'का0 अजय यादव, का0 विजय कुमार, हे0का0 मनोज कुमार, म0का0 सुनीता देवी');
+  assert.equal(oneLineText('  का0 अजय ,, का0 विजय,  '), 'का0 अजय, का0 विजय');
+  assert.equal(oneLineText('का0 अजय,का0 विजय'), 'का0 अजय, का0 विजय');
+  assert.equal(oneLineText('\n  \n'), '');
+  assert.equal(oneLineText('का0 अजय यादव'), 'का0 अजय यादव');
+  assert.equal(isOneLineKey('{"hint":"x","oneLine":true}'), true);
+  assert.equal(isOneLineKey('{"hint":"x"}'), false);
+  const out = deriveFormatValues({ Hamrah: 'का0 अजय\nका0 विजय', Other: 'a\nb' }, [
+    { key_name: 'Hamrah', field_type: 'multiline', dropdown_options: '{"oneLine": true}' },
+    { key_name: 'Other', field_type: 'multiline' },
+  ] as never);
+  assert.equal(out.Hamrah, 'का0 अजय, का0 विजय');
+  assert.equal(out.Other, 'a\nb');
+});

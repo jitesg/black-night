@@ -462,6 +462,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   instead of FIRNO/SECTION (seed_version 1).
 - Every धारा / Sections key in the predefined formats (SECTION / Sections / Section / hNSec / hNDhara / BadhSection / GhatSection /
   NewSections, 37 keys in 25 formats) is field_type "multiline" (owner; seed_version +1 each). New धारा keys: multiline too.
+- हमराह boxes (owner): all 13 हमराह text keys (Hamrah in 11 formats, 60(1) फर्द TeamMembers + LadyConstable) are field_type "multiline" (autoGrow
+  box grows with the names) + key option `{"oneLine": true}` → deriveFormatValues `oneLineText` prints ONE clean line (lines joined ", ", extra
+  spaces / blank lines / ",," dropped) and a grey `placeholder` example (seed_version +1 each; backup docs/format-backups/hamrah_before_multiline.json;
+  tests in scripts/test_format_derived.ts). New हमराह keys: the same.
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use
   it for lat/long. ✕ / 📋 on every typed format box except date.
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
