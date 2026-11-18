@@ -625,6 +625,9 @@ detailed working log. Keep the guide up to date when the architecture changes.
   `address` column = full printed address (detail, formats, office sync, people search unchanged), the rest in new column nyayalay_persons.extra_json;
   old rows = 'free' address. updateNyayalayDocument re-inserts kept persons with INSERT OR REPLACE (a plain INSERT hit the soft-deleted row's id).
   Tests in scripts/test_person_card.ts.
+  Same form (owner): "कोर्ट का विवरण" (NBW / सम्मन: court name, वाद / अपराध सं0, धाराएं) and `FirSection` (मु0अ0सं0 / वर्ष / थाना) are each ONE
+  card (design A: bg-card, border, radius 16, heading inside with ⚖️ / 📄 in #3B82F6); अन्य = "वैकल्पिक" chip and no * (it was never required);
+  no separate "अंतिम तिथि" heading; DatePickerField shows dd/mm/yyyy (value stays YYYY-MM-DD).
 - न्यायालय HC जमानत चेकलिस्ट (owner's bug, there since the MeDo export): add/edit saved it only in nyayalay_documents.checklist_json while the
   detail reads nyayalay_checklist_items (never written → "0/0"). Now create / update call `writeChecklistRows` (same id → update, new → insert,
   gone → soft-delete; null JSON = no checklist), `getNyayalayDocWithDetails` writes the rows once from checklist_json for older papers (ticks kept);

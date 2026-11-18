@@ -7,7 +7,7 @@ import {
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { router, useLocalSearchParams } from 'expo-router';
-import { CalendarDays, CheckSquare, ChevronDown, Plus, Scale, Square, Trash2 } from 'lucide-react-native';
+import { CalendarDays, CheckSquare, ChevronDown, FileText, Plus, Scale, Square, Trash2 } from 'lucide-react-native';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import {
   AlertDialog,
@@ -156,9 +156,22 @@ function FirSection({
   fir, onChange, errors, optional,
 }: { fir: FirForm; onChange: (f: FirForm) => void; errors?: Record<string, string>; optional?: boolean }) {
   const { t } = useTranslation();
+  // one card like कोर्ट का विवरण (owner, design A); optional (अन्य) → "वैकल्पिक" chip and no * on any box
+  const req = (label: string) => (optional ? label.replace(/\s*\*\s*$/, '') : label);
   return (
-    <>
-      <Section title={optional ? t('nyayalay.form.sectionFirDetailsOptional') : t('nyayalay.form.sectionFirDetails')} />
+    <View
+      className="bg-card border border-border rounded-2xl px-4 pt-3.5 pb-1 mt-6 mb-1 shadow-sm shadow-black/5"
+      style={{ borderCurve: 'continuous' }}
+    >
+      <View className="flex-row items-center gap-2 mb-1">
+        <FileText size={16} color={COURT_BLUE} />
+        <Text className="text-[15px] font-bold text-foreground">{t('nyayalay.form.sectionFirDetails')}</Text>
+        {optional ? (
+          <View className="bg-muted rounded-full px-2 py-0.5">
+            <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">वैकल्पिक</Text>
+          </View>
+        ) : null}
+      </View>
       <View className="flex-row gap-3">
         <View className="flex-1">
           <Field label={optional ? t('nyayalay.form.firNumber') : t('nyayalay.form.firNumberRequired')} error={errors?.fir_number}>
@@ -166,15 +179,15 @@ function FirSection({
           </Field>
         </View>
         <View style={{ width: 88 }}>
-          <Field label={t('nyayalay.form.yearRequired')} error={errors?.fir_year}>
+          <Field label={req(t('nyayalay.form.yearRequired'))} error={errors?.fir_year}>
             <Input type="number" value={fir.year} onChangeText={(v) => onChange({ ...fir, year: v })} placeholder={String(new Date().getFullYear())} />
           </Field>
         </View>
       </View>
-      <Field label={t('nyayalay.form.policeStationRequired')} error={errors?.fir_ps}>
+      <Field label={req(t('nyayalay.form.policeStationRequired'))} error={errors?.fir_ps}>
         <Input value={fir.ps} onChangeText={(v) => onChange({ ...fir, ps: v })} placeholder={t('nyayalay.form.policeStationPlaceholder')} />
       </Field>
-    </>
+    </View>
   );
 }
 
