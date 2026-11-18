@@ -44,6 +44,9 @@ import { HeaderDocButton, ReportDateField } from '@/components/common/ReportForm
 // थाना प्रार्थना पत्र / RTI / अन्य added (owner): same screen with "प्रारूप से जोड़ें" for every petition except बीट सूचना / NCR.
 const REPORT_PETITION_TYPES = new Set(['RL', 'जनता दर्शन', 'CO पेशी', 'SDM', 'DM', 'थाना प्रार्थना पत्र', 'RTI', 'अन्य']);
 
+/** प्रार्थना पत्र module colour (list accent) — the आख्या save buttons (owner) */
+const PP_BLUE = '#2D52B8';
+
 // ── Main screen ───────────────────────────────────────────────────────────────
 /** Any value → editor HTML (old plain-text आख्या → paragraphs; HTML kept as is). */
 function toEditorHtml(v: string): string {
@@ -147,12 +150,13 @@ export default function ReportScreen() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSave = async () => {
+  /** complete = false → "आख्या सहेजें (लंबित रहे)" (owner): the आख्या is kept, the पत्र stays लंबित */
+  const handleSave = async (complete = true) => {
     if (!validate() || !ppId) return;
     setSaving(true);
     try {
       // the editor HTML carries the layout itself → no separate marked text
-      await saveReport(ppId, reportDate, reportContent.trim(), '');
+      await saveReport(ppId, reportDate, reportContent.trim(), '', complete);
       savedRef.current = true;
       setIsDirty(false);
       router.back();
@@ -239,16 +243,28 @@ export default function ReportScreen() {
                   <Text className="text-xs text-destructive">{errors.reportContent}</Text>
                 ) : null}
 
-                {/* Save button */}
+                {/* Two saves like बीट सूचना / NCR (owner): keep it लंबित, or save + निस्तारित. प्रार्थना पत्र blue. */}
                 <Pressable
-                  onPress={handleSave}
+                  onPress={() => handleSave(false)}
                   disabled={saving}
-                  className="bg-primary rounded-xl py-4 items-center justify-center active:opacity-70"
-                  style={{ borderCurve: 'continuous', opacity: saving ? 0.6 : 1 }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('prarthnaPatra.report.btnSavePending')}
                 >
-                  <Text className="text-base font-bold text-primary-foreground">
-                    {saving ? t('common.saving') : t('prarthnaPatra.report.btnSave')}
-                  </Text>
+                  <View style={{ borderWidth: 1.5, borderColor: PP_BLUE, borderRadius: 12, paddingVertical: 13, alignItems: 'center', opacity: saving ? 0.6 : 1, borderCurve: 'continuous' }}>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: PP_BLUE }}>{t('prarthnaPatra.report.btnSavePending')}</Text>
+                  </View>
+                </Pressable>
+                <Pressable
+                  onPress={() => handleSave(true)}
+                  disabled={saving}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('prarthnaPatra.report.btnSaveComplete')}
+                >
+                  <View style={{ backgroundColor: PP_BLUE, borderRadius: 12, paddingVertical: 15, alignItems: 'center', opacity: saving ? 0.6 : 1, borderCurve: 'continuous' }}>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: '#FFFFFF' }}>
+                      {saving ? t('common.saving') : t('prarthnaPatra.report.btnSaveComplete')}
+                    </Text>
+                  </View>
                 </Pressable>
               </View>
           </ScrollView>
@@ -270,7 +286,7 @@ export default function ReportScreen() {
               <AlertDialogAction onPress={() => { setBackDialogOpen(false); setIsDirty(false); router.back(); }}>
                 <Text>{t('common.discard')}</Text>
               </AlertDialogAction>
-              <AlertDialogAction onPress={() => { setBackDialogOpen(false); handleSave(); }}>
+              <AlertDialogAction onPress={() => { setBackDialogOpen(false); handleSave(true); }}>
                 <Text>{t('common.save')}</Text>
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -292,7 +308,7 @@ export default function ReportScreen() {
           subtitle={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : ''}
           onBack={handleBack}
           rightActions={
-            <Pressable onPress={handleSave} disabled={saving} className="bg-primary rounded-xl px-4 py-2 active:opacity-70">
+            <Pressable onPress={() => handleSave(true)} disabled={saving} className="bg-primary rounded-xl px-4 py-2 active:opacity-70">
               <Text className="text-sm font-semibold text-primary-foreground">{saving ? t('common.saving') : t('common.save')}</Text>
             </Pressable>
           }
@@ -373,7 +389,7 @@ export default function ReportScreen() {
             <AlertDialogAction onPress={() => { setBackDialogOpen(false); setIsDirty(false); router.back(); }}>
               <Text>{t('common.discard')}</Text>
             </AlertDialogAction>
-            <AlertDialogAction onPress={() => { setBackDialogOpen(false); handleSave(); }}>
+            <AlertDialogAction onPress={() => { setBackDialogOpen(false); handleSave(true); }}>
               <Text>{t('common.save')}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>

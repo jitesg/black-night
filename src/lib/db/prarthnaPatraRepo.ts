@@ -173,8 +173,8 @@ export interface PPAnalytics {
   pending: number;
   nistarit: number;    // standard workflow
   finished: number;    // action workflow (Beat / NCR)
-  dueToday?: number;   // Beat only
-  overdue?: number;    // Beat only
+  dueToday?: number;   // pending, deadline today (every type)
+  overdue?: number;    // pending, deadline passed (every type)
 }
 
 export interface PPDashboardAnalytics {
@@ -507,7 +507,9 @@ export async function saveReport(
   ppId: string,
   reportPreparationDate: string,
   reportContent: string,
-  reportMarked = ''
+  reportMarked = '',
+  /** false = "आख्या सहेजें (लंबित रहे)" (owner): the आख्या is kept, the पत्र stays / goes back to लंबित */
+  complete = true,
 ): Promise<void> {
   const db = await getDatabase();
   const now = nowTimestamp();
@@ -538,10 +540,10 @@ export async function saveReport(
   // instead of _todayString(). The old local `const todayStr` variable is removed.
   await db.runAsync(
     `UPDATE prarthna_patra
-     SET status='Nistarit', disposal_date=?, updated_at=?,
+     SET status=?, disposal_date=?, updated_at=?,
          version=version+1, sync_status='pending'
      WHERE id=?`,
-    [reportPreparationDate, now, ppId]
+    [complete ? 'Nistarit' : 'Pending', complete ? reportPreparationDate : null, now, ppId]
   );
   resyncDeadlineAlerts();
 }
@@ -552,13 +554,14 @@ export async function getDashboardAnalytics(): Promise<PPDashboardAnalytics> {
   const all = await getAllPrarthnaPatra();
   const today = _todayString();
 
-  const zero = (): PPAnalytics => ({ total: 0, pending: 0, nistarit: 0, finished: 0 });
+  // owner: आज / समय निकला counted for EVERY type (was only बीट सूचना + थाना प्रार्थना पत्र)
+  const zero = (): PPAnalytics => ({ total: 0, pending: 0, nistarit: 0, finished: 0, dueToday: 0, overdue: 0 });
   const byType: Record<PetitionType, PPAnalytics> = {
     RL: zero(), 'जनता दर्शन': zero(), 'CO पेशी': zero(),
     SDM: zero(), DM: zero(), RTI: zero(), अन्य: zero(),
-    'बीट सूचना': { ...zero(), dueToday: 0, overdue: 0 },
+    'बीट सूचना': zero(),
     NCR: zero(),
-    'थाना प्रार्थना पत्र': { ...zero(), dueToday: 0, overdue: 0 },
+    'थाना प्रार्थना पत्र': zero(),
   };
   const overall = zero();
 
@@ -573,8 +576,8 @@ export async function getDashboardAnalytics(): Promise<PPDashboardAnalytics> {
       if (pp.status === 'Pending') byType[t].pending++;
       else byType[t].nistarit++;
 
-      // Deadline tracking for Beat and Thana petition types
-      if (DEADLINE_TRACKING_TYPES.includes(t) && pp.status === 'Pending') {
+      // Deadline tracking — every petition type (owner)
+      if (pp.status === 'Pending') {
         const days = daysUntilDeadline(pp.deadline_date, pp.status);
         if (days === 0) byType[t].dueToday = (byType[t].dueToday ?? 0) + 1;
         if (days < 0) byType[t].overdue = (byType[t].overdue ?? 0) + 1;

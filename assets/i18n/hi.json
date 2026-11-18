@@ -2315,7 +2315,8 @@
       "statFinished": "समाप्त",
       "statDone": "निस्तारित",
       "statNist": "निस्तारित",
-      "statOd": "अतिदेय"
+      "statOd": "अतिदेय",
+      "statToday": "आज"
     },
     "form": {
       "addTitle": "प्रार्थना पत्र जोड़ें",
@@ -2351,8 +2352,8 @@
       "fieldGender": "लिंग",
       "placeholderGender": "पु/स्त्री",
       "addAnotherComplainant": "अन्य आवेदक जोड़ें",
-      "sectionMatter": "विवरण (विवरण)",
-      "sectionComplaintDetails": "शिकायत का विवरण (विवरण)",
+      "sectionMatter": "विवरण",
+      "sectionComplaintDetails": "शिकायत का विवरण",
       "matterTitle": "प्रार्थना पत्र का विवरण",
       "matterPlaceholder": "मामले / प्रार्थना पत्र की सामग्री लिखें…",
       "sectionAccusedDetails": "विपक्षी / आरोपी विवरण (वैकल्पिक)",
@@ -2393,7 +2394,7 @@
       "district": "जिला",
       "ageGender": "उम्र / लिंग",
       "caste": "जाति",
-      "sectionMatter": "विवरण (विवरण)",
+      "sectionMatter": "विवरण",
       "sectionAccused": "विपक्षी / आरोपी ({{count}})",
       "accusedCardTitle": "विपक्षी / आरोपी {{number}}",
       "fatherName": "पिता का नाम",
@@ -2404,9 +2405,9 @@
       "sectionActions": "कार्रवाइयां ({{count}})",
       "actionDate": "तिथि: {{date}}",
       "actionFormat": "प्रारूप: {{title}}",
-      "takeActionBtn": "कार्रवाई करें",
-      "addReportBtn": "रिपोर्ट लगाए (Add Report)",
-      "viewEditReportBtn": "रिपोर्ट देखें / संपादित करें"
+      "takeActionBtn": "कार्यवाही करें",
+      "addReportBtn": "आख्या लगाएँ",
+      "viewEditReportBtn": "आख्या देखें / संपादित करें"
     },
     "action": {
       "title": "कार्रवाई करें",
@@ -2460,7 +2461,9 @@
       "unsavedDescWithSave": "आपके पास बिना सहेजे परिवर्तन हैं। क्या आप छोड़ने से पहले इस रिपोर्ट को सहेजना चाहते हैं?",
       "errorReportDate": "रिपोर्ट की तिथि आवश्यक है",
       "errorReportContent": "रिपोर्ट की सामग्री आवश्यक है",
-      "errorSaveFailed": "रिपोर्ट सहेजने में विफल। कृपया पुनः प्रयास करें।"
+      "errorSaveFailed": "रिपोर्ट सहेजने में विफल। कृपया पुनः प्रयास करें।",
+      "btnSavePending": "आख्या सहेजें (लंबित रहे)",
+      "btnSaveComplete": "✓ सहेजें व निस्तारित करें"
     },
     "fillFormat": {
       "subtitleReport": "प्रार्थना पत्र रिपोर्ट",

@@ -326,7 +326,7 @@ export default function PPDetailScreen() {
             <Pressable
               onPress={() => router.push(`/(app)/prarthna-patra/${pp.id}/take-action` as never)}
               className="rounded-xl py-3.5 items-center active:opacity-70"
-              style={{ backgroundColor: '#7C3AED' }}
+              style={{ backgroundColor: '#2D52B8' }} // प्रार्थना पत्र blue like "आख्या लगाएँ" (owner; was purple)
             >
               <Text className="text-sm font-semibold text-white">
                 <Zap size={15} color="#fff" /> {t('prarthnaPatra.detail.takeActionBtn')}

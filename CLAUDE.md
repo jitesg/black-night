@@ -289,6 +289,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
   बीट सूचना / NCR "कार्यवाही करें" (`[ppId]/take-action.tsx`) made alike (owner): no grey context box, subtitle "<type> · <first आवेदक>",
   .doc = header HeaderDocButton (bottom .doc removed), कार्रवाई की तिथि = ReportDateField (calendar, dd/mm/yyyy), no headings above प्रारूप card /
   editor; NCR action type, note and both save buttons unchanged. Shared `components/common/ReportFormParts.tsx` (ReportDateField, HeaderDocButton).
+- प्रार्थना पत्र types made alike (owner, sample approved): home रिमाइंडर / समय निकला (dashboardRepo loadDashboardData) list EVERY type (was only बीट सूचना /
+  NCR); getDashboardAnalytics counts आज / समय निकला for every type (analytics card shows "आज" too); आख्या screen has two saves — "आख्या सहेजें
+  (लंबित रहे)" (saveReport `complete = false` → status Pending, disposal_date NULL) and "✓ सहेजें व निस्तारित करें" (PP blue #2D52B8; back dialog
+  = complete); detail "कार्यवाही करें" button blue (was purple); words आख्या लगाएँ / आख्या देखें / संपादित करें / कार्यवाही करें, "विवरण", "शिकायत का विवरण".
 - `sys-fmt-pp-janta-darshan-aakhya` "जनता दर्शन / शिकायत प्रकोष्ठ प्रार्थना पत्र — जांच आख्या (14 बिन्दु)" (Prarthna Patra, owner's docx):
   bold header lines via `**…**` in [[सूची]] (supported in list lines too), optional गवाह / Lat / Long, doNoAction tick, बिन्दु ticks
   p1–p11 each opening `pNText` (showIf) → "✓ – विवरण" in the printed list. Owner's file has 11 points under a "14 बिन्दु" heading.

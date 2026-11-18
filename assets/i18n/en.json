@@ -2315,7 +2315,8 @@
       "statFinished": "Finished",
       "statDone": "Done",
       "statNist": "Nist.",
-      "statOd": "OD"
+      "statOd": "OD",
+      "statToday": "Today"
     },
     "form": {
       "addTitle": "Add Petition",
@@ -2404,9 +2405,9 @@
       "sectionActions": "Actions ({{count}})",
       "actionDate": "Date: {{date}}",
       "actionFormat": "Format: {{title}}",
-      "takeActionBtn": "Take Action",
-      "addReportBtn": "Add Report",
-      "viewEditReportBtn": "View / Edit Report"
+      "takeActionBtn": "Take action",
+      "addReportBtn": "Add report",
+      "viewEditReportBtn": "View / edit report"
     },
     "action": {
       "title": "Take Action",
@@ -2460,7 +2461,9 @@
       "unsavedDescWithSave": "You have unsaved changes. Do you want to save this report before leaving?",
       "errorReportDate": "Report date is required",
       "errorReportContent": "Report content is required",
-      "errorSaveFailed": "Failed to save report. Please try again."
+      "errorSaveFailed": "Failed to save report. Please try again.",
+      "btnSavePending": "Save report (keep pending)",
+      "btnSaveComplete": "✓ Save and dispose"
     },
     "fillFormat": {
       "subtitleReport": "Prarthna Patra Report",

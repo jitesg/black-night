@@ -19,7 +19,6 @@ import {
 import {
   getAllPrarthnaPatra,
   daysUntilDeadline as ppDaysUntilDeadline,
-  isActionWorkflow,
   type PrarthnaPatra,
   type PPDashboardAnalytics,
   type PPAnalytics,
@@ -308,7 +307,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
 
   for (const pp of ppAll) {
     if (pp.status !== 'Pending') continue;
-    if (!isActionWorkflow(pp.petition_type as never)) continue;
+    // every प्रार्थना पत्र type (owner; was only बीट सूचना / NCR — the 🔔 list already had all)
     const days = ppDaysUntilDeadline(pp.deadline_date, pp.status);
     if (days >= -1 && days <= 14) {
       reminders.push({
@@ -344,7 +343,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
 
   for (const pp of ppAll) {
     if (pp.status !== 'Pending') continue;
-    if (!isActionWorkflow(pp.petition_type as never)) continue;
+    // every प्रार्थना पत्र type (owner; was only बीट सूचना / NCR — the 🔔 list already had all)
     const days = ppDaysUntilDeadline(pp.deadline_date, pp.status);
     if (days < 0) {
       overdue.push({

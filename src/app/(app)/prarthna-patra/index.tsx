@@ -109,6 +109,12 @@ function AnalyticsCard({
           <Text className="text-xs font-semibold" style={{ color: '#065F46' }}>{nistarit + finished}</Text>
           <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('prarthnaPatra.analytics.statNist')}</Text>
         </View>
+        {dueToday !== undefined && dueToday > 0 && (
+          <View>
+            <Text className="text-xs font-semibold" style={{ color: '#D97706' }}>{dueToday}</Text>
+            <Text style={{ ...T.micro, color: '#9CA3AF' }}>{t('prarthnaPatra.analytics.statToday')}</Text>
+          </View>
+        )}
         {overdue !== undefined && overdue > 0 && (
           <View>
             <Text className="text-xs font-semibold" style={{ color: '#DC2626' }}>{overdue}</Text>
