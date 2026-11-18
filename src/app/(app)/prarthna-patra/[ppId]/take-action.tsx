@@ -37,7 +37,12 @@ import { getPublishedFormatsByType } from '@/lib/db/sysFormatRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
 
-const MODULE_COLOR = '#7C3AED';
+const MODULE_COLOR = '#2D52B8'; // प्रार्थना पत्र blue (owner; was purple)
+
+/** NCR action types as shown (owner): the saved value stays "BNSS Karyavahi", the screen says "BNSS कार्यवाही". */
+function actionTypeLabel(v: string | null | undefined): string {
+  return v === 'BNSS Karyavahi' ? 'BNSS कार्यवाही' : String(v ?? '');
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -62,7 +67,7 @@ function ActionTypePicker({
         style={{ borderColor: error ? '#DC2626' : '#E5E7EB', borderCurve: 'continuous' }}
       >
         <Text className="text-sm" style={{ color: value ? '#111827' : '#9CA3AF' }}>
-          {value || t('prarthnaPatra.action.selectActionType')}
+          {value ? actionTypeLabel(value) : t('prarthnaPatra.action.selectActionType')}
         </Text>
         <ChevronDown size={16} color="#9CA3AF" />
       </Pressable>
@@ -79,7 +84,7 @@ function ActionTypePicker({
               onPress={() => { onChange(tVal); setOpen(false); }}
               className="py-3 px-4 border-b border-border active:bg-muted flex-row items-center justify-between"
             >
-              <Text className="text-sm text-foreground">{tVal}</Text>
+              <Text className="text-sm text-foreground">{actionTypeLabel(tVal)}</Text>
               {value === tVal && <Text style={{ color: MODULE_COLOR }}>✓</Text>}
             </Pressable>
           ))}

@@ -265,8 +265,9 @@ const COPILOT_MODULES = ['mukadma', 'gd', 'nirodhatmak', 'nyayalay', 'prarthna-p
 export function isCopilotRoute(segs: readonly string[]): boolean {
   if (!segs.some((s) => COPILOT_MODULES.includes(s))) return false;
   return !segs.some((s) =>
+    // (owner) "कार्यवाही करें" (take-action) shows 🤖 / 🔔 like the आख्या screen — no longer excluded
     s.startsWith('add') || s.startsWith('edit') || s.startsWith('fill') ||
-    s === 'take-action' || s === 'editor' || s === 'select-format',
+    s === 'editor' || s === 'select-format',
   );
 }
 

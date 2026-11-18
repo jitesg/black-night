@@ -298,7 +298,7 @@ export default function PPDetailScreen() {
                   </Text>
                   {action.action_type ? (
                     <View className="rounded-full bg-secondary ml-auto px-2.5 py-1">
-                      <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{action.action_type}</Text>
+                      <Text textBreakStrategy="simple" className="text-xs text-muted-foreground">{action.action_type === 'BNSS Karyavahi' ? 'BNSS कार्यवाही' : action.action_type}</Text>
                     </View>
                   ) : null}
                 </View>

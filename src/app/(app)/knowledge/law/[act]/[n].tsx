@@ -582,7 +582,7 @@ export default function LawSectionDetailScreen() {
                 <View className="pt-2 border-t border-border/40">
                   <Text className="text-[11px] text-muted-foreground leading-4">
                     {isHi
-                      ? 'यह सरल व्याख्या सहायता के लिए है, आधिकारिक पाठ नहीं। कार्रवाई/निर्णय से पहले नीचे का आधिकारिक पाठ देखें।'
+                      ? 'यह सरल व्याख्या सहायता के लिए है, आधिकारिक पाठ नहीं। कार्यवाही/निर्णय से पहले नीचे का आधिकारिक पाठ देखें।'
                       : 'This simplified explanation is for guidance only, not the official text. Refer to the official text below before action or decision.'}
                   </Text>
                 </View>
