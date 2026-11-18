@@ -1,4 +1,4 @@
-import { applyPickedFir, hasFirMarkers, mergeContextDefaults, resolveContextDefaults } from '@/lib/contextDefaultResolver';
+import { applyPickedFir, mergeContextDefaults, resolveContextDefaults } from '@/lib/contextDefaultResolver';
 import { AutoValuePills, AUTO_PILL_LABELS_HI } from '@/components/formats/AutoValuePills';
 import { roleConfigOf } from '@/lib/ppPeople';
 import { FirPeopleContext } from '@/components/formats/FirPeopleButton';
@@ -7,7 +7,6 @@ import { formatPreviewBridge } from '@/lib/formatPreviewBridge';
 import { deleteReportRecord, getReportRecord, saveDraftRecord, saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
 import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
-import { FirPickBanner } from '@/components/formats/FirPickBanner';
 import type { FIR } from '@/lib/db/firRepo';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -522,13 +521,7 @@ export default function FillScreen() {
             </View>
           )}
 
-          {!firId && (pickedFir || hasFirMarkers(dynamicKeys.filter((key) => isKeyVisible(key, values)))) ? (
-            // "मुकदमा चुनें" only while a मुकदमा box is showing (owner: रवानगी "क्षेत्र" needs none); stays once one is picked
-            <FirPickBanner
-              picked={pickedFir}
-              onPick={pickFir}
-            />
-          ) : null}
+          {/* "मुकदमा चुनें" strip removed (owner: "पूरे app से सुझाव" in the मु0अ0सं0 / धारा / नाम boxes does it now) */}
 
           {/* ── Saved half-filled draft (module path) — offered, never auto-filled ── */}
           {pendingDraft ? (

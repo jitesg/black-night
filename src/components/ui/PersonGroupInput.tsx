@@ -23,7 +23,6 @@
  *   - 2+ prior cards        → tapping opens an inline mini-picker to choose which.
  */
 
-import { FirPeopleButton } from '@/components/formats/FirPeopleButton';
 import { PPPeopleButton } from '@/components/formats/PPPeopleButton';
 import { avedakCardWord, type GroupRole } from '@/lib/ppPeople';
 import {
@@ -31,7 +30,7 @@ import {
   personCardDefaults, relationWord, type AddrMode, type RelationChip,
 } from '@/lib/personCard';
 import { LabelWithHint } from './FieldHintLink';
-import { insertIntoGroup, toCard } from '@/lib/firPeople';
+import { insertIntoGroup } from '@/lib/firPeople';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { ChevronDown, ChevronUp, Copy, Trash2, UserPlus, X } from 'lucide-react-native';
@@ -899,13 +898,6 @@ export const PersonGroupInput = memo(({
           </View>
         )}
       </View>
-      {/* "मुकदमे से भरें" (owner) — only inside a format fill screen */}
-      <FirPeopleButton
-        multi={!single}
-        onInsert={(people) => onChange(keyName, single
-          ? JSON.stringify([toCard(people[0], false, 0)])
-          : insertIntoGroup(value, people.map((p, n) => toCard(p, false, n))))}
-      />
       {role ? (
         <PPPeopleButton
           role={role}

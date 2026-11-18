@@ -650,7 +650,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (parts address when the village is known). UI `components/common/PeopleSuggest.tsx`: list under the name box (source chips per module
   colour, "+n जगह" → sheet "card में भरें"), tap = that card only (`onReplace`), strip "✓ … से भरा · हटाएँ" (undo = card as before). The old
   "typed before" name list is off on these name boxes (`disableSuggestions`; AutocompleteInput got `onFocus`). The केस डायरी कार्यवाही panel
-  uses the same PersonGroupInput, so it shows the list too. "मुकदमा चुनें" strip + "मुकदमे से भरें" stay until the owner says the new way works.
+  uses the same PersonGroupInput, so it shows the list too. REMOVED now (owner, option क): the "मुकदमा चुनें" strip (FirPickBanner.tsx deleted; formats/fill,
+  PP + न्यायालय fill-format) and the "मुकदमे से वादी / अभियुक्त भरें" button on every Person / Accused / item_group card (FirPeopleButton no longer
+  rendered; FirPeopleContext providers + firPeople.ts left in place, unused by the UI). A format opened from a मुकदमा (firId / केस डायरी) still
+  fills its @FIR boxes by itself; opened directly, the officer uses the name / मु0अ0सं0 suggestions.
   Step 2: मु0अ0सं0 / धारा boxes (format keys whose default is @FIR.fir_number / @FIR.section, 34 + 30 in the seed) → `FormatCaseInput` in
   input.tsx + `components/common/CaseSuggest.tsx`: typing lists cases (`searchCases`: मुकदमे fir_number / section, then न्यायालय fir_number+year /
   apradh_sankhya / applicable_sections; SQL loose → every typed word re-checked in JS; one hit per मु0अ0सं0 + धारा; a box already holding that

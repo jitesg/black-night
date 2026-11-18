@@ -9,8 +9,6 @@
  * "startEmpty": no card until "+" is pressed (optional lists).
  */
 import { LabelWithHint } from './FieldHintLink';
-import { FirPeopleButton } from '@/components/formats/FirPeopleButton';
-import { insertIntoGroup, isPersonItemGroup, toItemRow } from '@/lib/firPeople';
 import React, { forwardRef, useMemo } from 'react';
 import { Pressable, Text, TextInput, View, type TextStyle } from 'react-native';
 import { Plus, Trash2 } from 'lucide-react-native';
@@ -117,12 +115,6 @@ export const ItemGroupInput = forwardRef<View, {
           {required ? <Text style={{ color: c.destructive }}> *</Text> : null}
         </Text>
       </LabelWithHint>
-      {/* "📁 मुकदमे से भरें" (owner): lists that hold people (name column) */}
-      {isPersonItemGroup(cols) ? (
-        <FirPeopleButton
-          onInsert={(people) => onChange(keyName, insertIntoGroup(JSON.stringify(rows), people.map((p) => toItemRow(p, cols)), newRow(cols)))}
-        />
-      ) : null}
 
       {rows.map((row, i) => (
         <View key={i} style={{ borderWidth: 1, borderColor: c.border, borderRadius: 14, padding: 12, gap: 10, backgroundColor: c.card }}>

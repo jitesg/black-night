@@ -20,9 +20,7 @@
  *   - email: basic pattern if provided
  */
 
-import { FirPeopleButton } from '@/components/formats/FirPeopleButton';
 import { LabelWithHint } from './FieldHintLink';
-import { insertIntoGroup, toCard } from '@/lib/firPeople';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { ChevronDown, ChevronUp, Copy, Trash2, UserPlus, X } from 'lucide-react-native';
@@ -788,8 +786,6 @@ export const AccusedGroupInput = memo(({
           </Text>
         </View>
       </View>
-      {/* "मुकदमे से भरें" (owner) — only inside a format fill screen */}
-      <FirPeopleButton onInsert={(people) => onChange(keyName, insertIntoGroup(value, people.map((p, n) => toCard(p, true, n))))} />
 
       {entries.map((entry, i) => (
         <AccusedCard

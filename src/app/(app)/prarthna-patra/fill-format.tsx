@@ -34,8 +34,7 @@ import { FormatKeyInput, keyHint } from '@/components/ui/input';
 import { saveReportRecord } from '@/lib/db/reportRecordRepo';
 import { clearFillDraft, loadFillDraft, saveFillDraft } from '@/lib/fillDraft';
 import { DraftResumeBanner } from '@/components/common/DraftResumeBanner';
-import { FirPickBanner } from '@/components/formats/FirPickBanner';
-import { applyPickedFir, hasFirMarkers, resolveContextDefaults } from '@/lib/contextDefaultResolver';
+import { applyPickedFir, resolveContextDefaults } from '@/lib/contextDefaultResolver';
 import type { FIR } from '@/lib/db/firRepo';
 import { AccusedGroupInput, initAccusedGroup } from '@/components/ui/AccusedGroupInput';
 import { PersonGroupInput, initPersonGroup } from '@/components/ui/PersonGroupInput';
@@ -250,13 +249,7 @@ export default function PPFillFormatScreen() {
         behavior={process.env.EXPO_OS === 'ios' ? 'padding' : process.env.EXPO_OS === 'web' ? undefined : 'height'}
         className="flex-1"
       >
-        {(pickedFir || hasFirMarkers(dynamicKeys.filter((key) => isKeyVisible(key, values)))) ? (
-          // "मुकदमा चुनें" only while a मुकदमा box is showing (owner: रवानगी "क्षेत्र" needs none); stays once one is picked
-          <FirPickBanner
-            picked={pickedFir}
-            onPick={pickFir}
-          />
-        ) : null}
+        {/* "मुकदमा चुनें" strip removed (owner: "पूरे app से सुझाव" does it now) */}
         {pendingDraft ? (
           <DraftResumeBanner
             onResume={() => { const d = pendingDraft; setPendingDraft(null); setValues((prev) => ({ ...prev, ...d })); }}
