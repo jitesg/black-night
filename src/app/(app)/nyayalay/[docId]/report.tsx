@@ -167,6 +167,9 @@ export default function NyayalayReportScreen() {
   const [backDialog, setBackDialog] = useState(false);
   const savedRef = useRef(false);
   const initialLoadDone = useRef(false);
+  // what the screen opened with (the saved report, or nothing) — loading it is not a change (owner: the "बिना सहेजे" dialog
+  // came up on back with nothing changed). Text compared as plain text, so the editor's own HTML tidy-up is not a change either.
+  const baselineRef = useRef<{ text: string; date: string }>({ text: '', date: todayStr() });
 
   useFocusEffect(useCallback(() => {
     initialLoadDone.current = false;
@@ -183,6 +186,10 @@ export default function NyayalayReportScreen() {
         ]);
         setDoc(d);
         setExistingReport(r);
+        baselineRef.current = {
+          text: r ? htmlToPlainText(r.report_marked ? markedToEditorHtml(r.report_marked) : toEditorHtml(r.report_content)).trim() : '',
+          date: r ? r.report_date : todayStr(),
+        };
 
         // रिपोर्ट box = the rich editor (owner): its value is editor HTML; a format's layout (marks) goes in as data-fmt
         if (draft) {
@@ -205,10 +212,11 @@ export default function NyayalayReportScreen() {
     })();
   }, [docId]));
 
-  // Dirty tracking
+  // Dirty tracking — only a real change from what the screen opened with (a format draft is one)
   useEffect(() => {
-    if (!initialLoadDone.current) return;
-    if (!savedRef.current) setIsDirty(true);
+    if (!initialLoadDone.current || savedRef.current) return;
+    const b = baselineRef.current;
+    setIsDirty(htmlToPlainText(reportContent).trim() !== b.text || actionDate !== b.date);
   }, [actionDate, reportContent]);
 
   // Hardware back
@@ -490,29 +498,39 @@ export default function NyayalayReportScreen() {
         </ScrollView>
       </View>
 
-      {/* Back protection dialog */}
+      {/* Back protection dialog (owner, sample approved): ⚠️ + clear words; अंतिम सहेजें (module blue, says it marks निस्तारित;
+          grey + off when the paper already is), बिना सहेजे बाहर जाएँ (red outline), रद्द करें — यहीं रहें.
+          AlertDialogFooter is flex-col-reverse: written in REVERSE of the on-screen order. */}
       <AlertDialog open={backDialog} onOpenChange={setBackDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('common.unsavedTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('common.unsavedDesc')}
-            </AlertDialogDescription>
+            <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: '#FEF3C7', alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
+              <Text style={{ fontSize: 20 }}>⚠️</Text>
+            </View>
+            <AlertDialogTitle>{t('nyayalay.report.backTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('nyayalay.report.backDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onPress={() => setBackDialog(false)}>
-              <Text>{t('common.cancel')}</Text>
+              <Text>{t('nyayalay.report.backStay')}</Text>
             </AlertDialogCancel>
             <AlertDialogAction
               onPress={() => { setBackDialog(false); setIsDirty(false); router.back(); }}
+              style={{ backgroundColor: 'transparent', borderWidth: 1.5, borderColor: '#DC2626' }}
             >
-              <Text>{t('common.discard')}</Text>
+              <View><Text style={{ color: '#DC2626', fontWeight: '700', fontSize: 15 }}>{t('nyayalay.report.backDiscard')}</Text></View>
             </AlertDialogAction>
             <AlertDialogAction
-              onPress={() => { setBackDialog(false); handleFinalSave(); }}
-              className="bg-primary"
+              disabled={isAlreadyFinished || saving}
+              onPress={() => { if (isAlreadyFinished) return; setBackDialog(false); handleFinalSave(); }}
+              style={{ backgroundColor: isAlreadyFinished ? '#D1D5DB' : MODULE_COLOR, height: undefined, minHeight: 52, paddingVertical: 8 }}
             >
-              <Text className="text-primary-foreground font-semibold">{t('common.save')}</Text>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ color: isAlreadyFinished ? '#6B7280' : '#FFFFFF', fontWeight: '700', fontSize: 15 }}>✓ {t('nyayalay.report.finalSave')}</Text>
+                <Text style={{ color: isAlreadyFinished ? '#6B7280' : '#FFFFFF', fontSize: 11.5, opacity: 0.9 }}>
+                  {isAlreadyFinished ? t('nyayalay.report.backSaveDone') : t('nyayalay.report.backSaveSub')}
+                </Text>
+              </View>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
