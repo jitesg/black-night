@@ -69,6 +69,12 @@ function StatusChip({ pp }: { pp: PPWithDetails }) {
 
 // ── Screen ────────────────────────────────────────────────────────────────
 
+/** "2026-10-28" → "28/10/2026" (owner: dd/mm/yyyy everywhere); other text as it is. */
+const dmyDate = (v: string | null | undefined) => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v ?? ''));
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : String(v ?? '');
+};
+
 export default function PPDetailScreen() {
   const { t } = useTranslation();
   const { ppId } = useLocalSearchParams<{ ppId: string }>();
@@ -259,11 +265,13 @@ export default function PPDetailScreen() {
               <View className="flex-row items-center gap-2 mb-3">
                 <Calendar size={14} color="#6B7280" />
                 <Text className="text-xs text-muted-foreground">
-                  {t('prarthnaPatra.detail.reportDate', { date: pp.report.report_preparation_date })}
+                  {t('prarthnaPatra.detail.reportDate', { date: dmyDate(pp.report.report_preparation_date) })}
                 </Text>
               </View>
               <Text className="text-sm text-foreground leading-6">{/* editor HTML → keep its line breaks */}{htmlToPlainText(pp.report.report_content).trim()}</Text>
-              {/* A4 प्रीव्यू + .doc without opening the आख्या (owner); the format's layout when it was saved unchanged */}
+              {/* A4 प्रीव्यू + .doc without opening the आख्या (owner); the format's layout when it was saved unchanged —
+                  under a thin divider, both buttons equal width (owner, design क) */}
+              <View className="bg-border" style={{ height: 1, marginTop: 14, marginBottom: 12 }} />
               <ReportExportButtons
                 size="small"
                 source={pp.report.report_marked ? markedToEditorHtml(pp.report.report_marked) : pp.report.report_content}

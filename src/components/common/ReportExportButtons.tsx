@@ -44,25 +44,26 @@ export const ReportExportButtons = memo(function ReportExportButtons({ source, t
   };
 
   const big = size === 'large';
+  // small = the PP detail आख्या card (owner, design क): both buttons equal width across the card, under a divider
   const box = {
     flexDirection: 'row' as const, alignItems: 'center' as const, justifyContent: 'center' as const, gap: 6,
-    borderRadius: big ? 12 : 999, paddingVertical: big ? 11 : 5, paddingHorizontal: big ? 8 : 12, borderWidth: 1.5,
+    borderRadius: 12, paddingVertical: big ? 11 : 10, paddingHorizontal: 8, borderWidth: 1.5,
   };
-  const fs = big ? 14 : 12.5;
+  const fs = big ? 14 : 13.5;
 
   return (
-    <View style={{ flexDirection: 'row', gap: 8, ...(big ? {} : { marginTop: 10 }) }}>
+    <View style={{ flexDirection: 'row', gap: 8 }}>
       {!wordOnly ? (
-        <Pressable onPress={() => setPreview(true)} accessibilityLabel="A4 प्रीव्यू" style={big ? { flex: 1 } : undefined}>
+        <Pressable onPress={() => setPreview(true)} accessibilityLabel="A4 प्रीव्यू" style={{ flex: 1 }}>
           <View style={{ ...box, borderColor: C.primary, backgroundColor: C.card }}>
-            <Printer size={big ? 16 : 13} color={C.primary} />
+            <Printer size={big ? 16 : 15} color={C.primary} />
             <Text numberOfLines={1} textBreakStrategy="simple" style={{ fontSize: fs, fontWeight: '700', color: C.primary }}>A4 प्रीव्यू</Text>
           </View>
         </Pressable>
       ) : null}
-      <Pressable onPress={exportWord} disabled={busy} accessibilityLabel="Word फ़ाइल (.doc)" style={big ? { flex: 1 } : undefined}>
+      <Pressable onPress={exportWord} disabled={busy} accessibilityLabel="Word फ़ाइल (.doc)" style={{ flex: 1 }}>
         <View style={{ ...box, borderColor: C.primary, backgroundColor: C.primary, opacity: busy ? 0.7 : 1 }}>
-          {busy ? <ActivityIndicator size={big ? 16 : 13} color={C.primaryForeground} /> : <FileText size={big ? 16 : 13} color={C.primaryForeground} />}
+          {busy ? <ActivityIndicator size={big ? 16 : 15} color={C.primaryForeground} /> : <FileText size={big ? 16 : 15} color={C.primaryForeground} />}
           <Text numberOfLines={1} textBreakStrategy="simple" style={{ fontSize: fs, fontWeight: '700', color: C.primaryForeground }}>
             {big ? '.doc (Word)' : '.doc'}
           </Text>
