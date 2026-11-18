@@ -28,6 +28,7 @@ import {
 import { getPublishedFormatsByType, mergeFormatsFirst, filterFormatsByQuery } from '@/lib/db/sysFormatRepo';
 import { nirodhatmakFormatBridge } from '@/lib/nirodhatmakFormatBridge';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { FORMAT_LIST_PADDING, FormatPreviewSheet, useFormatPickFilter } from '@/components/formats/FormatPickExtras';
 
 const MODULE_COLOR = '#DC2626';
 const NK_FORMAT_TYPE = 'BNSS Karyavahi' as const;
@@ -43,6 +44,10 @@ export default function NkSelectFormatScreen() {
   // Start with an empty search so every BNSS Karyavahi format is listed; the
   // proceeding type only decides which formats are suggested first.
   const [query, setQuery] = useState('');
+  const [previewFormat, setPreviewFormat] = useState<FormatWithMeta | null>(null);
+  // ⚙︎ filter (owner, design C): दिखाएँ / स्रोत (one format type here, so no प्रकार group)
+  const pick = useFormatPickFilter(formats, MODULE_COLOR);
+  const openFill = (f: FormatWithMeta) => router.push(`/(app)/formats/fill?formatId=${f.id}&callingModule=NK` as never);
 
   // Keep a ref so useFocusEffect can read latest query without re-registering
   const queryRef = useRef(query);
@@ -111,7 +116,9 @@ export default function NkSelectFormatScreen() {
           variant="light"
           returnKeyType="search"
           accessibilityLabel={t('formatPicker.searchPlaceholderNirodhatmak')}
+          trailing={pick.button}
         />
+        {pick.chips}
       </View>
 
       {loading ? (
@@ -121,18 +128,13 @@ export default function NkSelectFormatScreen() {
       ) : (
         <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
-          data={formats}
+          data={pick.filtered}
           keyExtractor={(item) => item.id}
-          contentContainerClassName="px-6 py-4 gap-3 pb-12"
+          contentContainerStyle={{ paddingHorizontal: FORMAT_LIST_PADDING, paddingTop: 16, paddingBottom: 48, gap: 12 }}
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           renderItem={({ item }) => (
-            <FormatCard format={item} query={query} onPress={() =>
-                router.push(
-                  `/(app)/formats/fill?formatId=${item.id}&callingModule=NK` as never
-                )
-              }
-            />
+            <FormatCard format={item} query={query} onPress={() => openFill(item)} onPreview={() => setPreviewFormat(item)} />
           )}
           ListEmptyComponent={
             <View className="items-center justify-center py-24 gap-4 px-6">
@@ -156,6 +158,15 @@ export default function NkSelectFormatScreen() {
           }
         />
       )}
+
+      {/* 👁 preview (shared) + ⚙︎ filter sheet */}
+      <FormatPreviewSheet
+        format={previewFormat}
+        onClose={() => setPreviewFormat(null)}
+        onFill={() => { const f = previewFormat; setPreviewFormat(null); if (f) openFill(f); }}
+        accent={MODULE_COLOR}
+      />
+      {pick.sheet}
     </View>
   );
 }

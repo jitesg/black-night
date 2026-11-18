@@ -585,6 +585,12 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Full-screen editor (DocumentEditor FullScreenModal) keyboard: on Android NO KeyboardAvoidingView resizing (it flickered when the keyboard
   opened / closed — owner) — `useEditorKeyboardPadding` pads by the keyboard height (grow-only while open, 0 on hide) and
   `suspendKeyboardInset()` stops the root KeyboardInsetView re-padding the hidden screen underneath while the editor is open. iOS keeps KAV.
+- "प्रारूप चुनें" screens made alike (owner, sample approved — GD / प्रार्थना पत्र / न्यायालय (every mode) / निरोधात्मक): shared
+  `components/formats/FormatPickExtras.tsx` — `useFormatPickFilter(list, accent, first?)` (⚙︎ FilterSearchButton as SearchBar `trailing`,
+  ActiveFilterChips, FilterSheet; groups / filtering in `src/lib/formatPickFilter.ts`, tests `scripts/test_format_pick_filter.ts`: प्रकार = the format
+  types when 2+, or न्यायालय tag mode "<tag> वाले" / "बाकी"; दिखाएँ ⭐ पसंदीदा / 🕘 हाल में उपयोग (newest first); स्रोत System / मेरे बनाए; counts on
+  every option) — replaced the GD / न्यायालय chip rows; `FormatPreviewSheet` (👁 on every card, blanks "....", "प्रारूप भरें →" on top = the screen's
+  select action). Cards: ⓘ + 👁 everywhere, ⭐ shown only, no ✏️ / 🗑. `FORMAT_LIST_PADDING` = 20 side padding (also the प्रारूप list, was 24).
 - Search lists tap once (owner: "सर्च करके select दो स्टेप में"): every FlatList / ScrollView / SectionList on the 19 screens with a SearchBar has
   `keyboardShouldPersistTaps="handled"` (like home) — without it the first tap only closed the keyboard. New list screens with a search box: add it.
 - Horizontal chip row INSIDE a pressable card (FormatCard tags): on Android the card took the drag and the row never slid (owner) — put

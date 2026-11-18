@@ -10,22 +10,16 @@
  * (callingModule=GD), generates the report in formats/preview.tsx, and
  * "Insert into GD" populates add-gd.tsx via gdFormatBridge.
  */
-import { stripFormatMarkers } from '@/lib/formatMarkers';
 import { logger } from '@/lib/logger';
 import { useTranslation } from 'react-i18next';
-import { stripHtmlTags } from '@/lib/stringUtils';
 import { T } from '@/lib/typography';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, Pressable,
-  ScrollView, Text, View,
+  ActivityIndicator, FlatList, Text, View,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
-import {
-  FileWarning,
-  Star, Clock, User,
-} from 'lucide-react-native';
-import { BottomSheet } from '@/components/ui/ds/BottomSheet';
+import { FileWarning } from 'lucide-react-native';
+import { FORMAT_LIST_PADDING, FormatPreviewSheet, useFormatPickFilter } from '@/components/formats/FormatPickExtras';
 import { SearchBar } from '@/components/SearchBar';
 import { FormatCard } from '@/components/formats/FormatCard';
 import {
@@ -39,47 +33,21 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 const GD_COLOR = '#D97706';
 const GD_TYPE = 'GD' as const;
 
-type ChipFilter = 'All' | 'Favorites' | 'Recently Used' | 'Created By Me';
-
-const CHIP_FILTERS: { labelKey: string; value: ChipFilter }[] = [
-  { labelKey: 'common.all',            value: 'All' },
-  { labelKey: 'filters.favorites',     value: 'Favorites' },
-  { labelKey: 'filters.recentlyUsed',  value: 'Recently Used' },
-  { labelKey: 'filters.createdByMe',   value: 'Created By Me' },
-];
-
-// ─── Apply chip filter to an already-GD-scoped list ───────────────────────
-function applyChipFilter(list: FormatWithMeta[], chip: ChipFilter): FormatWithMeta[] {
-  switch (chip) {
-    case 'Favorites':
-      return list.filter((f) => f.is_favorite === 1);
-    case 'Recently Used':
-      return list
-        .filter((f) => f.last_used_at != null)
-        .sort((a, b) => (b.last_used_at ?? 0) - (a.last_used_at ?? 0));
-    case 'Created By Me':
-      return list.filter((f) => f.created_by === 'me');
-    default:
-      return list;
-  }
-}
-
 // ─── Screen ───────────────────────────────────────────────────────────────
 export default function GdSelectFormatScreen() {
   const { t } = useTranslation();
   const [allGdFormats, setAllGdFormats] = useState<FormatWithMeta[]>([]);
-  const [displayed, setDisplayed] = useState<FormatWithMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [chip, setChip] = useState<ChipFilter>('All');
   const [previewFormat, setPreviewFormat] = useState<FormatWithMeta | null>(null);
+  // ⚙︎ filter (owner, design C — was the chip row): दिखाएँ / स्रोत on the GD list
+  const pick = useFormatPickFilter(allGdFormats, GD_COLOR);
+  const openFill = (f: FormatWithMeta) => router.push(`/(app)/formats/fill?formatId=${f.id}&callingModule=GD` as never);
 
-  // Refs that mirror query/chip so useFocusEffect can read current values
-  // without adding them to its dependency array (prevents double-load on keystroke).
+  // Ref that mirrors query so useFocusEffect can read the current value
+  // without adding it to its dependency array (prevents double-load on keystroke).
   const queryRef = useRef(query);
-  const chipRef  = useRef(chip);
   useEffect(() => { queryRef.current = query; }, [query]);
-  useEffect(() => { chipRef.current  = chip;  }, [chip]);
 
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -105,7 +73,7 @@ export default function GdSelectFormatScreen() {
   }, []));
 
   // ── Load: DB-level filter ensures format_type = 'GD' always ─────────────
-  const load = useCallback(async (q = '', activeChip: ChipFilter = 'All') => {
+  const load = useCallback(async (q = '') => {
     setLoading(true);
     try {
       // ① Text search: SQL WHERE format_type = 'GD' AND (title/vivran/tag LIKE ?)
@@ -115,9 +83,8 @@ export default function GdSelectFormatScreen() {
         ? await searchPublishedFormatsByTypes(q, [GD_TYPE])
         : await getPublishedFormatsByType(GD_TYPE);
 
-      logger.debug(`[GdSelectFormat] loaded ${base.length} GD rows — query="${q}" chip="${activeChip}"`);
+      logger.debug(`[GdSelectFormat] loaded ${base.length} GD rows — query="${q}"`);
       setAllGdFormats(base);
-      setDisplayed(applyChipFilter(base, activeChip));
     } catch (e) {
       logger.warn('[GdSelectFormat] load error:', e);
     } finally {
@@ -133,26 +100,14 @@ export default function GdSelectFormatScreen() {
   // re-registering this effect (and firing an extra DB load) on every keystroke.
   useFocusEffect(useCallback(() => {
     if (gdFormatBridge.has()) return;
-    load(queryRef.current, chipRef.current);
+    load(queryRef.current);
   }, [load]));
 
   // ── Search ───────────────────────────────────────────────────────────────
   const handleSearch = (text: string) => {
     setQuery(text);
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
-    searchTimeout.current = setTimeout(() => load(text, chip), 300);
-  };
-
-  const clearSearch = () => {
-    setQuery('');
-    load('', chip);
-  };
-
-  // ── Chip filter ──────────────────────────────────────────────────────────
-  const handleChip = (selected: ChipFilter) => {
-    setChip(selected);
-    // Re-apply filter to the already-loaded GD base set — no extra DB query
-    setDisplayed(applyChipFilter(allGdFormats, selected));
+    searchTimeout.current = setTimeout(() => load(text), 300);
   };
 
   return (
@@ -167,35 +122,10 @@ export default function GdSelectFormatScreen() {
           variant="light"
           returnKeyType="search"
           accessibilityLabel={t('formatPicker.searchPlaceholderGd')}
+          trailing={pick.button}
         />
 
-        {/* Chip filters — operate on the GD-scoped dataset only */}
-        <ScrollView keyboardShouldPersistTaps="handled"
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 8, paddingRight: 4 }}
-          >
-          {CHIP_FILTERS.map((f) => {
-            const active = chip === f.value;
-            const Icon =
-              f.value === 'Favorites'     ? Star :
-              f.value === 'Recently Used' ? Clock :
-              f.value === 'Created By Me' ? User  : null;
-            return (
-              <Pressable
-                key={f.value}
-                onPress={() => handleChip(f.value)}
-                className="bg-secondary flex-row items-center gap-1.5 rounded-full active:opacity-70 px-3 py-1.5"
-                style={active ? { backgroundColor: GD_COLOR } : undefined}
-              >
-                {Icon && <Icon size={11} color={active ? '#fff' : '#6B7280'} fill={f.value === 'Favorites' && active ? '#fff' : 'none'} />}
-                <Text textBreakStrategy="simple" className="text-secondary-foreground text-xs font-medium" style={active ? { color: '#fff' } : undefined}>
-                  {t(f.labelKey)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        {pick.chips}
       </View>
 
       {/* ── List ─────────────────────────────────────────────────── */}
@@ -206,10 +136,10 @@ export default function GdSelectFormatScreen() {
       ) : (
         <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
-          data={displayed}
+          data={pick.filtered}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{
-            paddingHorizontal: T.space.xl - 12,
+            paddingHorizontal: FORMAT_LIST_PADDING,
             paddingVertical: T.space.md,
             paddingBottom: 48,
             gap: T.space.md - 4,
@@ -220,7 +150,7 @@ export default function GdSelectFormatScreen() {
             <FormatCard
               format={item}
               query={query}
-              onPress={() => router.push(`/(app)/formats/fill?formatId=${item.id}&callingModule=GD` as never)}
+              onPress={() => openFill(item)}
               onPreview={() => setPreviewFormat(item)}
             />
           )}
@@ -233,16 +163,14 @@ export default function GdSelectFormatScreen() {
                 <FileWarning size={30} color={GD_COLOR} />
               </View>
               <Text className="text-base font-semibold text-foreground text-center">
-                {chip !== 'All'
-                  ? t('formatPicker.noFilteredTemplatesGd', {
-                      filter: t(CHIP_FILTERS.find((f) => f.value === chip)?.labelKey ?? 'common.all'),
-                    })
+                {pick.count
+                  ? t('formatPicker.noFilteredTemplatesGd')
                   : t('formatPicker.noTemplatesGd')}
               </Text>
               <Text className="text-sm text-muted-foreground text-center leading-5">
                 {query.trim()
                   ? t('formatPicker.emptySearchHint')
-                  : chip !== 'All'
+                  : pick.count
                   ? t('formatPicker.emptyFilterHintGd')
                   : t('formatPicker.createTemplateHintGd')}
               </Text>
@@ -251,24 +179,14 @@ export default function GdSelectFormatScreen() {
         />
       )}
 
-      {/* ── Template preview bottom sheet ──────────────────────── */}
-      <BottomSheet
-        visible={!!previewFormat}
+      {/* ── 👁 preview (shared) + ⚙︎ filter sheet ──────────────── */}
+      <FormatPreviewSheet
+        format={previewFormat}
         onClose={() => setPreviewFormat(null)}
-        title={previewFormat ? t('formatPicker.previewTitleWithFormat', { title: previewFormat.title }) : t('formatPicker.previewTitle')}
-        snapHeight={480}
-      >
-        <ScrollView keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, paddingTop: 8 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <Text className="text-sm text-foreground leading-6" selectable>
-            {previewFormat?.vivran
-              ? stripFormatMarkers(stripHtmlTags(previewFormat.vivran)).replace(/\{\{.*?\}\}|<<.*?>>|\[\[.*?\]\]/g, '....')
-              : ''}
-          </Text>
-        </ScrollView>
-      </BottomSheet>
+        onFill={() => { const f = previewFormat; setPreviewFormat(null); if (f) openFill(f); }}
+        accent={GD_COLOR}
+      />
+      {pick.sheet}
     </View>
   );
 }

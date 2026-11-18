@@ -12,26 +12,21 @@
  * NBW / Summons "tag" mode now behaves like GD's select-format:
  *   • Base set = formats whose tags array contains the tag param ('NBW' or 'Summons'),
  *     queried via getPublishedFormatsByTag — NOT filtered by format_type
- *   • Chip filters: All | Favorites | Recently Used | Created By Me
+ *   • ⚙︎ filter (owner, design C — was the chip row; every mode): प्रकार ("<tag> वाले" / बाकी, or the format types) /
+ *     दिखाएँ / स्रोत — components/formats/FormatPickExtras
  *   • Debounced search applied client-side on the tag-filtered result set
- *   • Eye icon → BottomSheet content preview
+ *   • 👁 → shared preview sheet with "प्रारूप भरें →" (every mode)
  */
-import { stripFormatMarkers } from '@/lib/formatMarkers';
 import { logger } from '@/lib/logger';
-import { stripHtmlTags } from '@/lib/stringUtils';
 import { T } from '@/lib/typography';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ActivityIndicator, FlatList, Pressable,
-  ScrollView, Text, View,
+  ActivityIndicator, FlatList, Text, View,
 } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import {
-  Clock, FileWarning,
-  Star, User,
-} from 'lucide-react-native';
-import { BottomSheet } from '@/components/ui/ds/BottomSheet';
+import { FileWarning } from 'lucide-react-native';
+import { FORMAT_LIST_PADDING, FormatPreviewSheet, useFormatPickFilter } from '@/components/formats/FormatPickExtras';
 import { SearchBar } from '@/components/SearchBar';
 import { FormatCard } from '@/components/formats/FormatCard';
 import {
@@ -51,31 +46,6 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 const MODULE_COLOR = '#1D4ED8';
 const ANYA_TYPES: FormatType[] = ['Nyayalay', 'Prarthna Patra', 'Any'];
 
-// ─── Chip filter (used in tag / NBW mode only) ─────────────────────────────
-type ChipFilter = 'All' | 'Favorites' | 'Recently Used' | 'Created By Me';
-
-const CHIP_FILTERS: { labelKey: string; value: ChipFilter }[] = [
-  { labelKey: 'formatPicker.chipAll',          value: 'All' },
-  { labelKey: 'formatPicker.chipFavorites',    value: 'Favorites' },
-  { labelKey: 'formatPicker.chipRecentlyUsed', value: 'Recently Used' },
-  { labelKey: 'formatPicker.chipCreatedByMe',  value: 'Created By Me' },
-];
-
-function applyChipFilter(list: FormatWithMeta[], chip: ChipFilter): FormatWithMeta[] {
-  switch (chip) {
-    case 'Favorites':
-      return list.filter((f) => f.is_favorite === 1);
-    case 'Recently Used':
-      return list
-        .filter((f) => f.last_used_at != null)
-        .sort((a, b) => (b.last_used_at ?? 0) - (a.last_used_at ?? 0));
-    case 'Created By Me':
-      return list.filter((f) => f.created_by === 'me');
-    default:
-      return list;
-  }
-}
-
 // ─── Screen ────────────────────────────────────────────────────────────────
 export default function NyayalaySelectFormatScreen() {
   const { t } = useTranslation();
@@ -91,22 +61,21 @@ export default function NyayalaySelectFormatScreen() {
   // Tag mode = NBW / Summons — uses the GD-style rich UI
   const isTagMode    = !isAnya && !isFormatType && !!tag;
 
-  // ── Tag-mode state (chip filters + preview) ───────────────────────────
-  const [allTagFormats, setAllTagFormats]   = useState<FormatWithMeta[]>([]);
-  const [displayed,     setDisplayed]       = useState<FormatWithMeta[]>([]);
-  const [chip,          setChip]            = useState<ChipFilter>('All');
-  const [previewFormat, setPreviewFormat]   = useState<FormatWithMeta | null>(null);
-
-  // ── Shared state ──────────────────────────────────────────────────────
+  // ── State ─────────────────────────────────────────────────────────────
   const [formats,  setFormats]  = useState<FormatWithMeta[]>([]);
   const [loading,  setLoading]  = useState(true);
   const [query,    setQuery]    = useState('');
+  const [previewFormat, setPreviewFormat] = useState<FormatWithMeta | null>(null);
+  // Tag mode: ids of the formats tagged for this paper (listed first) → filter "<tag> वाले" / "बाकी"
+  const [tagIds, setTagIds] = useState<ReadonlySet<string>>(new Set());
+  const first = useMemo(() => (isTagMode && tag ? { ids: tagIds, label: `${tag} वाले` } : undefined), [isTagMode, tag, tagIds]);
+  // ⚙︎ filter (owner, design C — was the tag-mode chip row; now every mode)
+  const pick = useFormatPickFilter(formats, MODULE_COLOR, first);
+  const openFill = (f: FormatWithMeta) => router.push(`/(app)/nyayalay/fill-format?formatId=${f.id}&docId=${docId}` as never);
 
-  // Refs so useFocusEffect reads latest query/chip without re-registering
+  // Ref so useFocusEffect reads the latest query without re-registering
   const queryRef = useRef(query);
-  const chipRef  = useRef(chip);
   useEffect(() => { queryRef.current = query; }, [query]);
-  useEffect(() => { chipRef.current  = chip;  }, [chip]);
 
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
@@ -114,7 +83,7 @@ export default function NyayalaySelectFormatScreen() {
   }, []);
 
   // ── Load ──────────────────────────────────────────────────────────────
-  const load = useCallback(async (q = '', activeChip: ChipFilter = 'All') => {
+  const load = useCallback(async (q = '') => {
     setLoading(true);
     try {
       if (isTagMode) {
@@ -124,16 +93,15 @@ export default function NyayalaySelectFormatScreen() {
         // (getPublishedFormatsByTag returns enriched rows, so client filter is cheap).
         // Formats tagged for this document type first, then every other
         // 'Nyayalay' type format, so nothing usable is hidden.
+        const tagged = await getPublishedFormatsByTag(tag!);
         const rawBase = mergeFormatsFirst(
-          await getPublishedFormatsByTag(tag!),
+          tagged,
           await getPublishedFormatsByType('Nyayalay' as FormatType),
         );
         const base = filterFormatsByQuery(rawBase, q);
-        logger.debug(
-          `[NyayalaySelectFormat] loaded ${base.length} rows for tag="${tag}" — query="${q}" chip="${activeChip}"`
-        );
-        setAllTagFormats(base);
-        setDisplayed(applyChipFilter(base, activeChip));
+        logger.debug(`[NyayalaySelectFormat] loaded ${base.length} rows for tag="${tag}" — query="${q}"`);
+        setTagIds(new Set(tagged.map((f) => f.id)));
+        setFormats(base);
       } else if (isFormatType) {
         // Exact type first (e.g. वादी सूचना), then all 'Nyayalay' formats
         const results = mergeFormatsFirst(
@@ -162,25 +130,14 @@ export default function NyayalaySelectFormatScreen() {
   }, [isAnya, isFormatType, isTagMode, tag, formatType]);
 
   useFocusEffect(useCallback(() => {
-    load(queryRef.current, chipRef.current);
+    load(queryRef.current);
   }, [load]));
 
   // ── Search ────────────────────────────────────────────────────────────
   const handleSearch = (q: string) => {
     setQuery(q);
     if (searchTimer.current) clearTimeout(searchTimer.current);
-    searchTimer.current = setTimeout(() => load(q, chip), 300);
-  };
-
-  const clearSearch = () => {
-    setQuery('');
-    load('', chip);
-  };
-
-  // ── Chip (tag mode only) ──────────────────────────────────────────────
-  const handleChip = (selected: ChipFilter) => {
-    setChip(selected);
-    setDisplayed(applyChipFilter(allTagFormats, selected));
+    searchTimer.current = setTimeout(() => load(q), 300);
   };
 
   // ── Derived ───────────────────────────────────────────────────────────
@@ -190,16 +147,14 @@ export default function NyayalaySelectFormatScreen() {
     : tag     ? t('formatPicker.titleWithTemplates', { tag, type: tag })
     : t('formatPicker.selectTemplate');
 
-  // In tag mode the displayed list comes from chip-filtered state;
-  // in other modes it comes from the shared formats state.
-  const listData = isTagMode ? displayed : formats;
+  const listData = pick.filtered;
 
   // ── Render ────────────────────────────────────────────────────────────
   return (
     <View className="flex-1 bg-background">
       <AppHeader title={title} subtitle={t('nyayalay.title')} showBack />
 
-      {/* ── Tag-mode toolbar: search + chip filters (mirrors GD) ── */}
+      {/* ── Tag-mode toolbar: search + ⚙︎ filter (mirrors GD) ── */}
       {isTagMode && (
         <View className="px-4 pt-3 pb-2 gap-2 border-b border-border bg-background">
           <SearchBar
@@ -209,42 +164,9 @@ export default function NyayalaySelectFormatScreen() {
             variant="light"
             returnKeyType="search"
             accessibilityLabel={t('formatPicker.searchTagAccessibility', { tag })}
+            trailing={pick.button}
           />
-          <ScrollView keyboardShouldPersistTaps="handled"
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 8, paddingRight: 4 }}
-          >
-            {CHIP_FILTERS.map((f) => {
-              const active = chip === f.value;
-              const Icon =
-                f.value === 'Favorites'     ? Star  :
-                f.value === 'Recently Used' ? Clock :
-                f.value === 'Created By Me' ? User  : null;
-              return (
-                <Pressable
-                  key={f.value}
-                  onPress={() => handleChip(f.value)}
-                  className="bg-secondary flex-row items-center gap-1.5 rounded-full active:opacity-70 px-3 py-1.5"
-                  style={active ? { backgroundColor: MODULE_COLOR } : undefined}
-                >
-                  {Icon && (
-                    <Icon
-                      size={11}
-                      color={active ? '#fff' : '#6B7280'}
-                      fill={f.value === 'Favorites' && active ? '#fff' : 'none'}
-                    />
-                  )}
-                  <Text textBreakStrategy="simple"
-                    className="text-secondary-foreground text-xs font-medium"
-                    style={active ? { color: '#fff' } : undefined}
-                  >
-                    {t(f.labelKey)}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+          {pick.chips}
         </View>
       )}
 
@@ -258,7 +180,9 @@ export default function NyayalaySelectFormatScreen() {
             variant="light"
             returnKeyType="search"
             accessibilityLabel={t('formatPicker.searchNyayalayAccessibility')}
+            trailing={pick.button}
           />
+          <View style={{ marginTop: 8 }}>{pick.chips}</View>
           <Text className="text-xs text-muted-foreground mt-2 mb-1">
             {isFormatType
               ? t('formatPicker.showingType', { type: formatType })
@@ -278,7 +202,7 @@ export default function NyayalaySelectFormatScreen() {
           data={listData}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{
-            paddingHorizontal: T.space.xl - 12,
+            paddingHorizontal: FORMAT_LIST_PADDING,
             paddingVertical: T.space.md,
             paddingBottom: 48,
             gap: T.space.md - 4,
@@ -289,8 +213,8 @@ export default function NyayalaySelectFormatScreen() {
             <FormatCard
               format={item}
               query={query}
-              onPress={() => router.push(`/(app)/nyayalay/fill-format?formatId=${item.id}&docId=${docId}` as never)}
-              onPreview={isTagMode ? () => setPreviewFormat(item) : undefined}
+              onPress={() => openFill(item)}
+              onPreview={() => setPreviewFormat(item)}
             />
           )}
           ListEmptyComponent={
@@ -302,18 +226,15 @@ export default function NyayalaySelectFormatScreen() {
                 <FileWarning size={30} color={MODULE_COLOR} />
               </View>
               <Text className="text-base font-semibold text-foreground text-center">
-                {isTagMode && chip !== 'All'
-                  ? t('formatPicker.noTemplatesChipTagged', {
-                      chip: t(CHIP_FILTERS.find((c) => c.value === chip)?.labelKey ?? chip),
-                      tag: tag ?? 'Nyayalay',
-                    })
+                {pick.count
+                  ? t('formatPicker.noFilteredTemplatesGd')
                   : t('formatPicker.noTemplatesTagged', { tag: tag ?? formatType ?? 'Nyayalay' })}
               </Text>
               <Text className="text-sm text-muted-foreground text-center leading-5">
                 {query.trim()
                   ? t('formatPicker.hintDifferentQuery')
-                  : isTagMode && chip !== 'All'
-                  ? t('formatPicker.hintTryAllFilterTagged', { tag: tag ?? 'Nyayalay' })
+                  : pick.count
+                  ? t('formatPicker.emptyFilterHintGd')
                   : isFormatType
                   ? t('formatPicker.hintCreateTypeFormat', { type: formatType, formatType })
                   : isAnya
@@ -325,26 +246,14 @@ export default function NyayalaySelectFormatScreen() {
         />
       )}
 
-      {/* ── Template preview bottom sheet (tag mode only) ─────────── */}
-      {isTagMode && (
-        <BottomSheet
-          visible={!!previewFormat}
-          onClose={() => setPreviewFormat(null)}
-          title={previewFormat ? t('formatPicker.previewTitleWithFormat', { title: previewFormat.title }) : t('formatPicker.previewTitle')}
-          snapHeight={480}
-        >
-          <ScrollView keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, paddingTop: 8 }}
-            showsVerticalScrollIndicator={false}
-          >
-            <Text className="text-sm text-foreground leading-6" selectable>
-              {previewFormat?.vivran
-                ? stripFormatMarkers(stripHtmlTags(previewFormat.vivran)).replace(/\{\{.*?\}\}|<<.*?>>|\[\[.*?\]\]/g, '…')
-                : ''}
-            </Text>
-          </ScrollView>
-        </BottomSheet>
-      )}
+      {/* ── 👁 preview (shared, every mode) + ⚙︎ filter sheet ─────── */}
+      <FormatPreviewSheet
+        format={previewFormat}
+        onClose={() => setPreviewFormat(null)}
+        onFill={() => { const f = previewFormat; setPreviewFormat(null); if (f) openFill(f); }}
+        accent={MODULE_COLOR}
+      />
+      {pick.sheet}
     </View>
   );
 }

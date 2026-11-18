@@ -332,7 +332,7 @@ export default function FormatsScreen() {
           data={formats}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{
-            paddingHorizontal: 24,
+            paddingHorizontal: 20, // same side padding on every format list (owner)
             paddingTop: 16,
             paddingBottom: 80,
             gap: 12,

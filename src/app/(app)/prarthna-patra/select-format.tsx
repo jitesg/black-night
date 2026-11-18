@@ -11,6 +11,7 @@ import { FormatCard } from '@/components/formats/FormatCard';
 import { type FormatWithMeta } from '@/lib/db/predefinedFormatRepo';
 import { getPublishedFormatsByTag, getPublishedFormatsByType, mergeFormatsFirst, filterFormatsByQuery } from '@/lib/db/sysFormatRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { FORMAT_LIST_PADDING, FormatPreviewSheet, useFormatPickFilter } from '@/components/formats/FormatPickExtras';
 
 const MODULE_COLOR = '#7C3AED';
 
@@ -23,6 +24,9 @@ export default function PPSelectFormatScreen() {
   const [formats, setFormats] = useState<FormatWithMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [previewFormat, setPreviewFormat] = useState<FormatWithMeta | null>(null);
+  // ⚙︎ filter (owner, design C): प्रकार (प्रार्थना पत्र / BNSS कार्यवाही) / दिखाएँ / स्रोत
+  const pick = useFormatPickFilter(formats, MODULE_COLOR);
 
   // Keep a ref so useFocusEffect can read latest query without re-registering
   const queryRef = useRef(query);
@@ -87,7 +91,9 @@ export default function PPSelectFormatScreen() {
           variant="light"
           returnKeyType="search"
           accessibilityLabel={t('prarthnaPatra.selectFormat.searchAccessibility')}
+          trailing={pick.button}
         />
+        {pick.chips}
       </View>
 
       {loading ? (
@@ -97,13 +103,13 @@ export default function PPSelectFormatScreen() {
       ) : (
         <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
-          data={formats}
+          data={pick.filtered}
           keyExtractor={(item) => item.id}
-          contentContainerClassName="px-5 py-4 gap-3 pb-12"
+          contentContainerStyle={{ paddingHorizontal: FORMAT_LIST_PADDING, paddingTop: 16, paddingBottom: 48, gap: 12 }}
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           renderItem={({ item }) => (
-            <FormatCard format={item} query={query} onPress={() => handleSelect(item)} />
+            <FormatCard format={item} query={query} onPress={() => handleSelect(item)} onPreview={() => setPreviewFormat(item)} />
           )}
           ListEmptyComponent={
             <View className="items-center justify-center py-24 gap-4 px-6">
@@ -125,6 +131,15 @@ export default function PPSelectFormatScreen() {
           }
         />
       )}
+
+      {/* 👁 preview (shared) + ⚙︎ filter sheet */}
+      <FormatPreviewSheet
+        format={previewFormat}
+        onClose={() => setPreviewFormat(null)}
+        onFill={() => { const f = previewFormat; setPreviewFormat(null); if (f) handleSelect(f); }}
+        accent={MODULE_COLOR}
+      />
+      {pick.sheet}
     </View>
   );
 }
