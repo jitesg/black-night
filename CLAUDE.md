@@ -651,6 +651,10 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   colour, "+n जगह" → sheet "card में भरें"), tap = that card only (`onReplace`), strip "✓ … से भरा · हटाएँ" (undo = card as before). The old
   "typed before" name list is off on these name boxes (`disableSuggestions`; AutocompleteInput got `onFocus`). The केस डायरी कार्यवाही panel
   uses the same PersonGroupInput, so it shows the list too. "मुकदमा चुनें" strip + "मुकदमे से भरें" stay until the owner says the new way works.
+  Step 2: मु0अ0सं0 / धारा boxes (format keys whose default is @FIR.fir_number / @FIR.section, 34 + 30 in the seed) → `FormatCaseInput` in
+  input.tsx + `components/common/CaseSuggest.tsx`: typing lists cases (`searchCases`: मुकदमे fir_number / section, then न्यायालय fir_number+year /
+  apradh_sankhya / applicable_sections; SQL loose → every typed word re-checked in JS; one hit per मु0अ0सं0 + धारा; a box already holding that
+  case shows none); a tap fills BOTH boxes (partner key found via allKeys, `KeyDefForRender.default_value`), nothing else.
 - FIR रो0आम (GD) रपट (owner): boxes "रो0आम रपट संख्या" (number) + "रपट का समय" (time) in a row under सूचना की तारीख / समय on add-fir and the
   FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Linked: @FIR.roaam_no / roaam_time fill the
   35(3) / 179 notices' RoNo / RoTime.

@@ -320,6 +320,8 @@ export interface KeyDefForRender {
   key_name: string;
   field_type: string;
   dropdown_options?: string | null;
+  /** the key's default ("@FIR.fir_number" … — the fill screens pass full key rows) */
+  default_value?: string | null;
 }
 
 /**

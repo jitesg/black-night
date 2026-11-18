@@ -23,7 +23,7 @@
 
 import { isMarkerDefault } from '@/lib/firFill';
 import React, {
-  forwardRef, memo, useRef, useState, useCallback, useImperativeHandle,
+  forwardRef, memo, useEffect, useRef, useState, useCallback, useImperativeHandle,
 } from 'react';
 import {
   Platform, Pressable, Text, TextInput, View,
@@ -41,6 +41,8 @@ import { SentenceFieldInput } from './SentenceFieldInput';
 import { HintLink, LabelWithHint } from './FieldHintLink';
 import type { KeyDefForRender } from '@/lib/templateEngine';
 import { multiChoiceSelected, multiChoiceToggle } from '@/lib/multiChoice';
+import { CaseSuggest } from '@/components/common/CaseSuggest';
+import type { CaseHit } from '@/lib/db/peopleRegistryRepo';
 import { dateFormatOf, daysBetweenInclusive, daysSpecOf, formatDateValue, toIsoDate } from '@/lib/formatDerived';
 
 // ─── Input Type Definitions ───────────────────────────────────────────────────
@@ -737,6 +739,27 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
     const inputType = fieldTypeToInputType(fieldType);
     // multiline fields get 5 rows (~120 px) so police report text has breathing room
     const multilineLines = fieldType === 'multiline' ? 5 : undefined;
+    // मु0अ0सं0 / धारा boxes (owner, "पूरे app से सुझाव" step 2): cases listed while typing; a pick fills both boxes
+    const caseRole = caseRoleOf(keyDef.default_value);
+    if (caseRole && inputType !== 'date') {
+      const partner = allKeys?.find((k) => caseRoleOf(k.default_value) === (caseRole === 'no' ? 'sec' : 'no'))?.key_name;
+      return (
+        <FormatCaseInput
+          ref={ref}
+          keyDef={keyDef}
+          value={value}
+          onChange={onChange}
+          error={error}
+          role={caseRole}
+          partnerKey={partner}
+          displayLabel={displayLabel}
+          hint={hint}
+          required={required}
+          inputType={inputType}
+          multilineProps={multilineLines !== undefined ? (autoGrow ? { autoGrow: true } : { numberOfLines: multilineLines }) : {}}
+        />
+      );
+    }
     return (
       <View ref={ref}>
         <Input
@@ -756,6 +779,52 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
     );
   }
 );
+
+// ── FormatCaseInput — मु0अ0सं0 / धारा box with case suggestions (owner) ─────────────────────────────
+
+/** 'no' for a @FIR.fir_number box, 'sec' for a @FIR.section box, else null. */
+function caseRoleOf(defaultValue: string | null | undefined): 'no' | 'sec' | null {
+  const d = String(defaultValue ?? '');
+  if (d.startsWith('@FIR.fir_number')) return 'no';
+  if (d.startsWith('@FIR.section')) return 'sec';
+  return null;
+}
+
+const FormatCaseInput = forwardRef<View, {
+  keyDef: FormatKeyDef; value: string; onChange: (keyName: string, value: string) => void; error?: string;
+  role: 'no' | 'sec'; partnerKey?: string; displayLabel: string; hint?: string; required: boolean; inputType: InputType;
+  multilineProps: { autoGrow?: boolean; numberOfLines?: number };
+}>(({ keyDef, value, onChange, error, role, partnerKey, displayLabel, hint, required, inputType, multilineProps }, ref) => {
+  const [focused, setFocused] = useState(false);
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (blurTimer.current) clearTimeout(blurTimer.current); }, []);
+  const pick = (h: CaseHit) => {
+    setFocused(false);
+    // both boxes together (owner): this one and its partner
+    onChange(keyDef.key_name, role === 'no' ? h.firNumber : h.section);
+    if (partnerKey) onChange(partnerKey, role === 'no' ? h.section : h.firNumber);
+  };
+  return (
+    <View ref={ref}>
+      <Input
+        type={inputType}
+        label={displayLabel}
+        labelHint={hint}
+        placeholder={keyPlaceholder(keyDef.dropdown_options) ?? (isMarkerDefault(keyDef.default_value) ? undefined : keyDef.default_value) ?? `Enter ${displayLabel}`}
+        value={value}
+        onChangeText={(v) => onChange(keyDef.key_name, v)}
+        onFocus={() => { if (blurTimer.current) clearTimeout(blurTimer.current); setFocused(true); }}
+        onBlur={() => { blurTimer.current = setTimeout(() => setFocused(false), 200); }}
+        errorText={error}
+        required={required}
+        clearCopy
+        {...multilineProps}
+      />
+      <CaseSuggest query={value} active={focused} onPick={pick} />
+    </View>
+  );
+});
+FormatCaseInput.displayName = 'FormatCaseInput';
 
 // ── FormatKeyDaysBox — locked "कुल दिवस" (owner: filled from the two dates, the officer cannot change it) ──
 

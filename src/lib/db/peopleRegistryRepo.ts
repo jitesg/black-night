@@ -4,7 +4,7 @@
  * (person cards inside saved form values), हल्का persons. Rules (merge / rank) in src/lib/peopleRegistry.ts. On the phone only.
  */
 import { getDatabase } from './database';
-import { sqlWordFilter } from '../searchUtils';
+import { queryTokens, searchNormalize, sqlWordFilter } from '../searchUtils';
 import { mergePeople, peopleInValues, rankPeople, type PeopleSource, type PersonHit, type RawPerson } from '../peopleRegistry';
 
 const PER_SOURCE = 25;
@@ -120,4 +120,60 @@ export async function searchPeople(query: string, limit = 5): Promise<PersonHit[
   }
 
   return rankPeople(mergePeople(raw), q, limit);
+}
+
+// ── मु0अ0सं0 / धारा सुझाव (owner, step 2) ────────────────────────────────────────────────────────────
+
+/** One case for the मु0अ0सं0 / धारा boxes: picking it fills BOTH boxes, nothing else. */
+export interface CaseHit {
+  key: string;
+  firNumber: string;
+  section: string;
+  /** "वादी रामपाल · 12/11/2026" / "वाद 412/26" */
+  detail: string;
+  module: 'fir' | 'court';
+}
+
+/**
+ * Cases whose मु0अ0सं0 or धारा holds what is typed (every word): मुकदमे first, then न्यायालय कागज़ (their मु0अ0सं0 + धारा);
+ * one hit per मु0अ0सं0 + धारा. At most `limit`. Empty when nothing is typed.
+ */
+export async function searchCases(query: string, limit = 5): Promise<CaseHit[]> {
+  const q = query.trim();
+  if (!q) return [];
+  const db = await getDatabase();
+  const out: CaseHit[] = [];
+  const seen = new Set<string>();
+  // the SQL filter is loose (digits match any digit) — every typed word must really be in the मु0अ0सं0 / धारा
+  const tokens = queryTokens(q);
+  const add = (h: CaseHit) => {
+    const k = `${h.firNumber.replace(/\s+/g, '')}|${h.section.replace(/\s+/g, ' ').trim()}`;
+    if (!h.firNumber.trim() || seen.has(k)) return;
+    const hay = searchNormalize(`${h.firNumber} ${h.section}`);
+    if (!tokens.every((t) => hay.includes(t))) return;
+    seen.add(k); out.push({ ...h, key: k });
+  };
+  const fw = sqlWordFilter(['f.fir_number', 'f.section'], q);
+  for (const r of await safe(() => db.getAllAsync<Record<string, string | number>>(
+    `SELECT f.fir_number, f.section, f.complainant_name, f.date_of_information FROM firs f
+      WHERE f.deleted_at IS NULL AND ${fw.sql} ORDER BY f.updated_at DESC LIMIT 200`, fw.params,
+  ))) {
+    add({
+      key: '', module: 'fir', firNumber: String(r.fir_number ?? ''), section: String(r.section ?? ''),
+      detail: [r.complainant_name ? `वादी ${r.complainant_name}` : '', dmy(r.date_of_information)].filter(Boolean).join(' · '),
+    });
+  }
+  const dw = sqlWordFilter(['d.fir_number', 'd.apradh_sankhya', 'd.applicable_sections'], q);
+  for (const r of await safe(() => db.getAllAsync<Record<string, string | number>>(
+    `SELECT d.fir_number, d.fir_year, d.apradh_sankhya, d.applicable_sections, d.vad_sankhya, d.court_name FROM nyayalay_documents d
+      WHERE d.deleted_at IS NULL AND ${dw.sql} ORDER BY d.updated_at DESC LIMIT 200`, dw.params,
+  ))) {
+    const no = String(r.fir_number || r.apradh_sankhya || '').trim();
+    const year = String(r.fir_year ?? '').trim();
+    add({
+      key: '', module: 'court', firNumber: year && no && !no.includes('/') ? `${no}/${year}` : no, section: String(r.applicable_sections ?? ''),
+      detail: [r.vad_sankhya ? `वाद ${r.vad_sankhya}` : '', String(r.court_name ?? '')].filter(Boolean).join(' · '),
+    });
+  }
+  return out.slice(0, limit);
 }
