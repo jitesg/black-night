@@ -619,6 +619,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
   types when 2+, or न्यायालय tag mode "<tag> वाले" / "बाकी"; दिखाएँ ⭐ पसंदीदा / 🕘 हाल में उपयोग (newest first); स्रोत System / मेरे बनाए; counts on
   every option) — replaced the GD / न्यायालय chip rows; `FormatPreviewSheet` (👁 on every card, blanks "....", "प्रारूप भरें →" on top = the screen's
   select action). Cards: ⓘ + 👁 everywhere, ⭐ shown only, no ✏️ / 🗑. `FORMAT_LIST_PADDING` = 20 side padding (also the प्रारूप list, was 24).
+- न्यायालय उच्च न्यायालय cards "प्रारूप से वादी सूचना / DCRB रिपोर्ट जोड़ें" (owner, option ख): no format_type "वादी सूचना" / "DCRB रिपोर्ट" exists, so
+  they listed only the 5 Nyayalay formats. select-format `FORMAT_TYPE_FIRST` → their own formats first (ids sys-fmt-notice-suchna-vadi /
+  sys-fmt-dcrb-criminal-history via `getPublishedFormatsByIds`, + tags "वादी सूचना" / "DCRB", + the exact type), then Nyayalay; ⚙︎ प्रकार
+  "वादी सूचना वाले" / "DCRB वाले" / बाकी.
 - Search lists tap once (owner: "सर्च करके select दो स्टेप में"): every FlatList / ScrollView / SectionList on the 19 screens with a SearchBar has
   `keyboardShouldPersistTaps="handled"` (like home) — without it the first tap only closed the keyboard. New list screens with a search box: add it.
 - Horizontal chip row INSIDE a pressable card (FormatCard tags): on Android the card took the drag and the row never slid (owner) — put

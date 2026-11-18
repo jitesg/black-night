@@ -581,6 +581,18 @@ export async function getPublishedFormatsByTypes(types: string[]): Promise<Forma
   return enrichFormats(formats);
 }
 
+/** Published formats with these ids (any type), in the given id order — e.g. the न्यायालय वादी सूचना / DCRB picks. */
+export async function getPublishedFormatsByIds(ids: readonly string[]): Promise<FormatWithMeta[]> {
+  if (!ids.length) return [];
+  const formats = await dbGetAllAsync<PredefinedFormat>(
+    `SELECT * FROM predefined_formats
+     WHERE deleted_at IS NULL AND ${SQL_IS_PUBLISHED} AND id IN (${ids.map(() => '?').join(', ')})`,
+    [...ids]
+  );
+  const rows = await enrichFormats(formats);
+  return [...rows].sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+}
+
 export async function getPublishedFormatsByTag(tag: string): Promise<FormatWithMeta[]> {
   // Use EXISTS to avoid duplicate rows without DISTINCT.
   const formats = await dbGetAllAsync<PredefinedFormat>(

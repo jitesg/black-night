@@ -34,6 +34,7 @@ import {
   type FormatWithMeta,
 } from '@/lib/db/predefinedFormatRepo';
 import {
+  getPublishedFormatsByIds,
   getPublishedFormatsByTag,
   mergeFormatsFirst,
   filterFormatsByQuery,
@@ -45,6 +46,16 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 
 const MODULE_COLOR = '#1D4ED8';
 const ANYA_TYPES: FormatType[] = ['Nyayalay', 'Prarthna Patra', 'Any'];
+
+/**
+ * The उच्च न्यायालय cards "प्रारूप से वादी सूचना / DCRB रिपोर्ट जोड़ें" (owner, option ख): no format has format_type
+ * "वादी सूचना" / "DCRB रिपोर्ट", so the list showed only the 5 न्यायालय formats. Their own formats (by id — they live
+ * under केस डायरी / प्रार्थना पत्र — or by tag, for ones made later) are listed first; the न्यायालय formats follow.
+ */
+const FORMAT_TYPE_FIRST: Record<string, { ids: string[]; tags: string[]; label: string }> = {
+  'वादी सूचना': { ids: ['sys-fmt-notice-suchna-vadi'], tags: ['वादी सूचना'], label: 'वादी सूचना वाले' },
+  'DCRB रिपोर्ट': { ids: ['sys-fmt-dcrb-criminal-history'], tags: ['DCRB'], label: 'DCRB वाले' },
+};
 
 // ─── Screen ────────────────────────────────────────────────────────────────
 export default function NyayalaySelectFormatScreen() {
@@ -68,7 +79,11 @@ export default function NyayalaySelectFormatScreen() {
   const [previewFormat, setPreviewFormat] = useState<FormatWithMeta | null>(null);
   // Tag mode: ids of the formats tagged for this paper (listed first) → filter "<tag> वाले" / "बाकी"
   const [tagIds, setTagIds] = useState<ReadonlySet<string>>(new Set());
-  const first = useMemo(() => (isTagMode && tag ? { ids: tagIds, label: `${tag} वाले` } : undefined), [isTagMode, tag, tagIds]);
+  const first = useMemo(() => {
+    if (isTagMode && tag) return { ids: tagIds, label: `${tag} वाले` };
+    if (isFormatType && formatType) return { ids: tagIds, label: FORMAT_TYPE_FIRST[formatType]?.label ?? `${formatType} वाले` };
+    return undefined;
+  }, [isTagMode, isFormatType, tag, formatType, tagIds]);
   // ⚙︎ filter (owner, design C — was the tag-mode chip row; now every mode)
   const pick = useFormatPickFilter(formats, MODULE_COLOR, first);
   const openFill = (f: FormatWithMeta) => router.push(`/(app)/nyayalay/fill-format?formatId=${f.id}&docId=${docId}` as never);
@@ -103,11 +118,16 @@ export default function NyayalaySelectFormatScreen() {
         setTagIds(new Set(tagged.map((f) => f.id)));
         setFormats(base);
       } else if (isFormatType) {
-        // Exact type first (e.g. वादी सूचना), then all 'Nyayalay' formats
-        const results = mergeFormatsFirst(
+        // This card's own formats first (exact type, known ids, tags — FORMAT_TYPE_FIRST), then all 'Nyayalay' formats
+        const own = FORMAT_TYPE_FIRST[formatType!];
+        const ownList = mergeFormatsFirst(
+          await getPublishedFormatsByIds(own?.ids ?? []),
+          ...(await Promise.all((own?.tags ?? []).map((tg) => getPublishedFormatsByTag(tg)))),
           await getPublishedFormatsByType(formatType as FormatType),
-          await getPublishedFormatsByType('Nyayalay' as FormatType),
         );
+        const results = mergeFormatsFirst(ownList, await getPublishedFormatsByType('Nyayalay' as FormatType));
+        setTagIds(new Set(ownList.map((f) => f.id)));
+        // keepOrder inside filterFormatsByQuery keeps "this card's formats first" on a tie
         setFormats(filterFormatsByQuery(results, q));
       } else if (isAnya) {
         const results = q.trim()
