@@ -16,6 +16,9 @@ import {
   KeyboardAvoidingView, BackHandler, ActivityIndicator,
 } from 'react-native';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { markedToEditorHtml } from '@/lib/reportLayout';
+import { htmlToPlainText } from '@/lib/stringUtils';
+import { isHtml, markdownToHtml } from '@/lib/markdownToHtml';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { ChevronDown } from 'lucide-react-native';
@@ -91,6 +94,12 @@ function ActionTypePicker({
 
 // ── Main Screen ───────────────────────────────────────────────────────────
 
+/** Any value → editor HTML (old plain-text कार्यवाही → paragraphs; HTML kept as is). Same as the आख्या screen. */
+function toEditorHtml(v: string): string {
+  if (!v.trim()) return '';
+  return isHtml(v) ? v : markdownToHtml(v);
+}
+
 export default function TakeActionScreen() {
   const { t } = useTranslation();
   const { ppId } = useLocalSearchParams<{ ppId: string }>();
@@ -115,6 +124,8 @@ export default function TakeActionScreen() {
   // mutations to savedRef.current were silently lost on the next re-render.
   const savedRef = useRef(false);
   const initialLoadDone = useRef(false);
+  // what the screen opened with — loading the saved कार्यवाही is not a change (owner: "सहेजें?" came up with nothing changed)
+  const baselineRef = useRef<{ type: string; date: string; text: string } | null>(null);
 
   const isNCR = pp?.petition_type === 'NCR';
 
@@ -143,16 +154,21 @@ export default function TakeActionScreen() {
             setUsedFormatTitle(existing.format_title);
             setUsedFormatId(existing.format_id);
           }
+          baselineRef.current = existing
+            ? { type: existing.action_type || '', date: existing.action_date, text: htmlToPlainText(existing.action_content).trim() }
+            : null;
         } finally {
           setLoading(false);
           initialLoadDone.current = true;
         }
       }
 
-      // Insert format draft if returned from fill-format screen
+      // Insert format draft if returned from fill-format screen — with its layout (data-fmt editor HTML, like the आख्या;
+      // owner: 126/135 headings / names / signature / one sheet per letter were lost as plain text)
       if (draft) {
+        const added = draft.markedText?.trim() ? markedToEditorHtml(draft.markedText) : toEditorHtml(draft.generatedText);
         setActionContent((prev) =>
-          prev.trim() ? `${prev}\n\n${draft.generatedText}` : draft.generatedText
+          htmlToPlainText(prev).trim() ? `${toEditorHtml(prev)}<p><br></p>${added}` : added
         );
         setUsedFormatTitle(draft.formatTitle);
         setUsedFormatId(draft.formatId);
@@ -163,8 +179,12 @@ export default function TakeActionScreen() {
 
   // Dirty tracking (after initial load)
   useEffect(() => {
-    if (!initialLoadDone.current) return;
-    if (!savedRef.current) setIsDirty(true);
+    if (!initialLoadDone.current || savedRef.current) return;
+    const b = baselineRef.current;
+    // a new कार्यवाही: dirty once something is typed / picked; a saved one: only when it really differs
+    setIsDirty(b
+      ? (actionType !== b.type || actionDate !== b.date || htmlToPlainText(actionContent).trim() !== b.text)
+      : (!!actionType || !!htmlToPlainText(actionContent).trim()));
   }, [actionType, actionDate, actionContent]); // savedRef is a ref — excluded intentionally
 
   // Hardware back
@@ -185,7 +205,7 @@ export default function TakeActionScreen() {
     const e: Record<string, string> = {};
     if (isNCR && !actionType) e.actionType = t('prarthnaPatra.action.errorActionType');
     if (!actionDate.trim()) e.actionDate = t('prarthnaPatra.action.errorActionDate');
-    if (!actionContent.trim()) e.actionContent = t('prarthnaPatra.action.errorActionContent');
+    if (!htmlToPlainText(actionContent).trim()) e.actionContent = t('prarthnaPatra.action.errorActionContent');
     setErrors(e);
     return Object.keys(e).length === 0;
   };

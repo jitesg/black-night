@@ -289,6 +289,9 @@ detailed working log. Keep the guide up to date when the architecture changes.
   बीट सूचना / NCR "कार्यवाही करें" (`[ppId]/take-action.tsx`) made alike (owner): no grey context box, subtitle "<type> · <first आवेदक>",
   .doc = header HeaderDocButton (bottom .doc removed), कार्रवाई की तिथि = ReportDateField (calendar, dd/mm/yyyy), no headings above प्रारूप card /
   editor; NCR action type, note and both save buttons unchanged. Shared `components/common/ReportFormParts.tsx` (ReportDateField, HeaderDocButton).
+  Format layout in कार्यवाही (owner: 126/135 came in as plain text): fill-format mode=action now also passes `markedText` in ppActionDraftStore and
+  take-action inserts `markedToEditorHtml(markedText)` (else `toEditorHtml`), appended after "<p><br></p>" like the आख्या; empty check = htmlToPlainText;
+  dirty = differs from the saved कार्यवाही (`baselineRef`) — loading it is no change.
 - प्रार्थना पत्र types made alike (owner, sample approved): home रिमाइंडर / समय निकला (dashboardRepo loadDashboardData) list EVERY type (was only बीट सूचना /
   NCR); getDashboardAnalytics counts आज / समय निकला for every type (analytics card shows "आज" too); आख्या screen has two saves — "आख्या सहेजें
   (लंबित रहे)" (saveReport `complete = false` → status Pending, disposal_date NULL) and "✓ सहेजें व निस्तारित करें" (PP blue #2D52B8; back dialog

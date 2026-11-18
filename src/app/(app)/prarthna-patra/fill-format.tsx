@@ -195,6 +195,8 @@ export default function PPFillFormatScreen() {
           generatedText,
           formatTitle: format.title,
           formatId: format.id,
+          // layout marks too (owner: 126/135 lost its layout in the बीट / NCR कार्यवाही editor — only plain text was sent)
+          markedText,
         });
       }
       // Dismiss both fill-format and select-format in one go, landing back
