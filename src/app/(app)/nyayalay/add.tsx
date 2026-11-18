@@ -106,8 +106,8 @@ function Picker<T extends string>({
         className="border border-border rounded-xl px-3 py-3 flex-row items-center justify-between bg-card active:opacity-70"
         style={{ borderCurve: 'continuous' }}
       >
-        <Text className="text-sm flex-1"
-          style={{ color: value ? '#111827' : '#9CA3AF' }}>
+        {/* THEME colours (was #111827 — dark text on the dark card in dark mode) */}
+        <Text className={`text-sm flex-1 ${value ? 'text-foreground' : 'text-muted-foreground'}`}>
           {value ? (optionLabels?.[value] ?? value) : (placeholder ?? 'Select…')}
         </Text>
         <ChevronDown size={16} color="#9CA3AF" />
@@ -545,6 +545,7 @@ export default function AddNyayalayScreen() {
         cardBadge={word}
         addLabel={add}
         addressOptional
+        hideLabel
       />
     </View>
   );
@@ -570,7 +571,7 @@ export default function AddNyayalayScreen() {
           subtitle={isEdit ? t('nyayalay.form.editTitle') : t('nyayalay.form.newTitle')}
           onBack={handleBack}
           rightActions={
-            <Pressable onPress={handleSave} disabled={saving} className="bg-primary rounded-xl px-4 py-2 active:opacity-70">
+            <Pressable onPress={handleSave} disabled={saving} className="bg-primary rounded-xl px-4 py-2 active:opacity-70" style={{ marginRight: 8 }}>
               <Text className="text-sm font-semibold text-primary-foreground">{saving ? t('common.saving') : t('common.save')}</Text>
             </Pressable>
           }
@@ -585,10 +586,10 @@ export default function AddNyayalayScreen() {
             <Text className="text-sm text-destructive mt-3">{errors.general}</Text>
           ) : null}
 
-          {/* ── Document Type ── */}
-          <Section title={t('nyayalay.form.sectionDocType')} />
+          {/* ── Document Type — the box's own label (owner: the heading above + an empty label made a blank gap) ── */}
+          <View className="mt-4" />
           <Picker
-            label=""
+            label={`${t('nyayalay.form.sectionDocType')} *`}
             value={docType}
             options={DOC_TYPES}
             optionLabels={{
@@ -652,6 +653,7 @@ export default function AddNyayalayScreen() {
                   cardBadge={ACCUSED_WORD}
                   addLabel={`+ ${ACCUSED_WORD} जोड़ें`}
                   addressOptional
+                  hideLabel
                 />
               </View>
             </>
@@ -728,7 +730,8 @@ export default function AddNyayalayScreen() {
           {/* ── Anya ── */}
           {showAnya && (
             <>
-              <Section title={t('nyayalay.form.sectionDocumentDetails')} />
+              {/* no "दस्तावेज विवरण" heading — the box label says it (owner) */}
+              <View className="mt-2" />
               <Field label={t('nyayalay.form.documentTitleRequired')} error={errors.documentTitle}>
                 <Input value={documentTitle} onChangeText={(v) => { setDocumentTitle(v); markDirty(); }} placeholder={t('nyayalay.form.documentTitlePlaceholder')} />
               </Field>

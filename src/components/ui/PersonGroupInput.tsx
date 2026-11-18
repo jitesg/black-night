@@ -761,10 +761,12 @@ export interface PersonGroupInputProps {
   addLabel?: string;
   /** Badge on every named card (न्यायालय: "अभियुक्त" / "अपीलकर्ता") — role's word wins */
   cardBadge?: string;
+  /** No label / count row (the screen's own heading says it — न्यायालय form, owner) */
+  hideLabel?: boolean;
 }
 
 export const PersonGroupInput = memo(({
-  label, value, onChange, onValidChange, keyName, error, single, addressOptional, hint, role, addLabel, cardBadge,
+  label, value, onChange, onValidChange, keyName, error, single, addressOptional, hint, role, addLabel, cardBadge, hideLabel,
 }: PersonGroupInputProps) => {
   const C = useGroupTokens();
   const { t } = useTranslation();
@@ -884,6 +886,7 @@ export const PersonGroupInput = memo(({
   return (
     <View style={{ gap: 10 }}>
       {/* label (+ "ⓘ कैसे भरें?") and the count; the full-width "मुकदमे से … भरें" button below (owner, design B) */}
+      {hideLabel ? null : (
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
         <View style={{ flex: 1, minWidth: 0 }}>
           <LabelWithHint hint={hint} title={String(resolvedLabel)}>
@@ -900,6 +903,7 @@ export const PersonGroupInput = memo(({
           </View>
         )}
       </View>
+      )}
 
       {entries.map((entry, i) => (
         <PersonCard
