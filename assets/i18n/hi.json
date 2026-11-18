@@ -2264,7 +2264,8 @@
       "finishedBannerDesc": "आप अभी भी नीचे दी गई रिपोर्ट को संपादित और पुनः सहेज सकते हैं।",
       "tapToChangeTemplate": "प्रारूप बदलने के लिए टैप करें",
       "selectNyayalayTemplate": "न्यायालय प्रारूप चुनें",
-      "reportContentLabel": "रिपोर्ट सामग्री",
+      "reportContentLabel": "रिपोर्ट",
+      "editorPlaceholder": "रिपोर्ट यहाँ लिखें, या ऊपर \"फॉर्मेट से टेम्पलेट जोड़ें\" दबाएँ…",
       "courtReportTitle": "न्यायालय रिपोर्ट",
       "finalSaveNotePrefix": "अंतिम सहेजें स्थायी रूप से इस रिपोर्ट को संलग्न करेगा और दस्तावेज स्थिति को स्वचालित रूप से सेट करेगा:"
     },

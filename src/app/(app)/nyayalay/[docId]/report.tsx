@@ -9,7 +9,7 @@
  *                the shared DatePickerModal (calendar bottom-sheet).
  *                Template selector upgraded to a prominent action card with icon,
  *                format-type badge and an amber accent stripe.
- *   • Prompt 3 — Report content already uses GeneratedReportView (kept as-is).
+ *   • रिपोर्ट = DocumentEditor (owner, like the प्रार्थना पत्र आख्या); .doc in the header.
  *                Draft from fill-format auto-populates the editor on focus.
  */
 import { markedToEditorHtml } from '@/lib/reportLayout';
@@ -19,7 +19,10 @@ import {
   ActivityIndicator, BackHandler, KeyboardAvoidingView,
   Pressable, ScrollView, Text, View,
 } from 'react-native';
-import { GeneratedReportView } from '@/components/common/GeneratedReportView';
+import { DocumentEditor } from '@/components/common/DocumentEditor';
+import { HeaderDocButton } from '@/components/common/ReportFormParts';
+import { isHtml, markdownToHtml } from '@/lib/markdownToHtml';
+import { htmlToPlainText } from '@/lib/stringUtils';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { DatePickerModal, dateStrToObj } from '@/components/common/DatePickerModal';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -138,6 +141,12 @@ function DatePickerField({
 
 // ─── Screen ─────────────────────────────────────────────────────────────────
 
+/** Any value → editor HTML (old plain-text report → paragraphs; HTML kept as is). Same as the प्रार्थना पत्र आख्या. */
+function toEditorHtml(v: string): string {
+  if (!v.trim()) return '';
+  return isHtml(v) ? v : markdownToHtml(v);
+}
+
 export default function NyayalayReportScreen() {
   const { docId } = useLocalSearchParams<{ docId: string }>();
   const { t } = useTranslation();
@@ -175,15 +184,16 @@ export default function NyayalayReportScreen() {
         setDoc(d);
         setExistingReport(r);
 
+        // रिपोर्ट box = the rich editor (owner): its value is editor HTML; a format's layout (marks) goes in as data-fmt
         if (draft) {
-          setReportContent(draft.generatedText);
-          setReportMarked(draft.markedText ?? '');
+          setReportContent(draft.markedText?.trim() ? markedToEditorHtml(draft.markedText) : toEditorHtml(draft.generatedText));
+          setReportMarked('');
           setFormatTitle(draft.formatTitle);
           setFormatId(draft.formatId);
           setActionDate(todayStr());
         } else if (r) {
-          setReportContent(r.report_content);
-          setReportMarked(r.report_marked ?? '');
+          setReportContent(r.report_marked ? markedToEditorHtml(r.report_marked) : toEditorHtml(r.report_content));
+          setReportMarked('');
           setFormatTitle(r.format_title);
           setFormatId(r.format_id);
           setActionDate(r.report_date);
@@ -218,7 +228,7 @@ export default function NyayalayReportScreen() {
   const validate = (): boolean => {
     const e: Record<string, string> = {};
     if (!actionDate.trim()) e.actionDate = t('nyayalay.report.errorActionDateRequired');
-    if (!reportContent.trim()) e.reportContent = t('nyayalay.report.errorReportEmpty');
+    if (!htmlToPlainText(reportContent).trim()) e.reportContent = t('nyayalay.report.errorReportEmpty');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -233,7 +243,7 @@ export default function NyayalayReportScreen() {
         actionDate,
         formatTitle,
         formatId,
-        // '' after an edit (onSave clears it) — the editor's own HTML then carries the layout marks
+        // always '' now — the editor HTML itself carries the layout marks (data-fmt)
         reportMarked
       );
       await markNyayalayFinished(docId);
@@ -279,6 +289,9 @@ export default function NyayalayReportScreen() {
           subtitle={doc ? (DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type) : t('nyayalay.form.title')}
           onBack={handleBack}
           rightActions={
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {/* .doc at the top right (owner, like the प्रार्थना पत्र आख्या) — faded while the report is empty */}
+            <HeaderDocButton source={reportContent} title={formatTitle || t('nyayalay.report.courtReportTitle')} />
             <Pressable
               onPress={handleFinalSave}
               disabled={saving || isAlreadyFinished}
@@ -289,6 +302,7 @@ export default function NyayalayReportScreen() {
                 {saving ? t('common.saving') : t('nyayalay.report.finalSave')}
               </Text>
             </Pressable>
+            </View>
           }
         />
 
@@ -444,24 +458,21 @@ export default function NyayalayReportScreen() {
             />
           </View>
 
-          {/* ── Prompt 3: Report content — GeneratedReportView ──── */}
+          {/* ── रिपोर्ट = the rich editor (owner; same DocumentEditor as the प्रार्थना पत्र आख्या) — compact card, tap → full
+              screen; its पूर्वावलोकन = A4. The old copy / share / A4 / .doc / edit row is gone (.doc = header). ──── */}
           <Text className="text-xs text-muted-foreground font-medium uppercase tracking-widest mt-5 mb-2">
             {t('nyayalay.report.reportContentLabel')}
           </Text>
-          <GeneratedReportView
-            content={reportContent}
-            editorHtml={reportMarked ? markedToEditorHtml(reportMarked) : undefined}
-            wordExport
-            a4Preview
-            title={t('nyayalay.report.courtReportTitle')}
-            onSave={async (v) => { setReportContent(v); setReportMarked(''); setIsDirty(true); }}
-            sharePrefix={
-              doc
-                ? `${DOC_TYPE_LABELS[doc.doc_type]}${doc.vad_sankhya ? ` · वाद सं0 ${doc.vad_sankhya}` : ''}`
-                : undefined
-            }
+          <DocumentEditor
+            value={reportContent}
+            onChangeText={(v) => { setReportContent(v); setErrors((e) => ({ ...e, reportContent: '' })); }}
+            title={formatTitle || t('nyayalay.report.courtReportTitle')}
+            placeholder={t('nyayalay.report.editorPlaceholder')}
+            minHeight={160}
+            error={!!errors.reportContent}
+            accessibilityLabel={t('nyayalay.report.reportContentLabel')}
           />
-          <FardCheckButton text={reportContent} title={formatTitle || doc?.document_title || undefined} className="mt-2" />
+          <FardCheckButton text={htmlToPlainText(reportContent)} title={formatTitle || doc?.document_title || undefined} className="mt-2" />
           {errors.reportContent ? (
             <Text className="text-xs text-destructive mt-1">{errors.reportContent}</Text>
           ) : null}
