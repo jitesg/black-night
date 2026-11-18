@@ -23,6 +23,7 @@ import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachme
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import { CourtSuggest } from '@/components/common/CourtSuggest';
+import { dmy } from '@/components/common/CardActionMenu';
 import { PersonGroupInput, initPersonGroup, parsePersonGroup, type PersonEntry } from '@/components/ui/PersonGroupInput';
 import { cardFromCourtRow, courtRowFromCard, type CourtPersonRow } from '@/lib/personCard';
 import { rememberCourtName } from '@/lib/courtNameStore';
@@ -70,7 +71,8 @@ function DatePickerField({
         style={{ borderCurve: 'continuous' }}
       >
         <Text className="text-sm text-foreground flex-1">
-          {value || today}
+          {/* shown dd/mm/yyyy (owner); the value stays YYYY-MM-DD */}
+          {dmy(value || today)}
         </Text>
         <CalendarDays size={16} color="#9CA3AF" />
       </Pressable>
@@ -717,7 +719,8 @@ export default function AddNyayalayScreen() {
           {/* ── Deadline Date (all types) — DateTimePicker ── */}
           {docType && (
             <>
-              <Section title={t('nyayalay.form.sectionDeadline')} />
+              {/* no "अंतिम तिथि" heading above — the box label says it (owner) */}
+              <View className="mt-5" />
               <DatePickerField
                 label={t('nyayalay.form.deadlineDateRequired')}
                 value={deadlineDate}
