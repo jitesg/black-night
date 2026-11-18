@@ -322,6 +322,8 @@ export interface KeyDefForRender {
   dropdown_options?: string | null;
   /** the key's default ("@FIR.fir_number" … — the fill screens pass full key rows) */
   default_value?: string | null;
+  /** the box label (multiline boxes: सेवा में / संलग्नक / धारा keep their lines — formatDerived.multilineModeOf) */
+  label?: string | null;
 }
 
 /**

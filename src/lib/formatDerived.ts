@@ -14,7 +14,7 @@
  *    "01 किलो 200 ग्राम" and the total of all rows into the form value `total`.
  */
 
-export interface DerivedKeyDef { key_name: string; field_type?: string | null; dropdown_options?: string | null }
+export interface DerivedKeyDef { key_name: string; field_type?: string | null; dropdown_options?: string | null; label?: string | null }
 
 export const PAHAR_AUTO = 'समय से';
 
@@ -79,11 +79,15 @@ export function deriveFormatValues(values: Record<string, string>, keyDefs?: Der
     if (sp) set(kd.key_name, daysBetweenInclusive(values[sp.from], values[sp.to]));
   }
 
-  // हमराह boxes (owner): typed over several lines → one clean line in the report
+  // हमराह boxes (owner): typed over several lines → one clean line in the report; other multiline boxes: tidied —
+  // a running paragraph (flow) or the typed lines kept (सेवा में / संलग्नक / धारा) — see multilineModeOf
   for (const kd of keyDefs) {
-    if (!isOneLineKey(kd.dropdown_options)) continue;
     const v = values[kd.key_name];
-    if (v) { const c = oneLineText(v); if (c !== v) set(kd.key_name, c); }
+    if (!v) continue;
+    if (isOneLineKey(kd.dropdown_options)) { const c = oneLineText(v); if (c !== v) set(kd.key_name, c); continue; }
+    if (kd.field_type !== 'multiline') continue;
+    const c = multilineModeOf(kd) === 'lines' ? tidyLines(v) : tidyFlow(v);
+    if (c !== v) set(kd.key_name, c);
   }
 
   // Date keys (owner: all formats dd/mm/yyyy; a key may set {"dateFormat": "dd.mm.yyyy"}): the picker's YYYY-MM-DD (or a FIR
@@ -282,6 +286,38 @@ export function oneLineText(v: string | null | undefined): string {
     .replace(/,(?=\S)/g, ', ')
     .replace(/ {2,}/g, ' ')
     .trim();
+}
+
+// ── बढ़ने वाले box की छपाई (owner) ─────────────────────────────────────────────────────────────────
+// Every multiline box is tidied for the report (the box itself keeps what was typed):
+//  • "lines" boxes — सेवा में / किसको, संलग्नक, धारा: each line stays its own line; extra spaces, spaces at a line end,
+//    2+ blank lines (→ 1) and blank lines at the top / bottom are dropped.
+//  • every other box ("flow": विवरण, मज़मून, जांच में क्या पाया …): the same, and a single Enter is joined with a space,
+//    so the text runs as one paragraph and wraps by the A4 width; a blank line still starts a new paragraph.
+// A key may force it: dropdown_options {"lines": true} / {"flow": true}.
+
+const LINES_LABEL = /सेवा\s*में|सेवा\s*मे\b|किसको|संलग्नक|^\s*(?:\d+\.\s*)?धारा/;
+const LINES_KEY = /(?:^|[a-z0-9])(?:SECTION|Sections?|Sec|Dhara)$/;
+
+/** 'lines' = keep the typed lines, 'flow' = one running paragraph per blank-line block. */
+export function multilineModeOf(kd: { key_name: string; label?: string | null; dropdown_options?: string | null }): 'lines' | 'flow' {
+  const o = parseJson(kd.dropdown_options) as { lines?: unknown; flow?: unknown } | null;
+  if (o?.lines === true) return 'lines';
+  if (o?.flow === true) return 'flow';
+  return LINES_KEY.test(kd.key_name) || LINES_LABEL.test(String(kd.label ?? '')) ? 'lines' : 'flow';
+}
+
+const squeeze = (l: string) => l.replace(/[ \t\u00A0]+/g, ' ').trim();
+
+/** Typed lines kept; extra spaces / 2+ blank lines / blank lines at the ends dropped. */
+export function tidyLines(v: string | null | undefined): string {
+  return String(v ?? '').replace(/\r\n?/g, '\n').split('\n').map(squeeze).join('\n')
+    .replace(/\n{3,}/g, '\n\n').replace(/^\n+|\n+$/g, '');
+}
+
+/** One running paragraph per blank-line block: "की\nजांच" → "की जांच"; a blank line = new paragraph. */
+export function tidyFlow(v: string | null | undefined): string {
+  return tidyLines(v).split(/\n\n/).map((p) => p.split('\n').filter(Boolean).join(' ')).filter(Boolean).join('\n\n');
 }
 
 // ── आवेदक समूह / विपक्षी समूह (owner) — see ppPeople.ts ─────────────────────────────────────────────

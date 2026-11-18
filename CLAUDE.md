@@ -466,6 +466,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   box grows with the names) + key option `{"oneLine": true}` → deriveFormatValues `oneLineText` prints ONE clean line (lines joined ", ", extra
   spaces / blank lines / ",," dropped) and a grey `placeholder` example (seed_version +1 each; backup docs/format-backups/hamrah_before_multiline.json;
   tests in scripts/test_format_derived.ts). New हमराह keys: the same.
+- बढ़ने वाले box की छपाई (owner): deriveFormatValues tidies EVERY multiline value for the report (box keeps the typed text) —
+  `multilineModeOf` (formatDerived.ts): 'lines' when key option {"lines": true}, key name ends SECTION/Section(s)/Sec/Dhara, or label has
+  सेवा में / किसको / संलग्नक / starts with धारा → `tidyLines` (typed lines kept; extra spaces, 2+ blank lines, top/bottom blanks dropped);
+  else 'flow' ({"flow": true} forces) → `tidyFlow` (same + a single Enter joined with a space → one running paragraph wrapping by A4; blank
+  line = new paragraph). Seed: 50 lines (42 धारा + 6 सेवा में + 2 संलग्नक), 92 flow. KeyDefForRender has `label`. Tests test_format_derived.ts.
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use
   it for lat/long. ✕ / 📋 on every typed format box except date.
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /

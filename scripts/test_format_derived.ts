@@ -116,5 +116,28 @@ test('हमराह box: one clean line (oneLine)', async () => {
     { key_name: 'Other', field_type: 'multiline' },
   ] as never);
   assert.equal(out.Hamrah, 'का0 अजय, का0 विजय');
-  assert.equal(out.Other, 'a\nb');
+  assert.equal(out.Other, 'a b'); // other multiline boxes flow (one running paragraph)
+});
+
+test('बढ़ने वाले box: flow / lines tidy', async () => {
+  const { tidyFlow, tidyLines, multilineModeOf } = await import('../src/lib/formatDerived.ts');
+  assert.equal(tidyFlow('\nउपरोक्त विषयक   प्रार्थना पत्र की  \nजांच की गयी।\n\n\n\nजांच से पाया गया कि विवाद आपसी है।\n'),
+    'उपरोक्त विषयक प्रार्थना पत्र की जांच की गयी।\n\nजांच से पाया गया कि विवाद आपसी है।');
+  assert.equal(tidyLines('\nश्रीमान पुलिस अधीक्षक  \nजनपद   रायबरेली।\n\n\n'), 'श्रीमान पुलिस अधीक्षक\nजनपद रायबरेली।');
+  assert.equal(tidyLines('a\n\n\n\nb'), 'a\n\nb');
+  const m = (key_name: string, label: string, o?: string) => multilineModeOf({ key_name, label, dropdown_options: o });
+  assert.equal(m('Addressee', 'किसको (सेवा में के नीचे की लाइनें)'), 'lines');
+  assert.equal(m('Attachments', 'संलग्नक (हर लाइन पर एक)'), 'lines');
+  assert.equal(m('Sections', 'धारा'), 'lines');
+  assert.equal(m('h4Dhara', 'किस धारा की घटोत्तरी'), 'lines');
+  assert.equal(m('GhatReason', 'घटोत्तरी का कारण — पूरा वाक्य (जैसे: अभियोग में धारा …)'), 'flow');
+  assert.equal(m('GumshudaTalash', 'गुमशुदा / अपहृत की पतारसी व तलाश — विवरण'), 'flow');
+  assert.equal(m('Findings', 'जांच में क्या पाया (पूरा विवरण)'), 'flow');
+  assert.equal(m('X', 'कुछ', '{"lines": true}'), 'lines');
+  const out = deriveFormatValues({ Findings: 'की\nजांच', ToOther: 'क\nख' }, [
+    { key_name: 'Findings', field_type: 'multiline', label: 'जांच में क्या पाया' },
+    { key_name: 'ToOther', field_type: 'multiline', label: 'सेवा में के नीचे की लाइनें' },
+  ] as never);
+  assert.equal(out.Findings, 'की जांच');
+  assert.equal(out.ToOther, 'क\nख');
 });
