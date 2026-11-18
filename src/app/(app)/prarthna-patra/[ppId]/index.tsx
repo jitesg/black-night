@@ -292,9 +292,9 @@ export default function PPDetailScreen() {
                 style={{ borderCurve: 'continuous' }}
               >
                 <View className="flex-row items-center gap-2 mb-2">
-                  <Zap size={14} color="#7C3AED" />
+                  <Zap size={14} color="#2D52B8" />
                   <Text className="text-xs text-muted-foreground">
-                    {t('prarthnaPatra.detail.actionDate', { date: action.action_date })}
+                    {t('prarthnaPatra.detail.actionDate', { date: dmyDate(action.action_date) })}
                   </Text>
                   {action.action_type ? (
                     <View className="rounded-full bg-secondary ml-auto px-2.5 py-1">
@@ -307,14 +307,22 @@ export default function PPDetailScreen() {
                     {t('prarthnaPatra.detail.actionFormat', { title: action.format_title })}
                   </Text>
                 ) : null}
-                <Text className="text-sm text-foreground leading-6">{stripHtmlTags(action.action_content)}</Text>
+                {/* editor HTML → keep its paragraphs (was stripHtmlTags: lines ran together) */}
+                <Text className="text-sm text-foreground leading-6">{htmlToPlainText(action.action_content).trim()}</Text>
                 <View className="mt-2 self-start rounded-full px-2.5 py-1"
-                  style={{ backgroundColor: action.is_complete ? '#EDE9FE' : '#FEF3C7' }}>
+                  style={{ backgroundColor: action.is_complete ? '#D1FAE5' : '#FEF3C7' }}>
                   <Text textBreakStrategy="simple" className="text-xs font-semibold"
-                    style={{ color: action.is_complete ? '#5B21B6' : '#92400E' }}>
+                    style={{ color: action.is_complete ? '#065F46' : '#92400E' }}>
                     {action.is_complete ? t('prarthnaPatra.status.nistarit') : t('fir.list.filterPending')}
                   </Text>
                 </View>
+                {/* A4 प्रीव्यू + .doc like the आख्या card (owner) — under a thin divider, equal width */}
+                <View className="bg-border" style={{ height: 1, marginTop: 14, marginBottom: 12 }} />
+                <ReportExportButtons
+                  size="small"
+                  source={action.action_content}
+                  title={`${PETITION_TYPE_LABELS[pp.petition_type]} कार्यवाही`}
+                />
               </View>
             ))}
           </>

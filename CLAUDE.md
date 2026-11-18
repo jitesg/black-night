@@ -292,6 +292,8 @@ detailed working log. Keep the guide up to date when the architecture changes.
   Format layout in कार्यवाही (owner: 126/135 came in as plain text): fill-format mode=action now also passes `markedText` in ppActionDraftStore and
   take-action inserts `markedToEditorHtml(markedText)` (else `toEditorHtml`), appended after "<p><br></p>" like the आख्या; empty check = htmlToPlainText;
   dirty = differs from the saved कार्यवाही (`baselineRef`) — loading it is no change.
+  Detail screen कार्यवाही card = the आख्या card (owner): date dd/mm/yyyy (`dmyDate`), text via htmlToPlainText (paragraphs kept), status pill
+  green / amber, ⚡ PP blue, thin divider + `ReportExportButtons size="small"` (A4 प्रीव्यू + .doc of action_content).
 - प्रार्थना पत्र types made alike (owner, sample approved): home रिमाइंडर / समय निकला (dashboardRepo loadDashboardData) list EVERY type (was only बीट सूचना /
   NCR); getDashboardAnalytics counts आज / समय निकला for every type (analytics card shows "आज" too); आख्या screen has two saves — "आख्या सहेजें
   (लंबित रहे)" (saveReport `complete = false` → status Pending, disposal_date NULL) and "✓ सहेजें व निस्तारित करें" (PP blue #2D52B8; back dialog
