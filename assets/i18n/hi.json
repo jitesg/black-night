@@ -1670,7 +1670,18 @@
     },
     "greetName": "{{greeting}}, {{name}} 👋",
     "greetOfficer": "{{greeting}}, अधिकारी महोदय 👋",
-    "helloWord": "नमस्ते"
+    "helloWord": "नमस्ते",
+    "summary": {
+      "title": "सारांश",
+      "cases": "लंबित मुकदमे",
+      "casesOf": "कुल {{total}} में से",
+      "court": "चालू न्यायालय कागज़",
+      "pp": "लंबित प्रार्थना पत्र",
+      "nk": "निरोधात्मक कार्यवाही",
+      "reports": "रिपोर्ट इस हफ़्ते",
+      "reportsToday": "आज {{n}}",
+      "gd": "आज की GD"
+    }
   },
   "workspace": {
     "title": "उपयोगकर्ता प्रोफ़ाइल",

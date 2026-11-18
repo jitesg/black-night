@@ -1670,7 +1670,18 @@
     },
     "greetName": "{{greeting}}, {{name}} 👋",
     "greetOfficer": "{{greeting}}, Officer 👋",
-    "helloWord": "Hello"
+    "helloWord": "Hello",
+    "summary": {
+      "title": "Summary",
+      "cases": "Pending cases",
+      "casesOf": "of {{total}} total",
+      "court": "Active court papers",
+      "pp": "Pending petitions",
+      "nk": "Preventive actions",
+      "reports": "Reports this week",
+      "reportsToday": "today {{n}}",
+      "gd": "Today's GD"
+    }
   },
   "workspace": {
     "title": "User Profile",

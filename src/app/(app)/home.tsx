@@ -37,6 +37,7 @@ import { HighlightText } from '@/components/HighlightText';
 import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
 import { SectionHeader, StatusChip, EmptyState, SkeletonList } from '@/components/ui/ds';
 import { Pill } from '@/components/ui/ds/Pill';
+import { SummaryBento } from '@/components/home/SummaryBento';
 
 // ── Semantic colour aliases — Trust Green palette ─────────────────────────────
 const C_FIXED = {
@@ -61,7 +62,7 @@ const MC: Record<string, string> = {
 
 // Shadow is applied via Tailwind className="shadow-sm shadow-black/5" — no legacy shadow* props.
 
-// ── StatCard — compact 2-col grid tile ──────────────────────────────────────
+// ── Palette ─────────────────────────────────────────────────────────────────
 // Each sub-component that uses surface/text tokens calls useColorScheme()
 // directly. This keeps them self-contained and avoids prop-drilling C.
 function usePalette() {
@@ -79,25 +80,6 @@ function usePalette() {
   };
 }
 
-function StatCard({ label, value, color, onPress, note }: {
-  label: string; value: number; color: string; onPress?: () => void; note?: string;
-}) {
-  const C = usePalette();
-  return (
-    <Pressable
-      onPress={onPress}
-      style={{
-        flex: 1, backgroundColor: C.surface, borderRadius: 16, padding: 16,
-        borderCurve: 'continuous',
-      } as object}
-      className="shadow-sm shadow-black/5 active:opacity-70"
-    >
-      <Text style={{ fontSize: 28, fontWeight: '700', color, lineHeight: 34 }}>{value}</Text>
-      <Text style={{ ...T.caption1, color: C.textMuted, marginTop: 2, lineHeight: 16 }}>{label}</Text>
-      {note ? <Text style={{ fontSize: 11, color: C.textMuted, marginTop: 2, lineHeight: 17 }}>{note}</Text> : null}
-    </Pressable>
-  );
-}
 
 // ── QuickAction — icon + label tile ─────────────────────────────────────────
 function QuickAction({ label, icon: Icon, color, onPress }: {
@@ -467,6 +449,7 @@ export default function HomeScreen() {
   }
 
   const { today, reminders, recentActivity, productivity, nirodhatmak } = data;
+  const goRoute = (route: string) => router.push(route as never);
   const showSearch = searchQuery.length > 0;
 
   return (
@@ -596,28 +579,20 @@ export default function HomeScreen() {
             </Text>
           </View>
 
-          {/* ── Today's Summary ── */}
+          {/* ── सारांश (owner, design F — bento tiles in the module colours; each opens its module) ── */}
           <View style={{ gap: 10 }}>
-            <SectionHeader title={t('home.todaysSummary')} icon={<CalendarDays size={13} color={C.textMuted} />} />
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <StatCard label={t('home.pendingFir')} value={today.activeCase} color={C.purple}
-                onPress={() => router.push('/(app)/mukadma' as never)} />
-              <StatCard label={t('home.pendingGd')} value={today.todayGD} color={C.amber}
-                onPress={() => router.push('/(app)/gd' as never)} />
-            </View>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <StatCard label={t('home.courtWork')} value={today.activeCourtDocs} color={C.blue}
-                onPress={() => router.push('/(app)/nyayalay' as never)} />
-              <StatCard label={t('home.bnssActions')} value={nirodhatmak?.total ?? 0} color={C.red}
-                onPress={() => router.push('/(app)/nirodhatmak' as never)} />
-            </View>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <StatCard label="हाल के कार्य" value={recentCounts.today} color="#10B981"
-                note={`आज ${recentCounts.today} · इस हफ़्ते ${recentCounts.week} रिपोर्ट`}
-                onPress={() => router.push('/(app)/recent-tasks' as never)} />
-              <StatCard label={t('home.petitions')} value={today.pendingPrarthnaPatra} color={C.teal}
-                onPress={() => router.push('/(app)/prarthna-patra' as never)} />
-            </View>
+            <SectionHeader title={t('home.summary.title')} icon={<CalendarDays size={13} color={C.textMuted} />} />
+            <SummaryBento
+              casesPending={today.activeCase}
+              casesTotal={data.mukadma?.total ?? 0}
+              courtActive={today.activeCourtDocs}
+              ppPending={today.pendingPrarthnaPatra}
+              nkTotal={nirodhatmak?.total ?? 0}
+              reportsWeek={recentCounts.week}
+              reportsToday={recentCounts.today}
+              gdToday={today.todayGD}
+              go={goRoute}
+            />
           </View>
 
           {/* ── Quick Actions ── */}
