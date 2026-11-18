@@ -7,7 +7,7 @@ import {
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { FardCheckButton } from '@/components/fard/FardCheckButton';
 import { router, useLocalSearchParams } from 'expo-router';
-import { CalendarDays, CheckSquare, ChevronDown, Plus, Square, Trash2 } from 'lucide-react-native';
+import { CalendarDays, CheckSquare, ChevronDown, Plus, Scale, Square, Trash2 } from 'lucide-react-native';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import {
   AlertDialog,
@@ -140,6 +140,8 @@ function Picker<T extends string>({
 // ── Persons (accused / appellant) — the group person card (owner, like प्रार्थना पत्र) ────────────
 // Value = PersonGroupInput JSON; saved rows via personCard.ts courtRowFromCard (address = full address, rest in extra_json).
 const ACCUSED_WORD = 'अभियुक्त';
+/** न्यायालय module colour (⚖️ on the कोर्ट का विवरण card) */
+const COURT_BLUE = '#3B82F6'; // readable on the light and the dark card
 const APPELLANT_WORD = 'अपीलकर्ता';
 /** First card's name (the required one). */
 const firstName = (json: string) => (parsePersonGroup(json)[0]?.name ?? '').trim();
@@ -591,7 +593,15 @@ export default function AddNyayalayScreen() {
           {/* ── NBW / Summons fields ── */}
           {showCourtFields && (
             <>
-              <Section title={t('nyayalay.form.sectionCourtDetails')} />
+              {/* कोर्ट का विवरण in one card (owner, design A — like the person card): heading inside, THEME card colours */}
+              <View
+                className="bg-card border border-border rounded-2xl px-4 pt-3.5 pb-1 mt-6 mb-1 shadow-sm shadow-black/5"
+                style={{ borderCurve: 'continuous' }}
+              >
+              <View className="flex-row items-center gap-2 mb-1">
+                <Scale size={16} color={COURT_BLUE} />
+                <Text className="text-[15px] font-bold text-foreground">{t('nyayalay.form.sectionCourtDetails')}</Text>
+              </View>
               <Field label={t('nyayalay.form.courtNameRequired')} error={errors.courtName}>
                 <Input
                   value={courtName}
@@ -617,6 +627,7 @@ export default function AddNyayalayScreen() {
               <Field label={t('nyayalay.form.applicableSectionsRequired')} error={errors.applicableSections}>
                 <Input type="multiline" autoGrow value={applicableSections} onChangeText={(v) => { setApplicableSections(v); markDirty(); }} placeholder={t('nyayalay.form.applicableSectionsPlaceholder')} numberOfLines={2} />
               </Field>
+              </View>
 
               <Section title={t('nyayalay.form.sectionAccusedDetails')} />
               <View className="mb-2">
