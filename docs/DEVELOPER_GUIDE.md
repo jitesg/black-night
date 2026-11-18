@@ -232,9 +232,12 @@ Honest list of what a new team should know:
 2. Some screens still come from the original MeDo AI-builder export: large files (e.g. `components/ui/input.tsx`),
    occasional hard-coded colours and English strings.
 3. Tests do not yet run automatically on every push (only the APK build runs in CI).
-4. `en.json` lags behind `hi.json` (new strings are added in Hindi first).
-5. A few hidden leftovers of removed features remain (e.g. `FirPeopleContext` / `firPeople.ts`, old `ocr.*` strings).
-6. Some newer UI text is written as Hindi literals in components instead of i18n keys.
+4. Keep `en.json` in step with `hi.json` (same keys, same `{{placeholders}}`; checked complete on 18/11/2026).
+5. A few hidden leftovers of removed features remain: `FirPeopleButton` / `FirPeopleContext` (no longer rendered; still wired in the
+   fill screens and the case-diary panel) and the unused `PPPeopleButton` component (its context is still used). The old `ocr.*` strings
+   were removed.
+6. Many screens still have Hindi text written directly in the components (~1,300 places incl. data lists) instead of i18n keys, so the
+   English mode is partly Hindi. Being moved to `hi.json` / `en.json` module by module.
 7. No UI / end-to-end tests.
 
 ---
