@@ -47,7 +47,9 @@ detailed working log. Keep the guide up to date when the architecture changes.
 - NativeWind dark vars must be under `.dark:root` in `src/global.css`.
 - Edge-to-edge: `KeyboardInsetView` pads the root for the keyboard AND always by the bottom inset (screens stay above
   the navigation bar) — screens must not add `insets.bottom` again. Modals are separate windows: their outermost view
-  pads by `NAV_BAR_INSET` (`src/lib/navBarInset.ts`).
+  pads by `NAV_BAR_INSET` (`src/lib/navBarInset.ts`). NAV_BAR_INSET is a LIVE export (owner's bug build 46: the one-time start-up reading
+  was 0 on his phone → "कैसे भरें", the full-screen editor, वाक्यांश लाइब्रेरी … slid under the 3 buttons): KeyboardInsetView calls
+  `setNavBarInset(insets.bottom)` every render; read it inside render, never copy it into a module-level constant / StyleSheet.
 - docx export: use `Packer.toBase64String` (no Node Buffer on device).
 - expo-notifications needs typed triggers. Reminder sound = Android CHANNEL (immutable): one channel per sound (`reminder_v2_*`, `app_alerts_v2`); bundled sounds in `assets/sounds`; exact-alarm permissions in app.json.
 - Reminders module (v3): `reminderPlanner.ts` (pure rules: main/early/nag/snooze, test with `node --experimental-strip-types`), `reminderService.ts` (DB ↔ alarms, resync on app start/foreground), `reminderNotifications.ts` (channels, settings intents), `reminderActions.ts` + `reminderBackgroundTask.ts` (snooze/done buttons work with app closed; task defined in root `index.ts`, which is package.json `main`). Screens: `reminders/index|add|health`.

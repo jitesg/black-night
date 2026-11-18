@@ -19,6 +19,7 @@ import { Keyboard, Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { setNavBarInset } from '@/lib/navBarInset';
 
 // A full-screen editor Modal handles the keyboard itself. While it is open the screen underneath must
 // not re-pad on every keyboard change: that re-laid out the whole (hidden) FIR screen at the same moment
@@ -38,6 +39,8 @@ export function suspendKeyboardInset(): () => void {
 
 export function KeyboardInsetView({ children }: { children: ReactNode }) {
   const insets = useSafeAreaInsets();
+  // the live navigation-bar height for every Modal (NAV_BAR_INSET — the start-up reading can be 0, owner's bug)
+  setNavBarInset(insets.bottom);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
