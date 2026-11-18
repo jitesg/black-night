@@ -938,3 +938,23 @@ export function addDays(dateStr: string, days: number): string {
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 }
+
+/** List-card line (owner, card design B): per प्रार्थना पत्र the first आवेदक's name + village and how many आवेदक. One query for the list. */
+export interface PPCardPerson { name: string; village: string; count: number }
+export async function ppCardPeople(): Promise<Record<string, PPCardPerson>> {
+  const db = await getDatabase();
+  const rows = await db.getAllAsync<{ pid: string; name: string; village: string }>(
+    `SELECT prarthna_patra_id AS pid, name, village FROM prarthna_patra_complainants
+      WHERE deleted_at IS NULL ORDER BY created_at ASC, rowid ASC`,
+  );
+  const out: Record<string, PPCardPerson> = {};
+  for (const r of rows) {
+    const cur = out[r.pid];
+    if (!cur) out[r.pid] = { name: (r.name ?? '').trim(), village: (r.village ?? '').trim(), count: (r.name ?? '').trim() ? 1 : 0 };
+    else if ((r.name ?? '').trim()) {
+      cur.count += 1;
+      if (!cur.name) { cur.name = r.name.trim(); cur.village = cur.village || (r.village ?? '').trim(); }
+    }
+  }
+  return out;
+}

@@ -14,6 +14,7 @@ import Animated, {
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { attachmentCounts } from '@/lib/db/attachmentRepo';
+import { CardActionMenu, CardMenuButton, dmy, useCardMenu } from '@/components/common/CardActionMenu';
 import { OFFICE_BLUE, OFFICE_DELETE_WARNING, OfficeCardTag, isFromOffice } from '@/office/OfficeOrigin';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
@@ -35,6 +36,8 @@ import {
   type PrarthnaPatra,
   type PPDashboardAnalytics,
   type PetitionType,
+  ppCardPeople,
+  type PPCardPerson,
 } from '@/lib/db/prarthnaPatraRepo';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
@@ -69,33 +72,6 @@ function startOfWeekStr() {
   const d = new Date();
   d.setDate(d.getDate() - d.getDay());
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-// ── Status badge ──────────────────────────────────────────────────────────
-
-function StatusBadge({ pp }: { pp: PrarthnaPatra }) {
-  const { t } = useTranslation();
-  const days = daysUntilDeadline(pp.deadline_date, pp.status);
-  // Owner: one "done" state — निस्तारित (an old 'Finished' row shows the same).
-  if (pp.status === 'Nistarit' || pp.status === 'Finished') {
-    return (
-      <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#D1FAE5' }}>
-        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#065F46' }}>{t('prarthnaPatra.status.nistarit')}</Text>
-      </View>
-    );
-  }
-  if (days <= 0) {
-    return (
-      <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#FEE2E2' }}>
-        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#991B1B' }}>{t('prarthnaPatra.status.overdue')}</Text>
-      </View>
-    );
-  }
-  return (
-    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#FEF3C7' }}>
-      <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#92400E' }}>{t('fir.list.filterPending')}</Text>
-    </View>
-  );
 }
 
 // ── Analytics card (compact) ───────────────────────────────────────────────
@@ -146,100 +122,92 @@ function AnalyticsCard({
 
 // ── Petition card ─────────────────────────────────────────────────────────
 
+// owner (card design B — same as न्यायालय): status colours per theme, लंबित / समय निकला / निस्तारित
+const PP_STATUS = {
+  light: { done: ['#D1FAE5', '#065F46'], over: ['#FEE2E2', '#991B1B'], pend: ['#FEF3C7', '#92400E'] },
+  dark: { done: ['#052E16', '#6EE7B7'], over: ['#450A0A', '#FCA5A5'], pend: ['#451A03', '#FCD34D'] },
+} as const;
+const PP_DAY = { light: { done: '#065F46', left: '#1D4ED8', over: '#DC2626' }, dark: { done: '#6EE7B7', left: '#93C5FD', over: '#F87171' } } as const;
+
 const PPCard = memo(function PPCard({
-  pp, query, highlight, typoTolerant, onDelete, attachCount,
+  pp, query, highlight, typoTolerant, onDelete, attachCount, person,
 }: {
   pp: PrarthnaPatra; query: string; highlight: boolean; typoTolerant?: boolean; onDelete: (id: string) => void;
   /** संलग्न कागज़ count (owner) → "📎 n" */
   attachCount?: number;
+  /** first आवेदक + village + how many (ppCardPeople) */
+  person?: PPCardPerson;
 }) {
   const { t } = useTranslation();
-  const [menuOpen, setMenuOpen] = useState(false);
   const { colorScheme } = useColorScheme();
-  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const scheme = colorScheme === 'dark' ? 'dark' : 'light';
+  const C = THEME[scheme];
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const menu = useCardMenu();
   const days = daysUntilDeadline(pp.deadline_date, pp.status);
+  const done = pp.status === 'Nistarit' || pp.status === 'Finished';
+  // same rule as before: समय निकला from the deadline day on (the old "अतिदेय" badge)
+  const state: 'done' | 'over' | 'pend' = done ? 'done' : days <= 0 ? 'over' : 'pend';
+  const [badgeBg, badgeFg] = PP_STATUS[scheme][state];
+  const statusWord = done ? t('prarthnaPatra.status.nistarit') : state === 'over' ? 'समय निकला' : 'लंबित';
 
-  const dayLabel = (pp.status === 'Nistarit' || pp.status === 'Finished')
+  const dayLabel = done
     ? t('prarthnaPatra.status.nistarit')
     : days > 0 ? t('prarthnaPatra.dayLabel.daysLeft', { count: days })
     : days === 0 ? t('prarthnaPatra.dayLabel.dueToday')
-    : t('prarthnaPatra.dayLabel.daysOverdue', { count: Math.abs(days) });
-  const dayColor = (pp.status === 'Nistarit' || pp.status === 'Finished') ? '#6B7280'
-    : days > 0 ? '#2D52B8' : '#DC2626';
+    : `${Math.abs(days)} दिन ऊपर`;
+  const dayColor = PP_DAY[scheme][done ? 'done' : days > 0 ? 'left' : 'over'];
+
+  // Big name = first आवेदक ("व n अन्य" for more); no name → the type label as before
+  const name = person?.name
+    ? (person.count > 1 ? `${person.name} व ${person.count - 1} अन्य` : person.name)
+    : PETITION_TYPE_LABELS[pp.petition_type];
+  const subLine = [person?.village ? `ग्राम ${person.village}` : '', `प्राप्ति ${dmy(pp.date_of_receipt)}`].filter(Boolean).join(' · ');
+  const titleStyle = { fontSize: 16, fontWeight: '700' as const, lineHeight: 24, color: C.cardForeground, marginTop: 8 };
+  const view = () => router.push(`/(app)/prarthna-patra/${pp.id}` as never);
 
   return (
     <>
       <Pressable
-        onPress={() => router.push(`/(app)/prarthna-patra/${pp.id}` as never)}
-        onLongPress={() => setMenuOpen(true)}
+        onPress={view}
+        onLongPress={menu.openAt}
         className="bg-card border border-border rounded-2xl p-4 mb-3 active:opacity-70"
-        style={{ borderCurve: 'continuous', ...(isFromOffice(pp) ? { borderWidth: 2, borderColor: OFFICE_BLUE.light } : {}) }}
+        style={{ borderCurve: 'continuous', ...(isFromOffice(pp) ? { borderWidth: 2, borderColor: OFFICE_BLUE[scheme] } : {}) }}
       >
-        {/* Header row */}
-        <View className="flex-row items-start justify-between gap-3 mb-2">
-          <View className="flex-1">
-            {highlight
-              ? <HighlightText text={PETITION_TYPE_LABELS[pp.petition_type]} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, marginTop: 2 }} numberOfLines={1} typoTolerant={typoTolerant} />
-              : <Text style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, marginTop: 2 }} numberOfLines={1}>{PETITION_TYPE_LABELS[pp.petition_type]}</Text>
-            }
+        {/* Top: type · status · ⋮ */}
+        <View className="flex-row items-center gap-2">
+          <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: C.accent, flexShrink: 1 }}>
+            <Text textBreakStrategy="simple" numberOfLines={1} className="text-xs font-semibold" style={{ color: C.accentForeground }}>{pp.petition_type}</Text>
           </View>
-          <StatusBadge pp={pp} />
+          <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: badgeBg, marginLeft: 'auto' }}>
+            <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: badgeFg }}>{statusWord}</Text>
+          </View>
+          <CardMenuButton btnRef={menu.btnRef} onPress={menu.openAt} />
         </View>
 
-        {/* Complainant name from registration number context */}
-        <View className="flex-row items-center gap-3">
-          <View className="flex-1">
-            <Text className="text-xs text-muted-foreground">{t('prarthnaPatra.list.receipt', { date: pp.date_of_receipt })}</Text>
-            <Text className="text-xs text-muted-foreground">{t('prarthnaPatra.list.deadline', { date: pp.deadline_date })}</Text>
-            {attachCount ? <Text className="text-xs text-muted-foreground">📎 {attachCount}</Text> : null}
-          </View>
+        {highlight
+          ? <HighlightText text={name} query={query} style={titleStyle} numberOfLines={1} typoTolerant={typoTolerant} />
+          : <Text style={titleStyle} numberOfLines={1}>{name}</Text>}
+        <Text className="text-xs text-muted-foreground" numberOfLines={1} style={{ marginTop: 1 }}>{subLine}</Text>
+
+        {/* Bottom strip: days · 📎 · अंतिम तिथि */}
+        <View className="flex-row items-center gap-3 border-t border-border" style={{ marginTop: 10, paddingTop: 9 }}>
           <Text className="text-xs font-semibold" style={{ color: dayColor }}>{dayLabel}</Text>
+          {attachCount ? <Text className="text-xs text-muted-foreground">📎 {attachCount}</Text> : null}
+          <Text className="text-xs text-muted-foreground ml-auto">अंतिम {dmy(pp.deadline_date)}</Text>
         </View>
         {/* कार्यालय से आया (चरण ग) */}
         <OfficeCardTag row={pp} />
       </Pressable>
 
-      {/* Long-press menu */}
-      <AlertDialog open={menuOpen} onOpenChange={setMenuOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{PETITION_TYPE_LABELS[pp.petition_type]}</AlertDialogTitle>
-            <AlertDialogDescription>{t('prarthnaPatra.list.menuTitle')}</AlertDialogDescription>
-          </AlertDialogHeader>
-          {/* The footer lays its buttons out bottom-up (flex-col-reverse), so they are written here in reverse: on screen
-              देखें → संपादित करें → हटाएं → रद्द करें (owner: हटाएं was on top). Colours from THEME (the label was dark on green). */}
-          <AlertDialogFooter>
-            <AlertDialogCancel onPress={() => setMenuOpen(false)}>
-              <Text>{t('common.cancel')}</Text>
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive"
-              onPress={() => { setMenuOpen(false); setDeleteOpen(true); }}
-            >
-              <Text style={{ color: C.destructiveForeground }}>{t('common.delete')}</Text>
-            </AlertDialogAction>
-            <AlertDialogAction
-              style={{ backgroundColor: C.card, borderWidth: 1.5, borderColor: C.primary }}
-              onPress={() => {
-                setMenuOpen(false);
-                router.push(`/(app)/prarthna-patra/add?editId=${pp.id}` as never);
-              }}
-            >
-              <Text style={{ color: C.primary }}>{t('common.edit')}</Text>
-            </AlertDialogAction>
-            <AlertDialogAction
-              style={{ backgroundColor: C.primary }}
-              onPress={() => {
-                setMenuOpen(false);
-                router.push(`/(app)/prarthna-patra/${pp.id}` as never);
-              }}
-            >
-              <Text style={{ color: C.primaryForeground }}>{t('common.view')}</Text>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* ⋮ / press-and-hold menu (owner: देखें / संपादित करें / हटाएँ) */}
+      <CardActionMenu
+        anchor={menu.anchor}
+        onClose={menu.close}
+        onView={view}
+        onEdit={() => router.push(`/(app)/prarthna-patra/add?editId=${pp.id}` as never)}
+        onDelete={() => setDeleteOpen(true)}
+      />
 
       {/* Delete confirmation */}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
@@ -318,17 +286,21 @@ export default function PrarthnaPatraScreen() {
   }));
 
   const [attachCounts, setAttachCounts] = useState<Record<string, number>>({});
+  // first आवेदक per पत्र for the card's big name (owner, card design B)
+  const [people, setPeople] = useState<Record<string, PPCardPerson>>({});
   const firstLoadRef = useRef(true);
   const load = useCallback(async () => {
     // Spinner only on the first load; later visits refresh in place so the
     // list isn't torn down (keeps scroll position, no flash).
     if (firstLoadRef.current) { firstLoadRef.current = false; setLoading(true); }
     try {
-      const [all, dash, counts] = await Promise.all([
+      const [all, dash, counts, ppl] = await Promise.all([
         getAllPrarthnaPatra(), getDashboardAnalytics(), attachmentCounts('pp').catch(() => ({})),
+        ppCardPeople().catch(() => ({} as Record<string, PPCardPerson>)),
       ]);
       setItems(all);
       setAttachCounts(counts);
+      setPeople(ppl);
       setAnalytics(dash);
     } catch (e) {
       logger.error('[PrarthnaPatra] Failed to load data:', e);
@@ -620,7 +592,7 @@ export default function PrarthnaPatraScreen() {
             {loading && <ActivityIndicator className="my-8" />}
           </View>
         }
-        renderItem={({ item }) => <PPCard pp={item} query={query} highlight={settings.highlightMatches} typoTolerant={settings.typoTolerance} onDelete={handleDelete} attachCount={attachCounts[item.id]} />}
+        renderItem={({ item }) => <PPCard pp={item} query={query} highlight={settings.highlightMatches} typoTolerant={settings.typoTolerance} onDelete={handleDelete} attachCount={attachCounts[item.id]} person={people[item.id]} />}
         ListEmptyComponent={
           !loading ? (
             <View className="items-center py-16 gap-3">

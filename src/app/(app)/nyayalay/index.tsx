@@ -9,12 +9,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { attachmentCounts } from '@/lib/db/attachmentRepo';
+import { CardActionMenu, CardMenuButton, dmy, useCardMenu } from '@/components/common/CardActionMenu';
 import { OFFICE_BLUE, OFFICE_DELETE_WARNING, OfficeCardTag, isFromOffice } from '@/office/OfficeOrigin';
 import { useColorScheme } from 'nativewind';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import {
-  Plus, Scale, ChevronRight, Trash2, Edit3, ChevronDown, X,
+  Plus, Scale, ChevronDown, X,
 } from 'lucide-react-native';
 import { SearchBar } from '@/components/SearchBar';
 import { ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues } from '@/components/common/FilterSheet';
@@ -148,87 +149,60 @@ const DocCard = memo(function DocCard({
   // Type badge — use accent token so it adapts to both themes
   const typeBadgeBg   = palette.accent;
   const typeBadgeText = palette.accentForeground;
+  // owner (card design B, same as प्रार्थना पत्र): लंबित / समय निकला / निस्तारित, "n दिन ऊपर", ⋮ menu instead of ✏️ 🗑
+  const statusWord = isFinished ? statusLabel : isOverdue ? 'समय निकला' : 'लंबित';
+  const dayWord = !isFinished && days < 0 ? `${Math.abs(days)} दिन ऊपर` : dayLabel;
+  const title = doc.court_name || doc.document_title || '';
+  const subLine = [
+    doc.vad_sankhya ? `वाद सं0 ${doc.vad_sankhya}` : '',
+    doc.fir_number ? `मु0अ0सं0 ${doc.fir_number}` : '',
+  ].filter(Boolean).join(' · ');
+  const menu = useCardMenu();
+  const titleStyle = { fontSize: 16, fontWeight: '700' as const, lineHeight: 24, color: palette.cardForeground, marginTop: 8 };
 
   return (
     <Pressable
       onPress={onPress}
+      onLongPress={menu.openAt}
       className="bg-card border border-border rounded-2xl p-4 mb-3 active:opacity-70"
       style={{ borderCurve: 'continuous', ...(isFromOffice(doc) ? { borderWidth: 2, borderColor: OFFICE_BLUE[scheme] } : {}) }}
     >
-      <View className="flex-row items-start justify-between gap-3">
-        <View className="flex-1">
-          {/* Type badge */}
-          <View className="flex-row items-center gap-2 mb-2">
-            <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: typeBadgeBg }}>
-              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: typeBadgeText }}>
-                {t(DOC_TYPE_I18N_KEYS[doc.doc_type])}
-              </Text>
-            </View>
-            {doc.sub_type ? (
-              <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: palette.muted }}>
-                <Text textBreakStrategy="simple" className="text-xs" style={{ color: palette.mutedForeground }}>{doc.sub_type}</Text>
-              </View>
-            ) : null}
-          </View>
-
-          {/* Court / Vad Sankhya */}
-          {doc.court_name ? (
-            highlight
-              ? <HighlightText text={doc.court_name} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1} typoTolerant={typoTolerant} />
-              : <Text style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1}>{doc.court_name}</Text>
-          ) : null}
-          {doc.document_title ? (
-            highlight
-              ? <HighlightText text={doc.document_title} query={query} style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1} typoTolerant={typoTolerant} />
-              : <Text style={{ fontSize: 14, fontWeight: '600', lineHeight: 20, color: palette.cardForeground }} numberOfLines={1}>{doc.document_title}</Text>
-          ) : null}
-          {doc.vad_sankhya ? (
-            <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-              {t('nyayalay.vadPrefix', { number: doc.vad_sankhya })}
-            </Text>
-          ) : null}
-          {doc.fir_number ? (
-            <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-              {t('nyayalay.firPrefix', { number: doc.fir_number })}
-            </Text>
-          ) : null}
-
-          {/* Footer row */}
-          <View className="flex-row items-center gap-3 mt-2">
-            <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: statusBg }}>
-              <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: statusColor }}>{statusLabel}</Text>
-            </View>
-            <Text className="text-xs font-medium" style={{ color: dayColor }}>{dayLabel}</Text>
-            {attachCount ? <Text className="text-xs text-muted-foreground">📎 {attachCount}</Text> : null}
-            <Text className="text-xs text-muted-foreground ml-auto">{doc.deadline_date}</Text>
-          </View>
-          {/* कार्यालय से आया (चरण ग) */}
-          <OfficeCardTag row={doc} />
+      {/* Top: type (+ sub type) · status · ⋮ */}
+      <View className="flex-row items-center gap-2">
+        <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: typeBadgeBg }}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: typeBadgeText }}>
+            {t(DOC_TYPE_I18N_KEYS[doc.doc_type])}
+          </Text>
         </View>
-
-        {/* Actions: 36×36dp + hitSlop 4 = 44dp minimum touch target */}
-        <View className="gap-1 items-center">
-          <Pressable
-            onPress={onEdit}
-            className="w-9 h-9 items-center justify-center active:opacity-70"
-            hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-            accessibilityRole="button"
-            accessibilityLabel={t('nyayalay.accessibility.editDoc')}
-          >
-            <Edit3 size={16} color={palette.mutedForeground} />
-          </Pressable>
-          <Pressable
-            onPress={onDelete}
-            className="w-9 h-9 items-center justify-center active:opacity-70"
-            hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-            accessibilityRole="button"
-            accessibilityLabel={t('nyayalay.accessibility.deleteDoc')}
-          >
-            <Trash2 size={16} color={palette.destructive} />
-          </Pressable>
-          <ChevronRight size={15} color={palette.border} />
+        {doc.sub_type ? (
+          <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: palette.muted, flexShrink: 1 }}>
+            <Text textBreakStrategy="simple" numberOfLines={1} className="text-xs" style={{ color: palette.mutedForeground }}>{doc.sub_type}</Text>
+          </View>
+        ) : null}
+        <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: statusBg, marginLeft: 'auto' }}>
+          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: statusColor }}>{statusWord}</Text>
         </View>
+        <CardMenuButton btnRef={menu.btnRef} onPress={menu.openAt} />
       </View>
+
+      {/* Big name = न्यायालय (else the कागज़ title) */}
+      {title ? (
+        highlight
+          ? <HighlightText text={title} query={query} style={titleStyle} numberOfLines={1} typoTolerant={typoTolerant} />
+          : <Text style={titleStyle} numberOfLines={1}>{title}</Text>
+      ) : null}
+      {subLine ? <Text className="text-xs text-muted-foreground" numberOfLines={1} style={{ marginTop: 1 }}>{subLine}</Text> : null}
+
+      {/* Bottom strip: days · 📎 · अंतिम तिथि */}
+      <View className="flex-row items-center gap-3 border-t border-border" style={{ marginTop: 10, paddingTop: 9 }}>
+        <Text className="text-xs font-semibold" style={{ color: dayColor }}>{dayWord}</Text>
+        {attachCount ? <Text className="text-xs text-muted-foreground">📎 {attachCount}</Text> : null}
+        <Text className="text-xs text-muted-foreground ml-auto">अंतिम {dmy(doc.deadline_date)}</Text>
+      </View>
+      {/* कार्यालय से आया (चरण ग) */}
+      <OfficeCardTag row={doc} />
+
+      <CardActionMenu anchor={menu.anchor} onClose={menu.close} onView={onPress} onEdit={onEdit} onDelete={onDelete} />
     </Pressable>
   );
 });

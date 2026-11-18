@@ -53,8 +53,7 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Dialog buttons: `AlertDialogAction/Cancel` wrap labels in the themed Text.
 - AlertDialog width (owner): the NativeOnlyAnimatedView inside AlertDialogOverlay has `width: '100%'` — without it a dialog with short text
   (a menu) shrank to its content and opened narrow. AlertDialogFooter is flex-col-reverse: write buttons in REVERSE of the on-screen order.
-  प्रार्थना पत्र card long-press menu: देखें (primary) → संपादित करें (green outline) → हटाएं (red) → रद्द करें, colours via THEME style
-  (the className label colour came out dark on green on the phone).
+  (The old प्रार्थना पत्र long-press AlertDialog menu is gone — see the list card design B below.)
 - Flexible multi-line boxes (owner): `<Input autoGrow>` (multiline only) = min 2 lines, no numberOfLines, scrollEnabled false → the box grows
   with its text (page scrolls); FormatKeyInput `autoGrow` passes it to multiline format fields (else the old fixed 5 lines). Opted in: formats/fill,
   prarthna-patra + nyayalay fill-format, nyayalay/add, हल्का (add-gp, add-hamlet, add-person, add-religious, add-shop, add-institution),
@@ -256,6 +255,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   (3-column grid, "+ फ़ोटो / PDF" tile, sheet कैमरा / गैलरी (multi) / PDF-फ़ाइल, photos quality 0.6, tap = openFile, hold = साझा करें / हटाएँ;
   source 'office' → warning "सिर्फ़ आपके फ़ोन से हटेगा"). On both detail screens and add forms (new paper: files kept as `pending`,
   saved after create; edit: saved at once); list cards show "📎 n".
+  List cards न्यायालय + प्रार्थना पत्र = ONE design (owner, card design B): top type badge (accent) · status pill लंबित / समय निकला / निस्तारित (per-theme
+  colours) · ⋮; big name (न्यायालय: court_name / document_title; प्रार्थना पत्र: first आवेदक "व n अन्य" via `ppCardPeople()` in prarthnaPatraRepo, else the
+  type label); small line (वाद सं0 · मु0अ0सं0 / ग्राम · प्राप्ति dd/mm/yyyy); bottom strip days ("n दिन ऊपर") · 📎 · "अंतिम dd/mm/yyyy"; ⋮ or press-and-hold →
+  `components/common/CardActionMenu.tsx` popup देखें / संपादित करें / हटाएँ (like निरोधात्मक; `useCardMenu`, `dmy`). Same status rules as before
+  (न्यायालय overdue after the date, प्रार्थना पत्र from the deadline day).
   PP add form (owner): order प्रकार → जांचकर्ता → तिथियाँ → आवेदक → विवरण → विपक्षी → संलग्न कागज़ (bottom); no "प्रार्थना पत्र विवरण" /
   "तिथियां" headings, smaller Section gaps; जांचकर्ता = settings officer_name for a NEW पत्र (editable, not refilled once touched; edit keeps saved).
 - प्रार्थना पत्र report screen (`prarthna-patra/[ppId]/report.tsx`): every type except बीट सूचना / NCR (those = take-action) uses the inline flow
