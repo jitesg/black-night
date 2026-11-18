@@ -140,9 +140,11 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   135(3) letters: 2 zero-width lines at the top of [[हस्ताक्षर]] → the signature sits 2 lines lower (owner; seed_version +1: beat/yaksh 21,
   thanabhraman 23, mukadma 22, ncr 18, prarthna 9). Backup docs/format-backups/bnss126_before_135_sign_gap.json.
 - Field hints (owner): `{"hint": "…"}` in a key's dropdown_options → blue text link "ⓘ कैसे भरें?" at the RIGHT END of the field's label line
-  (owner, design B — the old chip above the field looked awkward); tap → floating box (Modal, measureInWindow, opens upwards near the bottom; owner's design C: green header strip "ⓘ <field label> —
-  कैसे भरें" + ✕, tip 17px, example in a light-green box with a green left bar, small muted note — parts from `src/lib/hintParts.ts` `splitHint`
-  (first "जैसे:" → example, then first " — " → note; no जैसे = whole; tests `scripts/test_hint_parts.ts`); `title` = the label; tap outside closes). `components/ui/FieldHintLink.tsx` (`HintLink`, `LabelWithHint`); `keyHint` in input.tsx; FormatKeyField passes
+  (owner, design B — the old chip above the field looked awkward); tap → sheet from the bottom (owner's design B, replaced the floating green box "design C" that covered the next field): grip, ⓘ circle +
+  small "कैसे भरें" + the field's name (18px) + ✕, divider, tip 17px (left out when it only repeats the name — `tipRepeatsTitle`), example = chips
+  when it is a short list (`exampleChips`: " / " or "," split, 2–6 parts ≤ 24 letters; display only) else a grey box with a blue bar, muted note,
+  primary "समझ गया" (parts from `src/lib/hintParts.ts` `splitHint` — first "जैसे:" → example, then first " — " → note; tests
+  `scripts/test_hint_parts.ts`); `title` = the label; tap outside / ✕ / back closes. `components/ui/FieldHintLink.tsx` (`HintLink`, `LabelWithHint`); `keyHint` in input.tsx; FormatKeyField passes
   `hint` to every label (Input `labelHint`, dropdown, multi_choice, date, item_group, sentence; checkbox = link at the row end); Person/AccusedGroupInput
   `hint` prop (label + link on their own line, buttons below) from the 4 fill screens; never printed; a dropdown's list goes under "options"). Owner wanted it on every predefined format (58 formats / 982 fields) — done batch by batch with samples. Tool: `python3 scripts/hints/apply_hints.py <batch>`
   (batch modules in scripts/hints/: `wants(f)` + `hint(f, k)`, shared `common.py`; only fields without a hint, seed_version +1). A "sentence" field

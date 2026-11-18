@@ -17,3 +17,22 @@ export function splitHint(text: string): HintParts {
   if (!example) return { main: t, example: '', note: '' };
   return { main, example, note };
 }
+
+/**
+ * Sheet design B (owner): a short example list ("लखनऊ / इलाहाबाद", "का0, हे0का0") shows as chips — each part ≤ 24 letters,
+ * 2–6 parts, split at " / " or ","; anything longer stays one example line ([] = no chips).
+ */
+export function exampleChips(example: string): string[] {
+  const e = String(example ?? '').trim().replace(/[।.]+$/, '');
+  if (!e) return [];
+  const sep = e.includes(' / ') ? ' / ' : e.includes(',') ? ',' : null;
+  if (!sep) return [];
+  const parts = e.split(sep).map((p) => p.trim()).filter(Boolean);
+  return parts.length >= 2 && parts.length <= 6 && parts.every((p) => p.length <= 24) ? parts : [];
+}
+
+/** The tip only repeats the field's name ("उच्च न्यायालय की पीठ") → not worth a line. */
+export function tipRepeatsTitle(main: string, title: string): boolean {
+  const n = (s: string) => String(s ?? '').replace(/[\s*:।.,()—–-]+/g, '').trim();
+  return !!n(main) && n(main) === n(title);
+}

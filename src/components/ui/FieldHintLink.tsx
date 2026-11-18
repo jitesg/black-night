@@ -1,44 +1,41 @@
 /**
- * "ⓘ कैसे भरें?" (owner, design B): a small blue text link at the right end of a format field's label line. A tap opens a
- * floating box with the field's tip ({"hint": "…"} in dropdown_options); a tap outside (or ✕) closes it. Never printed.
- * Was a separate "ⓘ भरने का तरीका जानें" chip above the field (owner: looked awkward).
+ * "ⓘ कैसे भरें?" (owner): a small blue text link at the right end of a format field's label line. A tap opens a sheet from
+ * the bottom (owner's design B — was a floating green box that covered the next field): ⓘ + the field's name, the tip
+ * ({"hint": "…"} in dropdown_options; a tip that only repeats the name is left out), the example (short lists as chips,
+ * else one line), a small note and "समझ गया". A tap outside / ✕ / back closes it. Never printed. THEME colours, light + dark.
  */
-import React, { useRef, useState } from 'react';
-import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native';
-import { X } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { Info, X } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
-import { splitHint } from '@/lib/hintParts';
+import { NAV_BAR_INSET } from '@/lib/navBarInset';
+import { exampleChips, splitHint, tipRepeatsTitle } from '@/lib/hintParts';
 
 export const HINT_LINK_LABEL = 'कैसे भरें?';
 
-/** `title` = the field's label (box header "ⓘ <title> — कैसे भरें"). */
+/** `title` = the field's label (sheet heading "ⓘ <title>"). */
 export function HintLink({ text, title }: { text?: string; title?: string }) {
   const { colorScheme } = useColorScheme();
   const dark = colorScheme === 'dark';
   const c = THEME[dark ? 'dark' : 'light'];
-  const { width: winW, height: winH } = useWindowDimensions();
-  const btnRef = useRef<View>(null);
-  const [pos, setPos] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const { height: winH } = useWindowDimensions();
+  const [open, setOpen] = useState(false);
   if (!text) return null;
   const accent = dark ? '#60A5FA' : '#2563EB';
-  // box = owner's design C: green header strip, tip, example in a light-green box with a green bar, small note
-  const G = dark
-    ? { head: '#4ADE80', headText: '#0F2016', line: '#2F5A3E', exBg: '#163322', exBar: '#4ADE80' }
-    : { head: '#15803D', headText: '#FFFFFF', line: '#86EFAC', exBg: '#ECFDF3', exBar: '#15803D' };
+  const chipC = dark
+    ? { bg: '#1E3A8A55', border: '#3B82F680', text: '#BFDBFE' }
+    : { bg: '#EFF6FF', border: '#BFDBFE', text: '#1D4ED8' };
+  const exBox = dark ? { bg: '#1E293B', bar: '#60A5FA' } : { bg: '#F1F5F9', bar: '#2563EB' };
   const parts = splitHint(text);
   const name = String(title ?? '').replace(/\s*\*+\s*$/, '').trim();
-  const open = () => btnRef.current?.measureInWindow((x, y, w, h) => setPos({ x, y, w, h }));
-  const close = () => setPos(null);
-  const boxW = Math.min(winW - 24, 420);
-  const left = pos ? Math.max(12, Math.min(pos.x + pos.w - boxW, winW - boxW - 12)) : 12;
-  const below = pos ? pos.y + pos.h + 8 : 0;
-  const placeAbove = pos ? below > winH * 0.6 : false; // near the bottom → open upwards
+  const main = parts.main && !tipRepeatsTitle(parts.main, name) ? parts.main : '';
+  const chips = exampleChips(parts.example);
+  const close = () => setOpen(false);
   return (
     <>
       <Pressable
-        ref={btnRef}
-        onPress={pos ? close : open}
+        onPress={() => setOpen(true)}
         hitSlop={10}
         accessibilityRole="button"
         accessibilityLabel={HINT_LINK_LABEL}
@@ -47,36 +44,62 @@ export function HintLink({ text, title }: { text?: string; title?: string }) {
         <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '700', color: accent }}>ⓘ</Text>
         <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '600', color: accent }}>{HINT_LINK_LABEL}</Text>
       </Pressable>
-      <Modal visible={!!pos} transparent animationType="fade" onRequestClose={close} statusBarTranslucent>
-        <Pressable onPress={close} style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.25)' }}>
-          {pos ? (
-            <View
-              onStartShouldSetResponder={() => true}
-              style={{ position: 'absolute', left, width: boxW,
-                ...(placeAbove ? { bottom: winH - pos.y + 8 } : { top: below }),
-                backgroundColor: c.card, borderRadius: 14, borderWidth: 1, borderColor: G.line, overflow: 'hidden', elevation: 8,
-                shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } }}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: G.head, paddingHorizontal: 14, paddingVertical: 9 }}>
-                <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: G.headText }}>
-                  {name ? `ⓘ ${name} — कैसे भरें` : 'ⓘ कैसे भरें'}
-                </Text>
-                <Pressable onPress={close} hitSlop={10} accessibilityLabel="बंद करें"><X size={18} color={G.headText} /></Pressable>
+      <Modal visible={open} transparent animationType="slide" onRequestClose={close} statusBarTranslucent>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          <Pressable onPress={close} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)' }} accessibilityLabel="बंद करें" />
+          <View
+            style={{
+              backgroundColor: c.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, maxHeight: winH * 0.75,
+              paddingHorizontal: 20, paddingTop: 10, paddingBottom: 16 + NAV_BAR_INSET,
+              elevation: 12, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 14, shadowOffset: { width: 0, height: -4 },
+            }}
+          >
+            <View style={{ alignSelf: 'center', width: 40, height: 4, borderRadius: 2, backgroundColor: c.border, marginBottom: 14 }} />
+            {/* heading: ⓘ + the field's name + ✕ */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <View style={{ width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: chipC.bg }}>
+                <Info size={19} color={accent} />
               </View>
-              <View style={{ paddingHorizontal: 14, paddingTop: 10, paddingBottom: 12, gap: 8 }}>
-                {parts.main ? <Text style={{ fontSize: 17, lineHeight: 28, color: c.foreground }}>{parts.main}</Text> : null}
-                {parts.example ? (
-                  <View style={{ borderLeftWidth: 3, borderLeftColor: G.exBar, backgroundColor: G.exBg, borderTopRightRadius: 8, borderBottomRightRadius: 8, paddingHorizontal: 10, paddingVertical: 6 }}>
-                    <Text style={{ fontSize: 16, lineHeight: 26, color: c.foreground }}>
-                      जैसे: <Text style={{ fontWeight: '700' }}>{parts.example}</Text>
-                    </Text>
-                  </View>
-                ) : null}
-                {parts.note ? <Text style={{ fontSize: 14, lineHeight: 22, color: c.mutedForeground }}>{parts.note}</Text> : null}
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={{ fontSize: 12.5, fontWeight: '600', color: c.mutedForeground }}>कैसे भरें</Text>
+                <Text style={{ fontSize: 18, lineHeight: 28, fontWeight: '700', color: c.foreground }}>{name || 'यह खाना'}</Text>
               </View>
+              <Pressable onPress={close} hitSlop={12} accessibilityRole="button" accessibilityLabel="बंद करें"
+                style={{ width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: c.muted }}>
+                <X size={18} color={c.mutedForeground} />
+              </Pressable>
             </View>
-          ) : null}
-        </Pressable>
+            <View style={{ height: 1, backgroundColor: c.border, marginTop: 14, marginBottom: 4 }} />
+            <ScrollView style={{ flexGrow: 0 }} contentContainerStyle={{ paddingTop: 10, gap: 14 }} showsVerticalScrollIndicator={false}>
+              {main ? <Text style={{ fontSize: 17, lineHeight: 29, color: c.foreground }}>{main}</Text> : null}
+              {parts.example ? (
+                chips.length ? (
+                  <View style={{ gap: 8 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: c.mutedForeground }}>उदाहरण</Text>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                      {chips.map((ch) => (
+                        <View key={ch} style={{ backgroundColor: chipC.bg, borderWidth: 1, borderColor: chipC.border, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 6 }}>
+                          <Text style={{ fontSize: 16, fontWeight: '700', color: chipC.text }}>{ch}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                ) : (
+                  <View style={{ borderLeftWidth: 3, borderLeftColor: exBox.bar, backgroundColor: exBox.bg, borderTopRightRadius: 10, borderBottomRightRadius: 10, paddingHorizontal: 12, paddingVertical: 10 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: c.mutedForeground, marginBottom: 2 }}>उदाहरण</Text>
+                    <Text style={{ fontSize: 16.5, lineHeight: 27, fontWeight: '600', color: c.foreground }}>{parts.example}</Text>
+                  </View>
+                )
+              ) : null}
+              {parts.note ? <Text style={{ fontSize: 14.5, lineHeight: 23, color: c.mutedForeground }}>{parts.note}</Text> : null}
+            </ScrollView>
+            <Pressable onPress={close} accessibilityRole="button" accessibilityLabel="समझ गया" style={{ marginTop: 18 }}>
+              <View style={{ backgroundColor: c.primary, borderRadius: 14, paddingVertical: 13, alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: c.primaryForeground }}>समझ गया</Text>
+              </View>
+            </Pressable>
+          </View>
+        </View>
       </Modal>
     </>
   );
