@@ -185,7 +185,7 @@ function ContinueRow({ item }: { item: RecentActivity }) {
         alignItems: 'center', justifyContent: 'center',
       }}>
         <Text style={{ fontSize: 11, fontWeight: '700', color: item.color }}>
-          {item.label.slice(0, 2).toUpperCase()}
+          {item.badge ?? item.label.slice(0, 2).toUpperCase()}
         </Text>
       </View>
       <View style={{ flex: 1 }}>

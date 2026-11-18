@@ -8,6 +8,7 @@
 import { safeNum, safePct } from '../safeNum';
 import i18n from '@/lib/i18n';
 import { htmlToPlainText } from '@/lib/stringUtils';
+import { crimeTypeLabel } from './checklistRepo';
 import { getAllFIRs, type FIR } from './firRepo';
 import { getAllGdEntries, type GdEntry } from './gdRepo';
 import {
@@ -135,6 +136,8 @@ export interface OverdueItem {
 
 export interface RecentActivity {
   id: string;
+  /** short Hindi mark in the coloured tile (मु / न्या / प्रा / GD / नि — owner) */
+  badge?: string;
   label: string;
   subtitle: string;
   time: number; // unix seconds
@@ -293,6 +296,11 @@ export async function loadDashboardData(): Promise<DashboardData> {
   // स्मरणपत्र / समय निकला rows (owner): court type in Hindi, the matter as plain text (it is rich-editor HTML)
   const courtTypeHi = (dt: string) => i18n.t(`nyayalay.docType.${dt}`, { defaultValue: DOC_TYPE_LABELS[dt as keyof typeof DOC_TYPE_LABELS] ?? dt });
   const matterLine = (m: string | null | undefined) => htmlToPlainText(m).replace(/\s+/g, ' ').trim() || '—';
+  /** "2026-11-18" → "18/11/2026" (owner: dates dd/mm/yyyy) */
+  const dmyDate = (v: string | null | undefined) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v ?? '');
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : (v || '—');
+  };
   const reminders: ReminderItem[] = [];
 
   for (const doc of nyayalayDocs) {
@@ -370,8 +378,10 @@ export async function loadDashboardData(): Promise<DashboardData> {
   firs.forEach((f) =>
     activities.push({
       id: f.id,
-      label: 'FIR Added',
-      subtitle: `${f.fir_number || '—'} · ${f.crime_type}`,
+      badge: 'मु',
+      label: 'मुकदमा दर्ज',
+      // stored id ("cyber_crime") → the Hindi name the मुकदमा list shows
+      subtitle: `${f.fir_number || '—'} · ${crimeTypeLabel(f.crime_type) || '—'}`,
       time: f.created_at,
       route: `/(app)/mukadma/${f.id}`,
       color: MODULE_COLORS.Mukadma,
@@ -380,8 +390,11 @@ export async function loadDashboardData(): Promise<DashboardData> {
   nyayalayDocs.forEach((d) =>
     activities.push({
       id: d.id,
-      label: 'Court Document Added',
-      subtitle: `${DOC_TYPE_LABELS[d.doc_type] ?? d.doc_type} · ${d.court_name || '—'}`,
+      badge: 'न्या',
+      label: 'न्यायालय कागज़ जोड़ा',
+      // no court name (उच्च न्यायालय कागज़) → वाद सं0, then मु0अ0सं0, then the title
+      subtitle: `${courtTypeHi(d.doc_type)} · ${d.court_name || (d.vad_sankhya ? `वाद सं0 ${d.vad_sankhya}` : '')
+        || (d.fir_number ? `मु0अ0सं0 ${d.fir_number}${d.fir_year ? `/${d.fir_year}` : ''}` : '') || d.document_title || '—'}`,
       time: d.created_at,
       route: `/(app)/nyayalay/${d.id}`,
       color: MODULE_COLORS.Nyayalay,
@@ -390,8 +403,9 @@ export async function loadDashboardData(): Promise<DashboardData> {
   ppAll.forEach((p) =>
     activities.push({
       id: p.id,
-      label: 'Prarthna Patra Added',
-      subtitle: `${p.petition_type} · ${p.matter || '—'}`,
+      badge: 'प्रा',
+      label: 'प्रार्थना पत्र जोड़ा',
+      subtitle: `${p.petition_type} · ${matterLine(p.matter)}`,
       time: p.created_at,
       route: `/(app)/prarthna-patra/${p.id}`,
       color: MODULE_COLORS['Prarthna Patra'],
@@ -400,8 +414,9 @@ export async function loadDashboardData(): Promise<DashboardData> {
   gdAll.forEach((g) =>
     activities.push({
       id: g.id,
-      label: 'GD Entry Created',
-      subtitle: `${g.gd_type} · ${g.preparation_date}`,
+      badge: 'GD',
+      label: 'GD बनाई',
+      subtitle: `${g.gd_type} · ${dmyDate(g.preparation_date)}`,
       time: g.created_at,
       route: `/(app)/gd/${g.id}`,
       color: MODULE_COLORS.GD,
@@ -410,7 +425,8 @@ export async function loadDashboardData(): Promise<DashboardData> {
   nirodhatmakAll.forEach((n) =>
     activities.push({
       id: n.id,
-      label: 'BNSS Proceeding Added',
+      badge: 'नि',
+      label: 'निरोधात्मक कार्यवाही',
       subtitle: n.format_title || '—',
       time: n.created_at,
       route: '/(app)/nirodhatmak',
