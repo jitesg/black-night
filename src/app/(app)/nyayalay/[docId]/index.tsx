@@ -9,7 +9,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  Bell, Calendar, CheckSquare, Edit3,
+  Bell, Calendar, CheckSquare, Pencil,
   FileText, Square,
 } from 'lucide-react-native';
 import {
@@ -28,7 +28,7 @@ import {
   type NyayalayReport,
   type NyayalayChecklistItem,
 } from '@/lib/db/nyayalayRepo';
-import { AppHeader } from '@/components/ui/ds/AppHeader';
+import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import { OfficeOriginBanner, isFromOffice } from '@/office/OfficeOrigin';
 import { AddFromFormatCard } from '@/components/ui/ds/AddFromFormatCard';
@@ -606,9 +606,12 @@ export default function NyayalayDocDetailScreen() {
         subtitle={`${DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type}${doc.sub_type ? ` — ${doc.sub_type}` : ''}`}
         onBack={handleBack}
         rightActions={
-          <Pressable onPress={() => router.push(`/(app)/nyayalay/add?editId=${doc.id}` as never)} className="active:opacity-70 px-3 py-1.5 border border-border rounded-xl">
-            <Edit3 size={14} color="#6B7280" />
-          </Pressable>
+          // same pencil as the प्रार्थना पत्र detail (owner): HeaderIconBtn, theme colour, like 🤖 / 🔔
+          <HeaderIconBtn
+            icon={Pencil}
+            onPress={() => router.push(`/(app)/nyayalay/add?editId=${doc.id}` as never)}
+            label="न्यायालय कागज़ संपादित करें"
+          />
         }
       />
 
