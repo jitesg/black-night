@@ -515,7 +515,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   from DocumentEditor + .doc via exportReportToDocx; size large / small, `wordOnly`): PP आख्या box, PP detail आख्या card (report_marked first),
   बीट सूचना / NCR take-action (.doc only). न्यायालय रिपोर्ट (`nyayalay/[docId]/report.tsx`, owner): the रिपोर्ट box is now the same `DocumentEditor`
   as the प्रार्थना पत्र आख्या (value = editor HTML; a format draft → `markedToEditorHtml(markedText)` else `toEditorHtml`, replacing the box like before;
-  old saved report_marked → its editor HTML; report_marked now saved ''), `HeaderDocButton` next to अंतिम सहेजें; the GeneratedReportView row कॉपी /
+  old saved report_marked → its editor HTML; report_marked now saved ''), `HeaderDocButton` alone in the header; अंतिम सहेजें = full-width
+  button at the bottom (under फर्द जाँचें + the ⓘ निस्तारित note; owner); the GeneratedReportView row कॉपी /
   साझा / A4 / .doc / संपादित and "Report content will appear here." are gone (owner: no copy / share icons); label "रिपोर्ट", placeholder
   nyayalay.report.editorPlaceholder; FardCheckButton + validation read htmlToPlainText.
   Look (owner, later): rectangular boxes, one per line (label above — like थाना / जनपद on the person card), order अधिकारी का नाम → थाना → जनपद

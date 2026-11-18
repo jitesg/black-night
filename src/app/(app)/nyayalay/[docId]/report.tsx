@@ -288,22 +288,8 @@ export default function NyayalayReportScreen() {
           title={existingReport ? t('nyayalay.report.editReport') : t('nyayalay.report.generateReport')}
           subtitle={doc ? (DOC_TYPE_LABELS[doc.doc_type] ? t(`nyayalay.docType.${doc.doc_type}`) : doc.doc_type) : t('nyayalay.form.title')}
           onBack={handleBack}
-          rightActions={
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            {/* .doc at the top right (owner, like the प्रार्थना पत्र आख्या) — faded while the report is empty */}
-            <HeaderDocButton source={reportContent} title={formatTitle || t('nyayalay.report.courtReportTitle')} />
-            <Pressable
-              onPress={handleFinalSave}
-              disabled={saving || isAlreadyFinished}
-              className="rounded-xl px-4 py-2 active:opacity-70"
-              style={{ backgroundColor: isAlreadyFinished ? '#9CA3AF' : MODULE_COLOR }}
-            >
-              <Text className="text-sm font-semibold text-white">
-                {saving ? t('common.saving') : t('nyayalay.report.finalSave')}
-              </Text>
-            </Pressable>
-            </View>
-          }
+          // owner: only .doc here (faded while empty); अंतिम सहेजें moved to the bottom, under the editor
+          rightActions={<HeaderDocButton source={reportContent} title={formatTitle || t('nyayalay.report.courtReportTitle')} />}
         />
 
         <ScrollView
@@ -477,12 +463,30 @@ export default function NyayalayReportScreen() {
             <Text className="text-xs text-destructive mt-1">{errors.reportContent}</Text>
           ) : null}
 
-          {/* Final Save note */}
+          {/* Final Save note — above the button, read before pressing (owner) */}
           <View className="mt-4 bg-muted rounded-xl p-3" style={{ borderCurve: 'continuous' }}>
             <Text className="text-xs text-muted-foreground">
-              {t('nyayalay.report.finalSaveNotePrefix')} <Text className="font-semibold">{t('nyayalay.status.nistarit')}</Text>.
+              ⓘ {t('nyayalay.report.finalSaveNotePrefix')} <Text className="font-semibold">{t('nyayalay.status.nistarit')}</Text>.
             </Text>
           </View>
+
+          {/* अंतिम सहेजें — full width at the bottom (owner; was in the header) */}
+          <Pressable
+            onPress={handleFinalSave}
+            disabled={saving || isAlreadyFinished}
+            accessibilityRole="button"
+            accessibilityLabel={t('nyayalay.report.finalSave')}
+            style={{ marginTop: 12 }}
+          >
+            <View style={{
+              backgroundColor: isAlreadyFinished ? '#9CA3AF' : MODULE_COLOR, borderRadius: 14, paddingVertical: 15,
+              alignItems: 'center', justifyContent: 'center', opacity: saving ? 0.7 : 1, borderCurve: 'continuous',
+            }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: '#FFFFFF' }}>
+                {saving ? t('common.saving') : `✓ ${t('nyayalay.report.finalSave')}`}
+              </Text>
+            </View>
+          </Pressable>
         </ScrollView>
       </View>
 
