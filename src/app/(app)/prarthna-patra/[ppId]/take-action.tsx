@@ -8,14 +8,13 @@
  *   is_complete=true  → status becomes Nistarit (owner: one "done" state — निस्तारित)
  *   is_complete=false → status stays Pending (draft)
  */
-import { ReportExportButtons } from '@/components/common/ReportExportButtons';
+import { HeaderDocButton, ReportDateField } from '@/components/common/ReportFormParts';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   View, Text, ScrollView, Pressable,
   KeyboardAvoidingView, BackHandler, ActivityIndicator,
 } from 'react-native';
-import { Input } from '@/components/ui/input';
 import { DocumentEditor } from '@/components/common/DocumentEditor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -26,7 +25,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import {
   getPPWithDetails, saveAction,
-  PETITION_TYPE_LABELS, NCR_ACTION_TYPES,
+  NCR_ACTION_TYPES,
   _todayString,
   type PPWithDetails, type NCRActionType,
 } from '@/lib/db/prarthnaPatraRepo';
@@ -228,8 +227,11 @@ export default function TakeActionScreen() {
       className="flex-1"
     >
       <View className="flex-1 bg-background">
-        <AppHeader title={t('prarthnaPatra.action.title')} subtitle={pp?.petition_type ? PETITION_TYPE_LABELS[pp.petition_type] : ''}
+        {/* owner: like the आख्या screen — small line "<प्रकार> · <first आवेदक>", .doc at the top right */}
+        <AppHeader title={t('prarthnaPatra.action.title')}
+          subtitle={[pp?.petition_type ?? '', pp?.complainants[0]?.name ?? ''].filter(Boolean).join(' · ')}
           onBack={handleBack}
+          rightActions={<HeaderDocButton source={actionContent} title={t('prarthnaPatra.action.editorTitle')} />}
         />
 
         <ScrollView
@@ -237,20 +239,6 @@ export default function TakeActionScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Petition context */}
-          {pp && (
-            <View className="bg-muted rounded-xl px-3 py-2.5 mt-4">
-              <Text className="text-xs text-muted-foreground">
-                {PETITION_TYPE_LABELS[pp.petition_type]}
-              </Text>
-              {pp.complainants[0]?.name ? (
-                <Text className="text-xs text-muted-foreground mt-0.5">
-                  {pp.complainants[0].name}
-                </Text>
-              ) : null}
-            </View>
-          )}
-
           {errors.general ? (
             <Text className="text-sm text-destructive mt-3">{errors.general}</Text>
           ) : null}
@@ -267,18 +255,18 @@ export default function TakeActionScreen() {
             </>
           )}
 
-          {/* ── Action Date ── */}
-          <SectionLabel title={t('prarthnaPatra.action.sectionActionDate')} />
-          <Input
-            type="date"
-            placeholder="YYYY-MM-DD"
-            value={actionDate}
-            onChangeText={setActionDate}
-            errorText={errors.actionDate}
-          />
+          {/* ── Action Date — calendar box, dd/mm/yyyy (same as the आख्या screen) ── */}
+          <View style={{ marginTop: 14 }}>
+            <ReportDateField
+              label={t('prarthnaPatra.action.sectionActionDate')}
+              value={actionDate}
+              onChange={setActionDate}
+              error={errors.actionDate}
+            />
+          </View>
 
-          {/* ── Add From Format ── */}
-          <SectionLabel title={t('prarthnaPatra.action.sectionAddFromFormat')} />
+          {/* ── Add From Format (the card names itself — no heading above it) ── */}
+          <View style={{ height: 12 }} />
           <AddFromFormatCard
             title={t('prarthnaPatra.action.addFromFormat')}
             subtitle={usedFormatTitle
@@ -289,7 +277,7 @@ export default function TakeActionScreen() {
           />
 
           {/* ── Action Editor ── */}
-          <SectionLabel title={t('prarthnaPatra.action.sectionActionEditor')} />
+          <View style={{ height: 12 }} />
           <DocumentEditor
             value={actionContent}
             onChangeText={(v) => { setActionContent(v); setErrors((e) => ({ ...e, actionContent: '' })); }}
@@ -302,11 +290,6 @@ export default function TakeActionScreen() {
           {errors.actionContent ? (
             <Text className="text-xs text-destructive mt-1">{errors.actionContent}</Text>
           ) : null}
-          {/* .doc (owner) — the editor above already has its own A4 preview */}
-          <View style={{ marginTop: 10 }}>
-            <ReportExportButtons wordOnly source={actionContent} title={t('prarthnaPatra.action.editorTitle')} />
-          </View>
-
           {/* ── Info note ── */}
           <View className="mt-4 bg-muted rounded-xl p-3">
             <Text className="text-xs text-muted-foreground">

@@ -268,6 +268,9 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   survives edits), old plain आख्या → `markdownToHtml`, old saved report_marked → its editor HTML; report_marked now saved ''. ".doc" = header
   `HeaderDocButton` at the top right after 🤖 / 🔔 (faded while empty); A4 = the editor's पूर्वावलोकन. Detail card shows htmlToPlainText. No "प्रार्थना पत्र विवरण" card and no "रिपोर्ट लगाएं" step any more (owner) —
   the screen opens straight on तिथि / प्रारूप / editor / सहेजें; header subtitle = "<प्रकार> · <first आवेदक>".
+  बीट सूचना / NCR "कार्यवाही करें" (`[ppId]/take-action.tsx`) made alike (owner): no grey context box, subtitle "<type> · <first आवेदक>",
+  .doc = header HeaderDocButton (bottom .doc removed), कार्रवाई की तिथि = ReportDateField (calendar, dd/mm/yyyy), no headings above प्रारूप card /
+  editor; NCR action type, note and both save buttons unchanged. Shared `components/common/ReportFormParts.tsx` (ReportDateField, HeaderDocButton).
 - `sys-fmt-pp-janta-darshan-aakhya` "जनता दर्शन / शिकायत प्रकोष्ठ प्रार्थना पत्र — जांच आख्या (14 बिन्दु)" (Prarthna Patra, owner's docx):
   bold header lines via `**…**` in [[सूची]] (supported in list lines too), optional गवाह / Lat / Long, doNoAction tick, बिन्दु ticks
   p1–p11 each opening `pNText` (showIf) → "✓ – विवरण" in the printed list. Owner's file has 11 points under a "14 बिन्दु" heading.
