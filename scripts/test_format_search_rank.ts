@@ -38,3 +38,16 @@ test('a number matches only a whole number', () => {
   assert.equal(formatSearchRank('उ0नि0 रवानगी', { title: 'रवानगी उ0नि0' })[0], 1);
   assert.equal(formatSearchRank('gd', { title: 'x', tags: ['GD'] })[0], 2);
 });
+
+test('"प्रारूप चुनें" lists: query → rank first, a tie keeps the list order', () => {
+  // like prarthna-patra / nirodhatmak select-format: this paper's formats first, then the rest
+  const pp = seed.formats.filter((f) => f.format_type === 'Prarthna Patra');
+  const rest = seed.formats.filter((f) => f.format_type !== 'Prarthna Patra');
+  const list = [...pp, ...rest].filter((f) => smartMatch('35(3)', [f.title, f.vivran, f.format_type, (f.tags ?? []).join(' ')]));
+  const out = sortBySearchRank(list, '35(3)', true);
+  assert.deepEqual(out.slice(0, 2).map((f) => f.id), ['sys-fmt-notice-35-3-bnss', 'sys-fmt-cd-abhiyukt-bayan-35-3']);
+  // the rest keep their list order (Prarthna Patra ones still before the others)
+  const tail = out.slice(2).map((f) => f.format_type);
+  const firstOther = tail.findIndex((t) => t !== 'Prarthna Patra');
+  assert.ok(firstOther === -1 || tail.slice(firstOther).every((t) => t !== 'Prarthna Patra'));
+});

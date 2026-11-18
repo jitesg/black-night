@@ -100,7 +100,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - प्रारूप खोज का क्रम (owner: "35(3)" put 9 × 126/135 above the 35(3) formats — "35" matched inside "135"): `src/lib/formatSearchRank.ts`
   (pure; tests `scripts/test_format_search_rank.ts` on the real seed: 35(3), 179, 170, 126, 60(1), 183, 480(2)) — rank 0 = whole query (words in a
   row) in the title, earlier = higher; 1 = every word in the title; 2 = title + tags; 3 = rest; a number word matches only a whole number.
-  `sortBySearchRank` in sysFormatRepo searchPublishedFormats + searchPublishedFormatsByTypes (which formats are found is unchanged).
+  `sortBySearchRank` in sysFormatRepo searchPublishedFormats + searchPublishedFormatsByTypes + `filterFormatsByQuery` (the PP / NK / न्यायालय
+  "प्रारूप चुनें" lists; `keepOrder` = a tie keeps their "this paper first" order; empty query = list unchanged). Which formats are found is unchanged.
 - Knowledge search = `src/lib/knowledgeSearchAll.ts` (`searchAllKnowledge`): knowledge entries + BNS/BNSS/BSA sections
   (`searchLaw`, section-like queries first) + फर्द + checklists + BNS संदर्भ rows; used by knowledge index and home.
   Law: `parseBareSectionNumber` ("धारा 103", "u/s 35(3)", १०३); Act screen filter understands it. bns-ref takes ?mode=&q=.

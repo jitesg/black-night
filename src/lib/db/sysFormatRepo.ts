@@ -708,8 +708,12 @@ export function mergeFormatsFirst(...lists: FormatWithMeta[][]): FormatWithMeta[
   return out;
 }
 
-/** Client-side text filter on title + vivran (Hindi-safe, case-insensitive). */
+/**
+ * Client-side text filter on title + vivran (Hindi-safe, case-insensitive) for the "प्रारूप चुनें" screens. With a query the
+ * found formats are ordered like the प्रारूप list (owner: "35(3)" on top — formatSearchRank.ts); a tie keeps the list's own
+ * order (this paper's formats first). An empty query keeps the list as it is.
+ */
 export function filterFormatsByQuery(list: FormatWithMeta[], q: string): FormatWithMeta[] {
   if (!q.trim()) return list;
-  return list.filter((f) => formatMatches(f, q));
+  return sortBySearchRank(list.filter((f) => formatMatches(f, q)), q, true);
 }

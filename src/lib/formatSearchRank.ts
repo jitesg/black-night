@@ -30,9 +30,13 @@ export function formatSearchRank(query: string, f: RankedFormat): [number, numbe
   return [3, 0];
 }
 
-/** Sort found formats by formatSearchRank, then by title (a new array). */
-export function sortBySearchRank<T extends RankedFormat>(list: readonly T[], query: string): T[] {
-  const keyed = list.map((f) => ({ f, r: formatSearchRank(query, f) }));
-  keyed.sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || (a.f.title ?? '').localeCompare(b.f.title ?? ''));
+/**
+ * Sort found formats by formatSearchRank, then by title (a new array). `keepOrder` = on a tie keep the list's own order
+ * instead of the title — the "प्रारूप चुनें" screens build their list with this paper's formats first.
+ */
+export function sortBySearchRank<T extends RankedFormat>(list: readonly T[], query: string, keepOrder = false): T[] {
+  const keyed = list.map((f, i) => ({ f, i, r: formatSearchRank(query, f) }));
+  keyed.sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1]
+    || (keepOrder ? a.i - b.i : (a.f.title ?? '').localeCompare(b.f.title ?? '')));
   return keyed.map((k) => k.f);
 }
