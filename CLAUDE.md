@@ -300,8 +300,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   `{"role": "vipakshi", "wordKey": "VipWord", "kindKey": "VipKind", "nilKey": "noVip"}` → deriveFormatValues writes the word (आवेदक / आवेदिका /
   आवेदकगण from the cards; विपक्षी(गण) or आरोपी(गण) by the officer's VipKind dropdown; nil → singular) — logic in `formatDerived.ts`
   (roleConfigOf / roleWord …), PP helpers `src/lib/ppPeople.ts` (ppCards: PP rows → cards, ग्राम/थाना/जनपद added; tests `scripts/test_pp_people.ts`).
-  PersonGroupInput `role` (all 4 fill screens): आवेदक / आवेदिका badge per card, "+ आवेदक / विपक्षी जोड़ें", `PPPeopleButton` "प्रार्थना पत्र से भरें"
-  (only in `PPPeopleContext` = prarthna-patra/fill-format, which reads `ppId` and fills role groups from that PP when the format opens).
+  PersonGroupInput `role` (all 4 fill screens): आवेदक / आवेदिका badge per card, "+ आवेदक / विपक्षी जोड़ें", the `PPPeopleButton` "प्रार्थना पत्र से भरें"
+  is NO LONGER rendered (owner removed it; PPPeopleContext in prarthna-patra/fill-format still fills role groups from that PP when the format opens).
   PP add form + detail say "आवेदक" (was वादी: section, card title, + अन्य आवेदक जोड़ें, error); the "वादी के समान (पता … कॉपी करें)" button
   is removed (owner). PP add form: सम्बन्ध chips पुत्र / पुत्री / पत्नी on आवेदक + विपक्षी cards (columns prarthna_patra_complainants/_accused.relation) → लिंग + पिता/पति
   label; आवेदक card badge. First format: जांच आख्या v3 (Avedak dropdown removed, VipKind added, parties lines "**1. {{Avedak}} –** …" /

@@ -23,14 +23,12 @@
  *   - 2+ prior cards        → tapping opens an inline mini-picker to choose which.
  */
 
-import { PPPeopleButton } from '@/components/formats/PPPeopleButton';
 import { avedakCardWord, type GroupRole } from '@/lib/ppPeople';
 import {
   ADOPT_SUBS, ID_TYPES, RELATION_CHIPS, TRANS_SUBS, addrModeOf, chipOf, composeAddress, fatherLabel, genderOfRelation, hasAddress,
   personCardDefaults, relationWord, type AddrMode, type RelationChip,
 } from '@/lib/personCard';
 import { LabelWithHint } from './FieldHintLink';
-import { insertIntoGroup } from '@/lib/firPeople';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { ChevronDown, ChevronUp, Copy, Trash2, UserPlus, X } from 'lucide-react-native';
@@ -757,7 +755,7 @@ export interface PersonGroupInputProps {
   addressOptional?: boolean;
   /** format field tip → "ⓘ कैसे भरें?" on the label line */
   hint?: string;
-  /** आवेदक / विपक्षी समूह (key option {"role": …}, ppPeople.ts): word badge, own add label, "प्रार्थना पत्र से भरें" */
+  /** आवेदक / विपक्षी समूह (key option {"role": …}, ppPeople.ts): word badge, own add label (the "प्रार्थना पत्र से भरें" button was removed — owner) */
   role?: GroupRole;
 }
 
@@ -898,12 +896,6 @@ export const PersonGroupInput = memo(({
           </View>
         )}
       </View>
-      {role ? (
-        <PPPeopleButton
-          role={role}
-          onInsert={(cards) => onChange(keyName, single ? JSON.stringify(cards.slice(0, 1)) : insertIntoGroup(value, cards))}
-        />
-      ) : null}
 
       {entries.map((entry, i) => (
         <PersonCard
