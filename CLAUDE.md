@@ -4,6 +4,9 @@ Police investigation assistant (Hindi/English), built with Expo SDK 55 / React N
 (new architecture, Hermes), expo-router, NativeWind v4, expo-sqlite. Originally exported
 from the MeDo AI builder (v1.0.583); development now continues here.
 
+Hand-over / new developers: start with `docs/DEVELOPER_GUIDE.md` (structured English map of the code); this file is the
+detailed working log. Keep the guide up to date when the architecture changes.
+
 ## Working rules (from the owner)
 - Talk to the owner in simple Hindi/Hinglish; they test on a real Android phone.
 - Never change existing features unless asked.
