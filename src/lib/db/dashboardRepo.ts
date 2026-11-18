@@ -6,6 +6,8 @@
  */
 
 import { safeNum, safePct } from '../safeNum';
+import i18n from '@/lib/i18n';
+import { htmlToPlainText } from '@/lib/stringUtils';
 import { getAllFIRs, type FIR } from './firRepo';
 import { getAllGdEntries, type GdEntry } from './gdRepo';
 import {
@@ -288,6 +290,9 @@ export async function loadDashboardData(): Promise<DashboardData> {
   };
 
   // ── Reminders (due in next 14 days, sorted nearest first) ─────────────
+  // स्मरणपत्र / समय निकला rows (owner): court type in Hindi, the matter as plain text (it is rich-editor HTML)
+  const courtTypeHi = (dt: string) => i18n.t(`nyayalay.docType.${dt}`, { defaultValue: DOC_TYPE_LABELS[dt as keyof typeof DOC_TYPE_LABELS] ?? dt });
+  const matterLine = (m: string | null | undefined) => htmlToPlainText(m).replace(/\s+/g, ' ').trim() || '—';
   const reminders: ReminderItem[] = [];
 
   for (const doc of nyayalayDocs) {
@@ -297,7 +302,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
       reminders.push({
         id: doc.id,
         module: 'Nyayalay',
-        title: `${DOC_TYPE_LABELS[doc.doc_type] ?? doc.doc_type} — ${doc.court_name || doc.vad_sankhya || doc.document_title || '—'}`,
+        title: `${courtTypeHi(doc.doc_type)} — ${doc.court_name || doc.vad_sankhya || doc.document_title || '—'}`,
         daysLeft: days,
         route: `/(app)/nyayalay/${doc.id}`,
         color: MODULE_COLORS.Nyayalay,
@@ -313,7 +318,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
       reminders.push({
         id: pp.id,
         module: 'Prarthna Patra',
-        title: `${pp.petition_type} — ${pp.matter || '—'}`,
+        title: `${pp.petition_type} — ${matterLine(pp.matter)}`,
         daysLeft: days,
         route: `/(app)/prarthna-patra/${pp.id}`,
         color: MODULE_COLORS['Prarthna Patra'],
@@ -333,7 +338,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
       overdue.push({
         id: doc.id,
         module: 'Nyayalay',
-        title: `${DOC_TYPE_LABELS[doc.doc_type] ?? doc.doc_type} — ${doc.court_name || doc.vad_sankhya || doc.document_title || '—'}`,
+        title: `${courtTypeHi(doc.doc_type)} — ${doc.court_name || doc.vad_sankhya || doc.document_title || '—'}`,
         daysOverdue: Math.abs(days),
         route: `/(app)/nyayalay/${doc.id}`,
         color: MODULE_COLORS.Nyayalay,
@@ -349,7 +354,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
       overdue.push({
         id: pp.id,
         module: 'Prarthna Patra',
-        title: `${pp.petition_type} — ${pp.matter || '—'}`,
+        title: `${pp.petition_type} — ${matterLine(pp.matter)}`,
         daysOverdue: Math.abs(days),
         route: `/(app)/prarthna-patra/${pp.id}`,
         color: MODULE_COLORS['Prarthna Patra'],

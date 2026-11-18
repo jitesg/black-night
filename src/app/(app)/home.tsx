@@ -130,6 +130,9 @@ function QuickAction({ label, icon: Icon, color, onPress }: {
 }
 
 // ── ReminderRow ──────────────────────────────────────────────────────────────
+/** module key (kept in English — used for colours / grouping) → the Hindi word on the स्मरणपत्र row (owner) */
+const REMINDER_MODULE_HI: Record<string, string> = { Nyayalay: 'न्यायालय', 'Prarthna Patra': 'प्रार्थना पत्र' };
+
 function ReminderRow({ item }: { item: ReminderItem }) {
   const { t } = useTranslation();
   const C = usePalette();
@@ -137,10 +140,11 @@ function ReminderRow({ item }: { item: ReminderItem }) {
   const isToday   = item.daysLeft === 0;
   const variant   = isOverdue ? 'error' : isToday ? 'warning' : 'neutral';
   const badge     = isOverdue
-    ? t('home.daysLate', { count: Math.abs(item.daysLeft) })
+    // the texts say "{{days}} दिन …" — pass `days` (was `count`, so "{{days}}" showed on screen — owner)
+    ? t('home.daysLate', { days: Math.abs(item.daysLeft) })
     : isToday
     ? t('home.today')
-    : t('home.daysRemaining', { count: item.daysLeft });
+    : t('home.daysRemaining', { days: item.daysLeft });
   return (
     <Pressable
       onPress={() => router.push(item.route as never)}
@@ -151,7 +155,7 @@ function ReminderRow({ item }: { item: ReminderItem }) {
         <Text style={{ ...T.footnote, fontWeight: '600', color: C.text }} numberOfLines={1}>
           {item.title}
         </Text>
-        <Text style={{ ...T.caption1, color: C.textMuted, marginTop: 2 }}>{item.module}</Text>
+        <Text style={{ ...T.caption1, color: C.textMuted, marginTop: 2 }}>{REMINDER_MODULE_HI[item.module] ?? item.module}</Text>
       </View>
       <StatusChip label={badge} variant={variant} />
     </Pressable>
