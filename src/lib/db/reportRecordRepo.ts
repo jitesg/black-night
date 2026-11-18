@@ -15,6 +15,8 @@ export async function saveReportRecord(input: {
   markedText: string;
   values?: Record<string, string>;
 }): Promise<string | null> {
+  // न्यायालय के नाम (owner, तरीका ख): a court name typed in this format's court box is suggested next time
+  void import('../courtNameStore').then((m) => m.rememberCourtNamesForFormat(input.formatId, input.values)).catch(() => {});
   try {
     // User-made formats are stored as editor HTML → plain text (marks are kept).
     const raw = String(input.markedText ?? '');

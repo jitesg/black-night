@@ -1,0 +1,77 @@
+[
+  {
+    "id": "sys-fmt-vehicle-release",
+    "seed_version": 6,
+    "keys": [
+      {
+        "key_name": "CourtName",
+        "label": "न्यायालय (सेवा में के नीचे)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "न्यायालय श्रीमान मुख्य न्यायिक मजिस्ट्रेट",
+        "sort_order": 0,
+        "dropdown_options": "{\"hint\": \"जिस न्यायालय को आख्या जा रही है, जैसे: न्यायालय श्रीमान मुख्य न्यायिक मजिस्ट्रेट रायबरेली\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-gd-fmt-rawangi-samanya",
+    "seed_version": 7,
+    "keys": [
+      {
+        "key_name": "WCourt",
+        "label": "न्यायालय का नाम",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: माननीय न्यायालय विशेष न्यायिक मजिस्ट्रेट कोर्ट सं0 25\", \"showIf\": \"Kind=वारंट\", \"hint\": \"जिस न्यायालय से वारंट / सम्मन आया, जैसे: माननीय न्यायालय विशेष न्यायिक मजिस्ट्रेट कोर्ट सं0 25\"}",
+        "sort_order": 11
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-nyayik-abhiraksha",
+    "seed_version": 5,
+    "keys": [
+      {
+        "key_name": "CourtName",
+        "label": "न्यायालय (श्रीमान …)",
+        "field_type": "text",
+        "is_required": 1,
+        "sort_order": 1,
+        "default_value": "मुख्य न्यायिक दण्डाधिकारी",
+        "dropdown_options": "{\"hint\": \"न्यायालय का नाम (\\\"श्रीमान\\\" के बाद वाला), जैसे: मुख्य न्यायिक दण्डाधिकारी\"}"
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-notice-suchna-vadi",
+    "seed_version": 1,
+    "keys": [
+      {
+        "key_name": "CourtOther",
+        "label": "न्यायालय का नाम (अन्य)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": null,
+        "dropdown_options": "{\"placeholder\": \"जैसे: माननीय सत्र न्यायालय रायबरेली\", \"showIf\": \"Court=अन्य\", \"hint\": \"न्यायालय का पूरा नाम, जैसे: माननीय सत्र न्यायालय रायबरेली\"}",
+        "sort_order": 11
+      }
+    ]
+  },
+  {
+    "id": "sys-fmt-bayan-183-patra",
+    "seed_version": 5,
+    "keys": [
+      {
+        "key_name": "CourtName",
+        "label": "न्यायालय (माननीय न्यायालय …)",
+        "field_type": "text",
+        "is_required": 1,
+        "default_value": "श्रीमान मुख्य न्यायिक मजिस्ट्रेट महोदय",
+        "dropdown_options": "{\"placeholder\": \"जैसे: विशेष न्यायाधीश पॉक्सो महोदय / श्रीमान एसीजेएम प्रथम महोदय\", \"hint\": \"जिस न्यायालय को पत्र जाना है, जैसे: विशेष न्यायाधीश पॉक्सो महोदय\"}",
+        "sort_order": 4
+      }
+    ]
+  }
+]

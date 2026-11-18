@@ -667,6 +667,15 @@ from the MeDo AI builder (v1.0.583); development now continues here.
   input.tsx + `components/common/CaseSuggest.tsx`: typing lists cases (`searchCases`: मुकदमे fir_number / section, then न्यायालय fir_number+year /
   apradh_sankhya / applicable_sections; SQL loose → every typed word re-checked in JS; one hit per मु0अ0सं0 + धारा; a box already holding that
   case shows none); a tap fills BOTH boxes (partner key found via allKeys, `KeyDefForRender.default_value`), nothing else.
+- न्यायालय के नाम — सुझाव (owner, sample approved; तरीका ख): `src/lib/courtNames.ts` (pure; tests `scripts/test_court_names.ts`) = owner's 24
+  courts `COURT_NAMES` + `matchCourtNames` (every typed word, English too: cjm → CJM / ACJM / Special CJM; own names first; max 6) + `addCustomCourt`
+  (max 30, list names / < 4 letters skipped); own names on the phone `src/lib/courtNameStore.ts` (localStorage `investsuite:court_names_custom`,
+  `rememberCourtName`, `rememberCourtNamesForFormat` — called from saveReportRecord, so every fill screen incl. the केस डायरी panel remembers without
+  touching it). UI `components/common/CourtSuggest.tsx` (list under the box while focused, 🕘 "आपका जोड़ा", highlight). Only on: format keys with
+  `{"court": true}` (`FormatCourtInput` in input.tsx) = vehicle-release / nyayik-abhiraksha / bayan-183 CourtName, रवानगी WCourt, notice-suchna
+  CourtOther (seed_version +1; backup docs/format-backups/court_names_before_suggest.json), and न्यायालय add/edit "न्यायालय का नाम" (NBW / सम्मन;
+  remembered on save). NOT DCRB HighCourtBench (it is a High Court bench, "… के {{HighCourtBench}} पीठ"). tidyRepeats "श्रीमान श्रीमान" → "श्रीमान"
+  ("न्यायालय श्रीमान {{CourtName}}" + a picked "श्रीमान …").
 - FIR रो0आम (GD) रपट (owner): boxes "रो0आम रपट संख्या" (number) + "रपट का समय" (time) in a row under सूचना की तारीख / समय on add-fir and the
   FIR details tab; columns firs.roaam_no / roaam_time (_ensureColumn), FIRInput + create/update. Linked: @FIR.roaam_no / roaam_time fill the
   35(3) / 179 notices' RoNo / RoTime.

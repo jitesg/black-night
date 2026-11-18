@@ -22,6 +22,8 @@ import { AttachmentsSection } from '@/components/common/AttachmentsSection';
 import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachmentRepo';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
+import { CourtSuggest } from '@/components/common/CourtSuggest';
+import { rememberCourtName } from '@/lib/courtNameStore';
 
 // ── Shared form primitives ─────────────────────────────────────────────────
 
@@ -347,6 +349,10 @@ export default function AddNyayalayScreen() {
 
   // NBW / Summons
   const [courtName, setCourtName] = useState('');
+  // न्यायालय के नाम सुझाव (owner): list under the box while it is focused
+  const [courtFocused, setCourtFocused] = useState(false);
+  const courtBlurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (courtBlurTimer.current) clearTimeout(courtBlurTimer.current); }, []);
   const [vadSankhya, setVadSankhya] = useState('');
   const [apradhSankhya, setApradhSankhya] = useState('');
   const [applicableSections, setApplicableSections] = useState('');
@@ -539,6 +545,7 @@ export default function AddNyayalayScreen() {
         const newId = await createNyayalayDocument(payload);
         if (pendingFiles.length) await addPendingAttachments('court', newId, pendingFiles);
       }
+      rememberCourtName(courtName); // a new court name is suggested next time (owner, तरीका ख)
       savedRef.current = true;
       setIsDirty(false);
       router.back();
@@ -628,7 +635,14 @@ export default function AddNyayalayScreen() {
             <>
               <Section title={t('nyayalay.form.sectionCourtDetails')} />
               <Field label={t('nyayalay.form.courtNameRequired')} error={errors.courtName}>
-                <Input value={courtName} onChangeText={(v) => { setCourtName(v); markDirty(); }} placeholder={t('nyayalay.form.courtNamePlaceholder')} />
+                <Input
+                  value={courtName}
+                  onChangeText={(v) => { setCourtName(v); markDirty(); }}
+                  placeholder={t('nyayalay.form.courtNamePlaceholder')}
+                  onFocus={() => { if (courtBlurTimer.current) clearTimeout(courtBlurTimer.current); setCourtFocused(true); }}
+                  onBlur={() => { courtBlurTimer.current = setTimeout(() => setCourtFocused(false), 200); }}
+                />
+                <CourtSuggest query={courtName} active={courtFocused} onPick={(name) => { setCourtFocused(false); setCourtName(name); markDirty(); }} />
               </Field>
               <View className="flex-row gap-3">
                 <View className="flex-1">

@@ -1134,6 +1134,7 @@ export function tidyRepeats(s: string): string {
     .replace(/(^|[\s(])मध्य[ \t]+मध्य(?=[ \t])/g, '$1मध्य')
     .replace(/(^|[\s(])धारा[ \t]+धारा(?=[ \t:])/g, '$1धारा') // FIR / typed "धारा 115(2)" into a "धारा {{Sections}}" slot (owner)
     .replace(/(^|[\s(])का[ \t]+का(?=[ \t])/g, '$1का') // 170 क्षेत्र भ्रमण: "{{Accused}} का" + old "का अपने पड़ोसी से…"
+    .replace(/(^|[\s(])श्रीमान[ \t]+श्रीमान(?=[ \t])/g, '$1श्रीमान') // "न्यायालय श्रीमान {{CourtName}}" + a suggested "श्रीमान …" court (owner)
     .replace(/।(?:[ \t]*।)+/g, '।');
 }
 

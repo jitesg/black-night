@@ -42,6 +42,8 @@ import { HintLink, LabelWithHint } from './FieldHintLink';
 import type { KeyDefForRender } from '@/lib/templateEngine';
 import { multiChoiceSelected, multiChoiceToggle } from '@/lib/multiChoice';
 import { CaseSuggest } from '@/components/common/CaseSuggest';
+import { CourtSuggest } from '@/components/common/CourtSuggest';
+import { isCourtKey } from '@/lib/courtNames';
 import type { CaseHit } from '@/lib/db/peopleRegistryRepo';
 import { dateFormatOf, daysBetweenInclusive, daysSpecOf, formatDateValue, toIsoDate } from '@/lib/formatDerived';
 
@@ -739,6 +741,23 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
     const inputType = fieldTypeToInputType(fieldType);
     // multiline fields get 5 rows (~120 px) so police report text has breathing room
     const multilineLines = fieldType === 'multiline' ? 5 : undefined;
+    // न्यायालय के नाम (owner): court-name boxes ({"court": true}) list the owner's courts + own names while typing
+    if (isCourtKey(keyDef.dropdown_options) && inputType !== 'date') {
+      return (
+        <FormatCourtInput
+          ref={ref}
+          keyDef={keyDef}
+          value={value}
+          onChange={onChange}
+          error={error}
+          displayLabel={displayLabel}
+          hint={hint}
+          required={required}
+          inputType={inputType}
+          multilineProps={multilineLines !== undefined ? (autoGrow ? { autoGrow: true } : { numberOfLines: multilineLines }) : {}}
+        />
+      );
+    }
     // मु0अ0सं0 / धारा boxes (owner, "पूरे app से सुझाव" step 2): cases listed while typing; a pick fills both boxes
     const caseRole = caseRoleOf(keyDef.default_value);
     if (caseRole && inputType !== 'date') {
@@ -825,6 +844,38 @@ const FormatCaseInput = forwardRef<View, {
   );
 });
 FormatCaseInput.displayName = 'FormatCaseInput';
+
+// ── FormatCourtInput — न्यायालय के नाम box with court suggestions (owner) ─────────────────────────────
+
+const FormatCourtInput = forwardRef<View, {
+  keyDef: FormatKeyDef; value: string; onChange: (keyName: string, value: string) => void; error?: string;
+  displayLabel: string; hint?: string; required: boolean; inputType: InputType;
+  multilineProps: { autoGrow?: boolean; numberOfLines?: number };
+}>(({ keyDef, value, onChange, error, displayLabel, hint, required, inputType, multilineProps }, ref) => {
+  const [focused, setFocused] = useState(false);
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (blurTimer.current) clearTimeout(blurTimer.current); }, []);
+  return (
+    <View ref={ref}>
+      <Input
+        type={inputType}
+        label={displayLabel}
+        labelHint={hint}
+        placeholder={keyPlaceholder(keyDef.dropdown_options) ?? (isMarkerDefault(keyDef.default_value) ? undefined : keyDef.default_value) ?? `Enter ${displayLabel}`}
+        value={value}
+        onChangeText={(v) => onChange(keyDef.key_name, v)}
+        onFocus={() => { if (blurTimer.current) clearTimeout(blurTimer.current); setFocused(true); }}
+        onBlur={() => { blurTimer.current = setTimeout(() => setFocused(false), 200); }}
+        errorText={error}
+        required={required}
+        clearCopy
+        {...multilineProps}
+      />
+      <CourtSuggest query={value} active={focused} onPick={(name) => { setFocused(false); onChange(keyDef.key_name, name); }} />
+    </View>
+  );
+});
+FormatCourtInput.displayName = 'FormatCourtInput';
 
 // ── FormatKeyDaysBox — locked "कुल दिवस" (owner: filled from the two dates, the officer cannot change it) ──
 
