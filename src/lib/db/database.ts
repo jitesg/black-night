@@ -1334,6 +1334,8 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   // आख्या made from a format: its marked text (layout for A4 / .doc) while the text is unchanged — reportLayout.ts
   await _ensureColumn(database, 'prarthna_patra_reports',     'report_marked',     "TEXT DEFAULT ''");
   await _ensureColumn(database, 'nyayalay_reports',           'report_marked',     "TEXT DEFAULT ''");
+  // न्यायालय person = group card (owner): सम्बन्ध, उम्र, पता के हिस्से, पहचान … (address column keeps the full address)
+  await _ensureColumn(database, 'nyayalay_persons',           'extra_json',        "TEXT DEFAULT ''");
   // "संलग्न कागज़" (owner): photos / PDFs of a प्रार्थना पत्र (module 'pp') or a न्यायालय document ('court') — attachmentRepo.ts
   try {
     await database.execAsync(`

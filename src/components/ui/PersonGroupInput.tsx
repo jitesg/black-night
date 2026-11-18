@@ -757,10 +757,14 @@ export interface PersonGroupInputProps {
   hint?: string;
   /** आवेदक / विपक्षी समूह (key option {"role": …}, ppPeople.ts): word badge, own add label (the "प्रार्थना पत्र से भरें" button was removed — owner) */
   role?: GroupRole;
+  /** Own "+ … जोड़ें" text (न्यायालय: "+ अभियुक्त जोड़ें" / "+ अपीलकर्ता जोड़ें") — role's text wins */
+  addLabel?: string;
+  /** Badge on every named card (न्यायालय: "अभियुक्त" / "अपीलकर्ता") — role's word wins */
+  cardBadge?: string;
 }
 
 export const PersonGroupInput = memo(({
-  label, value, onChange, onValidChange, keyName, error, single, addressOptional, hint, role,
+  label, value, onChange, onValidChange, keyName, error, single, addressOptional, hint, role, addLabel, cardBadge,
 }: PersonGroupInputProps) => {
   const C = useGroupTokens();
   const { t } = useTranslation();
@@ -914,7 +918,8 @@ export const PersonGroupInput = memo(({
           canRemove={entries.length > 1}
           allEntries={entries}
           t={t}
-          roleBadge={role === 'avedak' && entry.name.trim() ? avedakCardWord(entry as unknown as Record<string, unknown>) : undefined}
+          roleBadge={role === 'avedak' && entry.name.trim() ? avedakCardWord(entry as unknown as Record<string, unknown>)
+            : cardBadge && entry.name.trim() ? cardBadge : undefined}
         />
       ))}
 
@@ -926,7 +931,7 @@ export const PersonGroupInput = memo(({
         }}>
           <UserPlus size={15} color={C.addText} />
           <Text style={{ fontSize: 14, fontWeight: '600', color: C.addText }}>
-            {role === 'avedak' ? '+ आवेदक जोड़ें' : role === 'vipakshi' ? '+ विपक्षी जोड़ें' : t('group.person.addBtn')}
+            {role === 'avedak' ? '+ आवेदक जोड़ें' : role === 'vipakshi' ? '+ विपक्षी जोड़ें' : addLabel ?? t('group.person.addBtn')}
           </Text>
         </Pressable>
       )}

@@ -23,6 +23,8 @@ import { addPendingAttachments, type PendingAttachment } from '@/lib/db/attachme
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { Input } from '@/components/ui/input';
 import { CourtSuggest } from '@/components/common/CourtSuggest';
+import { PersonGroupInput, initPersonGroup, parsePersonGroup, type PersonEntry } from '@/components/ui/PersonGroupInput';
+import { cardFromCourtRow, courtRowFromCard, type CourtPersonRow } from '@/lib/personCard';
 import { rememberCourtName } from '@/lib/courtNameStore';
 
 // ── Shared form primitives ─────────────────────────────────────────────────
@@ -133,62 +135,12 @@ function Picker<T extends string>({
   );
 }
 
-// ── Person form (accused / appellant) ─────────────────────────────────────
-
-interface PersonForm {
-  _key: string;
-  id?: string;
-  name: string;
-  father_name: string;
-  mobile: string;
-  address: string;
-  remarks: string;
-}
-
-function emptyPerson(type: 'accused' | 'appellant' = 'accused'): PersonForm {
-  return { _key: Math.random().toString(36).slice(2), name: '', father_name: '', mobile: '', address: '', remarks: '' };
-}
-
-function PersonCard({
-  person, index, label, onUpdate, onRemove, canRemove, nameError,
-}: {
-  person: PersonForm; index: number; label: string;
-  onUpdate: (field: keyof PersonForm, val: string) => void;
-  onRemove: () => void; canRemove: boolean; nameError?: string;
-}) {
-  const { t } = useTranslation();
-  return (
-    <View className="border border-border rounded-2xl p-4 mb-3" style={{ borderCurve: 'continuous' }}>
-      <View className="flex-row items-center justify-between mb-3">
-        <Text className="text-sm font-semibold text-foreground">{label} {index + 1}</Text>
-        {canRemove && (
-          <Pressable onPress={onRemove} className="active:opacity-70">
-            <Trash2 size={16} color="#DC2626" />
-          </Pressable>
-        )}
-      </View>
-      <Field label={t('nyayalay.form.nameRequired')} error={nameError}>
-        <Input value={person.name} onChangeText={(v) => onUpdate('name', v)} placeholder={t('nyayalay.form.fullNamePlaceholder')} />
-      </Field>
-      <Field label={t('nyayalay.form.fatherName')}>
-        <Input value={person.father_name} onChangeText={(v) => onUpdate('father_name', v)} placeholder={t('nyayalay.form.fatherNamePlaceholder')} />
-      </Field>
-      <View className="flex-row gap-3">
-        <View className="flex-1">
-          <Field label={t('nyayalay.form.mobile')}>
-            <Input type="mobile" value={person.mobile} onChangeText={(v) => onUpdate('mobile', v)} placeholder={t('nyayalay.form.mobilePlaceholder')} />
-          </Field>
-        </View>
-      </View>
-      <Field label={t('nyayalay.form.address')}>
-        <Input type="multiline" autoGrow value={person.address} onChangeText={(v) => onUpdate('address', v)} numberOfLines={2} placeholder={t('nyayalay.form.addressPlaceholder')} />
-      </Field>
-      <Field label={t('nyayalay.form.remarks')}>
-        <Input value={person.remarks} onChangeText={(v) => onUpdate('remarks', v)} placeholder={t('nyayalay.form.remarksPlaceholder')} />
-      </Field>
-    </View>
-  );
-}
+// ── Persons (accused / appellant) — the group person card (owner, like प्रार्थना पत्र) ────────────
+// Value = PersonGroupInput JSON; saved rows via personCard.ts courtRowFromCard (address = full address, rest in extra_json).
+const ACCUSED_WORD = 'अभियुक्त';
+const APPELLANT_WORD = 'अपीलकर्ता';
+/** First card's name (the required one). */
+const firstName = (json: string) => (parsePersonGroup(json)[0]?.name ?? '').trim();
 
 // ── FIR Details (shared) ──────────────────────────────────────────────────
 
@@ -356,10 +308,12 @@ export default function AddNyayalayScreen() {
   const [vadSankhya, setVadSankhya] = useState('');
   const [apradhSankhya, setApradhSankhya] = useState('');
   const [applicableSections, setApplicableSections] = useState('');
-  const [accused, setAccused] = useState<PersonForm[]>([emptyPerson('accused')]);
+  const [accused, setAccused] = useState<string>(() => initPersonGroup());
 
   // Appellants (Bail, HC Writ, Anya)
-  const [appellants, setAppellants] = useState<PersonForm[]>([emptyPerson('appellant')]);
+  const [appellants, setAppellants] = useState<string>(() => initPersonGroup());
+  // ids of the persons loaded for edit — only these keep their row id on save
+  const originalIds = useRef<Set<string>>(new Set());
 
   // FIR
   const [fir, setFir] = useState<FirForm>(emptyFir());
@@ -438,8 +392,10 @@ export default function AddNyayalayScreen() {
 
       const acc = doc.persons.filter((p) => p.person_type === 'accused');
       const app = doc.persons.filter((p) => p.person_type === 'appellant');
-      if (acc.length) setAccused(acc.map((p) => ({ _key: p.id, id: p.id, name: p.name, father_name: p.father_name, mobile: p.mobile, address: p.address, remarks: p.remarks })));
-      if (app.length) setAppellants(app.map((p) => ({ _key: p.id, id: p.id, name: p.name, father_name: p.father_name, mobile: p.mobile, address: p.address, remarks: p.remarks })));
+      originalIds.current = new Set(doc.persons.map((p) => p.id));
+      const toGroup = (rows: CourtPersonRow[]) => JSON.stringify(rows.map((r) => cardFromCourtRow(r)));
+      if (acc.length) setAccused(toGroup(acc));
+      if (app.length) setAppellants(toGroup(app));
 
       if (doc.checklist.length) {
         setChecklist(doc.checklist.map((c) => ({ _key: c.id, id: c.id, label: c.label, is_optional: c.is_optional, is_checked: c.is_done ?? false })));
@@ -463,11 +419,11 @@ export default function AddNyayalayScreen() {
       if (!vadSankhya.trim()) e.vadSankhya = t('nyayalay.form.errorVadSankhyaRequired');
       if (!apradhSankhya.trim()) e.apradhSankhya = t('nyayalay.form.errorApradhSankhyaRequired');
       if (!applicableSections.trim()) e.applicableSections = t('nyayalay.form.errorSectionsRequired');
-      if (!accused[0]?.name.trim()) e.accused0 = t('nyayalay.form.errorAccusedRequired');
+      if (!firstName(accused)) e.accused0 = t('nyayalay.form.errorAccusedRequired');
     }
 
     if (docType === 'Bail_Lower_Court') {
-      if (!appellants[0]?.name.trim()) e.appellant0 = t('nyayalay.form.errorAppellantRequired');
+      if (!firstName(appellants)) e.appellant0 = t('nyayalay.form.errorAppellantRequired');
       if (!fir.number.trim()) e.fir_number = t('nyayalay.form.errorFirNumberRequired');
       if (!fir.year.trim()) e.fir_year = t('nyayalay.form.errorFirYearRequired');
       if (!fir.ps.trim()) e.fir_ps = t('nyayalay.form.errorPoliceStationRequired');
@@ -482,14 +438,14 @@ export default function AddNyayalayScreen() {
       }
       if (subType === 'Writ') {
         if (!writType) e.writType = t('nyayalay.form.errorWritTypeRequired');
-        if (!appellants[0]?.name.trim()) e.appellant0 = t('nyayalay.form.errorAppellantRequired');
+        if (!firstName(appellants)) e.appellant0 = t('nyayalay.form.errorAppellantRequired');
         if (!matter.trim()) e.matter = t('nyayalay.form.errorMatterRequired');
       }
     }
 
     if (docType === 'Anya') {
       if (!documentTitle.trim()) e.documentTitle = t('nyayalay.form.errorDocumentTitleRequired');
-      if (!appellants[0]?.name.trim()) e.appellant0 = t('nyayalay.form.errorAppellantPersonRequired');
+      if (!firstName(appellants)) e.appellant0 = t('nyayalay.form.errorAppellantPersonRequired');
     }
 
     if (!deadlineDate.trim()) e.deadlineDate = t('nyayalay.form.errorDeadlineDateRequired');
@@ -504,18 +460,15 @@ export default function AddNyayalayScreen() {
     if (!validate()) return;
     setSaving(true);
     try {
-      const personsPayload = [
-        ...accused.filter((a) => a.name.trim()).map((a) => ({
-          id: a.id, person_type: 'accused' as const,
-          name: a.name, father_name: a.father_name,
-          mobile: a.mobile, address: a.address, remarks: a.remarks,
-        })),
-        ...appellants.filter((a) => a.name.trim()).map((a) => ({
-          id: a.id, person_type: 'appellant' as const,
-          name: a.name, father_name: a.father_name,
-          mobile: a.mobile, address: a.address, remarks: a.remarks,
-        })),
-      ];
+      const rows = (json: string, person_type: 'accused' | 'appellant') => parsePersonGroup(json)
+        .filter((c) => c.name.trim())
+        .map((c: PersonEntry) => ({
+          ...(c._id && originalIds.current.has(c._id) ? { id: c._id } : {}),
+          person_type,
+          ...courtRowFromCard(c),
+        }));
+      // only the group(s) this type shows are saved (as before: a hidden group's blank card adds nothing)
+      const personsPayload = [...rows(accused, 'accused'), ...rows(appellants, 'appellant')];
 
       const checklistJson = (docType === 'High_Court_Documents' && subType === 'Bail')
         ? JSON.stringify(checklist.map((c, idx) => ({ id: c.id, label: c.label, is_optional: c.is_optional, is_done: c.is_checked, sort_order: idx })))
@@ -556,25 +509,28 @@ export default function AddNyayalayScreen() {
     }
   };
 
-  // ── Accused helpers — each marks dirty (user interaction) ──
-  const updateAccused = (idx: number, field: keyof PersonForm, val: string) => {
-    setAccused((prev) => prev.map((a, i) => i === idx ? { ...a, [field]: val } : a));
-    markDirty();
+  // ── Person groups — every change marks dirty (user interaction) ──
+  const onAccused = (_k: string, v: string) => {
+    setAccused(v); markDirty();
+    if (errors.accused0 && firstName(v)) setErrors((prev) => ({ ...prev, accused0: '' }));
   };
-  const addAccused = () => { setAccused((p) => [...p, emptyPerson('accused')]); markDirty(); };
-  const removeAccused = (idx: number) => {
-    if (accused.length > 1) { setAccused((p) => p.filter((_, i) => i !== idx)); markDirty(); }
+  const onAppellants = (_k: string, v: string) => {
+    setAppellants(v); markDirty();
+    if (errors.appellant0 && firstName(v)) setErrors((prev) => ({ ...prev, appellant0: '' }));
   };
-
-  // ── Appellant helpers — each marks dirty (user interaction) ──
-  const updateAppellant = (idx: number, field: keyof PersonForm, val: string) => {
-    setAppellants((prev) => prev.map((a, i) => i === idx ? { ...a, [field]: val } : a));
-    markDirty();
-  };
-  const addAppellant = () => { setAppellants((p) => [...p, emptyPerson('appellant')]); markDirty(); };
-  const removeAppellant = (idx: number) => {
-    if (appellants.length > 1) { setAppellants((p) => p.filter((_, i) => i !== idx)); markDirty(); }
-  };
+  const appellantGroup = (word: string | undefined, add: string) => (
+    <View className="mb-2">
+      <PersonGroupInput
+        keyName="nyl_appellant"
+        value={appellants}
+        onChange={onAppellants}
+        error={errors.appellant0}
+        cardBadge={word}
+        addLabel={add}
+        addressOptional
+      />
+    </View>
+  );
 
   // ── Render ──────────────────────────────────────────────────────────
 
@@ -661,25 +617,17 @@ export default function AddNyayalayScreen() {
               </Field>
 
               <Section title={t('nyayalay.form.sectionAccusedDetails')} />
-              {accused.map((a, idx) => (
-                <PersonCard
-                  key={a._key}
-                  person={a}
-                  index={idx}
-                  label={t('nyayalay.form.accused')}
-                  onUpdate={(f, v) => updateAccused(idx, f, v)}
-                  onRemove={() => removeAccused(idx)}
-                  canRemove={accused.length > 1}
-                  nameError={idx === 0 ? errors.accused0 : undefined}
+              <View className="mb-2">
+                <PersonGroupInput
+                  keyName="nyl_accused"
+                  value={accused}
+                  onChange={onAccused}
+                  error={errors.accused0}
+                  cardBadge={ACCUSED_WORD}
+                  addLabel={`+ ${ACCUSED_WORD} जोड़ें`}
+                  addressOptional
                 />
-              ))}
-              <Pressable
-                onPress={addAccused}
-                className="border border-dashed border-border rounded-xl p-3 items-center flex-row justify-center gap-2 mb-2 active:opacity-70"
-              >
-                <Plus size={16} color="#6B7280" />
-                <Text className="text-sm text-muted-foreground">{t('nyayalay.form.addAnotherAccused')}</Text>
-              </Pressable>
+              </View>
             </>
           )}
 
@@ -687,25 +635,7 @@ export default function AddNyayalayScreen() {
           {showBailLower && (
             <>
               <Section title={t('nyayalay.form.sectionAppellantDetails')} />
-              {appellants.map((a, idx) => (
-                <PersonCard
-                  key={a._key}
-                  person={a}
-                  index={idx}
-                  label={t('nyayalay.form.appellant')}
-                  onUpdate={(f, v) => updateAppellant(idx, f, v)}
-                  onRemove={() => removeAppellant(idx)}
-                  canRemove={appellants.length > 1}
-                  nameError={idx === 0 ? errors.appellant0 : undefined}
-                />
-              ))}
-              <Pressable
-                onPress={addAppellant}
-                className="border border-dashed border-border rounded-xl p-3 items-center flex-row justify-center gap-2 mb-2 active:opacity-70"
-              >
-                <Plus size={16} color="#6B7280" />
-                <Text className="text-sm text-muted-foreground">{t('nyayalay.form.addAnotherAppellant')}</Text>
-              </Pressable>
+              {appellantGroup(APPELLANT_WORD, `+ ${APPELLANT_WORD} जोड़ें`)}
               <FirSection fir={fir} onChange={(f) => { setFir(f); markDirty(); }} errors={errors} />
             </>
           )}
@@ -749,25 +679,7 @@ export default function AddNyayalayScreen() {
                   />
 
                   <Section title={t('nyayalay.form.sectionAppellantDetails')} />
-                  {appellants.map((a, idx) => (
-                    <PersonCard
-                      key={a._key}
-                      person={a}
-                      index={idx}
-                      label={t('nyayalay.form.appellant')}
-                      onUpdate={(f, v) => updateAppellant(idx, f, v)}
-                      onRemove={() => removeAppellant(idx)}
-                      canRemove={appellants.length > 1}
-                      nameError={idx === 0 ? errors.appellant0 : undefined}
-                    />
-                  ))}
-                  <Pressable
-                    onPress={addAppellant}
-                    className="border border-dashed border-border rounded-xl p-3 items-center flex-row justify-center gap-2 mb-2 active:opacity-70"
-                  >
-                    <Plus size={16} color="#6B7280" />
-                    <Text className="text-sm text-muted-foreground">{t('nyayalay.form.addAnotherAppellant')}</Text>
-                  </Pressable>
+                  {appellantGroup(APPELLANT_WORD, `+ ${APPELLANT_WORD} जोड़ें`)}
 
                   <Section title={t('nyayalay.form.sectionMatter')} />
                   <Field label="" error={errors.matter}>
@@ -796,25 +708,7 @@ export default function AddNyayalayScreen() {
               </Field>
 
               <Section title={t('nyayalay.form.sectionPersonDetails')} />
-              {appellants.map((a, idx) => (
-                <PersonCard
-                  key={a._key}
-                  person={a}
-                  index={idx}
-                  label={t('nyayalay.form.person')}
-                  onUpdate={(f, v) => updateAppellant(idx, f, v)}
-                  onRemove={() => removeAppellant(idx)}
-                  canRemove={appellants.length > 1}
-                  nameError={idx === 0 ? errors.appellant0 : undefined}
-                />
-              ))}
-              <Pressable
-                onPress={addAppellant}
-                className="border border-dashed border-border rounded-xl p-3 items-center flex-row justify-center gap-2 mb-2 active:opacity-70"
-              >
-                <Plus size={16} color="#6B7280" />
-                <Text className="text-sm text-muted-foreground">{t('nyayalay.form.addAnotherPerson')}</Text>
-              </Pressable>
+              {appellantGroup(undefined, '+ व्यक्ति जोड़ें')}
 
               <FirSection fir={fir} onChange={(f) => { setFir(f); markDirty(); }} errors={errors} optional />
             </>

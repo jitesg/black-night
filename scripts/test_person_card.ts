@@ -67,3 +67,25 @@ test('PP row ↔ card round trip', () => {
   assert.equal(JSON.parse(noRem.extra_json).remarks, 'पहले भी');
   assert.equal(p.ppRowFromCard({ ...card, email: '', idNumber: '', remarks: '' }, true).extra_json, '');
 });
+
+test('न्यायालय row ↔ group card (address column = full address, parts in extra_json)', () => {
+  const card = {
+    name: 'रामपाल', fatherOrHusbandName: 'श्यामलाल', relationType: 'पुत्र', gender: '', age: '42', mobile: '9876500001', caste: '',
+    email: '', fullAddress: '', addrMode: 'parts' as const, house: '', village: 'ग्राम अघौरा', villageKind: 'ग्राम', thana: 'बछरावां',
+    district: 'रायबरेली', altMobile: '', idType: 'आधार', idNumber: '1234', remarks: 'टिप',
+  };
+  const row = p.courtRowFromCard(card);
+  assert.equal(row.address, 'ग्राम अघौरा थाना बछरावां जनपद रायबरेली');
+  assert.equal(row.remarks, 'टिप');
+  assert.equal(JSON.parse(row.extra_json).gender, 'पुरुष');
+  const back = p.cardFromCourtRow({ id: 'x1', ...row });
+  assert.equal(back._id, 'x1');
+  assert.equal(back.fullAddress, row.address);
+  assert.equal(back.relationType, 'पुत्र');
+  assert.equal(back.idNumber, '1234');
+  // old row: typed address kept as is ('free')
+  const old = p.cardFromCourtRow({ name: 'क', father_name: 'ख', address: 'ग्राम बेला थाना सरेनी', mobile: '', remarks: '' });
+  assert.equal(old.addrMode, 'free');
+  assert.equal(old.fullAddress, 'ग्राम बेला थाना सरेनी');
+  assert.equal(p.courtRowFromCard(old).address, 'ग्राम बेला थाना सरेनी');
+});

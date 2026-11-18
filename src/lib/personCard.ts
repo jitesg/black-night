@@ -196,3 +196,54 @@ export function ppRowFromCard(c: CardLike, hasRemarks: boolean): PPRowOut {
     ...(hasRemarks ? { remarks: c.remarks ?? '' } : {}),
   };
 }
+
+// ── न्यायालय person row ↔ group card (owner: the न्यायालय add form uses the group card) ──────────
+// nyayalay_persons keeps its columns (name, father_name, mobile, address, remarks) — `address` = the full printed address, so the
+// detail screen, formats and the office sync read it as before; the card's other parts live in extra_json.
+
+export interface CourtPersonRow {
+  id?: string;
+  name?: string | null;
+  father_name?: string | null;
+  mobile?: string | null;
+  address?: string | null;
+  remarks?: string | null;
+  extra_json?: string | null;
+}
+
+/** One saved न्यायालय person → a card (old rows: the typed address, 'free'). */
+export function cardFromCourtRow(r: CourtPersonRow): CardLike {
+  const x = parseExtra(r.extra_json);
+  const address = (r.address ?? '').trim();
+  const parts = x.addrMode === 'parts'
+    ? { addrMode: 'parts' as AddrMode, house: x.house ?? '', village: x.village ?? '', villageKind: x.villageKind || 'ग्राम', thana: x.thana ?? '', district: x.district ?? '' }
+    : { addrMode: 'free' as AddrMode, house: '', village: '', villageKind: 'ग्राम', thana: x.thana ?? '', district: x.district ?? '' };
+  return {
+    ...(r.id ? { _id: r.id } : {}),
+    name: r.name ?? '', fatherOrHusbandName: r.father_name ?? '', mobile: r.mobile ?? '',
+    age: x.age ?? '', caste: x.caste ?? '', gender: x.gender ?? '', relationType: x.relation ?? '', email: x.email ?? '',
+    altMobile: x.altMobile ?? '', idType: x.idType ?? '', idNumber: x.idNumber ?? '', remarks: r.remarks ?? '',
+    ...parts,
+    fullAddress: parts.addrMode === 'parts' ? composeAddress(parts) : address,
+  };
+}
+
+/** A card → the न्यायालय columns (address = full address as printed; the rest in extra_json, empty parts left out). */
+export function courtRowFromCard(c: CardLike): { name: string; father_name: string; mobile: string; address: string; remarks: string; extra_json: string } {
+  const mode = addrModeOf(c);
+  const address = mode === 'parts' ? composeAddress(c) : (c.fullAddress ?? '').trim();
+  const raw: Record<string, string | undefined> = {
+    relation: c.relationType, gender: c.gender || genderOfRelation(c.relationType), age: c.age, caste: c.caste, email: c.email,
+    altMobile: c.altMobile, idType: (c.idNumber ?? '').trim() ? c.idType : '', idNumber: c.idNumber,
+    addrMode: mode,
+    ...(mode === 'parts'
+      ? { house: c.house, village: c.village, villageKind: c.villageKind === 'कस्बा' ? 'कस्बा' : '', thana: c.thana, district: c.district }
+      : { thana: c.thana, district: c.district }),
+  };
+  const extra: Record<string, string> = {};
+  for (const [k, v] of Object.entries(raw)) if ((v ?? '').trim()) extra[k] = (v ?? '').trim();
+  return {
+    name: (c.name ?? '').trim(), father_name: (c.fatherOrHusbandName ?? '').trim(), mobile: (c.mobile ?? '').trim(),
+    address, remarks: (c.remarks ?? '').trim(), extra_json: JSON.stringify(extra),
+  };
+}

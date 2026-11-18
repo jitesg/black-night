@@ -619,6 +619,12 @@ detailed working log. Keep the guide up to date when the architecture changes.
   types when 2+, or न्यायालय tag mode "<tag> वाले" / "बाकी"; दिखाएँ ⭐ पसंदीदा / 🕘 हाल में उपयोग (newest first); स्रोत System / मेरे बनाए; counts on
   every option) — replaced the GD / न्यायालय chip rows; `FormatPreviewSheet` (👁 on every card, blanks "....", "प्रारूप भरें →" on top = the screen's
   select action). Cards: ⓘ + 👁 everywhere, ⭐ shown only, no ✏️ / 🗑. `FORMAT_LIST_PADDING` = 20 side padding (also the प्रारूप list, was 24).
+- न्यायालय add / edit persons = the group person card (owner, sample approved; all 5 types NBW / सम्मन / निचली अदालत जमानत / रिट / अन्य): the old
+  PersonCard (plain name / पिता / मोबाइल / पता / टिप्पणी) is gone — `PersonGroupInput` (props `cardBadge` "अभियुक्त" / "अपीलकर्ता", `addLabel`,
+  addressOptional) → "पूरे app से सुझाव", सम्बन्ध chips, पता के हिस्से. Rows ↔ cards `cardFromCourtRow` / `courtRowFromCard` (personCard.ts):
+  `address` column = full printed address (detail, formats, office sync, people search unchanged), the rest in new column nyayalay_persons.extra_json;
+  old rows = 'free' address. updateNyayalayDocument re-inserts kept persons with INSERT OR REPLACE (a plain INSERT hit the soft-deleted row's id).
+  Tests in scripts/test_person_card.ts.
 - न्यायालय HC जमानत चेकलिस्ट (owner's bug, there since the MeDo export): add/edit saved it only in nyayalay_documents.checklist_json while the
   detail reads nyayalay_checklist_items (never written → "0/0"). Now create / update call `writeChecklistRows` (same id → update, new → insert,
   gone → soft-delete; null JSON = no checklist), `getNyayalayDocWithDetails` writes the rows once from checklist_json for older papers (ticks kept);

@@ -71,6 +71,8 @@ export interface NyayalayPerson {
   mobile: string;
   address: string;
   remarks: string;
+  /** group card parts (सम्बन्ध, उम्र, पता के हिस्से, पहचान …) — personCard.ts cardFromCourtRow / courtRowFromCard */
+  extra_json?: string | null;
   created_at: number;
   updated_at: number;
   deleted_at: number | null;
@@ -195,6 +197,7 @@ interface CreateNyayalayInput {
     mobile: string;
     address: string;
     remarks: string;
+    extra_json?: string;
   }[];
 }
 
@@ -294,11 +297,11 @@ export async function createNyayalayDocument(input: CreateNyayalayInput): Promis
     const p = input.persons[i];
     await db.runAsync(
       `INSERT INTO nyayalay_persons
-       (id, doc_id, person_type, name, father_name, mobile, address, remarks,
+       (id, doc_id, person_type, name, father_name, mobile, address, remarks, extra_json,
         created_at, updated_at, deleted_at)
-       VALUES (?,?,?,?,?,?,?,?,?,?,NULL)`,
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,NULL)`,
       [generateUUID(), id, p.person_type, p.name, p.father_name,
-       p.mobile, p.address, p.remarks, now, now]
+       p.mobile, p.address, p.remarks, p.extra_json ?? '', now, now]
     );
   }
   await writeChecklistRows(db, id, input.checklist_json, now);
@@ -371,6 +374,7 @@ interface UpdateNyayalayInput extends Omit<CreateNyayalayInput, 'persons'> {
     mobile: string;
     address: string;
     remarks: string;
+    extra_json?: string;
   }[];
 }
 
@@ -404,13 +408,14 @@ export async function updateNyayalayDocument(
     `UPDATE nyayalay_persons SET deleted_at=? WHERE doc_id=?`, [now, id]
   );
   for (const p of input.persons) {
+    // OR REPLACE: a kept person comes back with its own id — the row soft-deleted just above (a plain INSERT hit the id)
     await db.runAsync(
-      `INSERT INTO nyayalay_persons
-       (id, doc_id, person_type, name, father_name, mobile, address, remarks,
+      `INSERT OR REPLACE INTO nyayalay_persons
+       (id, doc_id, person_type, name, father_name, mobile, address, remarks, extra_json,
         created_at, updated_at, deleted_at)
-       VALUES (?,?,?,?,?,?,?,?,?,?,NULL)`,
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,NULL)`,
       [p.id ?? generateUUID(), id, p.person_type,
-       p.name, p.father_name, p.mobile, p.address, p.remarks, now, now]
+       p.name, p.father_name, p.mobile, p.address, p.remarks, p.extra_json ?? '', now, now]
     );
   }
   await writeChecklistRows(db, id, input.checklist_json, now);
