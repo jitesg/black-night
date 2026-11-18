@@ -205,6 +205,66 @@ function resyncDeadlineAlerts(): void {
   import('@/office/officerSync').then((m) => m.queueOfficeSync()).catch(() => {});
 }
 
+// ── Checklist rows (उच्च न्यायालय जमानत) ─────────────────────────────────────
+// owner's bug: the add form saved the checklist only in nyayalay_documents.checklist_json, but the detail screen reads
+// nyayalay_checklist_items — nothing was ever written there, so the detail showed "0/0". Now every save writes the rows,
+// and an older paper gets its rows from checklist_json the first time it is opened.
+
+interface ChecklistJsonItem { id?: string; label: string; is_optional: boolean; is_done: boolean }
+
+/** checklist_json → items ([] for empty / broken JSON). Pure. */
+export function parseChecklistJson(json: string | null | undefined): ChecklistJsonItem[] {
+  try {
+    const v = JSON.parse(json || '[]');
+    if (!Array.isArray(v)) return [];
+    return v
+      .filter((x) => x && typeof x === 'object' && String(x.label ?? '').trim())
+      .map((x) => ({
+        id: typeof x.id === 'string' && x.id ? x.id : undefined,
+        label: String(x.label).trim(),
+        is_optional: !!x.is_optional,
+        is_done: !!(x.is_done ?? x.is_checked),
+      }));
+  } catch { return []; }
+}
+
+type Db = Awaited<ReturnType<typeof getDatabase>>;
+
+/** Make the doc's checklist rows match checklist_json (same id → updated, new → inserted, gone → soft-deleted). */
+async function writeChecklistRows(db: Db, docId: string, json: string | null | undefined, now: number): Promise<void> {
+  const items = parseChecklistJson(json);
+  const existing = await db.getAllAsync<{ id: string }>(
+    `SELECT id FROM nyayalay_checklist_items WHERE doc_id = ?`, [docId]
+  );
+  const known = new Set(existing.map((r) => r.id));
+  const keep = new Set<string>();
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i];
+    if (it.id && known.has(it.id)) {
+      keep.add(it.id);
+      await db.runAsync(
+        `UPDATE nyayalay_checklist_items SET label=?, is_done=?, is_optional=?, sort_order=?, updated_at=?, deleted_at=NULL WHERE id=?`,
+        [it.label, it.is_done ? 1 : 0, it.is_optional ? 1 : 0, i, now, it.id]
+      );
+    } else {
+      const id = generateUUID();
+      keep.add(id);
+      await db.runAsync(
+        `INSERT INTO nyayalay_checklist_items (id, doc_id, label, is_done, is_optional, sort_order, created_at, updated_at, deleted_at)
+         VALUES (?,?,?,?,?,?,?,?,NULL)`,
+        [id, docId, it.label, it.is_done ? 1 : 0, it.is_optional ? 1 : 0, i, now, now]
+      );
+    }
+  }
+  for (const r of existing) {
+    if (!keep.has(r.id)) {
+      await db.runAsync(
+        `UPDATE nyayalay_checklist_items SET deleted_at=? WHERE id=? AND deleted_at IS NULL`, [now, r.id]
+      );
+    }
+  }
+}
+
 export async function createNyayalayDocument(input: CreateNyayalayInput): Promise<string> {
   const db = await getDatabase();
   const id = generateUUID();
@@ -241,6 +301,7 @@ export async function createNyayalayDocument(input: CreateNyayalayInput): Promis
        p.mobile, p.address, p.remarks, now, now]
     );
   }
+  await writeChecklistRows(db, id, input.checklist_json, now);
 
   resyncDeadlineAlerts();
   return id;
@@ -270,14 +331,24 @@ export async function getNyayalayDocWithDetails(id: string): Promise<NyayalayDoc
      ORDER BY created_at ASC`, [id]
   );
 
-  const rawChecklist = await db.getAllAsync<{
+  type RawItem = {
     id: string; doc_id: string; label: string;
     is_done: number; is_optional: number; sort_order: number;
     created_at: number; updated_at: number; deleted_at: number | null;
-  }>(
+  };
+  const readRows = () => db.getAllAsync<RawItem>(
     `SELECT * FROM nyayalay_checklist_items WHERE doc_id = ? AND deleted_at IS NULL
      ORDER BY sort_order ASC`, [id]
   );
+  let rawChecklist = await readRows();
+  // older paper: the checklist was only in checklist_json → write its rows once (ticks kept)
+  if (!rawChecklist.length && parseChecklistJson(doc.checklist_json).length) {
+    const anyRow = await db.getFirstAsync<{ id: string }>(`SELECT id FROM nyayalay_checklist_items WHERE doc_id = ? LIMIT 1`, [id]);
+    if (!anyRow) {
+      await writeChecklistRows(db, id, doc.checklist_json, nowTimestamp());
+      rawChecklist = await readRows();
+    }
+  }
   const checklist: NyayalayChecklistItem[] = rawChecklist.map((r) => ({
     id: r.id, doc_id: r.doc_id, label: r.label,
     is_done: !!r.is_done,
@@ -342,6 +413,7 @@ export async function updateNyayalayDocument(
        p.name, p.father_name, p.mobile, p.address, p.remarks, now, now]
     );
   }
+  await writeChecklistRows(db, id, input.checklist_json, now);
   resyncDeadlineAlerts();
 }
 

@@ -510,8 +510,10 @@ export default function NyayalayDocDetailScreen() {
     <View className="mt-2">
       <ReminderPanel doc={doc} />
 
-      {/* Always-active checklist */}
-      <ChecklistSection items={checklistItems} onChange={handleChecklistToggle} />
+      {/* Checklist — only when the paper has one (HC जमानत); an empty "0/0" bar is not shown (owner) */}
+      {checklistItems.length > 0 && (
+        <ChecklistSection items={checklistItems} onChange={handleChecklistToggle} />
+      )}
 
       {/* Vadi Suchna — Add from Format (only 'वादी सूचना' type) */}
       {!isFinished && (
