@@ -119,7 +119,7 @@ export default function NkSelectFormatScreen() {
           <ActivityIndicator size="large" color={MODULE_COLOR} />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
           data={formats}
           keyExtractor={(item) => item.id}

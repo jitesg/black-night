@@ -149,7 +149,7 @@ export default function LawActSectionsScreen() {
       </View>
 
       {/* Section list with virtualization */}
-      <FlatList<SectionItem>
+      <FlatList<SectionItem> keyboardShouldPersistTaps="handled"
         data={filteredSections}
         keyExtractor={(item) => String(item.n)}
         initialNumToRender={20}

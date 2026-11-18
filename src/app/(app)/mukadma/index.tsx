@@ -372,7 +372,7 @@ export default function MukadmaHomeScreen() {
           <ActivityIndicator size="large" color="#6366F1" />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           data={filtered}
           keyExtractor={(item) => item.id}
           initialNumToRender={10}

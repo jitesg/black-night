@@ -584,6 +584,8 @@ from the MeDo AI builder (v1.0.583); development now continues here.
 - Full-screen editor (DocumentEditor FullScreenModal) keyboard: on Android NO KeyboardAvoidingView resizing (it flickered when the keyboard
   opened / closed — owner) — `useEditorKeyboardPadding` pads by the keyboard height (grow-only while open, 0 on hide) and
   `suspendKeyboardInset()` stops the root KeyboardInsetView re-padding the hidden screen underneath while the editor is open. iOS keeps KAV.
+- Search lists tap once (owner: "सर्च करके select दो स्टेप में"): every FlatList / ScrollView / SectionList on the 19 screens with a SearchBar has
+  `keyboardShouldPersistTaps="handled"` (like home) — without it the first tap only closed the keyboard. New list screens with a search box: add it.
 - Horizontal chip row INSIDE a pressable card (FormatCard tags): on Android the card took the drag and the row never slid (owner) — put
   the chips in their own Pressable (same onPress) inside the horizontal ScrollView; all tags shown (no slice).
 - AppHeader is white (its `variant="navy"` is ignored): header buttons use `HeaderIconBtn` (theme colour) — white icons on a

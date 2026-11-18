@@ -258,7 +258,7 @@ export default function SettingsScreen() {
 
       {/* ── Search results ── */}
       {filtered !== null ? (
-        <ScrollView contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 18 }} showsVerticalScrollIndicator={false}>
           {filtered.length === 0 ? (
             <View className="items-center py-16 gap-3">
               <Search size={28} color="#D1D5DB" />
@@ -281,7 +281,7 @@ export default function SettingsScreen() {
         </ScrollView>
       ) : (
         /* ── Grouped list ── */
-        <ScrollView
+        <ScrollView keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ padding: 18, paddingBottom: 60 }}
           showsVerticalScrollIndicator={false}
         >

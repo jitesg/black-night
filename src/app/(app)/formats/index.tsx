@@ -324,7 +324,7 @@ export default function FormatsScreen() {
           <ActivityIndicator size="large" color={INDIGO} />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
           initialNumToRender={8}
           maxToRenderPerBatch={5}
@@ -399,7 +399,7 @@ export default function FormatsScreen() {
         title={previewFormat ? `${previewFormat.title} (${t('common.preview')})` : ''}
         snapHeight={480}
       >
-        <ScrollView
+        <ScrollView keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 12, paddingBottom: 32 }}
         >

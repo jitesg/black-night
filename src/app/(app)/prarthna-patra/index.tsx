@@ -427,7 +427,7 @@ export default function PrarthnaPatraScreen() {
         }
       />
 
-      <FlatList
+      <FlatList keyboardShouldPersistTaps="handled"
         data={filtered}
         keyExtractor={(item) => item.id}
           initialNumToRender={10}
@@ -539,7 +539,7 @@ export default function PrarthnaPatraScreen() {
                     </View>
 
                     {/* Category cards */}
-                    <ScrollView
+                    <ScrollView keyboardShouldPersistTaps="handled"
                       horizontal
                       showsHorizontalScrollIndicator={false}
                       className="mb-3"

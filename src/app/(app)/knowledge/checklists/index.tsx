@@ -273,7 +273,7 @@ export default function ChecklistsIndexScreen() {
           </Text>
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           data={filtered}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}

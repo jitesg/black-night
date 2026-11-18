@@ -409,7 +409,7 @@ export default function GdScreen() {
           <ActivityIndicator size="large" color={GD_COLOR} />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           data={entries}
           keyExtractor={(item) => item.id}
           initialNumToRender={10}

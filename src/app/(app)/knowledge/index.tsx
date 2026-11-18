@@ -321,7 +321,7 @@ export default function KnowledgeHomeScreen() {
 
       {showSearch ? (
         /* Search results */
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
           data={searchResults}
           keyExtractor={(item) => item.id}
@@ -347,7 +347,7 @@ export default function KnowledgeHomeScreen() {
           }
         />
       ) : (
-        <ScrollView
+        <ScrollView keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerClassName="pb-10"
         >
@@ -359,7 +359,7 @@ export default function KnowledgeHomeScreen() {
             {loading ? (
               <ActivityIndicator size="small" color={C.primary} />
             ) : (
-              <ScrollView
+              <ScrollView keyboardShouldPersistTaps="handled"
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerClassName="gap-3 pr-2"

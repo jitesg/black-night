@@ -413,7 +413,7 @@ export default function SearchScreen() {
           </Text>
         </View>
       ) : (
-        <SectionList
+        <SectionList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
           sections={sections}
           keyExtractor={(item) => `${item.type}-${item.id}`}

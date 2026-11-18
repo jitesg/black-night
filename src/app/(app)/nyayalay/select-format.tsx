@@ -210,7 +210,7 @@ export default function NyayalaySelectFormatScreen() {
             returnKeyType="search"
             accessibilityLabel={t('formatPicker.searchTagAccessibility', { tag })}
           />
-          <ScrollView
+          <ScrollView keyboardShouldPersistTaps="handled"
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ gap: 8, paddingRight: 4 }}
@@ -273,7 +273,7 @@ export default function NyayalaySelectFormatScreen() {
           <ActivityIndicator size="large" color={MODULE_COLOR} />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews
           data={listData}
           keyExtractor={(item) => item.id}
@@ -333,7 +333,7 @@ export default function NyayalaySelectFormatScreen() {
           title={previewFormat ? t('formatPicker.previewTitleWithFormat', { title: previewFormat.title }) : t('formatPicker.previewTitle')}
           snapHeight={480}
         >
-          <ScrollView
+          <ScrollView keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, paddingTop: 8 }}
             showsVerticalScrollIndicator={false}
           >

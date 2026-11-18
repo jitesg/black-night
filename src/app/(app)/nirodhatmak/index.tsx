@@ -707,7 +707,7 @@ export default function NirodhatmakHomeScreen() {
           <ActivityIndicator size="large" color={MODULE_COLOR} />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
           initialNumToRender={8}
           maxToRenderPerBatch={5}

@@ -112,7 +112,7 @@ export default function LawLibraryIndexScreen() {
 
       {/* Search results mode */}
       {isSearchActive ? (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           data={searchResults}
           keyExtractor={(item) => `${item.act}-${item.n}`}
           contentContainerClassName="px-4 py-4 gap-3 pb-12"
@@ -278,7 +278,7 @@ export default function LawLibraryIndexScreen() {
         />
       ) : (
         /* Normal 3 Acts + 4th Card View */
-        <ScrollView
+        <ScrollView keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerClassName="px-4 py-4 gap-4 pb-28"
         >

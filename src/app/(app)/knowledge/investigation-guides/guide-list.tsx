@@ -286,7 +286,7 @@ export default function GuideListScreen() {
           <ActivityIndicator size="large" color={COLOR} />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
           data={entries}
           keyExtractor={(item) => item.id}

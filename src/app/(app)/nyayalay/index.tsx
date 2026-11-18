@@ -425,7 +425,7 @@ export default function NyayalayScreen() {
         accent={NYL_COLOR}
       />
 
-      <FlatList
+      <FlatList keyboardShouldPersistTaps="handled"
         data={filtered}
         keyExtractor={(item) => item.id}
           initialNumToRender={10}
@@ -513,7 +513,7 @@ export default function NyayalayScreen() {
                   </View>
 
                   {/* Per-type compact analytics cards */}
-                  <ScrollView
+                  <ScrollView keyboardShouldPersistTaps="handled"
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     className="mb-3"

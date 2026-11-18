@@ -565,7 +565,7 @@ export default function KnowledgeListScreen() {
           <ActivityIndicator size="large" color={color} />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
           data={entries}
           keyExtractor={(item) => item.id}

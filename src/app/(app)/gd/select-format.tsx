@@ -170,7 +170,7 @@ export default function GdSelectFormatScreen() {
         />
 
         {/* Chip filters — operate on the GD-scoped dataset only */}
-        <ScrollView
+        <ScrollView keyboardShouldPersistTaps="handled"
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ gap: 8, paddingRight: 4 }}
@@ -204,7 +204,7 @@ export default function GdSelectFormatScreen() {
           <ActivityIndicator size="large" color={GD_COLOR} />
         </View>
       ) : (
-        <FlatList
+        <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
           data={displayed}
           keyExtractor={(item) => item.id}
@@ -258,7 +258,7 @@ export default function GdSelectFormatScreen() {
         title={previewFormat ? t('formatPicker.previewTitleWithFormat', { title: previewFormat.title }) : t('formatPicker.previewTitle')}
         snapHeight={480}
       >
-        <ScrollView
+        <ScrollView keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, paddingTop: 8 }}
           showsVerticalScrollIndicator={false}
         >

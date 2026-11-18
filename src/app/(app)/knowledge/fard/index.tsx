@@ -45,7 +45,7 @@ export default function FardListScreen() {
         />
       </View>
 
-      <ScrollView
+      <ScrollView keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 40 }}
       >
