@@ -3,7 +3,8 @@
  * Owner-only operations: publish, archive, restore, version snapshots, audit log, stats.
  * Reuses the existing predefined_formats tables — no new format tables.
  */
-import { matchesQuery, smartMatch, sqlWordFilter } from '@/lib/searchUtils';
+import { smartMatch, sqlWordFilter } from '@/lib/searchUtils';
+import { sortBySearchRank } from '@/lib/formatSearchRank';
 import {
   getDatabase,
   dbRunAsync, dbGetFirstAsync, dbGetAllAsync,
@@ -660,20 +661,9 @@ export async function searchPublishedFormats(
 
   if (!useJsRanking) return results;
 
-  // JS-side relevance sort — avoids SQL subqueries that break the Web stub.
-  // Rank 1: query found in title  (shown first)
-  // Rank 2: query found in a tag  (secondary)
-  // Rank 3: query found in vivran / format_type (tertiary)
-  const rank = (f: FormatWithMeta): number => {
-    if (matchesQuery(query, f.title)) return 1;
-    if (matchesQuery(query, f.title, (f.tags ?? []).join(' '))) return 2;
-    return 3;
-  };
-  return results.filter((f) => formatMatches(f, query)).sort((a, b) => {
-    const dr = rank(a) - rank(b);
-    if (dr !== 0) return dr;
-    return (a.title ?? '').localeCompare(b.title ?? '');
-  });
+  // JS-side relevance sort — avoids SQL subqueries that break the Web stub. Whole query in the title first, then every
+  // word in the title, the tags, the rest; a number matches only a whole number (owner: "35(3)" — formatSearchRank.ts).
+  return sortBySearchRank(results.filter((f) => formatMatches(f, query)), query);
 }
 
 export async function searchPublishedFormatsByTypes(
@@ -698,17 +688,8 @@ export async function searchPublishedFormatsByTypes(
   );
   const results = await enrichFormats(rawFormats);
 
-  // JS-side relevance sort: title match > tag match > vivran match.
-  const rank = (f: FormatWithMeta): number => {
-    if (matchesQuery(query, f.title)) return 1;
-    if (matchesQuery(query, f.title, (f.tags ?? []).join(' '))) return 2;
-    return 3;
-  };
-  return results.filter((f) => formatMatches(f, query)).sort((a, b) => {
-    const dr = rank(a) - rank(b);
-    if (dr !== 0) return dr;
-    return (a.title ?? '').localeCompare(b.title ?? '');
-  });
+  // JS-side relevance sort (same rules as searchPublishedFormats — formatSearchRank.ts).
+  return sortBySearchRank(results.filter((f) => formatMatches(f, query)), query);
 }
 
 /**
