@@ -786,11 +786,12 @@ const FormatKeyDaysBox = forwardRef<View, { displayLabel: string; days: string; 
             <Text style={{ fontSize: 14, color: c.mutedForeground }}>दोनों तारीख चुनें — अपने-आप भरेगा</Text>
           )}
         </View>
-        {wrong ? <Text style={{ fontSize: 12, color: c.destructive }}>"कब तक" की तारीख "कब से" के बाद की होनी चाहिए</Text> : null}
+        {wrong ? <Text style={{ fontSize: 12, color: c.destructive }}>{'"कब तक" की तारीख "कब से" के बाद की होनी चाहिए'}</Text> : null}
       </View>
     );
   },
 );
+FormatKeyDaysBox.displayName = 'FormatKeyDaysBox';
 
 // ── FormatKeyDropdownInput — option chips for field_type=dropdown ────────────
 
