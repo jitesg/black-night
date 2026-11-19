@@ -84,6 +84,12 @@ detailed working log. Keep the guide up to date when the architecture changes.
   = bento tiles with module-colour gradients drawn by react-native-svg (no expo-linear-gradient): big लंबित मुकदमे (+ bar "कुल n में से" from
   mukadma.total) | चालू न्यायालय कागज़ / लंबित प्रार्थना पत्र, निरोधात्मक | रिपोर्ट इस हफ़्ते · आज n, full-width आज की GD; i18n home.summary.*; each
   tile opens its module (same routes as before). The old StatCard is gone.
+- Home "मेरी उत्पादकता" (owner, design P1; replaced the old उत्पादकता card — new-record counts of all modules + a red समापन दर): only मुकदमा /
+  न्यायालय / प्रार्थना पत्र, इस हफ़्ते / इस महीने switch, one row each "मिले / दर्ज n · निस्तारित / ख़त्म m · बाकी k" + ring %, green strip
+  "कुल उत्पादकता · done / got · p%". Rules `src/lib/productivity.ts` (pure; tests `scripts/test_productivity.ts`): got = created_at (मुकदमा,
+  न्यायालय) / date_of_receipt (PP); done = finished_at (new columns firs / nyayalay_documents, set by DB triggers trg_<t>_finished_at /
+  trg_<t>_reopened on status changes; older rows → updated_at) / disposal_date (PP); % capped at 100. Data `DashboardData.prod`; UI
+  `components/home/ProductivityCard.tsx`; i18n home.prod.*.
 - Home bell → `(app)/notifications.tsx` (सूचनाएँ): cards `components/notifications/NoticeItem.tsx` (icon tile, title + time, body, extras: progress / meta / action from the card) built live from `src/lib/noticeCards.ts` (pure; केस डायरी लंबित,
   न्यायालय/प्रार्थना पत्र overdue or due in 3 days, reminders due today/missed; tests `scripts/test_notice_cards.ts`),
   data via `src/lib/db/noticeRepo.ts`; bell badge = `noticeBadgeCount`.

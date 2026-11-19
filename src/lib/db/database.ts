@@ -1103,6 +1103,21 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'firs', 'complainant_relation', 'TEXT');
   await _ensureColumn(database, 'firs', 'complainant_gender',   'TEXT');
   // रो0आम (GD) रपट संख्या व समय of the FIR (owner) — next to सूचना की तारीख / समय on add-fir and the details tab
+  // होम "मेरी उत्पादकता" (owner): WHEN a मुकदमा / न्यायालय कागज़ was finished — set by the triggers below on every status change, so no
+  // screen has to remember it (older rows stay NULL → productivity.ts falls back to updated_at)
+  await _ensureColumn(database, 'firs', 'finished_at', 'INTEGER');
+  await _ensureColumn(database, 'nyayalay_documents', 'finished_at', 'INTEGER');
+  for (const t of ['firs', 'nyayalay_documents']) {
+    try {
+      await database.execAsync(`
+        CREATE TRIGGER IF NOT EXISTS trg_${t}_finished_at AFTER UPDATE OF status ON ${t}
+        WHEN NEW.status = 'Finished' AND (OLD.status IS NULL OR OLD.status <> 'Finished')
+        BEGIN UPDATE ${t} SET finished_at = strftime('%s','now') WHERE id = NEW.id; END;
+        CREATE TRIGGER IF NOT EXISTS trg_${t}_reopened AFTER UPDATE OF status ON ${t}
+        WHEN NEW.status <> 'Finished' AND OLD.status = 'Finished'
+        BEGIN UPDATE ${t} SET finished_at = NULL WHERE id = NEW.id; END;`);
+    } catch (e) { logger.warn(`[DB] finished_at trigger on ${t}:`, e); }
+  }
   await _ensureColumn(database, 'firs', 'roaam_no',   'TEXT');
   await _ensureColumn(database, 'firs', 'roaam_time', 'TEXT');
   await _ensureColumn(database, 'fir_accused', 'father',   'TEXT');

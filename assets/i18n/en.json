@@ -1681,6 +1681,20 @@
       "reports": "Reports this week",
       "reportsToday": "today {{n}}",
       "gd": "Today's GD"
+    },
+    "prod": {
+      "title": "My productivity",
+      "week": "This week",
+      "month": "This month",
+      "fir": "Cases",
+      "court": "Court papers",
+      "pp": "Petitions",
+      "firGot": "registered",
+      "firDone": "closed",
+      "got": "received",
+      "done": "disposed",
+      "left": "left",
+      "total": "Total productivity · {{done}} / {{got}} done"
     }
   },
   "workspace": {

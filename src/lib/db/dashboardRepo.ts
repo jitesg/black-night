@@ -9,6 +9,7 @@ import { safeNum, safePct } from '../safeNum';
 import i18n from '@/lib/i18n';
 import { htmlToPlainText } from '@/lib/stringUtils';
 import { crimeTypeLabel } from './checklistRepo';
+import { computeProductivity, type CourtLike, type FirLike, type PPLike, type ProdStats } from '@/lib/productivity';
 import { getAllFIRs, type FIR } from './firRepo';
 import { getAllGdEntries, type GdEntry } from './gdRepo';
 import {
@@ -167,6 +168,8 @@ export interface DashboardData {
   overdue: OverdueItem[];
   recentActivity: RecentActivity[];
   productivity: ProductivityAnalytics;
+  /** होम "मेरी उत्पादकता" (owner, P1): मुकदमा / न्यायालय / प्रार्थना पत्र — मिले vs निस्तारित, इस हफ़्ते + इस महीने */
+  prod: ProdStats;
   // raw arrays for list screens
   rawFIRs: FIR[];
   rawNyayalay: NyayalayDocument[];
@@ -501,6 +504,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
     overdue,
     recentActivity,
     productivity,
+    prod: computeProductivity(firs as unknown as FirLike[], nyayalayDocs as unknown as CourtLike[], ppAll as unknown as PPLike[], weekStart, monthStart),
     rawFIRs: firs,
     rawNyayalay: nyayalayDocs,
     rawPP: ppAll,

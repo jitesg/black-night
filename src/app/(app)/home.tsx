@@ -15,8 +15,8 @@ import { useTranslation } from 'react-i18next';
 import {
   BookOpen, FileText,
   BookMarked, ShieldAlert, Scroll, Scale,
-  TrendingUp, Bell, Clock,
-  CheckCircle, CalendarDays, Zap,
+  Bell, Clock,
+  CalendarDays, Zap,
   Star, StarOff, ChevronRight, MoreHorizontal,
 } from 'lucide-react-native';
 import { useWorkspace } from '@/context/WorkspaceContext';
@@ -38,6 +38,7 @@ import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
 import { SectionHeader, StatusChip, EmptyState, SkeletonList } from '@/components/ui/ds';
 import { Pill } from '@/components/ui/ds/Pill';
 import { SummaryBento } from '@/components/home/SummaryBento';
+import { ProductivityCard } from '@/components/home/ProductivityCard';
 
 // ── Semantic colour aliases — Trust Green palette ─────────────────────────────
 const C_FIXED = {
@@ -257,22 +258,6 @@ function SearchResultRow({ item, query, onPress }: { item: UniversalSearchItem; 
 }
 
 // ── ProductivityBar ───────────────────────────────────────────────────────────
-function ProductivityBar({ pct }: { pct: number }) {
-  const { t } = useTranslation();
-  const C = usePalette();
-  const color = pct >= 70 ? '#16A34A' : pct >= 40 ? '#D97706' : '#DC2626';
-  return (
-    <View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-        <Text style={{ ...T.caption1, color: C.textMuted, fontWeight: '500' }}>{t('home.completionRate')}</Text>
-        <Text style={{ ...T.caption1, fontWeight: '700', color }}>{pct}%</Text>
-      </View>
-      <View style={{ height: 6, backgroundColor: C.divider, borderRadius: 3, overflow: 'hidden' }}>
-        <View style={{ height: '100%', width: `${pct}%`, backgroundColor: color, borderRadius: 3 }} />
-      </View>
-    </View>
-  );
-}
 
 // ── Main Dashboard ────────────────────────────────────────────────────────────
 // Home search: results shown per module before "सब देखें", and module names.
@@ -448,7 +433,7 @@ export default function HomeScreen() {
     );
   }
 
-  const { today, reminders, recentActivity, productivity, nirodhatmak } = data;
+  const { today, reminders, recentActivity, nirodhatmak } = data;
   const goRoute = (route: string) => router.push(route as never);
   const showSearch = searchQuery.length > 0;
 
@@ -708,43 +693,8 @@ export default function HomeScreen() {
           )}
 
           {/* ── Productivity ── */}
-          <View style={{ gap: 10 }}>
-            <SectionHeader title={t('home.productivity')} icon={<TrendingUp size={13} color={C.textMuted} />} />
-            <View
-              className="shadow-sm shadow-black/5"
-              style={{
-                backgroundColor: C.surface, borderRadius: 20, padding: 16,
-                gap: 16, borderCurve: 'continuous',
-              } as object}
-            >
-              <View style={{ flexDirection: 'row', gap: 0 }}>
-                {[
-                  { label: t('home.today'),      value: productivity.createdToday },
-                  { label: t('home.thisWeek'),  value: productivity.createdThisWeek },
-                  { label: t('home.thisMonth'), value: productivity.createdThisMonth },
-                ].map((s, i) => (
-                  <View key={s.label} style={{
-                    flex: 1, alignItems: 'center',
-                    borderRightWidth: i < 2 ? 1 : 0, borderRightColor: C.divider,
-                  }}>
-                    <Text style={{ fontSize: 24, fontWeight: '700', color: C.text }}>{s.value}</Text>
-                    <Text style={{ ...T.caption1, color: C.textMuted, marginTop: 2, textAlign: 'center' }}>{s.label}</Text>
-                  </View>
-                ))}
-              </View>
-              <ProductivityBar pct={productivity.completionPct} />
-              <View style={{ flexDirection: 'row', gap: 16 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <CheckCircle size={12} color="#16A34A" />
-                  <Text style={{ ...T.caption1, color: C.textMuted }}>{t('home.finishedCount', { count: productivity.totalFinished })}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Clock size={12} color="#D97706" />
-                  <Text style={{ ...T.caption1, color: C.textMuted }}>{t('home.pendingCount', { count: productivity.totalPending })}</Text>
-                </View>
-              </View>
-            </View>
-          </View>
+          {/* ── मेरी उत्पादकता (owner, design P1: मुकदमा / न्यायालय / प्रार्थना पत्र — मिले vs निस्तारित, इस हफ़्ते / इस महीने) ── */}
+          <ProductivityCard stats={data.prod} go={goRoute} />
 
         </ScrollView>
       )}
