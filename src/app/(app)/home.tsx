@@ -27,8 +27,7 @@ import {
 } from '@/lib/db/dashboardRepo';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import { DashboardHeader } from '@/components/common/DashboardHeader';
-import { loadNoticeCards } from '@/lib/db/noticeRepo';
-import { noticeBadgeCount } from '@/lib/noticeCards';
+import { loadNoticeBadgeCount } from '@/lib/db/noticeRepo';
 import { reportRecordCounts } from '@/lib/db/reportRecordRepo';
 import { warmKnowledgeSearch } from '@/lib/db/knowledgeRepo';
 import { perfMarkOnce, perfSet } from '@/lib/perfLog';
@@ -271,7 +270,8 @@ export default function HomeScreen() {
   const [noticeCount, setNoticeCount] = useState(0);
   useFocusEffect(useCallback(() => {
     let alive = true;
-    loadNoticeCards().then((c) => { if (alive) setNoticeCount(noticeBadgeCount(c)); }).catch(() => {});
+    const t0 = Date.now();
+    loadNoticeBadgeCount().then((n) => { perfSet('noticeCountMs', Date.now() - t0); if (alive) setNoticeCount(n); }).catch(() => {});
     return () => { alive = false; };
   }, []));
   // "हाल के कार्य" tile (owner): reports made from predefined formats today / this week.
@@ -312,7 +312,9 @@ export default function HomeScreen() {
     (async () => {
       if (!dashboardLoadedRef.current) setLoading(true);
       try {
-        const d = await loadDashboardData();
+        const t0 = Date.now();
+        const d = await loadDashboardData({ home: true });
+        perfSet('homeLoadMs', Date.now() - t0);
         if (!cancelled) { setData(d); dashboardLoadedRef.current = true; }
       } finally {
         if (!cancelled) setLoading(false);

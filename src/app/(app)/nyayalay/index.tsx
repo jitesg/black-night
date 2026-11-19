@@ -41,6 +41,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
+import { useGoHome } from '@/lib/goHome';
 
 const NYL_COLOR = '#1D4ED8';
 
@@ -314,15 +315,16 @@ export default function NyayalayScreen() {
   // set below once the list is known — the back handler reads it (registered once on focus)
   const selectionBackRef = useRef<() => boolean>(() => false);
 
+  const goHome = useGoHome();
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (selectionBackRef.current()) return true; // back first ends the choosing
-      router.replace('/(app)/home' as never);
+      goHome(); // back to the Home below (no new Home) — src/lib/goHome.ts
       return true;
     });
     return () => sub.remove();
-  }, []));
+  }, [goHome]));
 
   // BUG-R2 FIX: handleSearch fired an async DB query on every keystroke with no
   // debounce — same pattern as BUG-H3 (knowledge/index.tsx). Added 300 ms debounce

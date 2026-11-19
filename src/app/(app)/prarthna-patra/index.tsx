@@ -45,6 +45,7 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
+import { useGoHome } from '@/lib/goHome';
 
 // ── Filter types ─────────────────────────────────────────────────────────
 const ACCENT = '#1E3A5F';
@@ -336,15 +337,16 @@ export default function PrarthnaPatraScreen() {
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
+  const goHome = useGoHome();
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (selectionBackRef.current()) return true; // back first ends the choosing
-      router.replace('/(app)/home' as never);
+      goHome(); // back to the Home below (no new Home) — src/lib/goHome.ts
       return true;
     });
     return () => sub.remove();
-  }, []));
+  }, [goHome]));
 
   // Debounced DB search: fires 300 ms after the user stops typing.
   // A cancellation flag prevents stale results from a slower earlier query

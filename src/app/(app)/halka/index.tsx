@@ -14,6 +14,7 @@ import { getAnalytics, getAllGramPanchayats, type GramPanchayat } from '@/lib/db
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { AppHeader, HeaderIconBtn } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
+import { useGoHome } from '@/lib/goHome';
 
 const STAT_CONFIG = [
   { key: 'totalGP',               label: 'Gram\nPanchayats',    icon: BookOpen,     color: '#2D52B8', category: 'gramPanchayats'    },
@@ -111,14 +112,15 @@ export default function HalkaHomeScreen() {
     }, [])
   );
 
+  const goHome = useGoHome();
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.replace('/(app)/home' as never);
+      goHome(); // back to the Home below (no new Home) — src/lib/goHome.ts
       return true;
     });
     return () => sub.remove();
-  }, []));
+  }, [goHome]));
 
   return (
     <View className="flex-1 bg-background">

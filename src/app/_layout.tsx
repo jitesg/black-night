@@ -55,6 +55,8 @@ import "../global.css";
 // are invalidated on return to foreground. The blur overlay alone is not enough —
 // a user who returns after a long break should be required to re-authenticate.
 const BACKGROUND_RELOCK_MS = 2 * 60 * 1000; // 2 minutes
+/** Foreground: full phone-alert resync at most this often (owner: speed). */
+const NOTIF_SYNC_EVERY_MS = 10 * 60 * 1000;
 
 // ── Auth note ────────────────────────────────────────────────────────────────
 // This app uses LOCAL SQLite auth (PIN / workspace setup), NOT Supabase Auth.
@@ -350,6 +352,8 @@ function InvestRootLayout() {
   // Additionally, if the app stays in the background for ≥ BACKGROUND_RELOCK_MS,
   // all in-memory PIN sessions are cleared on return — user must re-authenticate.
   const [isBackground, setIsBackground] = useState(false);
+  // last full phone-alert sync (see the foreground handler below)
+  const lastNotifSyncRef = useRef<{ at: number; day: string }>({ at: 0, day: '' });
   const appStateRef        = useRef<AppStateStatus>(AppState.currentState);
   const backgroundAtRef    = useRef<number | null>(null);
   const lastReminderResyncRef = useRef(0);
@@ -395,6 +399,7 @@ function InvestRootLayout() {
   useEffect(() => {
     (async () => {
       try {
+        lastNotifSyncRef.current = { at: Date.now(), day: new Date().toDateString() };
         await syncAppNotifications();
       } catch (e) {
         if (__DEV__) console.warn('[AppNotificationSync] Startup sync failed:', e);
@@ -440,7 +445,15 @@ function InvestRootLayout() {
         }
         (async () => {
           try {
-            await syncAppNotifications();
+            // Owner (speed): all phone alerts were cancelled + set again on EVERY return to the app, right when the
+            // officer starts tapping. Now at most once per 10 minutes, or when the day changed (daily summary).
+            // Saving / changing a paper still resyncs its alerts at once (the repos do that themselves).
+            const nowMs = Date.now();
+            const day = new Date(nowMs).toDateString();
+            if (nowMs - lastNotifSyncRef.current.at > NOTIF_SYNC_EVERY_MS || lastNotifSyncRef.current.day !== day) {
+              lastNotifSyncRef.current = { at: nowMs, day };
+              await syncAppNotifications();
+            }
             // कार्यालय कागज़ check on coming back (only when joined; one run at a time)
             void import('@/office/officerSync').then((m) => m.runOfficerSync({ notify: true })).catch(() => {});
             // Top up repeat-until-done alerts (at most every 10 minutes).

@@ -13,8 +13,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { openCopilot } from '@/lib/copilotStore';
-import { loadNoticeCards } from '@/lib/db/noticeRepo';
-import { noticeBadgeCount } from '@/lib/noticeCards';
+import { loadNoticeBadgeCount } from '@/lib/db/noticeRepo';
+import { perfSet } from '@/lib/perfLog';
 
 export interface AppHeaderProps {
   /** Primary title */
@@ -299,7 +299,8 @@ export const NoticeBellBtn = memo(function NoticeBellBtn() {
   const [count, setCount] = useState(0);
   useFocusEffect(useCallback(() => {
     let alive = true;
-    loadNoticeCards().then((c) => { if (alive) setCount(noticeBadgeCount(c)); }).catch(() => {});
+    const t0 = Date.now();
+    loadNoticeBadgeCount().then((n) => { perfSet('noticeCountMs', Date.now() - t0); if (alive) setCount(n); }).catch(() => {});
     return () => { alive = false; };
   }, []));
   return (

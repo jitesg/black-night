@@ -817,6 +817,14 @@ detailed working log. Keep the guide up to date when the architecture changes.
   2 चलानी प्रेषित), 5 GD, 3 reminders (reminderService.saveReminder) — रामपाल पुत्र श्यामलाल (ग्राम अघौरा, 9876500001) is in several modules
   for the "पूरे app से सुझाव" test. Ids kept in app_settings `test_data_ids`; `removeTestData` deletes only those (normal delete functions).
   One set at a time. Checked on the real schema with node:sqlite (48 rows in, all out).
+- Speed pass 1 (owner: touch / open delay; every change falls back to the old way on any error):
+  module root screens' hardware back → `useGoHome()` (`src/lib/goHome.ts`, pure check `navHome.ts`, tests `scripts/test_go_home.ts`) =
+  `router.back()` when the screen below is Home, else the old `router.replace('/(app)/home')` — replace used to stack a NEW Home on every
+  back (old ones stayed mounted, app got slower the longer it ran). NEVER `router.replace` to Home from a screen that was pushed from Home.
+  Home calls `loadDashboardData({ home: true })` (skips the whole ज्ञानकोष table — read twice before — and हल्का; AI tools still call it
+  without options). 🔔 count = `loadNoticeBadgeCount()` (noticeRepo; cached until SQLite total_changes / data_version or the minute changes;
+  calls at once share one run) in AppHeader + Home. Foreground phone-alert resync (`syncAppNotifications` in root _layout) at most every
+  10 min or on a new day (repos still resync on their own writes). Dev options → Performance shows "Home data load" / "🔔 count" ms.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 - OCR scan removed app-wide (owner): the "OCR स्कैन से स्वतः भरें" banners on मुकदमा add-fir, GD add-gd and प्रार्थना पत्र add, and the
   per-card scan button (Supabase ocr-extract-fields) on PersonGroupInput / AccusedGroupInput; OcrScanModal.tsx + ocrService.ts deleted

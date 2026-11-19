@@ -30,6 +30,7 @@ import { isSensitiveId } from '@/lib/regulations/regCore';
 import { KNOWLEDGE_HIT_COLOR, searchAllKnowledge, type KnowledgeHit } from '@/lib/knowledgeSearchAll';
 import { buildCaseItems } from '@/lib/cases/caseCore';
 import { getRegIndex } from '@/lib/regulations/regIndex';
+import { useGoHome } from '@/lib/goHome';
 
 const K_COLOR = '#0F766E';
 const ACCENT = '#1E3A5F';
@@ -202,14 +203,15 @@ export default function KnowledgeHomeScreen() {
   const [searchResults, setSearchResults] = useState<KnowledgeHit[]>([]);
   const [searching, setSearching] = useState(false);
 
+  const goHome = useGoHome();
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.replace('/(app)/home' as never);
+      goHome(); // back to the Home below (no new Home) — src/lib/goHome.ts
       return true;
     });
     return () => sub.remove();
-  }, []));
+  }, [goHome]));
 
   useFocusEffect(
     useCallback(() => {

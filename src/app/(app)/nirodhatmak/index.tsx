@@ -32,6 +32,7 @@ import {
 import { useListBottomPadding } from '@/hooks/useListBottomPadding';
 import { THEME } from '@/lib/theme';
 import { extractKaryvahiFacts } from '@/lib/nirodhatmak/extractKaryvahi';
+import { useGoHome } from '@/lib/goHome';
 
 const MODULE_COLOR = '#DC2626';
 
@@ -506,15 +507,16 @@ export default function NirodhatmakHomeScreen() {
     loadData(queryRef.current, activeTypeRef.current);
   }, [loadData]));
 
+  const goHome = useGoHome();
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (selectedIdsRef.current.size > 0) { setSelectedIds(new Set()); return true; }
-      router.replace('/(app)/home' as never);
+      goHome(); // back to the Home below (no new Home) — src/lib/goHome.ts
       return true;
     });
     return () => sub.remove();
-  }, []));
+  }, [goHome]));
 
   const handleSearch = (text: string) => {
     setQuery(text);

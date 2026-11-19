@@ -20,6 +20,7 @@ import { AppDrawer } from '@/components/common/AppDrawer';
 import { SearchBar } from '@/components/SearchBar';
 import { matchesQuery } from '@/lib/searchUtils';
 import { getOfficerLink, type OfficerLink } from '@/office/officerLink';
+import { useGoHome } from '@/lib/goHome';
 
 
 // ── Setting Item Definition ───────────────────────────────────────────────
@@ -222,14 +223,15 @@ export default function SettingsScreen() {
   // Reset search on focus (e.g. navigating back from sub-screen)
   useFocusEffect(useCallback(() => { setQuery(''); }, []));
 
+  const goHome = useGoHome();
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.replace('/(app)/home' as never);
+      goHome(); // back to the Home below (no new Home) — src/lib/goHome.ts
       return true;
     });
     return () => sub.remove();
-  }, []));
+  }, [goHome]));
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();

@@ -191,7 +191,12 @@ const MODULE_COLORS: Record<string, string> = {
 
 // ── Main loader ────────────────────────────────────────────────────────────
 
-export async function loadDashboardData(): Promise<DashboardData> {
+/**
+ * `home: true` (Home screen only — owner: speed): skips the ज्ञानकोष (whole knowledge table) and हल्का reads, which
+ * Home never shows; those parts come back as zeros. The AI tools call it without options and still get everything.
+ */
+export async function loadDashboardData(opts?: { home?: boolean }): Promise<DashboardData> {
+  const light = !!opts?.home;
   const today = localDateString();
   const todayStart = startOfDay(today);
   const todayEnd = endOfDay(today);
@@ -206,9 +211,9 @@ export async function loadDashboardData(): Promise<DashboardData> {
       getAllPrarthnaPatra(),
       getAllGdEntries(),
       getAllNirodhatmakKaryvahi(),
-      getHalkaAnalytics(),
-      getKnowledgeTotalCount(),
-      getKnowledgeAnalytics(),
+      light ? Promise.resolve(null) : getHalkaAnalytics().catch(() => null),
+      light ? Promise.resolve(0) : getKnowledgeTotalCount().catch(() => 0),
+      light ? Promise.resolve({} as Awaited<ReturnType<typeof getKnowledgeAnalytics>>) : getKnowledgeAnalytics().catch(() => ({} as Awaited<ReturnType<typeof getKnowledgeAnalytics>>)),
     ]);
 
   // ── Mukadma ───────────────────────────────────────────────────────────
@@ -277,12 +282,12 @@ export async function loadDashboardData(): Promise<DashboardData> {
 
   // ── Halka ─────────────────────────────────────────────────────────────
   const halka: HalkaAnalytics = {
-    gramPanchayats: halkaStats.totalGP,
-    hamlets: halkaStats.totalHamlets,
-    importantPersons: halkaStats.totalImportantPersons,
-    historySheeters: halkaStats.totalHistorySheeters,
-    religiousPlaces: halkaStats.totalReligiousPlaces,
-    institutions: halkaStats.totalInstitutions,
+    gramPanchayats: safeNum(halkaStats?.totalGP),
+    hamlets: safeNum(halkaStats?.totalHamlets),
+    importantPersons: safeNum(halkaStats?.totalImportantPersons),
+    historySheeters: safeNum(halkaStats?.totalHistorySheeters),
+    religiousPlaces: safeNum(halkaStats?.totalReligiousPlaces),
+    institutions: safeNum(halkaStats?.totalInstitutions),
   };
 
   // ── Knowledge ─────────────────────────────────────────────────────────

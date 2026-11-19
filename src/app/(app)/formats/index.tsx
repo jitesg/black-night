@@ -32,6 +32,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { BottomSheet } from '@/components/ui/ds/BottomSheet';
+import { useGoHome } from '@/lib/goHome';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const INDIGO = '#6366F1';
@@ -195,14 +196,15 @@ export default function FormatsScreen() {
     };
   }, [loadData]));
 
+  const goHome = useGoHome();
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.replace('/(app)/home' as never);
+      goHome(); // back to the Home below (no new Home) — src/lib/goHome.ts
       return true;
     });
     return () => sub.remove();
-  }, []));
+  }, [goHome]));
 
   const handleSearch = (text: string) => {
     setQuery(text);

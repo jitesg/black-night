@@ -10,7 +10,7 @@ import type { PmBayanRow } from '@/lib/pmBayan';
 import type { SceneRow } from '@/lib/sceneAlert';
 import { isPmKaryvahi, isSceneKaryvahi } from '@/lib/karyvahiSubSteps';
 import { extractKaryvahiFacts } from '@/lib/nirodhatmak/extractKaryvahi';
-import { buildNoticeCards, type CourtDocRow, type NoticeCard, type OfficeNewRow, type PetitionRow, type ReminderRow } from '@/lib/noticeCards';
+import { buildNoticeCards, noticeBadgeCount, type CourtDocRow, type NoticeCard, type OfficeNewRow, type PetitionRow, type ReminderRow } from '@/lib/noticeCards';
 
 export interface NoticeInput { firs: CdFirRow[]; courtDocs: CourtDocRow[]; petitions: PetitionRow[]; reminders: ReminderRow[]; nkPending: NkPendingRow[]; pmBayan: PmBayanRow[]; scene: SceneRow[]; officeNew: OfficeNewRow[] }
 
@@ -157,4 +157,38 @@ export async function loadNoticeInput(): Promise<NoticeInput> {
 
 export async function loadNoticeCards(now: Date = new Date()): Promise<NoticeCard[]> {
   return buildNoticeCards(await loadNoticeInput(), now);
+}
+
+// ── 🔔 count, shared + cached (owner: speed) ───────────────────────────────────────────────────────────────
+// Every module header and Home used to build ALL सूचनाएँ cards (8 queries) on each screen open just for one number.
+// Now one shared count: re-built only when something was written to the database (SQLite total_changes() — writes on
+// this connection — + PRAGMA data_version — writes by another connection, e.g. the background sync) or the minute
+// changed (due / overdue / missed depend on the clock). Calls at the same time share one run. Any error → the old
+// full build, so the count is never wrong for long and nothing can crash.
+let _countKey = '';
+let _count = 0;
+let _countRun: Promise<number> | null = null;
+let _countRunKey = '';
+
+async function noticeChangeKey(): Promise<string> {
+  const db = await getDatabase();
+  const r = await db.getFirstAsync<{ t: number }>(`SELECT total_changes() AS t`);
+  const v = await db.getFirstAsync<{ data_version: number }>(`PRAGMA data_version`);
+  return `${r?.t ?? ''}|${v?.data_version ?? ''}|${Math.floor(Date.now() / 60000)}`;
+}
+
+/** Bell badge number (same as noticeBadgeCount(loadNoticeCards())), cached as above. */
+export async function loadNoticeBadgeCount(): Promise<number> {
+  let key = '';
+  try { key = await noticeChangeKey(); } catch { key = ''; }
+  if (key && key === _countKey) return _count;
+  if (key && _countRun && key === _countRunKey) return _countRun;
+  const run = (async () => {
+    const n = noticeBadgeCount(await loadNoticeCards());
+    if (key) { _countKey = key; _count = n; }
+    return n;
+  })();
+  _countRun = run;
+  _countRunKey = key;
+  try { return await run; } finally { if (_countRun === run) { _countRun = null; _countRunKey = ''; } }
 }

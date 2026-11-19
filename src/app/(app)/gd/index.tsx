@@ -25,6 +25,7 @@ import {
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useListBottomPadding } from '@/hooks/useListBottomPadding';
 import { THEME } from '@/lib/theme';
+import { useGoHome } from '@/lib/goHome';
 
 // ─── Design Tokens ────────────────────────────────────────────────────────
 const ACCENT = '#6366F1';
@@ -270,14 +271,15 @@ export default function GdScreen() {
     loadData(queryRef.current, activeFilterRef.current);
   }, [loadData]));
 
+  const goHome = useGoHome();
   // Back → Dashboard: module root screens always return to home, never exit app.
   useFocusEffect(useCallback(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.replace('/(app)/home' as never);
+      goHome(); // back to the Home below (no new Home) — src/lib/goHome.ts
       return true;
     });
     return () => sub.remove();
-  }, []));
+  }, [goHome]));
 
   const handleSearch = (text: string) => {
     setQuery(text);

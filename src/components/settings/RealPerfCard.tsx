@@ -33,6 +33,8 @@ export function RealPerfCard() {
       {line('Cold start → first screen', ms(snap.firstScreenMs))}
       {line('Seed load', ms(snap.seedMs))}
       {line('Last search', ms(snap.lastSearchMs))}
+      {line('Home data load (last)', ms(snap.homeLoadMs))}
+      {line('🔔 count (last)', ms(snap.noticeCountMs))}
       {line('DB size', db ? `${db.sizeKb} KB` : '…')}
       {(db?.byType ?? []).map((r) => line(`rows · ${r.t}`, String(r.n)))}
     </View>
