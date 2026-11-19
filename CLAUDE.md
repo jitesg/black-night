@@ -825,6 +825,8 @@ detailed working log. Keep the guide up to date when the architecture changes.
   without options). 🔔 count = `loadNoticeBadgeCount()` (noticeRepo; cached until SQLite total_changes / data_version or the minute changes;
   calls at once share one run) in AppHeader + Home. Foreground phone-alert resync (`syncAppNotifications` in root _layout) at most every
   10 min or on a new day (repos still resync on their own writes). Dev options → Performance shows "Home data load" / "🔔 count" ms.
+  Back-exit (owner): Home's double-back calls `exitResetRef` before `BackHandler.exitApp()` (the JS session survives, so the next open
+  is instant) → scroll to top, search + module chips cleared, drawer closed, keyboard down. Home button / app switch keep their place.
 - App Lock locks only on app open / back-exit / background timeout; PIN set first.
 - OCR scan removed app-wide (owner): the "OCR स्कैन से स्वतः भरें" banners on मुकदमा add-fir, GD add-gd and प्रार्थना पत्र add, and the
   per-card scan button (Supabase ocr-extract-fields) on PersonGroupInput / AccusedGroupInput; OcrScanModal.tsx + ocrService.ts deleted

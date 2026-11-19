@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { clearAppLockSession } from '@/lib/appLockAuth';
 import { T } from '@/lib/typography';
 import {
-  View, Text, ScrollView, Pressable,
+  View, Text, ScrollView, Pressable, Keyboard,
   ActivityIndicator, SectionList,
   BackHandler, ToastAndroid, Platform,
 } from 'react-native';
@@ -283,6 +283,10 @@ export default function HomeScreen() {
   }, []));
   const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastBackPressTime = useRef(0);
+  /** Home's main scroll list — back-exit puts it back at the top. */
+  const homeScrollRef = useRef<ScrollView>(null);
+  /** Filled further down (after clearSearch): Home's "fresh start" for the next open. */
+  const exitResetRef = useRef<() => void>(() => {});
 
 
   // Double-tap back to exit — Android only, active only on this screen
@@ -293,6 +297,9 @@ export default function HomeScreen() {
       if (now - lastBackPressTime.current < 2000) {
         // Exiting ends the App Lock session; the PIN is asked on next open.
         clearAppLockSession();
+        // Owner: after a back-exit the app reopens instantly (same JS session), so Home kept its old scroll place and search.
+        // Reset it first so the next open starts fresh at the top. Never blocks the exit.
+        try { exitResetRef.current(); } catch { /* exit anyway */ }
         BackHandler.exitApp();
         return true;
       }
@@ -353,6 +360,18 @@ export default function HomeScreen() {
     setSearchQuery('');
     setSearchResults([]);
   }, []);
+
+  // Back-exit (owner): next open = Home from the top, search box empty, side menu closed. Home button / app switch keep their place.
+  exitResetRef.current = () => {
+    if (searchTimerRef.current) { clearTimeout(searchTimerRef.current); searchTimerRef.current = null; }
+    clearSearch();
+    setSearchModule('all');
+    setExpandedModules(new Set());
+    setSearchLoading(false);
+    setDrawerOpen(false);
+    Keyboard.dismiss();
+    homeScrollRef.current?.scrollTo({ y: 0, animated: false });
+  };
 
   // Hero card (owner, design C): date in the app language + a greeting by the time of day
   const lang = i18n.language;
@@ -507,6 +526,7 @@ export default function HomeScreen() {
       ) : (
         // ── Dashboard body ───────────────────────────────────────
         <ScrollView
+          ref={homeScrollRef}
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 60, gap: 24 }}
