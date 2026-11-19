@@ -1672,7 +1672,7 @@
     "greetOfficer": "{{greeting}}, Officer 👋",
     "helloWord": "Hello",
     "summary": {
-      "title": "Summary",
+      "title": "Other work",
       "cases": "Pending cases",
       "casesOf": "of {{total}} total",
       "court": "Active court papers",
@@ -1680,10 +1680,11 @@
       "nk": "Preventive actions",
       "reports": "Reports this week",
       "reportsToday": "today {{n}}",
-      "gd": "Today's GD"
+      "gd": "Today's GD",
+      "nkShort": "Preventive"
     },
     "prod": {
-      "title": "My productivity",
+      "title": "My work",
       "week": "This week",
       "month": "This month",
       "fir": "Cases",
@@ -1694,7 +1695,9 @@
       "got": "received",
       "done": "disposed",
       "left": "left",
-      "total": "Total productivity · {{done}} / {{got}} done"
+      "total": "Total productivity · {{done}} / {{got}} done",
+      "pending": "Total pending {{n}}",
+      "pendingOf": "Total pending {{n}} / {{total}}"
     }
   },
   "workspace": {

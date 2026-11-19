@@ -1,5 +1,7 @@
 /**
- * Home "सारांश" — design F (owner, sample approved): bento tiles in each module's colour.
+ * Home "और काम" (owner): what "मेरा काम" (ProductivityCard) does not show — निरोधात्मक, रिपोर्ट इस हफ़्ते, आज की GD — as one row of
+ * 3 gradient tiles. (Was design F "सारांश" with मुकदमा / न्यायालय / प्रार्थना पत्र tiles too; those moved into "मेरा काम" as "कुल लंबित".)
+ * Old design F layout, for reference:
  *   ┌──────────────┬──────────┐
  *   │ लंबित मुकदमे  │ न्यायालय  │
  *   │ (big + bar)   ├──────────┤
@@ -17,7 +19,7 @@ import { Pressable, Text, View } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
-import { BookOpen, FileCheck, Landmark, Mail, Scale, ShieldCheck } from 'lucide-react-native';
+import { BookOpen, FileCheck, ShieldCheck } from 'lucide-react-native';
 
 type Icon = ComponentType<{ size: number; color: string; strokeWidth?: number }>;
 
@@ -62,78 +64,35 @@ const Tile = memo(function Tile({ kind, onPress, style, children, horizontal, la
 });
 
 const W = '#FFFFFF';
-const corner = (I: Icon) => (
-  <View style={{ position: 'absolute', top: 10, right: 10, opacity: 0.85 }}>
-    <I size={20} color={W} strokeWidth={2} />
-  </View>
-);
 
-export const SummaryBento = memo(function SummaryBento({
-  casesPending, casesTotal, courtActive, ppPending, nkTotal, reportsWeek, reportsToday, gdToday, go,
-}: {
-  casesPending: number; casesTotal: number; courtActive: number; ppPending: number; nkTotal: number;
-  reportsWeek: number; reportsToday: number; gdToday: number;
+export const SummaryBento = memo(function SummaryBento({ nkTotal, reportsWeek, reportsToday, gdToday, go }: {
+  nkTotal: number; reportsWeek: number; reportsToday: number; gdToday: number;
   /** open a module route */
   go: (route: string) => void;
 }) {
   const { t } = useTranslation();
-  const pct = casesTotal > 0 ? Math.min(1, casesPending / casesTotal) : 0;
-  const num = (size: number) => ({ fontSize: size, fontWeight: '800' as const, color: W, lineHeight: Math.round(size * 1.2) });
-  const lbl = { fontSize: 12, fontWeight: '600' as const, color: W, opacity: 0.95, lineHeight: 18 };
-  const small = { padding: 12, paddingRight: 34, minHeight: 84, justifyContent: 'flex-end' as const };
-
+  const num = { fontSize: 22, fontWeight: '800' as const, color: W, lineHeight: 28 };
+  const lbl = { fontSize: 11.5, fontWeight: '600' as const, color: W, opacity: 0.95, lineHeight: 17 };
+  const tile = { flex: 1, padding: 11, paddingRight: 26, minHeight: 82, justifyContent: 'flex-end' as const };
+  const small = (I: Icon) => (
+    <View style={{ position: 'absolute', top: 8, right: 8, opacity: 0.85 }}><I size={16} color={W} strokeWidth={2} /></View>
+  );
   return (
-    <View style={{ gap: 10 }}>
-      {/* rows 1–2: big मुकदमे tile | न्यायालय over प्रार्थना पत्र */}
-      <View style={{ flexDirection: 'row', gap: 10 }}>
-        <Tile kind="case" label={t('home.summary.cases')} onPress={() => go('/(app)/mukadma')}
-          style={{ flex: 1.25, padding: 14, justifyContent: 'flex-end', minHeight: 178 }}>
-          {corner(Scale)}
-          <Text style={num(44)}>{casesPending}</Text>
-          <Text style={lbl}>{t('home.summary.cases')}</Text>
-          {casesTotal > 0 ? (
-            <>
-              <View style={{ height: 6, borderRadius: 3, backgroundColor: '#FFFFFF40', marginTop: 8, overflow: 'hidden' }}>
-                <View style={{ width: `${Math.round(pct * 100)}%`, height: '100%', borderRadius: 3, backgroundColor: W }} />
-              </View>
-              <Text style={{ ...lbl, fontSize: 11, opacity: 0.85, marginTop: 4 }}>{t('home.summary.casesOf', { total: casesTotal })}</Text>
-            </>
-          ) : null}
-        </Tile>
-        <View style={{ flex: 1, gap: 10 }}>
-          <Tile kind="court" label={t('home.summary.court')} onPress={() => go('/(app)/nyayalay')} style={{ flex: 1, ...small }}>
-            {corner(Landmark)}
-            <Text style={num(26)}>{courtActive}</Text>
-            <Text style={lbl} numberOfLines={2}>{t('home.summary.court')}</Text>
-          </Tile>
-          <Tile kind="pp" label={t('home.summary.pp')} onPress={() => go('/(app)/prarthna-patra')} style={{ flex: 1, ...small }}>
-            {corner(Mail)}
-            <Text style={num(26)}>{ppPending}</Text>
-            <Text style={lbl} numberOfLines={2}>{t('home.summary.pp')}</Text>
-          </Tile>
-        </View>
-      </View>
-
-      {/* row 3: निरोधात्मक | रिपोर्ट */}
-      <View style={{ flexDirection: 'row', gap: 10 }}>
-        <Tile kind="nk" label={t('home.summary.nk')} onPress={() => go('/(app)/nirodhatmak')} style={{ flex: 1, ...small }}>
-          {corner(ShieldCheck)}
-          <Text style={num(26)}>{nkTotal}</Text>
-          <Text style={lbl} numberOfLines={2}>{t('home.summary.nk')}</Text>
-        </Tile>
-        <Tile kind="rep" label={t('home.summary.reports')} onPress={() => go('/(app)/recent-tasks')} style={{ flex: 1, ...small }}>
-          {corner(FileCheck)}
-          <Text style={num(26)}>{reportsWeek}</Text>
-          <Text style={lbl} numberOfLines={2}>{`${t('home.summary.reports')} · ${t('home.summary.reportsToday', { n: reportsToday })}`}</Text>
-        </Tile>
-      </View>
-
-      {/* row 4: आज की GD — full width strip */}
-      <Tile kind="gd" horizontal label={t('home.summary.gd')} onPress={() => go('/(app)/gd')}
-        style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 14, paddingVertical: 11 }}>
-        <BookOpen size={20} color={W} strokeWidth={2} />
-        <Text style={{ ...lbl, fontSize: 13.5, flex: 1 }}>{t('home.summary.gd')}</Text>
-        <Text style={num(22)}>{gdToday}</Text>
+    <View style={{ flexDirection: 'row', gap: 10 }}>
+      <Tile kind="nk" label={t('home.summary.nk')} onPress={() => go('/(app)/nirodhatmak')} style={tile}>
+        {small(ShieldCheck)}
+        <Text style={num}>{nkTotal}</Text>
+        <Text style={lbl} numberOfLines={2}>{t('home.summary.nkShort')}</Text>
+      </Tile>
+      <Tile kind="rep" label={t('home.summary.reports')} onPress={() => go('/(app)/recent-tasks')} style={tile}>
+        {small(FileCheck)}
+        <Text style={num}>{reportsWeek}</Text>
+        <Text style={lbl} numberOfLines={3}>{`${t('home.summary.reports')} · ${t('home.summary.reportsToday', { n: reportsToday })}`}</Text>
+      </Tile>
+      <Tile kind="gd" label={t('home.summary.gd')} onPress={() => go('/(app)/gd')} style={tile}>
+        {small(BookOpen)}
+        <Text style={num}>{gdToday}</Text>
+        <Text style={lbl} numberOfLines={2}>{t('home.summary.gd')}</Text>
       </Tile>
     </View>
   );

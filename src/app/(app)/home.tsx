@@ -537,16 +537,16 @@ export default function HomeScreen() {
           </View>
 
           {/* ── मेरी उत्पादकता — right under the hero card (owner); design P1: मुकदमा / न्यायालय / प्रार्थना पत्र, मिले vs निस्तारित ── */}
-          <ProductivityCard stats={data.prod} go={goRoute} />
+          <ProductivityCard
+            stats={data.prod}
+            pending={{ fir: today.activeCase, firTotal: data.mukadma?.total ?? 0, court: today.activeCourtDocs, pp: today.pendingPrarthnaPatra }}
+            go={goRoute}
+          />
 
-          {/* ── सारांश (owner, design F — bento tiles in the module colours; each opens its module) ── */}
+          {/* ── और काम (owner): निरोधात्मक / रिपोर्ट / आज की GD — मुकदमा, न्यायालय, प्रार्थना पत्र are in मेरा काम above ── */}
           <View style={{ gap: 10 }}>
             <SectionHeader title={t('home.summary.title')} icon={<CalendarDays size={13} color={C.textMuted} />} />
             <SummaryBento
-              casesPending={today.activeCase}
-              casesTotal={data.mukadma?.total ?? 0}
-              courtActive={today.activeCourtDocs}
-              ppPending={today.pendingPrarthnaPatra}
               nkTotal={nirodhatmak?.total ?? 0}
               reportsWeek={recentCounts.week}
               reportsToday={recentCounts.today}

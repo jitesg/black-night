@@ -1,6 +1,7 @@
 /**
  * Home "मेरी उत्पादकता" — design P1 (owner, sample approved): only मुकदमा / न्यायालय / प्रार्थना पत्र.
- * इस हफ़्ते / इस महीने switch → one row per module "मिले n · निस्तारित m · बाकी k" + its ring %, and a green strip
+ * इस हफ़्ते / इस महीने switch → one row per module "<period> मिले n · निस्तारित m" + an amber "कुल लंबित k" pill (all pending, old papers too
+ * — merged in from the old "सारांश" tiles, owner) + its ring %, and a green strip
  * "कुल उत्पादकता · done / got निपटाए · p%". Rules in src/lib/productivity.ts. THEME colours (light + dark); a row opens its module.
  */
 import { memo, useState, type ComponentType } from 'react';
@@ -36,7 +37,12 @@ const Ring = memo(function Ring({ pct, color, text }: { pct: number; color: stri
   );
 });
 
-export const ProductivityCard = memo(function ProductivityCard({ stats, go }: { stats: ProdStats; go: (route: string) => void }) {
+/** Total still pending per module, whatever its date (merged from the old "सारांश" tiles — owner); fir also has its total. */
+export interface PendingNow { fir: number; firTotal: number; court: number; pp: number }
+
+export const ProductivityCard = memo(function ProductivityCard({ stats, pending, go }: {
+  stats: ProdStats; pending: PendingNow; go: (route: string) => void;
+}) {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const dark = colorScheme === 'dark';
@@ -44,11 +50,17 @@ export const ProductivityCard = memo(function ProductivityCard({ stats, go }: { 
   const [when, setWhen] = useState<'week' | 'month'>('month');
   const p = stats[when];
 
-  const rows: { key: 'fir' | 'court' | 'pp'; icon: Icon; title: string; got: string; done: string; route: string; row: ProdRow }[] = [
-    { key: 'fir', icon: Scale, title: t('home.prod.fir'), got: t('home.prod.firGot'), done: t('home.prod.firDone'), route: '/(app)/mukadma', row: p.fir },
-    { key: 'court', icon: Landmark, title: t('home.prod.court'), got: t('home.prod.got'), done: t('home.prod.done'), route: '/(app)/nyayalay', row: p.court },
-    { key: 'pp', icon: Mail, title: t('home.prod.pp'), got: t('home.prod.got'), done: t('home.prod.done'), route: '/(app)/prarthna-patra', row: p.pp },
+  const rows: { key: 'fir' | 'court' | 'pp'; icon: Icon; title: string; got: string; done: string; route: string; row: ProdRow; pend: string }[] = [
+    { key: 'fir', icon: Scale, title: t('home.prod.fir'), got: t('home.prod.firGot'), done: t('home.prod.firDone'), route: '/(app)/mukadma', row: p.fir,
+      pend: pending.firTotal > 0 ? t('home.prod.pendingOf', { n: pending.fir, total: pending.firTotal }) : t('home.prod.pending', { n: pending.fir }) },
+    { key: 'court', icon: Landmark, title: t('home.prod.court'), got: t('home.prod.got'), done: t('home.prod.done'), route: '/(app)/nyayalay', row: p.court,
+      pend: t('home.prod.pending', { n: pending.court }) },
+    { key: 'pp', icon: Mail, title: t('home.prod.pp'), got: t('home.prod.got'), done: t('home.prod.done'), route: '/(app)/prarthna-patra', row: p.pp,
+      pend: t('home.prod.pending', { n: pending.pp }) },
   ];
+  const periodWord = when === 'week' ? t('home.prod.week') : t('home.prod.month');
+  // "कुल लंबित" pill — amber, per theme
+  const pill = dark ? { bg: '#78350F', fg: '#FCD34D' } : { bg: '#FEF3C7', fg: '#92400E' };
   const seg = (k: 'week' | 'month', label: string) => (
     <Pressable onPress={() => setWhen(k)} accessibilityRole="button" accessibilityState={{ selected: when === k }}
       style={{ paddingHorizontal: 11, paddingVertical: 4, borderRadius: 999, ...(when === k ? { backgroundColor: C.card } : {}) }}>
@@ -70,7 +82,6 @@ export const ProductivityCard = memo(function ProductivityCard({ stats, go }: { 
       <View className="shadow-sm shadow-black/5" style={{ backgroundColor: C.card, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6, borderCurve: 'continuous' } as object}>
         {rows.map((r, i) => {
           const color = COLORS[r.key][dark ? 'dark' : 'light'];
-          const pending = Math.max(0, r.row.got - r.row.done);
           const I = r.icon;
           return (
             <Pressable key={r.key} onPress={() => go(r.route)} accessibilityRole="button" accessibilityLabel={r.title}
@@ -81,10 +92,13 @@ export const ProductivityCard = memo(function ProductivityCard({ stats, go }: { 
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '700', color: C.foreground }}>{r.title}</Text>
                 <Text numberOfLines={2} style={{ fontSize: 12, color: C.mutedForeground, lineHeight: 18 }}>
-                  {`${r.got} `}<Text style={{ fontWeight: '700', color: C.foreground }}>{r.row.got}</Text>
+                  {`${periodWord} ${r.got} `}<Text style={{ fontWeight: '700', color: C.foreground }}>{r.row.got}</Text>
                   {` · ${r.done} `}<Text style={{ fontWeight: '700', color: GREEN }}>{r.row.done}</Text>
-                  {` · ${t('home.prod.left')} ${pending}`}
                 </Text>
+                {/* everything still pending, old papers too (was the "सारांश" tile) */}
+                <View style={{ alignSelf: 'flex-start', marginTop: 4, borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2, backgroundColor: pill.bg }}>
+                  <Text numberOfLines={1} style={{ fontSize: 11, fontWeight: '700', color: pill.fg }}>{r.pend}</Text>
+                </View>
               </View>
               <Ring pct={rowPct(r.row)} color={color} text={C.foreground} />
             </Pressable>
