@@ -15,7 +15,8 @@ import { exampleChips, splitHint, tipRepeatsTitle } from '@/lib/hintParts';
 export const HINT_LINK_LABEL = 'कैसे भरें?';
 
 /** `title` = the field's label (sheet heading "ⓘ <title>"). */
-export function HintLink({ text, title }: { text?: string; title?: string }) {
+/** `iconOnly` = just a small ⓘ circle (the tick-switch rows — owner, design B); same sheet. */
+export function HintLink({ text, title, iconOnly }: { text?: string; title?: string; iconOnly?: boolean }) {
   const { colorScheme } = useColorScheme();
   const dark = colorScheme === 'dark';
   const c = THEME[dark ? 'dark' : 'light'];
@@ -41,8 +42,14 @@ export function HintLink({ text, title }: { text?: string; title?: string }) {
         accessibilityLabel={HINT_LINK_LABEL}
         style={{ flexDirection: 'row', alignItems: 'center', gap: 3, flexShrink: 0, alignSelf: 'flex-start' }}
       >
-        <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '700', color: accent }}>ⓘ</Text>
-        <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '600', color: accent }}>{HINT_LINK_LABEL}</Text>
+        {iconOnly ? (
+          <Info size={16} color={accent} strokeWidth={2.2} />
+        ) : (
+          <>
+            <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '700', color: accent }}>ⓘ</Text>
+            <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: '600', color: accent }}>{HINT_LINK_LABEL}</Text>
+          </>
+        )}
       </Pressable>
       <Modal visible={open} transparent animationType="slide" onRequestClose={close} statusBarTranslucent>
         <View style={{ flex: 1, justifyContent: 'flex-end' }}>

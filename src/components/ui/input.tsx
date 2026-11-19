@@ -1088,6 +1088,19 @@ FormatKeyMultiChoiceInput.displayName = 'FormatKeyMultiChoiceInput';
 
 // ── FormatKeyCheckboxInput — tick box for field_type=checkbox ───────────────
 
+/** "अंत में लिखें: "…"" → title "अंत में लिखें" + note ""…""; also "(…)" after a title. Short labels stay whole. */
+export function splitTickLabel(label: string): { title: string; note: string } {
+  const l = String(label ?? '').replace(/\s*\*+\s*$/, '').trim();
+  const m = /^(.{2,40}?)\s*(?::|—|–)\s*(.+)$/.exec(l) ?? /^(.{2,40}?)\s*(\(.+\))$/.exec(l);
+  // never split inside a quote (नीचे "दिनांक : " की लाइन)
+  if (!m || (m[1].match(/"/g) ?? []).length % 2 === 1) return { title: l, note: '' };
+  return { title: m[1].trim(), note: m[2].trim() };
+}
+
+/**
+ * Format tick (field_type=checkbox) — owner, design B: a row with the title (+ small ⓘ) and a light note under it, and an
+ * on / off switch on the right. Value "हाँ" / '' as before (printing unchanged). THEME colours, light + dark.
+ */
 const FormatKeyCheckboxInput = forwardRef<View, {
   keyName: string;
   value: string;
@@ -1097,30 +1110,37 @@ const FormatKeyCheckboxInput = forwardRef<View, {
 }>(({ keyName, value, onChange, displayLabel, hint }, ref) => {
   const { colorScheme } = useColorScheme();
   const c = THEME[colorScheme === 'dark' ? 'dark' : 'light'];
-  const green = colorScheme === 'dark' ? '#4ADE80' : '#15803D';
+  const green = colorScheme === 'dark' ? '#22C55E' : '#16A34A';
   const on = value.trim() !== '' && !/^(नहीं|no|false|0)$/i.test(value.trim());
+  const { title, note } = splitTickLabel(displayLabel);
   return (
     <View ref={ref}>
       <Pressable
         onPress={() => onChange(keyName, on ? '' : 'हाँ')}
-        accessibilityRole="checkbox"
+        accessibilityRole="switch"
         accessibilityState={{ checked: on }}
         accessibilityLabel={displayLabel}
         style={{
-          flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, borderRadius: 12,
-          borderWidth: on ? 2 : 1, borderColor: on ? green : c.border, backgroundColor: on ? `${green}14` : c.card,
+          flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 12, paddingVertical: 11, borderRadius: 12,
+          borderWidth: 1, borderColor: c.border, backgroundColor: c.card,
         }}
       >
-        <View style={{
-          width: 24, height: 24, borderRadius: 6, borderWidth: 2, borderColor: on ? green : c.mutedForeground,
-          backgroundColor: on ? green : 'transparent', alignItems: 'center', justifyContent: 'center',
-        }}>
-          {on ? <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '800', lineHeight: 20 }}>✓</Text> : null}
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Text style={{ flexShrink: 1, fontSize: 14, lineHeight: 21, fontWeight: '600', color: c.foreground }}>{title}</Text>
+            <HintLink text={hint} title={displayLabel} iconOnly />
+          </View>
+          {note ? (
+            <Text style={{ fontSize: 12.5, lineHeight: 19, color: c.mutedForeground, marginTop: 1 }}>{note}</Text>
+          ) : null}
         </View>
-        <Text style={{ flex: 1, fontSize: 14, lineHeight: 21, fontWeight: on ? '700' : '500', color: on ? green : c.foreground }}>
-          {String(displayLabel).replace(/\s*\*+\s*$/, '')}
-        </Text>
-        <HintLink text={hint} title={displayLabel} />
+        {/* on / off switch */}
+        <View style={{ width: 42, height: 25, borderRadius: 13, padding: 3, justifyContent: 'center', backgroundColor: on ? green : (colorScheme === 'dark' ? '#3A4A40' : '#D1D5DB') }}>
+          <View style={{
+            width: 19, height: 19, borderRadius: 10, backgroundColor: '#FFFFFF', alignSelf: on ? 'flex-end' : 'flex-start',
+            shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }, elevation: 2,
+          }} />
+        </View>
       </Pressable>
     </View>
   );

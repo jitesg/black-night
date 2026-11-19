@@ -520,6 +520,9 @@ detailed working log. Keep the guide up to date when the architecture changes.
   line = new paragraph). Seed: 50 lines (42 धारा + 6 सेवा में + 2 संलग्नक), 92 flow. KeyDefForRender has `label`. Tests test_format_derived.ts.
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use
   it for lat/long. ✕ / 📋 on every typed format box except date.
+- Format tick look (owner, design B): `FormatKeyCheckboxInput` = a row with title + small ⓘ (`HintLink iconOnly`) and a muted note under it
+  (`splitTickLabel`: text before the first ":" / "—" / "(…)" = title, never inside a quote), on / off switch on the right; no bold green label /
+  thick border any more. Value unchanged.
 - Format field type "checkbox" (`FormatKeyCheckboxInput`, value "हाँ" / empty) + tokens `{{if:Key|text}}` /
   `{{ifnot:Key|text}}` (templateEngine `_applyIfTokens`, Step -2, inner tokens allowed). `**…**` in a [[विवरण]] paragraph =
   bold words (print/editor/Word; editor <b> in body → ** on the way back; stripped in plain text). Used by the 170 चालानी
