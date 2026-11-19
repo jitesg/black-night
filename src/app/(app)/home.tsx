@@ -17,7 +17,7 @@ import {
   BookMarked, ShieldAlert, Scroll, Scale,
   Bell, Clock,
   CalendarDays, Zap,
-  Star, StarOff, ChevronRight, MoreHorizontal,
+  ChevronRight,
 } from 'lucide-react-native';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import {
@@ -34,7 +34,6 @@ import { warmKnowledgeSearch } from '@/lib/db/knowledgeRepo';
 import { perfMarkOnce, perfSet } from '@/lib/perfLog';
 import { SearchBar } from '@/components/SearchBar';
 import { HighlightText } from '@/components/HighlightText';
-import { usePinnedItems, type PinnedItem } from '@/hooks/usePinnedItems';
 import { SectionHeader, StatusChip, EmptyState, SkeletonList } from '@/components/ui/ds';
 import { Pill } from '@/components/ui/ds/Pill';
 import { SummaryBento } from '@/components/home/SummaryBento';
@@ -195,32 +194,6 @@ function ContinueRow({ item }: { item: RecentActivity }) {
   );
 }
 
-// ── PinnedChip ────────────────────────────────────────────────────────────────
-function PinnedChip({ item, onUnpin }: { item: PinnedItem; onUnpin: () => void }) {
-  const { t } = useTranslation();
-  const C = usePalette();
-  return (
-    <Pressable
-      onPress={() => router.push(item.route as never)}
-      onLongPress={onUnpin}
-      accessibilityHint={t('home.pinnedHintShort')}
-      className="flex-row items-center gap-2 active:opacity-70 mr-2.5 shadow-sm shadow-black/5"
-      style={{
-        paddingHorizontal: 12, paddingVertical: 10,
-        borderRadius: 12, borderCurve: 'continuous',
-        minWidth: 110,
-        backgroundColor: C.surface,
-        borderWidth: 1, borderColor: C.border,
-      } as object}
-    >
-      <Star size={11} color={C.action} fill={C.action} />
-      <Text style={{ ...T.footnote, fontWeight: '600', color: C.text, maxWidth: 100 }} numberOfLines={1}>
-        {item.labelKey ? t(item.labelKey) : item.label}
-      </Text>
-    </Pressable>
-  );
-}
-
 // ── SearchResultRow ───────────────────────────────────────────────────────────
 function SearchResultRow({ item, query, onPress }: { item: UniversalSearchItem; query: string; onPress: () => void }) {
   const C = usePalette();
@@ -311,7 +284,6 @@ export default function HomeScreen() {
   const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastBackPressTime = useRef(0);
 
-  const { items: pinnedItems, loaded: pinnedLoaded, unpinItem } = usePinnedItems();
 
   // Double-tap back to exit — Android only, active only on this screen
   useFocusEffect(useCallback(() => {
@@ -605,51 +577,6 @@ export default function HomeScreen() {
               ))}
             </ScrollView>
           </View>
-
-          {/* ── Pinned Items ── */}
-          {pinnedLoaded && (
-            <View style={{ gap: 10 }}>
-              <SectionHeader
-                title={t('home.pinned')}
-                icon={<Star size={13} color={C.textMuted} />}
-                actionLabel={pinnedItems.length > 0 ? t('home.manage') : undefined}
-                onAction={() => setDrawerOpen(true)}
-              />
-              {pinnedItems.length === 0 ? (
-                <View
-                  className="shadow-sm shadow-black/5"
-                  style={{
-                    backgroundColor: C.surface, borderRadius: 20, padding: 16,
-                    alignItems: 'center', gap: 8, borderCurve: 'continuous',
-                  } as object}
-                >
-                  <StarOff size={20} color={C.textMuted} />
-                  <Text style={{ ...T.caption1, color: C.textMuted, textAlign: 'center' }}>
-                    {t('home.pinnedHint')}
-                  </Text>
-                </View>
-              ) : (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {pinnedItems.map((item) => (
-                    <PinnedChip key={item.id} item={item} onUnpin={() => unpinItem(item.id)} />
-                  ))}
-                  <Pressable
-                    onPress={() => setDrawerOpen(true)}
-                    className="flex-row items-center gap-2 active:opacity-70 mr-2.5"
-                    style={{
-                      paddingHorizontal: 12, paddingVertical: 10,
-                      borderRadius: 12, borderStyle: 'dashed',
-                      borderCurve: 'continuous',
-                      borderWidth: 1, borderColor: C.border,
-                    } as object}
-                  >
-                    <MoreHorizontal size={14} color={C.textMuted} />
-                    <Text style={{ ...T.footnote, color: C.textMuted }}>{t('home.more')}</Text>
-                  </Pressable>
-                </ScrollView>
-              )}
-            </View>
-          )}
 
           {/* ── Continue Working ── */}
           {recentActivity.length > 0 && (
