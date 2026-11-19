@@ -536,6 +536,9 @@ export default function HomeScreen() {
             </Text>
           </View>
 
+          {/* ── मेरी उत्पादकता — right under the hero card (owner); design P1: मुकदमा / न्यायालय / प्रार्थना पत्र, मिले vs निस्तारित ── */}
+          <ProductivityCard stats={data.prod} go={goRoute} />
+
           {/* ── सारांश (owner, design F — bento tiles in the module colours; each opens its module) ── */}
           <View style={{ gap: 10 }}>
             <SectionHeader title={t('home.summary.title')} icon={<CalendarDays size={13} color={C.textMuted} />} />
@@ -620,8 +623,6 @@ export default function HomeScreen() {
           )}
 
           {/* ── Productivity ── */}
-          {/* ── मेरी उत्पादकता (owner, design P1: मुकदमा / न्यायालय / प्रार्थना पत्र — मिले vs निस्तारित, इस हफ़्ते / इस महीने) ── */}
-          <ProductivityCard stats={data.prod} go={goRoute} />
 
         </ScrollView>
       )}
