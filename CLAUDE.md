@@ -94,6 +94,8 @@ detailed working log. Keep the guide up to date when the architecture changes.
   मुकदमा "n / total") — prop `pending` from today.activeCase / mukadma.total / activeCourtDocs / pendingPrarthnaPatra; row text starts with the period
   word. The "सारांश" bento lost its मुकदमा / न्यायालय / प्रार्थना पत्र tiles → section "और काम" = one row of 3 gradient tiles (निरोधात्मक, रिपोर्ट इस
   हफ़्ते · आज n, आज की GD) in SummaryBento. No number is shown twice.
+  Gradient tiles (owner's build 47 bug): never size an Svg with "100%" inside a tile on Android — it drew a fixed default box (colour only
+  top-left, white text lost). Tile measures itself (onLayout) and draws the Svg at that pixel size, with backgroundColor = the first colour meanwhile.
 - Home bell → `(app)/notifications.tsx` (सूचनाएँ): cards `components/notifications/NoticeItem.tsx` (icon tile, title + time, body, extras: progress / meta / action from the card) built live from `src/lib/noticeCards.ts` (pure; केस डायरी लंबित,
   न्यायालय/प्रार्थना पत्र overdue or due in 3 days, reminders due today/missed; tests `scripts/test_notice_cards.ts`),
   data via `src/lib/db/noticeRepo.ts`; bell badge = `noticeBadgeCount`.

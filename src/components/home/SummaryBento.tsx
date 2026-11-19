@@ -14,7 +14,7 @@
  * Gradients are drawn with react-native-svg (already in the app — no new native module). Dark mode = deeper shades.
  * Every tile opens its module, like the old tiles. Words from i18n (home.summary.*).
  */
-import { memo, type ComponentType } from 'react';
+import { memo, useState, type ComponentType } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
@@ -40,24 +40,33 @@ const Tile = memo(function Tile({ kind, onPress, style, children, horizontal, la
   const { colorScheme } = useColorScheme();
   const [from, to] = GRAD[kind][colorScheme === 'dark' ? 'dark' : 'light'];
   const id = `g-${kind}`;
+  // Android: a "100%" Svg inside the tile measured to a fixed default box (owner's build 47: the colour covered only the
+  // top-left part, white text vanished) → draw it at the tile's real size, and paint the tile's own background meanwhile.
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
       className="active:opacity-80"
-      style={{ borderRadius: 18, overflow: 'hidden', borderCurve: 'continuous', ...style } as object}
+      onLayout={(e) => {
+        const { width, height } = e.nativeEvent.layout;
+        if (!size || Math.abs(size.w - width) > 0.5 || Math.abs(size.h - height) > 0.5) setSize({ w: width, h: height });
+      }}
+      style={{ borderRadius: 18, overflow: 'hidden', borderCurve: 'continuous', backgroundColor: from, ...style } as object}
     >
-      {/* the gradient fills the tile behind its content */}
-      <Svg style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} width="100%" height="100%">
+      {/* the gradient fills the tile behind its content (real pixel size, see above) */}
+      {size ? (
+      <Svg style={{ position: 'absolute', top: 0, left: 0 }} width={size.w} height={size.h}>
         <Defs>
           <LinearGradient id={id} x1="0" y1="0" x2={horizontal ? '1' : '1'} y2={horizontal ? '0' : '1'}>
             <Stop offset="0" stopColor={from} />
             <Stop offset="1" stopColor={to} />
           </LinearGradient>
         </Defs>
-        <Rect x="0" y="0" width="100%" height="100%" fill={`url(#${id})`} />
+        <Rect x="0" y="0" width={size.w} height={size.h} fill={`url(#${id})`} />
       </Svg>
+      ) : null}
       {children}
     </Pressable>
   );
