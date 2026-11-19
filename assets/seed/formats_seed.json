@@ -6795,7 +6795,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "जनता दर्शन",
@@ -6882,18 +6882,18 @@
         {
           "key_name": "Lat",
           "label": "अक्षांश (वैकल्पिक)",
-          "field_type": "text",
+          "field_type": "decimal",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "21.",
           "dropdown_options": "{\"placeholder\": \"जैसे: 26.454217\", \"hint\": \"GPS अक्षांश दशमलव सहित, जैसे: 26.454217 — मोबाइल के नक्शे से देखें; न हो तो खाली\"}",
           "sort_order": 8
         },
         {
           "key_name": "Long",
           "label": "देशान्तर (वैकल्पिक)",
-          "field_type": "text",
+          "field_type": "decimal",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "81.",
           "dropdown_options": "{\"placeholder\": \"जैसे: 81.190763\", \"hint\": \"GPS देशान्तर दशमलव सहित, जैसे: 81.190763 — न हो तो खाली\"}",
           "sort_order": 9
         },
@@ -7841,7 +7841,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 6,
       "app_version": "1.0.0",
       "tags": [
         "प्रार्थना पत्र",
@@ -7974,18 +7974,18 @@
         {
           "key_name": "Lat",
           "label": "अक्षांश (वैकल्पिक)",
-          "field_type": "text",
+          "field_type": "decimal",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "21.",
           "dropdown_options": "{\"placeholder\": \"जैसे: 26.443659\", \"hint\": \"GPS अक्षांश दशमलव सहित, जैसे: 26.454217 — मोबाइल के नक्शे से देखें; न हो तो खाली\"}",
           "sort_order": 13
         },
         {
           "key_name": "Long",
           "label": "देशान्तर (वैकल्पिक)",
-          "field_type": "text",
+          "field_type": "decimal",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "81.",
           "dropdown_options": "{\"placeholder\": \"जैसे: 81.091426\", \"hint\": \"GPS देशान्तर दशमलव सहित, जैसे: 81.190763 — न हो तो खाली\"}",
           "sort_order": 14
         },
@@ -8045,7 +8045,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "समाधान दिवस",
@@ -8140,18 +8140,18 @@
         {
           "key_name": "Lat",
           "label": "अक्षांश (वैकल्पिक)",
-          "field_type": "text",
+          "field_type": "decimal",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "21.",
           "dropdown_options": "{\"placeholder\": \"जैसे: 26.388702\", \"hint\": \"GPS अक्षांश दशमलव सहित, जैसे: 26.454217 — मोबाइल के नक्शे से देखें; न हो तो खाली\"}",
           "sort_order": 9
         },
         {
           "key_name": "Long",
           "label": "देशान्तर (वैकल्पिक)",
-          "field_type": "text",
+          "field_type": "decimal",
           "is_required": 0,
-          "default_value": null,
+          "default_value": "81.",
           "dropdown_options": "{\"placeholder\": \"जैसे: 81.066913\", \"hint\": \"GPS देशान्तर दशमलव सहित, जैसे: 81.190763 — न हो तो खाली\"}",
           "sort_order": 10
         },

@@ -521,6 +521,8 @@ detailed working log. Keep the guide up to date when the architecture changes.
   सेवा में / किसको / संलग्नक / starts with धारा → `tidyLines` (typed lines kept; extra spaces, 2+ blank lines, top/bottom blanks dropped);
   else 'flow' ({"flow": true} forces) → `tidyFlow` (same + a single Enter joined with a space → one running paragraph wrapping by A4; blank
   line = new paragraph). Seed: 50 lines (42 धारा + 6 सेवा में + 2 संलग्नक), 92 flow. KeyDefForRender has `label`. Tests test_format_derived.ts.
+- अक्षांश / देशान्तर (owner): the 3 PP जांच formats (janta-darshan, jaanch-aakhya, samadhan-diwas) Lat / Long = field_type decimal, default
+  "21." / "81." (seed_version +1; backup docs/format-backups/pp_lat_long_before_decimal.json). The केस डायरी निरीक्षण घटना स्थल LAT / LONG keep 26. / 81.
 - Format field type "decimal" (FormatKeyInput → Input type 'decimal': digits + one "."; for अक्षांश / देशान्तर). "number" strips the "." — never use
   it for lat/long. ✕ / 📋 on every typed format box except date.
 - Format tick look (owner, design B): `FormatKeyCheckboxInput` = a row with title + small ⓘ (`HintLink iconOnly`) and a muted note under it
