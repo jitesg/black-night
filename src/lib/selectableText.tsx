@@ -20,7 +20,9 @@
  * text out of buttons, pills and headers. Short Hindi labels inside a button (≤ 24 letters, plain text) are drawn on one line
  * with "simple" (see BUTTON_LABEL_MAX_LEN).
  */
-import React, { createContext, forwardRef, useContext } from 'react';
+import React, { createContext, forwardRef, useContext, useEffect, useState } from 'react';
+
+import { pressFeedback } from './pressFeedback';
 
 const NoSelectContext = createContext(false);
 
@@ -153,7 +155,60 @@ function wrapPressable(Orig: React.ComponentType<AnyProps>) {
   });
 }
 
-for (const name of ['Pressable', 'TouchableOpacity', 'TouchableHighlight']) patch(name, wrapPressable);
+/*
+ * Touch feedback (owner, sample C "Ripple + हल्का दबना"): every tappable Pressable on Android shows the phone's own
+ * ripple from the finger, and a rounded one (card / button / chip) shrinks a little (0.97) while held.
+ * Rules — so nothing that worked before changes:
+ *   • only with onPress / onLongPress and not disabled;
+ *   • a Pressable that sets `android_ripple` itself (even null) keeps its own;
+ *   • ripple + shrink are skipped on full-screen / absolute layers (sheet backdrops, "tap outside to close", keyboard
+ *     dismiss areas): position absolute, or flex ≥ 1 without rounded corners;
+ *   • shrink only with rounded corners (full-width list rows only get the ripple), not when the style has its own
+ *     transform or is a function (`style={({ pressed }) => …}`);
+ *   • the press state is a plain re-render of this wrapper; the children element is the same object, so React skips
+ *     re-rendering them. Any error → the Pressable renders exactly as before.
+ * TouchableOpacity / TouchableHighlight keep their own feedback (fade / underlay).
+ */
+const RIPPLE = { color: 'rgba(128,128,128,0.22)', borderless: false, foreground: false };
+const PRESS_SCALE = 0.97;
+const PRESSED_STYLE = { transform: [{ scale: PRESS_SCALE }] };
+
+function feedbackOf(props: AnyProps): { ripple: boolean; scale: boolean } {
+  const st = props.style;
+  return pressFeedback({
+    android: IS_ANDROID,
+    disabled: props.disabled,
+    hasPress: !!(props.onPress || props.onLongPress),
+    ownRipple: 'android_ripple' in props,
+    style: typeof st === 'function' ? 'fn' : ((flatten(st) ?? {}) as Record<string, unknown>),
+  });
+}
+
+function wrapPressableWithFeedback(Orig: React.ComponentType<AnyProps>) {
+  const Base = wrapPressable(Orig) as unknown as React.ComponentType<AnyProps>;
+  return forwardRef<unknown, AnyProps>(function FeedbackPressable(props, ref) {
+    const [pressed, setPressed] = useState(false);
+    let fb = { ripple: false, scale: false };
+    try { fb = feedbackOf(props); } catch { /* old look */ }
+    // e.g. "सहेजें" turns disabled while held → our onPressOut is no longer attached; never leave it shrunk
+    const stale = pressed && !fb.scale;
+    useEffect(() => { if (stale) setPressed(false); }, [stale]);
+    if (!fb.ripple && !fb.scale) return React.createElement(Base, { ...props, ref } as AnyProps);
+    const next: AnyProps = { ...props, ref };
+    if (fb.ripple) next.android_ripple = RIPPLE;
+    if (fb.scale) {
+      const userIn = props.onPressIn as ((e: unknown) => void) | undefined;
+      const userOut = props.onPressOut as ((e: unknown) => void) | undefined;
+      next.onPressIn = (e: unknown) => { setPressed(true); userIn?.(e); };
+      next.onPressOut = (e: unknown) => { setPressed(false); userOut?.(e); };
+      if (pressed) next.style = [props.style, PRESSED_STYLE];
+    }
+    return React.createElement(Base, next);
+  });
+}
+
+patch('Pressable', wrapPressableWithFeedback);
+for (const name of ['TouchableOpacity', 'TouchableHighlight']) patch(name, wrapPressable);
 
 // TouchableWithoutFeedback clones its single child, so it must stay the direct parent.
 patch('TouchableWithoutFeedback', (Orig) => forwardRef<unknown, AnyProps>(function NoSelectTWF(props, ref) {

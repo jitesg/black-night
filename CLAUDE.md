@@ -630,6 +630,11 @@ detailed working log. Keep the guide up to date when the architecture changes.
   ("Word (DOC) एक्सपोर्ट" → "Word (DOC)"). So a Hindi label INSIDE a Pressable/Touchable (NoSelectContext), plain text only, ≤ 24 chars, no
   numberOfLines of its own → numberOfLines 1 + "simple" automatically (`BUTTON_LABEL_MAX_LEN`); tight spots show "…". GeneratedReportView labels
   also set it explicitly.
+- Touch feedback app-wide (owner, sample C "Ripple + हल्का दबना"): `selectableText.tsx` `wrapPressableWithFeedback` (Pressable only;
+  TouchableOpacity / Highlight keep their own) — Android ripple `rgba(128,128,128,0.22)` + rounded ones shrink to 0.97 while held (press state =
+  wrapper re-render; children element unchanged). Rules pure in `src/lib/pressFeedback.ts` (tests `scripts/test_press_feedback.ts`): needs onPress /
+  onLongPress, not disabled; own `android_ripple` (even null) wins; nothing on backdrops (position absolute, or flex ≥ 1 without radius); shrink only
+  with a border radius, no own transform, no style function. To switch it off on one Pressable: `android_ripple={null}` (ripple) / a transform.
 - Dark mode: never hard-code a dark text colour ('#111827') on bg-card / bg-background — use className `text-foreground` and
   `...(selected ? { color: ACCENT } : {})` — NEVER `color: x ? A : undefined` (the undefined wiped the theme colour on the phone: केस डायरी
   कार्यवाही list names dark on dark, owner; all 9 such places changed) (fixed: crime-type + rank pickers in add-fir, karyvahi picker in add-case-diary-karyvahi,
