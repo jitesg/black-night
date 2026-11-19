@@ -9,7 +9,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 8,
+      "seed_version": 9,
       "app_version": "1.0.0",
       "tags": [
         "60(1)",
@@ -37,7 +37,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 1
         },
         {
@@ -163,7 +163,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मौके पर",
-          "dropdown_options": "{\"options\": [\"मौके पर\", \"फोन द्वारा\", \"थाने पहुँचकर दी जायेगी\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}",
+          "dropdown_options": "{\"options\": [\"मौके पर\", \"फोन द्वारा\", \"थाने पहुँचकर दी जायेगी\"]}",
           "sort_order": 15
         },
         {
@@ -204,7 +204,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -242,7 +242,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 2
         },
         {
@@ -436,7 +436,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -465,7 +465,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 1
         },
         {
@@ -663,7 +663,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "अकब से दी जा रही है",
-          "dropdown_options": "{\"options\": [\"मौके पर दी गयी\", \"फोन द्वारा दी गयी\", \"अकब से दी जा रही है\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}",
+          "dropdown_options": "{\"options\": [\"मौके पर दी गयी\", \"फोन द्वारा दी गयी\", \"अकब से दी जा रही है\"]}",
           "sort_order": 23
         },
         {
@@ -713,7 +713,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "फर्द",
@@ -761,7 +761,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 3
         },
         {
@@ -914,7 +914,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है",
-          "dropdown_options": "{\"options\": [\"नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है\", \"काल रिसीव नहीं हुई\", \"नम्बर व्यस्त बता रहा है\"], \"showIf\": \"GazOfficer\", \"hint\": \"कॉल करने पर क्या हुआ\"}",
+          "dropdown_options": "{\"options\": [\"नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है\", \"काल रिसीव नहीं हुई\", \"नम्बर व्यस्त बता रहा है\"], \"showIf\": \"GazOfficer\"}",
           "sort_order": 20
         },
         {
@@ -950,7 +950,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "थाने पहुँचकर उचित माध्यम से दी जायेगी",
-          "dropdown_options": "{\"options\": [\"थाने पहुँचकर उचित माध्यम से दी जायेगी\", \"मौके पर फोन द्वारा दी गयी\", \"मौके पर दी गयी\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}",
+          "dropdown_options": "{\"options\": [\"थाने पहुँचकर उचित माध्यम से दी जायेगी\", \"मौके पर फोन द्वारा दी गयी\", \"मौके पर दी गयी\"]}",
           "sort_order": 24
         },
         {
@@ -1028,7 +1028,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 22,
+      "seed_version": 23,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1089,7 +1089,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 5,
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}"
         },
         {
           "key_name": "Tehsil",
@@ -1185,7 +1185,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 22,
+      "seed_version": 23,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1255,7 +1255,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 11,
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}"
         },
         {
           "key_name": "Tehsil",
@@ -1324,7 +1324,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 25,
+      "seed_version": 26,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1412,7 +1412,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 12,
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}"
         },
         {
           "key_name": "Tehsil",
@@ -1472,7 +1472,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 23,
+      "seed_version": 24,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1569,7 +1569,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 13,
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}"
         },
         {
           "key_name": "Tehsil",
@@ -1629,7 +1629,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 19,
+      "seed_version": 20,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1726,7 +1726,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 13,
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}"
         },
         {
           "key_name": "Tehsil",
@@ -1786,7 +1786,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 10,
+      "seed_version": 11,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -1801,7 +1801,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आवेदक",
-          "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}",
+          "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"]}",
           "sort_order": 0
         },
         {
@@ -1892,7 +1892,7 @@
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
           "sort_order": 10,
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}"
         },
         {
           "key_name": "Tehsil",
@@ -1951,7 +1951,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2032,7 +2032,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 10
         },
         {
@@ -2082,7 +2082,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2145,7 +2145,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 10
         },
         {
@@ -2195,7 +2195,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2276,7 +2276,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 10
         },
         {
@@ -2326,7 +2326,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2344,7 +2344,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आवेदिका",
-          "dropdown_options": "{\"options\": [\"आवेदिका\", \"आवेदक\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}",
+          "dropdown_options": "{\"options\": [\"आवेदिका\", \"आवेदक\"]}",
           "sort_order": 0
         },
         {
@@ -2416,7 +2416,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 10
         },
         {
@@ -2466,7 +2466,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2484,7 +2484,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आवेदिका",
-          "dropdown_options": "{\"options\": [\"आवेदिका\", \"आवेदक\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}",
+          "dropdown_options": "{\"options\": [\"आवेदिका\", \"आवेदक\"]}",
           "sort_order": 0
         },
         {
@@ -2556,7 +2556,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 10
         },
         {
@@ -2606,7 +2606,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2705,7 +2705,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 10
         },
         {
@@ -2755,7 +2755,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "BNSS",
@@ -2863,7 +2863,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 10
         },
         {
@@ -2914,7 +2914,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 6,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "DCRB",
@@ -2990,7 +2990,7 @@
           "is_required": 1,
           "sort_order": 8,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}"
         },
         {
           "key_name": "PoliceStation",
@@ -3021,7 +3021,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 7,
+      "seed_version": 8,
       "app_version": "1.0.0",
       "tags": [
         "अवमुक्त",
@@ -3085,7 +3085,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "हो चुका है",
-          "dropdown_options": "{\"options\": [\"हो चुका है\", \"नहीं हुआ है\", \"आवश्यकता नहीं\"], \"hint\": \"वाहन का तकनीकी निरीक्षण (RI द्वारा) हुआ या नहीं\"}",
+          "dropdown_options": "{\"options\": [\"हो चुका है\", \"नहीं हुआ है\", \"आवश्यकता नहीं\"]}",
           "sort_order": 5
         },
         {
@@ -3112,7 +3112,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 8
         },
         {
@@ -3164,7 +3164,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 7,
+      "seed_version": 8,
       "app_version": "1.0.0",
       "tags": [
         "तकनीकी निरीक्षण",
@@ -3217,7 +3217,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 4
         },
         {
@@ -3473,7 +3473,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 6,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "आयु",
@@ -3591,7 +3591,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 11
         },
         {
@@ -3715,7 +3715,7 @@
           "is_required": 1,
           "default_value": null,
           "sort_order": 1,
-          "dropdown_options": "{\"options\": [{\"value\": \"yes\", \"label\": \"हाँ\"}, {\"value\": \"no\", \"label\": \"नहीं\"}], \"hint\": \"घटनास्थल की ई-साक्ष्य एप्प से वीडियोग्राफी हुई तो \\\"हाँ\\\"\"}"
+          "dropdown_options": "{\"options\": [{\"value\": \"yes\", \"label\": \"हाँ\"}, {\"value\": \"no\", \"label\": \"नहीं\"}]}"
         },
         {
           "key_name": "SIDNO",
@@ -3732,7 +3732,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "last_updated": "2026-07-17",
       "tags": [
@@ -3809,7 +3809,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "निरीक्षण",
@@ -3917,7 +3917,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "की गयी",
-          "dropdown_options": "{\"options\": [{\"value\": \"की गयी\", \"label\": \"की गयी\"}, {\"value\": \"तकनीकी समस्या\", \"label\": \"तकनीकी समस्या से नहीं हो सकी\"}, {\"value\": \"नहीं लिखना\", \"label\": \"कुछ न लिखें\"}], \"hint\": \"ई-साक्ष्य एप्प से वीडियोग्राफी हुई / तकनीकी समस्या रही / नहीं लिखना\"}",
+          "dropdown_options": "{\"options\": [{\"value\": \"की गयी\", \"label\": \"की गयी\"}, {\"value\": \"तकनीकी समस्या\", \"label\": \"तकनीकी समस्या से नहीं हो सकी\"}, {\"value\": \"नहीं लिखना\", \"label\": \"कुछ न लिखें\"}]}",
           "sort_order": 10
         },
         {
@@ -3940,7 +3940,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 6,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -4047,7 +4047,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "पिता",
-          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"], \"hint\": \"सुपुर्दगी लेने वाला थाने पर आये व्यक्ति का क्या लगता है\"}",
+          "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"]}",
           "sort_order": 10
         },
         {
@@ -4079,7 +4079,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 8,
+      "seed_version": 9,
       "app_version": "1.0.0",
       "tags": [
         "दाखिला",
@@ -4133,7 +4133,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उ0नि0",
-          "dropdown_options": "{\"options\": [\"उ0नि0\", \"निरीक्षक\", \"हे0का0\", \"का0\", \"प्रभारी निरीक्षक\"], \"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\", \"hint\": \"अभियुक्त लाकर दाखिल करने वाले अधिकारी का पद\"}",
+          "dropdown_options": "{\"options\": [\"उ0नि0\", \"निरीक्षक\", \"हे0का0\", \"का0\", \"प्रभारी निरीक्षक\"], \"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\"}",
           "sort_order": 4
         },
         {
@@ -4151,7 +4151,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\", \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\"}",
           "sort_order": 6
         },
         {
@@ -4205,7 +4205,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कोई जाहिरा चोट नहीं",
-          "dropdown_options": "{\"options\": [\"कोई जाहिरा चोट नहीं\", \"चोट है\"], \"hint\": \"अभियुक्त के शरीर पर चोट है या नहीं\"}",
+          "dropdown_options": "{\"options\": [\"कोई जाहिरा चोट नहीं\", \"चोट है\"]}",
           "sort_order": 12
         },
         {
@@ -4223,7 +4223,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "मर्दाना",
-          "dropdown_options": "{\"options\": [\"मर्दाना\", \"महिला\"], \"hint\": \"अभियुक्त पुरुष है तो \\\"मर्दाना\\\", महिला है तो \\\"महिला\\\" हवालात\"}",
+          "dropdown_options": "{\"options\": [\"मर्दाना\", \"महिला\"]}",
           "sort_order": 14
         },
         {
@@ -4259,7 +4259,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "पिता",
-          "dropdown_options": "{\"options\": [\"पिता\", \"माता\", \"पत्नी\", \"पति\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\"], \"hint\": \"गिरफ्तारी की सूचना अभियुक्त के किस परिजन को दी\"}",
+          "dropdown_options": "{\"options\": [\"पिता\", \"माता\", \"पत्नी\", \"पति\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\"]}",
           "sort_order": 18
         },
         {
@@ -4291,7 +4291,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 6,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -4319,7 +4319,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]}",
           "sort_order": 1
         },
         {
@@ -4513,7 +4513,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 6,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "वाहन",
@@ -4530,7 +4530,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]}",
           "sort_order": 0
         },
         {
@@ -4611,7 +4611,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "वैकल्पिक व्यवस्था कर",
-          "dropdown_options": "{\"options\": [\"वैकल्पिक व्यवस्था कर\", \"चलवाकर\", \"क्रेन की सहायता से\"], \"hint\": \"वाहन थाने तक कैसे लाया गया\"}",
+          "dropdown_options": "{\"options\": [\"वैकल्पिक व्यवस्था कर\", \"चलवाकर\", \"क्रेन की सहायता से\"]}",
           "sort_order": 9
         }
       ]
@@ -4625,7 +4625,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 6,
       "app_version": "1.0.0",
       "tags": [
         "तस्करा",
@@ -4643,7 +4643,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]}",
           "sort_order": 0
         },
         {
@@ -4917,7 +4917,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 14,
+      "seed_version": 15,
       "app_version": "1.0.0",
       "tags": [
         "GD",
@@ -4945,7 +4945,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 1
         },
         {
@@ -5746,7 +5746,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 6,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "आत्मसमर्पण",
@@ -5801,7 +5801,7 @@
           "is_required": 1,
           "sort_order": 5,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}"
         },
         {
           "key_name": "OfficerName",
@@ -5842,7 +5842,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 6,
       "app_version": "1.0.0",
       "tags": [
         "पत्र",
@@ -5921,7 +5921,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 7
         },
         {
@@ -5962,7 +5962,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "वाहन",
@@ -6079,7 +6079,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 11
         },
         {
@@ -6120,7 +6120,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "प्रार्थना पत्र",
@@ -6208,7 +6208,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 8
         },
         {
@@ -6249,7 +6249,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 6,
       "app_version": "1.0.0",
       "tags": [
         "दुर्घटना",
@@ -6312,7 +6312,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 5
         },
         {
@@ -6353,7 +6353,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 6,
       "app_version": "1.0.0",
       "tags": [
         "मेडिकल",
@@ -6463,7 +6463,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]}",
           "sort_order": 10
         },
         {
@@ -6513,7 +6513,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "पोस्टमार्टम",
@@ -6560,7 +6560,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कपड़े",
-          "dropdown_options": "{\"options\": [\"कपड़े\", \"बॉडी बैग\"], \"hint\": \"शव कपड़े में सील किया या बॉडी बैग में\"}",
+          "dropdown_options": "{\"options\": [\"कपड़े\", \"बॉडी बैग\"]}",
           "sort_order": 10
         },
         {
@@ -6569,7 +6569,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आरक्षी",
-          "dropdown_options": "{\"options\": [\"मुख्य आरक्षी\", \"आरक्षी\", \"महिला आरक्षी\"], \"hint\": \"शव ले जाने वाले कर्मचारी का पद\"}",
+          "dropdown_options": "{\"options\": [\"मुख्य आरक्षी\", \"आरक्षी\", \"महिला आरक्षी\"]}",
           "sort_order": 11
         },
         {
@@ -6641,7 +6641,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"]}",
           "sort_order": 19
         },
         {
@@ -6682,7 +6682,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "अवकाश",
@@ -6700,7 +6700,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आरक्षी",
-          "dropdown_options": "{\"options\": [\"आरक्षी\", \"मुख्य आरक्षी\", \"महिला आरक्षी\", \"आरक्षी चालक\", \"उपनिरीक्षक\", \"महिला उपनिरीक्षक\"], \"hint\": \"छुट्टी लेने वाले कर्मचारी का पद\"}",
+          "dropdown_options": "{\"options\": [\"आरक्षी\", \"मुख्य आरक्षी\", \"महिला आरक्षी\", \"आरक्षी चालक\", \"उपनिरीक्षक\", \"महिला उपनिरीक्षक\"]}",
           "sort_order": 0
         },
         {
@@ -6795,7 +6795,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "जनता दर्शन",
@@ -6813,7 +6813,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "जनता दर्शन",
-          "dropdown_options": "{\"options\": [\"जनता दर्शन\", \"आईजीआरएस\", \"शिकायत प्रकोष्ठ\", \"मुख्यमंत्री हेल्पलाइन\"], \"hint\": \"प्रार्थना पत्र कहाँ से आया\"}",
+          "dropdown_options": "{\"options\": [\"जनता दर्शन\", \"आईजीआरएस\", \"शिकायत प्रकोष्ठ\", \"मुख्यमंत्री हेल्पलाइन\"]}",
           "sort_order": 0
         },
         {
@@ -7101,7 +7101,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 32
         },
         {
@@ -7142,7 +7142,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 7,
+      "seed_version": 8,
       "app_version": "1.0.0",
       "tags": [
         "स्टेटस रिपोर्ट",
@@ -7512,7 +7512,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery & RecVideo=हाँ\", \"hint\": \"वीडियो ई-साक्ष्य ऐप पर अपलोड हुआ या नहीं\"}",
+          "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery & RecVideo=हाँ\"}",
           "sort_order": 39
         },
         {
@@ -7521,7 +7521,7 @@
           "field_type": "dropdown",
           "is_required": 0,
           "default_value": "",
-          "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery & RecVideo=हाँ & RecUpload=हाँ\", \"hint\": \"अपलोड की गयी रिकॉर्डिंग का उल्लेख केस डायरी में हो चुका है या नहीं\"}",
+          "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery & RecVideo=हाँ & RecUpload=हाँ\"}",
           "sort_order": 40
         },
         {
@@ -7800,7 +7800,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 71
         },
         {
@@ -7841,7 +7841,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "प्रार्थना पत्र",
@@ -8004,7 +8004,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 16
         },
         {
@@ -8045,7 +8045,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "समाधान दिवस",
@@ -8080,7 +8080,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "आवेदक",
-          "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\"\"}",
+          "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"]}",
           "sort_order": 2
         },
         {
@@ -8188,7 +8188,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 14
         },
         {
@@ -8229,7 +8229,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 12,
+      "seed_version": 13,
       "app_version": "1.0.0",
       "tags": [
         "35(3)",
@@ -8356,7 +8356,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 12
         },
         {
@@ -8397,7 +8397,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 5,
+      "seed_version": 6,
       "app_version": "1.0.0",
       "tags": [
         "179",
@@ -8533,7 +8533,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 13
         },
         {
@@ -8574,7 +8574,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "tags": [
         "नोटिस",
@@ -8701,7 +8701,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "जमानत प्रार्थना पत्र",
-          "dropdown_options": "{\"options\": [\"जमानत प्रार्थना पत्र\", \"क्रिमिनल पुनरीक्षण\", \"क्रिमिनल अपील\"], \"hint\": \"अभियुक्त ने जमानत प्रार्थना पत्र डाला है, क्रिमिनल पुनरीक्षण (रिवीजन) या क्रिमिनल अपील\"}",
+          "dropdown_options": "{\"options\": [\"जमानत प्रार्थना पत्र\", \"क्रिमिनल पुनरीक्षण\", \"क्रिमिनल अपील\"]}",
           "sort_order": 12
         },
         {
@@ -8728,7 +8728,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 15
         },
         {
@@ -8751,7 +8751,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 6,
+      "seed_version": 7,
       "app_version": "1.0.0",
       "tags": [
         "183",
@@ -8909,7 +8909,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 22
         },
         {
@@ -8950,7 +8950,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 4,
+      "seed_version": 5,
       "app_version": "1.0.0",
       "tags": [
         "मेडिकल",
@@ -9052,7 +9052,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कठोर व कुन्द वस्तु",
-          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p1Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p1Mlc\"}",
           "sort_order": 13
         },
         {
@@ -9340,7 +9340,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कठोर व कुन्द वस्तु",
-          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p2On & p2Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p2On & p2Mlc\"}",
           "sort_order": 49
         },
         {
@@ -9628,7 +9628,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "कठोर व कुन्द वस्तु",
-          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p3On & p3Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}",
+          "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p3On & p3Mlc\"}",
           "sort_order": 85
         },
         {
@@ -9831,7 +9831,7 @@
       "source": "system",
       "editable": 1,
       "content_type": "format",
-      "seed_version": 3,
+      "seed_version": 4,
       "app_version": "1.0.0",
       "tags": [
         "डॉक्टर",
@@ -10021,7 +10021,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उपनिरीक्षक",
-          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}",
+          "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"]}",
           "sort_order": 19
         }
       ]
@@ -10056,7 +10056,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "उ0नि0",
-          "dropdown_options": "{\"options\": [{\"value\": \"उ0नि0\", \"label\": \"उपनिरीक्षक\"}, {\"value\": \"नि0\", \"label\": \"निरीक्षक\"}], \"hint\": \"पंचायतनामा भरने वाले अधिकारी का पद\"}",
+          "dropdown_options": "{\"options\": [{\"value\": \"उ0नि0\", \"label\": \"उपनिरीक्षक\"}, {\"value\": \"नि0\", \"label\": \"निरीक्षक\"}]}",
           "sort_order": 7
         },
         {
@@ -10074,7 +10074,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "का0",
-          "dropdown_options": "{\"options\": [{\"value\": \"का0\", \"label\": \"आरक्षी\"}, {\"value\": \"हे0का0\", \"label\": \"मुख्य आरक्षी\"}, {\"value\": \"म0का0\", \"label\": \"महिला आरक्षी\"}], \"hint\": \"शव लेकर पोस्टमार्टम कराने वाले कर्मचारी का पद\"}",
+          "dropdown_options": "{\"options\": [{\"value\": \"का0\", \"label\": \"आरक्षी\"}, {\"value\": \"हे0का0\", \"label\": \"मुख्य आरक्षी\"}, {\"value\": \"म0का0\", \"label\": \"महिला आरक्षी\"}]}",
           "sort_order": 9
         },
         {
@@ -10452,7 +10452,7 @@
       "editable": 1,
       "created_by": "system",
       "content_type": "format",
-      "seed_version": 2,
+      "seed_version": 3,
       "app_version": "1.0.0",
       "last_updated": "2026-11-13",
       "tags": [

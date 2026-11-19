@@ -171,7 +171,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
   `hint` to every label (Input `labelHint`, dropdown, multi_choice, date, item_group, sentence; checkbox = link at the row end); Person/AccusedGroupInput
   `hint` prop (label + link on their own line, buttons below) from the 4 fill screens; never printed; a dropdown's list goes under "options"). Owner wanted it on every predefined format (58 formats / 982 fields) — done batch by batch with samples. Tool: `python3 scripts/hints/apply_hints.py <batch>`
   (batch modules in scripts/hints/: `wants(f)` + `hint(f, k)`, shared `common.py`; only fields without a hint, seed_version +1). A "sentence" field
-  keeps its tip under "tip" (its "hint" is the card prompt; `keyHint(raw, fieldType)`). Done: GD (all 8 formats, 156 fields), फर्द (4 formats, 105 fields), केस डायरी + Narrative (15 formats, 237 fields), न्यायालय + प्रार्थना पत्र (12 formats, 232 fields). बाकी 6 "Any" formats (82 fields) too → ALL predefined format fields now have a hint (new fields: add one). Every field of the 6 bnss126 + 7 bnss170 formats has one (seed_version +1 each). 170 fixes too: " ।" after every
+  keeps its tip under "tip" (its "hint" is the card prompt; `keyHint(raw, fieldType)`). Done: GD (all 8 formats, 156 fields), फर्द (4 formats, 105 fields), केस डायरी + Narrative (15 formats, 237 fields), न्यायालय + प्रार्थना पत्र (12 formats, 232 fields). बाकी 6 "Any" formats (82 fields) too → ALL predefined format fields now have a hint (new fields: add one). EXCEPT (owner, later) button-choice (dropdown) fields
+  whose tip only repeated the buttons ("अपना पद चुनें", "प्रार्थना पत्र कहाँ से आया"…): 71 such hints removed in 48 formats (seed_version +1; backup
+  docs/format-backups/dropdown_hints_before_plain_removed.json); dropdown tips that say what the choice changes in print stay. New dropdowns: a
+  hint only when it adds something. Every field of the 6 bnss126 + 7 bnss170 formats has one (seed_version +1 each). 170 fixes too: " ।" after every
   {{Matter}} / {{Advice}}; kshetra-ek "{{Accused#inline}} का {{Matter}}" (default no longer starts with "का"); prarthna-ubhay
   "{{Matter}} । इस पर मुझ…" (was ", जिस पर"); Facts label without "(आखिर में । न लगाएँ)"; village placeholder.
   The two धारा 135(3) report letters have no संलग्नक block (owner) — signature moved to [[हस्ताक्षर]]

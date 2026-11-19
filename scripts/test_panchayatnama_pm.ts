@@ -30,9 +30,12 @@ const base = {
 };
 const run = (v: Record<string, string>) => generateReport(f.vivran, { ...base, ...v }, f.keys);
 
-test('format is in the seed with a hint on every field', () => {
+test('format is in the seed with a hint on every field (button-choice fields only when the tip says more than the buttons — owner)', () => {
   assert.ok(f);
-  for (const k of f.keys) assert.match(String(k.dropdown_options), /"hint"/, k.key_name);
+  for (const k of f.keys) {
+    if (k.field_type === 'dropdown') continue;
+    assert.match(String(k.dropdown_options), /"hint"/, k.key_name);
+  }
 });
 
 test('पंचायतनामा + PM अवलोकन = owner wording', () => {

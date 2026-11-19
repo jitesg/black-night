@@ -1,0 +1,357 @@
+[
+  {
+    "format": "sys-fmt-fard-60-1-daru",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-fard-60-1-daru",
+    "key": "InformHow",
+    "dropdown_options": "{\"options\": [\"मौके पर\", \"फोन द्वारा\", \"थाने पहुँचकर दी जायेगी\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}"
+  },
+  {
+    "format": "sys-fmt-fard-peedita-baramadgi",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-fard-maal-masruka-shastra",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-fard-maal-masruka-shastra",
+    "key": "InformHow",
+    "dropdown_options": "{\"options\": [\"मौके पर दी गयी\", \"फोन द्वारा दी गयी\", \"अकब से दी जा रही है\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}"
+  },
+  {
+    "format": "sys-fmt-fard-ndps",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-fard-ndps",
+    "key": "GazResult",
+    "dropdown_options": "{\"options\": [\"नम्बर नेटवर्क क्षेत्र से बाहर बता रहा है\", \"काल रिसीव नहीं हुई\", \"नम्बर व्यस्त बता रहा है\"], \"showIf\": \"GazOfficer\", \"hint\": \"कॉल करने पर क्या हुआ\"}"
+  },
+  {
+    "format": "sys-fmt-fard-ndps",
+    "key": "InformHow",
+    "dropdown_options": "{\"options\": [\"थाने पहुँचकर उचित माध्यम से दी जायेगी\", \"मौके पर फोन द्वारा दी गयी\", \"मौके पर दी गयी\"], \"hint\": \"गिरफ्तारी की सूचना परिजनों को कैसे दी / दी जायेगी\"}"
+  },
+  {
+    "format": "sys-fmt-bnss126-beat",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss126-yaksh",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss126-thanabhraman",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss126-mukadma",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss126-ncr",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss126-prarthna",
+    "key": "Avedak",
+    "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss126-prarthna",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-mukadma",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-prv",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-prv-ubhay",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-prarthna",
+    "key": "Avedak",
+    "dropdown_options": "{\"options\": [\"आवेदिका\", \"आवेदक\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-prarthna",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-prarthna-ubhay",
+    "key": "Avedak",
+    "dropdown_options": "{\"options\": [\"आवेदिका\", \"आवेदक\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\" चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-prarthna-ubhay",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-kshetra-ek",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bnss170-kshetra",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-dcrb-criminal-history",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-vehicle-release",
+    "key": "Tech",
+    "dropdown_options": "{\"options\": [\"हो चुका है\", \"नहीं हुआ है\", \"आवश्यकता नहीं\"], \"hint\": \"वाहन का तकनीकी निरीक्षण (RI द्वारा) हुआ या नहीं\"}"
+  },
+  {
+    "format": "sys-fmt-vehicle-release",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-vehicle-technical-inspection",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-victim-age-certificate",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-cd-videography",
+    "key": "VideographyDone",
+    "dropdown_options": "{\"options\": [{\"value\": \"yes\", \"label\": \"हाँ\"}, {\"value\": \"no\", \"label\": \"नहीं\"}], \"hint\": \"घटनास्थल की ई-साक्ष्य एप्प से वीडियोग्राफी हुई तो \\\"हाँ\\\"\"}"
+  },
+  {
+    "format": "sys-fmt-cd-nirikshan-ghatnasthal",
+    "key": "ESakshya",
+    "dropdown_options": "{\"options\": [{\"value\": \"की गयी\", \"label\": \"की गयी\"}, {\"value\": \"तकनीकी समस्या\", \"label\": \"तकनीकी समस्या से नहीं हो सकी\"}, {\"value\": \"नहीं लिखना\", \"label\": \"कुछ न लिखें\"}], \"hint\": \"ई-साक्ष्य एप्प से वीडियोग्राफी हुई / तकनीकी समस्या रही / नहीं लिखना\"}"
+  },
+  {
+    "format": "sys-gd-fmt-taskara",
+    "key": "ReceiverRelation",
+    "dropdown_options": "{\"showIf\": \"Stage=पूछताछ के बाद सुपुर्दगी & GiveMode=सबको एक ही व्यक्ति को\", \"options\": [\"पिता\", \"माता\", \"पति\", \"पत्नी\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\", \"दोस्त\", \"पड़ोसी\", \"गाँव के व्यक्ति\"], \"hint\": \"सुपुर्दगी लेने वाला थाने पर आये व्यक्ति का क्या लगता है\"}"
+  },
+  {
+    "format": "sys-gd-fmt-abhiyukt-dakhila",
+    "key": "BringerRank",
+    "dropdown_options": "{\"options\": [\"उ0नि0\", \"निरीक्षक\", \"हे0का0\", \"का0\", \"प्रभारी निरीक्षक\"], \"showIf\": \"Mode=दूसरे अधिकारी ने लाकर दाखिल किया\", \"hint\": \"अभियुक्त लाकर दाखिल करने वाले अधिकारी का पद\"}"
+  },
+  {
+    "format": "sys-gd-fmt-abhiyukt-dakhila",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"showIf\": \"Mode=मैं वापस आकर दाखिल कर रहा (वापसी)/थाने पर ही गिरफ्तार कर दाखिल किया\", \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-gd-fmt-abhiyukt-dakhila",
+    "key": "Injury",
+    "dropdown_options": "{\"options\": [\"कोई जाहिरा चोट नहीं\", \"चोट है\"], \"hint\": \"अभियुक्त के शरीर पर चोट है या नहीं\"}"
+  },
+  {
+    "format": "sys-gd-fmt-abhiyukt-dakhila",
+    "key": "Hawalat",
+    "dropdown_options": "{\"options\": [\"मर्दाना\", \"महिला\"], \"hint\": \"अभियुक्त पुरुष है तो \\\"मर्दाना\\\", महिला है तो \\\"महिला\\\" हवालात\"}"
+  },
+  {
+    "format": "sys-gd-fmt-abhiyukt-dakhila",
+    "key": "InformRel",
+    "dropdown_options": "{\"options\": [\"पिता\", \"माता\", \"पत्नी\", \"पति\", \"भाई\", \"बहन\", \"पुत्र\", \"परिजन\"], \"hint\": \"गिरफ्तारी की सूचना अभियुक्त के किस परिजन को दी\"}"
+  },
+  {
+    "format": "sys-gd-fmt-vivechana-parivartan",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-gd-fmt-vahan-dakhila",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-gd-fmt-vahan-dakhila",
+    "key": "Lana",
+    "dropdown_options": "{\"options\": [\"वैकल्पिक व्यवस्था कर\", \"चलवाकर\", \"क्रेन की सहायता से\"], \"hint\": \"वाहन थाने तक कैसे लाया गया\"}"
+  },
+  {
+    "format": "sys-gd-fmt-aaropi-avmukt",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-gd-fmt-wapsi",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-nyayik-abhiraksha",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-samanya-patra",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-vahan-flag",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-pp-fir-sanstuti",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-rto-dl-rc",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-medical-patra",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-postmortem-33",
+    "key": "Wrap",
+    "dropdown_options": "{\"options\": [\"कपड़े\", \"बॉडी बैग\"], \"hint\": \"शव कपड़े में सील किया या बॉडी बैग में\"}"
+  },
+  {
+    "format": "sys-fmt-postmortem-33",
+    "key": "CarrierRank",
+    "dropdown_options": "{\"options\": [\"मुख्य आरक्षी\", \"आरक्षी\", \"महिला आरक्षी\"], \"hint\": \"शव ले जाने वाले कर्मचारी का पद\"}"
+  },
+  {
+    "format": "sys-fmt-postmortem-33",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\", \"प्रभारी निरीक्षक\", \"थानाध्यक्ष\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-avkash-patra",
+    "key": "Post",
+    "dropdown_options": "{\"options\": [\"आरक्षी\", \"मुख्य आरक्षी\", \"महिला आरक्षी\", \"आरक्षी चालक\", \"उपनिरीक्षक\", \"महिला उपनिरीक्षक\"], \"hint\": \"छुट्टी लेने वाले कर्मचारी का पद\"}"
+  },
+  {
+    "format": "sys-fmt-pp-janta-darshan-aakhya",
+    "key": "RefType",
+    "dropdown_options": "{\"options\": [\"जनता दर्शन\", \"आईजीआरएस\", \"शिकायत प्रकोष्ठ\", \"मुख्यमंत्री हेल्पलाइन\"], \"hint\": \"प्रार्थना पत्र कहाँ से आया\"}"
+  },
+  {
+    "format": "sys-fmt-pp-janta-darshan-aakhya",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bail-notice-aakhya",
+    "key": "RecUpload",
+    "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery & RecVideo=हाँ\", \"hint\": \"वीडियो ई-साक्ष्य ऐप पर अपलोड हुआ या नहीं\"}"
+  },
+  {
+    "format": "sys-fmt-bail-notice-aakhya",
+    "key": "RecCD",
+    "dropdown_options": "{\"options\": [\"हाँ\", \"नहीं\"], \"showIf\": \"gRecovery & RecVideo=हाँ & RecUpload=हाँ\", \"hint\": \"अपलोड की गयी रिकॉर्डिंग का उल्लेख केस डायरी में हो चुका है या नहीं\"}"
+  },
+  {
+    "format": "sys-fmt-bail-notice-aakhya",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-pp-jaanch-aakhya",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-pp-samadhan-diwas",
+    "key": "Avedak",
+    "dropdown_options": "{\"options\": [\"आवेदक\", \"आवेदिका\"], \"hint\": \"प्रार्थना पत्र देने वाला पुरुष है तो \\\"आवेदक\\\", महिला है तो \\\"आवेदिका\\\"\"}"
+  },
+  {
+    "format": "sys-fmt-pp-samadhan-diwas",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-notice-35-3-bnss",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-notice-179-bnss",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-notice-suchna-vadi",
+    "key": "CaseType",
+    "dropdown_options": "{\"options\": [\"जमानत प्रार्थना पत्र\", \"क्रिमिनल पुनरीक्षण\", \"क्रिमिनल अपील\"], \"hint\": \"अभियुक्त ने जमानत प्रार्थना पत्र डाला है, क्रिमिनल पुनरीक्षण (रिवीजन) या क्रिमिनल अपील\"}"
+  },
+  {
+    "format": "sys-fmt-notice-suchna-vadi",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-bayan-183-patra",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-cd-medical-avlokan",
+    "key": "p1MlcWeapon",
+    "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p1Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}"
+  },
+  {
+    "format": "sys-fmt-cd-medical-avlokan",
+    "key": "p2MlcWeapon",
+    "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p2On & p2Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}"
+  },
+  {
+    "format": "sys-fmt-cd-medical-avlokan",
+    "key": "p3MlcWeapon",
+    "dropdown_options": "{\"options\": [\"कठोर व कुन्द वस्तु\", \"धारदार वस्तु\", \"नहीं लिखना\"], \"showIf\": \"p3On & p3Mlc\", \"hint\": \"MLC के अनुसार चोटें किससे लगीं\"}"
+  },
+  {
+    "format": "sys-fmt-cd-doctor-bayan",
+    "key": "pad",
+    "dropdown_options": "{\"options\": [\"उपनिरीक्षक\", \"निरीक्षक\"], \"hint\": \"अपना पद चुनें\"}"
+  },
+  {
+    "format": "sys-fmt-cd-panchayatnama-pm-avlokan",
+    "key": "SIRank",
+    "dropdown_options": "{\"options\": [{\"value\": \"उ0नि0\", \"label\": \"उपनिरीक्षक\"}, {\"value\": \"नि0\", \"label\": \"निरीक्षक\"}], \"hint\": \"पंचायतनामा भरने वाले अधिकारी का पद\"}"
+  },
+  {
+    "format": "sys-fmt-cd-panchayatnama-pm-avlokan",
+    "key": "CoRank",
+    "dropdown_options": "{\"options\": [{\"value\": \"का0\", \"label\": \"आरक्षी\"}, {\"value\": \"हे0का0\", \"label\": \"मुख्य आरक्षी\"}, {\"value\": \"म0का0\", \"label\": \"महिला आरक्षी\"}], \"hint\": \"शव लेकर पोस्टमार्टम कराने वाले कर्मचारी का पद\"}"
+  }
+]
