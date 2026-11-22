@@ -233,6 +233,9 @@ detailed working log. Keep the guide up to date when the architecture changes.
   सम्बन्धित मु0अ0सं0 … धारा …"; ending "की तलाश मे" / "को सम्मन तामील कराने हेतु" / "की मृत्यु के सम्बन्ध में जानकारी कर आख्या हेतु"), WCourt, WCaseNo,
   WFir, WSec, WCard (expand WName / WRel / WFather / WAddr), optional WVs; Purpose "किस काम से" = multiline (owner, seed_version 7, backup gd_rawangi_purpose_before_multiline.json) (शा0 प्रति; empty → WName); अन्य: Other "रवानगी का उद्देश्य लिखें". GD = plain
   text, so no bold heading. Tests `scripts/test_rawangi.ts`.
+  वारंट अ0सं0 / धारा optional (owner, option क; seed_version 9, backup gd_rawangi_samanya_v8_before_fir_sec_optional.json): WFir / WSec
+  is_required 0 + "(वैकल्पिक)"; empty → left out of the heading ("सम्बन्धित मु0अ0सं0 … धारा …" / "सम्बन्धित धारा …" / nothing) and the body
+  ("अ0सं0 …", "धारा …"). न्यायालय का नाम + वाद सं0 stay required. Test in scripts/test_rawangi.ts.
   ⓘ note (owner): assets/format-info/sys-gd-fmt-rawangi-samanya.json = owner's Formatted_Police_Log.docx (37 रवानगी / आमद GD samples: 2 h
   sections, each "(n) …" title → h2, body p as is; masked names [AO] etc. → "………", owner) + one NOTES line in formatInfo.ts.
 - Format dropdown chips (`FormatKeyDropdownInput`, every format): compact pills (paddingHorizontal 14, paddingVertical 7, radius 999, no minWidth) —

@@ -61,3 +61,14 @@ test('प्रान्त का नाम = the format own box, not the setti
   assert.deepEqual(g.emptyWorkspaceKeys(g.withEmptyWorkspaceKeys(f.vivran, r.autoValues)), []);
   assert.match(gen({ Kind: 'गैर प्रान्त', DestState: 'बिहार' }), /गैर प्रान्त बिहार रवाना हुआ।$/);
 });
+
+test('वारंट: अ0सं0 / धारा optional (owner) — empty parts left out', () => {
+  const w = { Kind: 'वारंट', Hamrah: '', OfficerName: 'चन्द्रपाल सिंह', WType: 'NBW', WCourt: 'श्रीमान मुख्य न्यायिक मजिस्ट्रेट (CJM)', WCaseNo: '77/26',
+    WCard: JSON.stringify([{ name: 'रामू', relationType: 'पुत्र', fatherOrHusbandName: 'श्याम', fullAddress: 'ग्राम अघौरा' }]) };
+  assert.equal(gen(w), 'रवानगी उ0नि0 वारंटी\n\nइस समय मैं उ0नि0 चन्द्रपाल सिंह श्रीमान मुख्य न्यायिक मजिस्ट्रेट (CJM) के वाद सं0 77/26 शा0 प्रति रामू से सम्बन्धित रामू पुत्र श्याम निवासी ग्राम अघौरा की तलाश मे रवाना हुआ।');
+  assert.match(gen({ ...w, WSec: '323 भादवि' }), /^रवानगी उ0नि0 वारंटी सम्बन्धित धारा 323 भादवि\n\n.*वाद सं0 77\/26 शा0 प्रति रामू धारा 323 भादवि से सम्बन्धित/);
+  assert.match(gen({ ...w, WFir: '23' }), /^रवानगी उ0नि0 वारंटी सम्बन्धित मु0अ0सं0 23\n\n.*वाद सं0 77\/26 अ0सं0 23 शा0 प्रति रामू से सम्बन्धित/);
+  const k = (n: string) => f.keys.find((x: { key_name: string }) => x.key_name === n);
+  assert.equal(k('WFir').is_required, 0); assert.equal(k('WSec').is_required, 0);
+  assert.equal(k('WCaseNo').is_required, 1); assert.equal(k('WCourt').is_required, 1);
+});
