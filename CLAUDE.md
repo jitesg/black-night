@@ -694,7 +694,7 @@ detailed working log. Keep the guide up to date when the architecture changes.
   Fallback: `"@FIR.complainant_relation|पुत्री"` (used when empty / no FIR; screens without FIR context use `literalDefault`). Connected:
   183 बयान, मेडिकल अवलोकन, डॉक्टर बयान, अभियुक्त बयान, निरीक्षण घटना स्थल, 35(3) नोटिस (seed_version +1).
   Phase 3 done: FIR अभियुक्त like the वादी card — fir_accused columns father / relation / gender (_ensureColumn), shared UI
-  `components/fir/AccusedIdentityFields.tsx` (सम्बन्ध chips → लिंग auto, पिता / पति, लिंग) on add-fir and the FIR details tab (details tab now
+  (was `AccusedIdentityFields.tsx` — now the group card, see "मुकदमा अभियुक्त = group card" below) on add-fir and the FIR details tab (details tab now
   edits accused + "+ अभियुक्त जोड़ें"; saved with the FIR). More @FIR fields: fir_datetime, occurrence_datetime, complainant_with_role
   ("वादिनी रेनू पत्नी धीरज"), accused1_* (name/father/relation/gender/address/age/mobile/full/abhiyukt/mahila), accused_names
   ("क, ख व ग"), accused_count / _co_count (01), accused_abhiyukt / accused_number, accused_cards (PersonGroupInput JSON),
@@ -730,6 +730,14 @@ detailed working log. Keep the guide up to date when the architecture changes.
   (v6 `{{DeadCard#prose}}`). Option `"single": true` = one card only (all 4 fill screens). expand spec `"relationType||पुत्र"` = fallback when the
   card leaves it empty; expand runs before item_group `copy` (DName into पंच rows). न्यायालय fill-format now renders person / accused cards
   (before: plain text box). Backup docs/format-backups/batch2_before_person_cards.json.
+- मुकदमा अभियुक्त = group card (owner, sample approved): add-fir + FIR details tab use `PersonGroupInput` (hideLabel, cardBadge "अभियुक्त",
+  addLabel "+ अभियुक्त जोड़ें", addressOptional) like the वादी; card-bottom slot `renderCardExtra` → `components/fir/AccusedStatusFields.tsx`
+  "⚖️ अभियुक्त की स्थिति" (जमानत chips + while जेल में रिमांड नंबर / तारीख / अगली रिमांड, THEME colours; values ride on the card as bailStatus /
+  remandNumber / dateOfRemand / nextRemandDate). Rows ↔ cards `cardFromFirAccused` / `firAccusedFromCard` / `accusedCardHasData` (personCard.ts;
+  tests in scripts/test_person_card.ts): `address` = full printed address ('' when only the prefilled थाना / जनपद), parts + ई-मेल / पहचान /
+  टिप्पणी in new column fir_accused.extra_json; old typed address = 'free'; old empty address = new parts. Details tab: saved cards have no ✕
+  (`canRemoveEntry`, as before), a saved row is updated only when its columns changed. Unknown (अज्ञात) accused unchanged.
+  PersonGroupInput props `renderCardExtra`, `canRemoveEntry`, `newEntryExtra`. No remand reminder is created (the old "Reminder set" text claimed one).
 - Group person card v2 (owner, PersonGroupInput — every format, FIR वादी, प्रार्थना पत्र): rules `src/lib/personCard.ts` (pure; tests
   `scripts/test_person_card.ts`). सम्बन्ध chips पुत्र / पुत्री / पत्नी / ट्रांसजेंडर (sub-chips संतान / अभिभावक-गुरु) / दत्तक (sub-chips पुत्र / पुत्री);
   relationType = the PRINT word ("सोनम गुरु रेखा", "रामू दत्तक पुत्र श्याम लाल"; `KNOWN_RELATIONS` in templateEngine `_resolveConnector`).

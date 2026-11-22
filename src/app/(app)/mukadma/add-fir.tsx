@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { htmlToPlainText } from '@/lib/stringUtils';
 import { logger } from '@/lib/logger';
 import {
@@ -11,12 +11,12 @@ import {
   navigateToFIRTab,
 } from '@/lib/firNavigation';
 import {
-  Plus, Trash2, ChevronDown, User, MapPin, Edit2,
+  ChevronDown, MapPin, Edit2,
 } from 'lucide-react-native';
 import { DatePickerModal } from '@/components/common/DatePickerModal';
 import { createFIR } from '@/lib/db/firRepo';
 import { createAccused } from '@/lib/db/firAccusedRepo';
-import { AccusedIdentityFields } from '@/components/fir/AccusedIdentityFields';
+import { AccusedStatusFields } from '@/components/fir/AccusedStatusFields';
 import { seedFIRKaryvahi } from '@/lib/db/firKaryvahiRepo';
 import { getDatabase, getDbInstanceTag } from '@/lib/db/database';
 import { getFlatCrimeTypes, type CrimeTypeMeta } from '@/lib/db/checklistRepo';
@@ -28,36 +28,11 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { FIRSectionAssistant, FIRSuggesterButton } from '@/components/law/FIRSectionAssistant';
-import { PersonGroupInput } from '@/components/ui/PersonGroupInput';
+import { PersonGroupInput, initPersonGroup, parsePersonGroup, type PersonEntry } from '@/components/ui/PersonGroupInput';
+import { accusedCardHasData, firAccusedFromCard, type AccusedCard } from '@/lib/personCard';
 import { complainantToGroup, groupToComplainant } from '@/lib/firComplainant';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
-interface KnownAccused {
-  id: string;
-  name: string;
-  address: string;
-  mobile: string;
-  altMobile: string;
-  jati: string;
-  age: string;
-  relation: string;
-  father: string;
-  gender: string;
-  bailStatus: 'unknown' | 'in_jail' | 'on_bail';
-  remandNumber: string;
-  dateOfRemand: string;
-  nextRemandDate: string;
-}
-
-function mkAccused(): KnownAccused {
-  return {
-    id: Math.random().toString(36).slice(2),
-    name: '', address: '', mobile: '', altMobile: '',
-    jati: '', age: '', relation: '', father: '', gender: '', bailStatus: 'unknown',
-    remandNumber: '', dateOfRemand: '', nextRemandDate: '',
-  };
-}
 
 // ─── Small reusable helpers ───────────────────────────────────────────────────
 
@@ -312,113 +287,6 @@ function DateField({ label, value, onChange }: { label: string; value: string; o
   );
 }
 
-// ─── Accused card ─────────────────────────────────────────────────────────────
-
-function AccusedCard({
-  accused, index, onChange, onRemove,
-}: {
-  accused: KnownAccused; index: number;
-  onChange: (id: string, field: keyof KnownAccused, value: string) => void;
-  onRemove: (id: string) => void;
-}) {
-  const { t } = useTranslation();
-  const BAIL_OPTIONS = [
-    { label: t('fir.addFir.bailUnknown'), value: 'unknown' },
-    { label: t('fir.addFir.bailInJail'), value: 'in_jail' },
-    { label: t('fir.addFir.bailOnBail'), value: 'on_bail' },
-  ];
-
-  return (
-    <View className="bg-card border border-border rounded-2xl p-4 gap-4 mb-3" style={{ borderCurve: 'continuous' }}>
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center gap-2">
-          <View className="w-7 h-7 rounded-full bg-secondary items-center justify-center">
-            <User size={14} color="#6B7280" />
-          </View>
-          <Text className="text-sm font-semibold text-foreground">{t('fir.addFir.accusedLabel', { n: index + 1 })}</Text>
-        </View>
-        <Pressable onPress={() => onRemove(accused.id)} className="p-1 active:opacity-60">
-          <Trash2 size={16} color="#DC2626" />
-        </Pressable>
-      </View>
-
-      <Field label={t('fir.addFir.fieldAccusedName')}>
-        <Input clearCopy value={accused.name} onChangeText={(v) => onChange(accused.id, 'name', v)} placeholder={t('fir.addFir.namePlaceholder')} />
-      </Field>
-      <AccusedIdentityFields value={accused} onChange={(f, v) => onChange(accused.id, f, v)} />
-      <Field label={t('fir.addFir.fieldAccusedAddress')}>
-        <Input clearCopy type="multiline" value={accused.address} onChangeText={(v) => onChange(accused.id, 'address', v)} placeholder={t('fir.addFir.addressPlaceholder')} numberOfLines={2} />
-      </Field>
-      <View className="flex-row gap-3">
-        <View className="flex-1">
-          <Field label={t('fir.addFir.fieldAccusedMobile')}>
-            <Input type="mobile" value={accused.mobile} onChangeText={(v) => onChange(accused.id, 'mobile', v)} placeholder={t('fir.addFir.mobilePlaceholder')} />
-          </Field>
-        </View>
-        <View className="flex-1">
-          <Field label={t('fir.addFir.fieldAccusedAltMobile')}>
-            <Input type="mobile" value={accused.altMobile} onChangeText={(v) => onChange(accused.id, 'altMobile', v)} placeholder={t('fir.addFir.altMobilePlaceholder')} />
-          </Field>
-        </View>
-      </View>
-      <View className="flex-row gap-3">
-        <View className="flex-1">
-          <Field label={t('fir.addFir.fieldAccusedJati')}>
-            <Input value={accused.jati} onChangeText={(v) => onChange(accused.id, 'jati', v)} placeholder={t('fir.addFir.jatiPlaceholder')} />
-          </Field>
-        </View>
-        <View className="flex-1">
-          <Field label={t('fir.addFir.fieldAccusedAge')}>
-            <Input type="age" value={accused.age} onChangeText={(v) => onChange(accused.id, 'age', v)} placeholder={t('fir.addFir.agePlaceholder')} />
-          </Field>
-        </View>
-      </View>
-
-      {/* Status */}
-      <Field label={t('fir.addFir.fieldBailStatus')}>
-        <View className="flex-row flex-wrap gap-2">
-          {BAIL_OPTIONS.map((opt) => (
-            <Pressable
-              key={opt.value}
-              onPress={() => onChange(accused.id, 'bailStatus', opt.value)}
-              className="rounded-full border active:opacity-70 px-3 py-1.5"
-              style={{
-                borderColor: accused.bailStatus === opt.value ? '#6366F1' : '#E5E7EB',
-                backgroundColor: accused.bailStatus === opt.value ? '#EEF2FF' : '#fff',
-              }}
-            >
-              <Text textBreakStrategy="simple" className="text-xs font-medium" style={{ color: accused.bailStatus === opt.value ? '#6366F1' : '#6B7280' }}>
-                {opt.label}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      </Field>
-
-      {accused.bailStatus === 'in_jail' && (
-        <>
-          <Field label={t('fir.addFir.fieldRemandNumber')}>
-            <Input value={accused.remandNumber} onChangeText={(v) => onChange(accused.id, 'remandNumber', v)} placeholder={t('fir.addFir.fieldRemandNumber')} />
-          </Field>
-          <View className="flex-row gap-3">
-            <View className="flex-1">
-              <DateField label={t('fir.addFir.fieldDateOfRemand')} value={accused.dateOfRemand} onChange={(v) => onChange(accused.id, 'dateOfRemand', v)} />
-            </View>
-            <View className="flex-1">
-              <DateField label={t('fir.addFir.fieldNextRemandDate')} value={accused.nextRemandDate} onChange={(v) => onChange(accused.id, 'nextRemandDate', v)} />
-            </View>
-          </View>
-          {accused.nextRemandDate ? (
-            <View className="flex-row items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
-              <Text className="text-xs text-amber-700">⏰ Reminder set for next remand: {accused.nextRemandDate}</Text>
-            </View>
-          ) : null}
-        </>
-      )}
-    </View>
-  );
-}
-
 // ─── Main Screen ─────────────────────────────────────────────────────────────
 
 export default function AddFIRScreen() {
@@ -448,7 +316,12 @@ export default function AddFIRScreen() {
   const [roaamTime, setRoaamTime] = useState('');
   // Accused
   const [accusedType, setAccusedType] = useState<'known' | 'unknown'>('known');
-  const [knownAccused, setKnownAccused] = useState<KnownAccused[]>([mkAccused()]);
+  // अभियुक्त = group cards like the वादी (owner, sample approved); जमानत / रिमांड ride on each card
+  const [accusedJson, setAccusedJson] = useState(() => initPersonGroup());
+  const knownAccused = useMemo(
+    () => parsePersonGroup(accusedJson).map((e) => ({ ...firAccusedFromCard(e as unknown as Partial<AccusedCard>), hasData: accusedCardHasData(e as unknown as Partial<AccusedCard>) })),
+    [accusedJson],
+  );
   const [unknownCount, setUnknownCount] = useState('');
   // Forms
   const [nakalChick, setNakalChick] = useState('');
@@ -484,15 +357,14 @@ export default function AddFIRScreen() {
     }, [])
   );
 
-  const updateAccused = useCallback((id: string, field: keyof KnownAccused, value: string) => {
-    isDirty.current = true;
-    setKnownAccused((prev) => prev.map((a) => a.id === id ? { ...a, [field]: value } : a));
-  }, []);
-
-  const removeAccused = useCallback((id: string) => {
-    isDirty.current = true;
-    setKnownAccused((prev) => prev.filter((a) => a.id !== id));
-  }, []);
+  const onAccusedChange = useCallback((_k: string, v: string) => { isDirty.current = true; setAccusedJson(v); }, []);
+  const renderAccusedExtra = useCallback((e: PersonEntry & Record<string, unknown>, _i: number, set: (f: string, v: string) => void) => (
+    <AccusedStatusFields
+      bailStatus={String(e.bailStatus ?? '')} remandNumber={String(e.remandNumber ?? '')}
+      dateOfRemand={String(e.dateOfRemand ?? '')} nextRemandDate={String(e.nextRemandDate ?? '')}
+      set={set}
+    />
+  ), []);
 
   const handleSave = async () => {
     if (!firNumber.trim()) { setError(t('fir.addFir.errorFIRRequired')); return; }
@@ -528,12 +400,7 @@ export default function AddFIRScreen() {
         setError('कम से कम एक अभियुक्त का नाम लिखें।');
         return;
       }
-      const incomplete = knownAccused.find(
-        (a) =>
-          !a.name.trim() &&
-          (a.address.trim() || a.mobile.trim() || a.altMobile.trim() ||
-           a.jati.trim()   || a.age.trim())
-      );
+      const incomplete = knownAccused.find((a) => !a.name.trim() && a.hasData);
       if (incomplete) {
         setError('जोड़े गए सभी अभियुक्तों के नाम लिखें, या खाली अभियुक्त हटा दें।');
         return;
@@ -636,14 +503,8 @@ export default function AddFIRScreen() {
             // Fix 4 guard already ran above — any card reaching here either
             // has a name or has all fields blank; skip the blank-all-fields ones.
             if (!a.name.trim()) continue;
-            await createAccused({
-              fir_id: firId, is_known: 1,
-              name: a.name, address: a.address, mobile: a.mobile,
-              alt_mobile: a.altMobile, jati: a.jati, age: a.age,
-              bail_status: a.bailStatus, remand_number: a.remandNumber,
-              date_of_remand: a.dateOfRemand, next_remand_date: a.nextRemandDate,
-              father: a.father.trim(), relation: a.relation, gender: a.gender,
-            });
+            const { hasData: _hasData, ...row } = a;
+            await createAccused({ fir_id: firId, is_known: 1, ...row });
             accusedCount++;
           }
         }
@@ -891,16 +752,16 @@ export default function AddFIRScreen() {
 
           {accusedType === 'known' ? (
             <>
-              {knownAccused.map((a, i) => (
-                <AccusedCard key={a.id} accused={a} index={i} onChange={updateAccused} onRemove={removeAccused} />
-              ))}
-              <Pressable
-                onPress={() => { isDirty.current = true; setKnownAccused((prev) => [...prev, mkAccused()]); }}
-                className="flex-row items-center justify-center gap-2 border-2 border-dashed border-border rounded-2xl py-4 active:opacity-70"
-              >
-                <Plus size={16} color="#6B7280" />
-                <Text className="text-sm text-muted-foreground font-medium">{t('fir.addFir.addAnotherAccused')}</Text>
-              </Pressable>
+              <PersonGroupInput
+                keyName="accused"
+                hideLabel
+                value={accusedJson}
+                onChange={onAccusedChange}
+                addressOptional
+                cardBadge="अभियुक्त"
+                addLabel="+ अभियुक्त जोड़ें"
+                renderCardExtra={renderAccusedExtra}
+              />
             </>
           ) : (
             <Field label={t('fir.addFir.fieldTotalUnknown')}>

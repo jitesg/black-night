@@ -247,3 +247,83 @@ export function courtRowFromCard(c: CardLike): { name: string; father_name: stri
     address, remarks: (c.remarks ?? '').trim(), extra_json: JSON.stringify(extra),
   };
 }
+
+// ─── मुकदमा अभियुक्त (fir_accused) ↔ group card (owner, sample approved) ─────────────────────────────────────────────────────
+// Same idea as न्यायालय: `address` column = the full printed address (formats @FIR.accused_*, people search unchanged), the other
+// columns as before, address parts + email / पहचान / टिप्पणी in extra_json. Old rows (no parts) = 'free' address as typed.
+// The अभियुक्त-only values ride on the card: bailStatus / remandNumber / dateOfRemand / nextRemandDate.
+
+export interface FirAccusedRow {
+  id?: string;
+  name?: string | null; address?: string | null; mobile?: string | null; alt_mobile?: string | null; jati?: string | null;
+  age?: string | null; father?: string | null; relation?: string | null; gender?: string | null;
+  bail_status?: string | null; remand_number?: string | null; date_of_remand?: string | null; next_remand_date?: string | null;
+  extra_json?: string | null;
+}
+
+export type BailStatus = 'unknown' | 'in_jail' | 'on_bail';
+export interface AccusedCard extends CardLike { bailStatus: BailStatus; remandNumber: string; dateOfRemand: string; nextRemandDate: string }
+
+const bailOf = (s: unknown): BailStatus => (s === 'in_jail' || s === 'on_bail' ? s : 'unknown');
+
+export function cardFromFirAccused(r: FirAccusedRow): AccusedCard {
+  const x = parseExtra(r.extra_json);
+  const address = (r.address ?? '').trim();
+  const d = personCardDefaults();
+  // parts saved → parts; an old row with a typed address → 'free' (as typed); an old row with no address → the new parts (थाना / जनपद from सेटिंग)
+  const parts = x.addrMode === 'parts'
+    ? { addrMode: 'parts' as AddrMode, house: x.house ?? '', village: x.village ?? '', villageKind: x.villageKind || 'ग्राम', thana: x.thana ?? '', district: x.district ?? '' }
+    : address
+      ? { addrMode: 'free' as AddrMode, house: '', village: '', villageKind: 'ग्राम', thana: '', district: '' }
+      : { addrMode: 'parts' as AddrMode, house: '', village: '', villageKind: 'ग्राम', thana: d.thana, district: d.district };
+  return {
+    ...(r.id ? { _id: r.id } : {}),
+    name: r.name ?? '', fatherOrHusbandName: r.father ?? '', mobile: r.mobile ?? '', age: r.age ?? '', caste: r.jati ?? '',
+    gender: r.gender ?? '', relationType: r.relation ?? '', email: x.email ?? '',
+    altMobile: r.alt_mobile ?? '', idType: x.idType ?? '', idNumber: x.idNumber ?? '', remarks: x.remarks ?? '',
+    ...parts,
+    fullAddress: parts.addrMode === 'parts' ? composeAddress(parts) : address,
+    bailStatus: bailOf(r.bail_status), remandNumber: r.remand_number ?? '', dateOfRemand: r.date_of_remand ?? '', nextRemandDate: r.next_remand_date ?? '',
+  };
+}
+
+export interface FirAccusedOut {
+  name: string; address: string; mobile: string; alt_mobile: string; jati: string; age: string; father: string; relation: string; gender: string;
+  bail_status: BailStatus; remand_number: string; date_of_remand: string; next_remand_date: string; extra_json: string;
+}
+
+/** A card → the fir_accused columns (remand values only while जेल में, like the old form). */
+export function firAccusedFromCard(c: Partial<AccusedCard>): FirAccusedOut {
+  const mode = addrModeOf(c as CardLike);
+  // only the prefilled थाना / जनपद (no मकान / ग्राम) → no address, like the old empty box (they stay in extra_json)
+  const address = mode === 'parts'
+    ? ((c.house ?? '').trim() || (c.village ?? '').trim() ? composeAddress(c) : '')
+    : (c.fullAddress ?? '').trim();
+  const raw: Record<string, string | undefined> = {
+    email: c.email, idType: (c.idNumber ?? '').trim() ? c.idType : '', idNumber: c.idNumber, remarks: c.remarks,
+    addrMode: mode,
+    ...(mode === 'parts'
+      ? { house: c.house, village: c.village, villageKind: c.villageKind === 'कस्बा' ? 'कस्बा' : '', thana: c.thana, district: c.district }
+      : {}),
+  };
+  const extra: Record<string, string> = {};
+  for (const [k, v] of Object.entries(raw)) if ((v ?? '').trim()) extra[k] = (v ?? '').trim();
+  const bail = bailOf(c.bailStatus);
+  const jail = bail === 'in_jail';
+  return {
+    name: (c.name ?? '').trim(), address, mobile: (c.mobile ?? '').trim(), alt_mobile: (c.altMobile ?? '').trim(),
+    jati: (c.caste ?? '').trim(), age: (c.age ?? '').trim(), father: (c.fatherOrHusbandName ?? '').trim(),
+    relation: (c.relationType ?? '').trim(), gender: (c.gender || genderOfRelation(c.relationType ?? '') || '').trim(),
+    bail_status: bail,
+    remand_number: jail ? (c.remandNumber ?? '').trim() : '', date_of_remand: jail ? (c.dateOfRemand ?? '') : '',
+    next_remand_date: jail ? (c.nextRemandDate ?? '') : '',
+    extra_json: JSON.stringify(extra),
+  };
+}
+
+/** Anything typed on the card (blank prefilled थाना / जनपद does not count) — a card with no name but this = "name missing". */
+export function accusedCardHasData(c: Partial<AccusedCard>): boolean {
+  const own = [c.name, c.fatherOrHusbandName, c.mobile, c.altMobile, c.age, c.caste, c.house, c.village, c.email, c.idNumber, c.remarks, c.remandNumber];
+  if (own.some((v) => (v ?? '').trim())) return true;
+  return addrModeOf(c as CardLike) === 'free' && !!(c.fullAddress ?? '').trim();
+}

@@ -89,3 +89,34 @@ test('न्यायालय row ↔ group card (address column = full address
   assert.equal(old.fullAddress, 'ग्राम बेला थाना सरेनी');
   assert.equal(p.courtRowFromCard(old).address, 'ग्राम बेला थाना सरेनी');
 });
+
+// ─── मुकदमा अभियुक्त ↔ group card ──────────────────────────────────────────────
+import { accusedCardHasData, cardFromFirAccused, firAccusedFromCard } from '../src/lib/personCard.ts';
+
+test('old अभियुक्त row (typed address) → free card, back to the same columns', () => {
+  const row = { id: 'a1', name: 'बबलू', address: 'ग्राम रिशालखेड़ा थाना बछरावां', mobile: '9876500001', alt_mobile: '', jati: 'यादव', age: '30',
+    father: 'रामू', relation: 'पुत्र', gender: 'पुरुष', bail_status: 'in_jail', remand_number: '12', date_of_remand: '2026-11-18', next_remand_date: '2026-12-02' };
+  const c = cardFromFirAccused(row);
+  assert.equal(c._id, 'a1'); assert.equal(c.addrMode, 'free'); assert.equal(c.fullAddress, row.address);
+  assert.equal(c.bailStatus, 'in_jail'); assert.equal(c.caste, 'यादव');
+  const out = firAccusedFromCard(c);
+  assert.equal(out.address, row.address); assert.equal(out.father, 'रामू'); assert.equal(out.remand_number, '12');
+  assert.equal(out.next_remand_date, '2026-12-02'); assert.equal(out.gender, 'पुरुष');
+});
+
+test('new card with parts → composed address + parts in extra_json, round trip', () => {
+  const out = firAccusedFromCard({ name: 'सोनम', relationType: 'पत्नी', fatherOrHusbandName: 'राजू', addrMode: 'parts',
+    house: '', village: 'अघौरा', villageKind: 'ग्राम', thana: 'सरेनी', district: 'रायबरेली', email: 'a@b.in', bailStatus: 'on_bail', remandNumber: '9' });
+  assert.equal(out.address, 'ग्राम अघौरा थाना सरेनी जनपद रायबरेली');
+  assert.equal(out.gender, 'महिला'); assert.equal(out.bail_status, 'on_bail');
+  assert.equal(out.remand_number, '', 'remand only while जेल में');
+  const back = cardFromFirAccused({ ...out, id: 'x' });
+  assert.equal(back.village, 'अघौरा'); assert.equal(back.email, 'a@b.in'); assert.equal(back.addrMode, 'parts');
+});
+
+test('only prefilled थाना / जनपद → no address; such a card has no data', () => {
+  const blank = { name: '', addrMode: 'parts' as const, house: '', village: '', thana: 'सरेनी', district: 'रायबरेली' };
+  assert.equal(firAccusedFromCard({ ...blank, name: 'क' }).address, '');
+  assert.equal(accusedCardHasData(blank), false);
+  assert.equal(accusedCardHasData({ ...blank, mobile: '9876500001' }), true);
+});

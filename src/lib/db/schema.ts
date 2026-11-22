@@ -230,6 +230,7 @@ export const CREATE_TABLES_SQL = `
     father TEXT,
     relation TEXT,
     gender TEXT,
+    extra_json TEXT,
     bail_status TEXT NOT NULL DEFAULT 'unknown',
     remand_number TEXT,
     date_of_remand TEXT,

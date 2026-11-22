@@ -459,12 +459,14 @@ interface PersonCardProps {
   t: (key: string, opts?: Record<string, unknown>) => string;
   /** आवेदक समूह: "आवेदक" / "आवेदिका" on the card (owner) */
   roleBadge?: string;
+  /** Screen-own part at the bottom of the card (मुकदमा अभियुक्त: जमानत स्थिति / रिमांड) */
+  extra?: React.ReactNode;
 }
 
 const PersonCard = memo(({
   C, index, entry, collapsed, cardErrors, touched,
   onToggleCollapse, onChange, onBlur, onRemove, canRemove, onReplace,
-  allEntries, t, roleBadge,
+  allEntries, t, roleBadge, extra,
 }: PersonCardProps) => {
   // "पूरे app से सुझाव" (owner): list under the name box while it is focused; after a pick, the strip "… से भरा · हटाएँ"
   const [nameFocused, setNameFocused] = useState(false);
@@ -733,6 +735,7 @@ const PersonCard = memo(({
               </FieldRow>
             </View>
           ) : null}
+          {extra}
         </View>
       )}
     </View>
@@ -763,10 +766,17 @@ export interface PersonGroupInputProps {
   cardBadge?: string;
   /** No label / count row (the screen's own heading says it — न्यायालय form, owner) */
   hideLabel?: boolean;
+  /** Screen-own part at the bottom of each card; `set` changes one field of that card (kept in the same JSON). */
+  renderCardExtra?: (entry: PersonEntry & Record<string, unknown>, index: number, set: (field: string, value: string) => void) => React.ReactNode;
+  /** false = this card has no ✕ (मुकदमा विवरण: saved अभियुक्त are not removed here, as before) */
+  canRemoveEntry?: (entry: PersonEntry) => boolean;
+  /** New cards start with these extra fields (e.g. bailStatus 'unknown') */
+  newEntryExtra?: Record<string, string>;
 }
 
 export const PersonGroupInput = memo(({
   label, value, onChange, onValidChange, keyName, error, single, addressOptional, hint, role, addLabel, cardBadge, hideLabel,
+  renderCardExtra, canRemoveEntry, newEntryExtra,
 }: PersonGroupInputProps) => {
   const C = useGroupTokens();
   const { t } = useTranslation();
@@ -868,8 +878,8 @@ export const PersonGroupInput = memo(({
   const handleAdd = useCallback(() => {
     setCollapsedSet(new Set(entries.map((_, i) => i)));
     setTouchedSets((prev) => [...prev, new Set<string>()]);
-    emit([...entries, newPerson(`per_${Date.now()}_${entries.length}`)]);
-  }, [entries, emit]);
+    emit([...entries, { ...newPerson(`per_${Date.now()}_${entries.length}`), ...(newEntryExtra ?? {}) } as PersonEntry]);
+  }, [entries, emit, newEntryExtra]);
 
   const handleRemove = useCallback((i: number) => {
     if (entries.length <= 1) return;
@@ -919,11 +929,14 @@ export const PersonGroupInput = memo(({
           onBlur={handleBlur}
           onRemove={handleRemove}
           onReplace={handleReplace}
-          canRemove={entries.length > 1}
+          canRemove={entries.length > 1 && (canRemoveEntry ? canRemoveEntry(entry) : true)}
           allEntries={entries}
           t={t}
           roleBadge={role === 'avedak' && entry.name.trim() ? avedakCardWord(entry as unknown as Record<string, unknown>)
             : cardBadge && entry.name.trim() ? cardBadge : undefined}
+          extra={renderCardExtra
+            ? renderCardExtra(entry as PersonEntry & Record<string, unknown>, i, (f, v) => handleChange(i, f as keyof PersonEntry, v))
+            : undefined}
         />
       ))}
 

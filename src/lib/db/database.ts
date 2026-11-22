@@ -1123,6 +1123,7 @@ async function initializeSchema(database: SQLite.SQLiteDatabase): Promise<void> 
   await _ensureColumn(database, 'fir_accused', 'father',   'TEXT');
   await _ensureColumn(database, 'fir_accused', 'relation', 'TEXT');
   await _ensureColumn(database, 'fir_accused', 'gender',   'TEXT');
+  await _ensureColumn(database, 'fir_accused', 'extra_json', 'TEXT'); // group card: address parts + more (owner)
   await _ensureColumn(database, 'fir_karyvahi', 'deleted_at',  'INTEGER');
   await _ensureColumn(database, 'fir_karyvahi', 'precautions', 'TEXT');
   await _ensureColumn(database, 'knowledge_entries', 'crime_type', "TEXT DEFAULT ''");

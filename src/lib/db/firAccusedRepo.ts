@@ -18,6 +18,8 @@ export interface FIRAccused {
   remand_number?: string;
   date_of_remand?: string;
   next_remand_date?: string;
+  /** Group card (owner): address parts, ई-मेल / पहचान / टिप्पणी — personCard.ts firAccusedFromCard / cardFromFirAccused. */
+  extra_json?: string | null;
   created_at: number;
   updated_at: number;
   deleted_at?: number;
@@ -39,15 +41,15 @@ export async function createAccused(input: FIRAccusedInput): Promise<FIRAccused>
   const now = nowTimestamp();
   await db.runAsync(
     `INSERT INTO fir_accused (id, fir_id, is_known, name, address, mobile, alt_mobile, jati, age,
-      bail_status, remand_number, date_of_remand, next_remand_date, father, relation, gender, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      bail_status, remand_number, date_of_remand, next_remand_date, father, relation, gender, extra_json, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       id, input.fir_id, input.is_known ? 1 : 0,
       input.name ?? null, input.address ?? null, input.mobile ?? null,
       input.alt_mobile ?? null, input.jati ?? null, input.age ?? null,
       input.bail_status ?? 'unknown', input.remand_number ?? null,
       input.date_of_remand ?? null, input.next_remand_date ?? null,
-      input.father ?? null, input.relation ?? null, input.gender ?? null,
+      input.father ?? null, input.relation ?? null, input.gender ?? null, input.extra_json ?? null,
       now, now,
     ]
   );
@@ -60,7 +62,7 @@ export async function updateAccused(id: string, input: Partial<FIRAccusedInput>)
   const allowed = [
     'name', 'address', 'mobile', 'alt_mobile', 'jati', 'age',
     'bail_status', 'remand_number', 'date_of_remand', 'next_remand_date',
-    'father', 'relation', 'gender',
+    'father', 'relation', 'gender', 'extra_json',
   ];
   const entries = Object.entries(input).filter(([k]) => allowed.includes(k));
   if (!entries.length) return;
