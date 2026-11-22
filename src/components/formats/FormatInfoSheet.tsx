@@ -30,7 +30,8 @@ export function FormatInfoSheet({ formatId, visible, onClose, onFill }: {
     <Modal visible transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
       <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.45)', paddingBottom: NAV_BAR_INSET }}>
         <Pressable style={{ flex: 1 }} onPress={onClose} accessibilityLabel="बंद करें" />
-        <View style={{ maxHeight: height * 0.9, backgroundColor: th.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, overflow: 'hidden' }}>
+        {/* 🔍 open → fixed height (owner's bug: the sheet shrank and jumped with every letter, and collapsed when nothing matched) */}
+        <View style={{ ...(search.open ? { height: height * 0.9 } : { maxHeight: height * 0.9 }), backgroundColor: th.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, overflow: 'hidden' }}>
           <View style={{ alignItems: 'center', paddingVertical: 8 }}>
             <View style={{ width: 44, height: 5, borderRadius: 3, backgroundColor: th.border }} />
           </View>
@@ -48,8 +49,21 @@ export function FormatInfoSheet({ formatId, visible, onClose, onFill }: {
               <InfoSearchBox q={search.q} setQ={search.setQ} count={search.count} active={search.active} onClose={search.close} autoFocus />
             </View>
           ) : null}
-          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
-            {info ? <InfoBlocksView blocks={search.shown} highlight={search.active ? search.q : ''} /> : (
+          <ScrollView style={search.open ? { flex: 1 } : undefined} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
+            {info && search.active && !search.count ? (
+              // nothing matched: say so where the text was + one tap back to the whole note
+              <View style={{ alignItems: 'center', paddingTop: 28, paddingBottom: 12, gap: 10 }}>
+                <Search size={34} color={th.mutedForeground} />
+                <Text style={{ fontSize: 15, color: th.foreground, textAlign: 'center' }}>{`"${search.q.trim()}" — इस जानकारी में कुछ नहीं मिला`}</Text>
+                <Pressable
+                  onPress={() => search.setQ('')}
+                  accessibilityRole="button"
+                  style={{ marginTop: 4, borderWidth: 1.5, borderColor: C.navyText, borderRadius: 12, paddingHorizontal: 20, paddingVertical: 10 }}
+                >
+                  <Text style={{ fontSize: 14.5, fontWeight: '700', color: C.navyText }}>खोज हटाएँ</Text>
+                </Pressable>
+              </View>
+            ) : info ? <InfoBlocksView blocks={search.shown} highlight={search.active ? search.q : ''} /> : (
               <Text style={{ ...txt, color: th.mutedForeground }}>इस प्रारूप की जानकारी अभी उपलब्ध नहीं है।</Text>
             )}
           </ScrollView>

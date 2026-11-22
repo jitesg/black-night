@@ -421,6 +421,8 @@ detailed working log. Keep the guide up to date when the architecture changes.
   an h2 part brings its h section heading; count = parts). UI `components/common/InfoSearch.tsx` (`useInfoSearch`, `InfoSearchBox` with
   "n भाग मिले" / "कुछ नहीं मिला"); InfoBlocksView `highlight` (yellow marks via buildHighlightSegments, context so nested cards follow).
   FormatInfoSheet: 🔍 in the blue bar opens the box; DetailedAnalysisCard (law note): box always at the top "इस विश्लेषण में खोजें…".
+  FormatInfoSheet with 🔍 open = FIXED height 90% (owner's bug: it shrank / jumped per letter and collapsed on no match) + empty state
+  "\"q\" — इस जानकारी में कुछ नहीं मिला" with a "खोज हटाएँ" button (clears q) in place of the text.
 - `sys-fmt-bayan-183-patra` "पीड़िता — 183 BNSS बयान (दर्ज कराने व अवलोकन) तथा CWC सुपुर्दगी पत्र (तीनों एक साथ)" (Case Diary, owner's docx +
   text): ticks doL1/doL2/doL3 (default all on) → up to 3 letters (one sheet each); Law बीएनएसएस/सीआरपीसी → 183/180 or 164/161; Rel पुत्र →
   पीड़ित/निवासी else पीड़िता/निवासिनी; CWC letter: Minor, optional Receiver (one person: माता / पिता / रिश्तेदार + RecvRelation / केयर टेकर)
