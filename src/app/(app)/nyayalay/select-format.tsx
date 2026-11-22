@@ -80,7 +80,7 @@ export default function NyayalaySelectFormatScreen() {
   // Tag mode: ids of the formats tagged for this paper (listed first) → filter "<tag> वाले" / "बाकी"
   const [tagIds, setTagIds] = useState<ReadonlySet<string>>(new Set());
   const first = useMemo(() => {
-    if (isTagMode && tag) return { ids: tagIds, label: `${tag} वाले` };
+    if (isTagMode && tag) return { ids: tagIds, label: `${tag === 'Death_Report' ? 'मृत्यु आख्या' : tag} वाले` };
     if (isFormatType && formatType) return { ids: tagIds, label: FORMAT_TYPE_FIRST[formatType]?.label ?? `${formatType} वाले` };
     return undefined;
   }, [isTagMode, isFormatType, tag, formatType, tagIds]);

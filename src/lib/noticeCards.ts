@@ -51,6 +51,7 @@ export const HC_DUE_SOON_DAYS = 5;
 const COURT_LABEL: Record<string, string> = {
   NBW: 'NBW',
   Summons: 'सम्मन',
+  Death_Report: 'मृत्यु आख्या',
   Bail_Lower_Court: 'जमानत (निचली अदालत)',
   High_Court_Documents: 'हाईकोर्ट दस्तावेज़',
   Anya: 'न्यायालय दस्तावेज़',
@@ -59,6 +60,7 @@ const COURT_LABEL: Record<string, string> = {
 const COURT_TASK: Record<string, string> = {
   NBW: 'NBW तामील',
   Summons: 'सम्मन तामील',
+  Death_Report: 'मृत्यु आख्या',
   Bail_Lower_Court: 'जमानत आख्या',
   High_Court_Documents: 'हाईकोर्ट आख्या',
   Anya: 'आख्या',

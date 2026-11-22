@@ -21,6 +21,8 @@
  *   <Input               label="Name"   value={v} onChangeText={set} />  ← bare = text
  */
 
+import { courtPickSpecOf } from '@/lib/courtPick';
+import { CourtPaperPick } from '@/components/formats/CourtPaperPick';
 import { isMarkerDefault } from '@/lib/firFill';
 import React, {
   forwardRef, memo, useEffect, useRef, useState, useCallback, useImperativeHandle,
@@ -720,6 +722,16 @@ const FormatKeyField = forwardRef<View, FormatKeyInputProps>(
             required={required}
           />
         );
+        // "न्यायालय से लंबित काग़ज़ चुनें" under this dropdown (key option courtPick / courtFill — src/lib/courtPick.ts)
+        const pickSpec = courtPickSpecOf(keyDef.dropdown_options);
+        if (pickSpec) {
+          return (
+            <View>
+              {dd}
+              <CourtPaperPick spec={pickSpec} choice={value} allValues={allValues} onChange={onChange} />
+            </View>
+          );
+        }
         // पहर worked out from a time (formatDerived.ts): say what "समय से" will print
         const paharFrom = paharSource(keyDef.dropdown_options);
         if (!paharFrom) return dd;

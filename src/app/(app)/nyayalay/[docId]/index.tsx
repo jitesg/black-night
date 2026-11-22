@@ -405,7 +405,7 @@ export default function NyayalayDocDetailScreen() {
   // Uses flex-row + flex-wrap + numberOfLines={1} to prevent horizontal overflow
   // on small Android screens.
 
-  const renderCompactDetails = (sectionTitleKey: string) => {
+  const renderCompactDetails = (sectionTitleKey: string, personsKey = 'nbw.accusedDetails') => {
     const accusedNames = accused.map((a) => a.name).join(', ') || t('nbw.noAccused');
     return (
       <View
@@ -451,7 +451,7 @@ export default function NyayalayDocDetailScreen() {
 
         {/* Accused names — comma-separated inline */}
         <View>
-          <Text className="text-xs text-muted-foreground mb-0.5">{t('nbw.accusedDetails')}</Text>
+          <Text className="text-xs text-muted-foreground mb-0.5">{t(personsKey)}</Text>
           <Text className="text-sm text-foreground leading-5" numberOfLines={2}>
             {accusedNames}
           </Text>
@@ -463,6 +463,8 @@ export default function NyayalayDocDetailScreen() {
   // Convenience wrappers so call-sites remain self-documenting.
   const renderNBWDetails     = () => renderCompactDetails('nbw.nbwDetails');
   const renderSummonsDetails = () => renderCompactDetails('nbw.summonsDetails');
+  // मृत्यु आख्या (owner): same card as सम्मन, person heading "जिसकी मृत्यु आख्या माँगी गई"
+  const renderDeathDetails   = () => renderCompactDetails('nbw.deathDetails', 'nyayalay.form.sectionDeathPerson');
 
   // ── Report workflow — shared by NBW and Summons ──────────────────────
   // Streamlined: Generate button FIRST, ReportCard BELOW.
@@ -630,6 +632,8 @@ export default function NyayalayDocDetailScreen() {
           ? renderNBWDetails()
           : doc.doc_type === 'Summons'
           ? renderSummonsDetails()
+          : doc.doc_type === 'Death_Report'
+          ? renderDeathDetails()
           : renderCommonDetails()}
 
         {/* संलग्न कागज़ (owner) */}
@@ -641,7 +645,7 @@ export default function NyayalayDocDetailScreen() {
 
         {/* Type-dispatched workflow */}
         {doc.doc_type === 'NBW' && renderNBWWorkflow()}
-        {doc.doc_type === 'Summons' && renderReportWorkflow()}
+        {(doc.doc_type === 'Summons' || doc.doc_type === 'Death_Report') && renderReportWorkflow()}
         {doc.doc_type === 'Bail_Lower_Court' && renderBailLowerCourtInfo()}
         {doc.doc_type === 'High_Court_Documents' && renderHCWorkflow()}
         {doc.doc_type === 'Anya' && renderAnyaWorkflow()}

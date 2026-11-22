@@ -1530,6 +1530,7 @@
     "addTemplate": "फॉर्मेट से टेम्पलेट जोड़ें",
     "nbwDetails": "NBW विवरण",
     "summonsDetails": "समन विवरण",
+    "deathDetails": "मृत्यु आख्या विवरण",
     "noAccused": "कोई अभियुक्त नहीं",
     "templateLabel": "टेम्पलेट"
   },
@@ -2077,6 +2078,7 @@
     "docType": {
       "NBW": "NBW",
       "Summons": "समन",
+      "Death_Report": "मृत्यु आख्या",
       "Bail_Lower_Court": "जमानत (निचली अदालत)",
       "High_Court_Documents": "उच्च न्यायालय दस्तावेज",
       "Anya": "अन्य"
@@ -2180,7 +2182,11 @@
       "hcDeadlineHint": "नए उच्च न्यायालय दस्तावेजों के लिए स्वतः आज + 15 दिन निर्धारित। यदि आवश्यक हो तो संपादित करें।",
       "subTypeBail": "जमानत",
       "subTypeWrit": "रिट",
-      "appellants": "अपीलार्थी / वादी"
+      "appellants": "अपीलार्थी / वादी",
+      "apradhSankhyaOptional": "अपराध संख्या (मु0अ0सं0)",
+      "applicableSectionsOptional": "लागू धाराएं",
+      "sectionDeathPerson": "जिसकी मृत्यु आख्या माँगी गई",
+      "errorDeathPersonRequired": "जिस व्यक्ति की मृत्यु आख्या माँगी गई, उसका नाम लिखें"
     },
     "fillFormat": {
       "loadingTemplate": "फॉर्मेट लोड हो रहा है…",

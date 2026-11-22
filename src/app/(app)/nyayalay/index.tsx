@@ -61,6 +61,7 @@ const STATUS_LABEL_KEY = {
 const DOC_TYPE_I18N_KEYS: Record<DocType, string> = {
   NBW: 'nyayalay.docType.NBW',
   Summons: 'nyayalay.docType.Summons',
+  Death_Report: 'nyayalay.docType.Death_Report',
   Bail_Lower_Court: 'nyayalay.docType.Bail_Lower_Court',
   High_Court_Documents: 'nyayalay.docType.High_Court_Documents',
   Anya: 'nyayalay.docType.Anya',

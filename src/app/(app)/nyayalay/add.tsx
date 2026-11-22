@@ -431,6 +431,12 @@ export default function AddNyayalayScreen() {
     if (!docType) { e.docType = t('nyayalay.form.errorDocTypeRequired'); }
 
     const needsCourtFields = docType === 'NBW' || docType === 'Summons';
+    // मृत्यु आख्या (owner): कोर्ट का नाम + वाद सं0 + व्यक्ति ज़रूरी; अपराध सं0 / धाराएं वैकल्पिक (परिवाद में नहीं होतीं)
+    if (docType === 'Death_Report') {
+      if (!courtName.trim()) e.courtName = t('nyayalay.form.errorCourtNameRequired');
+      if (!vadSankhya.trim()) e.vadSankhya = t('nyayalay.form.errorVadSankhyaRequired');
+      if (!firstName(accused)) e.accused0 = t('nyayalay.form.errorDeathPersonRequired');
+    }
     if (needsCourtFields) {
       if (!courtName.trim()) e.courtName = t('nyayalay.form.errorCourtNameRequired');
       if (!vadSankhya.trim()) e.vadSankhya = t('nyayalay.form.errorVadSankhyaRequired');
@@ -552,7 +558,8 @@ export default function AddNyayalayScreen() {
 
   // ── Render ──────────────────────────────────────────────────────────
 
-  const showCourtFields = docType === 'NBW' || docType === 'Summons';
+  const isDeath = docType === 'Death_Report';
+  const showCourtFields = docType === 'NBW' || docType === 'Summons' || isDeath;
   const showBailLower = docType === 'Bail_Lower_Court';
   const showHC = docType === 'High_Court_Documents';
   const showHCBail = showHC && subType === 'Bail';
@@ -595,6 +602,7 @@ export default function AddNyayalayScreen() {
             optionLabels={{
               NBW: t('nyayalay.docType.NBW'),
               Summons: t('nyayalay.docType.Summons'),
+              Death_Report: t('nyayalay.docType.Death_Report'),
               Bail_Lower_Court: t('nyayalay.docType.Bail_Lower_Court'),
               High_Court_Documents: t('nyayalay.docType.High_Court_Documents'),
               Anya: t('nyayalay.docType.Anya'),
@@ -633,25 +641,25 @@ export default function AddNyayalayScreen() {
                   </Field>
                 </View>
                 <View className="flex-1">
-                  <Field label={t('nyayalay.form.apradhSankhyaRequired')} error={errors.apradhSankhya}>
+                  <Field label={isDeath ? t('nyayalay.form.apradhSankhyaOptional') : t('nyayalay.form.apradhSankhyaRequired')} error={errors.apradhSankhya}>
                     <Input value={apradhSankhya} onChangeText={(v) => { setApradhSankhya(v); markDirty(); }} placeholder={t('nyayalay.form.apradhSankhyaPlaceholder')} />
                   </Field>
                 </View>
               </View>
-              <Field label={t('nyayalay.form.applicableSectionsRequired')} error={errors.applicableSections}>
+              <Field label={isDeath ? t('nyayalay.form.applicableSectionsOptional') : t('nyayalay.form.applicableSectionsRequired')} error={errors.applicableSections}>
                 <Input type="multiline" autoGrow value={applicableSections} onChangeText={(v) => { setApplicableSections(v); markDirty(); }} placeholder={t('nyayalay.form.applicableSectionsPlaceholder')} numberOfLines={2} />
               </Field>
               </View>
 
-              <Section title={t('nyayalay.form.sectionAccusedDetails')} />
+              <Section title={isDeath ? t('nyayalay.form.sectionDeathPerson') : t('nyayalay.form.sectionAccusedDetails')} />
               <View className="mb-2">
                 <PersonGroupInput
                   keyName="nyl_accused"
                   value={accused}
                   onChange={onAccused}
                   error={errors.accused0}
-                  cardBadge={ACCUSED_WORD}
-                  addLabel={`+ ${ACCUSED_WORD} जोड़ें`}
+                  cardBadge={isDeath ? 'व्यक्ति' : ACCUSED_WORD}
+                  addLabel={isDeath ? '+ व्यक्ति जोड़ें' : `+ ${ACCUSED_WORD} जोड़ें`}
                   addressOptional
                   hideLabel
                 />

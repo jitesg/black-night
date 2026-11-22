@@ -123,7 +123,7 @@ export async function getOfficeNewRows(): Promise<OfficeNewRow[]> {
     `SELECT id, doc_type, deadline_date, office_json, vad_sankhya, apradh_sankhya FROM nyayalay_documents
      WHERE deleted_at IS NULL AND office_task_id IS NOT NULL AND office_new = 1`,
   ).catch(() => []);
-  const COURT: Record<string, string> = { NBW: 'NBW', Summons: 'सम्मन', Bail_Lower_Court: 'जमानत (निचली अदालत)', High_Court_Documents: 'उच्च न्यायालय', Anya: 'न्यायालय' };
+  const COURT: Record<string, string> = { NBW: 'NBW', Summons: 'सम्मन', Death_Report: 'मृत्यु आख्या', Bail_Lower_Court: 'जमानत (निचली अदालत)', High_Court_Documents: 'उच्च न्यायालय', Anya: 'न्यायालय' };
   return [
     ...pp.map((r) => ({ id: r.id, module: 'pp' as const, label: r.petition_type, who: r.who, deadline_date: r.deadline_date, from: meta(r.office_json) })),
     ...court.map((r) => ({

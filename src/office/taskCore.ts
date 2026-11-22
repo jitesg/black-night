@@ -15,6 +15,7 @@ export const PETITION_SUBTYPES = ['RL', 'जनता दर्शन', 'CO प�
 export const COURT_SUBTYPES: { value: string; label: string }[] = [
   { value: 'NBW', label: 'NBW' },
   { value: 'Summons', label: 'सम्मन' },
+  { value: 'Death_Report', label: 'मृत्यु आख्या' },
   { value: 'Bail_Lower_Court', label: 'जमानत (निचली अदालत)' },
   { value: 'High_Court_Documents', label: 'उच्च न्यायालय' },
   { value: 'Anya', label: 'अन्य' },

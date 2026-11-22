@@ -236,6 +236,13 @@ detailed working log. Keep the guide up to date when the architecture changes.
   वारंट अ0सं0 / धारा optional (owner, option क; seed_version 9, backup gd_rawangi_samanya_v8_before_fir_sec_optional.json): WFir / WSec
   is_required 0 + "(वैकल्पिक)"; empty → left out of the heading ("सम्बन्धित मु0अ0सं0 … धारा …" / "सम्बन्धित धारा …" / nothing) and the body
   ("अ0सं0 …", "धारा …"). न्यायालय का नाम + वाद सं0 stay required. Test in scripts/test_rawangi.ts.
+  "न्यायालय से लंबित काग़ज़ चुनें" (owner, sample approved; seed_version 10, backup gd_rawangi_samanya_v9_before_court_pick.json): WType key options
+  `courtPick` {NBW / सम्मन → [NBW, Summons], मृत्यु आख्या → [Death_Report, NBW, Summons]} + `courtFill` {WCourt: court, WCaseNo: vad, WFir: fir,
+  WSec: sections, WCard: person} → `components/formats/CourtPaperPick.tsx` under the dropdown (FormatKeyField, input.tsx): dashed court-blue strip
+  with the count (hidden when 0), sheet with search + type-badge cards, tap fills via the form's onChange, "✓ … भरा · हटाएँ" undo; the paper stays
+  लंबित. Rules pure `src/lib/courtPick.ts` (courtPickSpecOf / typesFor / orderPapers / paperFir = अपराध सं0 else fir/year / fillValuesFrom /
+  matchPaper; tests scripts/test_court_pick.ts), data nyayalayRepo `getPendingCourtPapersForPick(types)` (pending docs + first person, 2 queries).
+  Any format dropdown can use the same two options.
   ⓘ note (owner): assets/format-info/sys-gd-fmt-rawangi-samanya.json = owner's Formatted_Police_Log.docx (37 रवानगी / आमद GD samples: 2 h
   sections, each "(n) …" title → h2, body p as is; masked names [AO] etc. → "………", owner) + one NOTES line in formatInfo.ts.
 - Format dropdown chips (`FormatKeyDropdownInput`, every format): compact pills (paddingHorizontal 14, paddingVertical 7, radius 999, no minWidth) —
@@ -666,6 +673,11 @@ detailed working log. Keep the guide up to date when the architecture changes.
   Same form (owner): "कोर्ट का विवरण" (NBW / सम्मन: court name, वाद / अपराध सं0, धाराएं) and `FirSection` (मु0अ0सं0 / वर्ष / थाना) are each ONE
   card (design A: bg-card, border, radius 16, heading inside with ⚖️ / 📄 in #3B82F6); अन्य = "वैकल्पिक" chip and no * (it was never required);
   no separate "अंतिम तिथि" heading; DatePickerField shows dd/mm/yyyy (value stays YYYY-MM-DD).
+- न्यायालय प्रकार "मृत्यु आख्या" (owner): DocType `Death_Report` (nyayalayRepo DOC_TYPES after Summons, labels / analytics / reminder category;
+  i18n nyayalay.docType.Death_Report, nbw.deathDetails; noticeCards + noticeRepo labels; office taskCore COURT_SUBTYPES). add.tsx: same court card as
+  NBW / सम्मन but only कोर्ट का नाम + वाद सं0 + व्यक्ति required (अपराध सं0 / धाराएं "वैकल्पिक" labels), person section "जिसकी मृत्यु आख्या माँगी गई",
+  badge "व्यक्ति". Detail = सम्मन's compact card + report workflow; report "प्रारूप से जोड़ें" → select-format tag=Death_Report ("मृत्यु आख्या वाले").
+  Alerts like NBW (deadlineAlerts has no per-type rule except High Court).
 - न्यायालय HC जमानत चेकलिस्ट (owner's bug, there since the MeDo export): add/edit saved it only in nyayalay_documents.checklist_json while the
   detail reads nyayalay_checklist_items (never written → "0/0"). Now create / update call `writeChecklistRows` (same id → update, new → insert,
   gone → soft-delete; null JSON = no checklist), `getNyayalayDocWithDetails` writes the rows once from checklist_json for older papers (ticks kept);

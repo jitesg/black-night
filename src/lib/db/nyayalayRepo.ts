@@ -6,6 +6,8 @@ import { isTypoTolerant, smartMatch, sqlWordFilter } from '@/lib/searchUtils';
 export type DocType =
   | 'NBW'
   | 'Summons'
+  /** मृत्यु आख्या (owner) — the court asks whether a person (वारंटी / अभियुक्त) has died; form like NBW / सम्मन */
+  | 'Death_Report'
   | 'Bail_Lower_Court'
   | 'High_Court_Documents'
   | 'Anya';
@@ -18,6 +20,7 @@ export type PersonType = 'accused' | 'appellant';
 export const DOC_TYPES: DocType[] = [
   'NBW',
   'Summons',
+  'Death_Report',
   'Bail_Lower_Court',
   'High_Court_Documents',
   'Anya',
@@ -26,6 +29,7 @@ export const DOC_TYPES: DocType[] = [
 export const DOC_TYPE_LABELS: Record<DocType, string> = {
   NBW: 'NBW',
   Summons: 'Summons',
+  Death_Report: 'Death Report',
   Bail_Lower_Court: 'Bail (Lower Court)',
   High_Court_Documents: 'High Court Documents',
   Anya: 'Anya',
@@ -321,6 +325,33 @@ export async function getAllNyayalayDocuments(): Promise<NyayalayDocument[]> {
   return rows;
 }
 
+/**
+ * GD रवानगी "न्यायालय से लंबित काग़ज़ चुनें" (owner): pending papers of the given types, each with its first person
+ * (accused / व्यक्ति, oldest first). Two queries, no per-row reads. Order / search in src/lib/courtPick.ts.
+ */
+export async function getPendingCourtPapersForPick(types: readonly string[]): Promise<import('@/lib/courtPick').PickPaper[]> {
+  const wanted = types.filter((t) => (DOC_TYPES as string[]).includes(t));
+  if (!wanted.length) return [];
+  const db = await getDatabase();
+  const marks = wanted.map(() => '?').join(',');
+  const docs = await db.getAllAsync<NyayalayDocument>(
+    `SELECT * FROM nyayalay_documents WHERE deleted_at IS NULL AND status = 'Pending' AND doc_type IN (${marks})`, wanted,
+  );
+  if (!docs.length) return [];
+  const ids = docs.map((d) => d.id);
+  const people = await db.getAllAsync<{ id: string; doc_id: string; name: string; father_name: string; mobile: string; address: string; remarks: string; extra_json: string | null }>(
+    `SELECT id, doc_id, name, father_name, mobile, address, remarks, extra_json FROM nyayalay_persons
+     WHERE deleted_at IS NULL AND doc_id IN (${ids.map(() => '?').join(',')}) ORDER BY created_at ASC`, ids,
+  );
+  const first = new Map<string, (typeof people)[number]>();
+  for (const p of people) if (!first.has(p.doc_id) && (p.name ?? '').trim()) first.set(p.doc_id, p);
+  return docs.map((d) => ({
+    id: d.id, doc_type: d.doc_type, court_name: d.court_name ?? '', vad_sankhya: d.vad_sankhya ?? '', apradh_sankhya: d.apradh_sankhya ?? '',
+    applicable_sections: d.applicable_sections ?? '', fir_number: d.fir_number ?? '', fir_year: d.fir_year ?? '',
+    deadline_date: d.deadline_date ?? '', person: first.get(d.id) ?? null,
+  }));
+}
+
 export async function getNyayalayDocWithDetails(id: string): Promise<NyayalayDocWithDetails | null> {
   const db = await getDatabase();
   const docs = await db.getAllAsync<NyayalayDocument>(
@@ -462,6 +493,7 @@ export function computeAnalyticsFromDocs(docs: NyayalayDocument[]): NyayalayAnal
   const byType: Record<DocType, NyayalayTypeAnalytics> = {
     NBW: emptyType(),
     Summons: emptyType(),
+    Death_Report: emptyType(),
     Bail_Lower_Court: emptyType(),
     High_Court_Documents: emptyType(),
     Anya: emptyType(),
@@ -603,6 +635,7 @@ export function computeReminderInfo(
   const categoryMap: Record<string, string> = {
     NBW: 'NBW Due',
     Summons: 'Summons Compliance',
+    Death_Report: 'Death Report Due',
     Bail_Lower_Court: 'Bail Compliance Pending',
     High_Court_Documents_Bail: 'HC Bail Due',
     High_Court_Documents_Writ: 'Writ Due',

@@ -1530,6 +1530,7 @@
     "addTemplate": "Add Template from Format",
     "nbwDetails": "NBW Details",
     "summonsDetails": "Summons Details",
+    "deathDetails": "Death report details",
     "noAccused": "No accused on record",
     "templateLabel": "Template"
   },
@@ -2077,6 +2078,7 @@
     "docType": {
       "NBW": "NBW",
       "Summons": "Summons",
+      "Death_Report": "Death report",
       "Bail_Lower_Court": "Bail (Lower Court)",
       "High_Court_Documents": "High Court Documents",
       "Anya": "Anya"
@@ -2111,7 +2113,7 @@
       "courtName": "Court Name",
       "courtNameRequired": "Court Name *",
       "courtNamePlaceholder": "Court name",
-      "vadSankhya": "Vad Sankhya",
+      "vadSankhya": "Case no.",
       "vadSankhyaRequired": "Vad Sankhya *",
       "vadSankhyaPlaceholder": "Vad no.",
       "apradhSankhya": "Apradh Sankhya",
@@ -2180,7 +2182,11 @@
       "hcDeadlineHint": "Auto-set to today + 15 days for new High Court docs. Edit if needed.",
       "subTypeBail": "Bail",
       "subTypeWrit": "Writ",
-      "appellants": "Appellants / Complainants"
+      "appellants": "Appellants / Complainants",
+      "apradhSankhyaOptional": "Crime no.",
+      "applicableSectionsOptional": "Sections",
+      "sectionDeathPerson": "Person whose death report is asked",
+      "errorDeathPersonRequired": "Write the name of the person whose death report is asked"
     },
     "fillFormat": {
       "loadingTemplate": "Loading template…",

@@ -4730,7 +4730,7 @@
       "source": "system",
       "editable": 0,
       "content_type": "format",
-      "seed_version": 9,
+      "seed_version": 10,
       "app_version": "1.0.0",
       "tags": [
         "रवानगी",
@@ -4838,7 +4838,7 @@
           "field_type": "dropdown",
           "is_required": 1,
           "default_value": "NBW",
-          "dropdown_options": "{\"options\": [\"NBW\", \"सम्मन\", \"मृत्यु आख्या\"], \"showIf\": \"Kind=वारंट\", \"hint\": \"NBW = वारंटी की तलाश; सम्मन = सम्मन तामील; मृत्यु आख्या = मृत्यु के सम्बन्ध में जानकारी कर आख्या\"}",
+          "dropdown_options": "{\"options\": [\"NBW\", \"सम्मन\", \"मृत्यु आख्या\"], \"showIf\": \"Kind=वारंट\", \"hint\": \"NBW = वारंटी की तलाश; सम्मन = सम्मन तामील; मृत्यु आख्या = मृत्यु के सम्बन्ध में जानकारी कर आख्या\", \"courtPick\": {\"NBW\": [\"NBW\", \"Summons\"], \"सम्मन\": [\"NBW\", \"Summons\"], \"मृत्यु आख्या\": [\"Death_Report\", \"NBW\", \"Summons\"]}, \"courtFill\": {\"WCourt\": \"court\", \"WCaseNo\": \"vad\", \"WFir\": \"fir\", \"WSec\": \"sections\", \"WCard\": \"person\"}}",
           "sort_order": 10
         },
         {
