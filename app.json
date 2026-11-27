@@ -3,7 +3,7 @@
     "name": "InvestSuite",
     "slug": "investsuite-core",
     "version": "1.0.583",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {

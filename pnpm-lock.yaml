@@ -199,6 +199,9 @@ importers:
       expo-screen-capture:
         specifier: ~55.0.18
         version: 55.0.18(expo@55.0.6)(react@19.2.0)
+      expo-screen-orientation:
+        specifier: ~55.0.20
+        version: 55.0.20(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))
       expo-sharing:
         specifier: ~55.0.11
         version: 55.0.22(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0)
@@ -3987,6 +3990,12 @@ packages:
     peerDependencies:
       expo: '*'
       react: '*'
+
+  expo-screen-orientation@55.0.20:
+    resolution: {integrity: sha512-GxV5QW+zRHJ+ChRzgqWncuKuJPrLFKrPjeaBSNfAdk24x83kmH4EvUcu4lHFBSKsUUMHQCCSslCofXN0+sXjFw==}
+    peerDependencies:
+      expo: '*'
+      react-native: '*'
 
   expo-server@55.0.11:
     resolution: {integrity: sha512-AxRdHqcv0H1g4s923vu+5n1Nrhne23bjXbP+Vl7+Lwfpe7MG9PuU1IS95IJK6a+7BVV1mRN6QlZvs8Yv7EEXNQ==}
@@ -10809,6 +10818,11 @@ snapshots:
     dependencies:
       expo: 55.0.6(patch_hash=d2507f55976f6c5da8f35d26906f4bd46415e042570afc3bd7c543c86abc5a61)(@babel/core@7.29.7)(@expo/dom-webview@55.0.6)(@expo/metro-runtime@55.0.11)(expo-router@55.0.5)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       react: 19.2.0
+
+  expo-screen-orientation@55.0.20(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0)):
+    dependencies:
+      expo: 55.0.6(patch_hash=d2507f55976f6c5da8f35d26906f4bd46415e042570afc3bd7c543c86abc5a61)(@babel/core@7.29.7)(@expo/dom-webview@55.0.6)(@expo/metro-runtime@55.0.11)(expo-router@55.0.5)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+      react-native: 0.83.2(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.0)
 
   expo-server@55.0.11: {}
 

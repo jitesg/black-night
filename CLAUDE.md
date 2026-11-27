@@ -65,6 +65,11 @@ detailed working log. Keep the guide up to date when the architecture changes.
   knowledge add-checklist / add-guide, sys-format-manager + sys-knowledge-manager editors. NOT मुकदमा (add-fir, details) and NOT the केस डायरी
   कार्यवाही panel (owner) — they keep the fixed height.
 - `plugins/withHighRefreshRate.js` requests the max display refresh rate.
+- Orientation (owner, option ख "phone खड़ा, tablet घूमे"): app.json `"orientation": "default"` (was "portrait" — tablets could not turn) +
+  `src/lib/orientationPolicy.ts` (imported from index.ts, both apps): smallest screen side < 600 dp → `expo-screen-orientation` lockAsync
+  PORTRAIT_UP, else unlockAsync; re-checked on Dimensions change (foldables). Rule pure `src/lib/screenSize.ts` (tests scripts/test_screen_size.ts).
+  Dep expo-screen-orientation ~55.0.20 (native → needs a new APK). Screens are portrait-first; wide-landscape tweaks per screen when the owner sends
+  tablet screenshots.
 - App icon (owner chose B of 3 flat samples, from the owner's "officer at desk" picture): officer with star cap behind a laptop, cup + files,
   brown gradient — source `assets/icon.svg` → icon.png (1024), adaptive-icon-bg.png (gradient), adaptive-icon.png (figure scaled 0.66 into the
   safe zone, transparent), favicon.png (48). Rendered with Playwright (file:// svg with width/height). Office app keeps its own icon.
