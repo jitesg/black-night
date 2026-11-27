@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useRef } from 'react';
-import { View, Text, Pressable, FlatList } from 'react-native';
+import { View, Text, Pressable, FlatList, ScrollView } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
@@ -14,7 +14,7 @@ import { getSimple, hasSimple } from '@/lib/law/simpleExplain';
 import { hasDetailedExplain } from '@/lib/law/detailedAnalysis';
 import { hasCasesForSection } from '@/lib/law/casesData';
 import { getLawNote } from '@/lib/law/lawNotes';
-import { classFlagsBySection, passesLawFilters, type SectionFacts } from '@/lib/law/lawFilter';
+import { classDots, classFlagsBySection, passesLawFilters, sectionRanges, type ClassTone, type SectionFacts } from '@/lib/law/lawFilter';
 import {
   ActiveFilterChips, FilterSearchButton, FilterSheet, activeFilterCount, type FilterGroupDef, type FilterValues,
 } from '@/components/common/FilterSheet';
@@ -71,9 +71,17 @@ export default function LawActSectionsScreen() {
   }, [actId, allSections.length, countOf]);
   const filtersOn = activeFilterCount(filterValues, filterGroups) > 0;
 
+  // Number-range chips (owner, new layout part 3: "1–100 · 101–200 …"; chapters wait for a verified chapter list)
+  const ranges = useMemo(() => sectionRanges(allSections.length ? allSections[allSections.length - 1].n : meta.total), [allSections, meta.total]);
+  const [range, setRange] = useState<string | null>(null);
+  const toneColor = (tone: ClassTone) => (tone === 'strict' ? (colorScheme === 'dark' ? '#F87171' : '#DC2626')
+    : tone === 'mild' ? (colorScheme === 'dark' ? '#4ADE80' : '#16A34A') : (colorScheme === 'dark' ? '#FBBF24' : '#D97706'));
+
   const filteredSections = useMemo(() => {
     const raw = filterText.trim();
-    const base = filtersOn ? allSections.filter((s) => passesLawFilters(facts.get(s.n)!, filterValues)) : allSections;
+    const r = ranges.find((x) => x.label === range);
+    const inRange = r ? allSections.filter((s) => s.n >= r.from && s.n <= r.to) : allSections;
+    const base = filtersOn ? inRange.filter((s) => passesLawFilters(facts.get(s.n)!, filterValues)) : inRange;
     if (!raw) return base;
 
     // A section number, with or without "धारा" / "section" / this Act's name:
@@ -92,7 +100,7 @@ export default function LawActSectionsScreen() {
       const simple = getSimple(actId, s.n);
       return matchesQuery(raw, s.title, simple?.s, (simple?.k ?? []).join(' '));
     });
-  }, [allSections, filterText, actId, filtersOn, facts, filterValues]);
+  }, [allSections, filterText, actId, filtersOn, facts, filterValues, ranges, range]);
 
   /** The typed text as a section number of this Act that exists, else null. */
   const sectionOf = useCallback((text: string): number | null => {
@@ -132,6 +140,25 @@ export default function LawActSectionsScreen() {
           trailing={<FilterSearchButton count={activeFilterCount(filterValues, filterGroups)} onPress={() => setShowFilters(true)} accent={actColor} />}
         />
         <ActiveFilterChips groups={filterGroups} values={filterValues} onRemove={(k) => setFilterValues((v) => ({ ...v, [k]: null }))} accent={actColor} />
+        {ranges.length > 1 ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 6 }}>
+            {[{ label: 'सभी' }, ...ranges].map((r) => {
+              const on = r.label === 'सभी' ? range == null : range === r.label;
+              return (
+                <Pressable
+                  key={r.label}
+                  onPress={() => setRange(r.label === 'सभी' ? null : r.label)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  style={{ borderRadius: 999, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 5,
+                    borderColor: on ? actColor : C.border, backgroundColor: on ? actColor : C.card }}
+                >
+                  <Text style={{ fontSize: 12.5, fontWeight: '700', color: on ? '#FFFFFF' : C.foreground }}>{r.label}</Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        ) : null}
         {/* A number typed → one tap opens that section (replaces the old "धारा: ___ देखें" row) */}
         {typedSection != null ? (
           <Pressable
@@ -158,7 +185,7 @@ export default function LawActSectionsScreen() {
         contentContainerClassName="px-4 py-3 gap-2 pb-28"
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
-          filterText.trim() || filtersOn ? (
+          filterText.trim() || filtersOn || range ? (
             <Text className="text-xs font-semibold text-muted-foreground mb-1">
               {t('knowledge.resultCount', { count: filteredSections.length, defaultValue: `${filteredSections.length} धाराएं मिलीं` })}
             </Text>
@@ -198,6 +225,22 @@ export default function LawActSectionsScreen() {
                     </View>
                   )}
                 </View>
+                {(() => {
+                  const f = facts.get(item.n);
+                  const dots = classDots(f?.cls);
+                  if (!dots.length && !f?.detailed) return null;
+                  return (
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: 10, rowGap: 2 }}>
+                      {dots.map((d) => (
+                        <View key={d.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                          <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: toneColor(d.tone) }} />
+                          <Text style={{ fontSize: 11.5, color: C.mutedForeground }}>{d.label}</Text>
+                        </View>
+                      ))}
+                      {f?.detailed ? <Text style={{ fontSize: 11.5, color: actColor, fontWeight: '600' }}>📘 विश्लेषण</Text> : null}
+                    </View>
+                  );
+                })()}
               </View>
             </View>
             <ChevronRight size={18} color={C.mutedForeground} />

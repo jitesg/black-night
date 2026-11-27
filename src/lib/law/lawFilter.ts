@@ -49,3 +49,28 @@ export function passesLawFilters(f: SectionFacts, v: LawFilterValues): boolean {
   if (v.bail === 'nonbail' && !f.cls?.nonbail) return false;
   return true;
 }
+
+/** Number-range groups for an Act's section list (owner, new layout part 3): 1–100, 101–200 … up to the last section. */
+export function sectionRanges(last: number, size = 100): { from: number; to: number; label: string }[] {
+  const out: { from: number; to: number; label: string }[] = [];
+  const n = Math.max(0, Math.floor(Number(last) || 0));
+  for (let from = 1; from <= n; from += size) {
+    const to = Math.min(n, from + size - 1);
+    out.push({ from, to, label: `${from}–${to}` });
+  }
+  return out;
+}
+
+export type ClassTone = 'strict' | 'mild' | 'mixed';
+/** The two small dots on a BNS row: संज्ञेय / असंज्ञेय and जमानतीय / अजमानतीय (mixed sections say both; none → []). */
+export function classDots(f: ClassFlags | undefined): { label: string; tone: ClassTone }[] {
+  if (!f) return [];
+  const out: { label: string; tone: ClassTone }[] = [];
+  if (f.cog && f.noncog) out.push({ label: 'संज्ञेय / असंज्ञेय', tone: 'mixed' });
+  else if (f.cog) out.push({ label: 'संज्ञेय', tone: 'strict' });
+  else if (f.noncog) out.push({ label: 'असंज्ञेय', tone: 'mild' });
+  if (f.bail && f.nonbail) out.push({ label: 'जमानतीय / अजमानतीय', tone: 'mixed' });
+  else if (f.nonbail) out.push({ label: 'अजमानतीय', tone: 'strict' });
+  else if (f.bail) out.push({ label: 'जमानतीय', tone: 'mild' });
+  return out;
+}

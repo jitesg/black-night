@@ -28,3 +28,13 @@ test('BNS 103 संज्ञेय + अजमानतीय, 115(2) जमा
   assert.ok(passesLawFilters({ simple: false, detailed: false, cases: false }, {}));
   assert.ok(!passesLawFilters({ simple: false, detailed: false, cases: false }, { cog: 'noncog' }));
 });
+
+test('number ranges + class dots (new layout part 3)', async () => {
+  const { sectionRanges, classDots } = await import('../src/lib/law/lawFilter.ts');
+  assert.deepEqual(sectionRanges(358).map((r) => r.label), ['1–100', '101–200', '201–300', '301–358']);
+  assert.deepEqual(sectionRanges(170).map((r) => r.label), ['1–100', '101–170']);
+  assert.deepEqual(sectionRanges(0), []);
+  assert.deepEqual(classDots(undefined), []);
+  assert.deepEqual(classDots({ cog: true, noncog: false, bail: false, nonbail: true }).map((d) => d.label), ['संज्ञेय', 'अजमानतीय']);
+  assert.deepEqual(classDots({ cog: true, noncog: true, bail: true, nonbail: false }).map((d) => d.tone), ['mixed', 'mild']);
+});

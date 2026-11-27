@@ -888,6 +888,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
     "# धारा नंबर लिखें" (parseBareSectionNumber → one button per Act that has the section, Enter opens when only one), 3 Act GradientTiles (`big`,
     ACT_GRAD), `SpecialLawList` one card: UPPR / POCSO / महिला कानून / BNS संदर्भ / अन्य अधिनियम (same routes), official note small at the bottom.
     i18n knowledge.lawLayout.*.
+  3 Act सूची (`knowledge/law/[act]/index.tsx`): number-range chips सभी / 1–100 / 101–200 … (`sectionRanges` in lawFilter.ts; combines with
+    search + ⚙︎ filter) — NOT chapters: the app has no chapter data and India Code / Wikipedia were unreachable from the sandbox, so chapter
+    groups wait for a verified list (owner can send it). Each row: `classDots` (BNS only — संज्ञेय/असंज्ञेय + जमानतीय/अजमानतीय from the BNSS
+    First Schedule; red strict / green mild / amber mixed) + "📘 विश्लेषण" when the section has a detailed note. Tests in scripts/test_law_filter.ts.
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared
