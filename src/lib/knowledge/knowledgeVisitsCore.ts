@@ -54,3 +54,17 @@ export function isSaved(list: readonly KnowledgeVisit[], route: string): boolean
 export function toggleSaved(list: readonly KnowledgeVisit[], item: KnowledgeVisit): KnowledgeVisit[] {
   return isSaved(list, item.route) ? list.filter((x) => x.route !== item.route) : addVisit(list, item, SAVED_MAX);
 }
+
+/** SOPs whose checklist is started but not finished, most done first (ज्ञानकोष new layout part 5 "जारी हैं"). */
+export function sopsInProgress<T extends { id: string }>(
+  items: readonly T[], stepsOf: (item: T) => { sopId: string; total: number } | null, done: ReadonlyMap<string, number>,
+): { item: T; done: number; total: number }[] {
+  const out: { item: T; done: number; total: number }[] = [];
+  for (const it of items) {
+    const s = stepsOf(it);
+    if (!s || s.total <= 0) continue;
+    const d = Math.min(done.get(s.sopId) ?? 0, s.total);
+    if (d > 0 && d < s.total) out.push({ item: it, done: d, total: s.total });
+  }
+  return out.sort((a, b) => b.done / b.total - a.done / a.total);
+}

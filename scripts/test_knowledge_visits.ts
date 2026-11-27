@@ -29,3 +29,11 @@ test('saved toggle', () => {
   s = toggleSaved(s, v(103));
   assert.equal(s.length, 0);
 });
+
+test('SOPs in progress', async () => {
+  const { sopsInProgress } = await import('../src/lib/knowledge/knowledgeVisitsCore.ts');
+  const items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
+  const steps = (i: { id: string }) => (i.id === 'd' ? null : { sopId: `s-${i.id}`, total: 10 });
+  const done = new Map([['s-a', 3], ['s-b', 10], ['s-c', 7]]);
+  assert.deepEqual(sopsInProgress(items, steps, done).map((x) => `${x.item.id}:${x.done}`), ['c:7', 'a:3']);
+});

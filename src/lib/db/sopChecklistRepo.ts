@@ -166,3 +166,20 @@ export async function getCaseChecklists(
 
   return rows || [];
 }
+
+/**
+ * Ticked steps per SOP — the best of its general checklist and each case's (owner, ज्ञानकोष new layout part 5: "जारी हैं").
+ * Returns sop_id → done count; any error → empty map (the list just shows no "जारी हैं" block).
+ */
+export async function getSopDoneCounts(): Promise<Map<string, number>> {
+  const out = new Map<string, number>();
+  try {
+    const db = await getDatabase();
+    const rows = await db.getAllAsync<{ sop_id: string; d: number }>(
+      `SELECT sop_id, COALESCE(case_id, '') AS c, SUM(CASE WHEN done = 1 THEN 1 ELSE 0 END) AS d
+         FROM sop_checklist GROUP BY sop_id, COALESCE(case_id, '')`,
+    );
+    for (const r of rows) out.set(r.sop_id, Math.max(out.get(r.sop_id) ?? 0, Number(r.d) || 0));
+  } catch { /* table missing / read error — no progress shown */ }
+  return out;
+}

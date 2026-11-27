@@ -895,6 +895,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
   4 धारा पेज (`knowledge/law/[act]/[n].tsx`): BNS single schedule row → 4 fact boxes सज़ा / संज्ञेय / जमानत / विचारण (replaced the 3 pills; "कई
     उप-धाराएँ" pill unchanged); switch मूल पाठ / सरल / विश्लेषण / निर्णय (only parts the section has; मूल पाठ tab = text + classification + संबंधित,
     the संबंधित / उप-धाराएँ pills switch to it first); bottom bar ⭐ सहेजें (`useSavedToggle` → होम "सहेजे गए") between पिछली and the counter.
+  5 SOP सूची (`knowledge/list.tsx`, category SOP only): `components/knowledge/SopListParts.tsx` — `SopListHeader` (visible उप-श्रेणी chips = the ⚙︎
+    sheet's sub group, "⏳ जारी हैं" = SOPs with a started, unfinished checklist + amber bar → opens ?tab=checklist; `getSopDoneCounts` in sopChecklistRepo
+    = best of general / per-case ticks; `sopsInProgress` in knowledgeVisitsCore; hidden while searching) + `SopQuickButtons` on every SOP card
+    (📖 पढ़ें ?tab=details / ✅ चेकलिस्ट / 💡 समझें when hasExplain).
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared

@@ -14,7 +14,10 @@ import {
 } from '@/lib/db/knowledgeRepo';
 import { getAllKnowledgeNotesMap } from '@/lib/db/knowledgeNotesRepo';
 import { getDisplayShortTitle, getCircularNumberChip, getEntryStatus, getEntryPreviewText } from '@/lib/knowledge/knowledgeDisplay';
-import { getSopStepCount } from '@/ai/sopIndex';
+import { getById as getSopIndexEntry, getSopStepCount } from '@/ai/sopIndex';
+import { SopListHeader, SopQuickButtons } from '@/components/knowledge/SopListParts';
+import { getSopDoneCounts } from '@/lib/db/sopChecklistRepo';
+import { sopsInProgress } from '@/lib/knowledge/knowledgeVisitsCore';
 import { hasExplain } from '@/ai/sopExplain';
 import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
 import {
@@ -48,8 +51,10 @@ function fmtTs(ts: number): string {
 
 // ─── Record Card ──────────────────────────────────────────────────────────
 function RecordCard({
-  item, userNote, color, query, highlight, typoTolerant, onPress, onEdit, onDelete,
+  item, userNote, color, query, highlight, typoTolerant, onPress, onEdit, onDelete, sopActions,
 }: {
+  /** SOP list (owner, new layout part 5): पढ़ें / चेकलिस्ट / समझें buttons on the card */
+  sopActions?: boolean;
   item: KnowledgeEntry;
   userNote?: string;
   color: string;
@@ -207,6 +212,8 @@ function RecordCard({
           ))}
         </View>
       )}
+
+      {sopActions && getSopStepCount(item.id) > 0 ? <SopQuickButtons id={item.id} color={color} explain={hasExplain(item.id)} /> : null}
 
       {/* Footer */}
       <View className="flex-row items-center justify-between pt-1 border-t border-border/50">
@@ -500,6 +507,19 @@ export default function KnowledgeListScreen() {
       options: [{ value: 'System', label: t('knowledge.list.filterSystem') }, { value: 'User', label: t('knowledge.list.filterUser') }],
     },
   ], [t, subcategories, allEntries, isSopCategory]);
+  // SOP "जारी हैं" (owner, new layout part 5): checklist started, not finished — re-read on every focus
+  const [sopDone, setSopDone] = useState<Map<string, number>>(new Map());
+  useFocusEffect(useCallback(() => {
+    if (!isSopCategory) return;
+    let alive = true;
+    getSopDoneCounts().then((m) => { if (alive) setSopDone(m); }).catch(() => {});
+    return () => { alive = false; };
+  }, [isSopCategory]));
+  const sopProgress = useMemo(() => (isSopCategory ? sopsInProgress(allEntries, (e) => {
+    const ix = getSopIndexEntry(e.id);
+    return ix ? { sopId: ix.id, total: ix.steps.length } : null;
+  }, sopDone).map((x) => ({ id: x.item.id, title: getDisplayShortTitle(x.item), done: x.done, total: x.total })) : []), [isSopCategory, allEntries, sopDone]);
+
   const filterValues = useMemo<FilterValues>(
     () => ({ sub: activeSubcat === 'All' ? null : activeSubcat, source: sourceFilter === 'All' ? null : sourceFilter }),
     [activeSubcat, sourceFilter],
@@ -574,7 +594,15 @@ export default function KnowledgeListScreen() {
           contentInsetAdjustmentBehavior="automatic"
           refreshing={false}
           onRefresh={() => loadData()}
-          ListHeaderComponent={isLawCategory ? <RegulationsEntryCard /> : category === 'Court Judgment' ? <CasesEntryCard /> : null}
+          ListHeaderComponent={isLawCategory ? <RegulationsEntryCard /> : category === 'Court Judgment' ? <CasesEntryCard /> : isSopCategory ? (
+            <SopListHeader
+              color={color}
+              chips={(filterGroups[0]?.options ?? []) as { value: string; label: string }[]}
+              active={activeSubcat}
+              onPick={handleSubcat}
+              inProgress={query.trim() ? [] : sopProgress}
+            />
+          ) : null}
           renderItem={({ item }) => (
             <RecordCard
               item={item}
@@ -590,6 +618,7 @@ export default function KnowledgeListScreen() {
                 )
               }
               onDelete={() => setDeleteTarget(item)}
+              sopActions={isSopCategory}
             />
           )}
           ListEmptyComponent={
