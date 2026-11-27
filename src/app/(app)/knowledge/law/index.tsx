@@ -8,8 +8,17 @@ import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { THEME } from '@/lib/theme';
 import { ACTS, searchLaw, type ActId, type LawSearchResult } from '@/lib/law/lawLibrary';
+import { GradientTile, SectionTitle } from '@/components/knowledge/KnowledgeHomeParts';
+import { SectionJumpStrip, SpecialLawList } from '@/components/knowledge/LawLibraryParts';
 import { hasSimple } from '@/lib/law/simpleExplain';
 import { getRegProgress, getWomenProgress } from '@/lib/regulations/regIndex';
+
+/** Act tile gradients — the Act colours (ACT_COLOR), deeper in dark mode. */
+const ACT_GRAD: Record<ActId, { light: [string, string]; dark: [string, string] }> = {
+  BNS: { light: ['#1D4ED8', '#1E3A8A'], dark: ['#1E40AF', '#172554'] },
+  BNSS: { light: ['#0F766E', '#115E59'], dark: ['#0F766E', '#134E4A'] },
+  BSA: { light: ['#B45309', '#78350F'], dark: ['#92400E', '#451A03'] },
+};
 
 export default function LawLibraryIndexScreen() {
   const { t, i18n } = useTranslation();
@@ -277,192 +286,47 @@ export default function LawLibraryIndexScreen() {
           }
         />
       ) : (
-        /* Normal 3 Acts + 4th Card View */
+        /* New layout (owner, part 2): # धारा नंबर · 3 Act tiles · विशेष कानून व संदर्भ list · official note */
         <ScrollView keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="px-4 py-4 gap-4 pb-28"
+          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 40, gap: 20 }}
         >
-          {/* Small official notice banner */}
-          <View
-            className="p-3.5 rounded-2xl border border-border bg-muted/40 gap-1"
-            style={{ borderCurve: 'continuous' }}
-          >
-            <Text className="text-xs text-muted-foreground leading-5">
-              ⚖️ {t('knowledge.law.officialNote', 'आधिकारिक अंग्रेज़ी पाठ (गजट 25-12-2023). हिंदी पाठ सत्यापित होने पर जोड़ा जाएगा।')}
-            </Text>
-          </View>
-
-          {/* 3 Main Act Cards */}
-          <View className="gap-3">
-            {actCards.map(({ id, icon: Icon, color, bg }) => {
-              const meta = ACTS[id];
-              return (
-                <Pressable
+          <SectionJumpStrip
+            placeholder={t('knowledge.lawLayout.jumpPlaceholder')}
+            noneText={(n) => t('knowledge.lawLayout.jumpNone', { n })}
+          />
+          <View>
+            <SectionTitle text={t('knowledge.lawLayout.mainActs')} />
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              {actCards.map(({ id, icon }) => (
+                <GradientTile
                   key={id}
-                  onPress={() => router.push(`/(app)/knowledge/law/${id}` as never)}
-                  className="bg-card border border-border rounded-2xl p-5 gap-3 active:opacity-70"
-                  style={{ borderCurve: 'continuous', minHeight: 44 }}
-                >
-                  <View className="flex-row items-start justify-between">
-                    <View className="flex-row items-center gap-3 flex-1" style={{ minWidth: 0 }}>
-                      <View
-                        className="w-12 h-12 rounded-xl items-center justify-center"
-                        style={{ backgroundColor: bg }}
-                      >
-                        <Icon size={24} color={color} />
-                      </View>
-                      <View className="flex-1" style={{ minWidth: 0 }}>
-                        <View className="flex-row items-center gap-2">
-                          <Text className="text-[17px] font-bold text-foreground">
-                            {id}
-                          </Text>
-                          <View
-                            className="rounded-full px-2.5 py-1"
-                            style={{ backgroundColor: bg }}
-                          >
-                            <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color }}>
-                              {meta.shortHi}
-                            </Text>
-                          </View>
-                        </View>
-                        <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
-                          {meta.citation}
-                        </Text>
-                      </View>
-                    </View>
-                    <ChevronRight size={20} color={C.mutedForeground} />
-                  </View>
-
-                  <View className="gap-1 pt-1 border-t border-border/50">
-                    <Text className="text-sm font-semibold text-foreground">
-                      {isHi ? meta.nameHi : meta.nameEn}
-                    </Text>
-                    <Text className="text-xs text-muted-foreground">
-                      {isHi ? meta.nameEn : meta.nameHi}
-                    </Text>
-                  </View>
-
-                  <View className="flex-row items-center justify-between pt-1">
-                    <View
-                      className="rounded-full px-2.5 py-1"
-                      style={{ backgroundColor: bg }}
-                    >
-                      <Text textBreakStrategy="simple" className="text-xs font-bold" style={{ color }}>
-                        {t('knowledge.law.actSections', { count: meta.total, defaultValue: `${meta.total} धाराएं` })}
-                      </Text>
-                    </View>
-                    <Text className="text-xs font-semibold" style={{ color }}>
-                      {t('knowledge.law.jumpBtn', 'देखें')} →
-                    </Text>
-                  </View>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          {/* UP Police Regulations, POCSO Act, women Acts — same card style as BNS/BNSS/BSA */}
-          <View className="gap-3">
-            {regCards.map((rc) => {
-              const Icon = rc.icon;
-              return (
-                <Pressable
-                  key={rc.act}
-                  onPress={() => router.push(`/(app)/knowledge/regulations?act=${rc.act}` as never)}
-                  className="bg-card border border-border rounded-2xl p-5 gap-3 active:opacity-70"
-                  style={{ borderCurve: 'continuous', minHeight: 44 }}
-                  accessibilityRole="button"
-                >
-                  <View className="flex-row items-start justify-between">
-                    <View className="flex-row items-center gap-3 flex-1" style={{ minWidth: 0 }}>
-                      <View className="w-12 h-12 rounded-xl items-center justify-center" style={{ backgroundColor: `${rc.color}15` }}>
-                        <Icon size={24} color={rc.color} />
-                      </View>
-                      <View className="flex-1" style={{ minWidth: 0 }}>
-                        <View className="flex-row items-center gap-2">
-                          <Text className="text-[17px] font-bold text-foreground">{rc.short}</Text>
-                          <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${rc.color}15` }}>
-                            <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: rc.color }}>
-                              {rc.badge}
-                            </Text>
-                          </View>
-                        </View>
-                        <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
-                          {rc.citation}
-                        </Text>
-                      </View>
-                    </View>
-                    <ChevronRight size={20} color={C.mutedForeground} />
-                  </View>
-
-                  <View className="gap-1 pt-1 border-t border-border/50">
-                    <Text className="text-sm font-semibold text-foreground">{rc.nameHi}</Text>
-                    <Text className="text-xs text-muted-foreground">{rc.nameEn}</Text>
-                  </View>
-
-                  <View className="flex-row items-center justify-between pt-1">
-                    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${rc.color}15` }}>
-                      <Text textBreakStrategy="simple" className="text-xs font-bold" style={{ color: rc.color }}>
-                        {rc.count} · हिंदी तैयार {rc.done}
-                      </Text>
-                    </View>
-                    <Text className="text-xs font-semibold" style={{ color: rc.color }}>
-                      {t('knowledge.law.jumpBtn', 'देखें')} →
-                    </Text>
-                  </View>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          {/* BNS संदर्भ — IPC ↔ BNS finder (Delhi Police BNS Handbook) */}
-          <Pressable
-            onPress={() => router.push('/(app)/knowledge/bns-ref' as never)}
-            className="bg-card border border-border rounded-2xl p-5 gap-2 active:opacity-70"
-            style={{ borderCurve: 'continuous', minHeight: 44 }}
-            accessibilityRole="button"
-          >
-            <View className="flex-row items-center gap-3">
-              <View className="w-12 h-12 rounded-xl items-center justify-center" style={{ backgroundColor: '#0E749015' }}>
-                <Scale size={24} color="#0E7490" />
-              </View>
-              <View className="flex-1" style={{ minWidth: 0 }}>
-                <View className="flex-row items-center gap-2">
-                  <Text className="text-[17px] font-bold text-foreground">BNS संदर्भ</Text>
-                  <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: '#0E749015' }}>
-                    <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: '#0E7490' }}>IPC ↔ BNS खोज</Text>
-                  </View>
-                </View>
-                <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>Delhi Police Academy BNS Handbook · 595 पंक्तियाँ</Text>
-              </View>
-              <ChevronRight size={20} color={C.mutedForeground} />
+                  tile={{
+                    key: id, big: true, label: id, icon, route: `/(app)/knowledge/law/${id}`,
+                    sub: `${t('knowledge.law.actSections', { count: ACTS[id].total, defaultValue: `${ACTS[id].total} धाराएं` })}\n${isHi ? ACTS[id].shortHi : ACTS[id].nameEn.split(',')[0]}`,
+                    light: ACT_GRAD[id].light, dark: ACT_GRAD[id].dark,
+                  }}
+                />
+              ))}
             </View>
-          </Pressable>
-
-          {/* 4th Card: अन्य अधिनियम / मेरे नोट (opens existing list?category=Law) */}
-          <Pressable
-            onPress={() => router.push('/(app)/knowledge/list?category=Law' as never)}
-            className="bg-card border border-border rounded-2xl p-5 gap-3 active:opacity-70 mt-1"
-            style={{ borderCurve: 'continuous', minHeight: 44 }}
-          >
-            <View className="flex-row items-center justify-between">
-              <View className="flex-row items-center gap-3 flex-1" style={{ minWidth: 0 }}>
-                <View
-                  className="w-12 h-12 rounded-xl items-center justify-center bg-purple-500/10"
-                >
-                  <Bookmark size={24} color="#7C3AED" />
-                </View>
-                <View className="flex-1" style={{ minWidth: 0 }}>
-                  <Text className="text-[15px] font-bold text-foreground">
-                    {t('knowledge.law.otherActs', 'अन्य अधिनियम / मेरे नोट')}
-                  </Text>
-                  <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={2}>
-                    {t('knowledge.law.otherActsDesc', 'मोटर वाहन, NDPS, आबकारी, शस्त्र व अन्य अधिनियम')}
-                  </Text>
-                </View>
-              </View>
-              <ChevronRight size={20} color={C.mutedForeground} />
-            </View>
-          </Pressable>
+          </View>
+          <View>
+            <SectionTitle text={t('knowledge.lawLayout.special')} />
+            <SpecialLawList
+              rows={[
+                ...regCards.map((rc) => ({
+                  key: rc.act, icon: rc.icon, color: rc.color, title: rc.act === 'women' ? rc.nameHi : `${rc.short} · ${rc.badge}`,
+                  sub: `${rc.count} · हिंदी तैयार ${rc.done}`, route: `/(app)/knowledge/regulations?act=${rc.act}`,
+                })),
+                { key: 'bnsref', icon: Scale, color: '#0E7490', title: 'BNS संदर्भ · IPC ↔ BNS', sub: 'Delhi Police Academy BNS Handbook · 595 पंक्तियाँ', route: '/(app)/knowledge/bns-ref' },
+                { key: 'other', icon: Bookmark, color: '#7C3AED', title: t('knowledge.law.otherActs', 'अन्य अधिनियम / मेरे नोट'),
+                  sub: t('knowledge.law.otherActsDesc', 'मोटर वाहन, NDPS, आबकारी, शस्त्र व अन्य अधिनियम'), route: '/(app)/knowledge/list?category=Law' },
+              ]}
+            />
+          </View>
+          <Text style={{ fontSize: 11.5, lineHeight: 18, color: C.mutedForeground }}>
+            ⚖️ {t('knowledge.law.officialNote', 'आधिकारिक अंग्रेज़ी पाठ (गजट 25-12-2023). हिंदी पाठ सत्यापित होने पर जोड़ा जाएगा।')}
+          </Text>
         </ScrollView>
       )}
     </View>

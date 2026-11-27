@@ -7,6 +7,7 @@
     "sectionAnalytics": "Analytics",
     "sectionCategories": "Categories",
     "homeLayout": { "recent": "🕘 Recently viewed", "sections": "📂 Sections", "saved": "⭐ Saved", "moreSaved": "See all ({{n}})", "less": "Show less", "lawSub": "BNS · BNSS · BSA · {{n}}", "countSub": "{{n}} entries", "fard": "Fard guide", "fardSub": "Fard & documents", "guides": "Investigation guides", "guidesSub": "By crime type", "checklistSub": "Investigation lists", "courtSub": "{{n}} judgments" },
+    "lawLayout": { "jumpPlaceholder": "Type a section number — e.g. 103, 35(3)", "jumpNone": "Section {{n}} not found in any code", "mainActs": "Main codes", "special": "Special laws & reference" },
     "searching": "Searching…",
     "resultCount_one": "{{count}} result",
     "resultCount_other": "{{count}} results",

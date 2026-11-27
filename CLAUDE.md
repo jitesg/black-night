@@ -884,6 +884,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
     localStorage investsuite:knowledge_recent / _saved, this phone only; rules `knowledgeVisitsCore.ts`, tests scripts/test_knowledge_visits.ts);
     recorded by `useRecordKnowledgeVisit` in law/[act]/[n], [knowledgeId] (title only) and fard/[code]; `useSavedToggle` for ⭐ buttons. i18n knowledge.homeLayout.*.
     Act colours `ACT_COLOR` in lawLibrary.ts (BNS #1D4ED8, BNSS #0F766E, BSA #B45309 — same as the Act screen).
+  2 विधि पुस्तकालय (`knowledge/law/index.tsx`, normal mode; search mode unchanged): `components/knowledge/LawLibraryParts.tsx` — `SectionJumpStrip`
+    "# धारा नंबर लिखें" (parseBareSectionNumber → one button per Act that has the section, Enter opens when only one), 3 Act GradientTiles (`big`,
+    ACT_GRAD), `SpecialLawList` one card: UPPR / POCSO / महिला कानून / BNS संदर्भ / अन्य अधिनियम (same routes), official note small at the bottom.
+    i18n knowledge.lawLayout.*.
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared

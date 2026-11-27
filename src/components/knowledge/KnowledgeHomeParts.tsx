@@ -24,9 +24,11 @@ export interface KnowledgeTile {
   /** [from, to] light / dark */
   light: [string, string];
   dark: [string, string];
+  /** Act tiles (विधि पुस्तकालय): short name big, no wrap */
+  big?: boolean;
 }
 
-const GradientTile = memo(function GradientTile({ tile }: { tile: KnowledgeTile }) {
+export const GradientTile = memo(function GradientTile({ tile }: { tile: KnowledgeTile }) {
   const { colorScheme } = useColorScheme();
   const [from, to] = colorScheme === 'dark' ? tile.dark : tile.light;
   const [size, setSize] = useState<{ w: number; h: number } | null>(null);
@@ -59,8 +61,8 @@ const GradientTile = memo(function GradientTile({ tile }: { tile: KnowledgeTile 
         <I size={18} color={W} strokeWidth={2.2} />
       </View>
       <View style={{ marginTop: 10 }}>
-        <Text numberOfLines={1} style={{ fontSize: 15, fontWeight: '800', color: W }}>{tile.label}</Text>
-        <Text numberOfLines={1} style={{ fontSize: 11.5, fontWeight: '600', color: W, opacity: 0.92 }}>{tile.sub}</Text>
+        <Text numberOfLines={1} style={{ fontSize: tile.big ? 20 : 15, fontWeight: '800', color: W }}>{tile.label}</Text>
+        <Text numberOfLines={tile.big ? 2 : 1} style={{ fontSize: 11.5, fontWeight: '600', color: W, opacity: 0.92 }}>{tile.sub}</Text>
       </View>
     </Pressable>
   );
