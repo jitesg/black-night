@@ -5,6 +5,9 @@ import './src/lib/perfLog';
 import './src/lib/selectableText';
 // phone = portrait only, tablet / opened foldable = turns freely (owner, option ख)
 import './src/lib/orientationPolicy';
+// tablet keyboard: Ctrl+F / "/" opens the screen's search box (scrolling keys are native — plugins/withHardwareKeys.js)
+import { startHardwareKeys } from './src/lib/hardwareKeys';
+startHardwareKeys();
 // (not in the "InvestSuite कार्यालय" build — it has no reminders)
 if (process.env.EXPO_PUBLIC_APP_VARIANT !== 'office') {
   // eslint-disable-next-line @typescript-eslint/no-require-imports

@@ -65,6 +65,12 @@ detailed working log. Keep the guide up to date when the architecture changes.
   knowledge add-checklist / add-guide, sys-format-manager + sys-knowledge-manager editors. NOT मुकदमा (add-fir, details) and NOT the केस डायरी
   कार्यवाही panel (owner) — they keep the fixed height.
 - `plugins/withHighRefreshRate.js` requests the max display refresh rate.
+- Tablet / Bluetooth keyboard keys (owner, sample क; Ctrl+N left out): `plugins/withHardwareKeys.js` adds MainActivity.dispatchKeyEvent — a typing
+  box / editor WebView focused (onCheckIsTextEditor) → untouched; else ↓ ↑ (15 %), PgDn / PgUp / Space / Shift+Space (85 %), Home / End (MOVE_HOME /
+  MOVE_END, never system HOME) scroll the top-most visible vertical ScrollView ≥ 25 % of the window (ReactScrollView → `reactSmoothScrollTo` so Fabric
+  state stays in step); Ctrl+F / "/" → DeviceEventEmitter "investsuiteHardwareKey" {kind:'search'} → `src/lib/hardwareKeys.ts` (started in index.ts) →
+  `focusCurrentSearch` (`src/lib/searchFocusRegistry.ts`, pure; SearchBar adds itself while its screen is focused via NavigationContext focus/blur;
+  tests scripts/test_hardware_keys.ts). Esc not touched (Android: unused Esc = Back). Modals (own windows) not reached. Native → needs a new APK.
 - Orientation (owner, option ख "phone खड़ा, tablet घूमे"): app.json `"orientation": "default"` (was "portrait" — tablets could not turn) +
   `src/lib/orientationPolicy.ts` (imported from index.ts, both apps): smallest screen side < 600 dp → `expo-screen-orientation` lockAsync
   PORTRAIT_UP, else unlockAsync; re-checked on Dimensions change (foldables). Rule pure `src/lib/screenSize.ts` (tests scripts/test_screen_size.ts).

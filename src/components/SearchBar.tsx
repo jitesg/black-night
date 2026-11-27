@@ -28,7 +28,9 @@
  * The current Input uses a fixed borderRadius: 12 rectangle and manages
  * focus state internally — incompatible with SearchBar's animated container.
  */
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { NavigationContext } from '@react-navigation/native';
+import { addSearchTarget } from '@/lib/searchFocusRegistry';
 import {
   Platform, Pressable, ScrollView, Text, TextInput, View,
   type ReturnKeyTypeOptions, type TextStyle, type ViewStyle,
@@ -202,6 +204,19 @@ export const SearchBar = memo(function SearchBar({
     return () => { alive = false; clearTimeout(id); };
   }, [suggestOn, scope, value, noResults]);
   const inputRef = useRef<TextInput>(null);
+  // Tablet keyboard Ctrl+F / "/" (owner): this box is the screen's search target while its screen is focused.
+  const navigation = useContext(NavigationContext);
+  useEffect(() => {
+    const target = { focus: () => { if (!inputRef.current) throw new Error('no input'); inputRef.current.focus(); } };
+    let remove: (() => void) | null = null;
+    const on = () => { if (!remove) remove = addSearchTarget(target); };
+    const off = () => { remove?.(); remove = null; };
+    if (!navigation) { on(); return off; }
+    if (navigation.isFocused()) on();
+    const unFocus = navigation.addListener('focus', on);
+    const unBlur = navigation.addListener('blur', off);
+    return () => { unFocus(); unBlur(); off(); };
+  }, [navigation]);
   // `focused` (Reanimated shared value) drives the animated container style on
   // the UI thread. `isFocused` (React state) derives the JS-thread icon color.
   // Both are intentionally kept: shared values cannot be read synchronously on

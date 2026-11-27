@@ -93,7 +93,8 @@
           "faceIDPermission": "Allow InvestSuite to use Face ID for authentication."
         }
       ],
-      "./plugins/withHighRefreshRate"
+      "./plugins/withHighRefreshRate",
+      "./plugins/withHardwareKeys"
     ],
     "router": {
       "root": "src"
