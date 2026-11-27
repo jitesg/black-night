@@ -18,6 +18,7 @@ import { getById as getSopIndexEntry, getSopStepCount } from '@/ai/sopIndex';
 import { SopListHeader, SopQuickButtons } from '@/components/knowledge/SopListParts';
 import { getSopDoneCounts } from '@/lib/db/sopChecklistRepo';
 import { sopsInProgress } from '@/lib/knowledge/knowledgeVisitsCore';
+import { circularDate, circularRows, isRecent, shortMonth, withGroupHeads, type GroupRow } from '@/lib/knowledge/knowledgeGroups';
 import { hasExplain } from '@/ai/sopExplain';
 import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
 import {
@@ -51,8 +52,10 @@ function fmtTs(ts: number): string {
 
 // ─── Record Card ──────────────────────────────────────────────────────────
 function RecordCard({
-  item, userNote, color, query, highlight, typoTolerant, onPress, onEdit, onDelete, sopActions,
+  item, userNote, color, query, highlight, typoTolerant, onPress, onEdit, onDelete, sopActions, showDate,
 }: {
+  /** परिपत्र (owner, new layout part 8): "📅 13 जन0 2013" + नया */
+  showDate?: boolean;
   /** SOP list (owner, new layout part 5): पढ़ें / चेकलिस्ट / समझें buttons on the card */
   sopActions?: boolean;
   item: KnowledgeEntry;
@@ -91,6 +94,20 @@ function RecordCard({
       {/* Title row */}
       <View className="flex-row items-start gap-3">
         <View className="flex-1" style={{ minWidth: 0 }}>
+          {showDate ? (() => {
+            const d = circularDate(item);
+            if (!d) return null;
+            return (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color }}>{`📅 ${d.d} ${shortMonth(d.m)} ${d.y}`}</Text>
+                {isRecent(item) ? (
+                  <View style={{ borderRadius: 999, paddingHorizontal: 7, paddingVertical: 1, backgroundColor: colorScheme === 'dark' ? '#78350F' : '#FEF3C7' }}>
+                    <Text style={{ fontSize: 10.5, fontWeight: '800', color: colorScheme === 'dark' ? '#FCD34D' : '#92400E' }}>नया</Text>
+                  </View>
+                ) : null}
+              </View>
+            );
+          })() : null}
           {circChip ? (
             <View className="flex-row items-center mb-1.5">
               <View
@@ -545,6 +562,14 @@ export default function KnowledgeListScreen() {
     setDeleteTarget(null);
   };
 
+  // परिपत्र = month groups, पुलिस प्रारूप = उप-श्रेणी groups (owner, new layout part 8); other categories as before
+  const isCircular = category === 'Circular';
+  const listRows = useMemo<GroupRow<KnowledgeEntry>[]>(() => {
+    if (isCircular) return circularRows(entries);
+    if (category === 'Police Format') return withGroupHeads(entries, (e) => ({ key: e.subcategory || '-', label: e.subcategory || 'अन्य' }));
+    return entries.map((item) => ({ kind: 'item' as const, key: item.id, item }));
+  }, [entries, isCircular, category]);
+
   return (
     <View className="flex-1 bg-background">
       <AppHeader
@@ -587,8 +612,8 @@ export default function KnowledgeListScreen() {
       ) : (
         <FlatList keyboardShouldPersistTaps="handled"
           removeClippedSubviews={true}
-          data={entries}
-          keyExtractor={(item) => item.id}
+          data={listRows}
+          keyExtractor={(row) => row.key}
           contentContainerClassName="px-6 py-4 gap-3 pb-10"
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
@@ -603,7 +628,12 @@ export default function KnowledgeListScreen() {
               inProgress={query.trim() ? [] : sopProgress}
             />
           ) : null}
-          renderItem={({ item }) => (
+          renderItem={({ item: row }) => row.kind === 'head' ? (
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 6 }}>
+              <Text style={{ fontSize: 12.5, fontWeight: '800', letterSpacing: 0.3, color: C.mutedForeground }}>{row.label}</Text>
+              <Text style={{ fontSize: 12, fontWeight: '700', color: C.mutedForeground }}>{row.count}</Text>
+            </View>
+          ) : ((item: KnowledgeEntry) => (
             <RecordCard
               item={item}
               userNote={notesMap.get(item.id)}
@@ -619,8 +649,9 @@ export default function KnowledgeListScreen() {
               }
               onDelete={() => setDeleteTarget(item)}
               sopActions={isSopCategory}
+              showDate={isCircular}
             />
-          )}
+          ))(row.item)}
           ListEmptyComponent={
             <View className="items-center justify-center py-24 gap-4">
               {cat && (

@@ -51,3 +51,17 @@ test('crime type grid (part 7)', async () => {
   assert.equal(crimeEmoji('road_accident'), '🚗');
   assert.equal(crimeEmoji('x'), '📋');
 });
+
+test('circular month groups (part 8)', async () => {
+  const { circularRows, withGroupHeads, isRecent, circularDate } = await import('../src/lib/knowledge/knowledgeGroups.ts');
+  const rows = circularRows([
+    { id: 'a', last_updated: '2013-01-13' }, { id: 'b', last_updated: '2013-03-02' }, { id: 'c', last_updated: '2013-03-20' }, { id: 'd' },
+  ]);
+  assert.deepEqual(rows.map((r) => (r.kind === 'head' ? `#${r.label}(${r.count})` : r.item.id)),
+    ['#मार्च 2013(2)', 'c', 'b', '#जनवरी 2013(1)', 'a', '#तारीख नहीं(1)', 'd']);
+  assert.deepEqual(circularDate({ created_at: 1700000000 })?.y, 2023);
+  const now = new Date(2026, 10, 27).getTime();
+  assert.equal(isRecent({ last_updated: '2026-11-25' }, now), true);
+  assert.equal(isRecent({ last_updated: '2026-10-01' }, now), false);
+  assert.equal(withGroupHeads([{ id: 'x' }], () => ({ key: 'k', label: 'L' })).length, 2);
+});

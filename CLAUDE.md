@@ -905,6 +905,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
   7 चेकलिस्ट (`knowledge/checklists/index.tsx`): "🔎 अपराध प्रकार चुनें" grid (3 per row, emoji + name + count; `src/lib/knowledge/crimeTypeGrid.ts`
     crimeTypeCounts / itemsOfCrime / CRIME_EMOJI by crime_taxonomy id; hidden while searching) → that type's items as numbered steps with a line
     (timeline). जाँच गाइड home: the 4 section cards = 2×2 tiles + a "अपराध प्रकार से चेकलिस्ट" row. फर्द ज्ञान list unchanged (already this card style).
+  8 परिपत्र / पुलिस प्रारूप (`knowledge/list.tsx`): FlatList rows = `GroupRow` (`src/lib/knowledge/knowledgeGroups.ts`): परिपत्र newest first in month
+    groups (`circularRows`; date = seed last_updated = the circular's date, user rows → created_at; "तारीख नहीं" last), card line "📅 13 जन0 2013" +
+    "नया" (≤ 7 days, `isRecent`); पुलिस प्रारूप grouped by उप-श्रेणी (`withGroupHeads`); other categories one plain row each as before. No "issued by"
+    field exists — the उप-श्रेणी chip (DGP Circulars …) on the card shows it.
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared
