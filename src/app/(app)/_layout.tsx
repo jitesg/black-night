@@ -1,13 +1,20 @@
 import { Stack, useSegments } from 'expo-router';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
+import { HOME_WIDE_MAX_DP, homeTwoColumns, sidePadding } from '@/lib/screenSize';
 import { CopilotHost } from '@/components/ai/CopilotHost';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 export default function AppLayout() {
   // Screenshots are allowed (screen-capture blocking removed on request).
   const { colorScheme } = useColorScheme();
+  // Tablet (owner): every screen centred at 720 dp (design A), Home wider for its two columns (design B), map full.
+  // sidePadding = 0 on phones, so nothing changes there.
+  const { width, height } = useWindowDimensions();
+  const bg = THEME[colorScheme ?? 'light'].background;
+  const padX = sidePadding(width, height);
+  const homePadX = homeTwoColumns(width, height) ? sidePadding(width, height, HOME_WIDE_MAX_DP) : padX;
   const segments = useSegments() as readonly string[];
   const insideFIR =
     segments.includes('mukadma') &&
@@ -25,17 +32,17 @@ export default function AppLayout() {
             // Fix white flash: pre-fill the inter-screen background with the
             // app's off-white theme colour so no bare white shows during
             // screen transitions on Web and native.
-            contentStyle: { backgroundColor: THEME[colorScheme ?? 'light'].background },
+            contentStyle: { backgroundColor: bg, paddingHorizontal: padX },
           }}
         >
-          <Stack.Screen name="home" />
+          <Stack.Screen name="home" options={{ contentStyle: { backgroundColor: bg, paddingHorizontal: homePadX } }} />
           <Stack.Screen name="workspace-setup" />
           <Stack.Screen name="settings" />
           <Stack.Screen name="reminders" />
           <Stack.Screen name="notifications" />
           <Stack.Screen name="recent-tasks" />
           <Stack.Screen name="halka" />
-          <Stack.Screen name="map" />
+          <Stack.Screen name="map" options={{ contentStyle: { backgroundColor: bg } }} />
           <Stack.Screen name="mukadma" />
           <Stack.Screen name="formats" />
           <Stack.Screen name="gd" />

@@ -4,8 +4,9 @@ import { T } from '@/lib/typography';
 import {
   View, Text, ScrollView, Pressable, Keyboard,
   ActivityIndicator, SectionList,
-  BackHandler, ToastAndroid, Platform,
+  BackHandler, ToastAndroid, Platform, useWindowDimensions,
 } from 'react-native';
+import { homeTwoColumns } from '@/lib/screenSize';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -285,6 +286,9 @@ export default function HomeScreen() {
   const lastBackPressTime = useRef(0);
   /** Home's main scroll list — back-exit puts it back at the top. */
   const homeScrollRef = useRef<ScrollView>(null);
+  // Tablet lying down (owner, design B): two columns; phones always one column.
+  const win = useWindowDimensions();
+  const twoCol = homeTwoColumns(win.width, win.height);
   /** Filled further down (after clearSearch): Home's "fresh start" for the next open. */
   const exitResetRef = useRef<() => void>(() => {});
 
@@ -558,6 +562,102 @@ export default function HomeScreen() {
             </Text>
           </View>
 
+          {twoCol ? (
+            // ── Tablet (design B): left = मेरा काम + त्वरित कार्य, right = और काम + कार्य जारी रखें + स्मरणपत्र ──
+            <View style={{ flexDirection: 'row', gap: 20, alignItems: 'flex-start' }}>
+              <View style={{ flex: 1.15, minWidth: 0, gap: 24 }}>
+          {/* ── मेरी उत्पादकता — right under the hero card (owner); design P1: मुकदमा / न्यायालय / प्रार्थना पत्र, मिले vs निस्तारित ── */}
+          <ProductivityCard
+            stats={data.prod}
+            pending={{ fir: today.activeCase, firTotal: data.mukadma?.total ?? 0, court: today.activeCourtDocs, pp: today.pendingPrarthnaPatra }}
+            go={goRoute}
+          />
+
+          {/* ── Quick Actions ── */}
+          <View style={{ gap: 10 }}>
+            <SectionHeader title={t('home.quickActions')} icon={<Zap size={13} color={C.textMuted} />} />
+            {/* Primary module row — horizontal scroll */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ gap: 10, paddingRight: 4 }}>
+              {[
+                { label: t('home.newFir'),    icon: FileText,    color: MC.Mukadma,          route: '/(app)/mukadma/add-fir' },
+                { label: t('home.newGd'),     icon: BookMarked,  color: MC.GD,               route: '/(app)/gd/add-gd' },
+                { label: t('home.courtWork'), icon: Scale,       color: MC.Nyayalay,         route: '/(app)/nyayalay/add' },
+                { label: t('home.petition'),  icon: Scroll,      color: MC['Prarthna Patra'],route: '/(app)/prarthna-patra/add' },
+                { label: t('home.bnss'),      icon: ShieldAlert, color: MC.Nirodhatmak,      route: '/(app)/nirodhatmak' },
+                { label: t('home.beatBook'),  icon: BookOpen,    color: MC.Halka,            route: '/(app)/halka' },
+              ].map((item) => (
+                <View key={item.route} style={{ width: 76 }}>
+                  <QuickAction
+                    label={item.label}
+                    icon={item.icon}
+                    color={item.color}
+                    onPress={() => router.push(item.route as never)}
+                  />
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+
+              </View>
+              <View style={{ flex: 1, minWidth: 0, gap: 24 }}>
+          {/* ── और काम (owner): निरोधात्मक / रिपोर्ट / आज की GD — मुकदमा, न्यायालय, प्रार्थना पत्र are in मेरा काम above ── */}
+          <View style={{ gap: 10 }}>
+            <SectionHeader title={t('home.summary.title')} icon={<CalendarDays size={13} color={C.textMuted} />} />
+            <SummaryBento
+              nkTotal={nirodhatmak?.total ?? 0}
+              reportsWeek={recentCounts.week}
+              reportsToday={recentCounts.today}
+              gdToday={today.todayGD}
+              go={goRoute}
+            />
+          </View>
+
+          {/* ── Continue Working ── */}
+          {recentActivity.length > 0 && (
+            <View style={{ gap: 10 }}>
+              <SectionHeader title={t('home.continueWorking')} icon={<Clock size={13} color={C.textMuted} />} />
+              <View
+                className="shadow-sm shadow-black/5"
+                style={{
+                  backgroundColor: C.surface, borderRadius: 20,
+                  paddingHorizontal: 16, borderCurve: 'continuous',
+                } as object}
+              >
+                {recentActivity.slice(0, 6).map((a, idx) => (
+                  <ContinueRow key={`${a.id}-${idx}`} item={a} />
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* ── Upcoming Reminders ── */}
+          {reminders.length > 0 && (
+            <View style={{ gap: 10 }}>
+              <SectionHeader title={t('home.reminders')} icon={<Bell size={13} color={C.textMuted} />} />
+              <View
+                className="shadow-sm shadow-black/5"
+                style={{
+                  backgroundColor: C.surface, borderRadius: 20,
+                  paddingHorizontal: 16, borderCurve: 'continuous',
+                } as object}
+              >
+                {reminders.slice(0, 6).map((r) => <ReminderRow key={r.id} item={r} />)}
+                {reminders.length > 6 ? (
+                  <View style={{ paddingVertical: 12, alignItems: 'center' }}>
+                    <Text style={{ ...T.caption1, fontWeight: '600', color: C.action }}>
+                      {t('home.moreReminders', { count: reminders.length - 6 })}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+            </View>
+          )}
+
+              </View>
+            </View>
+          ) : (
+            <>
           {/* ── मेरी उत्पादकता — right under the hero card (owner); design P1: मुकदमा / न्यायालय / प्रार्थना पत्र, मिले vs निस्तारित ── */}
           <ProductivityCard
             stats={data.prod}
@@ -642,6 +742,9 @@ export default function HomeScreen() {
                 ) : null}
               </View>
             </View>
+          )}
+
+            </>
           )}
 
           {/* ── Productivity ── */}

@@ -70,6 +70,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
   PORTRAIT_UP, else unlockAsync; re-checked on Dimensions change (foldables). Rule pure `src/lib/screenSize.ts` (tests scripts/test_screen_size.ts).
   Dep expo-screen-orientation ~55.0.20 (native → needs a new APK). Screens are portrait-first; wide-landscape tweaks per screen when the owner sends
   tablet screenshots.
+  Tablet layout (owner: Home = B, all other screens = A; "सूची + विवरण" later after a tablet test): `(app)/_layout.tsx` Stack contentStyle
+  `paddingHorizontal = sidePadding(w, h)` (screenSize.ts: 0 on phones, else centres the content at CONTENT_MAX_DP 720; sides = background colour);
+  `home` own contentStyle — `homeTwoColumns` (large screen and width ≥ 900) → 1040 dp and home.tsx shows two columns (left मेरा काम + त्वरित
+  कार्य, right और काम + कार्य जारी रखें + स्मरणपत्र), else one column like the phone; `map` full width. Tests in scripts/test_screen_size.ts.
 - App icon (owner chose B of 3 flat samples, from the owner's "officer at desk" picture): officer with star cap behind a laptop, cup + files,
   brown gradient — source `assets/icon.svg` → icon.png (1024), adaptive-icon-bg.png (gradient), adaptive-icon.png (figure scaled 0.66 into the
   safe zone, transparent), favicon.png (48). Rendered with Playwright (file:// svg with width/height). Office app keeps its own icon.
