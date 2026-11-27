@@ -6,6 +6,7 @@
     "searchAccessibility": "ज्ञान आधार खोजें",
     "sectionAnalytics": "विश्लेषण",
     "sectionCategories": "श्रेणियाँ",
+    "homeLayout": { "recent": "🕘 हाल में देखा", "sections": "📂 विभाग", "saved": "⭐ सहेजे गए", "moreSaved": "सब देखें ({{n}})", "less": "कम दिखाएँ", "lawSub": "BNS · BNSS · BSA · {{n}}", "countSub": "{{n}} प्रविष्टि", "fard": "फर्द ज्ञान", "fardSub": "फर्द व दस्तावेज़", "guides": "जाँच गाइड", "guidesSub": "अपराध प्रकार से", "checklistSub": "जाँच की सूचियाँ", "courtSub": "{{n}} निर्णय" },
     "searching": "खोज जारी है…",
     "resultCount_one": "{{count}} परिणाम",
     "resultCount_other": "{{count}} परिणाम",

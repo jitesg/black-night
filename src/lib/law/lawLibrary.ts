@@ -77,6 +77,9 @@ export const ACTS: Record<ActId, ActMeta> = {
   },
 };
 
+/** Each Act's colour in the Law screens (same as knowledge/law/[act] actColor). */
+export const ACT_COLOR: Record<ActId, string> = { BNS: '#1D4ED8', BNSS: '#0F766E', BSA: '#B45309' };
+
 export interface SectionItem {
   n: number;
   title: string;

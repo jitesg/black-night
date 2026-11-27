@@ -877,6 +877,13 @@ detailed working log. Keep the guide up to date when the architecture changes.
   per-card scan button (Supabase ocr-extract-fields) on PersonGroupInput / AccusedGroupInput; OcrScanModal.tsx + ocrService.ts deleted
   (old i18n keys ocr.* / *.ocr* / group.scan.* left unused). Don't add OCR back unless the owner asks.
 
+- ज्ञानकोष new layouts (owner chose all 8 of the sample, applied one by one):
+  1 होम (`knowledge/index.tsx`): the count strip + फर्द card + category list → `components/knowledge/KnowledgeHomeParts.tsx`: "🕘 हाल में देखा" chips,
+    "📂 विभाग" 2-column gradient tiles (svg at measured size) with the count inside — विधि, निर्णय, SOP, फर्द, परिपत्र, पुलिस प्रारूप, जाँच गाइड, चेकलिस्ट
+    (the last two screens were reachable only from search), "⭐ सहेजे गए" (5 + सब देखें). Lists = `src/lib/knowledge/knowledgeVisits.ts` (expo-sqlite
+    localStorage investsuite:knowledge_recent / _saved, this phone only; rules `knowledgeVisitsCore.ts`, tests scripts/test_knowledge_visits.ts);
+    recorded by `useRecordKnowledgeVisit` in law/[act]/[n], [knowledgeId] (title only) and fard/[code]; `useSavedToggle` for ⭐ buttons. i18n knowledge.homeLayout.*.
+    Act colours `ACT_COLOR` in lawLibrary.ts (BNS #1D4ED8, BNSS #0F766E, BSA #B45309 — same as the Act screen).
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared

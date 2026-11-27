@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRecordKnowledgeVisit } from '@/lib/knowledge/knowledgeVisits';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   AlertTriangle, Check, Clock, ClipboardCopy, ClipboardList, Edit2, ExternalLink, FileText,
@@ -2459,6 +2460,14 @@ function KnowledgeDetailScreen() {
   // All screen-level hooks are placed unconditionally at the top
   const [entry, setEntry] = useState<KnowledgeEntry | null>(null);
   const [loading, setLoading] = useState(true);
+  // ज्ञानकोष होम "🕘 हाल में देखा" (owner): SOP / परिपत्र / निर्णय / नियमावली … (title only, like the lists)
+  const visitItem = useMemo(() => (entry ? {
+    route: `/(app)/knowledge/${entry.id}`,
+    label: (entry.title || '').trim(),
+    title: '',
+    color: entry.id.startsWith('sys-case-') ? '#7C3AED' : (KNOWLEDGE_CATEGORY_MAP[entry.category]?.color ?? '#0F766E'),
+  } : null), [entry]);
+  useRecordKnowledgeVisit(visitItem);
 
   useFocusEffect(
     useCallback(() => {

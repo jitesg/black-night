@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@/lib/logger';
 import { stripHtmlTags } from '@/lib/stringUtils';
@@ -9,7 +9,9 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { BookOpen, ChevronRight } from 'lucide-react-native';
+import { Bell, BookOpen, ClipboardList, FileText, Gavel, ListChecks, Scale, SearchCheck } from 'lucide-react-native';
+import { KnowledgeTileGrid, RecentVisitChips, SavedVisitList, SectionTitle, type KnowledgeTile } from '@/components/knowledge/KnowledgeHomeParts';
+import { useKnowledgeVisitLists } from '@/lib/knowledge/knowledgeVisits';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { AppDrawer } from '@/components/common/AppDrawer';
 import { SearchBar } from '@/components/SearchBar';
@@ -20,8 +22,7 @@ import {
 } from '@/lib/db/knowledgeRepo';
 import { seedReady, onSeedComplete } from '@/lib/db/seedManager';
 import {
-  KNOWLEDGE_CATEGORIES, ANALYTICS_LABELS,
-  type KnowledgeCategory,
+  KNOWLEDGE_CATEGORIES, getCategoryLabel,
 } from '@/lib/knowledgeConstants';
 import { useSettingsStore } from '@/hooks/useSettingsStore';
 import { useColorScheme } from 'nativewind';
@@ -32,94 +33,10 @@ import { buildCaseItems } from '@/lib/cases/caseCore';
 import { getRegIndex } from '@/lib/regulations/regIndex';
 import { useGoHome } from '@/lib/goHome';
 
-const K_COLOR = '#0F766E';
-const ACCENT = '#1E3A5F';
 function fmtTs(ts: number): string {
   return new Date(ts * 1000).toLocaleDateString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
-}
-
-// ─── Analytics Card ───────────────────────────────────────────────────────
-function AnalyticsCard({
-  label, categoryId, count, onPress,
-}: {
-  label: string; categoryId: string; count: number; onPress: () => void;
-}) {
-  const { colorScheme } = useColorScheme();
-  const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
-  const K_COLOR = colorScheme === 'dark' ? '#14B8A6' : '#0F766E';
-  const cat = KNOWLEDGE_CATEGORIES.find((c) => c.id === categoryId);
-  const color = cat?.color ?? K_COLOR;
-  const Icon = cat?.icon;
-  return (
-    <Pressable
-      onPress={onPress}
-      className="bg-card border border-border rounded-2xl p-4 gap-2 active:opacity-70"
-      style={{ borderCurve: 'continuous', width: 130 }}
-    >
-      {Icon && (
-        <View
-          className="w-9 h-9 rounded-xl items-center justify-center"
-          style={{ backgroundColor: `${color}15` }}
-        >
-          <Icon size={16} color={color} />
-        </View>
-      )}
-      <Text className="text-2xl font-bold text-foreground">{count}</Text>
-      <Text className="text-xs text-muted-foreground leading-4">{label}</Text>
-    </Pressable>
-  );
-}
-
-// ─── Category Row ─────────────────────────────────────────────────────────
-function CategoryRow({ cat, count }: { cat: KnowledgeCategory; count?: number | string }) {
-  const { t } = useTranslation();
-  const Icon = cat.icon;
-  const isLaw = cat.id === 'Law';
-  const displayLabel = isLaw
-    ? t('knowledge.categories.Law', 'विधि पुस्तकालय')
-    : t(`knowledge.categories.${cat.id}`, cat.label);
-
-  const handlePress = () => {
-    if (isLaw) {
-      router.push('/(app)/knowledge/law' as never);
-    } else if (cat.id === 'Investigation Guides') {
-      router.push('/(app)/knowledge/investigation-guides' as never);
-    } else {
-      router.push(`/(app)/knowledge/list?category=${encodeURIComponent(cat.id)}` as never);
-    }
-  };
-  return (
-    <Pressable
-      onPress={handlePress}
-      className="flex-row items-center gap-4 px-5 py-4 bg-card border border-border rounded-2xl active:opacity-70"
-      style={{ borderCurve: 'continuous' }}
-    >
-      <View
-        className="w-10 h-10 rounded-xl items-center justify-center"
-        style={{ backgroundColor: `${cat.color}15` }}
-      >
-        <Icon size={18} color={cat.color} />
-      </View>
-      <View className="flex-1" style={{ minWidth: 0 }}>
-        <Text className="text-base font-semibold text-foreground">{displayLabel}</Text>
-        <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
-          {isLaw
-            ? 'BNS · BNSS · BSA · 1059+ धाराएं'
-            : `${cat.subcategories.slice(0, 3).join(' · ')}${cat.subcategories.length > 3 ? ' …' : ''}`}
-        </Text>
-      </View>
-      <View
-        className="rounded-full px-2.5 py-1"
-        style={{ backgroundColor: `${cat.color}15` }}
-      >
-        <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: cat.color }}>
-          {count ?? (isLaw ? '1059+' : 0)}
-        </Text>
-      </View>
-    </Pressable>
-  );
 }
 
 // ─── Search Result Row ────────────────────────────────────────────────────
@@ -301,6 +218,34 @@ export default function KnowledgeHomeScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialQ]);
 
+  // ज्ञानकोष होम tiles (owner, part 1) — same routes as the old analytics cards / category rows / फर्द card;
+  // जाँच गाइड + चेकलिस्ट (screens were only reachable from search) get their own tiles.
+  const [focusTick, setFocusTick] = useState(0);
+  useFocusEffect(useCallback(() => { setFocusTick((n) => n + 1); }, []));
+  const visits = useKnowledgeVisitLists(focusTick);
+  const tiles = useMemo<KnowledgeTile[]>(() => {
+    const n = (id: string) => (analytics[id] ?? 0);
+    const list = (id: string) => `/(app)/knowledge/list?category=${encodeURIComponent(id)}`;
+    return [
+      { key: 'law', label: getCategoryLabel('Law', t), sub: t('knowledge.homeLayout.lawSub', { n: `${358 + 531 + 170 + n('Law')}` }), icon: Scale,
+        route: '/(app)/knowledge/law', light: ['#0F766E', '#115E59'], dark: ['#0F766E', '#134E4A'] },
+      { key: 'court', label: getCategoryLabel('Court Judgment', t), sub: t('knowledge.homeLayout.courtSub', { n: n('Court Judgment') + CASE_NOTES_TOTAL }), icon: Gavel,
+        route: list('Court Judgment'), light: ['#7C3AED', '#5B21B6'], dark: ['#6D28D9', '#4C1D95'] },
+      { key: 'sop', label: getCategoryLabel('SOP', t), sub: t('knowledge.homeLayout.countSub', { n: n('SOP') }), icon: ClipboardList,
+        route: list('SOP'), light: ['#2563EB', '#1E40AF'], dark: ['#1E40AF', '#1E3A8A'] },
+      { key: 'fard', label: t('knowledge.homeLayout.fard'), sub: t('knowledge.homeLayout.fardSub'), icon: BookOpen,
+        route: '/(app)/knowledge/fard', light: ['#92400E', '#78350F'], dark: ['#78350F', '#451A03'] },
+      { key: 'circular', label: getCategoryLabel('Circular', t), sub: t('knowledge.homeLayout.countSub', { n: n('Circular') }), icon: Bell,
+        route: list('Circular'), light: ['#D97706', '#B45309'], dark: ['#B45309', '#78350F'] },
+      { key: 'format', label: getCategoryLabel('Police Format', t), sub: t('knowledge.homeLayout.countSub', { n: n('Police Format') }), icon: FileText,
+        route: list('Police Format'), light: ['#4F46E5', '#3730A3'], dark: ['#4338CA', '#312E81'] },
+      { key: 'guides', label: t('knowledge.homeLayout.guides'), sub: t('knowledge.homeLayout.guidesSub'), icon: SearchCheck,
+        route: '/(app)/knowledge/investigation-guides', light: ['#DB2777', '#9D174D'], dark: ['#BE185D', '#831843'] },
+      { key: 'checklists', label: t('knowledge.categories.Checklist'), sub: t('knowledge.homeLayout.checklistSub'), icon: ListChecks,
+        route: '/(app)/knowledge/checklists', light: ['#16A34A', '#15803D'], dark: ['#15803D', '#14532D'] },
+    ];
+  }, [analytics, t]);
+
   const showSearch = query.trim().length > 0;
 
   return (
@@ -353,89 +298,20 @@ export default function KnowledgeHomeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerClassName="pb-10"
         >
-          {/* Analytics Dashboard */}
-          <View className="px-6 pt-5 gap-3">
-            <Text className="text-xs font-bold uppercase tracking-widest" style={{ color: C.mutedForeground }}>
-              {t('knowledge.sectionAnalytics')}
-            </Text>
-            {loading ? (
-              <ActivityIndicator size="small" color={C.primary} />
-            ) : (
-              <ScrollView keyboardShouldPersistTaps="handled"
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerClassName="gap-3 pr-2"
-              >
-                {ANALYTICS_LABELS.map(({ label, categoryId }) => {
-                  const isLaw = categoryId === 'Law';
-                  const displayLabel = isLaw
-                    ? t('knowledge.categories.Law', 'विधि पुस्तकालय')
-                    : t(`knowledge.categories.${categoryId}`, label);
-                  // For Law: include 358 (BNS) + 531 (BNSS) + 170 (BSA) official sections + user notes
-                  const displayCount = isLaw
-                    ? 358 + 531 + 170 + (analytics['Law'] ?? 0)
-                    : (analytics[categoryId] ?? 0) + (categoryId === 'Court Judgment' ? CASE_NOTES_TOTAL : 0);
-                  return (
-                    <AnalyticsCard
-                      key={categoryId}
-                      label={displayLabel}
-                      categoryId={categoryId}
-                      count={displayCount}
-                      onPress={() => {
-                        if (isLaw) {
-                          router.push('/(app)/knowledge/law' as never);
-                        } else {
-                          router.push(
-                            `/(app)/knowledge/list?category=${encodeURIComponent(categoryId)}` as never
-                          );
-                        }
-                      }}
-                    />
-                  );
-                })}
-              </ScrollView>
-            )}
-          </View>
-
-          {/* ── Fard Knowledge Study Guide ── */}
-          <View className="px-6 pt-6 gap-3">
-            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              {t('fard.sectionHeader', 'अध्ययन सामग्री')}
-            </Text>
-            <Pressable
-              onPress={() => router.push('/(app)/knowledge/fard' as never)}
-              className="flex-row items-center gap-4 px-5 py-4 bg-card border border-border rounded-2xl active:opacity-70"
-              style={{ borderCurve: 'continuous' }}
-            >
-              <View
-                className="w-10 h-10 rounded-xl items-center justify-center bg-indigo-500/10"
-              >
-                <BookOpen size={20} color="#6366F1" />
-              </View>
-              <View className="flex-1" style={{ minWidth: 0 }}>
-                <Text className="text-base font-semibold text-foreground">
-                  {t('fard.entryTitle', 'फर्द ज्ञान')}
-                </Text>
-                <Text className="text-xs text-muted-foreground mt-0.5">
-                  {t('fard.entrySubtitle', 'फर्द और ज़रूरी दस्तावेज़')}
-                </Text>
-              </View>
-              <ChevronRight size={18} color={C.mutedForeground} />
-            </Pressable>
-          </View>
-
-          {/* ── Categories ── */}
-          <View className="px-6 pt-6 gap-3">
-            <Text className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              {t('knowledge.sectionCategories')}
-            </Text>
-            {KNOWLEDGE_CATEGORIES.map((cat) => {
-              const isLaw = cat.id === 'Law';
-              const displayCount = isLaw ? '1059+' : (analytics[cat.id] ?? 0) + (cat.id === 'Court Judgment' ? CASE_NOTES_TOTAL : 0);
-              return (
-                <CategoryRow key={cat.id} cat={cat} count={displayCount} />
-              );
-            })}
+          <View style={{ paddingHorizontal: 16, paddingTop: 16, gap: 20 }}>
+            {/* New layout (owner, part 1): 🕘 हाल में देखा · 📂 विभाग tiles (count inside — no second list) · ⭐ सहेजे गए */}
+            <RecentVisitChips items={visits.recent} title={t('knowledge.homeLayout.recent')} />
+            <View>
+              <SectionTitle text={t('knowledge.homeLayout.sections')} />
+              {loading ? <ActivityIndicator size="small" color={C.primary} style={{ marginBottom: 8 }} /> : null}
+              <KnowledgeTileGrid tiles={tiles} />
+            </View>
+            <SavedVisitList
+              items={visits.saved}
+              title={t('knowledge.homeLayout.saved')}
+              moreLabel={(n) => t('knowledge.homeLayout.moreSaved', { n })}
+              lessLabel={t('knowledge.homeLayout.less')}
+            />
           </View>
         </ScrollView>
       )}

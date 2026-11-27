@@ -3,6 +3,7 @@ import {
   View, Text, Pressable, ScrollView, Share, Modal,
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
+import { useRecordKnowledgeVisit } from '@/lib/knowledge/knowledgeVisits';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,7 +15,7 @@ import {
 } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { THEME } from '@/lib/theme';
-import { ACTS, getSection, getOffenceClassification, getLinks, getLinkCounts, type ActId, type ClassificationRow } from '@/lib/law/lawLibrary';
+import { ACT_COLOR, ACTS, getSection, getOffenceClassification, getLinks, getLinkCounts, type ActId, type ClassificationRow } from '@/lib/law/lawLibrary';
 import { getSimple, type SimpleExplainEntry } from '@/lib/law/simpleExplain';
 import { getDetailedExplain, type DetailedExplainEntry } from '@/lib/law/detailedAnalysis';
 import { getCasesForSection, type CaseLawItem } from '@/lib/law/casesData';
@@ -94,6 +95,11 @@ export default function LawSectionDetailScreen() {
   const relatedCardYRef = useRef<number>(0);
 
   const section = useMemo(() => getSection(actId, sectionNum), [actId, sectionNum]);
+  // ज्ञानकोष होम "🕘 हाल में देखा" (owner)
+  const visitItem = useMemo(() => (section ? {
+    route: `/(app)/knowledge/law/${actId}/${sectionNum}`, label: `${actId} ${sectionNum}`, title: section.title ?? '', color: ACT_COLOR[actId],
+  } : null), [section, actId, sectionNum]);
+  useRecordKnowledgeVisit(visitItem);
 
   // Simple explanation ("सरल भाषा में") if available
   const simpleExplain: SimpleExplainEntry | null = useMemo(

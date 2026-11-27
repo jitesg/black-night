@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -14,12 +15,18 @@ import {
 } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
 import { getFardEntry } from '@/knowledge/fard/fardKb';
+import { useRecordKnowledgeVisit } from '@/lib/knowledge/knowledgeVisits';
 
 export default function FardDetailScreen() {
   const { t } = useTranslation();
   const { code } = useLocalSearchParams<{ code: string }>();
 
   const entry = code ? getFardEntry(code) : undefined;
+  // ज्ञानकोष होम "🕘 हाल में देखा" (owner)
+  const visitItem = useMemo(() => (entry && code ? {
+    route: `/(app)/knowledge/fard/${encodeURIComponent(code)}`, label: entry.name, title: '', color: '#92400E',
+  } : null), [entry, code]);
+  useRecordKnowledgeVisit(visitItem);
 
   if (!entry) {
     return (
