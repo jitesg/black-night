@@ -37,3 +37,17 @@ test('SOPs in progress', async () => {
   const done = new Map([['s-a', 3], ['s-b', 10], ['s-c', 7]]);
   assert.deepEqual(sopsInProgress(items, steps, done).map((x) => `${x.item.id}:${x.done}`), ['c:7', 'a:3']);
 });
+
+test('crime type grid (part 7)', async () => {
+  const { crimeTypeCounts, itemsOfCrime, crimeEmoji } = await import('../src/lib/knowledge/crimeTypeGrid.ts');
+  const items = [
+    { id: 1, pairs: [{ crimeType: 'murder' }, { crimeType: 'murder' }, { crimeType: 'theft' }] },
+    { id: 2, pairs: [{ crimeType: 'theft' }] },
+    { id: 3, pairs: [] },
+  ];
+  assert.deepEqual(crimeTypeCounts(items), [{ id: 'theft', count: 2 }, { id: 'murder', count: 1 }]);
+  assert.deepEqual(itemsOfCrime(items, 'murder').map((i) => i.id), [1]);
+  assert.equal(itemsOfCrime(items, null).length, 3);
+  assert.equal(crimeEmoji('road_accident'), '🚗');
+  assert.equal(crimeEmoji('x'), '📋');
+});

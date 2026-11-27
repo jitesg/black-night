@@ -902,6 +902,9 @@ detailed working log. Keep the guide up to date when the architecture changes.
   6 न्यायिक निर्णय (`knowledge/cases.tsx`): कोर्ट = one switch सभी / सुप्रीम कोर्ट / हाईकोर्ट; सत्यापित + विषय chips in one row; card = court
     (HC → its courtName) + year (`caseYear`) + ⚠ अद्यतन badges, ☆/⭐ save, headline, name — citation, law tags as "🔗 BNSS 35" (`isLawTag`), other
     tags plain (3 max); plain style object. Tests in scripts/test_cases.ts.
+  7 चेकलिस्ट (`knowledge/checklists/index.tsx`): "🔎 अपराध प्रकार चुनें" grid (3 per row, emoji + name + count; `src/lib/knowledge/crimeTypeGrid.ts`
+    crimeTypeCounts / itemsOfCrime / CRIME_EMOJI by crime_taxonomy id; hidden while searching) → that type's items as numbered steps with a line
+    (timeline). जाँच गाइड home: the 4 section cards = 2×2 tiles + a "अपराध प्रकार से चेकलिस्ट" row. फर्द ज्ञान list unchanged (already this card style).
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared

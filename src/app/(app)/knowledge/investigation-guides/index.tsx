@@ -82,37 +82,30 @@ function SectionCard({
   const C = colorScheme === 'dark' ? THEME.dark : THEME.light;
   const COLOR = colorScheme === 'dark' ? '#22D3EE' : '#0891B2';
   const Icon = section.icon;
+  // 2×2 tile (owner, ज्ञानकोष new layout part 7)
   return (
     <Pressable
       onPress={onPress}
-      className="bg-card border border-border rounded-2xl px-5 py-4 flex-row items-center gap-4 active:opacity-70"
-      style={{ borderCurve: 'continuous' }}
+      accessibilityRole="button"
+      style={{ width: '48.5%', backgroundColor: C.card, borderWidth: 1, borderColor: C.border, borderRadius: 16, padding: 14, gap: 10,
+        borderCurve: 'continuous' } as object}
     >
-      <View
-        className="w-11 h-11 rounded-xl items-center justify-center"
-        style={{ backgroundColor: `${COLOR}15` }}
-      >
-        <Icon size={20} color={COLOR} />
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View style={{ width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: `${COLOR}18` }}>
+          <Icon size={20} color={COLOR} />
+        </View>
+        <View style={{ borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2, backgroundColor: `${COLOR}18` }}>
+          <Text style={{ fontSize: 12, fontWeight: '800', color: COLOR }}>{count}</Text>
+        </View>
       </View>
-      <View className="flex-1" style={{ minWidth: 0 }}>
-        <Text className="text-sm font-semibold text-foreground leading-5">
+      <View>
+        <Text numberOfLines={2} style={{ fontSize: 14, fontWeight: '700', lineHeight: 20, color: C.foreground }}>
           {t(`knowledge.guide.${section.type}.label`)}
         </Text>
-        <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>
+        <Text numberOfLines={2} style={{ fontSize: 11.5, lineHeight: 16, color: C.mutedForeground, marginTop: 2 }}>
           {t(`knowledge.guide.${section.type}.subtitle`)}
         </Text>
       </View>
-      <View className="items-end gap-1">
-        <View
-          className="rounded-full px-2.5 py-1"
-          style={{ backgroundColor: `${COLOR}15` }}
-        >
-          <Text textBreakStrategy="simple" className="text-xs font-semibold" style={{ color: COLOR }}>
-            {count}
-          </Text>
-        </View>
-      </View>
-      <ChevronRight size={16} color={C.mutedForeground} />
     </Pressable>
   );
 }
@@ -166,15 +159,32 @@ export default function InvestigationGuidesHomeScreen() {
             </Text>
           </View>
 
-          {/* Section cards */}
-          {GUIDE_SECTIONS.map((section) => (
-            <SectionCard
-              key={section.type}
-              section={section}
-              count={counts[section.subcategory] ?? 0}
-              onPress={() => router.push(section.route as never)}
-            />
-          ))}
+          {/* Section tiles, 2 × 2 */}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 10 }}>
+            {GUIDE_SECTIONS.map((section) => (
+              <SectionCard
+                key={section.type}
+                section={section}
+                count={counts[section.subcategory] ?? 0}
+                onPress={() => router.push(section.route as never)}
+              />
+            ))}
+          </View>
+
+          {/* अपराध प्रकार से चेकलिस्ट (owner, part 7) */}
+          <Pressable
+            onPress={() => router.push('/(app)/knowledge/checklists' as never)}
+            accessibilityRole="button"
+            className="bg-card border border-border rounded-2xl px-4 py-3.5 flex-row items-center gap-3"
+            style={{ borderCurve: 'continuous' }}
+          >
+            <Text style={{ fontSize: 20 }}>🔎</Text>
+            <View className="flex-1" style={{ minWidth: 0 }}>
+              <Text className="text-sm font-semibold text-foreground">अपराध प्रकार से चेकलिस्ट</Text>
+              <Text className="text-xs text-muted-foreground mt-0.5" numberOfLines={1}>हत्या, चोरी, दुर्घटना … — काम क्रम से</Text>
+            </View>
+            <ChevronRight size={16} color={COLOR} />
+          </Pressable>
         </ScrollView>
       )}
     </View>

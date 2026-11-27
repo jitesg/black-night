@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator, FlatList, Pressable, Text, View,
 } from 'react-native';
@@ -22,6 +22,8 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { matchesQuery } from '@/lib/searchUtils';
+import { crimeTypeLabel } from '@/lib/db/checklistRepo';
+import { crimeEmoji, crimeTypeCounts, itemsOfCrime } from '@/lib/knowledge/crimeTypeGrid';
 
 const COLOR = '#0891B2';
 
@@ -145,6 +147,10 @@ export default function ChecklistsIndexScreen() {
   const [query, setQuery]               = useState('');
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>('All');
   const [deleteTarget, setDeleteTarget] = useState<ChecklistItemM2M | null>(null);
+  // अपराध प्रकार grid (owner, ज्ञानकोष new layout part 7): one type → only its items, shown as numbered steps
+  const [crime, setCrime] = useState<string | null>(null);
+  const crimes = useMemo(() => crimeTypeCounts(allItems), [allItems]);
+  const shown = useMemo(() => itemsOfCrime(filtered, crime), [filtered, crime]);
 
   const applyFilters = (data: ChecklistItemM2M[], q: string, sf: SourceFilter) => {
     let result = data;
@@ -202,16 +208,61 @@ export default function ChecklistsIndexScreen() {
   };
 
   const renderItem = useCallback(
-    ({ item }: { item: ChecklistItemM2M }) => (
-      <ItemCard
-        item={item}
-        query={query}
-        onEdit={() => router.push(`/(app)/knowledge/checklists/add-checklist?editId=${item.id}` as never)}
-        onDelete={() => setDeleteTarget(item)}
-      />
-    ),
-    [query, router]
+    ({ item, index }: { item: ChecklistItemM2M; index: number }) => {
+      const card = (
+        <ItemCard
+          item={item}
+          query={query}
+          onEdit={() => router.push(`/(app)/knowledge/checklists/add-checklist?editId=${item.id}` as never)}
+          onDelete={() => setDeleteTarget(item)}
+        />
+      );
+      if (!crime) return card;
+      // timeline: step number + line down to the next step
+      return (
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          <View style={{ alignItems: 'center', width: 28 }}>
+            <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: COLOR, alignItems: 'center', justifyContent: 'center', marginTop: 12 }}>
+              <Text style={{ fontSize: 12, fontWeight: '800', color: '#FFFFFF' }}>{index + 1}</Text>
+            </View>
+            <View style={{ flex: 1, width: 2, backgroundColor: C.border, marginTop: 4, marginBottom: -16 }} />
+          </View>
+          <View style={{ flex: 1, minWidth: 0 }}>{card}</View>
+        </View>
+      );
+    },
+    [query, crime, COLOR, C.border]
   );
+
+  const crimeGrid = crimes.length ? (
+    <View style={{ gap: 8, marginBottom: 4 }}>
+      <Text style={{ fontSize: 12, fontWeight: '800', letterSpacing: 0.4, color: C.mutedForeground }}>🔎 अपराध प्रकार चुनें</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        {[{ id: '', count: allItems.length }, ...crimes].map((c) => {
+          const on = (crime ?? '') === c.id;
+          const label = c.id ? crimeTypeLabel(c.id) : 'सभी';
+          return (
+            <Pressable
+              key={c.id || 'all'}
+              onPress={() => setCrime(c.id || null)}
+              accessibilityRole="button"
+              accessibilityState={{ selected: on }}
+              accessibilityLabel={label}
+              style={{ width: '31.5%', alignItems: 'center', gap: 2, paddingVertical: 9, paddingHorizontal: 4, borderRadius: 14, borderWidth: 1,
+                borderColor: on ? COLOR : C.border, backgroundColor: on ? `${COLOR}1A` : C.card }}
+            >
+              <Text style={{ fontSize: 18 }}>{c.id ? crimeEmoji(c.id) : '📋'}</Text>
+              <Text numberOfLines={2} style={{ fontSize: 11.5, fontWeight: '700', textAlign: 'center', color: on ? COLOR : C.foreground }}>{label}</Text>
+              <Text style={{ fontSize: 10.5, color: C.mutedForeground }}>{c.count}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      {crime ? (
+        <Text style={{ fontSize: 13, fontWeight: '800', color: C.foreground, marginTop: 4 }}>{`${crimeTypeLabel(crime)} — ${shown.length} काम (क्रम से)`}</Text>
+      ) : null}
+    </View>
+  ) : null;
 
   return (
     <View className="flex-1 bg-background">
@@ -255,7 +306,7 @@ export default function ChecklistsIndexScreen() {
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color={COLOR} />
         </View>
-      ) : filtered.length === 0 ? (
+      ) : shown.length === 0 && (query.trim() || !crimes.length) ? (
         <View className="flex-1 items-center justify-center gap-4 px-8">
           <View
             className="w-16 h-16 rounded-2xl items-center justify-center"
@@ -274,7 +325,8 @@ export default function ChecklistsIndexScreen() {
         </View>
       ) : (
         <FlatList keyboardShouldPersistTaps="handled"
-          data={filtered}
+          data={shown}
+          ListHeaderComponent={query.trim() ? null : crimeGrid}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 48, gap: 12 }}
