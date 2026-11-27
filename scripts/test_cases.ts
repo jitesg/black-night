@@ -106,3 +106,14 @@ test('search ignores nukta encoding (ड़ precomposed vs decomposed)', () => {
   assert.equal(filterCases(items, { query: pre }).length, filterCases(items, { query: dec }).length);
   assert.ok(filterCases(items, { query: dec }).length >= 1);
 });
+
+test('case year + law tags (new layout part 6)', async () => {
+  const { caseYear, isLawTag } = await import('../src/lib/cases/caseCore.ts');
+  assert.equal(caseYear('(1994) 4 SCC 260; AIR 1994 SC 1349'), '1994');
+  assert.equal(caseYear('AIR 2014 SC 2756'), '2014');
+  assert.equal(caseYear(''), '');
+  assert.equal(isLawTag('BNSS 35'), true);
+  assert.equal(isLawTag('IPC 302'), true);
+  assert.equal(isLawTag('गिरफ़्तारी'), false);
+  assert.equal(isLawTag('BNSS'), false);
+});

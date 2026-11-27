@@ -98,3 +98,14 @@ export function topicOrder(index: RegIndexData | null, items: CaseItem[]): strin
   for (const it of items) if (!out.includes(it.topic)) out.push(it.topic);
   return out;
 }
+
+/** Year of a judgment from its citation — "(1994) 4 SCC 260" → "1994"; none → '' (ज्ञानकोष new layout part 6). */
+export function caseYear(citation: string | null | undefined): string {
+  const m = /\b(19[5-9]\d|20[0-4]\d)\b/.exec(String(citation ?? ''));
+  return m ? m[1] : '';
+}
+
+/** Tags that name a law section ("BNSS 35", "IPC 302", "धारा 41A CrPC") — shown as 🔗 links on the card. */
+export function isLawTag(tag: string): boolean {
+  return /\b(BNSS|BNS|BSA|IPC|CrPC|Cr\.P\.C|POCSO|NDPS)\b/i.test(tag) && /\d/.test(tag);
+}

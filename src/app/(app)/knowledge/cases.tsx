@@ -15,8 +15,9 @@ import { THEME } from '@/lib/theme';
 import { getCaseNoteRows } from '@/lib/db/knowledgeRepo';
 import { onSeedComplete } from '@/lib/db/seedManager';
 import { getRegIndex } from '@/lib/regulations/regIndex';
+import { useSavedToggle } from '@/lib/knowledge/knowledgeVisits';
 import {
-  CASES_FOOTER_NOTE, CASES_SOURCE_NOTE, buildCaseItems, filterCases, topicOrder,
+  CASES_FOOTER_NOTE, CASES_SOURCE_NOTE, buildCaseItems, caseYear, filterCases, isLawTag, topicOrder,
   type CaseItem, type CaseRowLite, type Court,
 } from '@/lib/cases/caseCore';
 
@@ -53,41 +54,53 @@ function FooterNote({ isDark }: { isDark: boolean }) {
   );
 }
 
+/**
+ * Case card (owner, new layout part 6): court + year badges on top, Hindi headline, case name · citation, law-section tags as
+ * 🔗 links, other tags plain, ⭐ save (→ ज्ञानकोष होम "सहेजे गए"). Plain style object (function styles were ignored on the phone).
+ */
 const CaseCard = memo(function CaseCard({ item, c, isDark }: { item: CaseItem; c: Theme; isDark: boolean }) {
   const court = item.meta.court;
+  const year = caseYear(item.meta.citation);
   const subtitle = [item.meta.caseName || item.para?.en, item.meta.citation].filter(Boolean).join(' — ');
+  const tags = item.tags.filter((t) => t !== 'न्यायिक निर्णय' && !/Court$/.test(t) && t !== item.meta.caseName && t !== item.topic);
+  const lawTags = tags.filter(isLawTag).slice(0, 3);
+  const otherTags = tags.filter((t) => !isLawTag(t)).slice(0, Math.max(0, 3 - lawTags.length));
+  const visit = useMemo(() => ({ route: `/(app)/knowledge/${item.id}`, label: item.title, title: item.meta.caseName, color: ACCENT }), [item]);
+  const { saved, toggle } = useSavedToggle(item.available ? visit : null);
+  const pill = (bg: string, fg: string, text: string, key?: string) => (
+    <View key={key ?? text} style={{ height: 22, paddingHorizontal: 8, borderRadius: 999, justifyContent: 'center', backgroundColor: bg }}>
+      <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 11, fontWeight: '700', color: fg }}>{text}</Text>
+    </View>
+  );
   return (
     <Pressable
       disabled={!item.available}
       onPress={() => router.push(`/(app)/knowledge/${item.id}` as never)}
-      style={({ pressed }) => ({
-        padding: 14, marginBottom: 8, borderRadius: 16, backgroundColor: c.card, borderWidth: 1, borderColor: c.border,
-        gap: 6, opacity: !item.available ? 0.5 : pressed ? 0.75 : 1,
-      })}
+      style={{ padding: 14, marginBottom: 8, borderRadius: 16, backgroundColor: c.card, borderWidth: 1, borderColor: c.border,
+        gap: 6, opacity: !item.available ? 0.5 : 1 }}
       accessibilityRole="button"
       accessibilityLabel={item.title}
     >
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+        {item.available ? pill(`${COURT_COLOR[court]}1A`, COURT_COLOR[court], court === 'SC' ? 'सुप्रीम कोर्ट' : (item.meta.courtName || 'हाईकोर्ट'), 'court')
+          : <Text style={{ fontSize: 11, fontWeight: '600', color: c.mutedForeground }}>जल्द उपलब्ध</Text>}
+        {year ? pill(c.secondary, c.secondaryForeground, year, 'year') : null}
+        {item.meta.hasUpdate ? pill(isDark ? '#78350F66' : '#FEF3C7', isDark ? '#FDE68A' : '#92400E', '⚠ अद्यतन', 'upd') : null}
+        <View style={{ flex: 1 }} />
+        {item.available ? (
+          <Pressable onPress={toggle} hitSlop={10} accessibilityRole="button" accessibilityState={{ selected: saved }} accessibilityLabel={saved ? 'सहेजा गया — हटाएँ' : 'सहेजें'}>
+            <Text style={{ fontSize: 16 }}>{saved ? '⭐' : '☆'}</Text>
+          </Pressable>
+        ) : null}
+      </View>
       <Text textBreakStrategy="simple" style={{ fontSize: 15, fontWeight: '800', lineHeight: 21, color: c.foreground }}>{item.title}</Text>
       {subtitle ? <Text textBreakStrategy="simple" numberOfLines={2} style={{ fontSize: 12.5, lineHeight: 18, color: c.mutedForeground }}>{subtitle}</Text> : null}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
-        {item.available ? (
-          <View style={{ height: 22, paddingHorizontal: 8, borderRadius: 999, justifyContent: 'center', backgroundColor: `${COURT_COLOR[court]}1A` }}>
-            <Text style={{ fontSize: 11, fontWeight: '800', color: COURT_COLOR[court] }}>{court}</Text>
-          </View>
-        ) : (
-          <Text style={{ fontSize: 11, fontWeight: '600', color: c.mutedForeground }}>जल्द उपलब्ध</Text>
-        )}
-        {item.meta.hasUpdate ? (
-          <View style={{ height: 22, paddingHorizontal: 8, borderRadius: 999, justifyContent: 'center', backgroundColor: isDark ? '#78350F66' : '#FEF3C7' }}>
-            <Text style={{ fontSize: 11, fontWeight: '700', color: isDark ? '#FDE68A' : '#92400E' }}>⚠ अद्यतन</Text>
-          </View>
-        ) : null}
-        {item.tags.filter((t) => t !== 'न्यायिक निर्णय' && !/Court$/.test(t) && t !== item.meta.caseName && t !== item.topic).slice(0, 3).map((t) => (
-          <View key={t} style={{ height: 22, paddingHorizontal: 8, borderRadius: 999, justifyContent: 'center', backgroundColor: c.secondary }}>
-            <Text textBreakStrategy="simple" numberOfLines={1} style={{ fontSize: 11, fontWeight: '600', color: c.secondaryForeground }}>{t}</Text>
-          </View>
-        ))}
-      </View>
+      {lawTags.length || otherTags.length ? (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+          {lawTags.map((t) => pill(isDark ? '#2E1065' : '#F5F3FF', isDark ? '#C4B5FD' : ACCENT, `🔗 ${t}`))}
+          {otherTags.map((t) => pill(c.secondary, c.secondaryForeground, t))}
+        </View>
+      ) : null}
     </Pressable>
   );
 });
@@ -182,10 +195,24 @@ export default function CasesHubScreen() {
           variant="light"
           returnKeyType="search"
         />
+        {/* कोर्ट = one switch (owner, new layout part 6) */}
+        <View style={{ flexDirection: 'row', backgroundColor: c.secondary, borderRadius: 12, padding: 3, gap: 3 }}>
+          {([['all', 'सभी'], ['SC', 'सुप्रीम कोर्ट'], ['HC', 'हाईकोर्ट']] as const).map(([v, label]) => {
+            const on = court === v;
+            return (
+              <Pressable
+                key={v}
+                onPress={() => setCourt(v)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: on }}
+                style={{ flex: 1, alignItems: 'center', paddingVertical: 7, borderRadius: 9, backgroundColor: on ? c.card : 'transparent' }}
+              >
+                <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: '700', color: on ? (v === 'all' ? ACCENT : COURT_COLOR[v]) : c.mutedForeground }}>{label}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }} keyboardShouldPersistTaps="handled">
-          <Chip label="सभी" active={court === 'all'} onPress={() => setCourt('all')} c={c} />
-          <Chip label="सुप्रीम कोर्ट" active={court === 'SC'} onPress={() => setCourt('SC')} c={c} color={COURT_COLOR.SC} />
-          <Chip label="हाईकोर्ट" active={court === 'HC'} onPress={() => setCourt('HC')} c={c} color={COURT_COLOR.HC} />
           <Pressable
             onPress={() => setVerifiedOnly((v) => !v)}
             accessibilityRole="switch"
@@ -198,8 +225,6 @@ export default function CasesHubScreen() {
             <ShieldCheck size={13} color={verifiedOnly ? '#fff' : c.foreground} />
             <Text style={{ fontSize: 12.5, fontWeight: '700', color: verifiedOnly ? '#fff' : c.foreground }}>सत्यापित</Text>
           </Pressable>
-        </ScrollView>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }} keyboardShouldPersistTaps="handled">
           <Chip label="सभी विषय" active={!topic} onPress={() => setTopic(null)} c={c} />
           {topics.map((t) => <Chip key={t} label={t} active={topic === t} onPress={() => setTopic(topic === t ? null : t)} c={c} />)}
         </ScrollView>
