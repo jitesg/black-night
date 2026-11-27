@@ -3,14 +3,14 @@ import {
   View, Text, Pressable, ScrollView, Share, Modal,
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { useRecordKnowledgeVisit } from '@/lib/knowledge/knowledgeVisits';
+import { useRecordKnowledgeVisit, useSavedToggle } from '@/lib/knowledge/knowledgeVisits';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Clipboard from 'expo-clipboard';
 import {
   Copy, Share2, ChevronLeft, ChevronRight, Check,
-  AlertTriangle, ShieldCheck, Landmark, Layers,
+  Layers,
   ChevronDown, ChevronUp, Link2, ArrowLeftRight, X,
 } from 'lucide-react-native';
 import { AppHeader } from '@/components/ui/ds/AppHeader';
@@ -100,6 +100,7 @@ export default function LawSectionDetailScreen() {
     route: `/(app)/knowledge/law/${actId}/${sectionNum}`, label: `${actId} ${sectionNum}`, title: section.title ?? '', color: ACT_COLOR[actId],
   } : null), [section, actId, sectionNum]);
   useRecordKnowledgeVisit(visitItem);
+  const { saved, toggle: toggleSaved } = useSavedToggle(visitItem);
 
   // Simple explanation ("सरल भाषा में") if available
   const simpleExplain: SimpleExplainEntry | null = useMemo(
@@ -127,13 +128,24 @@ export default function LawSectionDetailScreen() {
   const links = useMemo(() => getLinks(actId, sectionNum), [actId, sectionNum]);
   const linkCounts = useMemo(() => getLinkCounts(actId, sectionNum), [actId, sectionNum]);
   const [showAllRefs, setShowAllRefs] = useState<boolean>(false);
+  // New layout (owner, part 4): मूल पाठ / सरल / विश्लेषण / निर्णय in ONE switch — only the parts this section has
+  type ReadTab = 'text' | 'simple' | 'analysis' | 'cases';
+  const [tab, setTab] = useState<ReadTab>('text');
+  const tabs = useMemo(() => {
+    const list: { key: ReadTab; label: string }[] = [{ key: 'text', label: isHi ? 'मूल पाठ' : 'Text' }];
+    if (simpleExplain) list.push({ key: 'simple', label: isHi ? 'सरल' : 'Simple' });
+    if (detailedExplain || lawNote) list.push({ key: 'analysis', label: isHi ? 'विश्लेषण' : 'Analysis' });
+    if (cases.length > 0) list.push({ key: 'cases', label: isHi ? 'निर्णय' : 'Cases' });
+    return list;
+  }, [isHi, simpleExplain, detailedExplain, lawNote, cases.length]);
   const [showAllCitedBy, setShowAllCitedBy] = useState<boolean>(false);
 
   const scrollToRelated = useCallback(() => {
+    if (tab !== 'text') { setTab('text'); setTimeout(() => { if (relatedCardYRef.current > 0) scrollViewRef.current?.scrollTo({ y: relatedCardYRef.current - 12, animated: true }); }, 250); return; }
     if (relatedCardYRef.current > 0 && scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ y: relatedCardYRef.current - 12, animated: true });
     }
-  }, []);
+  }, [tab]);
 
   // Structured blocks parsed via formatSectionSafe with self-check integrity
   const blocks = useMemo(() => {
@@ -179,13 +191,14 @@ export default function LawSectionDetailScreen() {
   }, [actId, sectionNum, meta.total]);
 
   const scrollToClassification = useCallback(() => {
-    if (scrollViewRef.current && classificationCardYRef.current > 0) {
-      scrollViewRef.current.scrollTo({
-        y: classificationCardYRef.current - 20,
-        animated: true,
-      });
-    }
-  }, []);
+    const go = () => {
+      if (scrollViewRef.current && classificationCardYRef.current > 0) {
+        scrollViewRef.current.scrollTo({ y: classificationCardYRef.current - 20, animated: true });
+      }
+    };
+    if (tab !== 'text') { setTab('text'); setTimeout(go, 250); return; }
+    go();
+  }, [tab]);
 
   if (!section) {
     return (
@@ -415,70 +428,21 @@ export default function LawSectionDetailScreen() {
                       </Text>
                     </Pressable>
                   ) : singleRow ? (
-                    <>
-                      {/* Cognizable Pill */}
-                      <View
-                        className="flex-row items-center gap-1 rounded-full border px-2.5 py-1"
-                        style={{
-                          backgroundColor: isCognizable
-                            ? (isDark ? '#7C2D1225' : '#FFF7ED')
-                            : (isDark ? '#1E3A8A25' : '#EFF6FF'),
-                          borderColor: isCognizable
-                            ? (isDark ? '#EA580C80' : '#FDBA74')
-                            : (isDark ? '#3B82F680' : '#BFDBFE'),
-                          borderCurve: 'continuous',
-                        }}
-                      >
-                        <AlertTriangle
-                          size={12}
-                          color={isCognizable ? '#EA580C' : '#3B82F6'}
-                        />
-                        <Text textBreakStrategy="simple"
-                          className="text-xs font-bold"
-                          style={{ color: isCognizable ? '#EA580C' : '#2563EB' }}
-                        >
-                          {singleRow.cognizable || (isCognizable ? 'संज्ञेय' : 'असंज्ञेय')}
-                        </Text>
-                      </View>
-
-                      {/* Bailable Pill */}
-                      <View
-                        className="flex-row items-center gap-1 rounded-full border px-2.5 py-1"
-                        style={{
-                          backgroundColor: isBailable
-                            ? (isDark ? '#064E3B25' : '#ECFDF5')
-                            : (isDark ? '#7F1D1D25' : '#FEF2F2'),
-                          borderColor: isBailable
-                            ? (isDark ? '#05966980' : '#A7F3D0')
-                            : (isDark ? '#DC262680' : '#FECACA'),
-                          borderCurve: 'continuous',
-                        }}
-                      >
-                        <ShieldCheck
-                          size={12}
-                          color={isBailable ? '#059669' : '#DC2626'}
-                        />
-                        <Text textBreakStrategy="simple"
-                          className="text-xs font-bold"
-                          style={{ color: isBailable ? '#059669' : '#DC2626' }}
-                        >
-                          {singleRow.bailable || (isBailable ? 'जमानती' : 'अजमानती')}
-                        </Text>
-                      </View>
-
-                      {/* Court Pill */}
-                      {singleRow.court ? (
-                        <View
-                          className="flex-row items-center gap-1 rounded-full bg-muted border border-border px-2.5 py-1"
-                          style={{ borderCurve: 'continuous' }}
-                        >
-                          <Landmark size={12} color={C.mutedForeground} />
-                          <Text textBreakStrategy="simple" className="text-xs font-semibold text-foreground">
-                            {singleRow.court}
-                          </Text>
+                    // New layout (owner, part 4): 4 fact boxes — सज़ा · संज्ञेय · जमानत · विचारण (BNSS First Schedule row)
+                    <View style={{ width: '100%', flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                      {[
+                        { k: isHi ? 'सज़ा' : 'Punishment', v: singleRow.punishment, color: C.foreground },
+                        { k: isHi ? 'संज्ञेय' : 'Cognizable', v: singleRow.cognizable || (isCognizable ? 'संज्ञेय' : 'असंज्ञेय'), color: isCognizable ? '#EA580C' : '#2563EB' },
+                        { k: isHi ? 'जमानत' : 'Bail', v: singleRow.bailable || (isBailable ? 'जमानती' : 'अजमानती'), color: isBailable ? '#059669' : '#DC2626' },
+                        { k: isHi ? 'विचारण' : 'Triable by', v: singleRow.court, color: C.foreground },
+                      ].filter((f) => (f.v ?? '').trim()).map((f) => (
+                        <View key={f.k} style={{ flexGrow: 1, flexBasis: '46%', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 8,
+                          backgroundColor: isDark ? '#FFFFFF0D' : '#0000000A', borderCurve: 'continuous' } as object}>
+                          <Text style={{ fontSize: 11, color: C.mutedForeground, fontWeight: '600' }}>{f.k}</Text>
+                          <Text style={{ fontSize: 13, color: f.color, fontWeight: '700', marginTop: 1 }}>{f.v}</Text>
                         </View>
-                      ) : null}
-                    </>
+                      ))}
+                    </View>
                   ) : null}
                 </>
               )}
@@ -500,8 +464,28 @@ export default function LawSectionDetailScreen() {
           )}
         </View>
 
-        {/* ── B2: 'सरल भाषा में' Simple Explanation Card (ABOVE official text) ── */}
-        {simpleExplain ? (
+        {/* ── मूल पाठ / सरल / विश्लेषण / निर्णय switch (owner, part 4) ── */}
+        {tabs.length > 1 ? (
+          <View style={{ flexDirection: 'row', backgroundColor: isDark ? '#FFFFFF0F' : '#0000000D', borderRadius: 12, padding: 3, gap: 3 }}>
+            {tabs.map((tb) => {
+              const on = tab === tb.key;
+              return (
+                <Pressable
+                  key={tb.key}
+                  onPress={() => setTab(tb.key)}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: on }}
+                  style={{ flex: 1, alignItems: 'center', paddingVertical: 8, borderRadius: 9, backgroundColor: on ? C.card : 'transparent' }}
+                >
+                  <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: '700', color: on ? actColor : C.mutedForeground }}>{tb.label}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        ) : null}
+
+        {/* ── B2: 'सरल भाषा में' Simple Explanation Card ── */}
+        {tab === 'simple' && simpleExplain ? (
           <View
             className="p-5 bg-card border border-border rounded-2xl shadow-sm shadow-black/5 gap-3.5"
             style={{ borderCurve: 'continuous' }}
@@ -598,6 +582,7 @@ export default function LawSectionDetailScreen() {
         ) : null}
 
         {/* ── Section Body (Formatted Book Page Layout) ── */}
+        {tab === 'text' ? (
         <View
           className="bg-card border border-border rounded-2xl shadow-sm shadow-black/5"
           style={{ padding: 12, borderCurve: 'continuous' }}
@@ -619,8 +604,10 @@ export default function LawSectionDetailScreen() {
           </View>
         </View>
 
+        ) : null}
+
         {/* ── BNS Offence Classification Card (BNSS Schedule I) ── */}
-        {classificationRows.length > 0 && (
+        {tab === 'text' && classificationRows.length > 0 && (
           <View
             onLayout={(e) => {
               classificationCardYRef.current = e.nativeEvent.layout.y;
@@ -740,17 +727,17 @@ export default function LawSectionDetailScreen() {
         )}
 
         {/* ── Detailed Analysis Card ("विस्तृत विश्लेषण") ── */}
-        {detailedExplain || lawNote ? (
+        {tab === 'analysis' && (detailedExplain || lawNote) ? (
           <DetailedAnalysisCard entry={detailedExplain ?? {}} isHi={isHi} note={lawNote} />
         ) : null}
 
         {/* ── Verified Case Law Card ("महत्वपूर्ण निर्णय") ── */}
-        {cases.length > 0 ? (
+        {tab === 'cases' && cases.length > 0 ? (
           <CaseLawCard cases={cases} isHi={isHi} />
         ) : null}
 
         {/* ── A2: 'संबंधित धाराएँ' Related Sections Card (BELOW section text / classification card) ── */}
-        {linkCounts.total > 0 && (
+        {tab === 'text' && linkCounts.total > 0 && (
           <View
             onLayout={(e) => {
               relatedCardYRef.current = e.nativeEvent.layout.y;
@@ -951,6 +938,19 @@ export default function LawSectionDetailScreen() {
           <Text className="text-xs font-bold text-foreground" numberOfLines={1}>
             {isHi ? 'पिछली' : 'Previous'}
           </Text>
+        </Pressable>
+
+        {/* ⭐ सहेजें (owner, part 4) → ज्ञानकोष होम "सहेजे गए" */}
+        <Pressable
+          onPress={toggleSaved}
+          accessibilityRole="button"
+          accessibilityState={{ selected: saved }}
+          accessibilityLabel={saved ? 'सहेजा गया — हटाएँ' : 'सहेजें'}
+          className="flex-row items-center gap-1 px-3 py-2 rounded-xl border"
+          style={{ borderCurve: 'continuous', minHeight: 44, borderColor: saved ? '#F59E0B' : C.border, backgroundColor: saved ? (isDark ? '#78350F55' : '#FEF3C7') : C.background }}
+        >
+          <Text style={{ fontSize: 15 }}>{saved ? '⭐' : '☆'}</Text>
+          <Text className="text-xs font-bold text-foreground" numberOfLines={1}>{saved ? (isHi ? 'सहेजा' : 'Saved') : (isHi ? 'सहेजें' : 'Save')}</Text>
         </Pressable>
 
         {/* Centre shows '2 / 358' and act code on two lines */}
