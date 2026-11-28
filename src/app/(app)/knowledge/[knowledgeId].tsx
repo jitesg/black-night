@@ -7,6 +7,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useRecordKnowledgeVisit } from '@/lib/knowledge/knowledgeVisits';
+import { getCircularGuide } from '@/lib/circularGuide';
+import { CircularGuideView } from '@/components/knowledge/CircularGuideView';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   AlertTriangle, Check, Clock, ClipboardCopy, ClipboardList, Edit2, ExternalLink, FileText,
@@ -2451,10 +2453,12 @@ export function DefaultDetail({ entry }: { entry: KnowledgeEntry }) {
 function KnowledgeDetailScreen() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { knowledgeId, tab: routeTab, caseId: routeCaseId } = useLocalSearchParams<{
+  const { knowledgeId, tab: routeTab, caseId: routeCaseId, view: routeView } = useLocalSearchParams<{
     knowledgeId: string;
     tab?: string;
     caseId?: string;
+    /** 'text' = the old परिपत्र view (मूल पाठ / नोट / फ़ाइलें) even when the परिपत्र has a guide */
+    view?: string;
   }>();
 
   // All screen-level hooks are placed unconditionally at the top
@@ -2568,6 +2572,9 @@ function KnowledgeDetailScreen() {
   }
 
   if (isCircular) {
+    // परिपत्र गाइड (owner's base layout) when this परिपत्र has one; "मूल पाठ…" button → ?view=text = the old view
+    const guide = routeView === 'text' ? null : getCircularGuide(entry.id);
+    if (guide) return <CircularGuideView key={entry.id} entryId={entry.id} title={entry.title} guide={guide} />;
     return (
       <CircularDetail
         key={entry.id}

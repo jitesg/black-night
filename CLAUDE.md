@@ -909,6 +909,16 @@ detailed working log. Keep the guide up to date when the architecture changes.
     groups (`circularRows`; date = seed last_updated = the circular's date, user rows → created_at; "तारीख नहीं" last), card line "📅 13 जन0 2013" +
     "नया" (≤ 7 days, `isRecent`); पुलिस प्रारूप grouped by उप-श्रेणी (`withGroupHeads`); other categories one plain row each as before. No "issued by"
     field exists — the उप-श्रेणी chip (DGP Circulars …) on the card shows it.
+- परिपत्र गाइड = the base layout for every DGP परिपत्र (owner approved the 70/2013 sample: theme + structure; step 1 = shared screen + 70/2013,
+  then the other परिपत्र in batches of 5–7, sample per batch). Data: one JSON per परिपत्र `assets/circular-guides/<entry id>.json` + one line in
+  `GUIDES` (`src/lib/circularGuide.ts`: getCircularGuide, guideLawPairs via law_map.json rev, checklist ticks in localStorage
+  investsuite:circ_check:<id>); rules `src/lib/circularGuideCore.ts` (parseGuide, guideSections — only sections present, numbered; lawPairs; checklistProgress
+  — `optional` item counts only while its switch is on; boldParts "**…**"; tests scripts/test_circular_guide.ts check every file against the seed ids, related ids
+  and law_map). Screen `components/knowledge/CircularGuideView.tsx`: compact navy header (#1E293B / dark #0B1220) + 3px amber line, back · short title +
+  ⚖️ kicker · ☆ (useSavedToggle), section buttons (scroll to section, follow the scroll); 1 विवरण (k/v + "आज की धाराएँ" chips → law/<act>/<n>), समस्या
+  (amber box), निर्देश (numbered, "देखें 73/2013" tag) + related परिपत्र red box (→ that entry), DGP (navy box, bold amber), वाद (case lines + order tabs),
+  चेकलिस्ट (ticks, dashed switch, navy status card red / green), footer + "📄 मूल पाठ, मेरा नोट व संलग्न फ़ाइलें" → `[knowledgeId]?view=text` (the old
+  CircularDetail). Used from [knowledgeId] when the परिपत्र has a guide. 70/2013 = owner's own notes text as sent (names as in his text).
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared
