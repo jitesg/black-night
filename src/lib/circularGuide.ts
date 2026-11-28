@@ -33,6 +33,14 @@ const GUIDES: Record<string, () => unknown> = {
   'sys-circ-ardh-dg-11-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-11-2013.json'),
   'sys-circ-dg-12-2013': () => require('../../assets/circular-guides/sys-circ-dg-12-2013.json'),
   'sys-circ-ardh-dg-13-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-13-2013.json'),
+  // batch 4 (April–May 2013)
+  'sys-circ-dg-14-2013': () => require('../../assets/circular-guides/sys-circ-dg-14-2013.json'),
+  'sys-circ-ardh-dg-15-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-15-2013.json'),
+  'sys-circ-dg-16-2013': () => require('../../assets/circular-guides/sys-circ-dg-16-2013.json'),
+  'sys-circ-dg-17-2013': () => require('../../assets/circular-guides/sys-circ-dg-17-2013.json'),
+  'sys-circ-dg-18-2013': () => require('../../assets/circular-guides/sys-circ-dg-18-2013.json'),
+  'sys-circ-ardh-dg-19-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-19-2013.json'),
+  'sys-circ-ardh-dg-20-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-20-2013.json'),
 };
 
 const cache = new Map<string, CircularGuide | null>();

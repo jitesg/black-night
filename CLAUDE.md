@@ -927,6 +927,8 @@ detailed working log. Keep the guide up to date when the architecture changes.
   chips: law_map has only IPC/CrPC/IEA), 5, अ0शा0 6. Still to do: 2012 परिपत्र have extra headings (उद्देश्य, समय-सीमाएँ, लागू शर्तें …) — teach convert.py
   to keep them as their own sections before that batch.
   Batch 3 done (March–April 2013): अ0शा0 8, सड़क सुरक्षा सप्ताह, महिला अपराध मीडिया, अ0शा0 11 (IPC 82/83), 12 (IPC 363/364/364A), अ0शा0 13 (IPC 326A/
+  Batch 4 done (April–May 2013): 14 (गोवध / PCA — no law chips, not in law_map), अ0शा0 15, 16 (CrPC 161/167), 17, 18 (CrPC 176 → BNSS 196),
+  अ0शा0 19 (IPC 509), अ0शा0 20.
   326B/354/376/509, CrPC 160/161/164/167). convert.py reads सेल्फ-चेक both as "☐ a ☐ b" and as "• a" lines (batches 1–2 unchanged by it).
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
