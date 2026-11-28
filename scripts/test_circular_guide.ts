@@ -48,3 +48,8 @@ test('every guide file is registered in GUIDES', () => {
     assert.ok(reg.includes(`'${f.replace(/\.json$/, '')}'`), `${f} not in GUIDES`);
   }
 });
+
+test('sub-heading `h` on a निर्देश point (2012 परिपत्र parts) is kept; empty h dropped', () => {
+  const g = parseGuide({ short: 'x', directions: { points: [{ h: 'उद्देश्य', b: 'a' }, { b: 'b' }, { h: ' ', b: 'c' }] } })!;
+  assert.deepEqual(g.directions!.points, [{ h: 'उद्देश्य', b: 'a' }, { b: 'b' }, { b: 'c' }]);
+});

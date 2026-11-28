@@ -9,7 +9,8 @@
  * Text may hold **bold**.
  */
 export interface GuideKV { k: string; v: string; accent?: boolean }
-export interface GuidePoint { t?: string; b: string; see?: string }
+/** `h` = a sub-heading shown above this point (2012 परिपत्र: उद्देश्य, समय-सीमाएँ, लागू शर्तें … inside निर्देश) */
+export interface GuidePoint { h?: string; t?: string; b: string; see?: string }
 export interface GuideRelated { id: string; title: string; text: string }
 export interface GuideOrder { tab: string; points: string[] }
 export interface GuideCheckItem { t: string; s?: string; optional?: boolean }
@@ -54,7 +55,7 @@ export function parseGuide(raw: unknown): CircularGuide | null {
   if (str(r.problemTitle)) g.problemTitle = str(r.problemTitle);
   if (str(r.problemNav)) g.problemNav = str(r.problemNav);
   const points = (Array.isArray(r.directions?.points) ? r.directions.points : [])
-    .map((p: any) => ({ ...(str(p?.t) ? { t: str(p.t) } : {}), b: str(p?.b), ...(str(p?.see) ? { see: str(p.see) } : {}) }))
+    .map((p: any) => ({ ...(str(p?.h) ? { h: str(p.h) } : {}), ...(str(p?.t) ? { t: str(p.t) } : {}), b: str(p?.b), ...(str(p?.see) ? { see: str(p.see) } : {}) }))
     .filter((p: GuidePoint) => p.b);
   if (points.length) g.directions = { ...(str(r.directions?.title) ? { title: str(r.directions.title) } : {}), ...(str(r.directions?.intro) ? { intro: str(r.directions.intro) } : {}), points };
   const related = (Array.isArray(r.related) ? r.related : []).map((x: any) => ({ id: str(x?.id), title: str(x?.title), text: str(x?.text) }))

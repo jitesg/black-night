@@ -6,7 +6,7 @@
  * tabs), चेकलिस्ट (ticks + optional switch + navy status card; saved on this phone). Footer + "मूल पाठ व नोट" → the old view
  * (?view=text). THEME colours for cards / text, fixed navy + amber like the owner's page, deeper shades in dark mode.
  */
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { Fragment, memo, useCallback, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -168,7 +168,11 @@ export const CircularGuideView = memo(function CircularGuideView({ entryId, titl
             {guide.directions.intro ? <Text style={{ ...muted, marginBottom: 8 }}>{guide.directions.intro}</Text> : null}
             <View style={{ gap: 8 }}>
               {guide.directions.points.map((p, i) => (
-                <View key={i} style={{ flexDirection: 'row', gap: 9, backgroundColor: P.soft, borderWidth: 1, borderColor: C.border, borderRadius: 10, padding: 9 }}>
+                <Fragment key={i}>
+                {p.h ? (
+                  <Text style={{ fontSize: 14, fontWeight: '800', color: C.foreground, marginTop: i ? 6 : 0, borderLeftWidth: 3, borderLeftColor: P.amberLine, paddingLeft: 8 }}>{p.h}</Text>
+                ) : null}
+                <View style={{ flexDirection: 'row', gap: 9, backgroundColor: P.soft, borderWidth: 1, borderColor: C.border, borderRadius: 10, padding: 9 }}>
                   <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: P.amberLine, alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>
                     <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: '800' }}>{i + 1}</Text>
                   </View>
@@ -178,6 +182,7 @@ export const CircularGuideView = memo(function CircularGuideView({ entryId, titl
                     {p.see ? <Text>{'  '}{tag(`देखें ${p.see}`)}</Text> : null}
                   </Text>
                 </View>
+                </Fragment>
               ))}
             </View>
             {(guide.related ?? []).map((r) => (
