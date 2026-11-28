@@ -77,9 +77,11 @@ def convert(e, ov):
     if ov.get('related'): g['related'] = ov['related']
     bg = bullets(section(t, 'पृष्ठभूमि'))
     if bg: g['case'] = {'title': 'पृष्ठभूमि', 'nav': 'पृष्ठभूमि', 'points': bg}
-    m = re.search(r'सेल्फ-चेक\s*\n(.+)', e['description'])
+    m = re.search(r'सेल्फ-चेक\s*\n(.+?)(?:\n\s*\n|\Z)', e['description'], re.S)
     if m:
-        items = [x.strip() for x in m.group(1).split('☐') if x.strip()]
+        block = m.group(1)
+        # "☐ a  ☐ b" on one line, or one "• a" bullet per line
+        items = [x.strip() for x in block.split('☐') if x.strip()] if '☐' in block else bullets(block)
         if items:
             g['checklist'] = {'title': 'सेल्फ-चेक', 'intro': 'परिपत्र का पालन करते समय tick करें:', 'items': [{'t': x} for x in items],
                               'doneText': 'सब बिंदु पूरे।', 'pendingText': '{n} बिंदु बाकी।'}
