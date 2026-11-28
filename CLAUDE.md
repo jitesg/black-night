@@ -924,12 +924,15 @@ detailed working log. Keep the guide up to date when the architecture changes.
   "पृष्ठभूमि", सेल्फ-चेक ☐ → चेकलिस्ट); short title / kicker / laws / related by hand in `scripts/circular_guides/overrides.py`. Owner approves each
   batch with an HTML sample first. Batch 1 done (December 2013): 71, 72, 73 (laws IPC 363/366, related 70), 75, सेवा संबंधी वाद, ललिता कुमारी (CrPC 154).
   Batch 2 done (January–February 2013): 01, 02 (CrPC 170/173/207 → BNSS 190/193/230), अ0शा0 03 (CrPC 160/161/164/164A/53A), अ0शा0 04 (NDPS — no law
-  chips: law_map has only IPC/CrPC/IEA), 5, अ0शा0 6. Still to do: 2012 परिपत्र have extra headings (उद्देश्य, समय-सीमाएँ, लागू शर्तें …) — teach convert.py
-  to keep them as their own sections before that batch.
+  chips: law_map has only IPC/CrPC/IEA), 5, अ0शा0 6.
   Batch 3 done (March–April 2013): अ0शा0 8, सड़क सुरक्षा सप्ताह, महिला अपराध मीडिया, अ0शा0 11 (IPC 82/83), 12 (IPC 363/364/364A), अ0शा0 13 (IPC 326A/
   326B/354/376/509, CrPC 160/161/164/167). convert.py reads सेल्फ-चेक both as "☐ a ☐ b" and as "• a" lines (batches 1–2 unchanged by it).
   Batch 4 done (April–May 2013): 14 (गोवध / PCA — no law chips, not in law_map), अ0शा0 15, 16 (CrPC 161/167), 17, 18 (CrPC 176 → BNSS 196),
   अ0शा0 19 (IPC 509), अ0शा0 20.
+  Batch 5 done (January–March 2012): 3, 04, महिला सुरक्षा (सं0 अस्पष्ट), 9, 11, 12, अ0शा0 14, अ0शा0 15 — no law chips (no IPC/CrPC in their text).
+  2012 परिपत्र have their own headings (उद्देश्य, लागू शर्तें, समय-सीमाएँ, टैब 1 …): convert.py `blocks()` keeps each as a part — its points go into
+  निर्देश in text order, the first carrying `h` (GuidePoint.h → sub-heading with an amber bar in CircularGuideView); हस्ताक्षरकर्ता / प्रकार → विवरण
+  rows (प्रतिलिपि left out); सेल्फ-चेक heading may carry "(हाँ/नहीं)". Batches 1–4 regenerate byte-identical with it.
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared

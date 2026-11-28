@@ -41,6 +41,15 @@ const GUIDES: Record<string, () => unknown> = {
   'sys-circ-dg-18-2013': () => require('../../assets/circular-guides/sys-circ-dg-18-2013.json'),
   'sys-circ-ardh-dg-19-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-19-2013.json'),
   'sys-circ-ardh-dg-20-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-20-2013.json'),
+  // batch 5 (January–March 2012)
+  'sys-circ-dg-3-2012': () => require('../../assets/circular-guides/sys-circ-dg-3-2012.json'),
+  'sys-circ-dg-4-2012': () => require('../../assets/circular-guides/sys-circ-dg-4-2012.json'),
+  'sys-circ-dg-women-safety-2012': () => require('../../assets/circular-guides/sys-circ-dg-women-safety-2012.json'),
+  'sys-circ-dg-9-2012': () => require('../../assets/circular-guides/sys-circ-dg-9-2012.json'),
+  'sys-circ-dg-11-2012': () => require('../../assets/circular-guides/sys-circ-dg-11-2012.json'),
+  'sys-circ-dg-12-2012': () => require('../../assets/circular-guides/sys-circ-dg-12-2012.json'),
+  'sys-circ-ardh-14-2012': () => require('../../assets/circular-guides/sys-circ-ardh-14-2012.json'),
+  'sys-circ-ardh-dg-15-2012': () => require('../../assets/circular-guides/sys-circ-ardh-dg-15-2012.json'),
 };
 
 const cache = new Map<string, CircularGuide | null>();
