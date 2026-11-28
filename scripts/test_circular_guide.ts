@@ -41,3 +41,10 @@ test('helpers', () => {
   assert.equal(parseOldLaw('BNS 103'), null);
   assert.deepEqual(boldParts('a **b** c').map((p) => p.bold), [false, true, false]);
 });
+
+test('every guide file is registered in GUIDES', () => {
+  const reg = readFileSync('src/lib/circularGuide.ts', 'utf8');
+  for (const f of readdirSync('assets/circular-guides').filter((x) => x.endsWith('.json'))) {
+    assert.ok(reg.includes(`'${f.replace(/\.json$/, '')}'`), `${f} not in GUIDES`);
+  }
+});

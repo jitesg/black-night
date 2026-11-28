@@ -155,7 +155,7 @@ export const CircularGuideView = memo(function CircularGuideView({ entryId, titl
 
         {guide.problem ? sectionWrap('problem', (
           <>
-            <Text style={h2}>{`${no('problem')}. मुख्य समस्या`}</Text>
+            <Text style={h2}>{`${no('problem')}. ${guide.problemTitle ?? 'मुख्य समस्या'}`}</Text>
             <View style={{ backgroundColor: P.amberBg, borderLeftWidth: 4, borderLeftColor: P.amberLine, borderRadius: 10, padding: 10 }}>
               <Rich text={guide.problem} style={{ ...body, color: P.amberFg }} />
             </View>
@@ -210,6 +210,16 @@ export const CircularGuideView = memo(function CircularGuideView({ entryId, titl
               <View style={{ backgroundColor: P.soft, borderWidth: 1, borderColor: C.border, borderRadius: 10, padding: 10, gap: 6, marginBottom: 10 }}>
                 {guide.case.lines.map((l) => (
                   <Text key={l.k} style={{ ...body, fontSize: 13 }}><Text style={{ fontWeight: '800' }}>{`${l.k}: `}</Text>{l.v}</Text>
+                ))}
+              </View>
+            ) : null}
+            {guide.case.points?.length ? (
+              <View style={{ gap: 8, marginBottom: guide.case.orders?.length ? 10 : 0 }}>
+                {guide.case.points.map((pt, i) => (
+                  <View key={i} style={{ flexDirection: 'row', gap: 8 }}>
+                    <Text style={{ ...body, color: P.amber, fontWeight: '800' }}>•</Text>
+                    <Rich text={pt} style={{ ...body, flex: 1 }} />
+                  </View>
                 ))}
               </View>
             ) : null}

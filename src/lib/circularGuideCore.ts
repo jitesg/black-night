@@ -20,10 +20,14 @@ export interface CircularGuide {
   details?: GuideKV[];
   laws?: string[];
   problem?: string;
+  /** heading of the problem box (default "मुख्य समस्या") and its top-button word (default "समस्या") — converted परिपत्र use "सार" */
+  problemTitle?: string;
+  problemNav?: string;
   directions?: { title?: string; intro?: string; points: GuidePoint[] };
   related?: GuideRelated[];
   dgp?: string;
-  case?: { title?: string; intro?: string; lines?: GuideKV[]; orders?: GuideOrder[] };
+  /** संदर्भित वाद / पृष्ठभूमि: k/v lines, plain bullet points and / or order tabs; `nav` = its top-button word (default "वाद") */
+  case?: { title?: string; nav?: string; intro?: string; lines?: GuideKV[]; points?: string[]; orders?: GuideOrder[] };
   checklist?: {
     title?: string; intro?: string; items: GuideCheckItem[]; optionalLabel?: string; optionalHint?: string;
     doneText?: string; pendingText?: string; footer?: string;
@@ -47,6 +51,8 @@ export function parseGuide(raw: unknown): CircularGuide | null {
   const details = kvList(r.details); if (details.length) g.details = details;
   const laws = (Array.isArray(r.laws) ? r.laws : []).map(str).filter(Boolean); if (laws.length) g.laws = laws;
   if (str(r.problem)) g.problem = str(r.problem);
+  if (str(r.problemTitle)) g.problemTitle = str(r.problemTitle);
+  if (str(r.problemNav)) g.problemNav = str(r.problemNav);
   const points = (Array.isArray(r.directions?.points) ? r.directions.points : [])
     .map((p: any) => ({ ...(str(p?.t) ? { t: str(p.t) } : {}), b: str(p?.b), ...(str(p?.see) ? { see: str(p.see) } : {}) }))
     .filter((p: GuidePoint) => p.b);
@@ -60,9 +66,11 @@ export function parseGuide(raw: unknown): CircularGuide | null {
     const orders = (Array.isArray(r.case.orders) ? r.case.orders : [])
       .map((o: any) => ({ tab: str(o?.tab), points: (Array.isArray(o?.points) ? o.points : []).map(str).filter(Boolean) }))
       .filter((o: GuideOrder) => o.tab && o.points.length);
-    if (lines.length || orders.length) {
-      g.case = { ...(str(r.case.title) ? { title: str(r.case.title) } : {}), ...(str(r.case.intro) ? { intro: str(r.case.intro) } : {}),
-        ...(lines.length ? { lines } : {}), ...(orders.length ? { orders } : {}) };
+    const cpoints = (Array.isArray(r.case.points) ? r.case.points : []).map(str).filter(Boolean);
+    if (lines.length || orders.length || cpoints.length) {
+      g.case = { ...(str(r.case.title) ? { title: str(r.case.title) } : {}), ...(str(r.case.nav) ? { nav: str(r.case.nav) } : {}),
+        ...(str(r.case.intro) ? { intro: str(r.case.intro) } : {}),
+        ...(lines.length ? { lines } : {}), ...(cpoints.length ? { points: cpoints } : {}), ...(orders.length ? { orders } : {}) };
     }
   }
   const items = (Array.isArray(r.checklist?.items) ? r.checklist.items : [])
@@ -91,7 +99,8 @@ export function guideSections(g: CircularGuide): { key: GuideSectionKey; label: 
   if (g.dgp) keys.push('dgp');
   if (g.case) keys.push('case');
   if (g.checklist?.items.length) keys.push('checklist');
-  return keys.map((key, i) => ({ key, label: SECTION_LABEL[key], no: i + 1 }));
+  const label = (k: GuideSectionKey) => (k === 'problem' && g.problemNav) || (k === 'case' && g.case?.nav) || SECTION_LABEL[k];
+  return keys.map((key, i) => ({ key, label: label(key), no: i + 1 }));
 }
 
 export type OldAct = 'IPC' | 'CrPC' | 'IEA';
