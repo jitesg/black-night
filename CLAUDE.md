@@ -919,6 +919,10 @@ detailed working log. Keep the guide up to date when the architecture changes.
   (amber box), निर्देश (numbered, "देखें 73/2013" tag) + related परिपत्र red box (→ that entry), DGP (navy box, bold amber), वाद (case lines + order tabs),
   चेकलिस्ट (ticks, dashed switch, navy status card red / green), footer + "📄 मूल पाठ, मेरा नोट व संलग्न फ़ाइलें" → `[knowledgeId]?view=text` (the old
   CircularDetail). Used from [knowledgeId] when the परिपत्र has a guide. 70/2013 = owner's own notes text as sent (names as in his text).
+  Other परिपत्र: `python3 -I scripts/circular_guides/convert.py <ids>` turns the परिपत्र's own app text into a guide (दिनांक / जारीकर्ता / प्रेषित /
+  संदर्भ / विषय / संबंधित पद → विवरण, सार → box with problemTitle/problemNav "सार", मुख्य निर्देश → points, पृष्ठभूमि → case.points with nav
+  "पृष्ठभूमि", सेल्फ-चेक ☐ → चेकलिस्ट); short title / kicker / laws / related by hand in `scripts/circular_guides/overrides.py`. Owner approves each
+  batch with an HTML sample first. Batch 1 done (December 2013): 71, 72, 73 (laws IPC 363/366, related 70), 75, सेवा संबंधी वाद, ललिता कुमारी (CrPC 154).
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared

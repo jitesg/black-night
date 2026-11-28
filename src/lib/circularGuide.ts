@@ -12,6 +12,13 @@ declare const localStorage: { getItem(k: string): string | null; setItem(k: stri
 
 const GUIDES: Record<string, () => unknown> = {
   'sys-circ-dg-70-2013': () => require('../../assets/circular-guides/sys-circ-dg-70-2013.json'),
+  // batch 1 (December 2013) — scripts/circular_guides/convert.py from the परिपत्र's own app text
+  'sys-circ-dg-71-2013': () => require('../../assets/circular-guides/sys-circ-dg-71-2013.json'),
+  'sys-circ-ardh-dg-72-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-72-2013.json'),
+  'sys-circ-dg-73-2013': () => require('../../assets/circular-guides/sys-circ-dg-73-2013.json'),
+  'sys-circ-ardh-dg-75-2013': () => require('../../assets/circular-guides/sys-circ-ardh-dg-75-2013.json'),
+  'sys-circ-dg-court-cases-service-2013': () => require('../../assets/circular-guides/sys-circ-dg-court-cases-service-2013.json'),
+  'sys-circ-dg-lalita-kumari-2013': () => require('../../assets/circular-guides/sys-circ-dg-lalita-kumari-2013.json'),
 };
 
 const cache = new Map<string, CircularGuide | null>();
