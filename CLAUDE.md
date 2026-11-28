@@ -923,6 +923,9 @@ detailed working log. Keep the guide up to date when the architecture changes.
   संदर्भ / विषय / संबंधित पद → विवरण, सार → box with problemTitle/problemNav "सार", मुख्य निर्देश → points, पृष्ठभूमि → case.points with nav
   "पृष्ठभूमि", सेल्फ-चेक ☐ → चेकलिस्ट); short title / kicker / laws / related by hand in `scripts/circular_guides/overrides.py`. Owner approves each
   batch with an HTML sample first. Batch 1 done (December 2013): 71, 72, 73 (laws IPC 363/366, related 70), 75, सेवा संबंधी वाद, ललिता कुमारी (CrPC 154).
+  Batch 2 done (January–February 2013): 01, 02 (CrPC 170/173/207 → BNSS 190/193/230), अ0शा0 03 (CrPC 160/161/164/164A/53A), अ0शा0 04 (NDPS — no law
+  chips: law_map has only IPC/CrPC/IEA), 5, अ0शा0 6. Still to do: 2012 परिपत्र have extra headings (उद्देश्य, समय-सीमाएँ, लागू शर्तें …) — teach convert.py
+  to keep them as their own sections before that batch.
 - Law "विस्तृत विश्लेषण" owner notes (owner, BNSS 35 first): `src/lib/law/lawNotes.ts` (NOTES "<ACT>-<n>" → assets/law-notes/<ACT>-<n>.json,
   `getLawNote`) — when a section has a note, `DetailedAnalysisCard note={…}` shows it INSTEAD of the generated explain_*.json accordions (same card
   header / badge). Blocks = formatInfo blocks + h2 / check (☐) / head.lines / n-column tables, drawn by the shared
